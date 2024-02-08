@@ -674,7 +674,7 @@ const Users = ({ searchValue, permissions }) => {
                         type="text"
                         placeholder="Enter User Name"
                         name="fname"
-                        className="formInput"
+                        className="formInput user-Input"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                       />
@@ -690,7 +690,7 @@ const Users = ({ searchValue, permissions }) => {
                         type="text"
                         placeholder="Enter User Name"
                         name="lname"
-                        className="formInput"
+                        className="formInput user-Input"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                       />
@@ -709,7 +709,7 @@ const Users = ({ searchValue, permissions }) => {
                             type="email"
                             placeholder="Enter Email Address"
                             name="email"
-                            className="formInput"
+                            className="formInput user-Input"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                           />
@@ -726,7 +726,7 @@ const Users = ({ searchValue, permissions }) => {
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter User Password"
                             name="fname"
-                            className="formInput"
+                            className="formInput user-Input"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                           />
@@ -757,7 +757,7 @@ const Users = ({ searchValue, permissions }) => {
                         type="number"
                         placeholder="Enter Phone No"
                         name="phoneno"
-                        className="formInput"
+                        className="formInput user-Input"
                         value={phone}
                         maxLength="10"
                         onChange={(e) => {
@@ -775,7 +775,7 @@ const Users = ({ searchValue, permissions }) => {
                         type="text"
                         placeholder="Enter Company Name"
                         name="cname"
-                        className="formInput"
+                        className="formInput user-Input"
                         value={company}
                         onChange={(e) => setCompany(e.target.value)}
                       />
@@ -788,7 +788,7 @@ const Users = ({ searchValue, permissions }) => {
                         type="number"
                         placeholder="Enter zip code"
                         name="zipcode"
-                        className="formInput"
+                        className="formInput user-Input"
                         value={zipCode}
                         maxLength="10"
                         onChange={(e) => {
@@ -803,7 +803,7 @@ const Users = ({ searchValue, permissions }) => {
                     <div className="relative">
                       <label className="formLabel">Country</label>
                       <select
-                        className="formInput"
+                        className="formInput user-Input"
                         value={countryID}
                         onChange={(e) => setCountryID(e.target.value)}
                       >
@@ -823,7 +823,7 @@ const Users = ({ searchValue, permissions }) => {
                     <div className="relative">
                       <label className="formLabel">State</label>
                       <select
-                        className="formInput"
+                        className="formInput user-Input"
                         onChange={(e) => setSelectedState(e.target.value)}
                         value={selectedState}
                       >
@@ -842,7 +842,7 @@ const Users = ({ searchValue, permissions }) => {
                     <div className="relative">
                       <label className="formLabel">Roles</label>
                       <select
-                        className="formInput"
+                        className="formInput user-Input"
                         value={selectRoleID}
                         onChange={(e) => setSelectRoleID(e.target.value)}
                       >
@@ -2141,7 +2141,7 @@ const Users = ({ searchValue, permissions }) => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
                                 viewBox="0 0 24 24"
-                                onClick={() => handleSort("compositionName")}
+                                onClick={() => handleSort("firstName")}
                               >
                                 <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                               </svg>

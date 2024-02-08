@@ -138,7 +138,7 @@ const Storagelimit = () => {
                           onChange={(e) => {
                             let value = e.target.value.trim();
                             if (value.length > 2) {
-                              alert("Please enter only two characters.");
+                              toast.error("Please enter only two characters.");
                               e.target.value = value.slice(0, 2);
                               return;
                             }

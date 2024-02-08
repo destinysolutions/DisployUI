@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import AdminSidebar from '../AdminSidebar'
 import AdminNavbar from '../AdminNavbar'
 import { BiUserPlus } from "react-icons/bi";
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import { debounce } from 'lodash';
 import * as Yup from "yup";
 import axios from "axios";
@@ -15,12 +15,18 @@ import { useEffect } from 'react';
 import { ADDEDITADVERTISEMENT, GETALLADS } from '../../Pages/Api';
 import { MdOutlineResetTv, MdPreview } from 'react-icons/md';
 import moment from 'moment';
+import { assignAdvertisement, getAdvertisementData } from '../../Redux/admin/AdvertisementSlice';
+import { useDispatch } from 'react-redux';
+import { getOnBodingData } from '../../Redux/admin/OnBodingSlice';
 
 const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const hiddenFileInput = useRef(null);
   const TodayDate = new Date();
+  const dispatch = useDispatch()
   const [showModal, setShowModal] = useState(false);
   const [showSelectScreenModal, setShowSelectScreenModal] = useState(false);
+  const [adsPreview, setAdsPreview] = useState(false);
+
   const [customerList, setCustomerList] = useState({
     allCustomer: [],
     searchCustomer: []
@@ -32,6 +38,8 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     advertisementData: [],
     SearchData: []
   })
+  const [selectAds, setSelectAds] = useState("");
+  console.log('selectAds', selectAds)
   console.log('allAdvertisement', allAdvertisement)
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,14 +50,18 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectcheck, setSelectCheck] = useState(false);
   const [searchAds, setSearchAds] = useState("")
-
+  console.log('selectedItems', selectedItems)
   const toggleModal = () => {
     setShowModal(!showModal);
     formik.resetForm();
   };
 
   const handleClose = () => {
-    setShowSelectScreenModal(!showSelectScreenModal)
+    setShowSelectScreenModal(false)
+    setSelectAllChecked(false)
+    setSelectCheck(false)
+    setSelectedItems([])
+    setSelectAds("")
   }
 
   const filteredData = Array.isArray(customerList?.allCustomer)
@@ -165,6 +177,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      toast.loading("saving...")
       const formData = new FormData();
       formData.append("Name", values.Name);
       formData.append("startTime", values.startTime);
@@ -190,6 +203,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
 
       const response = await axios.request(config);
       if (response?.data?.status === true) {
+        toast?.remove()
         formik.resetForm();
         toast.success("Advertisement Details saved successfully!");
         fetchAds()
@@ -203,51 +217,29 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   });
 
   const fetchUserData = () => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: GET_ALL_ORGANIZATION_MASTER,
-      headers: {},
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(response.data);
-        setCustomerList({
-          allCustomer: response.data.data,
-          searchCustomer: response.data.data
-        })
+    dispatch(getOnBodingData()).then((response) => {
+      setCustomerList({
+        allCustomer: response.payload.data,
+        searchCustomer: response.payload.data
       })
-      .catch((error) => {
-        console.log(error);
-      });
-
+    }).catch((error) => {
+      console.log('error', error)
+    })
   };
 
   const fetchAds = () => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: GETALLADS,
-      headers: {},
-    };
-    axios
-      .request(config)
+    dispatch(getAdvertisementData())
       .then((response) => {
-        console.log(response, "response");
         setAllAdvertisement({
-          advertisementData: response?.data?.data,
-          SearchData: response?.data?.data
+          advertisementData: response?.payload?.data,
+          SearchData: response?.payload?.data
         })
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      }).catch((error) => console.log('error', error))
   }
 
   useEffect(() => {
     fetchUserData();
-    fetchAds()
+    fetchAds();
   }, [])
 
   useEffect(() => {
@@ -288,7 +280,27 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     setFile(selectedFile);
   };
 
-  const debouncedOnChange = debounce(handleChange, 500);
+
+  const HandleSave = () => {
+    toast.loading("saving...")
+    let Params = {
+      "assignAdvertisementid": 0,
+      "adsCustomerMasterID": selectAds?.adsCustomerMasterID,
+      "organizationID": selectedItems.join(','),
+      "mode": "Save"
+    }
+    dispatch(assignAdvertisement(Params)).then((res) => {
+      if (res?.payload?.status === 200) {
+        toast?.remove()
+        toast.success("saved data Successfully")
+      }
+    }).catch((error)=> console.log('error', error))
+    setShowSelectScreenModal(false)
+    setSelectAllChecked(false)
+    setSelectCheck(false)
+    setSelectedItems([])
+    setSelectAds("")
+  }
 
   return (
     <>
@@ -302,10 +314,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
-            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 "
-              onClick={() => {
-                setShowSelectScreenModal(true)
-              }}>
+            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ">
               Advertisement
             </h1>
             <div className="flex gap-3">
@@ -336,7 +345,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="p-6">
-            <div className=" bg-white rounded-xl mt-8 shadow screen-section">
+            <div className=" bg-white rounded-xl shadow screen-section">
               <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                 <table
                   className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
@@ -369,12 +378,14 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                         Phone Number
                       </th>
                       <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
+                        Screen
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
                         Start Date
                       </th>
                       <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
                         End Date
                       </th>
-
                       <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
                         Action
                       </th>
@@ -384,7 +395,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                   <tbody>
                     {loading && (
                       <tr>
-                        <td colSpan={7}>
+                        <td colSpan={8}>
                           <div className="flex text-center m-5 justify-center">
                             <svg
                               aria-hidden="true"
@@ -414,7 +425,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                       allAdvertisement?.SearchData &&
                       sortedAndPaginatedAdsData?.length === 0 && (
                         <tr>
-                          <td colSpan={7}>
+                          <td colSpan={8}>
                             <div className="flex text-center m-5 justify-center">
                               <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                 No Data Available
@@ -445,6 +456,9 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                     {screen?.phoneNumber}
                                   </td>
                                   <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                    {screen?.screen}
+                                  </td>
+                                  <td className="p-2 text-center break-words text-[#5E5E5E]">
                                     {moment(screen?.startDate).format("LLL")}
                                   </td>
                                   <td className="p-2 text-center break-words text-[#5E5E5E]">
@@ -455,10 +469,25 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                     <div className="relative">
                                       <button
                                         data-tip
-                                        data-for="Preview"
-                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-3"
+                                        data-for="Assign"
+                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-1"
+                                        onClick={() => {
+                                          setShowSelectScreenModal(true)
+                                          setSelectAds(screen)
+                                        }}
                                       >
                                         <MdOutlineResetTv />
+                                      </button>
+                                      <button
+                                        data-tip
+                                        data-for="Preview"
+                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-1"
+                                        onClick={() => {
+                                          setAdsPreview(true)
+                                          setSelectAds(screen)
+                                        }}
+                                      >
+                                        <MdPreview />
                                       </button>
                                     </div>
                                   </td>
@@ -522,6 +551,46 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
+      {adsPreview && (
+        <div className="fixed left-1/2 top-1/3 -translate-x-1/2 w-[768px] h-[432px] bg-black z-50 inset-0">
+          {/* btn */}
+          <div className="fixed z-40">
+            <button
+              className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
+              onClick={() => setAdsPreview(false)}
+            >
+              <AiOutlineCloseCircle size={30} />
+            </button>
+          </div>
+          <div className="fixed">
+            {selectAds && (
+              <>
+                {selectAds.assetType === "image" && (
+                  <div className="imagebox p-3">
+                    <img
+                      src={selectAds.filePath}
+                      alt={selectAds.name}
+                      className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                    />
+                  </div>
+                )}
+                {selectAds.assetType === "video" && (
+                  <video
+                    controls
+                    className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                  >
+                    <source
+                      src={selectAds.filePath}
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
 
       {showModal && (
@@ -546,6 +615,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
           handleSort={handleSort}
           handleSelectAllCheckboxChange={handleSelectAllCheckboxChange}
           selectAllChecked={selectAllChecked}
+          HandleSave={HandleSave}
           selectedItems={selectedItems}
           handleScreenCheckboxChange={handleScreenCheckboxChange} />
       )}

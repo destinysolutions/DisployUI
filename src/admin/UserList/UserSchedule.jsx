@@ -164,7 +164,7 @@ const UserSchedule = ({ selectUser, schedules, loading }) => {
                             </div>
                           </td>
                         </tr>
-                      ) : schedules && sortedAndPaginatedData?.length === 0 ? (
+                      ) : !loading && schedules && sortedAndPaginatedData?.length === 0 ? (
                         <tr>
                           <td colSpan={7}>
                             <div className="flex text-center m-5 justify-center">

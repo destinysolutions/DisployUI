@@ -587,7 +587,7 @@ const Defaultmedia = ({ permissions }) => {
                                   </tbody>
                                 ))
                               ) : (
-                                <div>No data Found</div>
+                                <div>No Data Available</div>
                               )}
                             </table>
 

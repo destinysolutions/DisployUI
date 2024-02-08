@@ -39,7 +39,7 @@ button.stabshow.settingtabactive::after {
   position: absolute;
   content: "";
   top: 0;
-  right: -20px;
+  right: -10px;
   background: #ffffff;
   z-index: 9;
 }

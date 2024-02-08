@@ -202,6 +202,7 @@ const AddEditAdvertisement = ({
                       <input
                         type="file"
                         id="upload-button"
+                        accept="image/*, video/*"
                         style={{ display: "none" }}
                         ref={hiddenFileInput}
                         onChange={(e) => handleFileChange(e)}

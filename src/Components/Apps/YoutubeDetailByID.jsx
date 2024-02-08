@@ -620,6 +620,8 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                         url={YoutubeVideo}
                         className="w-full relative z-20 videoinner"
                         muted={isMuted}
+                        width={"100%"}
+                        height={"100%"}
                         playing={!showPreviewPopup}
                         controls={true} // Enable video controls
                         captions={{

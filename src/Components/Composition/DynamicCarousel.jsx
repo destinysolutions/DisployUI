@@ -46,7 +46,7 @@ const Carousel = ({ items, compositonData, from }) => {
           if (currentIndex === index) {
             return (
               <div
-                className="h-full w-full text-[#5A5881] font-semibold rounded shadow"
+                className="w-full h-full text-[#5A5881] font-semibold rounded shadow"
                 key={index}
               >
                 {item.assetType === "OnlineImage" && (
@@ -82,7 +82,9 @@ const Carousel = ({ items, compositonData, from }) => {
                   item?.assetType === "OnlineVideo") && (
                     <ReactPlayer
                       url={item?.assetFolderPath}
-                      className="w-full relative z-20 videoinner object-fill"
+                      className="w-full h-full relative z-20 videoinner object-fill"
+                      width={"100%"}
+                      height={"100%"}
                       controls={true}
                       playing={true}
                       loop={true}
@@ -96,8 +98,10 @@ const Carousel = ({ items, compositonData, from }) => {
                           ? item?.assetFolderPath
                           : item?.fileType
                       }
-                      className="w-full relative z-20 videoinner"
+                      className="w-full h-full relative z-20 videoinner object-fill"
                       controls={true}
+                      width={"100%"}
+                      height={"100%"}
                       loop={true}
                       playing={true}
                     />

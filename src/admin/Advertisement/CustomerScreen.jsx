@@ -1,7 +1,7 @@
 import React from 'react'
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
-const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChange, loading, sortedAndPaginatedData, currentPage, totalPages, selectAllChecked, handleSelectAllCheckboxChange, selectedItems, handleScreenCheckboxChange }) => {
+const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChange, loading, sortedAndPaginatedData, currentPage, totalPages, selectAllChecked, handleSelectAllCheckboxChange, selectedItems, handleScreenCheckboxChange,HandleSave }) => {
     return (
         <>
             <div
@@ -235,6 +235,14 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                         </svg>
                                     </button>
                                 </div>
+                            </div>
+                            <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
+                                <button
+                                    className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
+                                    onClick={()=> HandleSave()}
+                                >
+                                    Save
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -176,4 +176,4 @@ export const ADMINUSERTOKEN = `${baseUrl}Register/GetUserToken`
 
 export const ADDEDITADVERTISEMENT = `${baseUrl}AdsCustomer/AddorUpdateAdsCustomer`
 export const GETALLADS = `${baseUrl}AdsCustomer/GetAllAdsData`
-
+export const ASSIGN_ADS = `${baseUrl}AdsCustomer/InsertAdvertisementScreen`

@@ -19,6 +19,7 @@ import RetailersSlice from "./admin/RetailerSlice";
 import OnBodingSlice from "./admin/OnBodingSlice";
 import WeatherSlice from "./WeatherSlice";
 import ManageUserSlice from "./admin/ManageUserSlice";
+import AdvertisementSlice from "./admin/AdvertisementSlice";
 // const rootPersistConfig = {
 //   key: "root",
 //   storage,
@@ -56,6 +57,7 @@ const rootReducer = combineReducers({
   onBoding : OnBodingSlice,
   weather : WeatherSlice,
   ManageUser:ManageUserSlice,
+  advertisementData : AdvertisementSlice
 });
 
 const persisteRoot = rootReducer;

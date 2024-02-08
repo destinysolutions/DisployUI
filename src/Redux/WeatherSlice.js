@@ -65,8 +65,8 @@ export const deletedData = createAsyncThunk("data/deletedData", async (payload, 
 }
 );
 
-const RetailersSlice = createSlice({
-  name: "retailerData",
+const WeatherSlice = createSlice({
+  name: "weather",
   initialState,
   reducers: {
     resetStatus: (state) => {
@@ -131,6 +131,6 @@ const RetailersSlice = createSlice({
   },
 });
 
-export const { resetStatus } = RetailersSlice.actions;
+export const { resetStatus } = WeatherSlice.actions;
 
-export default RetailersSlice.reducer;
+export default WeatherSlice.reducer;

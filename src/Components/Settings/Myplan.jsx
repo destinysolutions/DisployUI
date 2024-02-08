@@ -69,61 +69,173 @@ const Myplan = () => {
 
     return (
         <>
-        <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
-            <div>
-                <button className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" onClick={() => showPlanModal(true)}>
-                    <SlCalender className="text-lg mr-2" />
-                    Add New Plan
-                </button>
+            <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
+                <div className="flex items-center justify-between mx-2 mb-5">
+                    <div className="title">
+                        <h2 className="font-bold text-xl">Pricing Plans</h2>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button
+                            className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
+                            onClick={() => showPlanModal(true)}
+                        >
+                            <SlCalender className="text-2xl mr-1" />
+                            Add New Plan
+                        </button>
+                    </div>
+                </div>
+                <div className="flex flex-wrap -mx-3 mb-8">
+                    <div className="w-full md:w-1/3 px-3 mb-4">
+                        <div className="bg-[#ECF0F1] p-4 rounded-lg h-full">
+                            <div className="flex justify-between">
+                                <div className="role-name">
+                                    <p>Total 5 Users</p>
+                                    <h3 className="text-2xl font-semibold my-2">
+                                        Basic Plan
+                                    </h3>
+                                    <p>A simple start for Everyone</p>
+                                </div>
+                                <div className="role-user ">
+                                    <div className="role-user flex justify-center">
+                                        <span>
+                                            <img src="./dist/images/1user-img.png" />
+                                        </span>
+                                        <span>
+                                            <img src="./dist/images/2user-img.png" />
+                                        </span>
+                                        <span className="pulus-user text-2xl text-white">
+                                            +3
+                                        </span>
+                                    </div>
+                                    <div className="role-user flex justify-center mt-6">
+                                        <button
+                                            className="text-white items-center justify-center rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-lg  text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                                        >
+                                            Edit Plan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-full md:w-1/3 px-3 mb-4">
+                        <div className="bg-[#ECF0F1] p-4 rounded-lg h-full">
+                            <div className="flex justify-between">
+                                <div className="role-name">
+                                    <p>Total 5 Users</p>
+                                    <h3 className="text-2xl font-semibold my-2">
+                                        Standard Plan
+                                    </h3>
+                                    <p>For small to medium Businesses </p>
+                                </div>
+                                <div className="role-user ">
+                                    <div className="role-user flex justify-center">
+                                        <span>
+                                            <img src="./dist/images/1user-img.png" />
+                                        </span>
+                                        <span>
+                                            <img src="./dist/images/2user-img.png" />
+                                        </span>
+                                        <span className="pulus-user text-2xl text-white">
+                                            +3
+                                        </span>
+                                    </div>
+                                    <div className="role-user flex justify-center mt-6">
+                                        <button
+                                            className="text-white items-center justify-center rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-lg  text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                                        >
+                                            Edit Plan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-full md:w-1/3 px-3 mb-4">
+                        <div className="bg-[#ECF0F1] p-4 rounded-lg h-full">
+                            <div className="flex justify-between">
+                                <div className="role-name">
+                                    <p>Total 2 Users</p>
+                                    <h3 className="text-2xl font-semibold my-2">
+                                        Enterprise Plan
+                                    </h3>
+                                    <p>A simple start for everyone </p>
+                                </div>
+                                <div className="role-user ">
+                                    <div className="role-user flex justify-center">
+                                        <span>
+                                            <img src="./dist/images/1user-img.png" />
+                                        </span>
+                                        <span>
+                                            <img src="./dist/images/2user-img.png" />
+                                        </span>
+                                        <span className="pulus-user text-2xl text-white">
+                                            +
+                                        </span>
+                                    </div>
+                                    <div className="role-user flex justify-center mt-6">
+                                        <button
+                                            className="text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-lg  text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                                        >
+                                            Edit Plan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-full md:w-1/3 px-3 mb-4">
+                        <div className="bg-[#ECF0F1] p-4 rounded-lg h-full">
+                            <div className="flex justify-between">
+                                <div className="role-name">
+                                    <p>Total 5 Users</p>
+                                    <h3 className="text-2xl font-semibold my-2">
+                                        Supplier Plan
+                                    </h3>
+                                    <p>A simple start for Everyone </p>
+                                </div>
+                                <div className="role-user ">
+                                    <div className="role-user flex justify-center">
+                                        <span>
+                                            <img src="./dist/images/1user-img.png" />
+                                        </span>
+                                        <span>
+                                            <img src="./dist/images/2user-img.png" />
+                                        </span>
+                                        <span className="pulus-user text-2xl text-white">
+                                            +3
+                                        </span>
+                                    </div>
+                                    <div className="role-user flex justify-center mt-6">
+                                        <button
+                                            className="text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-lg  text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                                        >
+                                            Edit Plan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex items-center justify-center w-full mt-12">
+                    <label
+                        htmlFor="toogleA"
+                        className="flex items-center cursor-pointer border border-blue-500 bg-blue-lighter p-4 rounded-full">
+                        <div className="text-3xl font-semibold mr-5">
+                            Start with a 14-day FREE trial!
+                        </div>
+
+                        <div className="relative">
+                            <input id="toogleA" type="checkbox" className="sr-only" />
+
+                            <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+
+                            <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                        </div>
+                    </label>
+                </div>
             </div>
-            <div className='clear-both overflow-x-auto'>
-                <table className=' bg-[#EFF3FF] w-full text-left rounded-xl' cellPadding={15}>
-                    <thead>
-                        <tr className='border-b border-b-[#E4E6FF]'>
-
-                            <th className='text-[#5A5881] text-base font-semibold'><span className='flex items-center'>Name<FiFilter className='ml-1 text-lg' /></span></th>
-                            <th className='text-[#5A5881] text-base font-semibold text-center'><span className='flex items-center justify-center'>Total Screen<FiFilter className='ml-1 text-lg' /></span></th>
-                            <th className='text-[#5A5881] text-base font-semibold'><span className='flex items-center justify-center'>Plan<FiFilter className='ml-1 text-lg' /></span></th>
-                            <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Storage</div></th>
-                            <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Cost</div></th>
-                            <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Discount <FiFilter className='ml-1 text-lg' /></div></th>
-                            <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Status</div></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {myplan.map((plan, index) => (
-                            <tr key={index} className='border-b border-b-[#E4E6FF]'>
-                                <td className='text-[#5E5E5E]'>{plan.name}</td>
-                                <td className='text-[#5E5E5E] text-center'>{plan.totalscreen}</td>
-                                <td className='text-[#5E5E5E] text-center'>{plan.plan}</td>
-                                <td className='text-[#5E5E5E] text-center'><span style={{ background: '#E4E6FF', padding: '10px', borderRadius: '5px' }}> {plan.storage} </span></td>
-                                <td className='text-[#5E5E5E] text-center'>{plan.cost}</td>
-                                <td className='text-[#5E5E5E] text-center'>{plan.discount}</td>
-
-
-
-                                <td className='text-center'>
-                                    <label className="inline-flex relative items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="sr-only peer"
-                                            checked={plan.statusEnabled}
-                                            onChange={() => handleStatusToggle(index)}
-                                        />
-                                        <div
-                                            className={`w-10 h-5 rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${plan.statusEnabled ? "bg-[#009618]" : "bg-[#9ddda7]"
-                                                }`}
-                                        ></div>
-                                    </label>
-                                </td>
-
-
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            </div>                                                    
             {/* Add new Plan */}
             {planModel && (
                 <>
@@ -227,7 +339,7 @@ const Myplan = () => {
                                                                             discouponcodes && (
                                                                                 <>
                                                                                     <div className='border-[#41479b78] border-t py-3 mt-2'>
-                                                                                        <button className=" bg-primary text-white border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50" onClick={() => showNewDiscountModal(true)}>
+                                                                                        <button className=" bg-primary text-white border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50">
                                                                                             Add new Discount
                                                                                         </button>
                                                                                         <div className='clear-both overflow-x-auto'>

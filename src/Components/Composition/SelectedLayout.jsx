@@ -951,6 +951,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                           url={item?.assetFolderPath}
                                           className="w-full relative z-20 videoinner max-h-10"
                                           controls={false}
+                                          width={"100%"}
+                                          height={"100%"}
                                           playing={false}
                                           loop={true}
                                         />

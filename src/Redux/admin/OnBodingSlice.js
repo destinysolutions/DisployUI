@@ -8,6 +8,7 @@ const initialState = {
   status: "idle",
   error: null,
   success: null,
+  loading:false,
   message: null,
   type: null
 };
@@ -69,14 +70,17 @@ const OnBodingSlice = createSlice({
     builder
       .addCase(getOnBodingData.pending, (state) => {    // getRetailer
         state.status = null;
+        state.loading = true;
       })
       .addCase(getOnBodingData.fulfilled, (state, action) => {    // getRetailer
         state.status = null;
         state.data = action.payload?.data;
+        state.loading = false;
       })
       .addCase(getOnBodingData.rejected, (state, action) => {    // getRetailer
         state.status = "failed";
         state.error = action.error.message;
+        state.loading = false;
       })
 
       .addCase(handleRemoveUser.pending, (state) => {    // handleRemoveUser

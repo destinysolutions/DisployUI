@@ -19,7 +19,6 @@ import { getMenuAll } from "../../Redux/SidebarSlice";
 
 const Userrole = ({ searchValue, permissions }) => {
   const store = useSelector((state) => state.root.userRole);
-  console.log('store', store)
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
@@ -236,6 +235,15 @@ const Userrole = ({ searchValue, permissions }) => {
             return null;
           }
 
+          let arr;
+          if (title.isForApproval === true) {
+            arr = Array.from({ length: 5 }, (_, index) => ({
+              appoverId: 0,
+              userId: selectedRoleIDs[moduleId]?.[index] || 0,
+              levelNo: index + 1,
+            }));
+          }
+
           return {
             moduleID: moduleId,
             isView: isView,
@@ -243,11 +251,12 @@ const Userrole = ({ searchValue, permissions }) => {
             isDelete: isDelete,
             isApprove: isApprove,
             noofApproval: selectedLevel[moduleId],
-            listApproverDetails: Array.from({ length: 5 }, (_, index) => ({
-              appoverId: 0,
-              userId: selectedRoleIDs[moduleId]?.[index] || 0,
-              levelNo: index + 1,
-            })),
+            listApproverDetails: arr,
+            // Array.from({ length: 5 }, (_, index) => ({
+            //   appoverId: 0,
+            //   userId: selectedRoleIDs[moduleId]?.[index] || 0,
+            //   levelNo: index + 1,
+            // })),
           };
         })
         .filter(Boolean), // Remove null values
@@ -746,26 +755,28 @@ const Userrole = ({ searchValue, permissions }) => {
                                           />
                                         </div>
                                       </td>
-                                      <td className="text-center">
-                                        <div>
-                                          <input
-                                            type="checkbox"
-                                            checked={
-                                              selectedCheckboxes[
-                                                title.moduleID
-                                              ]?.[moduleName]?.CreateEdit ||
-                                              false
-                                            }
-                                            onChange={() =>
-                                              handleCheckboxChange(
-                                                title.moduleID,
-                                                moduleName,
-                                                "CreateEdit"
-                                              )
-                                            }
-                                          />
-                                        </div>
-                                      </td>
+                                      {title.moduleID !== 1 &&(
+                                        <td className="text-center">
+                                          <div>
+                                            <input
+                                              type="checkbox"
+                                              checked={
+                                                selectedCheckboxes[
+                                                  title.moduleID
+                                                ]?.[moduleName]?.CreateEdit ||
+                                                false
+                                              }
+                                              onChange={() =>
+                                                handleCheckboxChange(
+                                                  title.moduleID,
+                                                  moduleName,
+                                                  "CreateEdit"
+                                                )
+                                              }
+                                            />
+                                          </div>
+                                        </td>
+                                      )}
                                       {title.moduleID !== 1 && (
                                         <td className="text-center">
                                           <div>

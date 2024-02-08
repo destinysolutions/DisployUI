@@ -31,7 +31,7 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
     const { compositions } = useSelector(
         (state) => state.root.composition
     );
-    const { schedules } =
+    const storeSchedule =
         useSelector((s) => s.root.schedule);
     const { youtube, textScroll } = useSelector((s) => s.root.apps);
     const TrashData = useSelector((state) => state.root.trashData);
@@ -41,8 +41,8 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
     const [selectUser, setSelectUser] = useState("")
     const [activeTab, setActiveTab] = useState(0);
     const allAppsData = [...youtube?.youtubeData, ...textScroll?.textScrollData];
-    const [token, setToken] = useState(null)
-
+    const [token, setToken] = useState("")
+    const [userloading, setUserLoading] = useState(false)
     const handleTabClick = (index) => {
         setActiveTab(index);
     };
@@ -78,7 +78,6 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
             };
             axios.request(config)
                 .then((response) => {
-                    console.log('response', response)
                     setToken(response?.data?.data?.token); // Set token into state
                 })
                 .catch((error) => {
@@ -89,6 +88,7 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
 
     useEffect(() => {
         if (token !== "") {
+            setUserLoading(true)
             const authToken = `Bearer ${token}`;
             const query = `ScreenType=ALL&searchAsset=`;
             let config = {
@@ -108,7 +108,7 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
             //get text scroll data
             dispatch(handleGetTextScrollData({ token }));
             setCompositionLoading(false)
-
+            setUserLoading(false)
         }
     }, [token])
 
@@ -144,7 +144,7 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
                                         value={selectUser}
                                         onChange={(e) => setSelectUser(e.target.value)}
                                     >
-                                        <option label="Select client"></option>
+                                        <option label="Select Client"></option>
                                         {store?.data?.map((item, index) => (
                                             <option
                                                 key={index}
@@ -220,10 +220,10 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
                             <UserComposition selectUser={selectUser} compositions={compositions} loading={compositionLoading} />
                         )}
                         {activeTab === 3 && (
-                            <UserSchedule selectUser={selectUser} schedules={schedules} />
+                            <UserSchedule selectUser={selectUser} schedules={storeSchedule?.schedules} loading={storeSchedule?.loading}/>
                         )}
                         {activeTab === 4 && (
-                            <UserApp selectUser={selectUser} allAppsData={allAppsData} />
+                            <UserApp selectUser={selectUser} allAppsData={allAppsData} userloading={userloading} />
                         )}
                         {activeTab === 5 && (
                             <UserTrash selectUser={selectUser} TrashData={TrashData} />

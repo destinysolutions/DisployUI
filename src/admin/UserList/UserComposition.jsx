@@ -12,7 +12,7 @@ const UserComposition = ({ selectUser, compositions, loading }) => {
   const [sortedField, setSortedField] = useState(null);
   const [searchComposition, setSearchComposition] = useState("");
   // Filter data based on search term
-  const filteredData = compositions.filter((item) =>
+  const filteredData = compositions?.filter((item) =>
     Object.values(item).some(
       (value) =>
         value &&

@@ -550,6 +550,8 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     <ReactPlayer
                       url={YoutubeVideo}
                       className="w-full relative z-20 videoinner"
+                      width={"100%"}
+                      height={"100%"}
                       muted={isMuted}
                       controls={true}
                     />
