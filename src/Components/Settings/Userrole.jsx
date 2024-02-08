@@ -97,7 +97,8 @@ const Userrole = ({ searchValue, permissions }) => {
     axios
       .request(config)
       .then((response) => {
-        setModuleTitle(response.data.data);
+        const filteredData = response.data.data.filter(item => item.moduleID !== 9 && item.moduleID !== 22 );
+        setModuleTitle(filteredData);
       })
       .catch((error) => {
         console.log(error);
@@ -547,7 +548,7 @@ const Userrole = ({ searchValue, permissions }) => {
                         </td>
 
                         <td className="text-center text-[#5A5881] text-base">
-                          {permissions.isSave &&
+                          {/* {permissions.isSave && */}
                             <button
                               data-tip
                               data-for="Edit"
@@ -567,7 +568,7 @@ const Userrole = ({ searchValue, permissions }) => {
                                 <span>Edit</span>
                               </ReactTooltip>
                             </button>
-                          }
+                          {/* } */}
                         </td>
                       </tr>
                     );
@@ -765,25 +766,17 @@ const Userrole = ({ searchValue, permissions }) => {
                                           />
                                         </div>
                                       </td>
-                                      <td className="text-center">
-                                        <div>
-                                          <input
-                                            type="checkbox"
-                                            checked={
-                                              selectedCheckboxes[
-                                                title.moduleID
-                                              ]?.[moduleName]?.Delete || false
-                                            }
-                                            onChange={() =>
-                                              handleCheckboxChange(
-                                                title.moduleID,
-                                                moduleName,
-                                                "Delete"
-                                              )
-                                            }
-                                          />
-                                        </div>
-                                      </td>
+                                      {title.moduleID !== 1 && (
+                                        <td className="text-center">
+                                          <div>
+                                            <input
+                                              type="checkbox"
+                                              checked={selectedCheckboxes[title.moduleID]?.[moduleName]?.Delete || false}
+                                              onChange={() => handleCheckboxChange(title.moduleID, moduleName, "Delete")}
+                                            />
+                                          </div>
+                                        </td>
+                                      )}
                                     </>
                                   )}
                                   {title.isForApproval === true &&
@@ -938,7 +931,7 @@ const Userrole = ({ searchValue, permissions }) => {
               ref={showUsersRef}
               className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
             >
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-[700px] bg-white outline-none focus:outline-none">
                 <div className="relative w-full cursor-pointer z-40 rounded-full">
                   <button
                     className="text-xl absolute -right-3 -top-4 bg-black text-white rounded-full"

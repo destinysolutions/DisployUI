@@ -145,11 +145,18 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
+    let count = 0;
+    
     for (const key in screenIds) {
       if (screenIds[key] === true) {
-        idS += `${key},`;
+        if (count > 0) {
+          idS += ",";
+        }
+        idS += key;
+        count++;
       }
     }
+
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -159,6 +166,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         "Content-Type": "application/json",
       },
     };
+
+
     toast.loading("Saving...");
     axios.request(config)
       .then((response) => {
@@ -473,6 +482,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   {urlParth.assetType === 'Video' &&
                     <ReactPlayer
                       url={urlParth.assetFolderPath}
+                      width={"100%"}
+                      height={"100%"}
                       className="w-full relative z-20 videoinner"
                       controls={true}
                     />
@@ -481,6 +492,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   {urlParth.assetType === 'OnlineVideo' &&
                     <ReactPlayer
                       url={urlParth.assetFolderPath}
+                      width={"100%"}
+                      height={"100%"}
                       className="w-full relative z-20 videoinner"
                       controls={true}
                     />
@@ -490,6 +503,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   {urlParth.assetType === 'Youtube' &&
                     <ReactPlayer
                       url={urlParth.assetFolderPath}
+                      width={"100%"}
+                      height={"100%"}
                       className="w-full relative z-20 videoinner"
                       controls={true}
                     />

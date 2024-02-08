@@ -755,7 +755,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         moreModalRef.current &&
         !moreModalRef.current.contains(event?.target)
       ) {
-        setMoreModal(false);
+        // setMoreModal(false);
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -765,7 +765,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   }, [handleClickOutside]);
 
   function handleClickOutside() {
-    setMoreModal(false);
+    // setMoreModal(false);
   }
 
   useEffect(() => {
@@ -1273,18 +1273,22 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 {screenContentVisible && (
                                   <td className="text-[#5E5E5E]">
                                     <div className="flex">
-                                      <input
-                                        type="checkbox"
-                                        className="mr-3"
-                                        onChange={() =>
-                                          handleScreenCheckboxChange(
-                                            screen.screenID
-                                          )
+                                      <div>
+                                        {permissions.isDelete &&
+                                          <input
+                                            type="checkbox"
+                                            className="mr-3"
+                                            onChange={() =>
+                                              handleScreenCheckboxChange(
+                                                screen.screenID
+                                              )
+                                            }
+                                            checked={selectedItems.includes(
+                                              screen.screenID
+                                            )}
+                                          />
                                         }
-                                        checked={selectedItems.includes(
-                                          screen.screenID
-                                        )}
-                                      />
+                                      </div>
                                       {isEditingScreen &&
                                         editingScreenID === screen.screenID ? (
                                         <div className="flex items-center gap-2">
@@ -1313,7 +1317,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           className="flex items-center gap-1"
                                           style={{ width: "max-content" }}
                                         >
-                                          {permissions.isSave &&
+                                          {permissions.isSave ?
                                             <div>
                                               <Link
                                                 to={`/screensplayer?screenID=${screen.screenID}`}
@@ -1339,7 +1343,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" />
                                               </button>
                                             </div>
-                                          }
+                                            : <> {screen?.screenName?.length > 10
+                                              ? screen?.screenName.slice(
+                                                0,
+                                                10
+                                              ) + "..."
+                                              : screen.screenName} </>}
                                         </div>
                                       )}
                                     </div>
@@ -1592,7 +1601,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                     title={screen?.tags && screen?.tags.trim().split(',').map(tag => tag.trim()).join(",")}
                                     className="text-center text-[#5E5E5E]"
                                   >
-                                   
+
                                     <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
                                       {(screen?.tags === "" ||
                                         screen?.tags === null) && (

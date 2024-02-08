@@ -10,20 +10,66 @@ import { GET_ALL_ORGANIZATION_MASTER } from "../../admin/AdminAPI";
 import toast from "react-hot-toast";
 // import BlackLogo from "../../images/DisployImg/BlackLogo.svg";
 import BlackLogo from "../../images/DisployImg/Black-Logo2.png";
-
+import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import disploy_tv_img from "../../images/ScreenImg/disploy-tv-img.png";
+import { useDispatch } from "react-redux";
+
 
 const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const history = useNavigate();
   const [errorMessge, setErrorMessge] = useState(false);
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
   const [screen, setScreen] = useState();
+  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
+  const [permissionsNewScreen, setPermissionsNewScreen] = useState({ isSave: false });
 
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
   const modalRef = useRef(null);
+  const dispatch = useDispatch();
 
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
+
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload?.data?.menu.reduce((result, menuItem) => {
+        if (menuItem.submenu && Array.isArray(menuItem.submenu)) {
+          const submenuItem = menuItem.submenu.find((submenuItem) => submenuItem.pageName === "New Screen");
+          if (submenuItem) {
+            result = submenuItem;
+          }
+        }
+        return result;
+      }, null);
+
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissionsNewScreen(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
+
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload.data.menu.find(e => e.pageName === "Screens");
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissions(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
 
   const handleOtpChange = (index, value) => {
     const updatedOtpValues = [...otpValues];
@@ -37,7 +83,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const completeOtp = otpValues.join("");
 
   const verifyOTP = () => {
-    let data = JSON.stringify({otp: completeOtp,});
+    let data = JSON.stringify({ otp: completeOtp, });
 
     let config = {
       method: "post",
@@ -76,15 +122,16 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.key === 'Enter') {
-        verifyOTP(event);
+        event.preventDefault();
+        verifyOTP();
       }
     };
     document.addEventListener('keydown', handleKeyPress);
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, []); // Empty dependency array means this effect runs once after the initial render
-  
+  }, [completeOtp]); // Empty dependency array means this effect runs once after the initial render
+
 
   useEffect(() => {
     let config = {
@@ -214,18 +261,17 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
                 </div>
               </div>
             </div>
-
-            <div className="flex items-center justify-center pb-4">
-              <button
-                className="text-white bg-SlateBlue hover:bg-primary font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
-                type="button"
-                onClick={verifyOTP}
-              >
-                Continue
-              </button>
-            </div>
-            {/* </>
-            )} */}
+            {(permissions.isSave || permissionsNewScreen.isSave) &&
+              <div className="flex items-center justify-center pb-4">
+                <button
+                  className="text-white bg-SlateBlue hover:bg-primary font-semibold lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
+                  type="button"
+                  onClick={verifyOTP}
+                >
+                  Continue
+                </button>
+              </div>
+            }
           </div>
         </div>
       </div>

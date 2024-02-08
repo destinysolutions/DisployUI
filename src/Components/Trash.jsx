@@ -360,7 +360,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <thead>
                   <tr className="items-center table-head-bg">
-                    <th className=" sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
+                    <th className="sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
                       Name
                       <svg
                         className="w-3 h-3 ms-1.5 cursor-pointer"

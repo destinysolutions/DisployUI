@@ -43,7 +43,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
-  const [weatherScheduleId, setWeatherScheduleId] = useState("");
+  const [weatherScheduleId, setWeatherScheduleId] = useState();
   const [searchSchedule, setSearchSchedule] = useState("");
   const [selectAll, setSelectAll] = useState(false);
   const [filteredScheduleData, setFilteredScheduleData] = useState([]);
@@ -139,7 +139,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       setLoadFist(false)
     }
 
-  }, [loadFist,store])
+  }, [loadFist, store])
 
 
   const handleGetAll = () => {
@@ -265,11 +265,16 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
-    console.log("weatherScheduleId",weatherScheduleId);
     let idS = "";
+    let count = 0;
+
     for (const key in screenIds) {
       if (screenIds[key] === true) {
-        idS += `${key},`;
+        if (count > 0) {
+          idS += ",";
+        }
+        idS += key;
+        count++;
       }
     }
     let config = {
