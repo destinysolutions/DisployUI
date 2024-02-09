@@ -2,7 +2,7 @@ import React from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { useState } from "react";
-
+import Switch from "react-switch";
 
 const Data = [{
   id: "1",
@@ -51,9 +51,14 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = Data.slice(indexOfFirstItem, indexOfLastItem);
-
+  const [data, setData] = useState(Data.slice());
   // pagination End
 
+  const toggleAction = (index) => {
+    const updatedData = [...data];
+    updatedData[index].Action = updatedData[index].Action === 1 ? 0 : 1;
+    setData(updatedData);
+  };
 
   return (
     <>
@@ -119,21 +124,9 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                       <td className=" border-b border-lightgray text-sm ">
                         {item?.RequestedBY}
                       </td>
-                      <td className=" border-b border-lightgray text-sm ">
-                        {item.Action === 1 ? (
-                          <label className="relative inline-flex items-center me-5 cursor-pointer">
-                            <input type="checkbox" value="" className="sr-only peer" checked />
-                            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
-                            <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Red</span>
-                          </label>
-                        ) : (
-                          <label className="relative inline-flex items-center me-5 cursor-pointer">
-                            <input type="checkbox" value="" className="sr-only peer" />
-                            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
-                            <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Red</span>
-                          </label>
-                        )}
-                      </td>
+                      <td className="border-b border-lightgray text-sm">
+                          <Switch checked={item.Action === 1} onChange={() => toggleAction(index)} />
+                        </td>
                     </tr>
                   ))
                 ) : (

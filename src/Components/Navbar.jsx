@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { RiLogoutBoxRLine } from "react-icons/ri";
+import { RiLogoutBoxRLine, RiUserShared2Fill } from "react-icons/ri";
 import "././../Styles/sidebar.css";
 import axios from "axios";
 import { SELECT_BY_ID_USERDETAIL } from "../Pages/Api";
 import { useSelector } from "react-redux";
 import { auth } from "../FireBase/firebase";
-import { MdOutlineNavigateNext } from "react-icons/md";
+import { MdNotifications, MdOutlineLogout, MdOutlineNavigateNext } from "react-icons/md";
 import { handleLogout } from "../Redux/Authslice";
 import { useDispatch } from "react-redux";
 
@@ -96,7 +96,7 @@ const Navbar = () => {
     (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
   );
 
-// console.log(userDetails);
+  // console.log(userDetails);
 
   return (
     // navbar component start
@@ -198,49 +198,42 @@ const Navbar = () => {
                         <div className="flex items-center space-x-3  p-2">
                           {userDetails?.profilePhoto === "" ? (
                             <img
-                              src={createImageFromInitials(
-                                500,
-                                userDetails?.firstName,
-                                color
-                              )}
+                              src={createImageFromInitials(500,userDetails?.firstName,color)}
                               alt="profile"
-                              className=" profile"
+                              className=" profile rounded-full "
                               onClick={handleProfileClick}
                             />
                           ) : (
                             <img
                               src={userDetails?.profilePhoto}
                               alt="profile"
-                              className=" profile"
+                              className=" profile rounded-full"
                               onClick={handleProfileClick}
                             />
                           )}
                           <div>
-                            <div className="text-[#7C82A7] font-semibold text-lg">
+                            <div className="font-semibold text-lg capitalize">
                               {userDetails?.firstName} {userDetails?.lastName}
                             </div>
-                            {/* <div className="text-[#ACB0C7] font-medium text-base">
-                                Lead Developer
-                              </div> */}
                           </div>
                         </div>
                         <div className="border-b-[1px] border-[#8E94A9]"></div>
-                        <div className="p-2">
-                          <Link to="/userprofile">
-                            <div className="text-base font-medium mb-1 flex justify-between items-center">
-                              My Account
-                              <MdOutlineNavigateNext className="text-2xl text-gray" />
-                            </div>
-                          </Link>
-                          {/* <div className="text-base font-medium mb-1 flex justify-between items-center">
-                                  Profile settings
-                                  <MdOutlineNavigateNext className="text-2xl text-gray" />
-                                </div> */}
-                        </div>
-                        <div className="border-b-[1px] border-[#8E94A9]"></div>
-                        <div className="flex justify-center items-center p-2">
+
+                        <div className="flex justify-start items-center p-2">
                           <div className="mr-2">
-                            <RiLogoutBoxRLine className="text-xl" />
+                            <RiUserShared2Fill   className="text-xl" />
+                          </div>
+                          <Link to="/userprofile">
+                            <button className="text-[#001737] font-bold text-base ">
+                              My Account
+                            </button>
+                          </Link>
+                        </div>
+
+                        <div className="border-b-[1px] border-[#8E94A9]"></div>
+                        <div className="flex justify-start items-center p-2">
+                          <div className="mr-2">
+                            <MdOutlineLogout className="text-xl" />
                           </div>
                           <button
                             className="text-[#001737] font-bold text-base "
