@@ -1,23 +1,23 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { ASSIGN_ADS, GETALLADS } from "../../Pages/Api";
+import { ASSIGN_ADS, GETALLADS, GET_NOTIFICATIONS, UPDATE_ADS_RATE } from "../../Pages/Api";
 
 
 const initialState = {
     data: [],
+    getNotification:[],
     status: "idle",
     error: null,
     success: null,
     message: null,
-    type: null
+    type: null,
   };
 
   // getAdvertisementData all
 export const getAdvertisementData = createAsyncThunk("data/fetchApiData", async (payload, thunkAPI) => {
     try {
       const token = thunkAPI.getState().root.auth.token;
-      // const queryParams = new URLSearchParams({ScreenGroupID : null}).toString();
       const response = await axios.get(GETALLADS, { headers: { Authorization: `Bearer ${token}` } });
       return response.data;
     } catch (error) {
@@ -39,6 +39,33 @@ export const assignAdvertisement = createAsyncThunk("data/postData", async (payl
   }
 }
 );
+
+  // getNotification all
+  export const getNotificationData = createAsyncThunk("data/getNotificationData", async (payload, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().root.auth.token;
+      const response = await axios.get(GET_NOTIFICATIONS, { headers: { Authorization: `Bearer ${token}` } });
+      return response.data;
+    } catch (error) {
+      console.log("error", error);
+      throw error;
+    }
+  }
+  );
+
+    // getNotification all
+    export const UpdateAdsRate = createAsyncThunk("data/UpdateAdsRate", async (payload, thunkAPI) => {
+      try {
+        const token = thunkAPI.getState().root.auth.token;
+        const queryParams = new URLSearchParams(payload).toString();
+        const response = await axios.post(`${UPDATE_ADS_RATE}?${queryParams}`, null, { headers: { Authorization: `Bearer ${token}` } });
+        return response.data;
+      } catch (error) {
+        console.log("error", error);
+        throw error;
+      }
+    }
+    );
 
   const AdvertisementSlice = createSlice({
     name: "advertisementData",
@@ -74,6 +101,31 @@ export const assignAdvertisement = createAsyncThunk("data/postData", async (payl
           state.message = action.payload.message || 'Save data successFully';
         })
         .addCase(assignAdvertisement.rejected, (state, action) => {    // addData
+          state.status = "failed";
+          state.error = action.error.message;
+        })
+
+        .addCase(getNotificationData.pending, (state) => {    // addData
+          state.status = null;
+        })
+        .addCase(getNotificationData.fulfilled, (state, action) => {    // addData
+          state.status = "get";
+          state.getNotification = action.payload?.data;
+        })
+        .addCase(getNotificationData.rejected, (state, action) => {    // addData
+          state.status = "failed";
+          state.error = action.error.message;
+        })
+
+        .addCase(UpdateAdsRate.pending, (state) => {    
+          state.status = null;
+        })
+        .addCase(UpdateAdsRate.fulfilled, (state, action) => {
+          console.log("action",action.payload.message);    
+          state.status = "succeeded";
+          state.message = action.payload.message;
+        })
+        .addCase(UpdateAdsRate.rejected, (state, action) => {    
           state.status = "failed";
           state.error = action.error.message;
         })
