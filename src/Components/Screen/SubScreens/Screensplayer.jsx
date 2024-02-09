@@ -1148,8 +1148,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     <ReactPlayer
                       url={playerData?.fileType}
                       className="w-full relative z-20 videoinner"
-                      width={"100%"}
-                      height={"100%"}
                       controls={true}
                       playing={true}
                       loop={true}

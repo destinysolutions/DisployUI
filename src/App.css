@@ -59,8 +59,21 @@ button {
   padding: 0 5px;
 }
 .user-Input {
-  width: 350px !important;
+  max-width: 350px !important;
 }
+
+@media (max-width: 1080px) {
+  .user-Input{
+    max-width: 200px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-Input{
+    max-width: 100% !important;
+  }
+}
+
 
 .formInput {
   position: relative;

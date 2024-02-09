@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import "../../../Styles/sidebar.css";
 import "../../../Styles/screen.css";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
@@ -55,6 +55,7 @@ import axios from "axios";
 import moment from "moment";
 import { socket } from "../../../App";
 import { getMenuAll, getMenuPermission } from "../../../Redux/SidebarSlice";
+import Loading from "../../Loading";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -62,7 +63,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const authToken = `Bearer ${token}`;
 
   const dispatch = useDispatch();
-
+  const [sidebarload, setSidebarLoad] = useState(true)
   NewScreenGroup.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
@@ -108,7 +109,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [loading, setLoading] = useState(false);
   const [layotuDetails, setLayotuDetails] = useState(null);
   const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
-
+  const [viewLoading, setViewLoading] = useState(true)
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Adjust items per page as needed
@@ -157,10 +158,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
             result = submenuItem;
           }
         }
+        setViewLoading(false)
         return result;
       }, null);
-      
-      
+
+
 
       if (findData) {
         const ItemID = findData.moduleID;
@@ -171,6 +173,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           }
         })
       }
+      setSidebarLoad(false)
+
     })
   }, [])
 
@@ -552,592 +556,629 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex border-b border-gray">
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <Navbar />
-      </div>
-      <div className="pt-16 px-5 page-contain">
-        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <div className="justify-between lg:flex md:flex items-center sm:block">
-            <div className="section-title">
-              <h1 className="not-italic font-medium text-2xl text-[#001737]">
-                Group Name
-              </h1>
+      {sidebarload && (
+        <Loading />
+      )}
+      {!sidebarload && (
+        <Suspense fallback={<Loading />}>
+          <>
+            <div className="flex border-b border-gray">
+              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Navbar />
             </div>
-            <div className="flex items-center sm:mt-3 flex-wrap gap-1">
-              <button
-                data-tip
-                data-for="Refresh Screen"
-                type="button"
-                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                onClick={() => handleRefres()}
-              >
-                <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
-                <ReactTooltip
-                  id="Refresh Screen"
-                  place="bottom"
-                  type="warning"
-                  effect="float"
-                >
-                  <span>Refresh Screen</span>
-                </ReactTooltip>
-              </button>
-              {permissions.isSave &&
-                <button
-                  data-tip
-                  data-for="Add New Group"
-                  type="button"
-                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                  onClick={() => newAddGroup()}
-                >
-                  <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
-                  <ReactTooltip
-                    id="Add New Group"
-                    place="bottom"
-                    type="warning"
-                    effect="float"
-                  >
-                    <span>Add New Group</span>
-                  </ReactTooltip>
-                </button>
-              }
-
-              {isModalOpen && (
-                <ScreenGroupModal
-                  isOpen={isModalOpen}
-                  onClose={closeModal}
-                  handleSaveNew={handleSaveNew}
-                  updateScreen={updateScreen}
-                  editSelectedScreen={editSelectedScreen}
-                  label={label}
-                />
-              )}
-
-              {store?.data?.length > 0 && (
-                <div>
-                  {permissions.isDelete &&
-                    <button
-                      data-tip
-                      data-for="Select All"
-                      type="button"
-                      className="flex align-middle border-white text-white items-center"
+            <div className="pt-16 px-5 page-contain">
+              <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
+                {viewLoading ? (
+                  <div className="flex text-center m-5 justify-center">
+                    <svg
+                      aria-hidden="true"
+                      role="status"
+                      className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                      viewBox="0 0 100 101"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <input
-                        type="checkbox"
-                        className="w-6 h-5"
-                        checked={selectAll}
-                        onChange={handleSelectAll}
-                        readOnly
+                      <path
+                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                        fill="currentColor"
                       />
-                    </button>
-                  }
-
-                  <ReactTooltip
-                    id="Select All"
-                    place="bottom"
-                    type="warning"
-                    effect="float"
-                  >
-                    <span>Select All</span>
-                  </ReactTooltip>
-                </div>
-              )}
-
-              {selectedItems.length > 0 && (
-                <div>
-                  <button
-                    data-tip
-                    data-for="All Delete"
-                    className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                  >
-                    <RiDeleteBin5Line
-                      className="text-3xl p-1 hover:text-white"
-                      onClick={() => handleDeleteGroupAll()}
-                    />
-                  </button>
-
-                  <ReactTooltip
-                    id="All Delete"
-                    place="bottom"
-                    type="warning"
-                    effect="float"
-                  >
-                    <span>Delete</span>
-                  </ReactTooltip>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-5 shadow-md p-5 bg-white rounded-lg">
-            {loader && (
-              <div className="flex text-center m-5 justify-center">
-                <svg
-                  aria-hidden="true"
-                  role="status"
-                  className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
-                  viewBox="0 0 100 101"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="currentColor"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="#1C64F2"
-                  />
-                </svg>
-                <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2  dark:bg-green-900 dark:text-green-300">
-                  Loading...
-                </span>
-              </div>
-            )}
-            {!loader &&
-              paginatedData.length > 0 &&
-              paginatedData.map((item, i) => {
-                const isAccordionOpen = openAccordionIndex === i;
-                return (
-                  <div
-                    key={i}
-                    className="accordions shadow-md p-5 bg-slate-200 rounded-lg mb-4"
-                  >
-                    <div className="section lg:flex md:flex  sm:block items-center justify-between ">
-                      <div className="flex gap-2 items-center">
-                        {editIndex === i ? (
-                          <>
-                            <input
-                              type="text"
-                              name="name"
-                              className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              value={newGroupName}
-                              onChange={(e) => setNewGroupName(e.target.value)}
-                            />
-                            <div>
-                              <BiSave
-                                className="cursor-pointer text-xl text-[#0000FF]"
-                                onClick={() => updateGroupName(i)}
-                              />
-                              <IoClose
-                                className="cursor-pointer text-xl text-[#FF0000]"
-                                onClick={() => {
-                                  setEditIndex(-1);
-                                  setNewGroupName("");
-                                }}
-                              />
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <h1 className="text-lg capitalize">
-                              {item?.screenGroupName}
-                            </h1>
-                            {permissions.isSave &&
-                              <MdOutlineModeEdit
-                                className="cursor-pointer text-xl text-[#0000FF]"
-                                onClick={() => editGroupName(i)}
-                              />
-                            }
-                          </>
-                        )}
+                      <path
+                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                        fill="#1C64F2"
+                      />
+                    </svg>
+                    <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
+                      Loading...
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="justify-between lg:flex md:flex items-center sm:block">
+                      <div className="section-title">
+                        <h1 className="not-italic font-medium text-2xl text-[#001737]">
+                          Group Name
+                        </h1>
                       </div>
+                      <div className="flex items-center sm:mt-3 flex-wrap gap-1">
+                        <button
+                          data-tip
+                          data-for="Refresh Screen"
+                          type="button"
+                          className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                          onClick={() => handleRefres()}
+                        >
+                          <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
+                          <ReactTooltip
+                            id="Refresh Screen"
+                            place="bottom"
+                            type="warning"
+                            effect="float"
+                          >
+                            <span>Refresh Screen</span>
+                          </ReactTooltip>
+                        </button>
+                        {permissions.isSave &&
+                          <button
+                            data-tip
+                            data-for="Add New Group"
+                            type="button"
+                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                            onClick={() => newAddGroup()}
+                          >
+                            <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
+                            <ReactTooltip
+                              id="Add New Group"
+                              place="bottom"
+                              type="warning"
+                              effect="float"
+                            >
+                              <span>Add New Group</span>
+                            </ReactTooltip>
+                          </button>
+                        }
 
-                      <div className="flex items-center">
-                        <div className=" flex items-center">
-                          {isAccordionOpen && (
-                            <>
-                              {permissions.isSave &&
-                                <button
-                                  data-tip
-                                  data-for="Add Screen"
-                                  className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                                  onClick={() => newAddGroup(item)}
-                                >
-                                  Add <b>+</b>
-                                  <ReactTooltip
-                                    id="Add Screen"
-                                    place="bottom"
-                                    type="warning"
-                                    effect="float"
-                                  >
-                                    <span>Add Screen</span>
-                                  </ReactTooltip>
-                                </button>
-                              }
+                        {isModalOpen && (
+                          <ScreenGroupModal
+                            isOpen={isModalOpen}
+                            onClose={closeModal}
+                            handleSaveNew={handleSaveNew}
+                            updateScreen={updateScreen}
+                            editSelectedScreen={editSelectedScreen}
+                            label={label}
+                          />
+                        )}
 
-                              {item.isPreview && (
-                                <button
-                                  data-tip
-                                  data-for="Preview"
-                                  className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                                  onClick={() => handleOpenPreview(item)}
-                                >
-                                  Preview
-                                  <ReactTooltip
-                                    id="Preview"
-                                    place="bottom"
-                                    type="warning"
-                                    effect="float"
-                                  >
-                                    <span>Preview</span>
-                                  </ReactTooltip>
-                                </button>
-                              )}
-
-                              {permissions.isSave &&
-                                <button
-                                  data-tip
-                                  data-for="Upload"
-                                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                                  onClick={() => {
-                                    setShowAssetModal(true);
-                                    setGetGroup(item);
-                                  }}
-                                >
-                                  <TbUpload className="text-3xl p-1 hover:text-white" />
-                                  <ReactTooltip
-                                    id="Upload"
-                                    place="bottom"
-                                    type="warning"
-                                    effect="float"
-                                  >
-                                    <span>Upload</span>
-                                  </ReactTooltip>
-                                </button>
-                              }
-
-                              {!selectedItems?.length && (
-                                <div>
-                                  {permissions.isDelete &&
-                                    <button
-                                      data-tip
-                                      data-for="All Delete"
-                                      className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                                    >
-                                      <RiDeleteBin5Line
-                                        className="text-3xl p-1 hover:text-white"
-                                        onClick={() => handleDeleteGroup(item)}
-                                      />
-                                      <ReactTooltip
-                                        id="All Delete"
-                                        place="bottom"
-                                        type="warning"
-                                        effect="float"
-                                      >
-                                        <span>Delete</span>
-                                      </ReactTooltip>
-                                    </button>
-                                  }
-                                </div>
-                              )}
-                            </>
-                          )}
-                          {permissions.isDelete &&
-                            <div>
-                              {selectAll ? (
+                        {store?.data?.length > 0 && (
+                          <div>
+                            {permissions.isDelete &&
+                              <button
+                                data-tip
+                                data-for="Select All"
+                                type="button"
+                                className="flex align-middle border-white text-white items-center"
+                              >
                                 <input
                                   type="checkbox"
-                                  data-tip
-                                  data-for="Select"
-                                  className=" mx-1 w-6 h-5 mt-2"
-                                  checked={selectedItems.includes(
-                                    item?.screenGroupID
-                                  )}
-                                  onChange={() =>
-                                    handleCheckboxChange(item?.screenGroupID)
-                                  }
+                                  className="w-6 h-5"
+                                  checked={selectAll}
+                                  onChange={handleSelectAll}
+                                  readOnly
                                 />
-                              ) : (
-                                <div>
-                                  <input
-                                    type="checkbox"
-                                    data-tip
-                                    data-for="Select"
-                                    className=" mx-1 w-6 h-5 mt-2"
-                                    checked={selectedItems.includes(
-                                      item?.screenGroupID
-                                    )}
-                                    onChange={() =>
-                                      handleCheckboxChange(item?.screenGroupID)
-                                    }
-                                  />
-                                  <ReactTooltip
-                                    id="Select"
-                                    place="bottom"
-                                    type="warning"
-                                    effect="float"
-                                  >
-                                    <span>Select</span>
-                                  </ReactTooltip>
-                                </div>
-                              )}
-                            </div>
-                          }
+                              </button>
+                            }
 
-                          <button>
-                            {isAccordionOpen ? (
-                              <div onClick={() => handleAccordionClick(i)}>
-                                <IoIosArrowDropup className="text-3xl" />
-                              </div>
-                            ) : (
-                              <div onClick={() => handleAccordionClick(i)}>
-                                <IoIosArrowDropdown className="text-3xl" />
-                              </div>
-                            )}
-                          </button>
-                        </div>
+                            <ReactTooltip
+                              id="Select All"
+                              place="bottom"
+                              type="warning"
+                              effect="float"
+                            >
+                              <span>Select All</span>
+                            </ReactTooltip>
+                          </div>
+                        )}
+
+                        {selectedItems.length > 0 && (
+                          <div>
+                            <button
+                              data-tip
+                              data-for="All Delete"
+                              className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                            >
+                              <RiDeleteBin5Line
+                                className="text-3xl p-1 hover:text-white"
+                                onClick={() => handleDeleteGroupAll()}
+                              />
+                            </button>
+
+                            <ReactTooltip
+                              id="All Delete"
+                              place="bottom"
+                              type="warning"
+                              effect="float"
+                            >
+                              <span>Delete</span>
+                            </ReactTooltip>
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    {isAccordionOpen && (
-                      <div className="overflow-x-scroll sc-scrollbar  pt-4">
-                        <table
-                          className="screen-table border border-lightgray w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
-                          cellPadding={20}
-                        >
-                          <thead>
-                            <tr className="items-center table-head-bg screen-table-th text-left rounded-lg">
-                              <th className="text-[#444] text-sm font-semibold p-2">
-                                <button className="flex items-center justify-center px-6 py-2">
-                                  Screen
-                                </button>
-                              </th>
-                              <th className="text-[#444] text-sm font-semibold p-2">
-                                <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                                  Status
-                                </button>
-                              </th>
-                              <th className="text-[#444] text-sm font-semibold p-2">
-                                <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                                  Last Seen
-                                </button>
-                              </th>
-                              <th className="text-[#444] text-sm font-semibold p-2">
-                                <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                                  Now Playing
-                                </button>
-                              </th>
-                              <th className="text-[#444] text-sm font-semibold p-2">
-                                <button className=" px-6 py-2 flex items-center justify-center mx-auto">
-                                  Current Schedule
-                                </button>
-                              </th>
-                              <th className="text-[#444] text-sm font-semibold p-2">
-                                <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                                  Tags
-                                </button>
-                              </th>
-                              <th className="text-[#444] text-sm font-semibold p-2">
-                                <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                                  Action
-                                </button>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {isAccordionOpen &&
-                              item &&
-                              item.screenGroupLists?.length > 0 &&
-                              item.screenGroupLists.map((screen, index) => {
-                                return (
-                                  <tr
-                                    key={index}
-                                    className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
-                                  >
-                                    <td className="flex items-center">
-                                      {screen.screenName}
-                                    </td>
-
-                                    <td className="p-2 text-center">
-                                      <span
-                                        id={`changetvstatus${screen.macID}`}
-                                        className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                          ? "bg-[#3AB700]"
-                                          : "bg-[#FF0000]"
-                                          }`}
-                                      >
-                                        {screen.screenStatus == 1
-                                          ? "Live"
-                                          : "offline"}
-                                      </span>
-                                    </td>
-                                    <td className="p-2 text-center">
-                                      {moment(screen?.updatedDate).format(
-                                        "LLL"
-                                      )}
-                                    </td>
-                                    <td className="p-2 text-center">
-                                      <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
-                                        <p className="line-clamp-3">
-                                          {screen.assetName}
-                                        </p>
-                                        <AiOutlineCloudUpload className="ml-2 text-3xl" />
-                                      </button>
-                                    </td>
-                                    <td className="break-words	w-[150px] p-2 text-center">
-                                      {screen.scheduleName}
-                                    </td>
-                                    <td
-                                      title={screen?.tags && screen?.tags}
-                                      className="mx-auto  p-2 text-center"
-                                    >
-                                      {(screen?.tags === "" ||
-                                        screen?.tags === null) && (
-                                          <span>
-                                            <AiOutlinePlusCircle
-                                              size={30}
-                                              className="mx-auto cursor-pointer"
-                                              onClick={() => {
-                                                setShowTagModal(true);
-                                                screen.tags === "" ||
-                                                  screen?.tags === null
-                                                  ? setTags([])
-                                                  : setTags(
-                                                    screen?.tags?.split(",")
-                                                  );
-                                                setTagUpdateScreeen(screen);
-                                              }}
-                                            />
-                                          </span>
-                                        )}
-                                      {screen?.tags !== null
-                                        ? screen.tags
-                                          .split(",")
-                                          .slice(
-                                            0,
-                                            screen.tags.split(",").length > 2
-                                              ? 3
-                                              : screen.tags.split(",").length
-                                          )
-                                          .map((text) => {
-                                            if (text.toString().length > 10) {
-                                              return text
-                                                .split("")
-                                                .slice(0, 10)
-                                                .concat("...")
-                                                .join("");
-                                            }
-                                            return text;
-                                          })
-                                          .join(",")
-                                        : ""}
-                                      {screen?.tags !== "" &&
-                                        screen?.tags !== null && (
-                                          <AiOutlinePlusCircle
-                                            onClick={() => {
-                                              setShowTagModal(true);
-                                              screen.tags === "" ||
-                                                screen?.tags === null
-                                                ? setTags([])
-                                                : setTags(
-                                                  screen?.tags?.split(",")
-                                                );
-                                              setTagUpdateScreeen(screen);
-                                            }}
-                                            className="mx-auto  w-5 h-5 cursor-pointer "
-                                          />
-                                        )}
-
-                                      {/* add or edit tag modal */}
-                                      {showTagModal && (
-                                        <AddOrEditTagPopup
-                                          setShowTagModal={setShowTagModal}
-                                          tags={tags}
-                                          setTags={setTags}
-                                          handleTagsUpdate={handleTagsUpdate}
-                                          from="screen"
-                                          setTagUpdateScreeen={
-                                            setTagUpdateScreeen
-                                          }
+                    <div className="mt-5 shadow-md p-5 bg-white rounded-lg">
+                      {loader && (
+                        <div className="flex text-center m-5 justify-center">
+                          <svg
+                            aria-hidden="true"
+                            role="status"
+                            className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="#1C64F2"
+                            />
+                          </svg>
+                          <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2  dark:bg-green-900 dark:text-green-300">
+                            Loading...
+                          </span>
+                        </div>
+                      )}
+                      {!loader &&
+                        paginatedData.length > 0 &&
+                        paginatedData.map((item, i) => {
+                          const isAccordionOpen = openAccordionIndex === i;
+                          return (
+                            <div
+                              key={i}
+                              className="accordions shadow-md p-5 bg-slate-200 rounded-lg mb-4"
+                            >
+                              <div className="section lg:flex md:flex  sm:block items-center justify-between ">
+                                <div className="flex gap-2 items-center">
+                                  {editIndex === i ? (
+                                    <>
+                                      <input
+                                        type="text"
+                                        name="name"
+                                        className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        value={newGroupName}
+                                        onChange={(e) => setNewGroupName(e.target.value)}
+                                      />
+                                      <div>
+                                        <BiSave
+                                          className="cursor-pointer text-xl text-[#0000FF]"
+                                          onClick={() => updateGroupName(i)}
                                         />
-                                      )}
-                                    </td>
-                                    <td className="p-2 justify-center flex ">
-                                      {permissions.isDelete &&
-                                        <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
-                                          <MdDeleteForever
-                                            onClick={() =>
-                                              deleteGroupInScreen(screen, item)
+                                        <IoClose
+                                          className="cursor-pointer text-xl text-[#FF0000]"
+                                          onClick={() => {
+                                            setEditIndex(-1);
+                                            setNewGroupName("");
+                                          }}
+                                        />
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <h1 className="text-lg capitalize">
+                                        {item?.screenGroupName}
+                                      </h1>
+                                      {permissions.isSave &&
+                                        <MdOutlineModeEdit
+                                          className="cursor-pointer text-xl text-[#0000FF]"
+                                          onClick={() => editGroupName(i)}
+                                        />
+                                      }
+                                    </>
+                                  )}
+                                </div>
+
+                                <div className="flex items-center">
+                                  <div className=" flex items-center">
+                                    {isAccordionOpen && (
+                                      <>
+                                        {permissions.isSave &&
+                                          <button
+                                            data-tip
+                                            data-for="Add Screen"
+                                            className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
+                                            onClick={() => newAddGroup(item)}
+                                          >
+                                            Add <b>+</b>
+                                            <ReactTooltip
+                                              id="Add Screen"
+                                              place="bottom"
+                                              type="warning"
+                                              effect="float"
+                                            >
+                                              <span>Add Screen</span>
+                                            </ReactTooltip>
+                                          </button>
+                                        }
+
+                                        {item.isPreview && (
+                                          <button
+                                            data-tip
+                                            data-for="Preview"
+                                            className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
+                                            onClick={() => handleOpenPreview(item)}
+                                          >
+                                            Preview
+                                            <ReactTooltip
+                                              id="Preview"
+                                              place="bottom"
+                                              type="warning"
+                                              effect="float"
+                                            >
+                                              <span>Preview</span>
+                                            </ReactTooltip>
+                                          </button>
+                                        )}
+
+                                        {permissions.isSave &&
+                                          <button
+                                            data-tip
+                                            data-for="Upload"
+                                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                            onClick={() => {
+                                              setShowAssetModal(true);
+                                              setGetGroup(item);
+                                            }}
+                                          >
+                                            <TbUpload className="text-3xl p-1 hover:text-white" />
+                                            <ReactTooltip
+                                              id="Upload"
+                                              place="bottom"
+                                              type="warning"
+                                              effect="float"
+                                            >
+                                              <span>Upload</span>
+                                            </ReactTooltip>
+                                          </button>
+                                        }
+
+                                        {!selectedItems?.length && (
+                                          <div>
+                                            {permissions.isDelete &&
+                                              <button
+                                                data-tip
+                                                data-for="All Delete"
+                                                className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                              >
+                                                <RiDeleteBin5Line
+                                                  className="text-3xl p-1 hover:text-white"
+                                                  onClick={() => handleDeleteGroup(item)}
+                                                />
+                                                <ReactTooltip
+                                                  id="All Delete"
+                                                  place="bottom"
+                                                  type="warning"
+                                                  effect="float"
+                                                >
+                                                  <span>Delete</span>
+                                                </ReactTooltip>
+                                              </button>
+                                            }
+                                          </div>
+                                        )}
+                                      </>
+                                    )}
+                                    {permissions.isDelete &&
+                                      <div>
+                                        {selectAll ? (
+                                          <input
+                                            type="checkbox"
+                                            data-tip
+                                            data-for="Select"
+                                            className=" mx-1 w-6 h-5 mt-2"
+                                            checked={selectedItems.includes(
+                                              item?.screenGroupID
+                                            )}
+                                            onChange={() =>
+                                              handleCheckboxChange(item?.screenGroupID)
                                             }
                                           />
+                                        ) : (
+                                          <div>
+                                            <input
+                                              type="checkbox"
+                                              data-tip
+                                              data-for="Select"
+                                              className=" mx-1 w-6 h-5 mt-2"
+                                              checked={selectedItems.includes(
+                                                item?.screenGroupID
+                                              )}
+                                              onChange={() =>
+                                                handleCheckboxChange(item?.screenGroupID)
+                                              }
+                                            />
+                                            <ReactTooltip
+                                              id="Select"
+                                              place="bottom"
+                                              type="warning"
+                                              effect="float"
+                                            >
+                                              <span>Select</span>
+                                            </ReactTooltip>
+                                          </div>
+                                        )}
+                                      </div>
+                                    }
+
+                                    <button>
+                                      {isAccordionOpen ? (
+                                        <div onClick={() => handleAccordionClick(i)}>
+                                          <IoIosArrowDropup className="text-3xl" />
                                         </div>
-                                      }
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            {!loader && paginatedData?.length === 0 && (
-              <>
-                <div className="flex text-center m-5 justify-center">
-                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                    No Data Available
-                  </span>
-                </div>
-              </>
-            )}
+                                      ) : (
+                                        <div onClick={() => handleAccordionClick(i)}>
+                                          <IoIosArrowDropdown className="text-3xl" />
+                                        </div>
+                                      )}
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
 
-            {/* end  pagination */}
-            {paginatedData && paginatedData.length > 0 && (
-              <div className="flex justify-end mt-5">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  <svg
-                    className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 5H1m0 0 4 4M1 5l4-4"
-                    />
-                  </svg>
-                  Previous
-                </button>
+                              {isAccordionOpen && (
+                                <div className="overflow-x-scroll sc-scrollbar  pt-4">
+                                  <table
+                                    className="screen-table border border-lightgray w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
+                                    cellPadding={20}
+                                  >
+                                    <thead>
+                                      <tr className="items-center table-head-bg screen-table-th text-left rounded-lg">
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <button className="flex items-center justify-center px-6 py-2">
+                                            Screen
+                                          </button>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                            Status
+                                          </button>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                            Last Seen
+                                          </button>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                            Now Playing
+                                          </button>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <button className=" px-6 py-2 flex items-center justify-center mx-auto">
+                                            Current Schedule
+                                          </button>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                                            Tags
+                                          </button>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                                            Action
+                                          </button>
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {isAccordionOpen &&
+                                        item &&
+                                        item.screenGroupLists?.length > 0 &&
+                                        item.screenGroupLists.map((screen, index) => {
+                                          return (
+                                            <tr
+                                              key={index}
+                                              className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
+                                            >
+                                              <td className="flex items-center">
+                                                {screen.screenName}
+                                              </td>
 
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  Next
-                  <svg
-                    className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M1 5h12m0 0L9 1m4 4L9 9"
-                    />
-                  </svg>
-                </button>
+                                              <td className="p-2 text-center">
+                                                <span
+                                                  id={`changetvstatus${screen.macID}`}
+                                                  className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                                    ? "bg-[#3AB700]"
+                                                    : "bg-[#FF0000]"
+                                                    }`}
+                                                >
+                                                  {screen.screenStatus == 1
+                                                    ? "Live"
+                                                    : "offline"}
+                                                </span>
+                                              </td>
+                                              <td className="p-2 text-center">
+                                                {moment(screen?.updatedDate).format(
+                                                  "LLL"
+                                                )}
+                                              </td>
+                                              <td className="p-2 text-center">
+                                                <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
+                                                  <p className="line-clamp-3">
+                                                    {screen.assetName}
+                                                  </p>
+                                                  <AiOutlineCloudUpload className="ml-2 text-3xl" />
+                                                </button>
+                                              </td>
+                                              <td className="break-words	w-[150px] p-2 text-center">
+                                                {screen.scheduleName}
+                                              </td>
+                                              <td
+                                                title={screen?.tags && screen?.tags}
+                                                className="mx-auto  p-2 text-center"
+                                              >
+                                                {(screen?.tags === "" ||
+                                                  screen?.tags === null) && (
+                                                    <span>
+                                                      <AiOutlinePlusCircle
+                                                        size={30}
+                                                        className="mx-auto cursor-pointer"
+                                                        onClick={() => {
+                                                          setShowTagModal(true);
+                                                          screen.tags === "" ||
+                                                            screen?.tags === null
+                                                            ? setTags([])
+                                                            : setTags(
+                                                              screen?.tags?.split(",")
+                                                            );
+                                                          setTagUpdateScreeen(screen);
+                                                        }}
+                                                      />
+                                                    </span>
+                                                  )}
+                                                {screen?.tags !== null
+                                                  ? screen.tags
+                                                    .split(",")
+                                                    .slice(
+                                                      0,
+                                                      screen.tags.split(",").length > 2
+                                                        ? 3
+                                                        : screen.tags.split(",").length
+                                                    )
+                                                    .map((text) => {
+                                                      if (text.toString().length > 10) {
+                                                        return text
+                                                          .split("")
+                                                          .slice(0, 10)
+                                                          .concat("...")
+                                                          .join("");
+                                                      }
+                                                      return text;
+                                                    })
+                                                    .join(",")
+                                                  : ""}
+                                                {screen?.tags !== "" &&
+                                                  screen?.tags !== null && (
+                                                    <AiOutlinePlusCircle
+                                                      onClick={() => {
+                                                        setShowTagModal(true);
+                                                        screen.tags === "" ||
+                                                          screen?.tags === null
+                                                          ? setTags([])
+                                                          : setTags(
+                                                            screen?.tags?.split(",")
+                                                          );
+                                                        setTagUpdateScreeen(screen);
+                                                      }}
+                                                      className="mx-auto  w-5 h-5 cursor-pointer "
+                                                    />
+                                                  )}
+
+                                                {/* add or edit tag modal */}
+                                                {showTagModal && (
+                                                  <AddOrEditTagPopup
+                                                    setShowTagModal={setShowTagModal}
+                                                    tags={tags}
+                                                    setTags={setTags}
+                                                    handleTagsUpdate={handleTagsUpdate}
+                                                    from="screen"
+                                                    setTagUpdateScreeen={
+                                                      setTagUpdateScreeen
+                                                    }
+                                                  />
+                                                )}
+                                              </td>
+                                              <td className="p-2 justify-center flex ">
+                                                {permissions.isDelete &&
+                                                  <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
+                                                    <MdDeleteForever
+                                                      onClick={() =>
+                                                        deleteGroupInScreen(screen, item)
+                                                      }
+                                                    />
+                                                  </div>
+                                                }
+                                              </td>
+                                            </tr>
+                                          );
+                                        })}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      {!loader && paginatedData?.length === 0 && (
+                        <>
+                          <div className="flex text-center m-5 justify-center">
+                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                              No Data Available
+                            </span>
+                          </div>
+                        </>
+                      )}
+
+                      {/* end  pagination */}
+                      {paginatedData && paginatedData.length > 0 && (
+                        <div className="flex justify-end mt-5">
+                          <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                          >
+                            <svg
+                              className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 14 10"
+                            >
+                              <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M13 5H1m0 0 4 4M1 5l4-4"
+                              />
+                            </svg>
+                            Previous
+                          </button>
+
+                          <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                          >
+                            Next
+                            <svg
+                              className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 14 10"
+                            >
+                              <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M1 5h12m0 0L9 1m4 4L9 9"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      )}
+                      {/* end  pagination */}
+                    </div>
+                  </>
+                )}
               </div>
-            )}
-            {/* end  pagination */}
-          </div>
-        </div>
-      </div>
+            </div>
+            <Footer />
+          </>
+        </Suspense>
+      )}
 
       {/* Model */}
       {showAssetModal && (
@@ -1170,7 +1211,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           modalVisible={isPreviewOpen}
         />
       )}
-      <Footer />
+     
     </>
   );
 };

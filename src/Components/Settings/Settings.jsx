@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import { useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
@@ -24,6 +24,7 @@ import { BsFillPrinterFill, BsFillSendFill } from "react-icons/bs";
 import html2pdf from 'html2pdf.js';
 import ReactToPrint from "react-to-print";
 import { HiClipboardDocumentList } from "react-icons/hi2";
+import Loading from "../Loading";
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   Settings.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -139,7 +140,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   const [showInvoice, setShowInvoice] = useState(false)
   const InvoiceRef = useRef(null);
   const dispatch = useDispatch();
-
+  const [sidebarload, setSidebarLoad] = useState(true)
   const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
 
   useEffect(() => {
@@ -154,6 +155,8 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
           }
         })
       }
+      setSidebarLoad(false)
+
     })
   }, [])
 
@@ -179,206 +182,215 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex border-b border-gray">
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <Navbar />
-      </div>
-
-      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
-        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-
-          <div className="lg:flex justify-between sm:flex xs:block  items-center mb-5 ">
-            <div className=" lg:mb-0 md:mb-0 sm:mb-4">
-              <h1 className="not-italic font-medium lg:text-2xl  md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
-                Settings
-              </h1>
+      {sidebarload && (
+        <Loading />
+      )}
+      {!sidebarload && (
+        <Suspense fallback={<Loading />}>
+          <>
+            <div className="flex border-b border-gray">
+              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Navbar />
             </div>
 
-            {/* User Roles search */}
-            <div
-              className={
-                STabs === 2 ? "" : "hidden" && STabs === 1 ? "" : "hidden"
-              }
-            >
-              <div className="text-right flex items-end justify-end relative">
-                <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
-                <input
-                  type="text"
-                  placeholder={
-                    STabs === 2 ? "Search User Role" : "Search User Name"
-                  }
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
-                />
-              </div>
-            </div>
+            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+              <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
 
-            {showInvoice && STabs === 6 && (
-              <div className="flex">
-                <button
-                  type='button'
-                  className="px-5 bg-primary flex items-center gap-2 text-white rounded-full py-2 border border-primary me-3 "
-                >
-                  <BsFillSendFill />
-                  Send Invoice
-                </button>
-                <button
-                  className="bg-white text-primary text-base px-5 flex items-center gap-2 py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
-                  type="button"
-                  onClick={() => DownloadInvoice()}
-                >
-                  <FaDownload />
-                  Download
-                </button>
-                <ReactToPrint
-                  trigger={() => <button
-                    className="bg-white text-primary text-base px-5 flex items-center gap-2 py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
-                    type="button"
-                  >
-                    <BsFillPrinterFill />
-                    Print
-                  </button>}
-                  content={() => InvoiceRef.current}
-                />
+                <div className="lg:flex justify-between sm:flex xs:block  items-center mb-5 ">
+                  <div className=" lg:mb-0 md:mb-0 sm:mb-4">
+                    <h1 className="not-italic font-medium lg:text-2xl  md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
+                      Settings
+                    </h1>
+                  </div>
 
-              </div>
-            )}
-          </div>
-
-          <div className="grid w-full lg:grid-cols-5 md:grid-cols-5 sm:grid-cols-1">
-            {/*Tab*/}
-            <div className="mainsettingtab col-span-1 w-full p-0">
-              <ul className="w-full">
-                <li>
-                  <button
+                  {/* User Roles search */}
+                  <div
                     className={
-                      STabs === 1 ? "stabshow settingtabactive" : "settingtab"
+                      STabs === 2 ? "" : "hidden" && STabs === 1 ? "" : "hidden"
                     }
-                    onClick={() => updateTab(1)}
                   >
-                    <HiOutlineUsers className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">Users</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={
-                      STabs === 2 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(2)}
-                  >
-                    <FaCertificate className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">User Role</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={
-                      STabs === 3 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(3)}
-                  >
-                    <MdOutlineStorage className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">
-                      Storage Limit
-                    </span>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={
-                      STabs === 4 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(4)}
-                  >
-                    <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">
-                      Default Media
-                    </span>
-                  </button>
-                </li>
-
-                {/* <li>
-                  <button
-                    className={
-                      STabs === 5 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(5)}
-                  >
-                    <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">
-                      Billing
-                    </span>
-                  </button>
-                </li> */}
-
-                {/*  <li>
-                      <button
-                        className={
-                          STabs === 6 ? "stabshow settingtabactive" : "settingtab"
+                    <div className="text-right flex items-end justify-end relative">
+                      <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
+                      <input
+                        type="text"
+                        placeholder={
+                          STabs === 2 ? "Search User Role" : "Search User Name"
                         }
-                        onClick={() => updateTab(6)}
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                        className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
+                      />
+                    </div>
+                  </div>
+
+                  {showInvoice && STabs === 6 && (
+                    <div className="flex">
+                      <button
+                        type='button'
+                        className="px-5 bg-primary flex items-center gap-2 text-white rounded-full py-2 border border-primary me-3 "
                       >
-                        <FaFileInvoiceDollar className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                        <span className="text-base text-primary">
-                          Invoice
-                        </span>
+                        <BsFillSendFill />
+                        Send Invoice
                       </button>
-                      </li>*/}
-                {/* <li>
-                  <button
-                    className={
-                      STabs === 7 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(7)}
-                  >
-                    <HiClipboardDocumentList className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">
-                      My Plan
-                    </span>
-                  </button>
-                  </li>*/}
-              </ul>
+                      <button
+                        className="bg-white text-primary text-base px-5 flex items-center gap-2 py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
+                        type="button"
+                        onClick={() => DownloadInvoice()}
+                      >
+                        <FaDownload />
+                        Download
+                      </button>
+                      <ReactToPrint
+                        trigger={() => <button
+                          className="bg-white text-primary text-base px-5 flex items-center gap-2 py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
+                          type="button"
+                        >
+                          <BsFillPrinterFill />
+                          Print
+                        </button>}
+                        content={() => InvoiceRef.current}
+                      />
+
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid w-full lg:grid-cols-5 md:grid-cols-5 sm:grid-cols-1">
+                  {/*Tab*/}
+                  <div className="mainsettingtab col-span-1 w-full p-0">
+                    <ul className="w-full">
+                      <li>
+                        <button
+                          className={
+                            STabs === 1 ? "stabshow settingtabactive" : "settingtab"
+                          }
+                          onClick={() => updateTab(1)}
+                        >
+                          <HiOutlineUsers className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">Users</span>
+                        </button>
+                      </li>
+
+                      <li>
+                        <button
+                          className={
+                            STabs === 2 ? "stabshow settingtabactive" : "settingtab"
+                          }
+                          onClick={() => updateTab(2)}
+                        >
+                          <FaCertificate className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">User Role</span>
+                        </button>
+                      </li>
+
+                      <li>
+                        <button
+                          className={
+                            STabs === 3 ? "stabshow settingtabactive" : "settingtab"
+                          }
+                          onClick={() => updateTab(3)}
+                        >
+                          <MdOutlineStorage className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">
+                            Storage Limit
+                          </span>
+                        </button>
+                      </li>
+
+                      <li>
+                        <button
+                          className={
+                            STabs === 4 ? "stabshow settingtabactive" : "settingtab"
+                          }
+                          onClick={() => updateTab(4)}
+                        >
+                          <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">
+                            Default Media
+                          </span>
+                        </button>
+                      </li>
+
+                      {/* <li>
+                    <button
+                      className={
+                        STabs === 5 ? "stabshow settingtabactive" : "settingtab"
+                      }
+                      onClick={() => updateTab(5)}
+                    >
+                      <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                      <span className="text-base text-primary">
+                        Billing
+                      </span>
+                    </button>
+                  </li> */}
+
+                      {/*  <li>
+                        <button
+                          className={
+                            STabs === 6 ? "stabshow settingtabactive" : "settingtab"
+                          }
+                          onClick={() => updateTab(6)}
+                        >
+                          <FaFileInvoiceDollar className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">
+                            Invoice
+                          </span>
+                        </button>
+                        </li>*/}
+                      {/* <li>
+                    <button
+                      className={
+                        STabs === 7 ? "stabshow settingtabactive" : "settingtab"
+                      }
+                      onClick={() => updateTab(7)}
+                    >
+                      <HiClipboardDocumentList className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                      <span className="text-base text-primary">
+                        My Plan
+                      </span>
+                    </button>
+                    </li>*/}
+                    </ul>
+                  </div>
+
+                  {/*Tab details*/}
+                  <div className="col-span-4 w-full bg-white  tabdetails rounded-md relative">
+                    <div className={STabs === 1 ? "" : "hidden"}>
+                      <Users searchValue={searchValue} permissions={permissions} />
+                    </div>
+                    {/*End of userrole details*/}
+                    <div className={STabs === 2 ? "" : "hidden"}>
+                      <Userrole searchValue={searchValue} permissions={permissions} />
+                    </div>
+                    {/*End of users details*/}
+                    <div className={STabs === 3 ? "" : "hidden"}>
+                      <Storagelimit permissions={permissions} />
+                    </div>
+                    {/*Storage Limits*/}
+                    <div className={STabs === 4 ? "" : "hidden"}>
+                      <Defaultmedia permissions={permissions} />
+                    </div>
+                    <div className={STabs === 5 ? "" : "hidden"}>
+                      <Billing permissions={permissions} />
+                    </div>
+                    <div className={STabs === 6 ? "" : "hidden"}>
+                      <Invoice permissions={permissions} showInvoice={showInvoice} setShowInvoice={setShowInvoice} InvoiceRef={InvoiceRef} DownloadInvoice={DownloadInvoice} />
+                    </div>
+
+                    <div className={STabs === 7 ? "" : "hidden"}>
+                      <Myplan />
+                    </div>
+
+                    {/*Default Media*/}
+                  </div>
+                </div>
+              </div>
             </div>
-
-            {/*Tab details*/}
-            <div className="col-span-4 w-full bg-white  tabdetails rounded-md relative">
-              <div className={STabs === 1 ? "" : "hidden"}>
-                <Users searchValue={searchValue} permissions={permissions} />
-              </div>
-              {/*End of userrole details*/}
-              <div className={STabs === 2 ? "" : "hidden"}>
-                <Userrole searchValue={searchValue} permissions={permissions} />
-              </div>
-              {/*End of users details*/}
-              <div className={STabs === 3 ? "" : "hidden"}>
-                <Storagelimit permissions={permissions} />
-              </div>
-              {/*Storage Limits*/}
-              <div className={STabs === 4 ? "" : "hidden"}>
-                <Defaultmedia permissions={permissions} />
-              </div>
-              <div className={STabs === 5 ? "" : "hidden"}>
-                <Billing permissions={permissions} />
-              </div>
-              <div className={STabs === 6 ? "" : "hidden"}>
-                <Invoice permissions={permissions} showInvoice={showInvoice} setShowInvoice={setShowInvoice} InvoiceRef={InvoiceRef} DownloadInvoice={DownloadInvoice} />
-              </div>
-
-              <div className={STabs === 7 ? "" : "hidden"}>
-                <Myplan />
-              </div>
-
-              {/*Default Media*/}
-            </div>
-          </div>
-        </div>
-      </div>
-      <Footer />
+            <Footer />
+          </>
+        </Suspense>
+      )}
     </>
   );
 };

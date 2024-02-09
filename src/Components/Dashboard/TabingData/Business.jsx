@@ -161,7 +161,7 @@ var StoreOptions = {
   labels: ["Stores"],
 };
 
-const Business = () => {
+const Business = ({setSidebarLoad,dashboardData,setDashboardData}) => {
   const dispatch = useDispatch();
   const { user, token } = useSelector((s) => s.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);
@@ -180,7 +180,7 @@ const Business = () => {
   const [selectedStateName, setSelectedStateName] = useState("");
   const [showStore, setShowStore] = useState(false);
   const [showCitydw, setShowCityDw] = useState(false);
-  const [dashboardData, setDashboardData] = useState(null)
+  
   const [allApp, setAllApp] = useState({
     AppLists: [],
     AppPercentages: [],
@@ -356,26 +356,6 @@ const Business = () => {
     setSelectedCity(city?.cityName)
     setshowCityStores(true);
   }
-
-  useEffect(() => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${USERDASHBOARD}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-    axios
-      .request(config)
-      .then((data) => {
-        setDashboardData(data?.data?.data)
-      })
-      .catch((error) => {
-        console.log("Error fetching states data:", error);
-      });
-  }, [])
-
   const customIcon = new L.Icon({
     iconUrl: mapImg,
     iconSize: [32, 32],
