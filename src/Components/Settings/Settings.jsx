@@ -13,7 +13,7 @@ import Userrole from "./Userrole";
 import Storagelimit from "./Storagelimit";
 import Defaultmedia from "./Defaultmedia";
 import Billing from "./Billing/Billing";
-import Myplan from "./Myplan"
+import Myplan from "./Myplan";
 import "../../Styles/Settings.css";
 import Footer from "../Footer";
 import Users from "./Users";
@@ -21,7 +21,7 @@ import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Invoice from "./Invoice";
 import { BsFillPrinterFill, BsFillSendFill } from "react-icons/bs";
-import html2pdf from 'html2pdf.js';
+import html2pdf from "html2pdf.js";
 import ReactToPrint from "react-to-print";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import Loading from "../Loading";
@@ -137,28 +137,36 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   const [records, setRecords] = useState(data);
   const [searchValue, setSearchValue] = useState("");
   const { token, user } = useSelector((state) => state.root.auth);
-  const [showInvoice, setShowInvoice] = useState(false)
+  const [showInvoice, setShowInvoice] = useState(false);
   const InvoiceRef = useRef(null);
   const dispatch = useDispatch();
-  const [sidebarload, setSidebarLoad] = useState(true)
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
+  const [sidebarload, setSidebarLoad] = useState(true);
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.bottummenu.find(e => e.pageName === "Settings");
+      const findData = item.payload.data.bottummenu.find(
+        (e) => e.pageName === "Settings"
+      );
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-      setSidebarLoad(false)
-
-    })
-  }, [])
+      setSidebarLoad(false);
+    });
+  }, []);
 
   function updateTab(id) {
     setSTabs(id);
@@ -167,35 +175,34 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   const DownloadInvoice = () => {
     const InvoiceNode = InvoiceRef.current;
-    console.log('InvoiceNode', InvoiceNode)
+    console.log("InvoiceNode", InvoiceNode);
     if (InvoiceNode) {
       html2pdf(InvoiceNode, {
         margin: 10,
-        filename: 'Invoice.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
+        filename: "Invoice.pdf",
+        image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       });
     }
-  }
-
+  };
 
   return (
     <>
-      {sidebarload && (
-        <Loading />
-      )}
+      {sidebarload && <Loading />}
       {!sidebarload && (
         <Suspense fallback={<Loading />}>
           <>
             <div className="flex border-b border-gray">
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
               <Navbar />
             </div>
 
             <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-
                 <div className="lg:flex justify-between sm:flex xs:block  items-center mb-5 ">
                   <div className=" lg:mb-0 md:mb-0 sm:mb-4">
                     <h1 className="not-italic font-medium lg:text-2xl  md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
@@ -226,7 +233,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                   {showInvoice && STabs === 6 && (
                     <div className="flex">
                       <button
-                        type='button'
+                        type="button"
                         className="px-5 bg-primary flex items-center gap-2 text-white rounded-full py-2 border border-primary me-3 "
                       >
                         <BsFillSendFill />
@@ -241,16 +248,17 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         Download
                       </button>
                       <ReactToPrint
-                        trigger={() => <button
-                          className="bg-white text-primary text-base px-5 flex items-center gap-2 py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
-                          type="button"
-                        >
-                          <BsFillPrinterFill />
-                          Print
-                        </button>}
+                        trigger={() => (
+                          <button
+                            className="bg-white text-primary text-base px-5 flex items-center gap-2 py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
+                            type="button"
+                          >
+                            <BsFillPrinterFill />
+                            Print
+                          </button>
+                        )}
                         content={() => InvoiceRef.current}
                       />
-
                     </div>
                   )}
                 </div>
@@ -262,7 +270,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       <li>
                         <button
                           className={
-                            STabs === 1 ? "stabshow settingtabactive" : "settingtab"
+                            STabs === 1
+                              ? "stabshow settingtabactive"
+                              : "settingtab"
                           }
                           onClick={() => updateTab(1)}
                         >
@@ -274,19 +284,25 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       <li>
                         <button
                           className={
-                            STabs === 2 ? "stabshow settingtabactive" : "settingtab"
+                            STabs === 2
+                              ? "stabshow settingtabactive"
+                              : "settingtab"
                           }
                           onClick={() => updateTab(2)}
                         >
                           <FaCertificate className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                          <span className="text-base text-primary">User Role</span>
+                          <span className="text-base text-primary">
+                            User Role
+                          </span>
                         </button>
                       </li>
 
                       <li>
                         <button
                           className={
-                            STabs === 3 ? "stabshow settingtabactive" : "settingtab"
+                            STabs === 3
+                              ? "stabshow settingtabactive"
+                              : "settingtab"
                           }
                           onClick={() => updateTab(3)}
                         >
@@ -300,7 +316,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       <li>
                         <button
                           className={
-                            STabs === 4 ? "stabshow settingtabactive" : "settingtab"
+                            STabs === 4
+                              ? "stabshow settingtabactive"
+                              : "settingtab"
                           }
                           onClick={() => updateTab(4)}
                         >
@@ -357,11 +375,17 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                   {/*Tab details*/}
                   <div className="col-span-4 w-full bg-white  tabdetails rounded-md relative">
                     <div className={STabs === 1 ? "" : "hidden"}>
-                      <Users searchValue={searchValue} permissions={permissions} />
+                      <Users
+                        searchValue={searchValue}
+                        permissions={permissions}
+                      />
                     </div>
                     {/*End of userrole details*/}
                     <div className={STabs === 2 ? "" : "hidden"}>
-                      <Userrole searchValue={searchValue} permissions={permissions} />
+                      <Userrole
+                        searchValue={searchValue}
+                        permissions={permissions}
+                      />
                     </div>
                     {/*End of users details*/}
                     <div className={STabs === 3 ? "" : "hidden"}>
@@ -375,7 +399,13 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       <Billing permissions={permissions} />
                     </div>
                     <div className={STabs === 6 ? "" : "hidden"}>
-                      <Invoice permissions={permissions} showInvoice={showInvoice} setShowInvoice={setShowInvoice} InvoiceRef={InvoiceRef} DownloadInvoice={DownloadInvoice} />
+                      <Invoice
+                        permissions={permissions}
+                        showInvoice={showInvoice}
+                        setShowInvoice={setShowInvoice}
+                        InvoiceRef={InvoiceRef}
+                        DownloadInvoice={DownloadInvoice}
+                      />
                     </div>
 
                     <div className={STabs === 7 ? "" : "hidden"}>

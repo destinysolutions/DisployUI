@@ -204,8 +204,8 @@ const Users = ({ searchValue, permissions }) => {
       newErrors.email = !email
         ? "Email is required"
         : !emailRegex.test(email)
-          ? "Please Enter Valid Email"
-          : "";
+        ? "Please Enter Valid Email"
+        : "";
 
       newErrors.password = !password ? "Password is required" : "";
     }
@@ -468,8 +468,8 @@ const Users = ({ searchValue, permissions }) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
-        setshowuserModal(false);
-        handleCancelPopup();
+        // setshowuserModal(false);
+        // handleCancelPopup();
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -479,8 +479,8 @@ const Users = ({ searchValue, permissions }) => {
   }, [handleClickOutside]);
 
   function handleClickOutside() {
-    setshowuserModal(false);
-    handleCancelPopup();
+    // setshowuserModal(false);
+    // handleCancelPopup();
   }
 
   useEffect(() => {
@@ -914,1444 +914,49 @@ const Users = ({ searchValue, permissions }) => {
                       >
                         Screen Access
                       </button>
-                      </div>
                     </div>
-                    {selectScreenModal && (
-                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                        <div
-                          ref={selectScreenRef}
-                          className="w-auto mx-auto lg:max-w-2xl md:max-w-sm sm:max-w-xs"
-                        >
-                          <div className="border-0 rounded-lg min-w-[20vw] overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none min-h-[350px] max-h-[550px]">
-                            <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                              <div className="flex items-center">
-                                <div className=" mt-1.5">
-                                  <input
-                                    type="checkbox"
-                                    className="w-5 h-5"
-                                    onChange={handleSelectAllCheckboxChange}
-                                    checked={
-                                      selectAllChecked ||
-                                      (Object.values(screenCheckboxes)?.length >
-                                        0 &&
-                                        Object.values(screenCheckboxes).every(
-                                          (e) => {
-                                            return e == true;
-                                          }
-                                        ))
-                                    }
-                                  />
-                                </div>
-                                <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
-                                  All Select
-                                </h3>
-                              </div>
-                              <button
-                                className="p-1 text-xl"
-                                onClick={() => {
-                                  setSelectScreenModal(false);
-                                }}
-                              >
-                                <AiOutlineCloseCircle className="text-3xl" />
-                              </button>
-                            </div>
-                            <div className="schedual-table bg-white rounded-xl mt-2 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
-                              <div className="overflow-x-scroll sc-scrollbar rounded-lg">
-                                <table
-                                  className="screen-table w-full"
-                                  cellPadding={20}
-                                >
-                                  <thead>
-                                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                                      <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
-                                        Screen
-                                      </th>
-                                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                        Status
-                                      </th>
-                                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                        Google Location
-                                      </th>
-                                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                        Associated Schedule
-                                      </th>
-                                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                        Tags
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {loading ? (
-                                      <tr>
-                                        <td
-                                          colSpan={6}
-                                          className="text-center font-semibold text-lg"
-                                        >
-                                          Loading...
-                                        </td>
-                                      </tr>
-                                    ) : !loading && screenData?.length > 0 ? (
-                                      screenData.map((screen) => (
-                                        <tr
-                                          key={screen.screenID}
-                                          className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                        >
-                                          <td className="flex items-center">
-                                            <input
-                                              type="checkbox"
-                                              className="mr-3"
-                                              onChange={() =>
-                                                handleScreenCheckboxChange(
-                                                  screen.screenID
-                                                )
-                                              }
-                                              checked={
-                                                screenCheckboxes[screen.screenID]
-                                              }
-                                            />
-
-                                            {screen.screenName}
-                                          </td>
-
-                                          <td className="text-center">
-                                            <span
-                                              id={`changetvstatus${screen.macid}`}
-                                              className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                                ? "bg-[#3AB700]"
-                                                : "bg-[#FF0000]"
-                                                }`}
-                                            >
-                                              {screen.screenStatus == 1
-                                                ? "Live"
-                                                : "offline"}
-                                            </span>
-                                          </td>
-                                          <td className="text-center break-words">
-                                            {screen.googleLocation}
-                                          </td>
-
-                                          <td className="text-center break-words">
-                                            {screen.scheduleName == "" ? (
-                                              ""
-                                            ) : (
-                                              `${screen.scheduleName} Till
-                                    ${moment(screen.endDate).format(
-                                                "YYYY-MM-DD hh:mm"
-                                              )}`
-                                            )}
-                                          </td>
-                                          <td className="text-center break-words">
-                                            {screen?.tags !== null
-                                              ? screen?.tags
-                                                .split(",")
-                                                .slice(
-                                                  0,
-                                                  screen?.tags.split(",")
-                                                    .length > 2
-                                                    ? 3
-                                                    : screen?.tags.split(",")
-                                                      .length
-                                                )
-                                                .map((text) => {
-                                                  if (
-                                                    text.toString().length > 10
-                                                  ) {
-                                                    return text
-                                                      .split("")
-                                                      .slice(0, 10)
-                                                      .concat("...")
-                                                      .join("");
-                                                  }
-                                                  return text;
-                                                })
-                                                .join(",")
-                                              : ""}
-                                          </td>
-                                        </tr>
+                  </div>
+                  {selectScreenModal && (
+                    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                      <div
+                        ref={selectScreenRef}
+                        className="w-auto mx-auto lg:max-w-2xl md:max-w-sm sm:max-w-xs"
+                      >
+                        <div className="border-0 rounded-lg min-w-[20vw] overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none min-h-[350px] max-h-[550px]">
+                          <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                            <div className="flex items-center">
+                              <div className=" mt-1.5">
+                                <input
+                                  type="checkbox"
+                                  className="w-5 h-5"
+                                  onChange={handleSelectAllCheckboxChange}
+                                  checked={
+                                    selectAllChecked ||
+                                    (Object.values(screenCheckboxes)?.length >
+                                      0 &&
+                                      Object.values(screenCheckboxes).every(
+                                        (e) => {
+                                          return e == true;
+                                        }
                                       ))
-                                    ) : (
-                                      <tr>
-                                        <td colSpan={6}>
-                                          <p className="text-center p-2">
-                                            No Screen available.
-                                          </p>
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </tbody>
-                                </table>
+                                  }
+                                />
                               </div>
+                              <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
+                                All Select
+                              </h3>
                             </div>
-                            <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
-                              <button
-                                className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
-                                onClick={() => {
-                                  setSelectScreenModal(false);
-                                }}
-                              >
-                                Save
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div className="col-span-12 text-center">
-                      <button
-                        className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
-                        onClick={() => {
-                          setshowuserModal(false);
-                          handleCancelPopup();
-                        }}
-                      >
-                        Cancel
-                      </button>
-                      {labelTitle !== "Update User" ? (
-                        <button
-                          onClick={() => {
-                            handleAddUser();
-                            setSelectedScreens([]);
-                          }}
-                          className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
-                        >
-                          Save
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            handleUpdateUser();
-                          }}
-                          className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
-                        >
-                          Update
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      )}
-
-          {showUserProfile ? (
-            <>
-              <div className="lg:p-4 md:p-4 sm:p-2 xs:p-2 ">
-                <h1
-                  onClick={() => {
-                    setShowUserProfile(false);
-                    setLoadFist(true);
-                    setUserScreenData([]);
-                    setUserID();
-                  }}
-                  className="font-medium flex cursor-pointer w-fit items-center lg:text-2xl md:text-2xl sm:text-xl mb-5"
-                >
-                  <IoIosArrowRoundBack size={30} />
-                  User Information
-                </h1>
-                <div className="full flex flex-wrap -mx-3 mb-3">
-                  <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <div className="card-shadow pt-6 text-[#5E5E5E]">
-                      <div className="user-details text-center border-b border-b-[#E4E6FF]">
-                        <span className="user-img flex justify-center mb-3">
-                          {userDetailData?.profilePhoto !== null ? (
-                            <img
-                              src={userDetailData?.profilePhoto}
-                              className="w-30 h-25 mb-3 rounded shadow-lg"
-                              style={{ width: "200px", height: "185px" }}
-                            />
-                          ) : (
-                            <BiSolidUser className="w-[200px] h-[185px]" />
-                          )}
-                        </span>
-                        <span className="user-name text-gray-900 dark:text-white font-semibold capitalize">
-                          {userDetailData?.firstName} {userDetailData?.lastName}
-                        </span>
-                        <div className="user-designation my-2">
-                          <span
-                            style={{ backgroundColor: "#cee9d6" }}
-                            className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                          >
-                            {userDetailData?.userRoleName}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="user-pro-details mt-10">
-                        <h3 className="user-name my-2">Details</h3>
-
-                        <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-3 mt-4">
-                          <div className="font-semibold">
-                            <span>User ID : </span>
-                          </div>
-                          <div className="col-span-2">
-                            <span>{userDetailData?.orgUserSpecificID}</span>
-                          </div>
-                          <div className="font-semibold">
-                            <span>User Name : </span>
-                          </div>
-                          <div className="col-span-2 capitalize">
-                            <span>
-                              {userDetailData?.firstName} {userDetailData?.lastName}
-                            </span>
-                          </div>
-                          <div className="font-semibold">
-                            <span>Company Name : </span>
-                          </div>
-                          <div className="col-span-2 capitalize">
-                            <span> {userDetailData?.company}</span>
-                          </div>
-                          <div className="font-semibold">
-                            <span>Email : </span>
-                          </div>
-                          <div className="col-span-2 capitalize">
-                            <span> {userDetailData?.email}</span>
-                          </div>
-                          <div className="font-semibold">
-                            <span>Status : </span>
-                          </div>
-                          <div className="col-span-2 capitalize">
-                            <span>
-                              {userDetailData?.isActive == 1 ? (
-                                <span
-                                  style={{ backgroundColor: "#cee9d6" }}
-                                  className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                >
-                                  Active
-                                </span>
-                              ) : (
-                                <span
-                                  style={{ backgroundColor: "#cee9d6" }}
-                                  className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                >
-                                  Inactive
-                                </span>
-                              )}
-                            </span>
-                          </div>
-                          <div className="font-semibold">
-                            <span>Role : </span>
-                          </div>
-                          <div className="col-span-2 capitalize">
-                            <span> {userDetailData?.userRoleName}</span>
-                          </div>
-                          <div className="font-semibold">
-                            <span>Contact : </span>
-                          </div>
-                          <div className="col-span-2 capitalize">
-                            <span> {userDetailData?.phone}</span>
-                          </div>
-                          <div className="font-semibold">
-                            <span>Language : </span>
-                          </div>
-                          <div className="col-span-2 capitalize">
-                            <span>
-                              {userDetailData?.languageName
-                                ? userDetailData?.languageName
-                                : "English"}
-                            </span>
-                          </div>
-                          <div className="font-semibold">
-                            <span>Country : </span>
-                          </div>
-                          <div className="col-span-2 capitalize">
-                            <span> {userDetailData?.countryName}</span>
-                          </div>
-
-                          <div className="font-semibold">
-                            <span>State : </span>
-                          </div>
-                          <div className="col-span-2 capitalize">
-                            <span> {userDetailData?.stateName}</span>
-                          </div>
-                        </div>
-
-                        <div className="flex justify-center w-full mt-10">
-                          <button
-                            onClick={() => {
-                              selectUserById(userDetailData?.orgUserSpecificID);
-                              setshowuserModal(true);
-                            }}
-                            className="me-3 hover:bg-white hover:text-primary text-base px-8 py-2 border border-primary  shadow-md rounded-full bg-primary text-white "
-                          >
-                            Edit Profile
-                          </button>
-                          {/* <button className="hover:text-#ffbebe px-8 py-3 border border-red shadow-md rounded-full text-red-600 text-1xl font-semibold bg-[#ffbebe] ">
-                        Suspend
-                      </button> */}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <div className="card-shadow pt-6 h-full">
-                      <ul className="flex flex-wrap gap-3 items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  ">
-                        <li>
-                          <button
-                            className={`inline-flex items-center
-                          ${activeTab === 1 ? "tabactivebtn" : "tabbtn "}
-                        `}
-                            onClick={() => setActiveTab(1)}
-                          >
-                            <MdLockOutline className="text-primary text-lg mr-1" />
-                            Security
-                          </button>
-                        </li>
-                        {/* <li>
-                      <button
-                        className={`inline-flex items-center
-                          ${activeTab === 2 ? "tabactivebtn" : "tabbtn "}
-                        `}
-                        onClick={() => setActiveTab(2)}
-                      >
-                        <IoMdNotificationsOutline className="text-primary text-lg mr-1" />
-                        Notifications
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        className={`inline-flex items-center
-                          ${activeTab === 3 ? "tabactivebtn" : "tabbtn "}
-                        `}
-                        onClick={() => setActiveTab(3)}
-                      >
-                        <IoIosLink className="text-primary text-lg mr-1" />
-                        Connections
-                      </button>
-                    </li> */}
-                      </ul>
-                      <div className={activeTab === 1 ? "" : "hidden"}>
-                        <div className="user-pro-details security-tab">
-                          <h3 className="user-name my-6">Change Password</h3>
-                          <div className="w-full py-9 mb-8 bg-light-red text-center">
-                            <p className="mb-3">
-                              <b>Ensure that these Requirements are met</b>
-                            </p>
-                            <p className=""> Minimum 8 characters long,</p>
-                            <p> uppercase & symbol</p>
-                          </div>
-                          <div className="w-full mb-4">
-                            <form
-                              className="space-y-2"
-                              action="#"
-                              onSubmit={formik.handleSubmit}
+                            <button
+                              className="p-1 text-xl"
+                              onClick={() => {
+                                setSelectScreenModal(false);
+                              }}
                             >
-                              <div className="relative">
-                                <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
-                                  Current Password
-                                </label>
-                                <input
-                                  type={currentPasswordShow ? "text" : "password"}
-                                  name="currentPassword"
-                                  id="currentPassword"
-                                  className=" border  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                  placeholder="Enter Current Password"
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  value={formik.values.currentPassword}
-                                />
-                                <div className="icon mt-3">
-                                  {currentPasswordShow ? (
-                                    <BsFillEyeFill
-                                      onClick={() =>
-                                        setCurrentPassword(!currentPasswordShow)
-                                      }
-                                    />
-                                  ) : (
-                                    <BsFillEyeSlashFill
-                                      onClick={() =>
-                                        setCurrentPassword(!currentPasswordShow)
-                                      }
-                                    />
-                                  )}
-                                </div>
-                              </div>
-                              {formik.touched.currentPassword &&
-                                formik.errors.currentPassword ? (
-                                <div className="text-red-500 error">
-                                  {formik.errors.currentPassword}
-                                </div>
-                              ) : null}
-                              <div className="relative">
-                                <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
-                                  New Password
-                                </label>
-                                <input
-                                  type={newPasswordShow ? "text" : "password"}
-                                  name="newPassword"
-                                  id="newPassword"
-                                  placeholder="Enter New Password"
-                                  className=" border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  value={formik.values.newPassword}
-                                />
-                                <div className="icon mt-3">
-                                  {newPasswordShow ? (
-                                    <BsFillEyeFill
-                                      onClick={() =>
-                                        setNewPassword(!newPasswordShow)
-                                      }
-                                    />
-                                  ) : (
-                                    <BsFillEyeSlashFill
-                                      onClick={() =>
-                                        setNewPassword(!newPasswordShow)
-                                      }
-                                    />
-                                  )}
-                                </div>
-                              </div>
-                              {formik.touched.newPassword &&
-                                formik.errors.newPassword ? (
-                                <div className="text-red-500 error">
-                                  {formik.errors.newPassword}
-                                </div>
-                              ) : null}
-                              <div className="relative">
-                                <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
-                                  Confirm password
-                                </label>
-                                <input
-                                  type={confirmPasswordShow ? "text" : "password"}
-                                  name="confirmPassword"
-                                  id="confirmPassword"
-                                  placeholder="Enter Confirm New Password"
-                                  className=" border  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  value={formik.values.confirmPassword}
-                                />
-                                <div className="icon mt-3">
-                                  {confirmPasswordShow ? (
-                                    <BsFillEyeFill
-                                      onClick={() =>
-                                        setConfirmPassword(!confirmPasswordShow)
-                                      }
-                                    />
-                                  ) : (
-                                    <BsFillEyeSlashFill
-                                      onClick={() =>
-                                        setConfirmPassword(!confirmPasswordShow)
-                                      }
-                                    />
-                                  )}
-                                </div>
-                              </div>
-                              {formik.touched.confirmPassword &&
-                                formik.errors.confirmPassword ? (
-                                <div className="text-red-500 error">
-                                  {formik.errors.confirmPassword}
-                                </div>
-                              ) : null}
-                              <div className="md:w-full flex justify-center pt-7">
-                                <button
-                                  className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
-                                  disabled={!formik.isValid || formik.isSubmitting}
-                                >
-                                  Save Changes
-                                </button>
-                              </div>
-                            </form>
+                              <AiOutlineCloseCircle className="text-3xl" />
+                            </button>
                           </div>
-                        </div>
-                      </div>
-                      <div className={activeTab === 2 ? "" : "hidden"}>
-                        <div className="user-pro-details notifications-tab mt-4">
-                          <h3 className="user-name ">Notifications</h3>
-                          <p className="mb-3">
-                            You will receive notification for the below selected
-                            items.
-                          </p>
-
-                          <div className="w-full my-6">
+                          <div className="schedual-table bg-white rounded-xl mt-2 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
                             <div className="overflow-x-scroll sc-scrollbar rounded-lg">
-                              <table className="screen-table min-w-full leading-normal bg-white mb-8">
-                                <thead>
-                                  <tr className="table-head-bg rounded-lg">
-                                    <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                                      Type
-                                    </th>
-                                    <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                                      Send alerts
-                                    </th>
-                                    <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                                      Email
-                                    </th>
-                                    <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                                      Phone
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                    <td className="px-5 py-3 bg-white text-sm">
-                                      <div className="flex items-center">
-                                        <div className="ml-3">
-                                          <p className="text-gray-900 whitespace-no-wrap">
-                                            Screen Offline
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <div className="relative ">
-                                        <select
-                                          className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                          name="whatever"
-                                          id="frm-whatever"
-                                        >
-                                          <option value="">Select </option>
-                                          <option value="1">Item 1</option>
-                                          <option value="2">Item 2</option>
-                                          <option value="3">Item 3</option>
-                                        </select>
-                                        <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
-                                          <svg
-                                            className="h-4 w-4"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20"
-                                          >
-                                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                          </svg>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label
-                                        className="checkbox"
-                                        htmlFor="offline1"
-                                      >
-                                        <span className="checkbox__label"></span>
-                                        <input type="checkbox" id="offline1" />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label
-                                        className="checkbox"
-                                        htmlFor="offline2"
-                                      >
-                                        <span className="checkbox__label"></span>
-                                        <input type="checkbox" id="offline2" />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                  </tr>
-                                  <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                    <td className="px-5 py-3 bg-white text-sm">
-                                      <div className="flex items-center">
-                                        <div className="ml-3">
-                                          <p className="text-gray-900 whitespace-no-wrap">
-                                            Purchased Plan
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <div className="relative ">
-                                        <select
-                                          className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                          name="whatever"
-                                          id="frm-whatever"
-                                        >
-                                          <option value="">Instant </option>
-                                          <option value="1">Item 1</option>
-                                          <option value="2">Item 2</option>
-                                          <option value="3">Item 3</option>
-                                        </select>
-                                        <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
-                                          <svg
-                                            className="h-4 w-4"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20"
-                                          >
-                                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                          </svg>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label
-                                        className="checkbox"
-                                        htmlFor="purchased-plan1"
-                                      >
-                                        <span className="checkbox__label"></span>
-                                        <input
-                                          type="checkbox"
-                                          id="purchased-plan1"
-                                        />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label
-                                        className="checkbox"
-                                        htmlFor="purchased-plan2"
-                                      >
-                                        <span className="checkbox__label"></span>
-                                        <input
-                                          type="checkbox"
-                                          id="purchased-plan2"
-                                        />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                  </tr>
-                                  <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                    <td className="px-5 py-3 bg-white text-sm">
-                                      <div className="flex items-center">
-                                        <div className="ml-3">
-                                          <p className="text-gray-900 whitespace-no-wrap">
-                                            Added Users
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <div className="relative ">
-                                        <select
-                                          className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                          name="whatever"
-                                          id="frm-whatever"
-                                        >
-                                          <option value="">15 Minute </option>
-                                          <option value="1">20 Minute</option>
-                                          <option value="2">25 Minute</option>
-                                          <option value="3">30 Minute</option>
-                                        </select>
-                                        <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
-                                          <svg
-                                            className="h-4 w-4"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20"
-                                          >
-                                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                          </svg>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label
-                                        className="checkbox"
-                                        htmlFor="added-users1"
-                                      >
-                                        <span className="checkbox__label"></span>
-                                        <input type="checkbox" id="added-users1" />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label
-                                        className="checkbox"
-                                        htmlFor="added-users2"
-                                      >
-                                        <span className="checkbox__label"></span>
-                                        <input type="checkbox" id="added-users2" />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                  </tr>
-                                  <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                    <td className="px-5 py-3 bg-white text-sm">
-                                      <div className="flex items-center">
-                                        <div className="ml-3">
-                                          <p className="text-gray-900 whitespace-no-wrap">
-                                            Changing Details
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <div className="relative ">
-                                        <input
-                                          type="text"
-                                          className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                          placeholder="Enter time (Minute)"
-                                        />
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label
-                                        className="checkbox"
-                                        htmlFor="changing-details1"
-                                      >
-                                        <span className="checkbox__label"></span>
-                                        <input
-                                          type="checkbox"
-                                          id="changing-details1"
-                                        />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label
-                                        className="checkbox"
-                                        htmlFor="changing-details2"
-                                      >
-                                        <span className="checkbox__label"></span>
-                                        <input
-                                          type="checkbox"
-                                          id="changing-details2"
-                                        />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                  </tr>
-                                  <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                    <td className="px-5 py-3 bg-white text-sm">
-                                      <div className="flex items-center">
-                                        <div className="ml-3">
-                                          <p className="text-gray-900 whitespace-no-wrap">
-                                            Playlist
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <div className="relative ">
-                                        <select
-                                          className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                          name="whatever"
-                                          id="frm-whatever"
-                                        >
-                                          <option value="">Select </option>
-                                          <option value="1">Playlist 1</option>
-                                          <option value="2">Playlist 2</option>
-                                          <option value="3">Playlist 3</option>
-                                        </select>
-                                        <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
-                                          <svg
-                                            className="h-4 w-4"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20"
-                                          >
-                                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                          </svg>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label
-                                        className="checkbox"
-                                        htmlFor="Playlist1"
-                                      >
-                                        <span className="checkbox__label"></span>
-                                        <input type="checkbox" id="Playlist1" />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label
-                                        className="checkbox"
-                                        htmlFor="Playlist2"
-                                      >
-                                        <span className="checkbox__label"></span>
-                                        <input type="checkbox" id="Playlist2" />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                  </tr>
-                                  <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                    <td className="px-5 py-3 bg-white text-sm">
-                                      <div className="flex items-center">
-                                        <div className="ml-3">
-                                          <p className="text-gray-900 whitespace-no-wrap">
-                                            Assets
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <div className="relative ">
-                                        <select
-                                          className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                          name="whatever"
-                                          id="frm-whatever"
-                                        >
-                                          <option value="">Select </option>
-                                          <option value="1">Assets 1</option>
-                                          <option value="2">Assets 2</option>
-                                          <option value="3">Assets 3</option>
-                                        </select>
-                                        <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
-                                          <svg
-                                            className="h-4 w-4"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20"
-                                          >
-                                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                          </svg>
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label className="checkbox" htmlFor="Assets1">
-                                        <span className="checkbox__label"></span>
-                                        <input type="checkbox" id="Assets1" />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                    <td className="px-5 py-3 text-sm">
-                                      <label className="checkbox" htmlFor="Assets2">
-                                        <span className="checkbox__label"></span>
-                                        <input type="checkbox" id="Assets2" />
-                                        <div className="checkbox__indicator"></div>
-                                      </label>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                            <div className="buttonWrapper flex justify-center  w-full">
-                              <button
-                                type="submit"
-                                id="submitButton"
-                                onclick="validateSignupForm()"
-                                className="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
-                              >
-                                <span>Save Change</span>
-                              </button>
-                              <button className="hover:bg-white hover:text-primary text-base px-8 py-3 border border-red shadow-md rounded-full text-red-900  bg-red-200 ">
-                                Discard
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className={activeTab === 3 ? "" : "hidden"}>
-                        <div className="user-pro-details connections-tab mt-3">
-                          <h3 className="user-name ">Connected Accounts</h3>
-                          <p className="mb-2">
-                            Display content from your connected accounts on your
-                            site.
-                          </p>
-
-                          <div className="w-full my-6">
-                            <table className="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-4">
-                              <thead>
-                                <tr className="border-b border-b-[#E4E6FF]">
-                                  <th className="px-5 py-3 text-left text-lg font-semibold text-gray-600 uppercase tracking-wider">
-                                    Apps
-                                  </th>
-                                  <th className="px-5 py-3 text-right text-lg font-semibold text-gray-600 uppercase tracking-wider">
-                                    Status
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                  <td className="px-5 py-2 bg-white text-sm">
-                                    <div className="flex items-center">
-                                      <div className="flex-shrink-0 w-10 h-10">
-                                        <img
-                                          className="w-full h-full rounded-full"
-                                          src={google_logo}
-                                          alt=""
-                                        />
-                                      </div>
-                                      <div className="ml-3 text-left">
-                                        <strong>Google</strong>
-                                        <p className="text-gray-900 whitespace-no-wrap">
-                                          Calendar and contacts
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className="px-5 py-2 text-sm text-right">
-                                    <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight rounded-full">
-                                      Connect
-                                    </span>
-                                  </td>
-                                </tr>
-                                <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                  <td className="px-5 py-2 bg-white text-sm">
-                                    <div className="flex items-center">
-                                      <div className="flex-shrink-0 w-10 h-10">
-                                        <img
-                                          className="w-full h-full rounded-full"
-                                          src={slack}
-                                          alt=""
-                                        />
-                                      </div>
-                                      <div className="ml-3 text-left">
-                                        <strong>Slack</strong>
-                                        <p className="text-gray-900 whitespace-no-wrap">
-                                          Communication
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className="px-5 py-2 text-sm text-right">
-                                    <span className="bg-red-200 px-3 py-1 font-semibold text-red-900 leading-tight rounded-full">
-                                      Disconnect
-                                    </span>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-
-                            <h3 className="user-name ">Social Accounts</h3>
-                            <p className="mb-3">
-                              Display content from social accounts on your site.
-                            </p>
-
-                            <table className="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-6">
-                              <tbody>
-                                <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                  <td className="px-5 py-3 bg-white text-sm">
-                                    <div className="flex items-center">
-                                      <div className="flex-shrink-0 w-10 h-10">
-                                        <img
-                                          className="w-full h-full rounded-full"
-                                          src={facebook}
-                                          alt=""
-                                        />
-                                      </div>
-                                      <div className="ml-3 text-left">
-                                        <strong>Facebook</strong>
-                                        <p className="text-gray-900 whitespace-no-wrap">
-                                          Not connected
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className="px-5 py-2 text-sm">
-                                    <a href="#" className="link-icon-bg">
-                                      <img src={link_icon} />
-                                    </a>
-                                  </td>
-                                </tr>
-                                <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                  <td className="px-5 py-2 bg-white text-sm">
-                                    <div className="flex items-center">
-                                      <div className="flex-shrink-0 w-10 h-10">
-                                        <img
-                                          className="w-full h-full rounded-full"
-                                          src={twitter}
-                                          alt=""
-                                        />
-                                      </div>
-                                      <div className="ml-3 text-left">
-                                        <strong>Twitter</strong>
-                                        <p className="text-gray-900 whitespace-no-wrap">
-                                          @Pixinvent
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className="px-5 py-2 text-sm">
-                                    <a href="#" className="delete-icon-bg">
-                                      <img src={deleteImg} />
-                                    </a>
-                                  </td>
-                                </tr>
-                                <tr className="border-b border-b-[#E4E6FF] bg-white">
-                                  <td className="px-5 py-2 bg-white text-sm">
-                                    <div className="flex items-center">
-                                      <div className="flex-shrink-0 w-10 h-10">
-                                        <img
-                                          className="w-full h-full rounded-full"
-                                          src={dribble}
-                                          alt=""
-                                        />
-                                      </div>
-                                      <div className="ml-3 text-left">
-                                        <strong>Dribbble</strong>
-                                        <p className="text-gray-900 whitespace-no-wrap">
-                                          Not connected
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className="px-5 py-2 text-sm">
-                                    <a href="#" className="delete-icon-bg">
-                                      <img src={deleteImg} />
-                                    </a>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-
-                            <div className="buttonWrapper flex justify-center w-full">
-                              <button
-                                type="submit"
-                                id="submitButton"
-                                onclick="validateSignupForm()"
-                                className="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
-                              >
-                                <span>Save Change</span>
-                              </button>
-                              <button className="hover:bg-white hover:text-primary text-base px-8 py-3 border border-red shadow-md rounded-full text-red-900  bg-red-200 ">
-                                Discard
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
-                <h3 className="user-name mb-4">Selected Screens</h3>
-                <div className="overflow-x-scroll sc-scrollbar rounded-lg shadow">
-                  <table className="w-full" cellPadding={20}>
-                    <thead>
-                      <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                          Screen
-                        </th>
-                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                          Status
-                        </th>
-                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                          Google Location
-                        </th>
-                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                          Associated Schedule
-                        </th>
-                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                          Tags
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {loading ? (
-                        <tr>
-                          <td
-                            colSpan={6}
-                            className="text-center font-semibold text-lg"
-                          >
-                            Loading...
-                          </td>
-                        </tr>
-                      ) : !loading && userScreenData?.length > 0 ? (
-                        userScreenData.map((screen) => (
-                          <tr
-                            key={screen.screenID}
-                            className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                          >
-                            <td className="text-center">{screen.screenName}</td>
-
-                            <td className="text-center">
-                              <span
-                                id={`changetvstatus${screen.macid}`}
-                                className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                  ? "bg-[#3AB700]"
-                                  : "bg-[#FF0000]"
-                                  }`}
-                              >
-                                {screen.screenStatus == 1 ? "Live" : "offline"}
-                              </span>
-                            </td>
-                            <td className="text-center break-words">
-                              {screen.googleLocation}
-                            </td>
-                            <td className="text-center break-words">
-                              {screen.scheduleName == "" ? (
-                                ""
-                              ) : (
-                                `${screen.scheduleName} Till
-                    ${moment(screen.endDate).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}`
-                              )}
-                            </td>
-                            <td className="text-center break-words">
-                              {screen?.tags !== null
-                                ? screen?.tags
-                                  .split(",")
-                                  .slice(
-                                    0,
-                                    screen?.tags.split(",").length > 2
-                                      ? 3
-                                      : screen?.tags.split(",").length
-                                  )
-                                  .map((text) => {
-                                    if (text.toString().length > 10) {
-                                      return text
-                                        .split("")
-                                        .slice(0, 10)
-                                        .concat("...")
-                                        .join("");
-                                    }
-                                    return text;
-                                  })
-                                  .join(",")
-                                : ""}
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={6}>
-                            <p className="text-center p-2">No Screen available.</p>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-                <div>
-                  {permissions.isSave &&
-                    <button
-                      className="flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                      onClick={() => {
-                        setUserDetailData([]);
-                        setFirstName("");
-                        setLastName("");
-                        setPassword("");
-                        setFileEdit(null);
-                        setPhone("");
-                        setEmail("");
-                        setCompany("");
-                        setCountryID(0);
-                        setSelectedState("");
-                        setSelectRoleID("");
-                        setIsActive(0);
-                        setZipCode("");
-                        setEditProfile();
-                        setshowuserModal(true);
-                      }}
-                    >
-                      <BiUserPlus className="text-2xl mr-1" />
-                      Add New User
-                    </button>
-                  }
-                </div>
-                <div className="clear-both">
-                  <div className="bg-white rounded-xl mt-8 shadow screen-section ">
-                    <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
-                      <table
-                        className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
-                        cellPadding={20}
-                      >
-                        <thead>
-                          <tr className="items-center table-head-bg">
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
-                              UserName
-                              <svg
-                                className="w-3 h-3 ms-1.5 cursor-pointer"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                                onClick={() => handleSort("firstName")}
-                              >
-                                <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                              </svg>
-                            </th>
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                              Roles
-                            </th>
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                              Screen Access
-                            </th>
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                              Status
-                            </th>
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                              Action
-                            </th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {loading && sortedAndPaginatedData.length === 0 && (
-                            <tr>
-                              <td colSpan={5}>
-                                <div className="flex text-center m-5 justify-center">
-                                  <svg
-                                    aria-hidden="true"
-                                    role="status"
-                                    className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
-                                    viewBox="0 0 100 101"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                      fill="currentColor"
-                                    />
-                                    <path
-                                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                      fill="#1C64F2"
-                                    />
-                                  </svg>
-                                  <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
-                                    Loading...
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          )}
-                          {!loading &&
-                            userData &&
-                            sortedAndPaginatedData?.length > 0 &&
-                            sortedAndPaginatedData.map((item, index) => {
-                              return (
-                                <tr
-                                  className="border-b border-b-[#E4E6FF]"
-                                  key={index}
-                                >
-                                  <td className="text-[#5E5E5E] text-center flex">
-                                    {item?.profilePhoto !== null ? (
-                                      <img
-                                        className="w-10 h-10 rounded-full"
-                                        src={item?.profilePhoto}
-                                        alt="Jese image"
-                                      />
-                                    ) : (
-                                      <RiUser3Fill className="w-10 h-10" />
-                                    )}
-                                    <div className="ps-3 flex text-center">
-                                      <div className="font-normal text-gray-500 mt-2">
-                                        {item.firstName + " " + item.lastName}
-                                      </div>
-                                    </div>
-                                  </td>
-
-                                  <td className="text-[#5E5E5E] text-center">
-                                    {item?.userRoleName}
-                                  </td>
-                                  <td className="text-[#5E5E5E] text-center">
-                                    <button
-                                      onClick={() => {
-                                        setScreenAccessModal(true);
-                                        getUsersScreens(item?.orgUserSpecificID);
-                                      }}
-                                    >
-                                      {item?.count}
-                                    </button>
-                                  </td>
-                                  <td className="text-[#5E5E5E] text-center">
-                                    {item.isActive == 1 ? (
-                                      <span className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
-                                        Active
-                                      </span>
-                                    ) : (
-                                      <span className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
-                                        Inactive
-                                      </span>
-                                    )}
-                                  </td>
-                                  <td className="text-center">
-                                    <div className="flex justify-center gap-4">
-                                      {permissions.isSave &&
-                                        <>
-                                          <div
-                                            data-tip
-                                            data-for="View"
-                                            className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                            onClick={() => {
-                                              setUserID(item.orgUserSpecificID);
-                                              selectUserById(item.orgUserSpecificID);
-                                              setUserMasterID(item.userMasterID);
-                                              setShowUserProfile(true);
-                                              getUsersScreens(item.orgUserSpecificID);
-                                            }}
-                                          >
-                                            <BsEyeFill />
-                                            <ReactTooltip
-                                              id="View"
-                                              place="bottom"
-                                              type="warning"
-                                              effect="float"
-                                            >
-                                              <span>View</span>
-                                            </ReactTooltip>
-                                          </div>
-
-                                          <div
-                                            data-tip
-                                            data-for="Edit"
-                                            className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                            onClick={() => {
-                                              setUserID(item.orgUserSpecificID);
-                                              selectUserById(item.orgUserSpecificID);
-                                              setUserMasterID(item.userMasterID);
-                                              setshowuserModal(true);
-                                            }}
-                                          >
-                                            <BiEdit />
-                                            <ReactTooltip
-                                              id="Edit"
-                                              place="bottom"
-                                              type="warning"
-                                              effect="float"
-                                            >
-                                              <span>Edit</span>
-                                            </ReactTooltip>
-                                          </div>
-                                        </>
-                                      }
-
-                                      {permissions.isDelete &&
-                                        <div
-                                          data-tip
-                                          data-for="Delete"
-                                          className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
-                                          onClick={() =>
-                                            handleDeleteUser(item.orgUserSpecificID)
-                                          }
-                                        >
-                                          <MdDeleteForever />
-                                          <ReactTooltip
-                                            id="Delete"
-                                            place="bottom"
-                                            type="warning"
-                                            effect="float"
-                                          >
-                                            <span>Delete</span>
-                                          </ReactTooltip>
-                                        </div>
-                                      }
-                                    </div>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          {!loading &&
-                            userData &&
-                            sortedAndPaginatedData?.length === 0 && (
-                              <>
-                                <tr>
-                                  <td colSpan={5}>
-                                    <div className="flex text-center justify-center">
-                                      <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
-                                        No Data Available
-                                      </span>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </>
-                            )}
-                        </tbody>
-                      </table>
-                    </div>
-                    {screenAccessModal && (
-                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                        <div
-                          ref={screenAccessModalRef}
-                          className="w-auto mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-                        >
-                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                            <div className="relative w-full cursor-pointer z-40 rounded-full">
-                              <button
-                                className="text-xl absolute -right-3 -top-4 bg-black text-white rounded-full"
-                                onClick={() => {
-                                  setScreenAccessModal(false);
-                                }}
-                              >
-                                <AiOutlineCloseCircle className="text-3xl" />
-                              </button>
-                            </div>
-                            <div className="schedual-table bg-white mt-8 shadow p-3 w-full overflow-x-scroll sc-scrollbar rounded-lg">
                               <table
                                 className="screen-table w-full"
                                 cellPadding={20}
@@ -2385,23 +990,37 @@ const Users = ({ searchValue, permissions }) => {
                                         Loading...
                                       </td>
                                     </tr>
-                                  ) : !loading && userScreenData?.length > 0 ? (
-                                    userScreenData.map((screen) => (
+                                  ) : !loading && screenData?.length > 0 ? (
+                                    screenData.map((screen) => (
                                       <tr
                                         key={screen.screenID}
                                         className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                                       >
-                                        <td className="text-center">
+                                        <td className="flex items-center">
+                                          <input
+                                            type="checkbox"
+                                            className="mr-3"
+                                            onChange={() =>
+                                              handleScreenCheckboxChange(
+                                                screen.screenID
+                                              )
+                                            }
+                                            checked={
+                                              screenCheckboxes[screen.screenID]
+                                            }
+                                          />
+
                                           {screen.screenName}
                                         </td>
 
                                         <td className="text-center">
                                           <span
                                             id={`changetvstatus${screen.macid}`}
-                                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                              ? "bg-[#3AB700]"
-                                              : "bg-[#FF0000]"
-                                              }`}
+                                            className={`rounded-full px-6 py-2 text-white text-center ${
+                                              screen.screenStatus == 1
+                                                ? "bg-[#3AB700]"
+                                                : "bg-[#FF0000]"
+                                            }`}
                                           >
                                             {screen.screenStatus == 1
                                               ? "Live"
@@ -2411,37 +1030,40 @@ const Users = ({ searchValue, permissions }) => {
                                         <td className="text-center break-words">
                                           {screen.googleLocation}
                                         </td>
+
                                         <td className="text-center break-words">
-                                          {screen.scheduleName == "" ? (
-                                            ""
-                                          ) : (
-                                            `${screen.scheduleName} Till
-                                ${moment(screen.endDate).format(
-                                              "YYYY-MM-DD hh:mm"
-                                            )}`
-                                          )}
+                                          {screen.scheduleName == ""
+                                            ? ""
+                                            : `${screen.scheduleName} Till
+                                    ${moment(screen.endDate).format(
+                                      "YYYY-MM-DD hh:mm"
+                                    )}`}
                                         </td>
                                         <td className="text-center break-words">
                                           {screen?.tags !== null
                                             ? screen?.tags
-                                              .split(",")
-                                              .slice(
-                                                0,
-                                                screen?.tags.split(",").length > 2
-                                                  ? 3
-                                                  : screen?.tags.split(",").length
-                                              )
-                                              .map((text) => {
-                                                if (text.toString().length > 10) {
-                                                  return text
-                                                    .split("")
-                                                    .slice(0, 10)
-                                                    .concat("...")
-                                                    .join("");
-                                                }
-                                                return text;
-                                              })
-                                              .join(",")
+                                                .split(",")
+                                                .slice(
+                                                  0,
+                                                  screen?.tags.split(",")
+                                                    .length > 2
+                                                    ? 3
+                                                    : screen?.tags.split(",")
+                                                        .length
+                                                )
+                                                .map((text) => {
+                                                  if (
+                                                    text.toString().length > 10
+                                                  ) {
+                                                    return text
+                                                      .split("")
+                                                      .slice(0, 10)
+                                                      .concat("...")
+                                                      .join("");
+                                                  }
+                                                  return text;
+                                                })
+                                                .join(",")
                                             : ""}
                                         </td>
                                       </tr>
@@ -2459,63 +1081,1444 @@ const Users = ({ searchValue, permissions }) => {
                               </table>
                             </div>
                           </div>
+                          <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
+                            <button
+                              className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
+                              onClick={() => {
+                                setSelectScreenModal(false);
+                              }}
+                            >
+                              Save
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    </div>
+                  )}
+                  <div className="col-span-12 text-center">
+                    <button
+                      className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
+                      onClick={() => {
+                        setshowuserModal(false);
+                        handleCancelPopup();
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    {labelTitle !== "Update User" ? (
+                      <button
+                        onClick={() => {
+                          handleAddUser();
+                          setSelectedScreens([]);
+                        }}
+                        className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
+                      >
+                        Save
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          handleUpdateUser();
+                        }}
+                        className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
+                      >
+                        Update
+                      </button>
                     )}
-                    <div className="flex justify-end mar-btm-15">
-                      <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 10"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M13 5H1m0 0 4 4M1 5l4-4"
-                          />
-                        </svg>
-                        Previous
-                      </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-                      <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      {showUserProfile ? (
+        <>
+          <div className="lg:p-4 md:p-4 sm:p-2 xs:p-2 ">
+            <h1
+              onClick={() => {
+                setShowUserProfile(false);
+                setLoadFist(true);
+                setUserScreenData([]);
+                setUserID();
+              }}
+              className="font-medium flex cursor-pointer w-fit items-center lg:text-2xl md:text-2xl sm:text-xl mb-5"
+            >
+              <IoIosArrowRoundBack size={30} />
+              User Information
+            </h1>
+            <div className="full flex flex-wrap -mx-3 mb-3">
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <div className="card-shadow pt-6 text-[#5E5E5E]">
+                  <div className="user-details text-center border-b border-b-[#E4E6FF]">
+                    <span className="user-img flex justify-center mb-3">
+                      {userDetailData?.profilePhoto !== null ? (
+                        <img
+                          src={userDetailData?.profilePhoto}
+                          className="w-30 h-25 mb-3 rounded shadow-lg"
+                          style={{ width: "200px", height: "185px" }}
+                        />
+                      ) : (
+                        <BiSolidUser className="w-[200px] h-[185px]" />
+                      )}
+                    </span>
+                    <span className="user-name text-gray-900 dark:text-white font-semibold capitalize">
+                      {userDetailData?.firstName} {userDetailData?.lastName}
+                    </span>
+                    <div className="user-designation my-2">
+                      <span
+                        style={{ backgroundColor: "#cee9d6" }}
+                        className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                       >
-                        Next
-                        <svg
-                          className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 14 10"
-                        >
-                          <path
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M1 5h12m0 0L9 1m4 4L9 9"
-                          />
-                        </svg>
+                        {userDetailData?.userRoleName}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="user-pro-details mt-10">
+                    <h3 className="user-name my-2">Details</h3>
+
+                    <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-3 mt-4">
+                      <div className="font-semibold">
+                        <span>User ID : </span>
+                      </div>
+                      <div className="col-span-2">
+                        <span>{userDetailData?.orgUserSpecificID}</span>
+                      </div>
+                      <div className="font-semibold">
+                        <span>User Name : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span>
+                          {userDetailData?.firstName} {userDetailData?.lastName}
+                        </span>
+                      </div>
+                      <div className="font-semibold">
+                        <span>Company Name : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData?.company}</span>
+                      </div>
+                      <div className="font-semibold">
+                        <span>Email : </span>
+                      </div>
+                      <div className="col-span-2">
+                        <span> {userDetailData?.email}</span>
+                      </div>
+                      <div className="font-semibold">
+                        <span>Status : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span>
+                          {userDetailData?.isActive == 1 ? (
+                            <span
+                              style={{ backgroundColor: "#cee9d6" }}
+                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                            >
+                              Active
+                            </span>
+                          ) : (
+                            <span
+                              style={{ backgroundColor: "#cee9d6" }}
+                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                            >
+                              Inactive
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                      <div className="font-semibold">
+                        <span>Role : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData?.userRoleName}</span>
+                      </div>
+                      <div className="font-semibold">
+                        <span>Contact : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData?.phone}</span>
+                      </div>
+                      <div className="font-semibold">
+                        <span>Language : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span>
+                          {userDetailData?.languageName
+                            ? userDetailData?.languageName
+                            : "English"}
+                        </span>
+                      </div>
+                      <div className="font-semibold">
+                        <span>Country : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData?.countryName}</span>
+                      </div>
+
+                      <div className="font-semibold">
+                        <span>State : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData?.stateName}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center w-full mt-10">
+                      <button
+                        onClick={() => {
+                          selectUserById(userDetailData?.orgUserSpecificID);
+                          setshowuserModal(true);
+                        }}
+                        className="me-3 hover:bg-white hover:text-primary text-base px-8 py-2 border border-primary  shadow-md rounded-full bg-primary text-white "
+                      >
+                        Edit Profile
                       </button>
+                      {/* <button className="hover:text-#ffbebe px-8 py-3 border border-red shadow-md rounded-full text-red-600 text-1xl font-semibold bg-[#ffbebe] ">
+                        Suspend
+                      </button> */}
                     </div>
                   </div>
                 </div>
               </div>
-            </>
-          )}
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <div className="card-shadow pt-6 h-full">
+                  <ul className="flex flex-wrap gap-3 items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  ">
+                    <li>
+                      <button
+                        className={`inline-flex items-center
+                          ${activeTab === 1 ? "tabactivebtn" : "tabbtn "}
+                        `}
+                        onClick={() => setActiveTab(1)}
+                      >
+                        <MdLockOutline className="text-primary text-lg mr-1" />
+                        Security
+                      </button>
+                    </li>
+                    {/* <li>
+                      <button
+                        className={`inline-flex items-center
+                          ${activeTab === 2 ? "tabactivebtn" : "tabbtn "}
+                        `}
+                        onClick={() => setActiveTab(2)}
+                      >
+                        <IoMdNotificationsOutline className="text-primary text-lg mr-1" />
+                        Notifications
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className={`inline-flex items-center
+                          ${activeTab === 3 ? "tabactivebtn" : "tabbtn "}
+                        `}
+                        onClick={() => setActiveTab(3)}
+                      >
+                        <IoIosLink className="text-primary text-lg mr-1" />
+                        Connections
+                      </button>
+                    </li> */}
+                  </ul>
+                  <div className={activeTab === 1 ? "" : "hidden"}>
+                    <div className="user-pro-details security-tab">
+                      <h3 className="user-name my-6">Change Password</h3>
+                      <div className="w-full py-9 mb-8 bg-light-red text-center">
+                        <p className="mb-3">
+                          <b>Ensure that these Requirements are met</b>
+                        </p>
+                        <p className=""> Minimum 8 characters long,</p>
+                        <p> uppercase & symbol</p>
+                      </div>
+                      <div className="w-full mb-4">
+                        <form
+                          className="space-y-2"
+                          action="#"
+                          onSubmit={formik.handleSubmit}
+                        >
+                          <div className="relative">
+                            <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
+                              Current Password
+                            </label>
+                            <input
+                              type={currentPasswordShow ? "text" : "password"}
+                              name="currentPassword"
+                              id="currentPassword"
+                              className=" border  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              placeholder="Enter Current Password"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              value={formik.values.currentPassword}
+                            />
+                            <div className="icon mt-3">
+                              {currentPasswordShow ? (
+                                <BsFillEyeFill
+                                  onClick={() =>
+                                    setCurrentPassword(!currentPasswordShow)
+                                  }
+                                />
+                              ) : (
+                                <BsFillEyeSlashFill
+                                  onClick={() =>
+                                    setCurrentPassword(!currentPasswordShow)
+                                  }
+                                />
+                              )}
+                            </div>
+                          </div>
+                          {formik.touched.currentPassword &&
+                          formik.errors.currentPassword ? (
+                            <div className="text-red-500 error">
+                              {formik.errors.currentPassword}
+                            </div>
+                          ) : null}
+                          <div className="relative">
+                            <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
+                              New Password
+                            </label>
+                            <input
+                              type={newPasswordShow ? "text" : "password"}
+                              name="newPassword"
+                              id="newPassword"
+                              placeholder="Enter New Password"
+                              className=" border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              value={formik.values.newPassword}
+                            />
+                            <div className="icon mt-3">
+                              {newPasswordShow ? (
+                                <BsFillEyeFill
+                                  onClick={() =>
+                                    setNewPassword(!newPasswordShow)
+                                  }
+                                />
+                              ) : (
+                                <BsFillEyeSlashFill
+                                  onClick={() =>
+                                    setNewPassword(!newPasswordShow)
+                                  }
+                                />
+                              )}
+                            </div>
+                          </div>
+                          {formik.touched.newPassword &&
+                          formik.errors.newPassword ? (
+                            <div className="text-red-500 error">
+                              {formik.errors.newPassword}
+                            </div>
+                          ) : null}
+                          <div className="relative">
+                            <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
+                              Confirm password
+                            </label>
+                            <input
+                              type={confirmPasswordShow ? "text" : "password"}
+                              name="confirmPassword"
+                              id="confirmPassword"
+                              placeholder="Enter Confirm New Password"
+                              className=" border  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              value={formik.values.confirmPassword}
+                            />
+                            <div className="icon mt-3">
+                              {confirmPasswordShow ? (
+                                <BsFillEyeFill
+                                  onClick={() =>
+                                    setConfirmPassword(!confirmPasswordShow)
+                                  }
+                                />
+                              ) : (
+                                <BsFillEyeSlashFill
+                                  onClick={() =>
+                                    setConfirmPassword(!confirmPasswordShow)
+                                  }
+                                />
+                              )}
+                            </div>
+                          </div>
+                          {formik.touched.confirmPassword &&
+                          formik.errors.confirmPassword ? (
+                            <div className="text-red-500 error">
+                              {formik.errors.confirmPassword}
+                            </div>
+                          ) : null}
+                          <div className="md:w-full flex justify-center pt-7">
+                            <button
+                              className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
+                              disabled={!formik.isValid || formik.isSubmitting}
+                            >
+                              Save Changes
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={activeTab === 2 ? "" : "hidden"}>
+                    <div className="user-pro-details notifications-tab mt-4">
+                      <h3 className="user-name ">Notifications</h3>
+                      <p className="mb-3">
+                        You will receive notification for the below selected
+                        items.
+                      </p>
+
+                      <div className="w-full my-6">
+                        <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                          <table className="screen-table min-w-full leading-normal bg-white mb-8">
+                            <thead>
+                              <tr className="table-head-bg rounded-lg">
+                                <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                  Type
+                                </th>
+                                <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                  Send alerts
+                                </th>
+                                <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                  Email
+                                </th>
+                                <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                  Phone
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Screen Offline
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <select
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      name="whatever"
+                                      id="frm-whatever"
+                                    >
+                                      <option value="">Select </option>
+                                      <option value="1">Item 1</option>
+                                      <option value="2">Item 2</option>
+                                      <option value="3">Item 3</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                      <svg
+                                        className="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="offline1"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="offline1" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="offline2"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="offline2" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Purchased Plan
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <select
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      name="whatever"
+                                      id="frm-whatever"
+                                    >
+                                      <option value="">Instant </option>
+                                      <option value="1">Item 1</option>
+                                      <option value="2">Item 2</option>
+                                      <option value="3">Item 3</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                      <svg
+                                        className="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="purchased-plan1"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input
+                                      type="checkbox"
+                                      id="purchased-plan1"
+                                    />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="purchased-plan2"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input
+                                      type="checkbox"
+                                      id="purchased-plan2"
+                                    />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Added Users
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <select
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      name="whatever"
+                                      id="frm-whatever"
+                                    >
+                                      <option value="">15 Minute </option>
+                                      <option value="1">20 Minute</option>
+                                      <option value="2">25 Minute</option>
+                                      <option value="3">30 Minute</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                      <svg
+                                        className="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="added-users1"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="added-users1" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="added-users2"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="added-users2" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Changing Details
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <input
+                                      type="text"
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      placeholder="Enter time (Minute)"
+                                    />
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="changing-details1"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input
+                                      type="checkbox"
+                                      id="changing-details1"
+                                    />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="changing-details2"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input
+                                      type="checkbox"
+                                      id="changing-details2"
+                                    />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Playlist
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <select
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      name="whatever"
+                                      id="frm-whatever"
+                                    >
+                                      <option value="">Select </option>
+                                      <option value="1">Playlist 1</option>
+                                      <option value="2">Playlist 2</option>
+                                      <option value="3">Playlist 3</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                      <svg
+                                        className="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="Playlist1"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="Playlist1" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="Playlist2"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="Playlist2" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Assets
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <select
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      name="whatever"
+                                      id="frm-whatever"
+                                    >
+                                      <option value="">Select </option>
+                                      <option value="1">Assets 1</option>
+                                      <option value="2">Assets 2</option>
+                                      <option value="3">Assets 3</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                      <svg
+                                        className="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label className="checkbox" htmlFor="Assets1">
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="Assets1" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label className="checkbox" htmlFor="Assets2">
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="Assets2" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="buttonWrapper flex justify-center  w-full">
+                          <button
+                            type="submit"
+                            id="submitButton"
+                            onclick="validateSignupForm()"
+                            className="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
+                          >
+                            <span>Save Change</span>
+                          </button>
+                          <button className="hover:bg-white hover:text-primary text-base px-8 py-3 border border-red shadow-md rounded-full text-red-900  bg-red-200 ">
+                            Discard
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={activeTab === 3 ? "" : "hidden"}>
+                    <div className="user-pro-details connections-tab mt-3">
+                      <h3 className="user-name ">Connected Accounts</h3>
+                      <p className="mb-2">
+                        Display content from your connected accounts on your
+                        site.
+                      </p>
+
+                      <div className="w-full my-6">
+                        <table className="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-4">
+                          <thead>
+                            <tr className="border-b border-b-[#E4E6FF]">
+                              <th className="px-5 py-3 text-left text-lg font-semibold text-gray-600 uppercase tracking-wider">
+                                Apps
+                              </th>
+                              <th className="px-5 py-3 text-right text-lg font-semibold text-gray-600 uppercase tracking-wider">
+                                Status
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td className="px-5 py-2 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
+                                    <img
+                                      className="w-full h-full rounded-full"
+                                      src={google_logo}
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div className="ml-3 text-left">
+                                    <strong>Google</strong>
+                                    <p className="text-gray-900 whitespace-no-wrap">
+                                      Calendar and contacts
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-5 py-2 text-sm text-right">
+                                <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight rounded-full">
+                                  Connect
+                                </span>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td className="px-5 py-2 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
+                                    <img
+                                      className="w-full h-full rounded-full"
+                                      src={slack}
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div className="ml-3 text-left">
+                                    <strong>Slack</strong>
+                                    <p className="text-gray-900 whitespace-no-wrap">
+                                      Communication
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-5 py-2 text-sm text-right">
+                                <span className="bg-red-200 px-3 py-1 font-semibold text-red-900 leading-tight rounded-full">
+                                  Disconnect
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <h3 className="user-name ">Social Accounts</h3>
+                        <p className="mb-3">
+                          Display content from social accounts on your site.
+                        </p>
+
+                        <table className="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-6">
+                          <tbody>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td className="px-5 py-3 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
+                                    <img
+                                      className="w-full h-full rounded-full"
+                                      src={facebook}
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div className="ml-3 text-left">
+                                    <strong>Facebook</strong>
+                                    <p className="text-gray-900 whitespace-no-wrap">
+                                      Not connected
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-5 py-2 text-sm">
+                                <a href="#" className="link-icon-bg">
+                                  <img src={link_icon} />
+                                </a>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td className="px-5 py-2 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
+                                    <img
+                                      className="w-full h-full rounded-full"
+                                      src={twitter}
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div className="ml-3 text-left">
+                                    <strong>Twitter</strong>
+                                    <p className="text-gray-900 whitespace-no-wrap">
+                                      @Pixinvent
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-5 py-2 text-sm">
+                                <a href="#" className="delete-icon-bg">
+                                  <img src={deleteImg} />
+                                </a>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td className="px-5 py-2 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
+                                    <img
+                                      className="w-full h-full rounded-full"
+                                      src={dribble}
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div className="ml-3 text-left">
+                                    <strong>Dribbble</strong>
+                                    <p className="text-gray-900 whitespace-no-wrap">
+                                      Not connected
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-5 py-2 text-sm">
+                                <a href="#" className="delete-icon-bg">
+                                  <img src={deleteImg} />
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <div className="buttonWrapper flex justify-center w-full">
+                          <button
+                            type="submit"
+                            id="submitButton"
+                            onclick="validateSignupForm()"
+                            className="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
+                          >
+                            <span>Save Change</span>
+                          </button>
+                          <button className="hover:bg-white hover:text-primary text-base px-8 py-3 border border-red shadow-md rounded-full text-red-900  bg-red-200 ">
+                            Discard
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
+            <h3 className="user-name mb-4">Selected Screens</h3>
+            <div className="overflow-x-scroll sc-scrollbar rounded-lg shadow">
+              <table className="w-full" cellPadding={20}>
+                <thead>
+                  <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Screen
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Status
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Google Location
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Associated Schedule
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Tags
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="text-center font-semibold text-lg"
+                      >
+                        Loading...
+                      </td>
+                    </tr>
+                  ) : !loading && userScreenData?.length > 0 ? (
+                    userScreenData.map((screen) => (
+                      <tr
+                        key={screen.screenID}
+                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                      >
+                        <td className="text-center">{screen.screenName}</td>
+
+                        <td className="text-center">
+                          <span
+                            id={`changetvstatus${screen.macid}`}
+                            className={`rounded-full px-6 py-2 text-white text-center ${
+                              screen.screenStatus == 1
+                                ? "bg-[#3AB700]"
+                                : "bg-[#FF0000]"
+                            }`}
+                          >
+                            {screen.screenStatus == 1 ? "Live" : "offline"}
+                          </span>
+                        </td>
+                        <td className="text-center break-words">
+                          {screen.googleLocation}
+                        </td>
+                        <td className="text-center break-words">
+                          {screen.scheduleName == ""
+                            ? ""
+                            : `${screen.scheduleName} Till
+                    ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`}
+                        </td>
+                        <td className="text-center break-words">
+                          {screen?.tags !== null
+                            ? screen?.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  screen?.tags.split(",").length > 2
+                                    ? 3
+                                    : screen?.tags.split(",").length
+                                )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
+                                .join(",")
+                            : ""}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6}>
+                        <p className="text-center p-2">No Screen available.</p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </>
-      );
+      ) : (
+        <>
+          <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
+            <div>
+              {permissions.isSave && (
+                <button
+                  className="flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  onClick={() => {
+                    setUserDetailData([]);
+                    setFirstName("");
+                    setLastName("");
+                    setPassword("");
+                    setFileEdit(null);
+                    setPhone("");
+                    setEmail("");
+                    setCompany("");
+                    setCountryID(0);
+                    setSelectedState("");
+                    setSelectRoleID("");
+                    setIsActive(0);
+                    setZipCode("");
+                    setEditProfile();
+                    setshowuserModal(true);
+                  }}
+                >
+                  <BiUserPlus className="text-2xl mr-1" />
+                  Add New User
+                </button>
+              )}
+            </div>
+            <div className="clear-both">
+              <div className="bg-white rounded-xl mt-8 shadow screen-section ">
+                <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
+                  <table
+                    className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
+                    cellPadding={20}
+                  >
+                    <thead>
+                      <tr className="items-center table-head-bg">
+                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center items-center">
+                          <div className="flex w-full items-center justify-start">
+                            UserName
+                            <svg
+                              className="w-3 h-3 ms-1.5 cursor-pointer"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                              onClick={() => handleSort("firstName")}
+                            >
+                              <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                            </svg>
+                          </div>
+                        </th>
+                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          Roles
+                        </th>
+                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          Screen Access
+                        </th>
+                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          Status
+                        </th>
+                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {loading && sortedAndPaginatedData.length === 0 && (
+                        <tr>
+                          <td colSpan={5}>
+                            <div className="flex text-center m-5 justify-center">
+                              <svg
+                                aria-hidden="true"
+                                role="status"
+                                className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                                viewBox="0 0 100 101"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                  fill="currentColor"
+                                />
+                                <path
+                                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                  fill="#1C64F2"
+                                />
+                              </svg>
+                              <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
+                                Loading...
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                      {!loading &&
+                        userData &&
+                        sortedAndPaginatedData?.length > 0 &&
+                        sortedAndPaginatedData.map((item, index) => {
+                          return (
+                            <tr
+                              className="border-b border-b-[#E4E6FF]"
+                              key={index}
+                            >
+                              <td className="text-[#5E5E5E] text-center flex">
+                                {item?.profilePhoto !== null ? (
+                                  <img
+                                    className="w-10 h-10 rounded-full"
+                                    src={item?.profilePhoto}
+                                    alt="Jese image"
+                                  />
+                                ) : (
+                                  <RiUser3Fill className="w-10 h-10" />
+                                )}
+                                <div className="ps-3 flex text-center">
+                                  <div className="font-normal text-gray-500 mt-2">
+                                    {item.firstName + " " + item.lastName}
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td className="text-[#5E5E5E] text-center">
+                                {item?.userRoleName}
+                              </td>
+                              <td className="text-[#5E5E5E] text-center">
+                                <button
+                                  onClick={() => {
+                                    setScreenAccessModal(true);
+                                    getUsersScreens(item?.orgUserSpecificID);
+                                  }}
+                                >
+                                  {item?.count}
+                                </button>
+                              </td>
+                              <td className="text-[#5E5E5E] text-center">
+                                {item.isActive == 1 ? (
+                                  <span className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
+                                    Active
+                                  </span>
+                                ) : (
+                                  <span className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
+                                    Inactive
+                                  </span>
+                                )}
+                              </td>
+                              <td className="text-center">
+                                <div className="flex justify-center gap-4">
+                                  {permissions.isSave && (
+                                    <>
+                                      <div
+                                        data-tip
+                                        data-for="View"
+                                        className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        onClick={() => {
+                                          setUserID(item.orgUserSpecificID);
+                                          selectUserById(
+                                            item.orgUserSpecificID
+                                          );
+                                          setUserMasterID(item.userMasterID);
+                                          setShowUserProfile(true);
+                                          getUsersScreens(
+                                            item.orgUserSpecificID
+                                          );
+                                        }}
+                                      >
+                                        <BsEyeFill />
+                                        <ReactTooltip
+                                          id="View"
+                                          place="bottom"
+                                          type="warning"
+                                          effect="float"
+                                        >
+                                          <span>View</span>
+                                        </ReactTooltip>
+                                      </div>
+
+                                      <div
+                                        data-tip
+                                        data-for="Edit"
+                                        className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        onClick={() => {
+                                          setUserID(item.orgUserSpecificID);
+                                          selectUserById(
+                                            item.orgUserSpecificID
+                                          );
+                                          setUserMasterID(item.userMasterID);
+                                          setshowuserModal(true);
+                                        }}
+                                      >
+                                        <BiEdit />
+                                        <ReactTooltip
+                                          id="Edit"
+                                          place="bottom"
+                                          type="warning"
+                                          effect="float"
+                                        >
+                                          <span>Edit</span>
+                                        </ReactTooltip>
+                                      </div>
+                                    </>
+                                  )}
+
+                                  {permissions.isDelete && (
+                                    <div
+                                      data-tip
+                                      data-for="Delete"
+                                      className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
+                                      onClick={() =>
+                                        handleDeleteUser(item.orgUserSpecificID)
+                                      }
+                                    >
+                                      <MdDeleteForever />
+                                      <ReactTooltip
+                                        id="Delete"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="float"
+                                      >
+                                        <span>Delete</span>
+                                      </ReactTooltip>
+                                    </div>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      {!loading &&
+                        userData &&
+                        sortedAndPaginatedData?.length === 0 && (
+                          <>
+                            <tr>
+                              <td colSpan={5}>
+                                <div className="flex text-center justify-center">
+                                  <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
+                                    No Data Available
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          </>
+                        )}
+                    </tbody>
+                  </table>
+                </div>
+                {screenAccessModal && (
+                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                    <div
+                      ref={screenAccessModalRef}
+                      className="w-auto mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                    >
+                      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                        <div className="relative w-full cursor-pointer z-40 rounded-full">
+                          <button
+                            className="text-xl absolute -right-3 -top-4 bg-black text-white rounded-full"
+                            onClick={() => {
+                              setScreenAccessModal(false);
+                            }}
+                          >
+                            <AiOutlineCloseCircle className="text-3xl" />
+                          </button>
+                        </div>
+                        <div className="schedual-table bg-white mt-8 shadow p-3 w-full overflow-x-scroll sc-scrollbar rounded-lg">
+                          <table
+                            className="screen-table w-full"
+                            cellPadding={20}
+                          >
+                            <thead>
+                              <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                                <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
+                                  Screen
+                                </th>
+                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                  Status
+                                </th>
+                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                  Google Location
+                                </th>
+                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                  Associated Schedule
+                                </th>
+                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                  Tags
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {loading ? (
+                                <tr>
+                                  <td
+                                    colSpan={6}
+                                    className="text-center font-semibold text-lg"
+                                  >
+                                    Loading...
+                                  </td>
+                                </tr>
+                              ) : !loading && userScreenData?.length > 0 ? (
+                                userScreenData.map((screen) => (
+                                  <tr
+                                    key={screen.screenID}
+                                    className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                  >
+                                    <td className="text-center">
+                                      {screen.screenName}
+                                    </td>
+
+                                    <td className="text-center">
+                                      <span
+                                        id={`changetvstatus${screen.macid}`}
+                                        className={`rounded-full px-6 py-2 text-white text-center ${
+                                          screen.screenStatus == 1
+                                            ? "bg-[#3AB700]"
+                                            : "bg-[#FF0000]"
+                                        }`}
+                                      >
+                                        {screen.screenStatus == 1
+                                          ? "Live"
+                                          : "offline"}
+                                      </span>
+                                    </td>
+                                    <td className="text-center break-words">
+                                      {screen.googleLocation}
+                                    </td>
+                                    <td className="text-center break-words">
+                                      {screen.scheduleName == ""
+                                        ? ""
+                                        : `${screen.scheduleName} Till
+                                ${moment(screen.endDate).format(
+                                  "YYYY-MM-DD hh:mm"
+                                )}`}
+                                    </td>
+                                    <td className="text-center break-words">
+                                      {screen?.tags !== null
+                                        ? screen?.tags
+                                            .split(",")
+                                            .slice(
+                                              0,
+                                              screen?.tags.split(",").length > 2
+                                                ? 3
+                                                : screen?.tags.split(",").length
+                                            )
+                                            .map((text) => {
+                                              if (text.toString().length > 10) {
+                                                return text
+                                                  .split("")
+                                                  .slice(0, 10)
+                                                  .concat("...")
+                                                  .join("");
+                                              }
+                                              return text;
+                                            })
+                                            .join(",")
+                                        : ""}
+                                    </td>
+                                  </tr>
+                                ))
+                              ) : (
+                                <tr>
+                                  <td colSpan={6}>
+                                    <p className="text-center p-2">
+                                      No Screen available.
+                                    </p>
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div className="flex justify-end mar-btm-15">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    <svg
+                      className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 5H1m0 0 4 4M1 5l4-4"
+                      />
+                    </svg>
+                    Previous
+                  </button>
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    Next
+                    <svg
+                      className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
 };
 
-      export default Users;
+export default Users;

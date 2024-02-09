@@ -4,6 +4,7 @@ import {
   GET_ORG_USERS,
   GET_SELECT_BY_STATE,
   GET_USER_SCREEN_DETAILS,
+  USER_ROLE_GET,
   getUrl,
 } from "../Pages/Api";
 import toast from "react-hot-toast";
@@ -197,6 +198,60 @@ export const handleSelectUserById = createAsyncThunk(
     }
   }
 );
+// Add Edit User Role
+export const handleAddNewUserRole = createAsyncThunk(
+  "UserMaster/handleAddNewUserRole",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+// get userRole by id
+export const handleUserRoleById = createAsyncThunk(
+  "UserMaster/handleUserRoleById",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+//get users
+export const getOrgUsersRole = createAsyncThunk(
+  "data/getOrgUsersRole",
+  async (payload, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().root.auth.token;
+      const response = await axios.post(USER_ROLE_GET, null, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      console.log("error", error);
+      throw error;
+    }
+  }
+);
 
 const initialState = {
   Countries: [],
@@ -324,6 +379,52 @@ const SettingUserSlice = createSlice({
       state.getUserData = action.payload?.data;
     });
     builder.addCase(handleSelectUserById.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    });
+
+    builder.addCase(handleAddNewUserRole.pending, (state) => {
+      // Add User Role
+      state.status = "loading";
+    });
+    builder.addCase(handleAddNewUserRole.fulfilled, (state, action) => {
+      // Add User Role
+      state.status = "succeeded";
+      state.data = action.payload;
+      state.message = action.payload.message || "User Role saved successfully";
+    });
+    builder.addCase(handleAddNewUserRole.rejected, (state, action) => {
+      // Add User Role
+      state.status = "failed";
+      state.error = action.payload.message;
+      state.message =
+        action.payload.message || "This user is not insert try agin";
+    });
+
+    // userRole By Id
+    builder.addCase(handleUserRoleById.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(handleUserRoleById.fulfilled, (state, action) => {
+      state.status = true;
+      state.data = action.payload;
+      // state.message = action.payload.message || "User Role saved successfully";
+    });
+    builder.addCase(handleUserRoleById.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+      // state.message =
+      //   action.payload.message || "This user is not insert try agin";
+    });
+
+    builder.addCase(getOrgUsersRole.pending, (state) => {
+      state.status = null;
+    });
+    builder.addCase(getOrgUsersRole.fulfilled, (state, action) => {
+      state.status = null;
+      state.getUserData = action.payload?.data;
+    });
+    builder.addCase(getOrgUsersRole.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
     });

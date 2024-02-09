@@ -37,11 +37,15 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-  const [sidebarload, setSidebarLoad] = useState(true)
+  const [sidebarload, setSidebarLoad] = useState(true);
   const [loadFist, setLoadFist] = useState(true);
   // Use Redux state instead of local state
   const store = useSelector((state) => state.root.trashData);
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
   const [selectAll, setSelectAll] = useState(false);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectcheck, setSelectCheck] = useState(false);
@@ -133,23 +137,26 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFist, store]); // Make sure to include dispatch as a dependency if you're using it in the effect
 
-
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.bottummenu.find(e => e.pageName === "Trash");
+      const findData = item.payload.data.bottummenu.find(
+        (e) => e.pageName === "Trash"
+      );
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-      setSidebarLoad(false)
-    })
-  }, [])
-
+      setSidebarLoad(false);
+    });
+  }, []);
 
   const handleSelectAllChange = () => {
     setSelectAllChecked(!selectAllChecked);
@@ -296,19 +303,20 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      {sidebarload && (
-        <Loading />
-      )}
+      {sidebarload && <Loading />}
       {!sidebarload && (
         <Suspense fallback={<Loading />}>
           <div>
             <div className="flex border-b border-gray mt-5">
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
               <Navbar />
             </div>
             <div className="pt-16 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="lg:flex lg:justify-between sm:block items-center">
+                <div className="flex justify-between items-center">
                   <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
                     Trash
                   </h1>
@@ -332,7 +340,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       </button>
                     )}
 
-                    {permissions.isDelete &&
+                    {permissions.isDelete && (
                       <input
                         data-tip
                         data-for="Select All"
@@ -341,7 +349,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                         checked={selectAllChecked}
                         onChange={handleSelectAllChange}
                       />
-                    }
+                    )}
                     <ReactTooltip
                       id="Select All"
                       place="bottom"
@@ -356,8 +364,8 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
                   <div>
                     <h4 className="text-1xl font-bold dark:text-white m-3 text-center">
-                      This data is stored upto 30 days after that it will get auto
-                      deleted.
+                      This data is stored upto 30 days after that it will get
+                      auto deleted.
                     </h4>
                   </div>
 
@@ -368,22 +376,24 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     >
                       <thead>
                         <tr className="items-center table-head-bg">
-                          <th className="sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
-                            Name
-                            <svg
-                              className="w-3 h-3 ms-1.5 cursor-pointer"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                              onClick={() => handleSort("assetName")}
-                            >
-                              <path
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
-                              />
-                            </svg>
+                          <th className="sticky top-0th-bg-100 text-md font-semibold ">
+                            <div className="flex justify-start items-center w-full">
+                              Name
+                              <svg
+                                className="w-3 h-3 ms-1.5 cursor-pointer"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                onClick={() => handleSort("assetName")}
+                              >
+                                <path
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                                />
+                              </svg>
+                            </div>
                           </th>
                           <th className=" sticky top-0 th-bg-100 text-md font-semibold">
                             File location
@@ -449,7 +459,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               <td className=" border-b border-lightgray text-sm ">
                                 <div className="flex gap-2 items-center justify-start">
-                                  {permissions.isDelete &&
+                                  {permissions.isDelete && (
                                     <>
                                       {selectAll ? (
                                         <CheckmarkIcon />
@@ -460,8 +470,10 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                             className="mx-1"
                                             checked={selectedItems.some(
                                               (selectedItem) =>
-                                                selectedItem.assetID === item.assetID &&
-                                                selectedItem.assetType === item.assetType
+                                                selectedItem.assetID ===
+                                                  item.assetID &&
+                                                selectedItem.assetType ===
+                                                  item.assetType
                                             )}
                                             onChange={() =>
                                               handleCheckboxChange({
@@ -472,7 +484,8 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                           />
                                         </button>
                                       )}
-                                    </>}
+                                    </>
+                                  )}
                                   {item.assetType === "Folder" && (
                                     <span className="w-30 h-30  flex items-center justify-center">
                                       <HiFolder />
@@ -523,7 +536,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
                               <td className="border-b border-lightgray text-sm">
                                 <div className="cursor-pointer text-xl flex gap-4 ">
-                                  {permissions.isDelete &&
+                                  {permissions.isDelete && (
                                     <button
                                       type="button"
                                       className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-3"
@@ -536,18 +549,21 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                     >
                                       <MdDeleteForever />
                                     </button>
-                                  }
-                                  {permissions.isSave &&
+                                  )}
+                                  {permissions.isSave && (
                                     <button
                                       type="button"
                                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                       onClick={() =>
-                                        handleRestore(item.assetID, item.assetType)
+                                        handleRestore(
+                                          item.assetID,
+                                          item.assetType
+                                        )
                                       }
                                     >
                                       <MdRestore />
                                     </button>
-                                  }
+                                  )}
                                 </div>
                               </td>
                             </tr>

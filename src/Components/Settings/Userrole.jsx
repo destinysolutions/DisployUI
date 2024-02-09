@@ -1,25 +1,19 @@
 import React, { useRef, useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { getUsersRoles } from "../../Redux/SettingUserSlice";
+import {
+  getOrgUsersRole,
+  getUsersRoles,
+  handleUserRoleById,
+} from "../../Redux/SettingUserSlice";
 import { BiEdit } from "react-icons/bi";
 import ReactTooltip from "react-tooltip";
-import { RiUser3Fill } from "react-icons/ri";
-import toast from "react-hot-toast";
 import { getUserRoleData, roleBaseUserFind } from "../../Redux/UserRoleSlice";
 import ShowUserScreen from "./ShowUserScreen";
 import AddEditUserRole from "./AddEditUserRole";
-import {
-  ADD_UPDATE_ORGANIZATION_USER_ROLE,
-  USER_ROLE_GET,
-} from "../../Pages/Api";
-import axios from "axios";
+import { ADD_UPDATE_ORGANIZATION_USER_ROLE } from "../../Pages/Api";
 import { useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import {
-  combineUserroleObjects,
-  mapModuleTitlesToUserAccess,
-} from "../Common/Common";
+import { combineUserroleObjects } from "../Common/Common";
 
 const Userrole = ({ searchValue }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -124,29 +118,16 @@ const Userrole = ({ searchValue }) => {
   };
 
   useEffect(() => {
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${USER_ROLE_GET}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        const filteredData = response.data.data.filter(
+    Promise.all([dispatch(getOrgUsersRole()), dispatch(getUserRoleData())])
+      .then(([orgUsersRoleRes, userRoleDataRes]) => {
+        // Process orgUsersRoleRes
+        const filteredOrgUsersRoleData = orgUsersRoleRes.payload.data.filter(
           (item) => item.moduleID !== 9 && item.moduleID !== 22
         );
-        setModuleTitle(filteredData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        setModuleTitle(filteredOrgUsersRoleData);
 
-    dispatch(getUserRoleData())
-      .then((res) => {
-        setRoleUserList(res?.payload?.data);
+        // Process userRoleDataRes
+        setRoleUserList(userRoleDataRes?.payload?.data);
       })
       .catch((error) => {
         console.log("error", error);
@@ -175,24 +156,24 @@ const Userrole = ({ searchValue }) => {
       data: data,
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        const selectedRole = response?.data?.data;
-        console.log("selectedRole", selectedRole);
-        const data = combineUserroleObjects(selectedRole);
-        setNextButton(false);
-        setUserRoleData(data);
-        setShowModal(true);
+    dispatch(handleUserRoleById({ config }))
+      .then((res) => {
+        if (res?.payload?.status === 200) {
+          const selectedRole = res?.payload?.data;
+          const data = combineUserroleObjects(selectedRole);
+          setNextButton(false);
+          setUserRoleData(data);
+          setShowModal(true);
+        }
       })
       .catch((error) => {
-        console.log(error);
+        console.log("error", error);
       });
   };
 
   return (
     <>
-      <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
+      <div className="p-5">
         <div className="flex justify-between">
           <h2 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
             Roles List
@@ -212,31 +193,33 @@ const Userrole = ({ searchValue }) => {
         </div>
 
         <div className="clear-both">
-          <div className="bg-white rounded-xl mt-8 shadow screen-section ">
-            <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
+          <div className="bg-white rounded-xl lg:mt-8 md:mt-8 mt-4 shadow screen-section ">
+            <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
               <table
                 className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                 cellPadding={20}
               >
                 <thead>
                   <tr className="items-center table-head-bg">
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
-                      Role Name
-                      <svg
-                        className="w-3 h-3 ms-1.5 cursor-pointer"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        onClick={() => handleSort("orgUserRole")}
-                      >
-                        <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                      </svg>
+                    <th className="text-[#5A5881] text-base font-semibold text-center flex items-center">
+                      <div className="flex w-full items-center justify-center">
+                        Role Name
+                        <svg
+                          className="w-3 h-3 ms-1.5 cursor-pointer"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          onClick={() => handleSort("orgUserRole")}
+                        >
+                          <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                        </svg>
+                      </div>
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    <th className="text-[#5A5881] text-base font-semibold text-center">
                       View Users
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    <th className="text-[#5A5881] text-base font-semibold text-center">
                       Action
                     </th>
                   </tr>
@@ -277,7 +260,7 @@ const Userrole = ({ searchValue }) => {
                     sortedAndPaginatedData.map((item, index) => {
                       return (
                         <tr className="border-b border-b-[#E4E6FF]" key={index}>
-                          <td className="text-[#5E5E5E] text-center flex">
+                          <td className="text-[#5E5E5E] text-center">
                             {item?.orgUserRole}
                           </td>
                           <td
@@ -408,6 +391,7 @@ const Userrole = ({ searchValue }) => {
           setUserDisable={setUserDisable}
           userDisable={userDisable}
           setUserRoleData={setUserRoleData}
+          dispatch={dispatch}
         />
       )}
     </>
