@@ -17,7 +17,7 @@ export const handleGetCountries = createAsyncThunk(
       const { data } = await getUrl(`Cascading/GetAllCountry`, {
         signal,
       });
-      if (data?.status == 200) return data;
+      if (data?.status === 200) return data;
       else {
         toast.error(data?.message);
         return rejectWithValue(data?.message);

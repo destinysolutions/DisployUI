@@ -487,11 +487,22 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
         // setAssetData(allAssets);
         // setAssetAllData(allAssets);
+        const CurrentTimeZone = new Date()
+        .toLocaleDateString(undefined, {
+          day: "2-digit",
+          timeZoneName: "long",
+        })
+        .substring(4);
+        timezoneResponse.data.data?.map((item)=>{
+          if(item?.timeZoneName === CurrentTimeZone){
+            setSelectedTimezoneName(item?.timeZoneID)
+          }
+        })
         setGetSelectedScreenTypeOption(screenTypeResponse.data.data);
         setScreenOrientation(screenOrientationResponse.data.data);
         setScreenResolution(screenResolutionResponse.data.data);
         setTimezone(timezoneResponse.data.data);
-        setSelectedTimezoneName(timezoneResponse.data.data[92].timeZoneID);
+        // setSelectedTimezoneName(timezoneResponse.data.data[92].timeZoneID);
         setScheduleData(scheduleResponse.data.data);
         setTagsData(tagsResponse.data.data);
         setCompositionData(compositionResponse.data.data);

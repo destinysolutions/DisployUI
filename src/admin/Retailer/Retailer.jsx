@@ -334,6 +334,17 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                         </tr>
                       )
                     })}
+                    {sortedAndPaginatedData?.length === 0 && (
+                      <tr>
+                      <td colSpan={6}>
+                        <div className="flex text-center justify-center">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                            No Data Available
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -341,7 +352,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                 className="flex items-center flex-column flex-wrap md:flex-row justify-end p-5"
                 aria-label="Table navigation"
               >
-                <ul className="-space-x-px rtl:space-x-reverse text-sm h-8 flex justify-end mt-2">
+                <ul className="-space-x-px rtl:space-x-reverse text-sm h-8 flex justify-end">
                   <li className="">
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}

@@ -1284,12 +1284,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                     <tr key={screen.screenID}>
                                       {screenContentVisible && (
                                         <td className="text-[#5E5E5E]">
-                                          <div className="flex">
+                                          <div className="flex items-center">
                                             <div>
                                               {permissions.isDelete &&
                                                 <input
                                                   type="checkbox"
-                                                  className="mr-3"
+                                                  className="mr-2"
                                                   onChange={() =>
                                                     handleScreenCheckboxChange(
                                                       screen.screenID
@@ -1330,7 +1330,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                 style={{ width: "max-content" }}
                                               >
                                                 {permissions.isSave ?
-                                                  <div>
+                                                  <div className="flex gap-1">
                                                     <Link
                                                       to={`/screensplayer?screenID=${screen.screenID}`}
                                                     >

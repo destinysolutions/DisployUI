@@ -177,3 +177,10 @@ export const ADMINUSERTOKEN = `${baseUrl}Register/GetUserToken`
 export const ADDEDITADVERTISEMENT = `${baseUrl}AdsCustomer/AddorUpdateAdsCustomer`
 export const GETALLADS = `${baseUrl}AdsCustomer/GetAllAdsData`
 export const ASSIGN_ADS = `${baseUrl}AdsCustomer/InsertAdvertisementScreen`
+export const  GET_NOTIFICATIONS  = `${baseUrl}AdsCustomer/GetAdsDatabyID`
+export const  UPDATE_ADS_RATE  = `${baseUrl}AdsCustomer/UpdateAdsRate`
+
+// Approval
+
+export const GETALLAPPROVAL = `${baseUrl}OrganizationUsersRole/GetApproveNotifications`
+export const APPROVEDETAILBYID = `${baseUrl}OrganizationUsersRole/ApproveDetailsByID`
