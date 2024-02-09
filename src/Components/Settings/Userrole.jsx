@@ -24,7 +24,7 @@ import {
 const Userrole = ({ searchValue }) => {
   const { token } = useSelector((state) => state.root.auth);
   const [userRoleData, setUserRoleData] = useState();
-
+  console.log("userRoleData", userRoleData);
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
   const showUsersRef = useRef(null);
