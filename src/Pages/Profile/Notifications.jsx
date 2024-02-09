@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
-
-import { BiUserPlus } from 'react-icons/bi';
-import { MdDeleteForever } from 'react-icons/md';
-import { RiUser3Fill } from 'react-icons/ri';
+import { RiAddFill, RiUser3Fill } from 'react-icons/ri';
 import { BsEyeFill } from 'react-icons/bs';
 import ReactTooltip from 'react-tooltip';
 import { AiOutlineSearch } from 'react-icons/ai';
 import AssetsPreview from '../../Components/Common/AssetsPreview'
+import AddPriceForAds from '../../Components/Common/AddPriceForAds'
+import { useDispatch, useSelector } from 'react-redux';
+import { UpdateAdsRate, getNotificationData, resetStatus } from "../../Redux/admin/AdvertisementSlice";
+import moment from 'moment/moment';
+import toast from 'react-hot-toast';
+
 
 const Data = [{
   id: "1",
@@ -89,12 +92,17 @@ const Data = [{
 
 
 const Billing = () => {
+  const store = useSelector((state) => state.root.advertisementData);
+
+  const dispatch = useDispatch();
+
+
 
   // pagination Start
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-  const filteredData = Data.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredData = store?.getNotification?.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
@@ -103,8 +111,34 @@ const Billing = () => {
   // pagination End
 
   const [open, setOpen] = useState(false);
+  const [openPriceAds, setOpenPriceAds] = useState(false);
   const [openPreview, setOpenPreview] = useState();
+  const [loadFirst, setloadFirst] = useState(true);
+  const [label, setLabel] = useState('');
+  const [editIdAds, setEditAdsId] = useState('');
 
+
+
+  useEffect(() => {
+    if (loadFirst) {
+      dispatch(getNotificationData())
+      setloadFirst(false)
+    }
+
+    if (store && store.status === "succeeded") {
+      toast.success(store.message)
+      setloadFirst(true)
+      dispatch(resetStatus())
+    }
+
+  }, [loadFirst, store])
+
+
+  const AddPriceAds = (item) => {
+    const payload = { AssignAdvertisementid: editIdAds, AdsPrice: item }
+    dispatch(UpdateAdsRate(payload))
+    setOpenPriceAds(false)
+  }
 
   return (
     <>
@@ -134,17 +168,20 @@ const Billing = () => {
               >
                 <thead>
                   <tr className="items-center table-head-bg">
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Name
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Phone
+                    <th className="                                                                                                      text-[#5A5881] text-base font-semibold w-fit text-center">
+                      GoogleLocation
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Date
+                      Screen
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Status
+                      Start Date
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      End Date
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Actions
@@ -157,51 +194,28 @@ const Billing = () => {
                       className="border-b border-b-[#E4E6FF]"
                       key={index}
                     >
-                      <td className="text-[#5E5E5E] text-center flex">
-                        {item?.profilePhoto !== null ? (
-                          <img
-                            className="w-10 h-10 rounded-full"
-                            src={item?.profilePhoto}
-                            alt="Jese image"
-                          />
-                        ) : (
-                          <RiUser3Fill className="w-10 h-10" />
-                        )}
-                        <div className="ps-3 flex text-center">
-                          <div className="font-normal text-gray-500 mt-2">
-                            <div className="text-base font-semibold">{item.name}</div>
-                            <div className="font-normal text-gray-500">{item.Email}</div>
-                          </div>
-                        </div>
+                      <td className="text-[#5E5E5E] ">
+                        <div className="text-base text-center font-semibold capitalize">{item.name}</div>
                       </td>
-
+                      <td className="text-[#5E5E5E]">
+                        <div className="text-base text-center font-semibold">{item.googleLocation}</div>
+                      </td>
+                      <td className="text-[#5E5E5E]">
+                        <div className="text-base text-center font-semibold">{item.screen}</div>
+                      </td>
                       <td className="text-[#5E5E5E] text-center">
-                        {item?.Phone}
+                        <div className="text-base text-center font-semibold">{moment(item?.startDate).format('DD-MM-YYYY' + ' - ' + 'HH:mm:ss')}</div>
                       </td>
-
                       <td className="text-[#5E5E5E] text-center">
-                        {item?.Date}
+                        <div className="text-base text-center font-semibold">{moment(item?.endDate).format('DD-MM-YYYY' + ' - ' + 'HH:mm:ss')}</div>
                       </td>
-
-                      <td className="text-[#5E5E5E] text-center">
-                        {item.Status == 1 ? (
-                          <span className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
-                            Active
-                          </span>
-                        ) : (
-                          <span className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
-                            Inactive
-                          </span>
-                        )}
-                      </td>
-
                       <td className="text-[#5E5E5E] text-center">
                         <div className="flex justify-center gap-4">
                           <div
                             data-tip
                             data-for="View"
                             className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            <BsEyeFill onClick={() => { setOpenPreview(item); setOpen(true) }} />
+                            <BsEyeFill onClick={() => { setOpenPreview(item); setOpen(true); }} />
                             <ReactTooltip
                               id="View"
                               place="bottom"
@@ -209,6 +223,20 @@ const Billing = () => {
                               effect="float"
                             >
                               <span>View</span>
+                            </ReactTooltip>
+                          </div>
+                          <div
+                            data-tip
+                            data-for="Add Price"
+                            className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <RiAddFill onClick={() => { setOpenPriceAds(true); setLabel('Add Price'); setEditAdsId(item.adsCustomerMasterID) }} />
+                            <ReactTooltip
+                              id="Add Price"
+                              place="bottom"
+                              type="warning"
+                              effect="float"
+                            >
+                              <span>Add Price</span>
                             </ReactTooltip>
                           </div>
                         </div>
@@ -228,7 +256,7 @@ const Billing = () => {
 
             {/* Pagination start */}
             {filteredData.length > 0 && (
-              <div className="mt-4 flex justify-end p-5">
+              <div className="flex justify-end p-5">
                 <div className="flex justify-end mar-btm-15">
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
@@ -288,6 +316,15 @@ const Billing = () => {
           open={open}
           setOpen={setOpen}
           openPreview={openPreview}
+        />
+      }
+
+      {openPriceAds &&
+        <AddPriceForAds
+          openPriceAds={openPriceAds}
+          setOpenPriceAds={setOpenPriceAds}
+          label={label}
+          AddPriceAds={AddPriceAds}
         />
       }
 

@@ -47,12 +47,12 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
     //   desc: <BillingsPlans />,
     //   icon: <BsSdCard />,
     // },
-    // {
-    //   label: "Notifications",
-    //   value: "notifications",
-    //   desc: <Notifications />,
-    //   icon: <IoIosNotificationsOutline />,
-    // },
+    {
+      label: "Notifications",
+      value: "notifications",
+      desc: <Notifications />,
+      icon: <IoIosNotificationsOutline />,
+    },
     // {
     //   label: "Connections",
     //   value: "connections",
