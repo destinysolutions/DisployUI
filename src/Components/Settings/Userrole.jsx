@@ -1,19 +1,25 @@
-import React, { useRef, useState } from 'react'
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { getUsersRoles } from '../../Redux/SettingUserSlice';
+import React, { useRef, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getUsersRoles } from "../../Redux/SettingUserSlice";
 import { BiEdit } from "react-icons/bi";
 import ReactTooltip from "react-tooltip";
 import { RiUser3Fill } from "react-icons/ri";
 import toast from "react-hot-toast";
-import { getUserRoleData, roleBaseUserFind } from '../../Redux/UserRoleSlice';
-import ShowUserScreen from './ShowUserScreen';
-import AddEditUserRole from './AddEditUserRole';
-import { ADD_UPDATE_ORGANIZATION_USER_ROLE, USER_ROLE_GET } from '../../Pages/Api';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { useForm } from 'react-hook-form';
-import { combineUserroleObjects, mapModuleTitlesToUserAccess } from '../Common/Common';
+import { getUserRoleData, roleBaseUserFind } from "../../Redux/UserRoleSlice";
+import ShowUserScreen from "./ShowUserScreen";
+import AddEditUserRole from "./AddEditUserRole";
+import {
+  ADD_UPDATE_ORGANIZATION_USER_ROLE,
+  USER_ROLE_GET,
+} from "../../Pages/Api";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import {
+  combineUserroleObjects,
+  mapModuleTitlesToUserAccess,
+} from "../Common/Common";
 
 const Userrole = ({ searchValue }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -23,11 +29,11 @@ const Userrole = ({ searchValue }) => {
   const dispatch = useDispatch();
   const showUsersRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
-  const [heading, setHeading] = useState("Add")
+  const [heading, setHeading] = useState("Add");
 
   const [nextbutton, setNextButton] = useState(false);
-  const [loading, setLoading] = useState(false)
-  const [userLoading, setUserLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [userLoading, setUserLoading] = useState(false);
   const [moduleTitle, setModuleTitle] = useState([]);
   const [showUsers, setShowUsers] = useState(false);
   const [userList, setUserList] = useState([]);
@@ -36,11 +42,11 @@ const Userrole = ({ searchValue }) => {
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [roleuserList, setRoleUserList] = useState([]);
-  const [userDisable,setUserDisable] = useState()
+  const [userDisable, setUserDisable] = useState();
   const [allUserRoleData, setAllUserRoleData] = useState({
     userRoleData: [],
-    SearchData: []
-  })
+    SearchData: [],
+  });
 
   // Filter data based on search term
   const filteredData = allUserRoleData?.SearchData?.filter((item) =>
@@ -70,7 +76,7 @@ const Userrole = ({ searchValue }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  console.log('sortedAndPaginatedData', sortedAndPaginatedData)
+  console.log("sortedAndPaginatedData", sortedAndPaginatedData);
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -87,28 +93,30 @@ const Userrole = ({ searchValue }) => {
 
   const fetchUserRole = () => {
     const payload = {
-      "mode": "Selectlist"
-    }
-    setLoading(true)
-    dispatch(getUsersRoles(payload)).then((res) => {
-      setAllUserRoleData({
-        userRoleData: res?.payload?.data,
-        SearchData: res?.payload?.data
+      mode: "Selectlist",
+    };
+    setLoading(true);
+    dispatch(getUsersRoles(payload))
+      .then((res) => {
+        setAllUserRoleData({
+          userRoleData: res?.payload?.data,
+          SearchData: res?.payload?.data,
+        });
+        setLoading(false);
+        console.log("res", res);
       })
-      setLoading(false)
-      console.log('res', res)
-    }).catch((error) => {
-      console.log('error', error)
-    })
-  }
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
 
   useEffect(() => {
-    fetchUserRole()
-  }, [])
+    fetchUserRole();
+  }, []);
 
   const handleRoleBasedUserGet = (userRoleID) => {
     setShowUsers(true);
-    setUserLoading(true)
+    setUserLoading(true);
     dispatch(roleBaseUserFind(userRoleID))?.then((res) => {
       setUserList(res?.payload?.data);
       setUserLoading(false);
@@ -127,26 +135,29 @@ const Userrole = ({ searchValue }) => {
     axios
       .request(config)
       .then((response) => {
-        const filteredData = response.data.data.filter(item => item.moduleID !== 9 && item.moduleID !== 22);
+        const filteredData = response.data.data.filter(
+          (item) => item.moduleID !== 9 && item.moduleID !== 22
+        );
         setModuleTitle(filteredData);
       })
       .catch((error) => {
         console.log(error);
       });
 
-    dispatch(getUserRoleData()).then((res) => {
-      setRoleUserList(res?.payload?.data)
-    }).catch((error) => {
-      console.log('error', error)
-    });
+    dispatch(getUserRoleData())
+      .then((res) => {
+        setRoleUserList(res?.payload?.data);
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
   }, []);
 
   const toggleModal = () => {
     setShowModal(!showModal);
-    setUserDisable()
-    setUserRoleData()
+    setUserDisable();
+    setUserRoleData();
   };
-
 
   const handleSelectByID = (user_role_id) => {
     let data = JSON.stringify({
@@ -168,32 +179,32 @@ const Userrole = ({ searchValue }) => {
       .request(config)
       .then((response) => {
         const selectedRole = response?.data?.data;
-        console.log('selectedRole', selectedRole)
-        const data = combineUserroleObjects(selectedRole)
+        console.log("selectedRole", selectedRole);
+        const data = combineUserroleObjects(selectedRole);
+        setNextButton(false);
         setUserRoleData(data);
-        setShowModal(true)
+        setShowModal(true);
       })
-
       .catch((error) => {
         console.log(error);
       });
-
-  }
+  };
 
   return (
     <>
-
       <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-        <div className='flex justify-between'>
-          <h2 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">Roles List</h2>
+        <div className="flex justify-between">
+          <h2 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
+            Roles List
+          </h2>
           <button
             className="flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
             onClick={() => {
-              setUserDisable()
+              setUserDisable();
               setShowModal(true);
-              setHeading("Add")
-              setUserRoleData()
-              setNextButton(false)
+              setHeading("Add");
+              setUserRoleData();
+              setNextButton(false);
             }}
           >
             Add New Role
@@ -265,17 +276,16 @@ const Userrole = ({ searchValue }) => {
                     sortedAndPaginatedData?.length > 0 &&
                     sortedAndPaginatedData.map((item, index) => {
                       return (
-                        <tr
-                          className="border-b border-b-[#E4E6FF]"
-                          key={index}
-                        >
+                        <tr className="border-b border-b-[#E4E6FF]" key={index}>
                           <td className="text-[#5E5E5E] text-center flex">
                             {item?.orgUserRole}
                           </td>
-                          <td className="text-[#5E5E5E] text-center cursor-pointer"
+                          <td
+                            className="text-[#5E5E5E] text-center cursor-pointer"
                             onClick={() => {
                               handleRoleBasedUserGet(item.orgUserRoleID);
-                            }}>
+                            }}
+                          >
                             {item?.userCount}
                           </td>
                           <td className="text-center">
@@ -287,7 +297,6 @@ const Userrole = ({ searchValue }) => {
                                   className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                   onClick={() => {
                                     handleSelectByID(item.orgUserRoleID);
-                                    setShowModal();
                                   }}
                                 >
                                   <BiEdit />
@@ -301,8 +310,6 @@ const Userrole = ({ searchValue }) => {
                                   </ReactTooltip>
                                 </div>
                               </>
-
-
                             </div>
                           </td>
                         </tr>
@@ -404,7 +411,7 @@ const Userrole = ({ searchValue }) => {
         />
       )}
     </>
-  )
-}
+  );
+};
 
-export default Userrole
+export default Userrole;
