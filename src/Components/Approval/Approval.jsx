@@ -73,8 +73,6 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                   };
                   console.log('Params', Params)
                   socket.emit("ScreenConnected", Params);
-                }else{
-                  console.log("Hello")
                 }
                 Swal.fire({
                   title: "Approved!",
