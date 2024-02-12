@@ -65,7 +65,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
           dispatch(handleApproval({ config }))
             .then((res) => {
               if (res?.payload?.status === 200) {
-                if(res?.payload?.macID !== ""  || res?.payload?.macID !== null){
+                if(res?.payload?.macID !== "" ){
                   const Params = {
                     id: socket.id,
                     connection: socket.connected,
@@ -73,6 +73,8 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                   };
                   console.log('Params', Params)
                   socket.emit("ScreenConnected", Params);
+                }else{
+                  console.log("Hello")
                 }
                 Swal.fire({
                   title: "Approved!",
