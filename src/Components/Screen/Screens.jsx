@@ -50,6 +50,7 @@ import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
+import { Pagination } from "../Common/Common";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -134,7 +135,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [sidebarload, setSidebarLoad] = useState(true);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6); // Adjust items per page as needed
+  const [itemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [permissions, setPermissions] = useState({
@@ -218,6 +219,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const endPage = currentPage * sortedAndPaginatedData?.length;
+  const startPage = Pagination(currentPage, sortedAndPaginatedData?.length);
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
@@ -378,7 +382,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           .then((res) => {
             toast.remove();
             toast.success("Deleted Successfully.");
-            console.log(MACID);
           })
           .catch((error) => {
             toast.remove();
@@ -850,7 +853,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     const handleStorageChange = () => {
       const isClosed = localStorage.getItem("isWindowClosed");
-      console.log("isClosed", isClosed);
       if (isClosed === "true") {
         dispatch(handleGetAllSchedule({ token }));
         localStorage.setItem("isWindowClosed", "false");
@@ -880,13 +882,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="grid lg:grid-cols-3 gap-2">
+                <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
                     Screens
                   </h1>
 
-                  <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
-                    <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
+                  <div className="flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
+                    <div className="relative mr-5">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <AiOutlineSearch className="w-5 h-5 text-gray " />
                       </span>
@@ -900,260 +902,277 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         }}
                       />
                     </div>
-                    <div className="flex items-center justify-end">
-                      {permissions.isSave && (
-                        <button
-                          data-tip
-                          data-for="New Screen"
-                          type="button"
-                          className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                          onClick={() => setShowOTPModal(true)}
-                        >
-                          <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
-                          <ReactTooltip
-                            id="New Screen"
-                            place="bottom"
-                            type="warning"
-                            effect="float"
-                          >
-                            <span>New Screen</span>
-                          </ReactTooltip>
-                        </button>
-                      )}
+                    {/* 
+              <button
+                type="button"
+                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+              >
+                <VscVmConnect className="p-1 px-2 text-4xl text-white hover:text-white" />
+              </button>
+            */}
 
-                      {showOTPModal ? (
-                        <>
-                          <ScreenOTPModal
-                            showOTPModal={showOTPModal}
-                            setShowOTPModal={setShowOTPModal}
-                          />
-                        </>
-                      ) : null}
-                      {showNewScreenGroupPopup && (
-                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                          <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
-                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                                <button
-                                  className="p-1 text-xl"
-                                  onClick={() =>
-                                    setShowNewScreenGroupPopup(false)
-                                  }
-                                >
-                                  <AiOutlineCloseCircle className="text-2xl" />
-                                </button>
-                              </div>
-                              <div className="p-3">
-                                <label>Enter Group Name : </label>
-                                <input
-                                  type="text"
-                                  onChange={(e) => {
-                                    setGroupName(e.target.value);
-                                  }}
-                                  className="border border-primary m-5"
-                                />
-                              </div>
-                              <div className="flex justify-center">
-                                <button
-                                  className="mb-4 border border-primary py-2 px-3"
-                                  onClick={handleScreenGroup}
-                                >
-                                  create
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
+                    {permissions.isSave && (
                       <button
                         data-tip
-                        data-for="Delete"
+                        data-for="New Screen"
                         type="button"
-                        className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                        onClick={handleDeleteAllscreen}
-                        style={{ display: selectAllChecked ? "block" : "none" }}
+                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                        onClick={() => setShowOTPModal(true)}
                       >
-                        <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
+                        <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
                         <ReactTooltip
-                          id="Delete"
+                          id="New Screen"
                           place="bottom"
                           type="warning"
                           effect="float"
                         >
-                          <span>Delete</span>
+                          <span>New Screen</span>
+                        </ReactTooltip>
+                      </button>
+                    )}
+
+                    {showOTPModal ? (
+                      <>
+                        <ScreenOTPModal
+                          showOTPModal={showOTPModal}
+                          setShowOTPModal={setShowOTPModal}
+                        />
+                      </>
+                    ) : null}
+                    {showNewScreenGroupPopup && (
+                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                        <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
+                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                            <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                              <button
+                                className="p-1 text-xl"
+                                onClick={() =>
+                                  setShowNewScreenGroupPopup(false)
+                                }
+                              >
+                                <AiOutlineCloseCircle className="text-2xl" />
+                              </button>
+                            </div>
+                            <div className="p-3">
+                              <label>Enter Group Name : </label>
+                              <input
+                                type="text"
+                                onChange={(e) => {
+                                  setGroupName(e.target.value);
+                                }}
+                                className="border border-primary m-5"
+                              />
+                            </div>
+                            <div className="flex justify-center">
+                              <button
+                                className="mb-4 border border-primary py-2 px-3"
+                                onClick={handleScreenGroup}
+                              >
+                                create
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 
+            >
+              <button
+                onClick={() => handleToggleActivation()}
+                type="button"
+                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+              >
+                <RiSignalTowerLine className="p-1 px-2 text-4xl text-white hover:text-white" />
+              </button>
+             */}
+                    <button
+                      data-tip
+                      data-for="Delete"
+                      type="button"
+                      className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                      onClick={handleDeleteAllscreen}
+                      style={{ display: selectAllChecked ? "block" : "none" }}
+                    >
+                      <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
+                      <ReactTooltip
+                        id="Delete"
+                        place="bottom"
+                        type="warning"
+                        effect="float"
+                      >
+                        <span>Delete</span>
+                      </ReactTooltip>
+                    </button>
+
+                    {/* multipal remove */}
+                    {selectedItems?.length !== 0 && !selectAllChecked && (
+                      <button
+                        className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        onClick={handleDeleteAllscreen}
+                      >
+                        <RiDeleteBin5Line className="text-lg" />
+                      </button>
+                    )}
+
+                    <div className="relative mt-1">
+                      <button
+                        data-tip
+                        data-for="More"
+                        type="button"
+                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                        onClick={() => setMoreModal(!moreModal)}
+                      >
+                        <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
+                        <ReactTooltip
+                          id="More"
+                          place="bottom"
+                          type="warning"
+                          effect="float"
+                        >
+                          <span>More</span>
                         </ReactTooltip>
                       </button>
 
-                      {/* multipal remove */}
-                      {selectedItems?.length !== 0 && !selectAllChecked && (
-                        <button
-                          className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={handleDeleteAllscreen}
-                        >
-                          <RiDeleteBin5Line className="text-lg" />
-                        </button>
-                      )}
-
-                      <div className="relative mt-1">
-                        <button
-                          data-tip
-                          data-for="More"
-                          type="button"
-                          className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                          onClick={() => setMoreModal(!moreModal)}
-                        >
-                          <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
-                          <ReactTooltip
-                            id="More"
-                            place="bottom"
-                            type="warning"
-                            effect="float"
-                          >
-                            <span>More</span>
-                          </ReactTooltip>
-                        </button>
-
-                        {moreModal && (
-                          <div ref={moreModalRef} className="moredw">
-                            <ul>
-                              <li className="flex text-sm items-center ">
-                                <input
-                                  type="checkbox"
-                                  className="mr-2 text-lg"
-                                  checked={screenCheckboxClick}
-                                  onChange={() =>
-                                    setScreenCheckboxClick(!screenCheckboxClick)
-                                  }
-                                />
-                                Screen
-                              </li>
-                              <li className="flex text-sm items-center mt-2 ">
-                                <input
-                                  type="checkbox"
-                                  className="mr-2 text-lg"
-                                  checked={locCheckboxClick}
-                                  onChange={() =>
-                                    setLocCheckboxClick(!locCheckboxClick)
-                                  }
-                                />
-                                Google Location
-                              </li>
-                              <li className="flex text-sm items-center mt-2">
-                                <input
-                                  type="checkbox"
-                                  className="mr-2 text-lg"
-                                  checked={statusCheckboxClick}
-                                  onChange={() =>
-                                    setStatusCheckboxClick(!statusCheckboxClick)
-                                  }
-                                />
-                                Status
-                              </li>
-                              <li className="flex text-sm items-center mt-2">
-                                <input
-                                  type="checkbox"
-                                  className="mr-2 text-lg"
-                                  checked={lastSeenCheckboxClick}
-                                  onChange={() =>
-                                    setLastSeenCheckboxClick(
-                                      !lastSeenCheckboxClick
-                                    )
-                                  }
-                                />
-                                Last Seen
-                              </li>
-                              <li className="flex text-sm items-center mt-2">
-                                <input
-                                  type="checkbox"
-                                  className="mr-2 text-lg"
-                                  checked={nowPlayingCheckboxClick}
-                                  onChange={() =>
-                                    setNowPlayingCheckboxClick(
-                                      !nowPlayingCheckboxClick
-                                    )
-                                  }
-                                />
-                                Now Playing
-                              </li>
-                              <li className="flex text-sm items-center mt-2 ">
-                                <input
-                                  type="checkbox"
-                                  className="mr-2 text-lg"
-                                  checked={currScheduleCheckboxClick}
-                                  onChange={() =>
-                                    setCurrScheduleCheckboxClick(
-                                      !currScheduleCheckboxClick
-                                    )
-                                  }
-                                />
-                                Current Schedule
-                              </li>
-                              <li className="flex text-sm items-center mt-2 ">
-                                <input
-                                  type="checkbox"
-                                  className="mr-2 text-lg"
-                                  checked={tagsCheckboxClick}
-                                  onChange={() =>
-                                    setTagsCheckboxClick(!tagsCheckboxClick)
-                                  }
-                                />
-                                Tags
-                              </li>
-                              <li className="flex text-sm items-center mt-2 ">
-                                <input
-                                  type="checkbox"
-                                  className="mr-2 text-lg"
-                                  checked={groupCheckboxClick}
-                                  onChange={() =>
-                                    setGroupCheckboxClick(!groupCheckboxClick)
-                                  }
-                                />
-                                Group Apply
-                              </li>
-                              <li className="flex text-sm justify-end mt-2 ">
-                                <button
-                                  className="bg-lightgray text-primary px-4 py-2 rounded-full"
-                                  onClick={() => {
-                                    handleUpdateMenu();
-                                  }}
-                                >
-                                  Update
-                                </button>
-                              </li>
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-
-                      {permissions.isDelete && (
-                        <button
-                          data-tip
-                          data-for="Select All"
-                          type="button"
-                          className="flex align-middle text-white items-center rounded-full p-2 text-base  "
-                        >
-                          <input
-                            type="checkbox"
-                            className="w-7 h-6"
-                            onChange={handleSelectAllCheckboxChange}
-                            checked={selectAllChecked}
-                          />
-                          <ReactTooltip
-                            id="Select All"
-                            place="bottom"
-                            type="warning"
-                            effect="float"
-                          >
-                            <span>Select All</span>
-                          </ReactTooltip>
-                        </button>
+                      {moreModal && (
+                        <div ref={moreModalRef} className="moredw">
+                          <ul>
+                            <li className="flex text-sm items-center ">
+                              <input
+                                type="checkbox"
+                                className="mr-2 text-lg"
+                                checked={screenCheckboxClick}
+                                onChange={() =>
+                                  setScreenCheckboxClick(!screenCheckboxClick)
+                                }
+                              />
+                              Screen
+                            </li>
+                            <li className="flex text-sm items-center mt-2 ">
+                              <input
+                                type="checkbox"
+                                className="mr-2 text-lg"
+                                checked={locCheckboxClick}
+                                onChange={() =>
+                                  setLocCheckboxClick(!locCheckboxClick)
+                                }
+                              />
+                              Google Location
+                            </li>
+                            <li className="flex text-sm items-center mt-2">
+                              <input
+                                type="checkbox"
+                                className="mr-2 text-lg"
+                                checked={statusCheckboxClick}
+                                onChange={() =>
+                                  setStatusCheckboxClick(!statusCheckboxClick)
+                                }
+                              />
+                              Status
+                            </li>
+                            <li className="flex text-sm items-center mt-2">
+                              <input
+                                type="checkbox"
+                                className="mr-2 text-lg"
+                                checked={lastSeenCheckboxClick}
+                                onChange={() =>
+                                  setLastSeenCheckboxClick(
+                                    !lastSeenCheckboxClick
+                                  )
+                                }
+                              />
+                              Last Seen
+                            </li>
+                            <li className="flex text-sm items-center mt-2">
+                              <input
+                                type="checkbox"
+                                className="mr-2 text-lg"
+                                checked={nowPlayingCheckboxClick}
+                                onChange={() =>
+                                  setNowPlayingCheckboxClick(
+                                    !nowPlayingCheckboxClick
+                                  )
+                                }
+                              />
+                              Now Playing
+                            </li>
+                            <li className="flex text-sm items-center mt-2 ">
+                              <input
+                                type="checkbox"
+                                className="mr-2 text-lg"
+                                checked={currScheduleCheckboxClick}
+                                onChange={() =>
+                                  setCurrScheduleCheckboxClick(
+                                    !currScheduleCheckboxClick
+                                  )
+                                }
+                              />
+                              Current Schedule
+                            </li>
+                            <li className="flex text-sm items-center mt-2 ">
+                              <input
+                                type="checkbox"
+                                className="mr-2 text-lg"
+                                checked={tagsCheckboxClick}
+                                onChange={() =>
+                                  setTagsCheckboxClick(!tagsCheckboxClick)
+                                }
+                              />
+                              Tags
+                            </li>
+                            <li className="flex text-sm items-center mt-2 ">
+                              <input
+                                type="checkbox"
+                                className="mr-2 text-lg"
+                                checked={groupCheckboxClick}
+                                onChange={() =>
+                                  setGroupCheckboxClick(!groupCheckboxClick)
+                                }
+                              />
+                              Group Apply
+                            </li>
+                            <li className="flex text-sm justify-end mt-2 ">
+                              <button
+                                className="bg-lightgray text-primary px-4 py-2 rounded-full"
+                                onClick={() => {
+                                  handleUpdateMenu();
+                                }}
+                              >
+                                Update
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
                       )}
                     </div>
+
+                    {permissions.isDelete && (
+                      <button
+                        data-tip
+                        data-for="Select All"
+                        type="button"
+                        className="flex align-middle text-white items-center rounded-full p-2 text-base  "
+                      >
+                        <input
+                          type="checkbox"
+                          className="w-7 h-6"
+                          onChange={handleSelectAllCheckboxChange}
+                          checked={selectAllChecked}
+                        />
+                        <ReactTooltip
+                          id="Select All"
+                          place="bottom"
+                          type="warning"
+                          effect="float"
+                        >
+                          <span>Select All</span>
+                        </ReactTooltip>
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                <div className=" bg-white rounded-xl mt-5 shadow screen-section">
+                <div className=" bg-white rounded-xl mt-8 shadow screen-section">
                   <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                     <table
                       className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
@@ -1813,52 +1832,60 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </tbody>
                     </table>
                   </div>
-                  <div className="flex justify-end p-5">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                      <svg
-                        className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 10"
+                  <div className="flex flex-col justify-end p-5 gap-3">
+                    {/* <div className="flex items-center justify-end">
+                      <span className="text-gray-500">{`Showing ${startPage} to ${endPage} of ${screens?.length} entries`}</span>
+                    </div> */}
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 5H1m0 0 4 4M1 5l4-4"
-                        />
-                      </svg>
-                      Previous
-                    </button>
-                    {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                      Next
-                      <svg
-                        className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 10"
+                        <svg
+                          className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 5H1m0 0 4 4M1 5l4-4"
+                          />
+                        </svg>
+                        Previous
+                      </button>
+                      <div className="flex items-center me-3">
+                        <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                      </div>
+                      {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M1 5h12m0 0L9 1m4 4L9 9"
-                        />
-                      </svg>
-                    </button>
+                        Next
+                        <svg
+                          className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

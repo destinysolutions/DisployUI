@@ -708,7 +708,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       onClick={() => {
                         localStorage.setItem('isWindowClosed', 'false');
                       }}>
-                      New Assets Upload
+                      Add New Assets
                     </button>
                   </Link>
                 ) : (
@@ -728,10 +728,10 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   <thead className="sticky -top-1 z-20">
                     <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
                       <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                        Asset
+                        App
                       </th>
-                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                        Asset Name
+                      <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
+                        App Name
                       </th>
                       <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
                         Type
@@ -743,7 +743,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     {!loading &&
                       assetData
                         .filter((item) => {
-                          console.log('item', item)
                           if (activeTab === "asset") {
                             if (item.hasOwnProperty("assetID") && item?.assetType !== "DOC") {
                               return item;
@@ -1024,7 +1023,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
               <div className="click-add">
                 <p className="text-filthy-brown">
-                  Add Assets have from Left side panel
+                Add Assets And Apps have from Left side panel
                 </p>
               </div>
             </div>

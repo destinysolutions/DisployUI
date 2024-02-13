@@ -271,7 +271,6 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
             },
           })
           .then((response) => {
-            console.log("Folder created:", response.data);
             loadFolderByID(folderId);
           })
           .catch((error) => {
@@ -309,7 +308,6 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data.data);
         if (response?.data?.status == 200) {
           setIsMoveToOpen(false);
           toast.remove();
@@ -415,7 +413,6 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
         if (response?.data?.data == true) {
           setassetsdw(null);
           setDeleteMessage(true);

@@ -56,7 +56,6 @@ const ForgotPassword = () => {
         maxBodyLength: Infinity,
       };
       const userExists = await axios.request(config);
-      console.log("userExists", userExists);
       if (userExists?.data?.status === false) {
         toast.dismiss();
         toast.error(userExists?.data?.message);
@@ -121,7 +120,6 @@ const ForgotPassword = () => {
           OTP: values.currentPassword,
           Password: values.newPassword,
         };
-        console.log("payload", payload);
         const config = {
           method: "post",
           url: UPDATE_PASSWORD,
@@ -129,7 +127,6 @@ const ForgotPassword = () => {
           maxBodyLength: Infinity,
         };
         const response = await axios.request(config);
-        console.log("response", response);
         if (response.data.status === true) {
           toast.dismiss();
           toast.success(response.data.message);

@@ -14,7 +14,6 @@ const Preview = ({ open, onClose, previewData }) => {
     onClose();
   };
 
-  console.log("previewData", previewData);
 
   return (
     <>

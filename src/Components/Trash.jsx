@@ -369,9 +369,9 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     </h4>
                   </div>
 
-                  <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                  <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
                     <table
-                      className="screeen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                       cellPadding={20}
                     >
                       <thead>
@@ -458,7 +458,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                             >
                               <td className=" border-b border-lightgray text-sm ">
-                                <div className="flex gap-2 items-center justify-start">
+                                <div className="flex gap-2 text-[#5E5E5E] items-center justify-start">
                                   {permissions.isDelete && (
                                     <>
                                       {selectAll ? (
@@ -487,32 +487,32 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                     </>
                                   )}
                                   {item.assetType === "Folder" && (
-                                    <span className="w-30 h-30  flex items-center justify-center">
+                                    <span className="w-30 h-30 text-[#5E5E5E] flex items-center justify-center">
                                       <HiFolder />
                                     </span>
                                   )}
                                   {item.assetType === "Image" && (
-                                    <span>
+                                    <span className="text-[#5E5E5E]">
                                       <FiImage />
                                     </span>
                                   )}
                                   {item.assetType === "OnlineImage" && (
-                                    <span>
+                                    <span className="text-[#5E5E5E]">
                                       <FiImage />
                                     </span>
                                   )}
                                   {item.assetType === "OnlineVideo" && (
-                                    <span>
+                                    <span className="text-[#5E5E5E]">
                                       <CgYoutube />
                                     </span>
                                   )}
                                   {item.assetType === "DOC" && (
-                                    <span>
+                                    <span className="text-[#5E5E5E]">
                                       <HiDocument />
                                     </span>
                                   )}
                                   {item.assetType === "Video" && (
-                                    <span>
+                                    <span className="text-[#5E5E5E]">
                                       <HiVideoCamera />
                                     </span>
                                   )}
@@ -520,18 +520,18 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                               </td>
                               {/* <td className=" border-b border-lightgray text-sm ">{item.assetFolderPath}</td> */}
-                              <td className=" border-b border-lightgray text-sm ">
+                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
                                 {item.folderPath}
                               </td>
-                              <td className=" border-b border-lightgray text-sm ">
+                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
                                 {moment(item.deleteDate).format(
                                   "DD/MM/YY, h:mm:ss a"
                                 )}
                               </td>
-                              <td className=" border-b border-lightgray text-sm ">
+                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
                                 {item.fileSize}
                               </td>
-                              <td className=" border-b border-lightgray text-sm ">
+                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
                                 {item.assetType}
                               </td>
                               <td className="border-b border-lightgray text-sm">

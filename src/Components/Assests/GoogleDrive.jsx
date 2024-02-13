@@ -18,7 +18,6 @@ const GoogleDrive = () => {
     if (data.action === "picked") {
       const selectedImages = data.docs;
       const downloadURLs = selectedImages.map((file) => file.url);
-      console.log(selectedImages, "selectedImages");
 
       setSelectedFiles(downloadURLs);
     }

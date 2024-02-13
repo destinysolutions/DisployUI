@@ -75,7 +75,6 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data, "sdsdsdsdsd");
 
         fetchUserData();
 

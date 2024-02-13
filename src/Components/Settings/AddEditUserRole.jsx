@@ -173,6 +173,18 @@ const AddEditUserRole = ({
                                         <input
                                           id={`${item?.alt}_Edit`}
                                           {...register(`${item?.alt}_Edit`)}
+                                          onChange={() => {
+                                            setValue(`${item?.alt}_View`, true);
+                                            if (
+                                              watch(`${item?.alt}_Edit`) ===
+                                              true
+                                            ) {
+                                              setValue(
+                                                `${item?.alt}_Delete`,
+                                                false
+                                              );
+                                            }
+                                          }}
                                           className="border border-primary text-center rounded h-4 w-4 cursor-pointer"
                                           type="checkbox"
                                         />

@@ -78,7 +78,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectcheck, setSelectCheck] = useState(false);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Adjust items per page as needed
+  const [itemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [sidebarload, setSidebarLoad] = useState(true);
@@ -157,6 +157,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -327,7 +328,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     let idS = "";
     for (const key in screenIds) {
       if (screenIds[key] === true) {
-        console.log("screenIds", screenIds[key]);
         idS += `${key},`;
       }
     }
@@ -787,12 +787,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
                                       {moment(schedule.startDate).format(
-                                        "YYYY-MM-DD hh:mm"
+                                        "YYYY-MM-DD hh:mm A"
                                       )}
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
                                       {moment(schedule.endDate).format(
-                                        "YYYY-MM-DD hh:mm"
+                                        "YYYY-MM-DD hh:mm A"
                                       )}
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
@@ -1025,6 +1025,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       </svg>
                       Previous
                     </button>
+                    <div className="flex items-center me-3">
+                     <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span> 
+                    </div>
                     {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}

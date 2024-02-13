@@ -40,7 +40,6 @@ export const DynamicDesignComponent = ({
       <td className="flex items-center text-center">
         {array.map((item, index) => {
           let disableList = userRoleData?.[`${name}_Approve`];
-          console.log("disableList", disableList);
           return (
             <div key={item} className="flex flex-col gap-1">
               <select
@@ -153,3 +152,12 @@ export function combineUserroleObjects(selectedRole) {
   let combinedObj = { ...mergedObject, ...obj };
   return combinedObj;
 }
+
+
+export const Pagination = (page, length) => {
+  if (page === 1) {
+    return 1;
+  } else {
+    return((page - 1) * length)
+  }
+};

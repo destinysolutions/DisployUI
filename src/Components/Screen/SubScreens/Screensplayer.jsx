@@ -512,7 +512,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   function handleChangePreviewScreen() {
     const { data, myComposition } = screenPreviewData;
     // console.log(data,myComposition);
-    const findCurrentSchedule = data.find((item) => {
+    const findCurrentSchedule = data?.find((item) => {
       // for schedule
       if (
         moment(moment().format("LLL")).isBetween(
@@ -538,7 +538,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     } else if (
       // for composition set
       (findCurrentSchedule === null || findCurrentSchedule === undefined) &&
-      myComposition[0]?.compositionPossition.length > 0
+      myComposition[0]?.compositionPossition?.length > 0
     ) {
       let obj = {};
       // if (previewModalData.length === 0) {
@@ -547,8 +547,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       for (const [
         key,
         value,
-      ] of myComposition[0]?.compositionPossition.entries()) {
-        const arr = value?.schedules.map((item) => {
+      ] of myComposition[0]?.compositionPossition?.entries()) {
+        const arr = value?.schedules?.map((item) => {
           return {
             ...item,
             width: value?.width,
@@ -559,8 +559,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         });
         obj[key + 1] = [...arr];
       }
-      const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
-      if (compositionData.length === 0) {
+      const newdd = Object.entries(obj)?.map(([k, i]) => ({ [k]: i }));
+      if (compositionData?.length === 0) {
         setCompositionData(newdd);
         setAllCompositionData(newdd);
         setPlayerData(null);
@@ -576,7 +576,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       return true;
     } else {
       // for default media set
-      const findDefaultAsset = data.find(
+      const findDefaultAsset = data?.find(
         (item) => item?.isdefaultAsset == "true"
       );
       setPlayerData(findDefaultAsset);
@@ -662,7 +662,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           const Params = {
             id: socket.id,
             connection: socket.connected,
-            macId: screenData[0]?.macid.replace(/^\s+/g, ""),
+            macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
           };
           socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
@@ -784,7 +784,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           setScreenData(updatedScreenData);
         }
         setTagUpdateScreeen(response?.data?.data?.model);
-        console.log(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -1093,7 +1092,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   </div>
                 ) : (
-                  compositionData.length > 0 &&
+                  compositionData?.length > 0 &&
                   !loading && (
                     <div className="relative z-0 mx-auto rounded-lg p-4 h-full w-full ">
                       {!fetchLayoutLoading &&
@@ -1142,7 +1141,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   )
                 )}
                 {!loading &&
-                  compositionData.length === 0 &&
+                  compositionData?.length === 0 &&
                   playerData !== null &&
                   playerData !== undefined &&
                   (Object.values(playerData).includes("Video") ||
@@ -1157,7 +1156,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
 
                 {!loading &&
-                  compositionData.length === 0 &&
+                  compositionData?.length === 0 &&
                   playerData !== null &&
                   playerData !== undefined &&
                   (Object.values(playerData).includes("OnlineImage") ||
@@ -1494,14 +1493,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="w-full">
                   <p className="text-primary text-sm font-light">Now Playing</p>
                   <h4 className="text-primary text-lg">
-                    {compositionData.length > 0 &&
+                    {compositionData?.length > 0 &&
                       playerData === null &&
                       "Composition"}
-                    {screenPreviewData.data.length > 1 &&
+                    {screenPreviewData?.data?.length > 1 &&
                       playerData !== null &&
                       "Schedule"}
-                    {screenPreviewData.data.length === 1 &&
-                      compositionData.length === 0 &&
+                    {screenPreviewData?.data?.length === 1 &&
+                      compositionData?.length === 0 &&
                       "Default Media"}
                   </h4>
                 </div>

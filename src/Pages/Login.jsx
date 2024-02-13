@@ -258,7 +258,6 @@ const Login = () => {
       const res = await signInWithRedirect(auth, appleProvider);
       const user = res.user;
       // onclose();
-      console.log("user", user);
     } catch (err) {
       console.log(err);
     }
@@ -274,7 +273,6 @@ const Login = () => {
       const res = await signInWithRedirect(auth, microsoftProvider);
       const user = res.user;
       // onclose();
-      console.log("user", user);
     } catch (err) {
       console.log(err);
     }

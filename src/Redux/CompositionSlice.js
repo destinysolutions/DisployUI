@@ -124,7 +124,6 @@ const CompositionSlice = createSlice({
 
     //delete all
     builder.addCase(handleDeleteAll.pending, (state, action) => {
-      console.log("action",action);
       state.loading = true;
       state.error = null;
     });

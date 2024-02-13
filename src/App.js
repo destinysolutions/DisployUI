@@ -123,7 +123,6 @@ const App = () => {
     socket.on('ScreenConnected', (data) => {
       console.log('Received data from server:', data);
       var b = document.getElementById(`changetvstatus${data.macId}`);
-      console.log('TV_Element', b)
       b.setAttribute(
         "class",
         "rounded-full px-6 py-2 text-white text-center " +

@@ -361,7 +361,7 @@ const ShowAssetModal = ({
                         localStorage.setItem("isWindowClosed", "false");
                       }}
                     >
-                      Upload
+                      Add New Assets
                     </button>
                   </Link>
                 </div>

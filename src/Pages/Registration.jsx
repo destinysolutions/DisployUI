@@ -309,7 +309,6 @@ const Registration = () => {
       const res = await auth.signInWithPopup(appleProvider);
       const user = res.user;
       // onclose();
-      console.log("user", user);
     } catch (err) {
       console.log(err);
     }
@@ -324,7 +323,6 @@ const Registration = () => {
       const res = await auth.signInWithPopup(microsoftProvider);
       const user = res.user;
       // onclose();
-      console.log("user", user);
     } catch (err) {
       console.log(err);
     }

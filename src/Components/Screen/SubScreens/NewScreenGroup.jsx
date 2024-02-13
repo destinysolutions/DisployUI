@@ -195,7 +195,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     };
     socket.emit("ScreenConnected", Params);
 
-    console.log("macIds:", macIds);
     if (connection.state === "Disconnected") {
       connection
         .start()
@@ -288,8 +287,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const editGroupName = (index) => {
     // GroupNameUpdate
     setEditIndex(index);
-    setNewGroupName(store?.data[index]?.screenGroupName);
-    setEditGroupID(store?.data[index]?.screenGroupID);
+    setNewGroupName(allGroupScreen[index]?.screenGroupName);
+    setEditGroupID(allGroupScreen[index]?.screenGroupID);
   };
 
   const updateGroupName = async (index) => {
@@ -361,7 +360,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const deleteGroupInScreen = (screen, item) => {
-    console.log("screen", screen)
     if (item?.screenGroupLists?.length > 1) {
       let payload = {
         ScreenGroupListID: screen.screenGroupListID,

@@ -22,7 +22,6 @@ const Users = () => {
     axios
       .get(All_REGISTER_URL)
       .then((response) => {
-        console.log(response.data.data);
         const fetchedData = response.data.data;
         setUserData(fetchedData);
       })
@@ -42,7 +41,6 @@ const Users = () => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         setUserData((prevData) =>
           prevData.filter((user) => user.userID !== id)
         );

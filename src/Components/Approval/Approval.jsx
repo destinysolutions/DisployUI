@@ -71,7 +71,6 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                     connection: socket.connected,
                     macId: res?.payload?.macID,
                   };
-                  console.log('Params', Params)
                   socket.emit("ScreenConnected", Params);
                 }
                 Swal.fire({

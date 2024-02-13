@@ -18,7 +18,6 @@ import { combineUserroleObjects } from "../Common/Common";
 const Userrole = ({ searchValue }) => {
   const { token } = useSelector((state) => state.root.auth);
   const [userRoleData, setUserRoleData] = useState();
-  console.log("userRoleData", userRoleData);
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
   const showUsersRef = useRef(null);
@@ -70,7 +69,6 @@ const Userrole = ({ searchValue }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  console.log("sortedAndPaginatedData", sortedAndPaginatedData);
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -97,7 +95,6 @@ const Userrole = ({ searchValue }) => {
           SearchData: res?.payload?.data,
         });
         setLoading(false);
-        console.log("res", res);
       })
       .catch((error) => {
         console.log("error", error);
@@ -340,7 +337,9 @@ const Userrole = ({ searchValue }) => {
                 </svg>
                 Previous
               </button>
-
+              <div className="flex items-center me-3">
+                <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+              </div>
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}

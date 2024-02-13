@@ -164,7 +164,6 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
     }
   }, [selectedImages, imageUploadProgress]);
 
-  console.log(uploadInProgress);
 
   return (
     <>

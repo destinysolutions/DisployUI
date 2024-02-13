@@ -6,7 +6,7 @@ const Carousel = ({ items, compositonData, from }) => {
 
   useEffect(() => {
     console.log("items", items);
-    const slideCount = items.length;
+    const slideCount = items?.length;
     let interval;
     if (from === "screen") {
       interval = setInterval(() => {
@@ -26,7 +26,6 @@ const Carousel = ({ items, compositonData, from }) => {
     <>
       <div className="h-full w-full p-1 bg-white">
         {items?.map((item, index) => {
-          console.log('item', item)
           let viewerSrc = '';
 
           if (item?.fileExtention === '.pdf' || item?.fileExtention === '.txt') {
@@ -49,31 +48,31 @@ const Carousel = ({ items, compositonData, from }) => {
                 className="w-full h-full text-[#5A5881] font-semibold rounded shadow"
                 key={index}
               >
-                {item.assetType === "OnlineImage" && (
+                {item?.assetType === "OnlineImage" && (
                   <img
                     className="w-full h-full object-fill rounded-sm"
-                    src={item.assetFolderPath}
-                    alt={item.assetName}
+                    src={item?.assetFolderPath}
+                    alt={item?.assetName}
                   />
                 )}
-                {item.mediaType === "OnlineImage" && (
+                {item?.mediaType === "OnlineImage" && (
                   <img
                     className="w-full h-full rounded-sm object-fill "
-                    src={item.fileType}
+                    src={item?.fileType}
                   />
                 )}
-                {item.assetType === "Image" && (
+                {item?.assetType === "Image" && (
                   <img
-                    src={item.assetFolderPath}
-                    alt={item.assetName}
-                    className={`w-full h-full ${item.assetType !== "Image" && "hidden"
+                    src={item?.assetFolderPath}
+                    alt={item?.assetName}
+                    className={`w-full h-full ${item?.assetType !== "Image" && "hidden"
                       } rounded-sm object-fill`}
                   />
                 )}
-                {item.mediaType === "Image" && (
+                {item?.mediaType === "Image" && (
                   <img
-                    src={item.fileType}
-                    className={`w-full h-full ${!item.fileType && "hidden"
+                    src={item?.fileType}
+                    className={`w-full h-full ${!item?.fileType && "hidden"
                       } rounded-sm object-fill`}
                   />
                 )}
@@ -90,8 +89,8 @@ const Carousel = ({ items, compositonData, from }) => {
                       loop={true}
                     />
                   )}
-                {(item.mediaType === "Video" ||
-                  item.mediaType === "Youtube") && (
+                {(item?.mediaType === "Video" ||
+                  item?.mediaType === "Youtube") && (
                     <ReactPlayer
                       url={
                         item?.assetFolderPath
@@ -124,7 +123,7 @@ const Carousel = ({ items, compositonData, from }) => {
                   item?.mediaType === "Text" ||
                   item?.text !== undefined) && (
                     <marquee
-                      className="text-3xl w-full h-full flex items-center text-black"
+                      className="text-3xl w-full h-full flex items-center text-white bg-black"
                       direction={
                         item?.scrollType == 1 ||
                           item?.direction == "Left to Right"

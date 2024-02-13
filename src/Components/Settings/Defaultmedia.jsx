@@ -49,7 +49,6 @@ const Defaultmedia = ({ permissions }) => {
     compositionName: "",
   });
   const [assetPreview, setAssetPreview] = useState("");
-  console.log('assetPreview', assetPreview)
 
   const modalRef = useRef(null);
 
@@ -532,7 +531,7 @@ const Defaultmedia = ({ permissions }) => {
                                 setSearchAssest("");
                               }}
                             >
-                              Upload
+                              Add New Assets
                             </button>
                           </div>
                           <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table sc-scrollbar rounded-lg">

@@ -50,6 +50,7 @@ import GridAssets from "../Components/Assests/GridAssets";
 import FinalReport from "../Components/Reports/FinalReport";
 import UserDashboard from "../Components/Dashboard/UserDashboard";
 import AddWeatherSchedule from "../Components/Schedule/AddWeatherSchedule";
+import BookSlot from "../Components/Screen/SubScreens/BookSlot/BookSlot";
 
 const Routing = () => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -166,6 +167,15 @@ const Routing = () => {
               path="/newscreengroup"
               element={
                 <NewScreenGroup
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+             <Route
+              path="/bookslot"
+              element={
+                <BookSlot
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />

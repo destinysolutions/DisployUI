@@ -4,6 +4,7 @@ import { RxCrossCircled } from 'react-icons/rx'
 import PreviewModal from "./PreviewModel"
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 const PreviewComposition = ({ previewModalData, closeModal, loading, layotuDetails, modalVisible, modalRef }) => {
+
     return (
         <PreviewModal show={modalVisible} onClose={closeModal}>
             <div

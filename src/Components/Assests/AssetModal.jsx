@@ -35,7 +35,6 @@ const AssetModal = ({ setShowAssetModal }) => {
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
         setAssetData(allAssets);
-        console.log(allAssets, "allAssets");
       })
       .catch((error) => {
         console.log(error);
@@ -194,7 +193,7 @@ const AssetModal = ({ setShowAssetModal }) => {
                         </div>
                         <Link to="/fileupload">
                           <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                            Upload
+                            Add New Assets
                           </button>
                         </Link>
                       </div>
