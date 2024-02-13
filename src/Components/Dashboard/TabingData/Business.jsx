@@ -161,7 +161,7 @@ var StoreOptions = {
   labels: ["Stores"],
 };
 
-const Business = ({setSidebarLoad,dashboardData,setDashboardData}) => {
+const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
   const dispatch = useDispatch();
   const { user, token } = useSelector((s) => s.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);
@@ -180,13 +180,13 @@ const Business = ({setSidebarLoad,dashboardData,setDashboardData}) => {
   const [selectedStateName, setSelectedStateName] = useState("");
   const [showStore, setShowStore] = useState(false);
   const [showCitydw, setShowCityDw] = useState(false);
-  
+
   const [allApp, setAllApp] = useState({
     AppLists: [],
     AppPercentages: [],
     AppOnlines: [],
-    AppOnlinePercentages: []
-  })
+    AppOnlinePercentages: [],
+  });
 
   useEffect(() => {
     let AppList = [];
@@ -195,20 +195,20 @@ const Business = ({setSidebarLoad,dashboardData,setDashboardData}) => {
     let AppOnlinePercentage = [];
     dashboardData?.totalScreen?.map((item) => {
       AppList?.push(item?.name);
-      AppPercentage?.push(Number(item?.percentage))
-    })
+      AppPercentage?.push(Number(item?.percentage));
+    });
     dashboardData?.totalStore?.map((item) => {
       AppOnline?.push(item?.name);
-      AppOnlinePercentage?.push(Number(item?.percentage))
-    })
+      AppOnlinePercentage?.push(Number(item?.percentage));
+    });
     setAllApp({
       ...allApp,
       AppLists: AppList,
       AppPercentages: AppPercentage,
       AppOnlines: AppOnline,
-      AppOnlinePercentages: AppOnlinePercentage
-    })
-  }, [dashboardData])
+      AppOnlinePercentages: AppOnlinePercentage,
+    });
+  }, [dashboardData]);
 
   const ScreenAppOption = {
     chart: {
@@ -258,7 +258,7 @@ const Business = ({setSidebarLoad,dashboardData,setDashboardData}) => {
       type: "donut",
     },
     series: allApp?.AppOnlinePercentages,
-    colors: ["#FF0000","#3AB700"],
+    colors: ["#FF0000", "#3AB700"],
     labels: allApp?.AppOnlines,
     legend: {
       show: true,
@@ -350,12 +350,12 @@ const Business = ({setSidebarLoad,dashboardData,setDashboardData}) => {
     setSelectedStateName(state.stateName);
     setShowCityDw(true);
     setShowStore(false);
-  }
+  };
 
   const handleCityMarker = (city) => {
-    setSelectedCity(city?.cityName)
+    setSelectedCity(city?.cityName);
     setshowCityStores(true);
-  }
+  };
   const customIcon = new L.Icon({
     iconUrl: mapImg,
     iconSize: [32, 32],
@@ -363,17 +363,16 @@ const Business = ({setSidebarLoad,dashboardData,setDashboardData}) => {
     popupAnchor: [0, -16],
   });
 
-const handleScreenClick =(screen) =>{
-  setSelectedScreen(screen)
-}
-
+  const handleScreenClick = (screen) => {
+    setSelectedScreen(screen);
+  };
 
   return (
     <>
       {/* google map start */}
       {(user?.userRole === "1" || user?.userRole === 1) && (
-        <div className="bg-white shadow-md rounded-lg mt-9">
-          <div className="lg:p-9 md:p-6 sm:p-3 xs:p-2">
+        <div className="bg-white shadow-md rounded-lg mt-5">
+          <div className="lg:p-5 md:p-4 sm:p-3 xs:p-2">
             <MapContainer
               center={center}
               zoom={4}
@@ -381,7 +380,7 @@ const handleScreenClick =(screen) =>{
               style={{ width: "100%", height: "560px", zIndex: 0 }}
             >
               <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
-  
+
               <MarkerClusterGroup>
                 {countries.map((country) => (
                   <Marker
@@ -389,40 +388,29 @@ const handleScreenClick =(screen) =>{
                     position={[country.latitude, country.longitude]}
                     icon={customIcon}
                     eventHandlers={{
-                      click: () => handleMarkerClick && handleMarkerClick(country),
+                      click: () =>
+                        handleMarkerClick && handleMarkerClick(country),
                     }}
                   >
                     <Popup>
                       <h3 className="flex flex-row gap-1">
-                        <span>
-                          Country :
-                        </span>
-                        <span>
-                          {selectedCountry?.countryName}
-                        </span>
+                        <span>Country :</span>
+                        <span>{selectedCountry?.countryName}</span>
                       </h3>
                       <div className="flex flex-col">
                         <h5 className="flex flex-row gap-2">
-                          <span>
-                            latitude :
-                          </span>
-                          <span>
-                            {selectedCountry?.latitude}
-                          </span>
+                          <span>latitude :</span>
+                          <span>{selectedCountry?.latitude}</span>
                         </h5>
                         <h5 className="flex flex-row gap-2">
-                          <span>
-                            longitude :
-                          </span>
-                          <span>
-                            {selectedCountry?.longitude}
-                          </span>
+                          <span>longitude :</span>
+                          <span>{selectedCountry?.longitude}</span>
                         </h5>
                       </div>
                     </Popup>
                   </Marker>
                 ))}
-  
+
                 {selectedCountry !== "" &&
                   states.map((state) => (
                     <Marker
@@ -430,7 +418,8 @@ const handleScreenClick =(screen) =>{
                       position={[state.latitude, state.longitude]}
                       icon={customIcon}
                       eventHandlers={{
-                        click: () => handleStateMarker && handleStateMarker(state),
+                        click: () =>
+                          handleStateMarker && handleStateMarker(state),
                       }}
                     ></Marker>
                   ))}
@@ -445,59 +434,50 @@ const handleScreenClick =(screen) =>{
                       }}
                     ></Marker>
                   ))}
-  
               </MarkerClusterGroup>
             </MapContainer>
           </div>
         </div>
       )}
 
-      <div className="bg-white shadow-md rounded-lg mt-9">
-      <div className="lg:p-9 md:p-6 sm:p-3 xs:p-2">
-        <MapContainer
-          center={center}
-          zoom={4}
-          maxZoom={18}
-          style={{ width: "100%", height: "560px", zIndex: 0 }}
-        >
-          <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
+      <div className="bg-white shadow-md rounded-lg mt-5">
+        <div className="lg:p-5 md:p-4 sm:p-3 xs:p-2">
+          <MapContainer
+            center={center}
+            zoom={4}
+            maxZoom={18}
+            style={{ width: "100%", height: "560px", zIndex: 0 }}
+          >
+            <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
 
-          <MarkerClusterGroup>
-            {dashboardData?.screen.map((screen,index) => (
-              <Marker
-                key={index}
-                position={[23.0225, 72.5714]}
-                icon={customIcon}
-                eventHandlers={{
-                  click: () => handleScreenClick && handleScreenClick(screen),
-                }}
-              >
-                <Popup>
-                  <h3 className="flex flex-row gap-1">
-                    <span>
-                      Location :
-                    </span>
-                    <span>
-                      {selectedScreen?.location}
-                    </span>
-                  </h3>
-                  <div className="flex flex-col">
-                    <h5 className="flex flex-row gap-2">
-                      <span>
-                        Total Screen :
-                      </span>
-                      <span>
-                        {selectedScreen?.screen}
-                      </span>
-                    </h5>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
-          </MarkerClusterGroup>
-        </MapContainer>
+            <MarkerClusterGroup>
+              {dashboardData?.screen.map((screen, index) => (
+                <Marker
+                  key={index}
+                  position={[23.0225, 72.5714]}
+                  icon={customIcon}
+                  eventHandlers={{
+                    click: () => handleScreenClick && handleScreenClick(screen),
+                  }}
+                >
+                  <Popup>
+                    <h3 className="flex flex-row gap-1">
+                      <span>Location :</span>
+                      <span>{selectedScreen?.location}</span>
+                    </h3>
+                    <div className="flex flex-col">
+                      <h5 className="flex flex-row gap-2">
+                        <span>Total Screen :</span>
+                        <span>{selectedScreen?.screen}</span>
+                      </h5>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+            </MarkerClusterGroup>
+          </MapContainer>
+        </div>
       </div>
-    </div>
       {/* google map end */}
       {/* country store popup start */}
       {showStore && (
@@ -505,8 +485,13 @@ const handleScreenClick =(screen) =>{
           <div className="bg-white shadow-md rounded-lg mt-5 ">
             <div className="p-3 lg:flex md:flex sm:flex xs:block items-center">
               <div className="flex flex-row items-center lg:mb-0 md:mb-0 sm:mb-0 xs:mb-2">
-                <img src={selectedCountry?.countryFlag} className="h-10 w-10 rounded-full" />
-                <div className="ml-2 mr-6 font-semibold">{selectedCountry?.countryName}</div>
+                <img
+                  src={selectedCountry?.countryFlag}
+                  className="h-10 w-10 rounded-full"
+                />
+                <div className="ml-2 mr-6 font-semibold">
+                  {selectedCountry?.countryName}
+                </div>
               </div>
               <div>
                 <Select
@@ -555,7 +540,7 @@ const handleScreenClick =(screen) =>{
                   label: city.cityName,
                 }))}
                 onChange={(selectedOption) => {
-                  setSelectedCity(selectedOption?.label)
+                  setSelectedCity(selectedOption?.label);
                   setshowCityStores(true);
                 }}
                 placeholder={selectedCity === "" ? "Select City" : selectedCity}
@@ -567,7 +552,9 @@ const handleScreenClick =(screen) =>{
             <>
               <div className="pb-4 ">
                 <div>
-                  <label className="p-5 text-lg font-semibold">{selectedCity}</label>
+                  <label className="p-5 text-lg font-semibold">
+                    {selectedCity}
+                  </label>
                 </div>
                 <div className="mt-6">
                   <div className="grid grid-cols-12 gap-4">
@@ -696,38 +683,37 @@ const handleScreenClick =(screen) =>{
               </h5>
 
               <div className="flex items-center justify-center flex-wrap">
-              <div className="mb-2 mt-9">
-                <div className="mx-auto flex justify-center">
-                  <ReactApexChart
-                    options={ScreenAppOnlineOfflineOption}
-                    series={ScreenAppOnlineOfflineOption.series}
-                    type="donut"
-                  />
+                <div className="mb-2 mt-9">
+                  <div className="mx-auto flex justify-center">
+                    <ReactApexChart
+                      options={ScreenAppOnlineOfflineOption}
+                      series={ScreenAppOnlineOfflineOption.series}
+                      type="donut"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <table cellPadding={10}>
+                    <tbody>
+                      <tr>
+                        <td className="flex items-center">
+                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#3AB700]"></span>
+                          {dashboardData?.totalStore?.[1]?.name}
+                        </td>
+                        <td>{dashboardData?.totalStore?.[1]?.percentage}%</td>
+                      </tr>
+                      <tr>
+                        <td className="flex items-center">
+                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#FF0000]"></span>
+                          {dashboardData?.totalStore?.[0]?.name}
+                        </td>
+                        <td>{dashboardData?.totalStore?.[0]?.percentage}%</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
-
-              <div>
-                <table cellPadding={10}>
-                  <tbody>
-                    <tr>
-                      <td className="flex items-center">
-                        <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#3AB700]"></span>
-                        {dashboardData?.totalStore?.[1]?.name}
-                      </td>
-                      <td>
-                        {dashboardData?.totalStore?.[1]?.percentage}%</td>
-                    </tr>
-                    <tr>
-                      <td className="flex items-center">
-                        <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#FF0000]"></span>
-                        {dashboardData?.totalStore?.[0]?.name}
-                      </td>
-                      <td>{dashboardData?.totalStore?.[0]?.percentage}%</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
             </div>
 
             <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md p-4 ">
@@ -820,11 +806,16 @@ const handleScreenClick =(screen) =>{
               No Apps here.
             </div>
           )}
-          {!allApps?.loading && allApps?.data.length > 0 && (
+          {!allApps?.loading &&
+            allApps?.data.length > 0 &&
             allApps?.data?.slice(0, 3)?.map(
               (app) =>
-                app.appType == "Apps" && app.appName !== "Weather" && (
-                  <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 " key={app.app_Id}>
+                app.appType == "Apps" &&
+                app.appName !== "Weather" && (
+                  <div
+                    className="lg:col-span-3 md:col-span-6 sm:col-span-12 "
+                    key={app.app_Id}
+                  >
                     <Link to={`/${app.appName}`}>
                       <div className="shadow-md  bg-white rounded-lg text-center py-10">
                         <img
@@ -832,16 +823,15 @@ const handleScreenClick =(screen) =>{
                           alt="Logo"
                           className="cursor-pointer mx-auto h-16 w-16 pb-2"
                         />
-                        <h4 className="text-size-md font-semibold py-2">{app.appName}</h4>
-                        <h4 className="text-sm font-normal ">
-                          {app.appUse}
+                        <h4 className="text-size-md font-semibold py-2">
+                          {app.appName}
                         </h4>
+                        <h4 className="text-sm font-normal ">{app.appUse}</h4>
                       </div>
                     </Link>
                   </div>
-                ))
-          )
-          }
+                )
+            )}
           {/* {!allApps?.loading && allApps?.data.length > 0 && (
             <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
               <div className="shadow-md  bg-white rounded-lg text-center py-10">

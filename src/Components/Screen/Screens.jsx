@@ -7,9 +7,7 @@ import {
   AiOutlineSave,
   AiOutlineSearch,
 } from "react-icons/ai";
-import {
-  MdOutlineModeEdit,
-} from "react-icons/md";
+import { MdOutlineModeEdit } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
@@ -17,16 +15,10 @@ import { MdOutlineAddToQueue } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi2";
 import PropTypes from "prop-types";
 import ScreenOTPModal from "./ScreenOTPModal";
-import {
-  RiArrowDownSLine,
-  RiDeleteBin5Line,
-} from "react-icons/ri";
+import { RiArrowDownSLine, RiDeleteBin5Line } from "react-icons/ri";
 import Footer from "../Footer";
 
-import {
-  SCREEN_DELETE_ALL,
-  SCREEN_GROUP,
-} from "../../Pages/Api";
+import { SCREEN_DELETE_ALL, SCREEN_GROUP } from "../../Pages/Api";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -64,7 +56,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  
+
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
@@ -139,13 +131,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     ? selectedCheckboxIDs.join(",")
     : "";
   const [selectcheck, setSelectCheck] = useState(false);
-  const [sidebarload, setSidebarLoad] = useState(true)
+  const [sidebarload, setSidebarLoad] = useState(true);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -162,7 +158,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-
   useEffect(() => {
     if (loadFist) {
       // load composition
@@ -177,8 +172,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       dispatch(handleGetTextScrollData({ token }));
       // get screen
       dispatch(handleGetScreen({ token }));
-      if(sidebarload){
-        
+      if (sidebarload) {
       }
       setLoadFist(false);
     }
@@ -196,12 +190,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(screens)
     ? screens?.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value.toString().toLowerCase().includes(searchScreen.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value.toString().toLowerCase().includes(searchScreen.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -225,23 +219,26 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.menu.find(e => e.pageName === "Screens");
+      const findData = item.payload.data.menu.find(
+        (e) => e.pageName === "Screens"
+      );
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-      setSidebarLoad(false)
-    })
-  }, [])
-
+      setSidebarLoad(false);
+    });
+  }, []);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -502,14 +499,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-        ? 4
-        : selectedYoutube?.youtubeId !== null &&
-          selectedYoutube?.youtubeId !== undefined
-          ? 5
-          : selectedComposition?.compositionID !== null &&
-            selectedComposition?.compositionID !== undefined
-            ? 3
-            : 0;
+      ? 4
+      : selectedYoutube?.youtubeId !== null &&
+        selectedYoutube?.youtubeId !== undefined
+      ? 5
+      : selectedComposition?.compositionID !== null &&
+        selectedComposition?.compositionID !== undefined
+      ? 3
+      : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -743,7 +740,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then((response) => { })
+      .then((response) => {})
       .catch((error) => {
         console.log(error);
       });
@@ -869,26 +866,27 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      {sidebarload && (
-        <Loading />
-      )}
+      {sidebarload && <Loading />}
 
       {!sidebarload && (
         <Suspense fallback={<Loading />}>
           <>
             <div className="flex border-b border-gray">
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
               <Navbar />
             </div>
             <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
+                <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
                     Screens
                   </h1>
 
-                  <div className="flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
-                    <div className="relative mr-5">
+                  <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
+                    <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <AiOutlineSearch className="w-5 h-5 text-gray " />
                       </span>
@@ -902,271 +900,260 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         }}
                       />
                     </div>
-                    {/* 
-              <button
-                type="button"
-                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-              >
-                <VscVmConnect className="p-1 px-2 text-4xl text-white hover:text-white" />
-              </button>
-            */}
-
-                    {permissions.isSave &&
-                      <button
-                        data-tip
-                        data-for="New Screen"
-                        type="button"
-                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                        onClick={() => setShowOTPModal(true)}
-                      >
-                        <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
-                        <ReactTooltip
-                          id="New Screen"
-                          place="bottom"
-                          type="warning"
-                          effect="float"
+                    <div className="flex items-center justify-end">
+                      {permissions.isSave && (
+                        <button
+                          data-tip
+                          data-for="New Screen"
+                          type="button"
+                          className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                          onClick={() => setShowOTPModal(true)}
                         >
-                          <span>New Screen</span>
-                        </ReactTooltip>
-                      </button>
-                    }
+                          <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
+                          <ReactTooltip
+                            id="New Screen"
+                            place="bottom"
+                            type="warning"
+                            effect="float"
+                          >
+                            <span>New Screen</span>
+                          </ReactTooltip>
+                        </button>
+                      )}
 
-                    {showOTPModal ? (
-                      <>
-                        <ScreenOTPModal
-                          showOTPModal={showOTPModal}
-                          setShowOTPModal={setShowOTPModal}
-                        />
-                      </>
-                    ) : null}
-                    {showNewScreenGroupPopup && (
-                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                        <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
-                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                            <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                              <button
-                                className="p-1 text-xl"
-                                onClick={() => setShowNewScreenGroupPopup(false)}
-                              >
-                                <AiOutlineCloseCircle className="text-2xl" />
-                              </button>
-                            </div>
-                            <div className="p-3">
-                              <label>Enter Group Name : </label>
-                              <input
-                                type="text"
-                                onChange={(e) => {
-                                  setGroupName(e.target.value);
-                                }}
-                                className="border border-primary m-5"
-                              />
-                            </div>
-                            <div className="flex justify-center">
-                              <button
-                                className="mb-4 border border-primary py-2 px-3"
-                                onClick={handleScreenGroup}
-                              >
-                                create
-                              </button>
+                      {showOTPModal ? (
+                        <>
+                          <ScreenOTPModal
+                            showOTPModal={showOTPModal}
+                            setShowOTPModal={setShowOTPModal}
+                          />
+                        </>
+                      ) : null}
+                      {showNewScreenGroupPopup && (
+                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                          <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
+                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                                <button
+                                  className="p-1 text-xl"
+                                  onClick={() =>
+                                    setShowNewScreenGroupPopup(false)
+                                  }
+                                >
+                                  <AiOutlineCloseCircle className="text-2xl" />
+                                </button>
+                              </div>
+                              <div className="p-3">
+                                <label>Enter Group Name : </label>
+                                <input
+                                  type="text"
+                                  onChange={(e) => {
+                                    setGroupName(e.target.value);
+                                  }}
+                                  className="border border-primary m-5"
+                                />
+                              </div>
+                              <div className="flex justify-center">
+                                <button
+                                  className="mb-4 border border-primary py-2 px-3"
+                                  onClick={handleScreenGroup}
+                                >
+                                  create
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* 
-            >
-              <button
-                onClick={() => handleToggleActivation()}
-                type="button"
-                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-              >
-                <RiSignalTowerLine className="p-1 px-2 text-4xl text-white hover:text-white" />
-              </button>
-             */}
-                    <button
-                      data-tip
-                      data-for="Delete"
-                      type="button"
-                      className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                      onClick={handleDeleteAllscreen}
-                      style={{ display: selectAllChecked ? "block" : "none" }}
-                    >
-                      <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
-                      <ReactTooltip
-                        id="Delete"
-                        place="bottom"
-                        type="warning"
-                        effect="float"
-                      >
-                        <span>Delete</span>
-                      </ReactTooltip>
-                    </button>
-
-                    {/* multipal remove */}
-                    {selectedItems?.length !== 0 && !selectAllChecked && (
-                      <button
-                        className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        onClick={handleDeleteAllscreen}
-                      >
-                        <RiDeleteBin5Line className="text-lg" />
-                      </button>
-                    )}
-
-                    <div className="relative mt-1">
                       <button
                         data-tip
-                        data-for="More"
+                        data-for="Delete"
                         type="button"
-                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                        onClick={() => setMoreModal(!moreModal)}
+                        className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                        onClick={handleDeleteAllscreen}
+                        style={{ display: selectAllChecked ? "block" : "none" }}
                       >
-                        <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
+                        <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
                         <ReactTooltip
-                          id="More"
+                          id="Delete"
                           place="bottom"
                           type="warning"
                           effect="float"
                         >
-                          <span>More</span>
+                          <span>Delete</span>
                         </ReactTooltip>
                       </button>
 
-                      {moreModal && (
-                        <div ref={moreModalRef} className="moredw">
-                          <ul>
-                            <li className="flex text-sm items-center ">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={screenCheckboxClick}
-                                onChange={() =>
-                                  setScreenCheckboxClick(!screenCheckboxClick)
-                                }
-                              />
-                              Screen
-                            </li>
-                            <li className="flex text-sm items-center mt-2 ">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={locCheckboxClick}
-                                onChange={() =>
-                                  setLocCheckboxClick(!locCheckboxClick)
-                                }
-                              />
-                              Google Location
-                            </li>
-                            <li className="flex text-sm items-center mt-2">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={statusCheckboxClick}
-                                onChange={() =>
-                                  setStatusCheckboxClick(!statusCheckboxClick)
-                                }
-                              />
-                              Status
-                            </li>
-                            <li className="flex text-sm items-center mt-2">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={lastSeenCheckboxClick}
-                                onChange={() =>
-                                  setLastSeenCheckboxClick(!lastSeenCheckboxClick)
-                                }
-                              />
-                              Last Seen
-                            </li>
-                            <li className="flex text-sm items-center mt-2">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={nowPlayingCheckboxClick}
-                                onChange={() =>
-                                  setNowPlayingCheckboxClick(!nowPlayingCheckboxClick)
-                                }
-                              />
-                              Now Playing
-                            </li>
-                            <li className="flex text-sm items-center mt-2 ">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={currScheduleCheckboxClick}
-                                onChange={() =>
-                                  setCurrScheduleCheckboxClick(
-                                    !currScheduleCheckboxClick
-                                  )
-                                }
-                              />
-                              Current Schedule
-                            </li>
-                            <li className="flex text-sm items-center mt-2 ">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={tagsCheckboxClick}
-                                onChange={() =>
-                                  setTagsCheckboxClick(!tagsCheckboxClick)
-                                }
-                              />
-                              Tags
-                            </li>
-                            <li className="flex text-sm items-center mt-2 ">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={groupCheckboxClick}
-                                onChange={() =>
-                                  setGroupCheckboxClick(!groupCheckboxClick)
-                                }
-                              />
-                              Group Apply
-                            </li>
-                            <li className="flex text-sm justify-end mt-2 ">
-                              <button
-                                className="bg-lightgray text-primary px-4 py-2 rounded-full"
-                                onClick={() => {
-                                  handleUpdateMenu();
-                                }}
-                              >
-                                Update
-                              </button>
-                            </li>
-                          </ul>
-                        </div>
+                      {/* multipal remove */}
+                      {selectedItems?.length !== 0 && !selectAllChecked && (
+                        <button
+                          className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          onClick={handleDeleteAllscreen}
+                        >
+                          <RiDeleteBin5Line className="text-lg" />
+                        </button>
+                      )}
+
+                      <div className="relative mt-1">
+                        <button
+                          data-tip
+                          data-for="More"
+                          type="button"
+                          className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                          onClick={() => setMoreModal(!moreModal)}
+                        >
+                          <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
+                          <ReactTooltip
+                            id="More"
+                            place="bottom"
+                            type="warning"
+                            effect="float"
+                          >
+                            <span>More</span>
+                          </ReactTooltip>
+                        </button>
+
+                        {moreModal && (
+                          <div ref={moreModalRef} className="moredw">
+                            <ul>
+                              <li className="flex text-sm items-center ">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={screenCheckboxClick}
+                                  onChange={() =>
+                                    setScreenCheckboxClick(!screenCheckboxClick)
+                                  }
+                                />
+                                Screen
+                              </li>
+                              <li className="flex text-sm items-center mt-2 ">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={locCheckboxClick}
+                                  onChange={() =>
+                                    setLocCheckboxClick(!locCheckboxClick)
+                                  }
+                                />
+                                Google Location
+                              </li>
+                              <li className="flex text-sm items-center mt-2">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={statusCheckboxClick}
+                                  onChange={() =>
+                                    setStatusCheckboxClick(!statusCheckboxClick)
+                                  }
+                                />
+                                Status
+                              </li>
+                              <li className="flex text-sm items-center mt-2">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={lastSeenCheckboxClick}
+                                  onChange={() =>
+                                    setLastSeenCheckboxClick(
+                                      !lastSeenCheckboxClick
+                                    )
+                                  }
+                                />
+                                Last Seen
+                              </li>
+                              <li className="flex text-sm items-center mt-2">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={nowPlayingCheckboxClick}
+                                  onChange={() =>
+                                    setNowPlayingCheckboxClick(
+                                      !nowPlayingCheckboxClick
+                                    )
+                                  }
+                                />
+                                Now Playing
+                              </li>
+                              <li className="flex text-sm items-center mt-2 ">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={currScheduleCheckboxClick}
+                                  onChange={() =>
+                                    setCurrScheduleCheckboxClick(
+                                      !currScheduleCheckboxClick
+                                    )
+                                  }
+                                />
+                                Current Schedule
+                              </li>
+                              <li className="flex text-sm items-center mt-2 ">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={tagsCheckboxClick}
+                                  onChange={() =>
+                                    setTagsCheckboxClick(!tagsCheckboxClick)
+                                  }
+                                />
+                                Tags
+                              </li>
+                              <li className="flex text-sm items-center mt-2 ">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={groupCheckboxClick}
+                                  onChange={() =>
+                                    setGroupCheckboxClick(!groupCheckboxClick)
+                                  }
+                                />
+                                Group Apply
+                              </li>
+                              <li className="flex text-sm justify-end mt-2 ">
+                                <button
+                                  className="bg-lightgray text-primary px-4 py-2 rounded-full"
+                                  onClick={() => {
+                                    handleUpdateMenu();
+                                  }}
+                                >
+                                  Update
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+
+                      {permissions.isDelete && (
+                        <button
+                          data-tip
+                          data-for="Select All"
+                          type="button"
+                          className="flex align-middle text-white items-center rounded-full p-2 text-base  "
+                        >
+                          <input
+                            type="checkbox"
+                            className="w-7 h-6"
+                            onChange={handleSelectAllCheckboxChange}
+                            checked={selectAllChecked}
+                          />
+                          <ReactTooltip
+                            id="Select All"
+                            place="bottom"
+                            type="warning"
+                            effect="float"
+                          >
+                            <span>Select All</span>
+                          </ReactTooltip>
+                        </button>
                       )}
                     </div>
-
-                    {permissions.isDelete &&
-                      <button
-                        data-tip
-                        data-for="Select All"
-                        type="button"
-                        className="flex align-middle text-white items-center rounded-full p-2 text-base  "
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-7 h-6"
-                          onChange={handleSelectAllCheckboxChange}
-                          checked={selectAllChecked}
-                        />
-                        <ReactTooltip
-                          id="Select All"
-                          place="bottom"
-                          type="warning"
-                          effect="float"
-                        >
-                          <span>Select All</span>
-                        </ReactTooltip>
-                      </button>
-                    }
                   </div>
                 </div>
 
-                <div className=" bg-white rounded-xl mt-8 shadow screen-section">
+                <div className=" bg-white rounded-xl mt-5 shadow screen-section">
                   <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                     <table
                       className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
@@ -1286,7 +1273,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         <td className="text-[#5E5E5E]">
                                           <div className="flex items-center">
                                             <div>
-                                              {permissions.isDelete &&
+                                              {permissions.isDelete && (
                                                 <input
                                                   type="checkbox"
                                                   className="mr-2"
@@ -1299,10 +1286,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                     screen.screenID
                                                   )}
                                                 />
-                                              }
+                                              )}
                                             </div>
                                             {isEditingScreen &&
-                                              editingScreenID === screen.screenID ? (
+                                            editingScreenID ===
+                                              screen.screenID ? (
                                               <div className="flex items-center gap-2">
                                                 <input
                                                   type="text"
@@ -1329,21 +1317,24 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                 className="flex items-center gap-1"
                                                 style={{ width: "max-content" }}
                                               >
-                                                {permissions.isSave ?
+                                                {permissions.isSave ? (
                                                   <div className="flex gap-1">
                                                     <Link
                                                       to={`/screensplayer?screenID=${screen.screenID}`}
                                                     >
-                                                      {screen?.screenName?.length > 10
+                                                      {screen?.screenName
+                                                        ?.length > 10
                                                         ? screen?.screenName.slice(
-                                                          0,
-                                                          10
-                                                        ) + "..."
+                                                            0,
+                                                            10
+                                                          ) + "..."
                                                         : screen.screenName}
                                                     </Link>
                                                     <button
                                                       onClick={() => {
-                                                        setIsEditingScreen(true);
+                                                        setIsEditingScreen(
+                                                          true
+                                                        );
                                                         setEditingScreenID(
                                                           screen.screenID
                                                         );
@@ -1355,12 +1346,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                       <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" />
                                                     </button>
                                                   </div>
-                                                  : <> {screen?.screenName?.length > 10
-                                                    ? screen?.screenName.slice(
-                                                      0,
-                                                      10
-                                                    ) + "..."
-                                                    : screen.screenName} </>}
+                                                ) : (
+                                                  <>
+                                                    {" "}
+                                                    {screen?.screenName
+                                                      ?.length > 10
+                                                      ? screen?.screenName.slice(
+                                                          0,
+                                                          10
+                                                        ) + "..."
+                                                      : screen.screenName}{" "}
+                                                  </>
+                                                )}
                                               </div>
                                             )}
                                           </div>
@@ -1376,10 +1373,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         <td className="text-center">
                                           <span
                                             id={`changetvstatus${screen.macid}`}
-                                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                              ? "bg-[#3AB700]"
-                                              : "bg-[#FF0000]"
-                                              }`}
+                                            className={`rounded-full px-6 py-2 text-white text-center ${
+                                              screen.screenStatus == 1
+                                                ? "bg-[#3AB700]"
+                                                : "bg-[#FF0000]"
+                                            }`}
                                           >
                                             {screen.screenStatus == 1
                                               ? "Live"
@@ -1390,7 +1388,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                                       {lastSeenContentVisible && (
                                         <td className="p-2 text-center break-words text-[#5E5E5E]">
-                                          {screen?.lastSeen ? moment(screen?.lastSeen).format("LLL") : null}
+                                          {screen?.lastSeen
+                                            ? moment(screen?.lastSeen).format(
+                                                "LLL"
+                                              )
+                                            : null}
                                         </td>
                                       )}
 
@@ -1428,14 +1430,19 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             <button
                                               onClick={() => {
                                                 setShowScheduleModal(true);
-                                                setScheduleScreenID(screen.screenID);
+                                                setScheduleScreenID(
+                                                  screen.screenID
+                                                );
                                               }}
                                             >
                                               Set a schedule
                                             </button>
                                           ) : (
-                                            `${screen.scheduleName} Till ${moment(screen.endDate).format("YYYY-MM-DD hh:mm"
-                                            )}`
+                                            `${
+                                              screen.scheduleName
+                                            } Till ${moment(
+                                              screen.endDate
+                                            ).format("YYYY-MM-DD hh:mm")}`
                                           )}
 
                                           {showScheduleModal && (
@@ -1464,7 +1471,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                     <button
                                                       className="p-1"
                                                       onClick={() =>
-                                                        setShowScheduleModal(false)
+                                                        setShowScheduleModal(
+                                                          false
+                                                        )
                                                       }
                                                     >
                                                       <AiOutlineCloseCircle className="text-3xl" />
@@ -1526,11 +1535,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                   <input
                                                                     type="checkbox"
                                                                     className="mr-3"
-                                                                    onChange={() => handleScheduleAdd(schedule)}
+                                                                    onChange={() =>
+                                                                      handleScheduleAdd(
+                                                                        schedule
+                                                                      )
+                                                                    }
                                                                   />
                                                                   <div>
                                                                     <div>
-                                                                      {schedule.scheduleName}
+                                                                      {
+                                                                        schedule.scheduleName
+                                                                      }
                                                                     </div>
                                                                   </div>
                                                                 </td>
@@ -1567,7 +1582,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                   }
                                                                 </td>
                                                                 <td className="p-2 text-center">
-                                                                  {schedule.tags}
+                                                                  {
+                                                                    schedule.tags
+                                                                  }
                                                                 </td>
                                                                 <td className="text-center">
                                                                   <Link
@@ -1577,7 +1594,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                   >
                                                                     <BiEdit />
                                                                   </Link>
-
                                                                 </td>
                                                               </tr>
                                                             )
@@ -1607,54 +1623,66 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       )}
 
                                       {tagsContentVisible && (
-
                                         <td
                                           // title={screen?.tags && screen?.tags}
-                                          title={screen?.tags && screen?.tags.trim().split(',').map(tag => tag.trim()).join(",")}
+                                          title={
+                                            screen?.tags &&
+                                            screen?.tags
+                                              .trim()
+                                              .split(",")
+                                              .map((tag) => tag.trim())
+                                              .join(",")
+                                          }
                                           className="text-center text-[#5E5E5E]"
                                         >
-
                                           <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
                                             {(screen?.tags === "" ||
                                               screen?.tags === null) && (
-                                                <span>
-                                                  <AiOutlinePlusCircle
-                                                    size={30}
-                                                    className="mx-auto cursor-pointer"
-                                                    onClick={() => {
-                                                      setShowTagModal(true);
-                                                      screen.tags === "" ||
-                                                        screen?.tags === null
-                                                        ? setTags([])
-                                                        : setTags(
-                                                          screen?.tags?.split(",")
+                                              <span>
+                                                <AiOutlinePlusCircle
+                                                  size={30}
+                                                  className="mx-auto cursor-pointer"
+                                                  onClick={() => {
+                                                    setShowTagModal(true);
+                                                    screen.tags === "" ||
+                                                    screen?.tags === null
+                                                      ? setTags([])
+                                                      : setTags(
+                                                          screen?.tags?.split(
+                                                            ","
+                                                          )
                                                         );
-                                                      setTagUpdateScreeen(screen);
-                                                    }}
-                                                  />
-                                                </span>
-                                              )}
+                                                    setTagUpdateScreeen(screen);
+                                                  }}
+                                                />
+                                              </span>
+                                            )}
 
                                             {screen?.tags !== null
                                               ? screen.tags
-                                                .split(",")
-                                                .slice(
-                                                  0,
-                                                  screen.tags.split(",").length > 2
-                                                    ? 3
-                                                    : screen.tags.split(",").length
-                                                )
-                                                .map((text) => {
-                                                  if (text.toString().length > 10) {
-                                                    return text
-                                                      .split("")
-                                                      .slice(0, 10)
-                                                      .concat("...")
-                                                      .join("");
-                                                  }
-                                                  return text;
-                                                })
-                                                .join(",")
+                                                  .split(",")
+                                                  .slice(
+                                                    0,
+                                                    screen.tags.split(",")
+                                                      .length > 2
+                                                      ? 3
+                                                      : screen.tags.split(",")
+                                                          .length
+                                                  )
+                                                  .map((text) => {
+                                                    if (
+                                                      text.toString().length >
+                                                      10
+                                                    ) {
+                                                      return text
+                                                        .split("")
+                                                        .slice(0, 10)
+                                                        .concat("...")
+                                                        .join("");
+                                                    }
+                                                    return text;
+                                                  })
+                                                  .join(",")
                                               : ""}
                                             {screen?.tags !== "" &&
                                               screen?.tags !== null && (
@@ -1662,11 +1690,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   onClick={() => {
                                                     setShowTagModal(true);
                                                     screen.tags === "" ||
-                                                      screen?.tags === null
+                                                    screen?.tags === null
                                                       ? setTags([])
                                                       : setTags(
-                                                        screen?.tags?.split(",")
-                                                      );
+                                                          screen?.tags?.split(
+                                                            ","
+                                                          )
+                                                        );
                                                     setTagUpdateScreeen(screen);
                                                   }}
                                                   className="w-5 h-5 cursor-pointer"
@@ -1676,10 +1706,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             {/* add or edit tag modal */}
                                             {showTagModal && (
                                               <AddOrEditTagPopup
-                                                setShowTagModal={setShowTagModal}
+                                                setShowTagModal={
+                                                  setShowTagModal
+                                                }
                                                 tags={tags}
                                                 setTags={setTags}
-                                                handleTagsUpdate={handleTagsUpdate}
+                                                handleTagsUpdate={
+                                                  handleTagsUpdate
+                                                }
                                                 from="screen"
                                                 setTagUpdateScreeen={
                                                   setTagUpdateScreeen
@@ -1736,7 +1770,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div> */}
 
                                           <div className="cursor-pointer text-xl">
-                                            {permissions.isSave &&
+                                            {permissions.isSave && (
                                               <Link
                                                 to={`/screensplayer?screenID=${screen.screenID}`}
                                               >
@@ -1757,7 +1791,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   </ReactTooltip>
                                                 </button>
                                               </Link>
-                                            }
+                                            )}
                                           </div>
                                           {/* <div className="cursor-pointer text-xl text-[#EE4B2B]">
                                   <MdDeleteForever
@@ -1832,7 +1866,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             <Footer />
           </>
         </Suspense>
-
       )}
       {showAssetModal && (
         <ShowAssetModal
@@ -1854,7 +1887,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           setSelectedAsset={setSelectedAsset}
         />
       )}
-     
     </>
   );
 };

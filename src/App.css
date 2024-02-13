@@ -63,17 +63,16 @@ button {
 }
 
 @media (max-width: 1080px) {
-  .user-Input{
+  .user-Input {
     max-width: 200px !important;
   }
 }
 
 @media (max-width: 768px) {
-  .user-Input{
+  .user-Input {
     max-width: 100% !important;
   }
 }
-
 
 .formInput {
   position: relative;
@@ -1053,6 +1052,18 @@ button.daysbtn {
   height: 6px;
   background-color: white;
 }
+.h-100vh {
+  height: calc(100vh - 100px);
+}
+
+.fixed-popup {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  transform: translateY(-50%);
+}
 
 .sc-scrollbar::-webkit-scrollbar-thumb {
   background-color: #999;
@@ -1081,8 +1092,6 @@ table.screen-table {
   }
 }
 
-
-
 /* Add this CSS to your stylesheet */
 
 .backdrop {
@@ -1108,10 +1117,36 @@ table.screen-table {
   flex-direction: column;
 }
 
+@media (min-width: 992px) {
+  input.search-user {
+    width: 250px;
+  }
+
+  .h-80vh {
+    height: 80vh;
+  }
+  .max-h-325 {
+    max-height: 325px;
+  }
+}
+
+@media (min-width: 320px) {
+  .sm\:grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
 /* Add responsiveness */
 @media (max-width: 768px) {
   .user-model-TC {
     width: 90%;
+  }
+
+  input.search-user {
+    min-width: 100%;
+  }
+  .youtube-preview {
+    width: 100% !important;
+    height: 100% !important;
   }
 }
 
@@ -1147,7 +1182,7 @@ table.screen-table {
 }
 
 .role-user span.pulus-user {
-  background: #41479B;
+  background: #41479b;
   width: 50px;
   height: 50px;
   border-radius: 30px;
@@ -1157,12 +1192,18 @@ table.screen-table {
   border: none;
 }
 
-.role-user span{
+.role-user span {
   width: 50px;
-    height: 50px;
-    border-radius: 50px;
-    overflow: hidden;
-    border: solid 2px #c3c3c3;
-    margin-left: -12px;
-    background: #ffff;
+  height: 50px;
+  border-radius: 50px;
+  overflow: hidden;
+  border: solid 2px #c3c3c3;
+  margin-left: -12px;
+  background: #ffff;
+}
+.break-all {
+  word-break: break-all;
+}
+.z-9990 {
+  z-index: 9990;
 }

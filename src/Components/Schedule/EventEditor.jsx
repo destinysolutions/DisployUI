@@ -14,7 +14,10 @@ import ReactPlayer from "react-player";
 import { Link } from "react-router-dom";
 import { debounce } from "lodash";
 import { handleGetAllAssets } from "../../Redux/Assetslice";
-import { handleGetTextScrollData, handleGetYoutubeData } from "../../Redux/AppsSlice";
+import {
+  handleGetTextScrollData,
+  handleGetYoutubeData,
+} from "../../Redux/AppsSlice";
 import { useDispatch } from "react-redux";
 const EventEditor = ({
   isOpen,
@@ -278,14 +281,14 @@ const EventEditor = ({
       UpdateALL: updateAllValue
         ? updateAllValue
         : selectedRepeatDay.length > 0
-          ? 1
-          : 0,
+        ? 1
+        : 0,
     };
     let updateAllValueFlag = updateAllValue
       ? updateAllValue
       : repeatDayValue !== null
-        ? 1
-        : 0;
+      ? 1
+      : 0;
     if (areSpecificDaysSelected || selectAllDays) {
       eventData.repeatDay = repeatDayValue;
     }
@@ -536,23 +539,25 @@ const EventEditor = ({
     };
   }, []);
 
-  let viewerSrc = '';
+  let viewerSrc = "";
 
-  if (assetPreview?.fileExtention === '.pdf' || assetPreview?.fileExtention === '.txt') {
-      viewerSrc = assetPreview?.assetFolderPath;
-  } else if (assetPreview?.fileExtention === '.csv') {
-      viewerSrc = `https://docs.google.com/gview?url=${assetPreview?.assetFolderPath}&embedded=true`;
-  } else if (
-    assetPreview?.fileExtention === '.pptx' ||
-    assetPreview?.fileExtention === '.ppt' ||
-    assetPreview?.fileExtention === '.docx' ||
-    assetPreview?.fileExtention === '.doc' ||
-    assetPreview?.fileExtention === '.xlsx' ||
-    assetPreview?.fileExtention === '.xls'
+  if (
+    assetPreview?.fileExtention === ".pdf" ||
+    assetPreview?.fileExtention === ".txt"
   ) {
-      viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+    viewerSrc = assetPreview?.assetFolderPath;
+  } else if (assetPreview?.fileExtention === ".csv") {
+    viewerSrc = `https://docs.google.com/gview?url=${assetPreview?.assetFolderPath}&embedded=true`;
+  } else if (
+    assetPreview?.fileExtention === ".pptx" ||
+    assetPreview?.fileExtention === ".ppt" ||
+    assetPreview?.fileExtention === ".docx" ||
+    assetPreview?.fileExtention === ".doc" ||
+    assetPreview?.fileExtention === ".xlsx" ||
+    assetPreview?.fileExtention === ".xls"
+  ) {
+    viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
   }
-
 
   return (
     <>
@@ -618,12 +623,17 @@ const EventEditor = ({
                       <tbody>
                         {allAssets.length > 0 ? (
                           allAssets
-                            .filter((item) => item?.assetType !== "Folder" && item?.assetType !== "DOC")
+                            .filter(
+                              (item) =>
+                                item?.assetType !== "Folder" &&
+                                item?.assetType !== "DOC"
+                            )
                             .map((item, index) => (
                               <tr
                                 key={index}
-                                className={`${selectedAsset === item ? "bg-[#f3c953]" : ""
-                                  } border-b border-[#eee] mt-5`}
+                                className={`${
+                                  selectedAsset === item ? "bg-[#f3c953]" : ""
+                                } border-b border-[#eee] mt-5`}
                                 onClick={() => {
                                   handleAssetAdd(item);
                                 }}
@@ -648,15 +658,15 @@ const EventEditor = ({
                                   )}
                                   {(item.assetType === "Video" ||
                                     item.assetType === "OnlineVideo") && (
-                                      <div className="max-w-[10vw] min-w-[10vw] min-h-[10vh] max-h-[10vh]">
-                                        <ReactPlayer
-                                          url={item?.assetFolderPath}
-                                          className="rounded-2xl videoTab "
-                                          controls={false}
-                                          playing={false}
-                                        />
-                                      </div>
-                                    )}
+                                    <div className="max-w-[10vw] min-w-[10vw] min-h-[10vh] max-h-[10vh]">
+                                      <ReactPlayer
+                                        url={item?.assetFolderPath}
+                                        className="rounded-2xl videoTab "
+                                        controls={false}
+                                        playing={false}
+                                      />
+                                    </div>
+                                  )}
 
                                   {item.text && (
                                     <div className="w-full h-full ">
@@ -673,7 +683,7 @@ const EventEditor = ({
                                       </marquee>
                                     </div>
                                   )}
-                                 {/* {item.assetType === "DOC" && (
+                                  {/* {item.assetType === "DOC" && (
                                     <a
                                       href={item.assetFolderPath}
                                       target="_blank"
@@ -740,10 +750,15 @@ const EventEditor = ({
                                 target="_blank"
                                 className="border-2 mt-4 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                               >
-                                <button type="button"
+                                <button
+                                  type="button"
                                   onClick={() => {
-                                    localStorage.setItem("isWindowClosed", "false");
-                                  }}>
+                                    localStorage.setItem(
+                                      "isWindowClosed",
+                                      "false"
+                                    );
+                                  }}
+                                >
                                   Upload asset
                                 </button>
                               </Link>
@@ -864,8 +879,7 @@ const EventEditor = ({
                                 </div>
                               </div>
                                             )}*/}
-
-                                            </td>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -892,7 +906,7 @@ const EventEditor = ({
                                   />
                                 </div>
                               )}
-              
+
                               {assetPreview.assetType === "OnlineVideo" && (
                                 <div className="relative videobox">
                                   <video
@@ -1108,9 +1122,10 @@ const EventEditor = ({
                         <div>
                           {buttons.map((label, index) => (
                             <button
-                              className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${selectedDays[index] &&
+                              className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
+                                selectedDays[index] &&
                                 "bg-SlateBlue border-white"
-                                } 
+                              } 
                                 `}
                               key={index}
                               onClick={() => handleDayButtonClick(index, label)}
@@ -1178,8 +1193,8 @@ const EventEditor = ({
                         </ul>
                       </div>
 
-                      <div className="p-3 flex justify-between items-center">
-                        <div>Repeat Multiple Day</div>
+                      <div className="p-3">
+                        <div className="mb-2">Repeat Multiple Day</div>
                         <div>
                           <button
                             onClick={() => setShowRepeatSettings(true)}

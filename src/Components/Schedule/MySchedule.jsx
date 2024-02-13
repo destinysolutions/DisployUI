@@ -51,7 +51,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
-  const selectedScreenIdsString = Array.isArray(selectedScreens) ? selectedScreens.join(",") : "";
+  const selectedScreenIdsString = Array.isArray(selectedScreens)
+    ? selectedScreens.join(",")
+    : "";
   const [scheduleId, setScheduleId] = useState("");
   const [searchSchedule, setSearchSchedule] = useState("");
   const [selectAll, setSelectAll] = useState(false);
@@ -79,29 +81,38 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [itemsPerPage] = useState(10); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
-  const [sidebarload, setSidebarLoad] = useState(true)
+  const [sidebarload, setSidebarLoad] = useState(true);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   // const currentItems = schedules?.slice(indexOfFirstItem, indexOfLastItem);
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.menu.find(e => e.pageName === "My Schedule");
+      const findData = item.payload.data.menu.find(
+        (e) => e.pageName === "My Schedule"
+      );
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-      setSidebarLoad(false)
-    })
-  }, [])
+      setSidebarLoad(false);
+    });
+  }, []);
 
   useEffect(() => {
     dispatch(handleGetAllSchedule({ token }));
@@ -114,15 +125,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value
-            .toString()
-            .toLowerCase()
-            .includes(searchSchedule.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value
+              .toString()
+              .toLowerCase()
+              .includes(searchSchedule.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -535,26 +546,27 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      {sidebarload && (
-        <Loading />
-      )}
+      {sidebarload && <Loading />}
       {!sidebarload && (
         <Suspense fallback={<Loading />}>
           <>
             {/* navbar and sidebar start */}
             <div className="flex border-b border-gray">
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
               <Navbar />
             </div>
             {/* navbar and sidebar end */}
-            <div className="pt-24 px-5 page-contain ">
+            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="lg:flex lg:justify-between sm:block items-center">
+                <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
                     My Schedule
                   </h1>
-                  <div className=" items-center flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn ">
-                    <div className="relative">
+                  <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
+                    <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <AiOutlineSearch className="w-5 h-5 text-gray " />
                       </span>
@@ -573,42 +585,24 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </button>
               </Link>
               */}
-                    {permissions.isSave &&
-                      <Link to="/addschedule">
-                        <button className="sm:ml-2 xs:ml-1  flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                          <BiAddToQueue className="text-lg mr-1" />
-                          New Schedule
-                        </button>
-                      </Link>
-                    }
-                    {/* <button className="sm:ml-2 xs:ml-1 flex align-middle bg-SlateBlue text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                    <div className="flex items-center justify-end">
+                      {permissions.isSave && (
+                        <Link to="/addschedule">
+                          <button className="sm:ml-2 xs:ml-1 xs:mt-0 sm:mt-0 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                            <BiAddToQueue className="text-lg mr-1" />
+                            New Schedule
+                          </button>
+                        </Link>
+                      )}
+                      {/* <button className="sm:ml-2 xs:ml-1 flex align-middle bg-SlateBlue text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <FiUpload className="text-lg" />
               </button> */}
-                    <button
-                      data-tip
-                      data-for="Delete"
-                      className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                      onClick={handelDeleteAllSchedule}
-                      style={{ display: selectAllChecked ? "block" : "none" }}
-                    >
-                      <RiDeleteBin5Line className="text-lg" />
-                      <ReactTooltip
-                        id="Delete"
-                        place="bottom"
-                        type="warning"
-                        effect="float"
-                      >
-                        <span>Delete</span>
-                      </ReactTooltip>
-                    </button>
-
-                    {/* multipal remove */}
-                    {selectedItems.length !== 0 && !selectAllChecked && (
                       <button
                         data-tip
                         data-for="Delete"
                         className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         onClick={handelDeleteAllSchedule}
+                        style={{ display: selectAllChecked ? "block" : "none" }}
                       >
                         <RiDeleteBin5Line className="text-lg" />
                         <ReactTooltip
@@ -620,34 +614,54 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           <span>Delete</span>
                         </ReactTooltip>
                       </button>
-                    )}
 
-                    {permissions.isDelete &&
-                      <button
-                        data-tip
-                        data-for="Select All"
-                        className="flex align-middle   text-white items-center  rounded-full p-2 text-base"
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-7 h-6"
-                          checked={selectAllChecked}
-                          onChange={handleSelectAll}
-                        />
-                        <ReactTooltip
-                          id="Select All"
-                          place="bottom"
-                          type="warning"
-                          effect="float"
+                      {/* multipal remove */}
+                      {selectedItems.length !== 0 && !selectAllChecked && (
+                        <button
+                          data-tip
+                          data-for="Delete"
+                          className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          onClick={handelDeleteAllSchedule}
                         >
-                          <span>Select All</span>
-                        </ReactTooltip>
-                      </button>
-                    }
+                          <RiDeleteBin5Line className="text-lg" />
+                          <ReactTooltip
+                            id="Delete"
+                            place="bottom"
+                            type="warning"
+                            effect="float"
+                          >
+                            <span>Delete</span>
+                          </ReactTooltip>
+                        </button>
+                      )}
+
+                      {permissions.isDelete && (
+                        <button
+                          data-tip
+                          data-for="Select All"
+                          className="flex align-middle   text-white items-center  rounded-full p-2 text-base"
+                        >
+                          <input
+                            type="checkbox"
+                            className="w-7 h-6"
+                            checked={selectAllChecked}
+                            onChange={handleSelectAll}
+                          />
+                          <ReactTooltip
+                            id="Select All"
+                            place="bottom"
+                            type="warning"
+                            effect="float"
+                          >
+                            <span>Select All</span>
+                          </ReactTooltip>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-xl mt-8 shadow screen-section">
-                  <div className="schedual-tabl mt-5 overflow-x-scroll sc-scrollbar rounded-lg">
+                <div className="bg-white rounded-xl lg:mt-8 mt-5 shadow screen-section">
+                  <div className="schedual-tabl lg:mt-5 overflow-x-scroll sc-scrollbar rounded-lg">
                     <table
                       className="screen-table w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
                       cellPadding={20}
@@ -718,7 +732,8 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               </div>
                             </td>
                           </tr>
-                        ) : schedules && sortedAndPaginatedData?.length === 0 ? (
+                        ) : schedules &&
+                          sortedAndPaginatedData?.length === 0 ? (
                           <tr>
                             <td colSpan={8}>
                               <div className="flex text-center m-5 justify-center">
@@ -791,43 +806,47 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="flex items-center justify-center gap-2 w-full flex-wrap">
                                         {(schedule?.tags === "" ||
                                           schedule?.tags === null) && (
-                                            <span>
-                                              <AiOutlinePlusCircle
-                                                size={30}
-                                                className="mx-auto cursor-pointer"
-                                                onClick={() => {
-                                                  setShowTagModal(true);
-                                                  schedule.tags === "" ||
-                                                    schedule?.tags === null
-                                                    ? setTags([])
-                                                    : setTags(
+                                          <span>
+                                            <AiOutlinePlusCircle
+                                              size={30}
+                                              className="mx-auto cursor-pointer"
+                                              onClick={() => {
+                                                setShowTagModal(true);
+                                                schedule.tags === "" ||
+                                                schedule?.tags === null
+                                                  ? setTags([])
+                                                  : setTags(
                                                       schedule?.tags?.split(",")
                                                     );
-                                                  setUpdateTagSchedule(schedule);
-                                                }}
-                                              />
-                                            </span>
-                                          )}
+                                                setUpdateTagSchedule(schedule);
+                                              }}
+                                            />
+                                          </span>
+                                        )}
                                         {schedule.tags !== null
                                           ? schedule.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              schedule.tags.split(",").length > 2
-                                                ? 3
-                                                : schedule.tags.split(",").length
-                                            )
-                                            .map((text) => {
-                                              if (text.toString().length > 10) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                              .split(",")
+                                              .slice(
+                                                0,
+                                                schedule.tags.split(",")
+                                                  .length > 2
+                                                  ? 3
+                                                  : schedule.tags.split(",")
+                                                      .length
+                                              )
+                                              .map((text) => {
+                                                if (
+                                                  text.toString().length > 10
+                                                ) {
+                                                  return text
+                                                    .split("")
+                                                    .slice(0, 10)
+                                                    .concat("...")
+                                                    .join("");
+                                                }
+                                                return text;
+                                              })
+                                              .join(",")
                                           : ""}
                                         {schedule?.tags !== "" &&
                                           schedule?.tags !== null && (
@@ -835,11 +854,11 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                               onClick={() => {
                                                 setShowTagModal(true);
                                                 schedule.tags === "" ||
-                                                  schedule?.tags === null
+                                                schedule?.tags === null
                                                   ? setTags([])
                                                   : setTags(
-                                                    schedule?.tags?.split(",")
-                                                  );
+                                                      schedule?.tags?.split(",")
+                                                    );
                                                 setUpdateTagSchedule(schedule);
                                               }}
                                               className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
@@ -863,7 +882,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     </td>
 
                                     <td className="text-center relative">
-                                      {permissions.isSave &&
+                                      {permissions.isSave && (
                                         <div className="flex justify-center gap-2 items-center">
                                           <div className="relative">
                                             <button
@@ -895,10 +914,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                               type="button"
                                               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                               onClick={() => {
-                                                setScheduleId(schedule.scheduleId);
+                                                setScheduleId(
+                                                  schedule.scheduleId
+                                                );
                                                 setAddScreenModal(true);
                                                 setScreenSelected(
-                                                  schedule?.screenAssigned?.split(",")
+                                                  schedule?.screenAssigned?.split(
+                                                    ","
+                                                  )
                                                 );
                                                 setSelectData(schedule);
                                               }}
@@ -915,7 +938,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                             </button>
                                           </div>
                                         </div>
-                                      }
+                                      )}
 
                                       {/* <div className="relative">
                                 <button
@@ -1031,7 +1054,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <Footer />
           </>
-
         </Suspense>
       )}
 

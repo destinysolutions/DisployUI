@@ -36,7 +36,6 @@ import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
 
-
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -64,30 +63,37 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const [instanceView, setInstanceView] = useState(false);
   const [scrollType, setScrollType] = useState(1);
   const [screenSelected, setScreenSelected] = useState([]);
-  const [sidebarload, setSidebarLoad] = useState(true)
+  const [sidebarload, setSidebarLoad] = useState(true);
   const navigate = useNavigate();
   const addScreenRef = useRef(null);
   const appDropdownRef = useRef(null);
 
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
-
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.menu.find(e => e.pageName === "Apps");
+      const findData = item.payload.data.menu.find(
+        (e) => e.pageName === "Apps"
+      );
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-      setSidebarLoad(false)
-    })
-  }, [])
-
+      setSidebarLoad(false);
+    });
+  }, []);
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
@@ -233,9 +239,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
     const updatedInstance = instanceData.map((instance) =>
       instance.textScroll_Id === instanceId
         ? {
-          ...instance,
-          isChecked: !instance.isChecked,
-        }
+            ...instance,
+            isChecked: !instance.isChecked,
+          }
         : instance
     );
 
@@ -292,8 +298,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${ADD_TEXTSCROLL_TAGS}?TextScrollId=${updateTextscrollTag?.textScroll_Id
-        }&Tags=${tags.length === 0 ? "" : tags}`,
+      url: `${ADD_TEXTSCROLL_TAGS}?TextScrollId=${
+        updateTextscrollTag?.textScroll_Id
+      }&Tags=${tags.length === 0 ? "" : tags}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
@@ -396,31 +403,32 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      {sidebarload && (
-        <Loading />
-      )}
+      {sidebarload && <Loading />}
       {!sidebarload && (
         <Suspense fallback={<Loading />}>
           <>
             <div className="flex border-b border-gray bg-white">
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
               <Navbar />
             </div>
-            <div className="pt-20 px-5 page-contain">
+            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="lg:flex lg:justify-between sm:block  items-center">
-                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+                <div className="grid lg:grid-cols-3 gap-2">
+                  <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
                     Apps
                   </h1>
-                  <div className="lg:flex">
-                    {permissions.isSave &&
+                  <div className="lg:col-span-2 flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
+                    {permissions.isSave && (
                       <Link to="/textscrolldetail">
                         <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                           <TbAppsFilled className="text-2xl mr-2 text-white" />
                           New Instance
                         </button>
                       </Link>
-                    }
+                    )}
                     <Link to="/apps">
                       <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                         <MdArrowBackIosNew className="text-2xl mr-2 text-white rounded-full p-1" />
@@ -449,14 +457,14 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                         {instanceData.length > 0 && (
                           <button className="sm:ml-2 xs:ml-1 mt-2 ">
-                            {permissions.isDelete &&
+                            {permissions.isDelete && (
                               <input
                                 type="checkbox"
                                 className="h-7 w-7"
                                 checked={selectAll}
                                 onChange={handleSelectAll}
                               />
-                            }
+                            )}
                           </button>
                         )}
                       </div>
@@ -491,57 +499,66 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                             className="xl:col-span-2 lg:col-span-3 md:col-span-4 sm:col-span-12"
                             key={instance.textScroll_Id}
                           >
-                            <div className="shadow-md bg-[#EFF3FF] rounded-lg">
+                            <div className="shadow-md bg-[#EFF3FF] rounded-lg h-full">
                               <div className="relative flex justify-between">
                                 <button className="float-right p-2">
                                   <input
-                                    style={{ display: selectAll ? "block" : "none" }}
+                                    style={{
+                                      display: selectAll ? "block" : "none",
+                                    }}
                                     className="h-5 w-5"
                                     type="checkbox"
                                     checked={instance.isChecked || false}
                                     onChange={() =>
-                                      handleCheckboxChange(instance.textScroll_Id)
+                                      handleCheckboxChange(
+                                        instance.textScroll_Id
+                                      )
                                     }
                                   />
                                 </button>
                                 <div className="relative">
-                                  {permissions.isSave && permissions.isDelete &&
-                                    <button className="float-right">
-                                      <BiDotsHorizontalRounded
-                                        className="text-2xl"
-                                        onClick={() =>
-                                          handleAppDropDownClick(instance.textScroll_Id)
-                                        }
-                                      />
-                                    </button>
-                                  }
+                                  {permissions.isSave &&
+                                    permissions.isDelete && (
+                                      <button className="float-right">
+                                        <BiDotsHorizontalRounded
+                                          className="text-2xl"
+                                          onClick={() =>
+                                            handleAppDropDownClick(
+                                              instance.textScroll_Id
+                                            )
+                                          }
+                                        />
+                                      </button>
+                                    )}
                                   {appDropDown === instance.textScroll_Id && (
                                     <div className="appdw" ref={appDropdownRef}>
                                       <ul className="space-y-2">
-                                        {permissions.isSave && <div>
-                                          <li
-                                            onClick={() => {
-                                              navigate(
-                                                `/textscrolldetail/${instance?.textScroll_Id}`
-                                              );
-                                            }}
-                                            className="flex text-sm items-center cursor-pointer"
-                                          >
-                                            <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                                            Edit
-                                          </li>
-                                          <li
-                                            className="flex text-sm items-center cursor-pointer"
-                                            onClick={() => {
-                                              setAddScreenModal(true);
-                                              setSelectData(instance);
-                                            }}
-                                          >
-                                            <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                                            Set to Screen
-                                          </li>
-                                        </div>}
-                                        {permissions.isDelete &&
+                                        {permissions.isSave && (
+                                          <div>
+                                            <li
+                                              onClick={() => {
+                                                navigate(
+                                                  `/textscrolldetail/${instance?.textScroll_Id}`
+                                                );
+                                              }}
+                                              className="flex text-sm items-center cursor-pointer"
+                                            >
+                                              <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                              Edit
+                                            </li>
+                                            <li
+                                              className="flex text-sm items-center cursor-pointer"
+                                              onClick={() => {
+                                                setAddScreenModal(true);
+                                                setSelectData(instance);
+                                              }}
+                                            >
+                                              <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                              Set to Screen
+                                            </li>
+                                          </div>
+                                        )}
+                                        {permissions.isDelete && (
                                           <li
                                             className="flex text-sm items-center cursor-pointer"
                                             onClick={() =>
@@ -554,7 +571,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                             <RiDeleteBin5Line className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                             Delete
                                           </li>
-                                        }
+                                        )}
                                       </ul>
                                     </div>
                                   )}
@@ -583,8 +600,8 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                 <h4
                                   onClick={() => {
                                     instance?.tags !== null &&
-                                      instance?.tags !== undefined &&
-                                      instance?.tags !== ""
+                                    instance?.tags !== undefined &&
+                                    instance?.tags !== ""
                                       ? setTags(instance?.tags?.split(","))
                                       : setTags([]);
                                     setShowTagModal(true);
@@ -657,7 +674,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                       handleUpdateTagsTextScroll
                                     }
                                     from="textscroll"
-                                    setUpdateTextscrollTag={setUpdateTextscrollTag}
+                                    setUpdateTextscrollTag={
+                                      setUpdateTextscrollTag
+                                    }
                                   />
                                 )}
                               </div>
@@ -665,9 +684,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                                   <div
                                     ref={appDropdownRef}
-                                    className="w-[960px] my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                                    className="lg:w-[960px] my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
                                   >
-                                    <div className="w-[960px] border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+                                    <div className="lg:w-[960px] border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
                                       <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
                                         <div className="flex items-center">
                                           <div>
@@ -694,8 +713,10 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                           direction={
                                             scrollType == 1 ? "right" : "left"
                                           }
-                                          style={{ fontSize: "36px", color: "white" }}
-
+                                          style={{
+                                            fontSize: "36px",
+                                            color: "white",
+                                          }}
                                         >
                                           {textScrollData}
                                         </marquee>
@@ -706,7 +727,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                           <div className="font-semibold w-fit">
                                             Tags:-
                                           </div>
-                                          <div className=" w-full">{showTags}</div>
+                                          <div className=" w-full">
+                                            {showTags}
+                                          </div>
                                         </div>
                                         <div>
                                           <label className="font-semibold">

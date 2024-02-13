@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import mapImg from "../images/DisployImg/mapImg.png";
 import L from "leaflet";
-import MarkerClusterGroup from 'react-leaflet-cluster';
-import ReactApexChart from 'react-apexcharts';
-import RevenueTable from '../Components/Dashboard/RevenueTable';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { ADMINDASHBOARD } from '../Pages/Api';
+import MarkerClusterGroup from "react-leaflet-cluster";
+import ReactApexChart from "react-apexcharts";
+import RevenueTable from "../Components/Dashboard/RevenueTable";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { ADMINDASHBOARD } from "../Pages/Api";
 
 const SalesOptions = {
   colors: ["#404f8b"],
@@ -57,14 +57,14 @@ const Dashboard = () => {
   const center = [20.5937, 78.9629];
   const { token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
-  const [dashboardData, setDashboardData] = useState(null)
+  const [dashboardData, setDashboardData] = useState(null);
   const [selectedScreen, setSelectedScreen] = useState("");
   const [allApp, setAllApp] = useState({
     AppLists: [],
     AppPercentages: [],
     AppOnlines: [],
-    AppOnlinePercentages: []
-  })
+    AppOnlinePercentages: [],
+  });
 
   useEffect(() => {
     let config = {
@@ -78,12 +78,12 @@ const Dashboard = () => {
     axios
       .request(config)
       .then((data) => {
-        setDashboardData(data?.data?.data)
+        setDashboardData(data?.data?.data);
       })
       .catch((error) => {
         console.log("Error fetching states data:", error);
       });
-  }, [])
+  }, []);
 
   useEffect(() => {
     let AppList = [];
@@ -92,20 +92,20 @@ const Dashboard = () => {
     let AppOnlinePercentage = [];
     dashboardData?.totalScreen?.map((item) => {
       AppList?.push(item?.name);
-      AppPercentage?.push(Number(item?.percentage))
-    })
+      AppPercentage?.push(Number(item?.percentage));
+    });
     dashboardData?.totalStore?.map((item) => {
       AppOnline?.push(item?.name);
-      AppOnlinePercentage?.push(Number(item?.percentage))
-    })
+      AppOnlinePercentage?.push(Number(item?.percentage));
+    });
     setAllApp({
       ...allApp,
       AppLists: AppList,
       AppPercentages: AppPercentage,
       AppOnlines: AppOnline,
-      AppOnlinePercentages: AppOnlinePercentage
-    })
-  }, [dashboardData])
+      AppOnlinePercentages: AppOnlinePercentage,
+    });
+  }, [dashboardData]);
 
   const ScreenAppOption = {
     chart: {
@@ -194,18 +194,18 @@ const Dashboard = () => {
   };
 
   const handleScreenClick = (screen) => {
-    setSelectedScreen(screen)
-  }
+    setSelectedScreen(screen);
+  };
   return (
     <div>
       {/* google map start */}
-      <div className="bg-white shadow-md rounded-lg mt-9">
-        <div className="lg:p-9 md:p-6 sm:p-3 xs:p-2">
+      <div className="bg-white shadow-md rounded-lg mt-5">
+        <div className="lg:p-5 md:p-4 sm:p-3 xs:p-2">
           <MapContainer
             center={center}
             zoom={4}
             maxZoom={18}
-            style={{ width: "100%", height: "560px", zIndex: 0 }}
+            style={{ width: "100%", height: "460px", zIndex: 0 }}
           >
             <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
 
@@ -221,21 +221,13 @@ const Dashboard = () => {
                 >
                   <Popup>
                     <h3 className="flex flex-row gap-1">
-                      <span>
-                        Location :
-                      </span>
-                      <span>
-                        {selectedScreen?.location}
-                      </span>
+                      <span>Location :</span>
+                      <span>{selectedScreen?.location}</span>
                     </h3>
                     <div className="flex flex-col">
                       <h5 className="flex flex-row gap-2">
-                        <span>
-                          Total Screen :
-                        </span>
-                        <span>
-                          {selectedScreen?.screen}
-                        </span>
+                        <span>Total Screen :</span>
+                        <span>{selectedScreen?.screen}</span>
                       </h5>
                     </div>
                   </Popup>
@@ -274,8 +266,7 @@ const Dashboard = () => {
                           <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#3AB700]"></span>
                           {dashboardData?.totalStore?.[1]?.name}
                         </td>
-                        <td>
-                          {dashboardData?.totalStore?.[1]?.percentage}%</td>
+                        <td>{dashboardData?.totalStore?.[1]?.percentage}%</td>
                       </tr>
                       <tr>
                         <td className="flex items-center">
@@ -345,7 +336,7 @@ const Dashboard = () => {
         </div>
       )}
 
-     {/* <div className=" mt-5 ">
+      {/* <div className=" mt-5 ">
         <div className="grid grid-cols-12 gap-4">
           <div className="lg:col-span-6  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
             <div className="mb-4 justify-between items-center gap-4 sm:flex mt-3">
@@ -381,9 +372,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>*/}
-
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

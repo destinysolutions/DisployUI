@@ -126,7 +126,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
         if (window.history.length === 1) {
           dispatch(handleNavigateFromComposition());
           dispatch(handleChangeNavigateFromComposition(false));
-          localStorage.setItem('isWindowClosed', 'true');
+          localStorage.setItem("isWindowClosed", "true");
           window.close();
         } else {
           history("/youtube");
@@ -192,7 +192,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               ) : (
                 <>
-                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] ">
                     {instanceName}
                   </h1>
                   <button onClick={() => setEdited(true)}>
@@ -540,8 +540,8 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   </table>
                 </div>
               </div>
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative w-[768px] h-[432px]">
-                <div className="videoplayer relative bg-white w-[768px] h-[432px]">
+              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative">
+                <div className="videoplayer relative bg-white">
                   {YoutubeVideo === "" ? (
                     <div className="flex items-center justify-center h-full">
                       <img src={Img} className="m-auto" />
@@ -563,7 +563,10 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
               {/* Place your video player here */}
               {showPreviewPopup && (
                 <>
-                  <div ref={modalRef} className="video-preview w-[960px] h-[540px]">
+                  <div
+                    ref={modalRef}
+                    className="video-preview lg:w-[960px] lg:h-[540px]"
+                  >
                     <ReactPlayer
                       url={YoutubeVideo}
                       className="youtube-preview"

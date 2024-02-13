@@ -126,13 +126,6 @@ button.stabshow.settingtabactive::after {
   }
 }
 
-@media (max-width: 480px) {
-  .settingtab,
-  button.stabshow.settingtabactive {
-    display: block;
-  }
-}
-
 @media (max-width: 400px) {
   .settingtab,
   button.stabshow.settingtabactive {

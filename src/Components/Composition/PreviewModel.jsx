@@ -7,7 +7,7 @@ function Modal({ show, onClose, children }) {
   return (
     <>
       <div className="fixed inset-0 bg-black/20 z-40 "></div>
-      <div className="z-40 fixed w-full h-full left-1/2 -translate-x-1/2 top-10  ">
+      <div className="z-40 fixed w-full h-full left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
         {children}
       </div>
     </>

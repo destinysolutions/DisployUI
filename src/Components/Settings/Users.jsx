@@ -1177,7 +1177,6 @@ const Users = ({ searchValue, permissions }) => {
                   </div>
                   <div className="user-pro-details mt-10">
                     <h3 className="user-name my-2">Details</h3>
-
                     <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-3 mt-4">
                       <div className="font-semibold">
                         <span>User ID : </span>
@@ -1197,13 +1196,19 @@ const Users = ({ searchValue, permissions }) => {
                         <span>Company Name : </span>
                       </div>
                       <div className="col-span-2 capitalize">
-                        <span> {userDetailData?.company}</span>
+                        <span className="break-all">
+                          {" "}
+                          {userDetailData?.company}
+                        </span>
                       </div>
                       <div className="font-semibold">
-                        <span>Email : </span>
+                        <span className="break-all">Email : </span>
                       </div>
                       <div className="col-span-2">
-                        <span> {userDetailData?.email}</span>
+                        <span className="break-all">
+                          {" "}
+                          {userDetailData?.email}
+                        </span>
                       </div>
                       <div className="font-semibold">
                         <span>Status : </span>

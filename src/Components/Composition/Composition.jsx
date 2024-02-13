@@ -73,8 +73,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [itemsPerPage] = useState(10);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
-  const [sidebarload, setSidebarLoad] = useState(true)
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
+  const [sidebarload, setSidebarLoad] = useState(true);
   const modalRef = useRef(null);
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
@@ -113,20 +117,24 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.menu.find(e => e.pageName === "My Composition");
+      const findData = item.payload.data.menu.find(
+        (e) => e.pageName === "My Composition"
+      );
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-      setSidebarLoad(false)
-
-    })
-  }, [])
+      setSidebarLoad(false);
+    });
+  }, []);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -435,8 +443,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 };
                 socket.emit("ScreenConnected", Params);
                 // loadComposition();
-
-              })
+              });
             } else {
               const Params = {
                 id: socket.id,
@@ -593,25 +600,26 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      {sidebarload && (
-        <Loading />
-      )}
+      {sidebarload && <Loading />}
       {!sidebarload && (
         <Suspense fallback={<Loading />}>
           <>
             <div className="flex bg-white border-b border-gray">
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
               <Navbar />
             </div>
 
-            <div className="pt-24 px-5 page-contain">
+            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
-                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+                <div className="grid lg:grid-cols-3 gap-2">
+                  <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
                     My Composition
                   </h1>
-                  <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
-                    <div className="relative">
+                  <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
+                    <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <AiOutlineSearch className="w-5 h-5 text-gray " />
                       </span>
@@ -623,41 +631,25 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         onChange={handleSearchComposition}
                       />
                     </div>
-                    {permissions.isSave &&
-                      <button
-                        onClick={() => navigation("/addcomposition")}
-                        className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                      >
-                        Add Composition
-                      </button>
-                    }
-                    {compositionData?.length > 0 && (
-                      <>
+                    <div className="flex items-center justify-end">
+                      {permissions.isSave && (
                         <button
-                          data-tip
-                          data-for="Delete"
-                          onClick={handleDeleteAllCompositions}
-                          className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          style={{ display: selectAllChecked ? "block" : "none" }}
+                          onClick={() => navigation("/addcomposition")}
+                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
-                          <RiDeleteBinLine />
-                          <ReactTooltip
-                            id="Delete"
-                            place="bottom"
-                            type="warning"
-                            effect="float"
-                          >
-                            <span>Delete</span>
-                          </ReactTooltip>
+                          Add Composition
                         </button>
-
-                        {/* multipal remove */}
-                        {selectedItems.length !== 0 && !selectAllChecked && (
+                      )}
+                      {compositionData?.length > 0 && (
+                        <>
                           <button
                             data-tip
                             data-for="Delete"
-                            className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                             onClick={handleDeleteAllCompositions}
+                            className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                            style={{
+                              display: selectAllChecked ? "block" : "none",
+                            }}
                           >
                             <RiDeleteBinLine />
                             <ReactTooltip
@@ -669,35 +661,55 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               <span>Delete</span>
                             </ReactTooltip>
                           </button>
-                        )}
-                        {permissions.isDelete &&
-                          <button
-                            data-tip
-                            data-for="Select All"
-                            className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base "
-                          >
-                            <input
-                              type="checkbox"
-                              className="w-7 h-6"
-                              checked={selectAllChecked}
-                              onChange={() => handleSelectAll()}
-                            />
-                            <ReactTooltip
-                              id="Select All"
-                              place="bottom"
-                              type="warning"
-                              effect="float"
+
+                          {/* multipal remove */}
+                          {selectedItems.length !== 0 && !selectAllChecked && (
+                            <button
+                              data-tip
+                              data-for="Delete"
+                              className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                              onClick={handleDeleteAllCompositions}
                             >
-                              <span>Select All</span>
-                            </ReactTooltip>
-                          </button>
-                        }
-                      </>
-                    )}
+                              <RiDeleteBinLine />
+                              <ReactTooltip
+                                id="Delete"
+                                place="bottom"
+                                type="warning"
+                                effect="float"
+                              >
+                                <span>Delete</span>
+                              </ReactTooltip>
+                            </button>
+                          )}
+                          {permissions.isDelete && (
+                            <button
+                              data-tip
+                              data-for="Select All"
+                              className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base "
+                            >
+                              <input
+                                type="checkbox"
+                                className="w-7 h-6"
+                                checked={selectAllChecked}
+                                onChange={() => handleSelectAll()}
+                              />
+                              <ReactTooltip
+                                id="Select All"
+                                place="bottom"
+                                type="warning"
+                                effect="float"
+                              >
+                                <span>Select All</span>
+                              </ReactTooltip>
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="bg-white rounded-xl mt-8 shadow screen-section">
-                  <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
+                  <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                     <table
                       className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                       cellPadding={20}
@@ -788,7 +800,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   >
                                     <td className="text-[#5E5E5E] text-center">
                                       <div className="flex gap-1">
-                                        {permissions.isDelete &&
+                                        {permissions.isDelete && (
                                           <input
                                             type="checkbox"
                                             checked={selectedItems.includes(
@@ -800,12 +812,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               )
                                             }
                                           />
-                                        }
+                                        )}
                                         {composition?.compositionName}
                                       </div>
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
-                                      {moment(composition?.dateAdded).format("LLL")}
+                                      {moment(composition?.dateAdded).format(
+                                        "LLL"
+                                      )}
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
                                       {composition?.resolution}
@@ -819,54 +833,60 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                       {composition?.screenNames}
                                     </td>
                                     <td
-                                      title={composition?.tags && composition?.tags}
+                                      title={
+                                        composition?.tags && composition?.tags
+                                      }
                                       className="text-center text-[#5E5E5E]"
                                     >
                                       <div className="flex items-center justify-center w-full flex-wrap gap-2 text-[#5E5E5E]">
                                         {(composition?.tags === "" ||
                                           composition?.tags === null) && (
-                                            <span>
-                                              <AiOutlinePlusCircle
-                                                size={30}
-                                                className="mx-auto cursor-pointer"
-                                                onClick={() => {
-                                                  setShowTagModal(true);
-                                                  composition?.tags === "" ||
-                                                    composition?.tags === null
-                                                    ? setTags([])
-                                                    : setTags(
-                                                      composition?.tags?.split(",")
+                                          <span>
+                                            <AiOutlinePlusCircle
+                                              size={30}
+                                              className="mx-auto cursor-pointer"
+                                              onClick={() => {
+                                                setShowTagModal(true);
+                                                composition?.tags === "" ||
+                                                composition?.tags === null
+                                                  ? setTags([])
+                                                  : setTags(
+                                                      composition?.tags?.split(
+                                                        ","
+                                                      )
                                                     );
-                                                  handleFetchCompositionById(
-                                                    composition?.compositionID,
-                                                    "tags"
-                                                  );
-                                                }}
-                                              />
-                                            </span>
-                                          )}
+                                                handleFetchCompositionById(
+                                                  composition?.compositionID,
+                                                  "tags"
+                                                );
+                                              }}
+                                            />
+                                          </span>
+                                        )}
                                         {composition?.tags !== null
                                           ? composition?.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              composition?.tags.split(",").length >
-                                                2
-                                                ? 3
-                                                : composition?.tags.split(",")
-                                                  .length
-                                            )
-                                            .map((text) => {
-                                              if (text.toString().length > 10) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                              .split(",")
+                                              .slice(
+                                                0,
+                                                composition?.tags.split(",")
+                                                  .length > 2
+                                                  ? 3
+                                                  : composition?.tags.split(",")
+                                                      .length
+                                              )
+                                              .map((text) => {
+                                                if (
+                                                  text.toString().length > 10
+                                                ) {
+                                                  return text
+                                                    .split("")
+                                                    .slice(0, 10)
+                                                    .concat("...")
+                                                    .join("");
+                                                }
+                                                return text;
+                                              })
+                                              .join(",")
                                           : ""}
                                         {composition?.tags !== "" &&
                                           composition?.tags !== null && (
@@ -874,11 +894,13 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               onClick={() => {
                                                 setShowTagModal(true);
                                                 composition?.tags === "" ||
-                                                  composition?.tags === null
+                                                composition?.tags === null
                                                   ? setTags([])
                                                   : setTags(
-                                                    composition?.tags?.split(",")
-                                                  );
+                                                      composition?.tags?.split(
+                                                        ","
+                                                      )
+                                                    );
                                                 handleFetchCompositionById(
                                                   composition?.compositionID,
                                                   "tags"
@@ -908,7 +930,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     <td className="text-center">
                                       <div className="flex justify-center gap-2 items-center">
                                         <div className="relative">
-                                          {permissions.isSave &&
+                                          {permissions.isSave && (
                                             <button
                                               data-tip
                                               data-for="Edit"
@@ -930,10 +952,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <span>Edit</span>
                                               </ReactTooltip>
                                             </button>
-                                          }
+                                          )}
                                         </div>
                                         <div className="relative">
-                                          {permissions.isView &&
+                                          {permissions.isView && (
                                             <button
                                               data-tip
                                               data-for="Preview"
@@ -957,10 +979,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <span>Preview</span>
                                               </ReactTooltip>
                                             </button>
-                                          }
+                                          )}
                                         </div>
                                         <div className="relative">
-                                          {permissions.isSave &&
+                                          {permissions.isSave && (
                                             <button
                                               data-tip
                                               data-for="Set to Screen"
@@ -970,7 +992,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                                 setAddScreenModal(true);
                                                 setSelectData(composition);
                                                 setScreenSelected(
-                                                  composition?.screenNames?.split(",")
+                                                  composition?.screenNames?.split(
+                                                    ","
+                                                  )
                                                 );
                                                 setCompositionId(
                                                   composition?.compositionID
@@ -987,7 +1011,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <span>Set to Screen</span>
                                               </ReactTooltip>
                                             </button>
-                                          }
+                                          )}
                                         </div>
                                       </div>
                                     </td>
@@ -1131,8 +1155,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           modalVisible={modalVisible}
         />
       )}
-
-     
     </>
   );
 };

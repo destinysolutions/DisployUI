@@ -614,8 +614,8 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                       </table>
                     </div>
                   </div>
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative w-[768px] h-[432px]">
-                    <div className="videoplayer relative bg-white w-[768px] h-[432px]">
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative ">
+                    <div className="videoplayer relative bg-white ">
                       <ReactPlayer
                         url={YoutubeVideo}
                         className="w-full relative z-20 videoinner"
@@ -638,7 +638,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                   {/* Place your video player here */}
                   {showPreviewPopup && (
                     <>
-                      <div ref={modalRef} className="video-preview w-[960px] h-[540px]">
+                      <div ref={modalRef} className="video-preview lg:w-[960px] lg:h-[540px]">
                         <ReactPlayer
                           url={YoutubeVideo}
                           className="youtube-preview"
