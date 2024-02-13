@@ -161,7 +161,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   useEffect(() => {
     // // load composition
@@ -243,7 +243,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         console.error(error);
       });
     // get screen by id
-    getScreenByid()
+    getScreenByid();
 
     // get all tags
     // axios
@@ -260,10 +260,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     //     console.log(error);
     //   });
   }, []);
-
-
-
-
 
   useEffect(() => {
     setAppDatas(allAppsData);
@@ -284,7 +280,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectedAsset((prevAsset) => ({
           ...prevAsset,
           assetName: filteredData[0]?.assetName,
-          assetID:filteredData[0]?.assetID
+          assetID: filteredData[0]?.assetID,
         }));
         setAssetPreview(filteredData[0]);
         break;
@@ -473,6 +469,12 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     let data = JSON.stringify({
       macid: macId,
       IsFromWeb: 1,
+      SystemTimeZone: new Date()
+        .toLocaleDateString(undefined, {
+          day: "2-digit",
+          timeZoneName: "long",
+        })
+        .substring(4),
     });
 
     let config = {
@@ -491,7 +493,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           const { data, myComposition } = response?.data;
-          setCompositionData([])
+          setCompositionData([]);
           setScreenPreviewData({ data, myComposition });
           if (myComposition.length > 0) {
             setFetchLayoutLoading(true);
@@ -942,7 +944,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         .then((response) => {
           toast.remove();
           toast.success("Media Updated.");
-          getScreenByid()
+          getScreenByid();
         })
         .catch((error) => {
           toast.remove();
@@ -1417,9 +1419,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                               >
                                                 <tr
                                                   className={`${selectedComposition?.compositionName ===
-                                                    composition?.compositionName
-                                                    ? "bg-[#f3c953]"
-                                                    : ""
+                                                      composition?.compositionName
+                                                      ? "bg-[#f3c953]"
+                                                      : ""
                                                     } border-b border-[#eee] `}
                                                   onClick={() => {
                                                     handleCompositionsAdd(
@@ -1505,13 +1507,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div className="w-full flex justify-end">
                   <IoCloudUploadOutline
-                  className="cursor-pointer" 
-                  size={24} 
-                  onClick={() => {
-                    setShowAssetModal(true);
-                    setSelectedDefaultAsset("");
-                    setSetscreenMacID(screenData[0]?.macid);
-                  }} />
+                    className="cursor-pointer"
+                    size={24}
+                    onClick={() => {
+                      setShowAssetModal(true);
+                      setSelectedDefaultAsset("");
+                      setSetscreenMacID(screenData[0]?.macid);
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -1560,8 +1563,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               <span
                                 id={`changetvstatus${screen.macid}`}
                                 className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                  ? "bg-[#3AB700]"
-                                  : "bg-[#FF0000]"
+                                    ? "bg-[#3AB700]"
+                                    : "bg-[#FF0000]"
                                   }`}
                               >
                                 {screen.screenStatus == 1 ? "Live" : "offline"}

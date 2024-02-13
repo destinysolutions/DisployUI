@@ -7,6 +7,7 @@ import { getApprovalData, handleApproval } from "../../Redux/ApprovalSlice";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { APPROVEDETAILBYID } from "../../Pages/Api";
+import { socket } from "../../App";
 const Approval = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch()
   const { token } = useSelector((state) => state.root.auth);
@@ -64,6 +65,15 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
           dispatch(handleApproval({ config }))
             .then((res) => {
               if (res?.payload?.status === 200) {
+                if(res?.payload?.macID !== "" ){
+                  const Params = {
+                    id: socket.id,
+                    connection: socket.connected,
+                    macId: res?.payload?.macID,
+                  };
+                  console.log('Params', Params)
+                  socket.emit("ScreenConnected", Params);
+                }
                 Swal.fire({
                   title: "Approved!",
                   text: "Your Request has been approved.",
@@ -128,24 +138,24 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
             <div className="overflow-x-scroll sc-scrollbar rounded-lg">
               <table
-                className="screeen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                className="screen-table w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
                 cellPadding={20}
               >
                 <thead>
                   <tr className="items-center table-head-bg">
-                    <th className="sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Type
                     </th>
-                    <th className=" sticky top-0 th-bg-100 text-md font-semibold">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Name
                     </th>
-                    <th className=" sticky top-0 th-bg-100 text-md font-semibold">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Request Date
                     </th>
-                    <th className=" sticky top-0 th-bg-100 text-md font-semibold">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Requested BY
                     </th>
-                    <th className=" sticky top-0 th-bg-100 text-md font-semibold">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Action
                     </th>
                   </tr>
@@ -157,7 +167,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                         <svg
                           aria-hidden="true"
                           role="status"
-                          className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                          className="inline w-10 h-10 me-3 text-black-200 animate-spin dark:text-black-600"
                           viewBox="0 0 100 101"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
@@ -171,7 +181,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                             fill="#1C64F2"
                           />
                         </svg>
-                        <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
+                        <span className="text-2xl  hover:bg-black-400 text-black-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
                           Loading...
                         </span>
                       </div>
@@ -182,22 +192,22 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                   currentItems.map((item, index) => (
                     <tr
                       key={index}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                      className="border-b-[#E4E6FF] border-b"
                     >
-                      <td className=" border-b border-lightgray text-sm ">
+                      <td className="text-[#5E5E5E] text-center">
                         {item?.type}
                       </td>
-                      <td className=" border-b border-lightgray text-sm ">
+                      <td className="text-[#5E5E5E] text-center">
                         {item?.name}
                       </td>
-                      <td className=" border-b border-lightgray text-sm ">
+                      <td className="text-[#5E5E5E] text-center">
                         {item?.date}
                       </td>
 
-                      <td className=" border-b border-lightgray text-sm ">
+                      <td className="text-[#5E5E5E] text-center">
                         {item?.userName}
                       </td>
-                      <td className="border-b border-lightgray text-sm">
+                      <td className="text-[#5E5E5E] text-center">
                         <label className="relative inline-flex items-center me-5 cursor-pointer">
                           <input type="checkbox"
                             checked={false}
