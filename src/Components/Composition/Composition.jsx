@@ -40,6 +40,7 @@ import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
+import { Pagination } from "../Common/Common";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user } = useSelector((state) => state.root.auth);
@@ -73,8 +74,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [itemsPerPage] = useState(10);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
-  const [sidebarload, setSidebarLoad] = useState(true)
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
+  const [sidebarload, setSidebarLoad] = useState(true);
   const modalRef = useRef(null);
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
@@ -110,23 +115,30 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+console.log('sortedAndPaginatedData', sortedAndPaginatedData)
+  const endPage = currentPage * sortedAndPaginatedData?.length;
+  const startPage = Pagination(currentPage, sortedAndPaginatedData?.length);
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.menu.find(e => e.pageName === "My Composition");
+      const findData = item.payload.data.menu.find(
+        (e) => e.pageName === "My Composition"
+      );
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-      setSidebarLoad(false)
-
-    })
-  }, [])
+      setSidebarLoad(false);
+    });
+  }, []);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -171,10 +183,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
 
-    if (selectedItems.length === compositionData.length) {
+    if (selectedItems?.length === compositionData?.length) {
       setSelectedItems([]);
     } else {
-      const allIds = compositionData.map(
+      const allIds = compositionData?.map(
         (composition) => composition.compositionID
       );
       setSelectedItems(allIds);
@@ -185,8 +197,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const handleCheckboxChange = (compositionID) => {
     setSelectAllChecked(false);
     setSelectCheck(true);
-    if (selectedItems.includes(compositionID)) {
-      setSelectedItems(selectedItems.filter((id) => id !== compositionID));
+    if (selectedItems?.includes(compositionID)) {
+      setSelectedItems(selectedItems?.filter((id) => id !== compositionID));
     } else {
       setSelectedItems([...selectedItems, compositionID]);
     }
@@ -228,8 +240,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         connection: socket.connected,
         macId: compositionData
           ?.map((item) => item?.maciDs)
-          .join(",")
-          .replace(/^\s+/g, ""),
+          ?.join(",")
+          ?.replace(/^\s+/g, ""),
       };
       socket.emit("ScreenConnected", Params);
       if (connection.state == "Disconnected") {
@@ -244,8 +256,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 "ScreenConnected",
                 compositionData
                   ?.map((item) => item?.maciDs)
-                  .join(",")
-                  .replace(/^\s+/g, "")
+                  ?.join(",")
+                  ?.replace(/^\s+/g, "")
               )
               .then(() => {
                 console.log("SignalR method invoked after screen update");
@@ -260,8 +272,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
             "ScreenConnected",
             compositionData
               ?.map((item) => item?.maciDs)
-              .join(",")
-              .replace(/^\s+/g, "")
+              ?.join(",")
+              ?.replace(/^\s+/g, "")
           )
           .then(() => {
             console.log("SignalR method invoked after screen update");
@@ -310,7 +322,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 obj[value?.sectionID] = [value];
               }
             }
-            const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
+            const newdd = Object.entries(obj)?.map(([k, i]) => ({ [k]: i }));
             setPreviewModalData(newdd);
             openModal();
           }
@@ -350,14 +362,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          const upadatedComposition = compositionData.map((item) => {
+          const upadatedComposition = compositionData?.map((item) => {
             if (response?.data?.data?.compositionID === item?.compositionID) {
               return { ...item, tags: response?.data?.data?.tags };
             } else {
               return item;
             }
           });
-          const upadatedFilteredComposition = filteredCompositionData.map(
+          const upadatedFilteredComposition = filteredCompositionData?.map(
             (item) => {
               if (response?.data?.data?.compositionID === item?.compositionID) {
                 return { ...item, tags: response?.data?.data?.tags };
@@ -435,8 +447,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 };
                 socket.emit("ScreenConnected", Params);
                 // loadComposition();
-
-              })
+              });
             } else {
               const Params = {
                 id: socket.id,
@@ -593,14 +604,15 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      {sidebarload && (
-        <Loading />
-      )}
+      {sidebarload && <Loading />}
       {!sidebarload && (
         <Suspense fallback={<Loading />}>
           <>
             <div className="flex bg-white border-b border-gray">
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
               <Navbar />
             </div>
 
@@ -623,14 +635,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         onChange={handleSearchComposition}
                       />
                     </div>
-                    {permissions.isSave &&
+                    {permissions?.isSave && (
                       <button
                         onClick={() => navigation("/addcomposition")}
                         className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                       >
                         Add Composition
                       </button>
-                    }
+                    )}
                     {compositionData?.length > 0 && (
                       <>
                         <button
@@ -638,7 +650,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                           data-for="Delete"
                           onClick={handleDeleteAllCompositions}
                           className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          style={{ display: selectAllChecked ? "block" : "none" }}
+                          style={{
+                            display: selectAllChecked ? "block" : "none",
+                          }}
                         >
                           <RiDeleteBinLine />
                           <ReactTooltip
@@ -652,7 +666,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
 
                         {/* multipal remove */}
-                        {selectedItems.length !== 0 && !selectAllChecked && (
+                        {selectedItems?.length !== 0 && !selectAllChecked && (
                           <button
                             data-tip
                             data-for="Delete"
@@ -670,7 +684,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             </ReactTooltip>
                           </button>
                         )}
-                        {permissions.isDelete &&
+                        {permissions?.isDelete && (
                           <button
                             data-tip
                             data-for="Select All"
@@ -691,7 +705,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               <span>Select All</span>
                             </ReactTooltip>
                           </button>
-                        }
+                        )}
                       </>
                     )}
                   </div>
@@ -780,7 +794,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                           <>
                             {compositionData &&
                               sortedAndPaginatedData.length > 0 &&
-                              sortedAndPaginatedData.map((composition) => {
+                              sortedAndPaginatedData?.map((composition) => {
                                 return (
                                   <tr
                                     className="border-b border-b-[#E4E6FF] "
@@ -788,7 +802,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   >
                                     <td className="text-[#5E5E5E] text-center">
                                       <div className="flex gap-1">
-                                        {permissions.isDelete &&
+                                        {permissions.isDelete && (
                                           <input
                                             type="checkbox"
                                             checked={selectedItems.includes(
@@ -800,12 +814,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               )
                                             }
                                           />
-                                        }
+                                        )}
                                         {composition?.compositionName}
                                       </div>
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
-                                      {moment(composition?.dateAdded).format("LLL")}
+                                      {moment(composition?.dateAdded).format(
+                                        "LLL"
+                                      )}
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
                                       {composition?.resolution}
@@ -819,54 +835,60 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                       {composition?.screenNames}
                                     </td>
                                     <td
-                                      title={composition?.tags && composition?.tags}
+                                      title={
+                                        composition?.tags && composition?.tags
+                                      }
                                       className="text-center text-[#5E5E5E]"
                                     >
                                       <div className="flex items-center justify-center w-full flex-wrap gap-2 text-[#5E5E5E]">
                                         {(composition?.tags === "" ||
                                           composition?.tags === null) && (
-                                            <span>
-                                              <AiOutlinePlusCircle
-                                                size={30}
-                                                className="mx-auto cursor-pointer"
-                                                onClick={() => {
-                                                  setShowTagModal(true);
-                                                  composition?.tags === "" ||
-                                                    composition?.tags === null
-                                                    ? setTags([])
-                                                    : setTags(
-                                                      composition?.tags?.split(",")
+                                          <span>
+                                            <AiOutlinePlusCircle
+                                              size={30}
+                                              className="mx-auto cursor-pointer"
+                                              onClick={() => {
+                                                setShowTagModal(true);
+                                                composition?.tags === "" ||
+                                                composition?.tags === null
+                                                  ? setTags([])
+                                                  : setTags(
+                                                      composition?.tags?.split(
+                                                        ","
+                                                      )
                                                     );
-                                                  handleFetchCompositionById(
-                                                    composition?.compositionID,
-                                                    "tags"
-                                                  );
-                                                }}
-                                              />
-                                            </span>
-                                          )}
+                                                handleFetchCompositionById(
+                                                  composition?.compositionID,
+                                                  "tags"
+                                                );
+                                              }}
+                                            />
+                                          </span>
+                                        )}
                                         {composition?.tags !== null
                                           ? composition?.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              composition?.tags.split(",").length >
-                                                2
-                                                ? 3
-                                                : composition?.tags.split(",")
-                                                  .length
-                                            )
-                                            .map((text) => {
-                                              if (text.toString().length > 10) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                              ?.split(",")
+                                              ?.slice(
+                                                0,
+                                                composition?.tags?.split(",")
+                                                  ?.length > 2
+                                                  ? 3
+                                                  : composition?.tags?.split(",")
+                                                      ?.length
+                                              )
+                                              ?.map((text) => {
+                                                if (
+                                                  text?.toString()?.length > 10
+                                                ) {
+                                                  return text
+                                                    .split("")
+                                                    .slice(0, 10)
+                                                    .concat("...")
+                                                    .join("");
+                                                }
+                                                return text;
+                                              })
+                                              .join(",")
                                           : ""}
                                         {composition?.tags !== "" &&
                                           composition?.tags !== null && (
@@ -874,11 +896,13 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               onClick={() => {
                                                 setShowTagModal(true);
                                                 composition?.tags === "" ||
-                                                  composition?.tags === null
+                                                composition?.tags === null
                                                   ? setTags([])
                                                   : setTags(
-                                                    composition?.tags?.split(",")
-                                                  );
+                                                      composition?.tags?.split(
+                                                        ","
+                                                      )
+                                                    );
                                                 handleFetchCompositionById(
                                                   composition?.compositionID,
                                                   "tags"
@@ -908,7 +932,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     <td className="text-center">
                                       <div className="flex justify-center gap-2 items-center">
                                         <div className="relative">
-                                          {permissions.isSave &&
+                                          {permissions.isSave && (
                                             <button
                                               data-tip
                                               data-for="Edit"
@@ -930,10 +954,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <span>Edit</span>
                                               </ReactTooltip>
                                             </button>
-                                          }
+                                          )}
                                         </div>
                                         <div className="relative">
-                                          {permissions.isView &&
+                                          {permissions.isView && (
                                             <button
                                               data-tip
                                               data-for="Preview"
@@ -957,10 +981,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <span>Preview</span>
                                               </ReactTooltip>
                                             </button>
-                                          }
+                                          )}
                                         </div>
                                         <div className="relative">
-                                          {permissions.isSave &&
+                                          {permissions.isSave && (
                                             <button
                                               data-tip
                                               data-for="Set to Screen"
@@ -970,7 +994,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                                 setAddScreenModal(true);
                                                 setSelectData(composition);
                                                 setScreenSelected(
-                                                  composition?.screenNames?.split(",")
+                                                  composition?.screenNames?.split(
+                                                    ","
+                                                  )
                                                 );
                                                 setCompositionId(
                                                   composition?.compositionID
@@ -987,7 +1013,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <span>Set to Screen</span>
                                               </ReactTooltip>
                                             </button>
-                                          }
+                                          )}
                                         </div>
                                       </div>
                                     </td>
@@ -999,54 +1025,62 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                       </tbody>
                     </table>
                   </div>
-
-                  <div className="flex justify-end p-5">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                      <svg
-                        className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 10"
+                  <div className="flex flex-col justify-end p-5 gap-3">
+                    {/* <div className="flex items-center justify-end">
+                      <span className="text-gray-500">{`Showing ${startPage} to ${endPage} of ${compositionData?.length} entries`}</span>
+                    </div> */}
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 5H1m0 0 4 4M1 5l4-4"
-                        />
-                      </svg>
-                      Previous
-                    </button>
-
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                      Next
-                      <svg
-                        className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 10"
+                        <svg
+                          className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 5H1m0 0 4 4M1 5l4-4"
+                          />
+                        </svg>
+                        Previous
+                      </button>
+                      <div className="flex items-center me-3">
+                        <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                      </div>
+                      {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M1 5h12m0 0L9 1m4 4L9 9"
-                        />
-                      </svg>
-                    </button>
+                        Next
+                        <svg
+                          className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
+                
                 </div>
               </div>
             </div>
@@ -1087,8 +1121,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     if (selectdata?.screenIDs) {
                       let arr = [selectdata?.screenIDs];
                       let newArr = arr[0]
-                        .split(",")
-                        .map((item) => parseInt(item.trim()));
+                        ?.split(",")
+                        ?.map((item) => parseInt(item?.trim()));
                       setSelectedScreens(newArr);
                     }
                     setSelectScreenModal(true);
@@ -1131,8 +1165,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           modalVisible={modalVisible}
         />
       )}
-
-     
     </>
   );
 };

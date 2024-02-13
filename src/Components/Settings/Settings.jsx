@@ -175,7 +175,6 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   const DownloadInvoice = () => {
     const InvoiceNode = InvoiceRef.current;
-    console.log("InvoiceNode", InvoiceNode);
     if (InvoiceNode) {
       html2pdf(InvoiceNode, {
         margin: 10,

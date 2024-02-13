@@ -122,7 +122,6 @@ const VideoRecorder = ({ closeModal, onVideoRecorded, videoModalRef }) => {
           setUploadProgress(0);
           setUploading(false);
 
-          console.log("API response:", response.data);
         } catch (error) {
           console.error("Error sending data to API:", error);
           setUploadProgress(0);

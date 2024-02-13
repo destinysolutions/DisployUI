@@ -178,15 +178,22 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
     for (const event of events) {
       if (event.start < earliestStartTime) {
-        const originalDate = moment(event.start);
-        earliestStartTime = originalDate.format("DD/MM/YYYY, h:mm:ss A");
+        // const originalDate = moment(event.start);
+        // earliestStartTime = originalDate.format("DD/MM/YYYY, h:mm:ss A");
+        earliestStartTime = event.start
       }
-
+      
       if (event.end > latestEndTime) {
-        const originalDate = moment(event.end);
-        latestEndTime = originalDate.format("MM/DD/YYYY, h:mm:ss A");
+
+        // const originalDate = moment(event.end);
+        // latestEndTime = originalDate.format("MM/DD/YYYY, h:mm:ss A");
+        latestEndTime = event.end
       }
     }
+
+    latestEndTime = moment(latestEndTime).format('MM/DD/YYYY, h:mm:ss A');
+    earliestStartTime = moment(earliestStartTime).format('MM/DD/YYYY, h:mm:ss A');
+  
 
     return {
       earliestStartTime,
@@ -194,7 +201,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     };
   };
   const overallEventTimes = getOverallEventTimes(myEvents);
-
+  
   const saveEditedSchedule = () => {
     if (overallEventTimes === null) {
       toast.remove();
@@ -272,7 +279,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         setSelectScreenModal(false);
         saveEditedSchedule();
-        navigate("/myschedule")
+        navigate("/myschedule");
         const Params = {
           id: socket.id,
           connection: socket.connected,
@@ -493,7 +500,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     const Params = {
       id: socket.id,
       connection: socket.connected,
-      macId:  macids.replace(/^\s+/g, ""),
+      macId: macids.replace(/^\s+/g, ""),
     };
     socket.emit("ScreenConnected", Params);
     if (connection.state == "Disconnected") {
@@ -593,10 +600,14 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((TIMEZONEresponse) => {
         setTimezone(TIMEZONEresponse.data.data);
-
         const timezone = isEditingSchedule
           ? addedTimezoneName
-          : TIMEZONEresponse.data.data[92].timeZoneName;
+          : new Date()
+              .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+              })
+              .substring(4);
 
         setSelectedTimezoneName(timezone);
         if (!isEditingSchedule) {
@@ -605,7 +616,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               ADD_SCHEDULE,
               {
                 scheduleName: newScheduleNameInput,
-                timeZoneName: TIMEZONEresponse.data.data[92].timeZoneName,
+                timeZoneName: timezone,
                 screenAssigned: selectedScreenIdsString,
                 operation: "Insert",
               },
@@ -878,7 +889,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             Your browser does not support the video tag.
                           </video>
                         )}
-                       {/* {selectedAsset.assetType === "DOC" && (
+                        {/* {selectedAsset.assetType === "DOC" && (
                           <a
                             href={selectedAsset.assetFolderPath}
                             target="_blank"

@@ -113,7 +113,6 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleSave = () => {
     setAssetError(false);
-    console.log("selectedAsset ", selectedAsset);
   };
 
   const handleSaveNew = async (payload) => {

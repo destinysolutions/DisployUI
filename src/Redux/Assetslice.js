@@ -58,7 +58,6 @@ export const handleDeleteFolder = createAsyncThunk(
       const response = await axios.request(config2);
       return response.data;
     } catch (error) {
-      console.log("error handleDeleteFolder ", error);
       if (error?.response) {
         return rejectWithValue(error?.response?.data);
       }

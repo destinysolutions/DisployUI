@@ -130,7 +130,6 @@ export const screenDeactivateActivate = createAsyncThunk("data/AddTagsAndUpdate"
     const queryParams = new URLSearchParams(payload).toString();
     const response = await axios.put(`${SCREEN_DEACTIVATE_ACTIVATE}?${queryParams}`, null, { headers: { Authorization: `Bearer ${token}` } });
     
-    console.log("response",response);
     if (response.data.status) {
       return {
         status: true,

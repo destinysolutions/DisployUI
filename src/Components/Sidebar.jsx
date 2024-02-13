@@ -25,7 +25,7 @@ import merge_screen from "../images/MenuIcons/merge_screen.svg";
 import { useSelector } from "react-redux";
 import { getMenuAll } from "../Redux/SidebarSlice";
 import dashboardIcon from "../images/MenuIcons/dashboard_icon.svg";
-
+import { BsCalendar2PlusFill } from "react-icons/bs";
 const Sidebar = ({ sidebarOpen }) => {
   Sidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -40,7 +40,7 @@ const Sidebar = ({ sidebarOpen }) => {
 
   const [menuData, setMenuData] = useState([]);
   const [menuDataBottummenu,setMenuDataBottummenu] = useState([]);
-
+  
   const store = useSelector((state) => state.root.sidebarData);
 
   useEffect(() => {
@@ -165,6 +165,13 @@ const Sidebar = ({ sidebarOpen }) => {
         //   path: "/mergescreen",
         //   icon: <img src={merge_screen} alt="" />,
         // },
+        {
+          title: "Book your slot",
+          path: "/bookslot",
+          icon: (
+            <BsCalendar2PlusFill className=" text-gray text-xl opacity-60 " />
+          ),
+        },
       ],
     },
     {

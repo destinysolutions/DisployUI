@@ -121,7 +121,6 @@ export const assignAdvertisement = createAsyncThunk("data/postData", async (payl
           state.status = null;
         })
         .addCase(UpdateAdsRate.fulfilled, (state, action) => {
-          console.log("action",action.payload.message);    
           state.status = "succeeded";
           state.message = action.payload.message;
         })

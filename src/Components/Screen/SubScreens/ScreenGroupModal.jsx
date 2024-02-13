@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineCloseCircle, AiOutlineCloudUpload } from "react-icons/ai";
+import {
+  AiOutlineCloseCircle,
+  AiOutlineCloudUpload,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { SelectByUserScreen } from "../../../Redux/ScreenGroupSlice";
 import { SELECT_BY_USER_SCREENDETAIL } from "../../../Pages/Api";
@@ -29,11 +33,12 @@ const ScreenGroupModal = ({
 
   const [screenGroupName, setScreenGroupName] = useState("");
   const [screenGroupNameError, setScreenGroupNameError] = useState(""); // Name validationError check
-
+  const [searchScreen, setSearchScreen] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Adjust items per page as needed
-
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortedField, setSortedField] = useState(null);
   useEffect(() => {
     // const query = { ID : user.userID, sort: sortOrder, col: sortColumn };
     let config = {
@@ -50,15 +55,44 @@ const ScreenGroupModal = ({
       setLoadFirst(false);
     }
   }, [dispatch, loadFirst, store]);
+  const filteredData = Array.isArray(store.data)
+    ? store.data?.filter((item) =>
+        item?.screenName?.toLowerCase()?.includes(searchScreen?.toLowerCase())
+      )
+    : [];
 
-  const totalPages = Math.ceil(store.data?.length / itemsPerPage);
-  const paginatedData = store.data?.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-  
+  const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
+
+  // Function to sort the data based on a field and order
+  const sortData = (data, field, order) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => {
+      if (order === "asc") {
+        return a[field] > b[field] ? 1 : -1;
+      } else {
+        return a[field] < b[field] ? 1 : -1;
+      }
+    });
+    return sortedData;
+  };
+
+  const sortedAndPaginatedData = sortData(
+    filteredData,
+    sortedField,
+    sortOrder
+  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleSort = (field) => {
+    if (sortedField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortOrder("asc");
+      setSortedField(field);
+    }
   };
 
   const handleScreenGroupNameChange = (e) => {
@@ -154,6 +188,11 @@ const ScreenGroupModal = ({
     }
   }, [editSelectedScreen, store]);
 
+  const handleScreenSearch = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchScreen(searchQuery);
+  };
+
   return (
     <div>
       <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -199,6 +238,22 @@ const ScreenGroupModal = ({
                   {screenGroupNameError}
                 </p>
               )}
+            </div>
+            <div className="flex justify-end ">
+              <div className="relative mr-5">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <AiOutlineSearch className="w-5 h-5 text-gray " />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search Screen" //location ,screen, tag
+                  className="border border-primary rounded-full px-7 pl-10 py-2 search-user sm:w-52 xs:w-52"
+                  value={searchScreen}
+                  onChange={(e) => {
+                    handleScreenSearch(e);
+                  }}
+                />
+              </div>
             </div>
 
             <div className="schedual-table bg-white rounded-xl mt-5 px-3">
@@ -252,8 +307,8 @@ const ScreenGroupModal = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {store && store.data?.length > 0 ? (
-                      paginatedData?.map((screen) => (
+                    {store && sortedAndPaginatedData?.length > 0 ? (
+                      sortedAndPaginatedData?.map((screen) => (
                         <tr
                           key={screen.screenID}
                           className="mt-7 bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
@@ -300,20 +355,16 @@ const ScreenGroupModal = ({
                             style={{ wordBreak: "break-all" }}
                           >
                             <div className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-aut hover:shadow-primary-500/50">
-                              <p className="line-clamp-3">{screen.assetName}</p>
+                              <p className="line-clamp-1">{screen.assetName}</p>
                               <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
                             </div>
                           </td>
 
                           <td className="text-center break-words">
-                          {screen.scheduleName == "" ? (
-                            ""
-                            ) : (
-                              `${screen.scheduleName} Till
-                      ${moment(screen.endDate).format(
-                        "YYYY-MM-DD hh:mm"
-                      )}`
-                            )}
+                            {screen.scheduleName == ""
+                              ? ""
+                              : `${screen.scheduleName} Till
+                      ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`}
                           </td>
 
                           <td className="text-center break-words">
@@ -381,7 +432,9 @@ const ScreenGroupModal = ({
                   </svg>
                   Previous
                 </button>
-
+                <div className="flex items-center me-3">
+                  <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                </div>
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}

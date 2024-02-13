@@ -2488,7 +2488,9 @@ const Users = ({ searchValue, permissions }) => {
                     </svg>
                     Previous
                   </button>
-
+                  <div className="flex items-center me-3">
+                     <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span> 
+                    </div>
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}

@@ -56,7 +56,6 @@ const ShowAssetModal = ({
   const [searchAssest, setSearchAssest] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
   const [assetData, setAssetData] = useState([]);
-  console.log('assetData', assetData)
   const [loading, setLoading] = useState(false);
   const [assetAllData, setAssetAllData] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
@@ -139,7 +138,6 @@ const ShowAssetModal = ({
   useEffect(() => {
     const handleStorageChange = () => {
       const isClosed = localStorage.getItem("isWindowClosed");
-      console.log("isClosed", isClosed);
       if (isClosed === "true") {
         fetchData();
         localStorage.setItem("isWindowClosed", "false");
@@ -519,7 +517,7 @@ const ShowAssetModal = ({
                         // setShowAssetModal(false)
                       }}
                     >
-                      Upload
+                      Add New Assets
                     </button>
                   </Link>
                 </div>

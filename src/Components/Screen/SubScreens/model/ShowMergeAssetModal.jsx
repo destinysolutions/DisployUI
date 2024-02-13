@@ -105,7 +105,6 @@ const ShowAssetModal = ({
            asset.assetType !== "Folder" &&  asset.assetType !== "DOC" &&
            asset.assetName.toLowerCase().includes(searchAssest)
        );
-       console.log("asset",filteredAssets);
      setFilteredAssets(filteredAssets);
 
      }else{
@@ -208,7 +207,7 @@ const ShowAssetModal = ({
                       onClick={() => {
                         localStorage.setItem("isWindowClosed", "false");
                       }}>
-                      Upload
+                      Add New Assets
                     </button>
                   </Link>
                 </div>

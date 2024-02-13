@@ -39,8 +39,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     SearchData: []
   })
   const [selectAds, setSelectAds] = useState("");
-  console.log('selectAds', selectAds)
-  console.log('allAdvertisement', allAdvertisement)
+
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Adjust items per page as needed
@@ -50,7 +49,6 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectcheck, setSelectCheck] = useState(false);
   const [searchAds, setSearchAds] = useState("")
-  console.log('selectedItems', selectedItems)
   const toggleModal = () => {
     setShowModal(!showModal);
     formik.resetForm();

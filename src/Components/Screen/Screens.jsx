@@ -7,9 +7,7 @@ import {
   AiOutlineSave,
   AiOutlineSearch,
 } from "react-icons/ai";
-import {
-  MdOutlineModeEdit,
-} from "react-icons/md";
+import { MdOutlineModeEdit } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
@@ -17,16 +15,10 @@ import { MdOutlineAddToQueue } from "react-icons/md";
 import { HiUserGroup } from "react-icons/hi2";
 import PropTypes from "prop-types";
 import ScreenOTPModal from "./ScreenOTPModal";
-import {
-  RiArrowDownSLine,
-  RiDeleteBin5Line,
-} from "react-icons/ri";
+import { RiArrowDownSLine, RiDeleteBin5Line } from "react-icons/ri";
 import Footer from "../Footer";
 
-import {
-  SCREEN_DELETE_ALL,
-  SCREEN_GROUP,
-} from "../../Pages/Api";
+import { SCREEN_DELETE_ALL, SCREEN_GROUP } from "../../Pages/Api";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -58,13 +50,14 @@ import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
+import { Pagination } from "../Common/Common";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  
+
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
@@ -139,13 +132,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     ? selectedCheckboxIDs.join(",")
     : "";
   const [selectcheck, setSelectCheck] = useState(false);
-  const [sidebarload, setSidebarLoad] = useState(true)
+  const [sidebarload, setSidebarLoad] = useState(true);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6); // Adjust items per page as needed
+  const [itemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -162,7 +159,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-
   useEffect(() => {
     if (loadFist) {
       // load composition
@@ -177,8 +173,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       dispatch(handleGetTextScrollData({ token }));
       // get screen
       dispatch(handleGetScreen({ token }));
-      if(sidebarload){
-        
+      if (sidebarload) {
       }
       setLoadFist(false);
     }
@@ -196,12 +191,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(screens)
     ? screens?.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value.toString().toLowerCase().includes(searchScreen.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value.toString().toLowerCase().includes(searchScreen.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -225,23 +220,30 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  
+  const endPage = currentPage * sortedAndPaginatedData?.length;
+  const startPage = Pagination(currentPage, sortedAndPaginatedData?.length);
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.menu.find(e => e.pageName === "Screens");
+      const findData = item.payload.data.menu.find(
+        (e) => e.pageName === "Screens"
+      );
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-      setSidebarLoad(false)
-    })
-  }, [])
-
+      setSidebarLoad(false);
+    });
+  }, []);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -381,7 +383,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           .then((res) => {
             toast.remove();
             toast.success("Deleted Successfully.");
-            console.log(MACID);
           })
           .catch((error) => {
             toast.remove();
@@ -502,14 +503,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-        ? 4
-        : selectedYoutube?.youtubeId !== null &&
-          selectedYoutube?.youtubeId !== undefined
-          ? 5
-          : selectedComposition?.compositionID !== null &&
-            selectedComposition?.compositionID !== undefined
-            ? 3
-            : 0;
+      ? 4
+      : selectedYoutube?.youtubeId !== null &&
+        selectedYoutube?.youtubeId !== undefined
+      ? 5
+      : selectedComposition?.compositionID !== null &&
+        selectedComposition?.compositionID !== undefined
+      ? 3
+      : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -743,7 +744,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then((response) => { })
+      .then((response) => {})
       .catch((error) => {
         console.log(error);
       });
@@ -853,7 +854,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     const handleStorageChange = () => {
       const isClosed = localStorage.getItem("isWindowClosed");
-      console.log("isClosed", isClosed);
       if (isClosed === "true") {
         dispatch(handleGetAllSchedule({ token }));
         localStorage.setItem("isWindowClosed", "false");
@@ -869,15 +869,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      {sidebarload && (
-        <Loading />
-      )}
+      {sidebarload && <Loading />}
 
       {!sidebarload && (
         <Suspense fallback={<Loading />}>
           <>
             <div className="flex border-b border-gray">
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
               <Navbar />
             </div>
             <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
@@ -911,7 +912,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             */}
 
-                    {permissions.isSave &&
+                    {permissions.isSave && (
                       <button
                         data-tip
                         data-for="New Screen"
@@ -929,7 +930,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           <span>New Screen</span>
                         </ReactTooltip>
                       </button>
-                    }
+                    )}
 
                     {showOTPModal ? (
                       <>
@@ -946,7 +947,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                               <button
                                 className="p-1 text-xl"
-                                onClick={() => setShowNewScreenGroupPopup(false)}
+                                onClick={() =>
+                                  setShowNewScreenGroupPopup(false)
+                                }
                               >
                                 <AiOutlineCloseCircle className="text-2xl" />
                               </button>
@@ -1074,7 +1077,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 className="mr-2 text-lg"
                                 checked={lastSeenCheckboxClick}
                                 onChange={() =>
-                                  setLastSeenCheckboxClick(!lastSeenCheckboxClick)
+                                  setLastSeenCheckboxClick(
+                                    !lastSeenCheckboxClick
+                                  )
                                 }
                               />
                               Last Seen
@@ -1085,7 +1090,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 className="mr-2 text-lg"
                                 checked={nowPlayingCheckboxClick}
                                 onChange={() =>
-                                  setNowPlayingCheckboxClick(!nowPlayingCheckboxClick)
+                                  setNowPlayingCheckboxClick(
+                                    !nowPlayingCheckboxClick
+                                  )
                                 }
                               />
                               Now Playing
@@ -1140,7 +1147,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
                     </div>
 
-                    {permissions.isDelete &&
+                    {permissions.isDelete && (
                       <button
                         data-tip
                         data-for="Select All"
@@ -1162,7 +1169,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           <span>Select All</span>
                         </ReactTooltip>
                       </button>
-                    }
+                    )}
                   </div>
                 </div>
 
@@ -1286,7 +1293,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         <td className="text-[#5E5E5E]">
                                           <div className="flex items-center">
                                             <div>
-                                              {permissions.isDelete &&
+                                              {permissions.isDelete && (
                                                 <input
                                                   type="checkbox"
                                                   className="mr-2"
@@ -1299,10 +1306,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                     screen.screenID
                                                   )}
                                                 />
-                                              }
+                                              )}
                                             </div>
                                             {isEditingScreen &&
-                                              editingScreenID === screen.screenID ? (
+                                            editingScreenID ===
+                                              screen.screenID ? (
                                               <div className="flex items-center gap-2">
                                                 <input
                                                   type="text"
@@ -1329,21 +1337,24 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                 className="flex items-center gap-1"
                                                 style={{ width: "max-content" }}
                                               >
-                                                {permissions.isSave ?
+                                                {permissions.isSave ? (
                                                   <div className="flex gap-1">
                                                     <Link
                                                       to={`/screensplayer?screenID=${screen.screenID}`}
                                                     >
-                                                      {screen?.screenName?.length > 10
+                                                      {screen?.screenName
+                                                        ?.length > 10
                                                         ? screen?.screenName.slice(
-                                                          0,
-                                                          10
-                                                        ) + "..."
+                                                            0,
+                                                            10
+                                                          ) + "..."
                                                         : screen.screenName}
                                                     </Link>
                                                     <button
                                                       onClick={() => {
-                                                        setIsEditingScreen(true);
+                                                        setIsEditingScreen(
+                                                          true
+                                                        );
                                                         setEditingScreenID(
                                                           screen.screenID
                                                         );
@@ -1355,12 +1366,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                       <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" />
                                                     </button>
                                                   </div>
-                                                  : <> {screen?.screenName?.length > 10
-                                                    ? screen?.screenName.slice(
-                                                      0,
-                                                      10
-                                                    ) + "..."
-                                                    : screen.screenName} </>}
+                                                ) : (
+                                                  <>
+                                                    {" "}
+                                                    {screen?.screenName
+                                                      ?.length > 10
+                                                      ? screen?.screenName.slice(
+                                                          0,
+                                                          10
+                                                        ) + "..."
+                                                      : screen.screenName}{" "}
+                                                  </>
+                                                )}
                                               </div>
                                             )}
                                           </div>
@@ -1376,10 +1393,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         <td className="text-center">
                                           <span
                                             id={`changetvstatus${screen.macid}`}
-                                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                              ? "bg-[#3AB700]"
-                                              : "bg-[#FF0000]"
-                                              }`}
+                                            className={`rounded-full px-6 py-2 text-white text-center ${
+                                              screen.screenStatus == 1
+                                                ? "bg-[#3AB700]"
+                                                : "bg-[#FF0000]"
+                                            }`}
                                           >
                                             {screen.screenStatus == 1
                                               ? "Live"
@@ -1390,7 +1408,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                                       {lastSeenContentVisible && (
                                         <td className="p-2 text-center break-words text-[#5E5E5E]">
-                                          {screen?.lastSeen ? moment(screen?.lastSeen).format("LLL") : null}
+                                          {screen?.lastSeen
+                                            ? moment(screen?.lastSeen).format(
+                                                "LLL"
+                                              )
+                                            : null}
                                         </td>
                                       )}
 
@@ -1428,14 +1450,19 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             <button
                                               onClick={() => {
                                                 setShowScheduleModal(true);
-                                                setScheduleScreenID(screen.screenID);
+                                                setScheduleScreenID(
+                                                  screen.screenID
+                                                );
                                               }}
                                             >
                                               Set a schedule
                                             </button>
                                           ) : (
-                                            `${screen.scheduleName} Till ${moment(screen.endDate).format("YYYY-MM-DD hh:mm"
-                                            )}`
+                                            `${
+                                              screen.scheduleName
+                                            } Till ${moment(
+                                              screen.endDate
+                                            ).format("YYYY-MM-DD hh:mm")}`
                                           )}
 
                                           {showScheduleModal && (
@@ -1464,7 +1491,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                     <button
                                                       className="p-1"
                                                       onClick={() =>
-                                                        setShowScheduleModal(false)
+                                                        setShowScheduleModal(
+                                                          false
+                                                        )
                                                       }
                                                     >
                                                       <AiOutlineCloseCircle className="text-3xl" />
@@ -1526,11 +1555,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                   <input
                                                                     type="checkbox"
                                                                     className="mr-3"
-                                                                    onChange={() => handleScheduleAdd(schedule)}
+                                                                    onChange={() =>
+                                                                      handleScheduleAdd(
+                                                                        schedule
+                                                                      )
+                                                                    }
                                                                   />
                                                                   <div>
                                                                     <div>
-                                                                      {schedule.scheduleName}
+                                                                      {
+                                                                        schedule.scheduleName
+                                                                      }
                                                                     </div>
                                                                   </div>
                                                                 </td>
@@ -1567,7 +1602,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                   }
                                                                 </td>
                                                                 <td className="p-2 text-center">
-                                                                  {schedule.tags}
+                                                                  {
+                                                                    schedule.tags
+                                                                  }
                                                                 </td>
                                                                 <td className="text-center">
                                                                   <Link
@@ -1577,7 +1614,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                   >
                                                                     <BiEdit />
                                                                   </Link>
-
                                                                 </td>
                                                               </tr>
                                                             )
@@ -1607,54 +1643,66 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       )}
 
                                       {tagsContentVisible && (
-
                                         <td
                                           // title={screen?.tags && screen?.tags}
-                                          title={screen?.tags && screen?.tags.trim().split(',').map(tag => tag.trim()).join(",")}
+                                          title={
+                                            screen?.tags &&
+                                            screen?.tags
+                                              .trim()
+                                              .split(",")
+                                              .map((tag) => tag.trim())
+                                              .join(",")
+                                          }
                                           className="text-center text-[#5E5E5E]"
                                         >
-
                                           <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
                                             {(screen?.tags === "" ||
                                               screen?.tags === null) && (
-                                                <span>
-                                                  <AiOutlinePlusCircle
-                                                    size={30}
-                                                    className="mx-auto cursor-pointer"
-                                                    onClick={() => {
-                                                      setShowTagModal(true);
-                                                      screen.tags === "" ||
-                                                        screen?.tags === null
-                                                        ? setTags([])
-                                                        : setTags(
-                                                          screen?.tags?.split(",")
+                                              <span>
+                                                <AiOutlinePlusCircle
+                                                  size={30}
+                                                  className="mx-auto cursor-pointer"
+                                                  onClick={() => {
+                                                    setShowTagModal(true);
+                                                    screen.tags === "" ||
+                                                    screen?.tags === null
+                                                      ? setTags([])
+                                                      : setTags(
+                                                          screen?.tags?.split(
+                                                            ","
+                                                          )
                                                         );
-                                                      setTagUpdateScreeen(screen);
-                                                    }}
-                                                  />
-                                                </span>
-                                              )}
+                                                    setTagUpdateScreeen(screen);
+                                                  }}
+                                                />
+                                              </span>
+                                            )}
 
                                             {screen?.tags !== null
                                               ? screen.tags
-                                                .split(",")
-                                                .slice(
-                                                  0,
-                                                  screen.tags.split(",").length > 2
-                                                    ? 3
-                                                    : screen.tags.split(",").length
-                                                )
-                                                .map((text) => {
-                                                  if (text.toString().length > 10) {
-                                                    return text
-                                                      .split("")
-                                                      .slice(0, 10)
-                                                      .concat("...")
-                                                      .join("");
-                                                  }
-                                                  return text;
-                                                })
-                                                .join(",")
+                                                  .split(",")
+                                                  .slice(
+                                                    0,
+                                                    screen.tags.split(",")
+                                                      .length > 2
+                                                      ? 3
+                                                      : screen.tags.split(",")
+                                                          .length
+                                                  )
+                                                  .map((text) => {
+                                                    if (
+                                                      text.toString().length >
+                                                      10
+                                                    ) {
+                                                      return text
+                                                        .split("")
+                                                        .slice(0, 10)
+                                                        .concat("...")
+                                                        .join("");
+                                                    }
+                                                    return text;
+                                                  })
+                                                  .join(",")
                                               : ""}
                                             {screen?.tags !== "" &&
                                               screen?.tags !== null && (
@@ -1662,11 +1710,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   onClick={() => {
                                                     setShowTagModal(true);
                                                     screen.tags === "" ||
-                                                      screen?.tags === null
+                                                    screen?.tags === null
                                                       ? setTags([])
                                                       : setTags(
-                                                        screen?.tags?.split(",")
-                                                      );
+                                                          screen?.tags?.split(
+                                                            ","
+                                                          )
+                                                        );
                                                     setTagUpdateScreeen(screen);
                                                   }}
                                                   className="w-5 h-5 cursor-pointer"
@@ -1676,10 +1726,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             {/* add or edit tag modal */}
                                             {showTagModal && (
                                               <AddOrEditTagPopup
-                                                setShowTagModal={setShowTagModal}
+                                                setShowTagModal={
+                                                  setShowTagModal
+                                                }
                                                 tags={tags}
                                                 setTags={setTags}
-                                                handleTagsUpdate={handleTagsUpdate}
+                                                handleTagsUpdate={
+                                                  handleTagsUpdate
+                                                }
                                                 from="screen"
                                                 setTagUpdateScreeen={
                                                   setTagUpdateScreeen
@@ -1736,7 +1790,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div> */}
 
                                           <div className="cursor-pointer text-xl">
-                                            {permissions.isSave &&
+                                            {permissions.isSave && (
                                               <Link
                                                 to={`/screensplayer?screenID=${screen.screenID}`}
                                               >
@@ -1757,7 +1811,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   </ReactTooltip>
                                                 </button>
                                               </Link>
-                                            }
+                                            )}
                                           </div>
                                           {/* <div className="cursor-pointer text-xl text-[#EE4B2B]">
                                   <MdDeleteForever
@@ -1779,60 +1833,68 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </tbody>
                     </table>
                   </div>
-                  <div className="flex justify-end p-5">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                      <svg
-                        className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 10"
+                  <div className="flex flex-col justify-end p-5 gap-3">
+                    {/* <div className="flex items-center justify-end">
+                      <span className="text-gray-500">{`Showing ${startPage} to ${endPage} of ${screens?.length} entries`}</span>
+                    </div> */}
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 5H1m0 0 4 4M1 5l4-4"
-                        />
-                      </svg>
-                      Previous
-                    </button>
-                    {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                      Next
-                      <svg
-                        className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 10"
+                        <svg
+                          className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 5H1m0 0 4 4M1 5l4-4"
+                          />
+                        </svg>
+                        Previous
+                      </button>
+                      <div className="flex items-center me-3">
+                        <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                      </div>
+                      {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M1 5h12m0 0L9 1m4 4L9 9"
-                        />
-                      </svg>
-                    </button>
+                        Next
+                        <svg
+                          className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
+                
                 </div>
               </div>
             </div>
             <Footer />
           </>
         </Suspense>
-
       )}
       {showAssetModal && (
         <ShowAssetModal
@@ -1854,7 +1916,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           setSelectedAsset={setSelectedAsset}
         />
       )}
-     
     </>
   );
 };

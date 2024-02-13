@@ -35,7 +35,6 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
       )
     )
     : [];
-console.log('filteredData', filteredData)
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
 
   // Function to sort the data based on a field and order

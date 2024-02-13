@@ -114,7 +114,6 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
               },
             })
             .then((response) => {
-              console.log("Upload Success:", response.data);
               setImageUploadStatus((prevStatus) => ({
                 ...prevStatus,
                 [image.id]: "success",

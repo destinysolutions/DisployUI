@@ -30,7 +30,6 @@ const ScreenAccessModal = ({
     ? screenMacID.join(",")
     : "";
 
-  console.log(selectedScreenMacIdsString);
   const handleSelectAllCheckboxChange = (e) => {
     const checked = e.target.checked;
     setSelectAllChecked(checked);

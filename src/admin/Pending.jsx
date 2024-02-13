@@ -49,7 +49,6 @@ const Pending = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data.data);
         setPendingUserData(response.data.data);
       })
       .catch((error) => {
@@ -89,7 +88,6 @@ const Pending = ({ sidebarOpen, setSidebarOpen }) => {
       axios
         .request(config)
         .then((response) => {
-          console.log(response.data);
           handleUserData();
           setPendingForm(false);
         })
@@ -109,7 +107,6 @@ const Pending = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         setUserData((prevData) =>
           prevData.filter((user) => user.userID !== id)
         );

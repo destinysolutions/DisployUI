@@ -169,7 +169,7 @@ const Security = () => {
               ) : null}
               <div className="relative">
                 <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
-                  Confirm password
+                  Confirm Password
                 </label>
                 <input
                   type={confirmPasswordShow ? "text" : "password"}
@@ -302,7 +302,7 @@ const Security = () => {
                     />
                   </svg>
                 </span>{" "}
-                At least one number, symbol, or whitespace character
+                At least one uppercase letter, one lowercase letter, one digit, and one special character
               </li>
             </ul>
           </div>

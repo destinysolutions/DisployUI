@@ -175,7 +175,6 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
     });
 
     selectedMedia.videos.forEach((video, index) => {
-      console.log(video, "video");
       // Split the URL by '/'
       const urlParts = video.image.split("/");
 

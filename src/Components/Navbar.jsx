@@ -96,7 +96,6 @@ const Navbar = () => {
     (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
   );
 
-  // console.log(userDetails);
 
   return (
     // navbar component start
