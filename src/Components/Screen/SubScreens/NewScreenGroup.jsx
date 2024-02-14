@@ -183,11 +183,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const callSignalR = () => {
-    const macIds = store?.data
-      ?.flatMap((item) => item.screenGroupLists.map((screen) => screen.macID))
+    const macIds = allGroupScreen?.map((item) => item.screenGroupLists.map((screen) => screen.macID))
       .join(",")
       .replace(/^\s+/g, "");
-console.log('macIds', macIds)
     const Params = {
       id: socket.id,
       connection: socket.connected,
@@ -349,7 +347,6 @@ console.log('macIds', macIds)
           connection: socket.connected,
           macId: allMacIDs,
         };
-        console.log('allMacIDs', allMacIDs)
         socket.emit("ScreenConnected", Params);
       }
     });
@@ -367,9 +364,24 @@ console.log('macIds', macIds)
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(screenGroupDeleteAll(selectedItems));
+        let arrMacIDs = [];
+        allGroupScreen?.forEach((items) => {
+            if (selectedItems?.includes(items?.screenGroupID)) {
+                let macIDs = items?.screenGroupLists?.map((screen) => screen.macID).join(",");
+                arrMacIDs.push(macIDs);
+            }
+        });
+        
+        const macId = arrMacIDs.join(",");
+        const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId: macId,
+        };
+        socket.emit("ScreenConnected", Params);
         setSelectedItems([]);
         setSelectAll(false);
-        callSignalR();
+        // callSignalR();
       }
     });
   };
