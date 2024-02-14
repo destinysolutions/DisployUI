@@ -187,7 +187,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       ?.flatMap((item) => item.screenGroupLists.map((screen) => screen.macID))
       .join(",")
       .replace(/^\s+/g, "");
-
+console.log('macIds', macIds)
     const Params = {
       id: socket.id,
       connection: socket.connected,
@@ -247,7 +247,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleRefres = () => {
-    // callSignalR();
+    callSignalR();
   };
 
   // Multipal check
@@ -369,7 +369,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         dispatch(screenGroupDeleteAll(selectedItems));
         setSelectedItems([]);
         setSelectAll(false);
-        // callSignalR();
+        callSignalR();
       }
     });
   };
