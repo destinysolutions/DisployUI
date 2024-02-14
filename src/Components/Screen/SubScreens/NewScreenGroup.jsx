@@ -349,6 +349,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           connection: socket.connected,
           macId: allMacIDs,
         };
+        console.log('allMacIDs', allMacIDs)
         socket.emit("ScreenConnected", Params);
       }
     });
