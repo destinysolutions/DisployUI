@@ -186,6 +186,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     const macIds = allGroupScreen?.map((item) => item.screenGroupLists.map((screen) => screen.macID))
       .join(",")
       .replace(/^\s+/g, "");
+      console.log('macIds', macIds)
     const Params = {
       id: socket.id,
       connection: socket.connected,
