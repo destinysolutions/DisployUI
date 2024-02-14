@@ -247,7 +247,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleRefres = () => {
-    callSignalR();
+    // callSignalR();
   };
 
   // Multipal check
@@ -369,7 +369,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         dispatch(screenGroupDeleteAll(selectedItems));
         setSelectedItems([]);
         setSelectAll(false);
-        callSignalR();
+        // callSignalR();
       }
     });
   };
