@@ -166,7 +166,7 @@ const ScreenGroupModal = ({
     } else {
       payLoad.screenGroupID = 0;
       await handleSaveNew(payLoad);
-      socket.emit("ScreenConnected", Params);
+      // socket.emit("ScreenConnected", Params);
     }
     onClose();
   };
