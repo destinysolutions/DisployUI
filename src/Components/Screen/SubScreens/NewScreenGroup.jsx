@@ -107,7 +107,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState();
   const [loading, setLoading] = useState(false);
-  const [layotuDetails, setLayotuDetails] = useState(null);
+  const [layoutDetails, setLayoutDetails] = useState(null);
   const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
   const [viewLoading, setViewLoading] = useState(true)
   // pagination
@@ -183,7 +183,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const callSignalR = () => {
-    const macIds = allGroupScreen?.map((item) => item.screenGroupLists.map((screen) => screen.macID))
+    const macIds = allGroupScreen?.map((item) => item?.screenGroupLists?.map((screen) => screen?.macID))
       .join(",")
       .replace(/^\s+/g, "");
       console.log('macIds', macIds)
@@ -337,8 +337,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         // callSignalR();
         let allMacIDs = "";
         allGroupScreen?.map((items)=>{
-          if(items?.screenGroupID === item.screenGroupID){
-            allMacIDs = items?.screenGroupLists?.map((screen) => screen.macID)
+          if(items?.screenGroupID === item?.screenGroupID){
+            allMacIDs = items?.screenGroupLists?.map((screen) => screen?.macID)
             .join(",")
             .replace(/^\s+/g, "");
           }
@@ -368,7 +368,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         let arrMacIDs = [];
         allGroupScreen?.forEach((items) => {
             if (selectedItems?.includes(items?.screenGroupID)) {
-                let macIDs = items?.screenGroupLists?.map((screen) => screen.macID).join(",");
+                let macIDs = items?.screenGroupLists?.map((screen) => screen?.macID).join(",");
                 arrMacIDs.push(macIDs);
             }
         });
@@ -521,7 +521,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       let allMacIDs = "";
       allGroupScreen?.map((item)=>{
         if(item?.screenGroupID === getGroup?.screenGroupID){
-          allMacIDs = item?.screenGroupLists?.map((screen) => screen.macID)
+          allMacIDs = item?.screenGroupLists?.map((screen) => screen?.macID)
           .join(",")
           .replace(/^\s+/g, "");
         }
@@ -550,7 +550,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          setLayotuDetails(response.data?.data[0]);
+          setLayoutDetails(response?.data?.data[0]);
           setLoading(false);
         }
       })
@@ -563,8 +563,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const handleOpenPreview = (item) => {
     setLoading(true);
     setLoadFirst(true);
-    dispatch(openPriviewModel(item.screenGroupID)).then((item) => {
-      handleFetchLayoutById(item.payload.data?.[0]?.layoutID);
+    dispatch(openPriviewModel(item?.screenGroupID)).then((item) => {
+      handleFetchLayoutById(item?.payload?.data?.[0]?.layoutID);
       let obj = {};
       for (const [
         key,
@@ -590,7 +590,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const handleClosePreview = () => {
     setIsPreviewOpen(false);
     setLoadFirst(true);
-    setLayotuDetails(null);
+    setLayoutDetails(null);
     setPreviewData();
   };
 
@@ -1246,7 +1246,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           modalRef={modalRef}
           closeModal={handleClosePreview}
           loading={loading}
-          layotuDetails={layotuDetails}
+          layotuDetails={layoutDetails}
           previewModalData={previewData}
           modalVisible={isPreviewOpen}
           from="screen"
