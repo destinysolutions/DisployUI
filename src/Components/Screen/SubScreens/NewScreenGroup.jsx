@@ -335,7 +335,21 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         dispatch(screenGroupDelete(item.screenGroupID));
         setSelectedItems([]);
         setSelectAll(false);
-        callSignalR();
+        // callSignalR();
+        let allMacIDs = "";
+        allGroupScreen?.map((items)=>{
+          if(items?.screenGroupID === item.screenGroupID){
+            allMacIDs = items?.screenGroupLists?.map((screen) => screen.macID)
+            .join(",")
+            .replace(/^\s+/g, "");
+          }
+        })
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: allMacIDs,
+        };
+        socket.emit("ScreenConnected", Params);
       }
     });
   };
@@ -488,9 +502,23 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
     const response = dispatch(groupAssetsInUpdateScreen(payload));
     if (!response) return;
-
+    
     if (response) {
-      callSignalR();
+      let allMacIDs = "";
+      allGroupScreen?.map((item)=>{
+        if(item?.screenGroupID === getGroup?.screenGroupID){
+          allMacIDs = item?.screenGroupLists?.map((screen) => screen.macID)
+          .join(",")
+          .replace(/^\s+/g, "");
+        }
+      })
+      const Params = {
+        id: socket.id,
+        connection: socket.connected,
+        macId: allMacIDs,
+      };
+      socket.emit("ScreenConnected", Params);
+      // callSignalR();
     }
   };
 
