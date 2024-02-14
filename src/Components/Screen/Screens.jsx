@@ -1834,7 +1834,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                   <div className="flex flex-col justify-end p-5 gap-3">
                     {/* <div className="flex items-center justify-end">
-                      <span className="text-gray-500">{`Showing ${startPage} to ${endPage} of ${screens?.length} entries`}</span>
+                      <span className="text-gray-500">{`Total listing of ${screens?.length} entries`}</span>
                     </div> */}
                     <div className="flex justify-end">
                       <button

@@ -798,17 +798,19 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     <td className="text-[#5E5E5E] text-center">
                                       <div className="flex gap-1">
                                         {permissions.isDelete && (
-                                          <input
-                                            type="checkbox"
-                                            checked={selectedItems.includes(
-                                              composition?.compositionID
-                                            )}
-                                            onChange={() =>
-                                              handleCheckboxChange(
+                                          <div>
+                                            <input
+                                              type="checkbox"
+                                              checked={selectedItems.includes(
                                                 composition?.compositionID
-                                              )
-                                            }
-                                          />
+                                              )}
+                                              onChange={() =>
+                                                handleCheckboxChange(
+                                                  composition?.compositionID
+                                                )
+                                              }
+                                            />
+                                          </div>
                                         )}
                                         {composition?.compositionName}
                                       </div>
