@@ -1207,6 +1207,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           layotuDetails={layotuDetails}
           previewModalData={previewData}
           modalVisible={isPreviewOpen}
+          from="screen"
         />
       )}
      

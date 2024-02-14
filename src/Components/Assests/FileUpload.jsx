@@ -211,7 +211,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 }
               }
             } catch (error) {
-              toast.error(`Upload failed`);
+              toast.error(`Uploaded File Not Supported`);
               console.error(`Upload failed for file ${image.name}:`, error);
               handleCancel();
             }
