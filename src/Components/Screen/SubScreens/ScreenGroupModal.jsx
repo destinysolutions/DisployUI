@@ -11,6 +11,7 @@ import moment from "moment";
 import { HiUserGroup } from "react-icons/hi2";
 import { Tooltip } from "@material-tailwind/react";
 import ReactTooltip from "react-tooltip";
+import { socket } from "../../../App";
 
 const ScreenGroupModal = ({
   label,
@@ -81,7 +82,7 @@ const ScreenGroupModal = ({
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
+  
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -147,13 +148,25 @@ const ScreenGroupModal = ({
       })),
       userID: 0,
     };
-
+    let allMacID = [];
+    store?.data?.map((item) => {
+      if (selectedItems?.includes(item?.screenID)) {
+        allMacID.push(item?.macid);
+      }
+    });
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId: allMacID?.join(","),
+    };
     if (editSelectedScreen && editSelectedScreen.screenGroupID) {
       payLoad.screenGroupID = editSelectedScreen.screenGroupID;
       await updateScreen(payLoad);
+      socket.emit("ScreenConnected", Params);
     } else {
       payLoad.screenGroupID = 0;
       await handleSaveNew(payLoad);
+      // socket.emit("ScreenConnected", Params);
     }
     onClose();
   };
