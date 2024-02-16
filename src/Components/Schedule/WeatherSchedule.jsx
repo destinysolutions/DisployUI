@@ -71,8 +71,6 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [weatherScheduleData, setWeatherScheduleData] = useState([]);
   const [loadFist, setLoadFist] = useState(true);
 
-
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -86,15 +84,15 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(store?.data?.model)
     ? store.data.model.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value
-            .toString()
-            .toLowerCase()
-            .includes(searchSchedule.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value
+              .toString()
+              .toLowerCase()
+              .includes(searchSchedule.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -132,15 +130,12 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-
   useEffect(() => {
     if (loadFist) {
-      dispatch(getData())
-      setLoadFist(false)
+      dispatch(getData());
+      setLoadFist(false);
     }
-
-  }, [loadFist, store])
-
+  }, [loadFist, store]);
 
   const handleGetAll = () => {
     let config = {
@@ -164,11 +159,10 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     handleGetAll();
 
-    if (store && store.status === 'deleted') {
-      toast.success(store.message)
-      setLoadFist(true)
+    if (store && store.status === "deleted") {
+      toast.success(store.message);
+      setLoadFist(true);
     }
-
   }, [store]);
 
   const handleSelectAll = () => {
@@ -176,7 +170,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     if (selectedItems.length === store?.data?.model?.length) {
       setSelectedItems([]);
     } else {
-      const allIds = store?.data?.model.map((schedule) => schedule.weatherSchedulingID);
+      const allIds = store?.data?.model.map(
+        (schedule) => schedule.weatherSchedulingID
+      );
       setSelectedItems(allIds);
     }
   };
@@ -185,7 +181,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectAllChecked(false);
     setSelectCheck(true);
     if (selectedItems.includes(weatherSchedulingID)) {
-      setSelectedItems(selectedItems.filter((id) => id !== weatherSchedulingID));
+      setSelectedItems(
+        selectedItems.filter((id) => id !== weatherSchedulingID)
+      );
     } else {
       setSelectedItems([...selectedItems, weatherSchedulingID]);
     }
@@ -287,18 +285,27 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       },
     };
     toast.loading("Saving...");
-    axios.request(config)
+    axios
+      .request(config)
       .then((response) => {
         if (response.data.status == 200) {
           try {
             if (macids?.includes(",")) {
               let allMacIDs = macids?.split(",");
               allMacIDs?.map((item) => {
-                let Params = { id: socket.id, connection: socket.connected, macId: item, };
+                let Params = {
+                  id: socket.id,
+                  connection: socket.connected,
+                  macId: item,
+                };
                 socket.emit("ScreenConnected", Params);
-              })
+              });
             } else {
-              const Params = { id: socket.id, connection: socket.connected, macId: macids, };
+              const Params = {
+                id: socket.id,
+                connection: socket.connected,
+                macId: macids,
+              };
               socket.emit("ScreenConnected", Params);
             }
             setTimeout(() => {
@@ -308,12 +315,14 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             }, 2000);
             if (connection.state == "Disconnected") {
               connection
-                .start().then((res) => {
+                .start()
+                .then((res) => {
                   console.log("signal connected");
                 })
                 .then(() => {
                   connection
-                    .invoke("ScreenConnected", macids).then(() => {
+                    .invoke("ScreenConnected", macids)
+                    .then(() => {
                       console.log("func. invoked");
                     })
                     .catch((err) => {
@@ -323,7 +332,8 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 });
             } else {
               connection
-                .invoke("ScreenConnected", macids).then(() => {
+                .invoke("ScreenConnected", macids)
+                .then(() => {
                   console.log("func. invoked");
                 })
                 .catch((err) => {
@@ -341,7 +351,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         toast.remove();
         console.log(error);
       });
-  }
+  };
 
   const handleSearchSchedule = (event) => {
     const searchQuery = event.target.value.toLowerCase();
@@ -532,7 +542,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <input
                   type="checkbox"
-                  className="w-7 h-6"
+                  className="lg:w-7 lg:h-6 w-5 h-5"
                   checked={selectAllChecked}
                   onChange={handleSelectAll}
                 />
@@ -644,8 +654,14 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                   ) : (
                                     <input
                                       type="checkbox"
-                                      checked={selectedItems.includes(schedule.weatherSchedulingID)}
-                                      onChange={() => handleCheckboxChange(schedule.weatherSchedulingID)}
+                                      checked={selectedItems.includes(
+                                        schedule.weatherSchedulingID
+                                      )}
+                                      onChange={() =>
+                                        handleCheckboxChange(
+                                          schedule.weatherSchedulingID
+                                        )
+                                      }
                                     />
                                   )}
                                   {schedule.name}
@@ -663,7 +679,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
                               </td>
                               <td className="text-center text-[#5E5E5E]">
-                                {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
+                                {moment(schedule.endDate).format(
+                                  "YYYY-MM-DD hh:mm"
+                                )}
                               </td>
                               <td className="text-center text-[#5E5E5E]">
                                 {schedule.screenAssigned}
@@ -676,43 +694,43 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="flex items-center justify-center gap-2 w-full flex-wrap">
                                   {(schedule?.tags === "" ||
                                     schedule?.tags === null) && (
-                                      <span>
-                                        <AiOutlinePlusCircle
-                                          size={30}
-                                          className="mx-auto cursor-pointer"
-                                          onClick={() => {
-                                            setShowTagModal(true);
-                                            schedule.tags === "" ||
-                                              schedule?.tags === null
-                                              ? setTags([])
-                                              : setTags(
+                                    <span>
+                                      <AiOutlinePlusCircle
+                                        size={30}
+                                        className="mx-auto cursor-pointer"
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          schedule.tags === "" ||
+                                          schedule?.tags === null
+                                            ? setTags([])
+                                            : setTags(
                                                 schedule?.tags?.split(",")
                                               );
-                                            setUpdateTagSchedule(schedule);
-                                          }}
-                                        />
-                                      </span>
-                                    )}
+                                          setUpdateTagSchedule(schedule);
+                                        }}
+                                      />
+                                    </span>
+                                  )}
                                   {schedule.tags !== null
                                     ? schedule.tags
-                                      ?.split(",")
-                                      .slice(
-                                        0,
-                                        schedule.tags?.split(",").length > 2
-                                          ? 3
-                                          : schedule.tags?.split(",").length
-                                      )
-                                      .map((text) => {
-                                        if (text.toString().length > 10) {
-                                          return text
-                                            ?.split("")
-                                            .slice(0, 10)
-                                            .concat("...")
-                                            .join("");
-                                        }
-                                        return text;
-                                      })
-                                      .join(",")
+                                        ?.split(",")
+                                        .slice(
+                                          0,
+                                          schedule.tags?.split(",").length > 2
+                                            ? 3
+                                            : schedule.tags?.split(",").length
+                                        )
+                                        .map((text) => {
+                                          if (text.toString().length > 10) {
+                                            return text
+                                              ?.split("")
+                                              .slice(0, 10)
+                                              .concat("...")
+                                              .join("");
+                                          }
+                                          return text;
+                                        })
+                                        .join(",")
                                     : ""}
                                   {schedule?.tags !== "" &&
                                     schedule?.tags !== null && (
@@ -720,11 +738,11 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setShowTagModal(true);
                                           schedule.tags === "" ||
-                                            schedule?.tags === null
+                                          schedule?.tags === null
                                             ? setTags([])
                                             : setTags(
-                                              schedule?.tags?.split(",")
-                                            );
+                                                schedule?.tags?.split(",")
+                                              );
                                           setUpdateTagSchedule(schedule);
                                         }}
                                         className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
@@ -755,7 +773,11 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       data-for="Edit"
                                       type="button"
                                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                      onClick={() => navigate(`/addweatherschedule?weatherScheduleId=${schedule.weatherSchedulingID}`)}
+                                      onClick={() =>
+                                        navigate(
+                                          `/addweatherschedule?weatherScheduleId=${schedule.weatherSchedulingID}`
+                                        )
+                                      }
                                     >
                                       <BiEdit />
                                       <ReactTooltip
@@ -775,7 +797,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       type="button"
                                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                       onClick={() => {
-                                        setWeatherScheduleId(schedule.weatherSchedulingID);
+                                        setWeatherScheduleId(
+                                          schedule.weatherSchedulingID
+                                        );
                                         setAddScreenModal(true);
                                         setScreenSelected(
                                           schedule?.screenAssigned?.split(",")
@@ -861,7 +885,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
       {/* add screen modal start */}
       {addScreenModal && (
-        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
           <div
             ref={addScreenRef}
             className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"

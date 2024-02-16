@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { FaUserCheck } from 'react-icons/fa6'
-import { AiOutlineSearch } from 'react-icons/ai';
-import { FcOpenedFolder } from 'react-icons/fc';
-import { HiDocumentDuplicate } from 'react-icons/hi';
+import React, { useState } from "react";
+import { FaUserCheck } from "react-icons/fa6";
+import { AiOutlineSearch } from "react-icons/ai";
+import { FcOpenedFolder } from "react-icons/fc";
+import { HiDocumentDuplicate } from "react-icons/hi";
 
 const UserAssets = ({ selectUser, Asseststore, loading }) => {
   //   Pagination
@@ -28,12 +28,12 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(Asseststore?.data)
     ? Asseststore?.data?.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value.toString().toLowerCase().includes(searchAsset.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value.toString().toLowerCase().includes(searchAsset.toLowerCase())
+        )
       )
-    )
     : [];
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
 
@@ -61,24 +61,29 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
     setSearchAsset(searchQuery);
   };
   return (
-    <div className='w-full mt-8'>
+    <div className="w-full mt-8">
       <div>
         <div className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
           {selectUser === "" ? (
-            <div className='flex flex-col items-center justify-center gap-3'>
-              <FaUserCheck size={60} className='text-gray-400 dark:text-gray-500' />
-              <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-600 dark:text-white">Please Select Client</h5>
+            <div className="flex flex-col items-center justify-center gap-3">
+              <FaUserCheck
+                size={60}
+                className="text-gray-400 dark:text-gray-500"
+              />
+              <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-600 dark:text-white">
+                Please Select Client
+              </h5>
             </div>
           ) : (
             <>
-              <div className='flex justify-end items-center'>
+              <div className="flex justify-end items-center">
                 <div className="relative mr-5">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <AiOutlineSearch className="w-5 h-5 text-gray " />
                   </span>
                   <input
                     type="text"
-                    placeholder="Search Screen" //location ,screen, tag
+                    placeholder="Search Asset" //location ,screen, tag
                     className="border border-primary rounded-full px-7 pl-10 py-2 search-user"
                     value={searchAsset}
                     onChange={(e) => {
@@ -95,12 +100,11 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
                   >
                     <thead className="table-head-bg screen-table-th">
                       <tr className="items-center table-head-bg ">
-
                         <th className="text-[#5A5881] text-base text-center font-semibold w-200">
-                            Preview
+                          Preview
                         </th>
                         <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                        <div className="flex">
+                          <div className="flex">
                             Name
                             <svg
                               className="w-3 h-3 ms-1.5 mt-2 cursor-pointer"
@@ -181,15 +185,9 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
                                   <tr key={index}>
                                     <td className="text-[#5E5E5E]">
                                       {item.assetType === "Folder" && (
-                                        <div
-                                          className="text-center relative list-none rounded-md flex justify-center items-center flex-col h-full "
-                                        >
-                                          <FcOpenedFolder
-                                            className="text-8xl text-center mx-auto"
-                                          />
-                                          <span
-                                            className="cursor-pointer w-full flex-wrap break-all inline-flex justify-center"
-                                          >
+                                        <div className="text-center relative list-none rounded-md flex justify-center items-center flex-col h-full ">
+                                          <FcOpenedFolder className="text-8xl text-center mx-auto" />
+                                          <span className="cursor-pointer w-full flex-wrap break-all inline-flex justify-center">
                                             {item.assetName}
                                           </span>
                                         </div>
@@ -201,7 +199,6 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
                                             <img
                                               src={item.assetFolderPath}
                                               alt={item.assetName}
-
                                             />
                                           </div>
                                         </div>
@@ -210,16 +207,13 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
                                       {item.assetType === "Video" && (
                                         <div className="img-cover ivratio img-cover-ratio">
                                           <div>
-                                            <video
-                                              controls
-
-                                            >
+                                            <video controls>
                                               <source
                                                 src={item.assetFolderPath}
                                                 type="video/mp4"
                                               />
-                                              Your browser does not support the video
-                                              tag.
+                                              Your browser does not support the
+                                              video tag.
                                             </video>
                                           </div>
                                         </div>
@@ -228,10 +222,7 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
                                       {item.assetType === "OnlineImage" && (
                                         <div className="img-cover ivratio img-cover-ratio text-center">
                                           <div>
-                                            <img
-                                              src={item.assetFolderPath}
-
-                                            />
+                                            <img src={item.assetFolderPath} />
                                           </div>
                                         </div>
                                       )}
@@ -239,24 +230,19 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
                                       {item.assetType === "OnlineVideo" && (
                                         <div className="img-cover ivratio img-cover-ratio">
                                           <div>
-                                            <video
-                                              controls
-
-                                            >
+                                            <video controls>
                                               <source
                                                 src={item.assetFolderPath}
                                                 type="video/mp4"
                                               />
-                                              Your browser does not support the video
-                                              tag.
+                                              Your browser does not support the
+                                              video tag.
                                             </video>
                                           </div>
                                         </div>
                                       )}
                                       {item.assetType === "DOC" && (
-                                        <div
-                                          className="items-center flex justify-center cursor-pointer"
-                                        >
+                                        <div className="items-center flex justify-center cursor-pointer">
                                           <HiDocumentDuplicate className=" text-primary text-4xl mt-10 " />
                                         </div>
                                       )}
@@ -266,18 +252,12 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
                                     </td>
 
                                     <td className="text-center text-[#5E5E5E]">
-                                      <span
-
-                                      >
-                                        {item.durations}
-                                      </span>
+                                      <span>{item.durations}</span>
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
                                       {item.resolutions}
                                     </td>
-                                    <td
-                                      className="text-center text-[#5E5E5E]"
-                                    >
+                                    <td className="text-center text-[#5E5E5E]">
                                       {item.assetType}
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
@@ -344,7 +324,7 @@ const UserAssets = ({ selectUser, Asseststore, loading }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default UserAssets
+export default UserAssets;

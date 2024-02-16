@@ -450,13 +450,13 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-20 px-5 page-contain">
+      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <div className="lg:flex lg:justify-between md:justify-between sm:justify-between sm:flex flex-wrap items-center">
-            <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4">
+          <div className="grid grid-cols-3 gap-2">
+            <h1 className="col-span-2 not-italic font-medium text-2xl text-[#001737] sm-mb-3">
               Media Upload
             </h1>
-            <div className="lg:flex md:flex sm:block">
+            <div className="lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
               <Link>
                 <button
                   className="flex align-middle border-primary items-center border rounded-full lg:px-8 md:px-8 sm:px-4 xs:px-4 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
@@ -697,7 +697,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
           </div>
 
           {fileSuccessModal ? (
-            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
               <div className="relative w-full max-w-xl max-h-full">
                 <div className="relative bg-white rounded-lg shadow">
                   <div className="p-6 text-center">
@@ -725,7 +725,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
           ) : null}
 
           {fileErrorModal ? (
-            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
               <div className="relative w-full max-w-xl max-h-full">
                 <div className="relative bg-white rounded-lg shadow">
                   <div className="p-6 text-center">

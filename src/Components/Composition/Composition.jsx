@@ -635,35 +635,22 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         onChange={handleSearchComposition}
                       />
                     </div>
-                    {permissions?.isSave && (
-                      <button
-                        onClick={() => navigation("/addcomposition")}
-                        className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                      >
-                        Add Composition
-                      </button>
-                    )}
-                    {compositionData?.length > 0 && (
-                      <>
+                    <div className="flex items-center justify-end">
+                      {permissions?.isSave && (
                         <button
-                          data-tip
-                          data-for="Delete"
-                          onClick={handleDeleteAllCompositions}
-                          className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          style={{
-                            display: selectAllChecked ? "block" : "none",
-                          }}
+                          onClick={() => navigation("/addcomposition")}
+                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
                           Add Composition
                         </button>
-
-                        {/* multipal remove */}
-                        {selectedItems?.length !== 0 && !selectAllChecked && (
+                      )}
+                      {compositionData?.length > 0 && (
+                        <>
                           <button
                             data-tip
                             data-for="Delete"
                             onClick={handleDeleteAllCompositions}
-                            className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                            className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center rounded-full px-2 py-2 lg:px-3 lg:py-3 text-base hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                             style={{
                               display: selectAllChecked ? "block" : "none",
                             }}
@@ -678,35 +665,55 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               <span>Delete</span>
                             </ReactTooltip>
                           </button>
-                        )}
-                        {permissions?.isDelete && (
-                          <button
-                            data-tip
-                            data-for="Select All"
-                            className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base "
-                          >
-                            <input
-                              type="checkbox"
-                              className="w-7 h-6"
-                              checked={selectAllChecked}
-                              onChange={() => handleSelectAll()}
-                            />
-                            <ReactTooltip
-                              id="Select All"
-                              place="bottom"
-                              type="warning"
-                              effect="float"
+
+                          {/* multipal remove */}
+                          {selectedItems?.length !== 0 && !selectAllChecked && (
+                            <button
+                              data-tip
+                              data-for="Delete"
+                              className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full px-2 py-2 lg:px-3 lg:py-3  text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                              onClick={handleDeleteAllCompositions}
                             >
-                              <span>Select All</span>
-                            </ReactTooltip>
-                          </button>
-                        )}
-                      </>
-                    )}
+                              <RiDeleteBinLine />
+                              <ReactTooltip
+                                id="Delete"
+                                place="bottom"
+                                type="warning"
+                                effect="float"
+                              >
+                                <span>Delete</span>
+                              </ReactTooltip>
+                            </button>
+                          )}
+                          {permissions?.isDelete && (
+                            <button
+                              data-tip
+                              data-for="Select All"
+                              className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base "
+                            >
+                              <input
+                                type="checkbox"
+                                className="lg:w-7 lg:h-6 w-5 h-5"
+                                checked={selectAllChecked}
+                                onChange={() => handleSelectAll()}
+                              />
+                              <ReactTooltip
+                                id="Select All"
+                                place="bottom"
+                                type="warning"
+                                effect="float"
+                              >
+                                <span>Select All</span>
+                              </ReactTooltip>
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-xl mt-8 shadow screen-section">
-                  <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                <div className="bg-white rounded-xl lg:mt-8 mt-5 shadow screen-section">
+                  <div className="rounded-xl lg:mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
                     <table
                       className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                       cellPadding={20}

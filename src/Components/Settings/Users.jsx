@@ -652,7 +652,7 @@ const Users = ({ searchValue, permissions }) => {
   return (
     <>
       {showuserModal && (
-        <div className="backdrop">
+        <div className="backdrop z-9990">
           <div ref={modalRef} className="user-model">
             <div className="hours-heading flex justify-between items-center p-5 border-b border-gray">
               <h1 className="text-lg font-medium text-primary">{labelTitle}</h1>
@@ -664,7 +664,7 @@ const Users = ({ searchValue, permissions }) => {
               />
             </div>
             <hr className="border-gray " />
-            <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 ">
+            <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 max-h-96 overflow-auto">
               <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl">
                 <div className="grid grid-cols-12 gap-6">
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
@@ -864,7 +864,7 @@ const Users = ({ searchValue, permissions }) => {
                     </div>
                   </div>
 
-                  <div className="lg:col-span-4 md:col-span-4 sm:col-span-12 xs:col-span-12">
+                  <div className="lg:col-span-4 md:col-span-12 sm:col-span-12 xs:col-span-12">
                     <div className="mt-3 flex items-center">
                       <input
                         className="border border-primary mr-3 rounded h-6 w-6"
@@ -875,7 +875,7 @@ const Users = ({ searchValue, permissions }) => {
                       <label>isActive</label>
                     </div>
                   </div>
-                  <div className="lg:col-span-8 md:col-span-8 sm:col-span-12 xs:col-span-12">
+                  <div className="lg:col-span-8 md:col-span-12 sm:col-span-12 xs:col-span-12">
                     <div className="flex items-center justify-end">
                       <div className="layout-img me-3">
                         {file && editProfile !== 1 ? (
@@ -895,7 +895,7 @@ const Users = ({ searchValue, permissions }) => {
                       </div>
                       <div className="layout-detaills me-3">
                         <button
-                          className="px-5 bg-primary text-white rounded-full py-2 border border-primary "
+                          className="lg:px-5 md:px-5 px-2 bg-primary text-white rounded-full py-2 border border-primary "
                           onClick={handleClick}
                         >
                           Profile photo
@@ -910,14 +910,14 @@ const Users = ({ searchValue, permissions }) => {
                       </div>
                       <button
                         onClick={() => setSelectScreenModal(true)}
-                        className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3 "
+                        className="lg:px-5 md:px-5 px-2 bg-primary text-white rounded-full py-2 border border-primary me-3 "
                       >
                         Screen Access
                       </button>
                     </div>
                   </div>
                   {selectScreenModal && (
-                    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                       <div
                         ref={selectScreenRef}
                         className="w-auto mx-auto lg:max-w-2xl md:max-w-sm sm:max-w-xs"
@@ -1135,7 +1135,7 @@ const Users = ({ searchValue, permissions }) => {
 
       {showUserProfile ? (
         <>
-          <div className="lg:p-4 md:p-4 sm:p-2 xs:p-2 ">
+          <div className="lg:p-4 md:p-4 sm:p-2 xs:p-2 mt-3">
             <h1
               onClick={() => {
                 setShowUserProfile(false);
@@ -2101,7 +2101,7 @@ const Users = ({ searchValue, permissions }) => {
             <div>
               {permissions.isSave && (
                 <button
-                  className="flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  className="flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 lg:mb-5 lg:mt-0 mt-3 mb-4 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   onClick={() => {
                     setUserDetailData([]);
                     setFirstName("");
@@ -2126,8 +2126,8 @@ const Users = ({ searchValue, permissions }) => {
               )}
             </div>
             <div className="clear-both">
-              <div className="bg-white rounded-xl mt-8 shadow screen-section ">
-                <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
+              <div className="bg-white rounded-xl lg:mt-8 shadow screen-section ">
+                <div className="rounded-xl lg:mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
                   <table
                     className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                     cellPadding={20}
@@ -2344,7 +2344,7 @@ const Users = ({ searchValue, permissions }) => {
                   </table>
                 </div>
                 {screenAccessModal && (
-                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                     <div
                       ref={screenAccessModalRef}
                       className="w-auto mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
@@ -2494,8 +2494,8 @@ const Users = ({ searchValue, permissions }) => {
                     Previous
                   </button>
                   <div className="flex items-center me-3">
-                     <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span> 
-                    </div>
+                    <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                  </div>
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}

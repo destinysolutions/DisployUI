@@ -208,7 +208,7 @@ const ScreenGroupModal = ({
 
   return (
     <div>
-      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
         <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
@@ -252,8 +252,8 @@ const ScreenGroupModal = ({
                 </p>
               )}
             </div>
-            <div className="flex justify-end ">
-              <div className="relative mr-5">
+            <div className="p-2 ">
+              <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <AiOutlineSearch className="w-5 h-5 text-gray " />
                 </span>
@@ -269,7 +269,7 @@ const ScreenGroupModal = ({
               </div>
             </div>
 
-            <div className="schedual-table bg-white rounded-xl mt-5 px-3">
+            <div className="p-2 relative overflow-x-auto shadow-md sm:rounded-lg col-span-2 sm:col-span-2 max-h-325">
               <div className="relative overflow-x-auto sc-scrollbar rounded-lg shadow">
                 <table
                   className="screen-table min-w-full leading-normal text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"

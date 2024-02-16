@@ -157,7 +157,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -600,7 +599,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       <button
                         data-tip
                         data-for="Delete"
-                        className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full px-2 py-2 lg:px-3 lg:py-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         onClick={handelDeleteAllSchedule}
                         style={{ display: selectAllChecked ? "block" : "none" }}
                       >
@@ -620,7 +619,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           data-tip
                           data-for="Delete"
-                          className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full px-2 py-2 lg:px-3 lg:py-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           onClick={handelDeleteAllSchedule}
                         >
                           <RiDeleteBin5Line className="text-lg" />
@@ -643,7 +642,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         >
                           <input
                             type="checkbox"
-                            className="w-7 h-6"
+                            className="lg:w-7 lg:h-6 w-5 h-5"
                             checked={selectAllChecked}
                             onChange={handleSelectAll}
                           />
@@ -1026,7 +1025,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       Previous
                     </button>
                     <div className="flex items-center me-3">
-                     <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span> 
+                      <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
                     </div>
                     {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
                     <button
@@ -1064,7 +1063,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
       {/* add screen modal start */}
       {addScreenModal && (
-        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
           <div
             ref={addScreenRef}
             className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"

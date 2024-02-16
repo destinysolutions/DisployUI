@@ -135,11 +135,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const paginatedData = mergeData
     ? mergeData?.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    )
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
     : [];
-    
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -239,7 +239,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => { };
+  const handleAssetUpdate = () => {};
 
   const editMergeScreenName = (index) => {
     // mergeNameUpdate
@@ -430,7 +430,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   >
                     <input
                       type="checkbox"
-                      className="w-6 h-5"
+                      className="lg:w-7 lg:h-6 w-5 h-5"
                       checked={selectAll}
                       onChange={handleSelectAll}
                       readOnly
@@ -721,10 +721,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                       <td className="p-2 text-center">
                                         <span
                                           id={`changetvstatus${screen.macID}`}
-                                          className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                          className={`rounded-full px-6 py-2 text-white text-center ${
+                                            screen.screenStatus == 1
                                               ? "bg-[#3AB700]"
                                               : "bg-[#FF0000]"
-                                            }`}
+                                          }`}
                                         >
                                           {screen.screenStatus == 1
                                             ? "Live"
@@ -753,47 +754,47 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                       >
                                         {(screen?.tags === "" ||
                                           screen?.tags === null) && (
-                                            <span>
-                                              <AiOutlinePlusCircle
-                                                size={30}
-                                                className="mx-auto cursor-pointer"
-                                                onClick={() => {
-                                                  setShowTagModal(true);
-                                                  screen.tags === "" ||
-                                                    screen?.tags === null
-                                                    ? setTags([])
-                                                    : setTags(
+                                          <span>
+                                            <AiOutlinePlusCircle
+                                              size={30}
+                                              className="mx-auto cursor-pointer"
+                                              onClick={() => {
+                                                setShowTagModal(true);
+                                                screen.tags === "" ||
+                                                screen?.tags === null
+                                                  ? setTags([])
+                                                  : setTags(
                                                       screen?.tags?.split(",")
                                                     );
-                                                  setTagUpdateScreeen(screen);
-                                                }}
-                                              />
-                                            </span>
-                                          )}
+                                                setTagUpdateScreeen(screen);
+                                              }}
+                                            />
+                                          </span>
+                                        )}
                                         {screen?.tags !== null
                                           ? screen.tags
-                                            ?.split(",")
-                                            .slice(
-                                              0,
-                                              screen.tags?.split(",").length >
-                                                2
-                                                ? 3
-                                                : screen.tags?.split(",")
-                                                  .length
-                                            )
-                                            .map((text) => {
-                                              if (
-                                                text.toString().length > 10
-                                              ) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                              ?.split(",")
+                                              .slice(
+                                                0,
+                                                screen.tags?.split(",").length >
+                                                  2
+                                                  ? 3
+                                                  : screen.tags?.split(",")
+                                                      .length
+                                              )
+                                              .map((text) => {
+                                                if (
+                                                  text.toString().length > 10
+                                                ) {
+                                                  return text
+                                                    .split("")
+                                                    .slice(0, 10)
+                                                    .concat("...")
+                                                    .join("");
+                                                }
+                                                return text;
+                                              })
+                                              .join(",")
                                           : ""}
                                         {screen?.tags !== "" &&
                                           screen?.tags !== null && (
@@ -801,11 +802,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                               onClick={() => {
                                                 setShowTagModal(true);
                                                 screen.tags === "" ||
-                                                  screen?.tags === null
+                                                screen?.tags === null
                                                   ? setTags([])
                                                   : setTags(
-                                                    screen?.tags?.split(",")
-                                                  );
+                                                      screen?.tags?.split(",")
+                                                    );
                                                 setTagUpdateScreeen(screen);
                                               }}
                                               className="mx-auto  w-5 h-5 cursor-pointer "

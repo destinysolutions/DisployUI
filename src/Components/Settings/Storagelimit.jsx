@@ -64,7 +64,7 @@ const Storagelimit = () => {
           Storage Limit
         </h1>
       </div>
-      <div className="px-6 pb-6 mt-2 ">
+      <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2 pb-5 mt-2 ">
         <div className="rounded-xl shadow">
           <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
             <table

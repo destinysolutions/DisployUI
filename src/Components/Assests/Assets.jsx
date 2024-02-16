@@ -680,12 +680,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
             <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="grid lg:grid-cols-4 gap-2">
+                <div className="grid lg:grid-cols-2 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
                     Assets
                   </h1>
-                  <div className="lg:col-span-3 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
-                    <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
+                  <div className="lg:flex items-center md:mt-0 lg:mt-0 md:justify-end flex-wrap">
+                    <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 ">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <AiOutlineSearch className="w-5 h-5 text-gray " />
                       </span>
@@ -696,70 +696,74 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         onChange={debouncedOnChange}
                       />
                     </div>
-                    {permissions.isSave && (
-                      <div className="flex items-center justify-center w-full">
-                        <button
-                          className=" dashboard-btn flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 px-2 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={createFolder}
-                          disabled={FolderDisable}
-                        >
-                          <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
-                          New Folder
-                        </button>
-                        <button
-                          onClick={() => openFileUpload()}
-                          className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2 px-2 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        >
-                          <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
-                          Upload
-                        </button>
-                      </div>
-                    )}
-                    <div className="flex items-center justify-center w-full">
-                      <ul className="flex items-center  xs:mt-2 sm:mt-2 md:mt-0 lg:mt-0 xs:mr-1 mr-3 rounded-full border-2 border-SlateBlue">
-                        <li className="flex items-center ">
-                          <button
-                            className={
-                              asstab === 1 ? "tabshow tabassactive " : "asstab "
-                            }
-                          >
-                            <RxDashboard className="text-primary text-lg" />
-                          </button>
-                        </li>
-                        <li className="flex items-center ">
-                          <button
-                            className={
-                              asstab === 2 ? "tabshow right " : "asstab "
-                            }
-                            onClick={() => gridTableDisplay()}
-                          >
-                            <AiOutlineUnorderedList className="text-primary text-lg" />
-                          </button>
-                        </li>
-                      </ul>
+                  </div>
+                </div>
 
-                      {store.data?.length !== 0 && (
-                        <>
-                          <button
-                            className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                            onClick={handleDeleteAll}
-                            style={{ display: selectAll ? "block" : "none" }}
-                          >
-                            <RiDeleteBin5Line className="text-lg" />
-                          </button>
-                          <button className="flex align-middle   text-white items-center  rounded-full p-2 text-base">
-                            {permissions.isDelete && (
-                              <input
-                                type="checkbox"
-                                className="w-7 h-6"
-                                checked={selectAll}
-                                onChange={handleSelectAll}
-                              />
-                            )}
-                          </button>
-                        </>
-                      )}
+                <div className="lg:mt-5 mt-3 lg:flex items-center lg:justify-end justify-center ">
+                  {permissions.isSave && (
+                    <div className="flex items-center justify-center lg:mb-0 mb-3">
+                      <button
+                        className=" dashboard-btn flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 px-2 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        onClick={createFolder}
+                        disabled={FolderDisable}
+                      >
+                        <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
+                        New Folder
+                      </button>
+                      <button
+                        onClick={() => openFileUpload()}
+                        className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2 px-2 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                      >
+                        <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
+                        Upload
+                      </button>
                     </div>
+                  )}
+
+                  <div className="flex items-center justify-center">
+                    <ul className="flex items-center xs:mr-1 mr-3 rounded-full border-2 border-SlateBlue">
+                      <li className="flex items-center ">
+                        <button
+                          className={
+                            asstab === 1 ? "tabshow tabassactive " : "asstab "
+                          }
+                        >
+                          <RxDashboard className="text-primary text-lg" />
+                        </button>
+                      </li>
+                      <li className="flex items-center ">
+                        <button
+                          className={
+                            asstab === 2 ? "tabshow right " : "asstab "
+                          }
+                          onClick={() => gridTableDisplay()}
+                        >
+                          <AiOutlineUnorderedList className="text-primary text-lg" />
+                        </button>
+                      </li>
+                    </ul>
+
+                    {store.data?.length !== 0 && (
+                      <>
+                        <button
+                          className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          onClick={handleDeleteAll}
+                          style={{ display: selectAll ? "block" : "none" }}
+                        >
+                          <RiDeleteBin5Line className="text-lg" />
+                        </button>
+                        <button className="flex align-middle   text-white items-center  rounded-full p-2 text-base">
+                          {permissions.isDelete && (
+                            <input
+                              type="checkbox"
+                              className="w-7 h-6"
+                              checked={selectAll}
+                              onChange={handleSelectAll}
+                            />
+                          )}
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -1233,7 +1237,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     )}
 
                     {addScreenModal && (
-                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                         <div
                           ref={addScreenRef}
                           className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"

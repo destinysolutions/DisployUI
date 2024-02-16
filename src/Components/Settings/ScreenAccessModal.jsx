@@ -156,7 +156,7 @@ const ScreenAccessModal = ({
   }, []);
 
   return (
-    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
       <div
         ref={selectScreenRef}
         className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
@@ -263,14 +263,10 @@ const ScreenAccessModal = ({
                       </td>
 
                       <td className="text-center break-words">
-                      {screen.scheduleName == "" ? (
-                        ""
-                        ) : (
-                          `${screen.scheduleName} Till
-                  ${moment(screen.endDate).format(
-                    "YYYY-MM-DD hh:mm"
-                  )}`
-                        )}
+                        {screen.scheduleName == ""
+                          ? ""
+                          : `${screen.scheduleName} Till
+                  ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`}
                       </td>
                       <td className="text-center break-words">
                         {screen?.tags !== null

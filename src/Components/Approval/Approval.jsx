@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { APPROVEDETAILBYID } from "../../Pages/Api";
 import { socket } from "../../App";
 const Approval = ({ sidebarOpen, setSidebarOpen }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [ApprovalList, setApprovalList] = useState([]);
@@ -25,21 +25,21 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
 
   // pagination End
 
-
-
   const fetchApproval = () => {
-    setLoading(true)
-    dispatch(getApprovalData()).then((res) => {
-      setApprovalList(res?.payload?.data)
-      setLoading(false)
-    }).catch((error) => {
-      console.log('error', error)
-    })
-  }
+    setLoading(true);
+    dispatch(getApprovalData())
+      .then((res) => {
+        setApprovalList(res?.payload?.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
 
   useEffect(() => {
-    fetchApproval()
-  }, [])
+    fetchApproval();
+  }, []);
 
   const HandleToggle = (selectApproval) => {
     try {
@@ -65,7 +65,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
           dispatch(handleApproval({ config }))
             .then((res) => {
               if (res?.payload?.status === 200) {
-                if(res?.payload?.macID !== "" ){
+                if (res?.payload?.macID !== "") {
                   const Params = {
                     id: socket.id,
                     connection: socket.connected,
@@ -78,14 +78,14 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                   text: "Your Request has been approved.",
                   icon: "success",
                   showConfirmButton: false,
-                  timer: 1500
+                  timer: 1500,
                 });
-                fetchApproval()
+                fetchApproval();
               }
             })
             .catch((error) => {
-              console.log('error', error)
-            })
+              console.log("error", error);
+            });
         } else {
           let config = {
             method: "post",
@@ -104,14 +104,14 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                   text: "Your Request has been cancelled.",
                   icon: "error",
                   showConfirmButton: false,
-                  timer: 1500
+                  timer: 1500,
                 });
-                fetchApproval()
+                fetchApproval();
               }
             })
             .catch((error) => {
-              console.log('error', error)
-            })
+              console.log("error", error);
+            });
         }
       });
     } catch (error) {
@@ -122,12 +122,12 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <>
       {/* sidebar and navbar display start */}
-      <div className="flex border-b border-gray mt-5">
+      <div className="flex ">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
       {/* sidebar and navbar display end */}
-      <div className="pt-16 px-5 page-contain">
+      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
@@ -187,12 +187,10 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                     </td>
                   </tr>
                 )}
-                {!loading && currentItems.length > 0 && (
+                {!loading &&
+                  currentItems.length > 0 &&
                   currentItems.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="border-b-[#E4E6FF] border-b"
-                    >
+                    <tr key={index} className="border-b-[#E4E6FF] border-b">
                       <td className="text-[#5E5E5E] text-center">
                         {item?.type}
                       </td>
@@ -208,19 +206,19 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                       <td className="text-[#5E5E5E] text-center">
                         <label className="relative inline-flex items-center me-5 cursor-pointer">
-                          <input type="checkbox"
+                          <input
+                            type="checkbox"
                             checked={false}
                             className="sr-only peer"
                             onChange={(e) => {
-                              HandleToggle(item)
+                              HandleToggle(item);
                             }}
                           />
                           <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
                         </label>
                       </td>
                     </tr>
-                  ))
-                )}
+                  ))}
                 {!loading && currentItems.length === 0 && (
                   <tr>
                     <td colSpan={5}>
@@ -263,7 +261,10 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
 
                 <button
                   onClick={() => setCurrentPage(currentPage + 1)}
-                  disabled={currentPage === Math.ceil(ApprovalList?.length / itemsPerPage)}
+                  disabled={
+                    currentPage ===
+                    Math.ceil(ApprovalList?.length / itemsPerPage)
+                  }
                   className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
                   Next
@@ -288,7 +289,6 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
             {/* Pagination End */}
           </div>
         </div>
-
       </div>
     </>
   );

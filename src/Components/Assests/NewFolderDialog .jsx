@@ -97,11 +97,11 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
           const Params = {
             id: socket.id,
             connection: socket.connected,
-            macId:  macids,
+            macId: macids,
           };
           socket.emit("ScreenConnected", Params);
           setTimeout(() => {
-            toast.remove()
+            toast.remove();
             setSelectScreenModal(false);
             setAddScreenModal(false);
           }, 1000);
@@ -802,7 +802,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                         )}
                       </div>
                       {deleteMessage && (
-                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                           <div className="relative w-full max-w-xl max-h-full">
                             <div className="relative bg-white rounded-lg shadow">
                               <div className="py-6 text-center">
@@ -865,7 +865,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           {addScreenModal && (
-            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
               <div
                 ref={addScreenRef}
                 className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"

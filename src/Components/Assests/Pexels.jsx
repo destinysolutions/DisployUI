@@ -146,7 +146,7 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
                   navigate(-1);
                 } else {
                   dispatch(handleNavigateFromComposition());
-                  localStorage.setItem('isWindowClosed', 'true');
+                  localStorage.setItem("isWindowClosed", "true");
                   window.close();
                 }
               }
@@ -281,164 +281,160 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
           </div>
           {/* Conditional rendering based on selected media type */}
           <div className="container mx-auto">
-            <div>
-              <div className="unsplash-section h-[60vh] bg-white rounded-lg">
-                {selectedMediaType === "images" ? (
-                  <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
-                    {photos.map((photo, index) => (
-                      <div
-                        key={index}
-                        className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box"
-                        onClick={() => handleSelectMedia("images", photo)}
-                        style={{
-                          border: selectedMedia.images.includes(photo)
-                            ? "2px solid blue"
-                            : "2px solid white",
-                        }}
+            <div className="unsplash-section lg:max-h-80 max-h-60 bg-white rounded-lg">
+              {selectedMediaType === "images" ? (
+                <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
+                  {photos.map((photo, index) => (
+                    <div
+                      key={index}
+                      className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box"
+                      onClick={() => handleSelectMedia("images", photo)}
+                      style={{
+                        border: selectedMedia.images.includes(photo)
+                          ? "2px solid blue"
+                          : "2px solid white",
+                      }}
+                    >
+                      <img
+                        src={photo.src.original}
+                        alt={photo.photographer}
+                        className="relative unsplash-img"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
+                  {media.map((item, index) => (
+                    <div
+                      key={index}
+                      className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box"
+                      onClick={() => handleSelectMedia("videos", item)}
+                      style={{
+                        border: selectedMedia.videos.includes(item)
+                          ? "2px solid blue"
+                          : "2px solid white",
+                      }}
+                    >
+                      <video
+                        width="100%"
+                        height="200px"
+                        controls
+                        className="relative unsplash-img"
                       >
+                        <source
+                          src={item.video_files[0].link}
+                          type="video/mp4"
+                        />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="text-center mt-5">
+                <button
+                  onClick={handleLoadMore}
+                  className="text-white py-3 px-3 rounded-md fs-3 my-4 flex items-center justify-center mx-auto bg-SlateBlue hover:bg-black"
+                >
+                  <BiLoaderCircle /> Load More
+                </button>
+              </div>
+            </div>
+
+            <div className="text-center mt-5">
+              <button
+                onClick={handleMediaUpload}
+                className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
+                disabled={uploadInProgress}
+              >
+                {uploadInProgress ? "Uploading..." : "Upload Media"}
+              </button>
+            </div>
+
+            <div className="  bg-white shadow-2xl max-w-xs">
+              {uploadInProgress && (
+                <>
+                  {/* For Images */}
+                  {selectedMedia.images.map((image) => (
+                    <div
+                      key={image.id}
+                      className="image-upload-progress progress-container"
+                    >
+                      <div className="progress flex items-center">
+                        <div
+                          className="progress-bar"
+                          style={{
+                            width: `${imageUploadProgress[image.id]}%`,
+                          }}
+                        ></div>
+                        {imageUploadProgress[image.id]}%
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* For Videos */}
+                  {selectedMedia.videos.map((video) => (
+                    <div
+                      key={video.id}
+                      className="video-upload-progress progress-container"
+                    >
+                      <div className="progress flex items-center">
+                        <div
+                          className="progress-bar"
+                          style={{
+                            width: `${videoUploadProgress[video.id]}%`,
+                          }}
+                        ></div>
+                        {videoUploadProgress[video.id]}%
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+
+            {/* Display selected media as uploaded */}
+            {uploadedMedia.images.length > 0 && (
+              <div>
+                <h2>Uploaded Photos</h2>
+                <ul>
+                  {uploadedMedia.images.map((photoId) => {
+                    const photo = photos.find((photo) => photo.id === photoId);
+                    return (
+                      <li key={photo.id}>
                         <img
                           src={photo.src.original}
                           alt={photo.photographer}
-                          className="relative unsplash-img"
                         />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
-                    {media.map((item, index) => (
-                      <div
-                        key={index}
-                        className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box"
-                        onClick={() => handleSelectMedia("videos", item)}
-                        style={{
-                          border: selectedMedia.videos.includes(item)
-                            ? "2px solid blue"
-                            : "2px solid white",
-                        }}
-                      >
-                        <video
-                          width="100%"
-                          height="200px"
-                          controls
-                          className="relative unsplash-img"
-                        >
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+
+            {uploadedMedia.videos.length > 0 && (
+              <div>
+                <h2>Uploaded Videos</h2>
+                <ul>
+                  {uploadedMedia.videos.map((videoId) => {
+                    const video = media.find((item) => item.id === videoId);
+                    return (
+                      <li key={video.id}>
+                        <video width="320" height="240" controls>
                           <source
-                            src={item.video_files[0].link}
+                            src={video.video_files[0].link}
                             type="video/mp4"
                           />
                           Your browser does not support the video tag.
                         </video>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <div className="text-center mt-5">
-                  <button
-                    onClick={handleLoadMore}
-                    className="text-white py-3 px-3 rounded-md fs-3 my-4 flex items-center justify-center mx-auto bg-SlateBlue hover:bg-black"
-                  >
-                    <BiLoaderCircle /> Load More
-                  </button>
-                </div>
+                      </li>
+                    );
+                  })}
+                </ul>
               </div>
-
-              <div className="text-center mt-5">
-                <button
-                  onClick={handleMediaUpload}
-                  className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
-                  disabled={uploadInProgress}
-                >
-                  {uploadInProgress ? "Uploading..." : "Upload Media"}
-                </button>
-              </div>
-
-              <div className="  bg-white shadow-2xl max-w-xs">
-                {uploadInProgress && (
-                  <>
-                    {/* For Images */}
-                    {selectedMedia.images.map((image) => (
-                      <div
-                        key={image.id}
-                        className="image-upload-progress progress-container"
-                      >
-                        <div className="progress flex items-center">
-                          <div
-                            className="progress-bar"
-                            style={{
-                              width: `${imageUploadProgress[image.id]}%`,
-                            }}
-                          ></div>
-                          {imageUploadProgress[image.id]}%
-                        </div>
-                      </div>
-                    ))}
-
-                    {/* For Videos */}
-                    {selectedMedia.videos.map((video) => (
-                      <div
-                        key={video.id}
-                        className="video-upload-progress progress-container"
-                      >
-                        <div className="progress flex items-center">
-                          <div
-                            className="progress-bar"
-                            style={{
-                              width: `${videoUploadProgress[video.id]}%`,
-                            }}
-                          ></div>
-                          {videoUploadProgress[video.id]}%
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                )}
-              </div>
-
-              {/* Display selected media as uploaded */}
-              {uploadedMedia.images.length > 0 && (
-                <div>
-                  <h2>Uploaded Photos</h2>
-                  <ul>
-                    {uploadedMedia.images.map((photoId) => {
-                      const photo = photos.find(
-                        (photo) => photo.id === photoId
-                      );
-                      return (
-                        <li key={photo.id}>
-                          <img
-                            src={photo.src.original}
-                            alt={photo.photographer}
-                          />
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
-
-              {uploadedMedia.videos.length > 0 && (
-                <div>
-                  <h2>Uploaded Videos</h2>
-                  <ul>
-                    {uploadedMedia.videos.map((videoId) => {
-                      const video = media.find((item) => item.id === videoId);
-                      return (
-                        <li key={video.id}>
-                          <video width="320" height="240" controls>
-                            <source
-                              src={video.video_files[0].link}
-                              type="video/mp4"
-                            />
-                            Your browser does not support the video tag.
-                          </video>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>

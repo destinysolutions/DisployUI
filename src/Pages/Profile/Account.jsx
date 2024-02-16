@@ -77,7 +77,7 @@ const Account = () => {
     shouldFocusError: true,
     resolver: yupResolver(profileSchema),
   });
-  const PHoneNumber = watch("phone")
+  const PHoneNumber = watch("phone");
   const onSubmit = (data) => {
     const { phone } = data;
 
@@ -107,7 +107,7 @@ const Account = () => {
       response.then((res) => {
         if (res?.type.includes("fulfilled")) {
           toast.success("profile edited successfully.", { duration: 2000 });
-          setFile(null)
+          setFile(null);
         }
       });
     }
@@ -166,8 +166,8 @@ const Account = () => {
   return (
     <>
       {/* {loading ? toast.loading("Fetching details....") : toast.remove()} */}
-      <div className="rounded-xl mt-8 shadow bg-white">
-        <h4 className="text-xl font-bold p-5">Profile Details</h4>
+      <div className="rounded-xl mt-5 shadow-lg bg-white">
+        <h4 className="text-xl font-bold px-5">Profile Details</h4>
         <div className="flex items-center border-b border-b-[#E4E6FF] p-5">
           <div className="layout-img me-5">
             {file !== undefined && file !== null ? (
@@ -190,7 +190,7 @@ const Account = () => {
           <div className="layout-detaills">
             <div className="flex">
               <button
-                className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
+                className="lg:px-5 px-3 lg:text-lg md:text-md sm:text-sm bg-primary text-white rounded-full py-2 border border-primary me-3"
                 onClick={handleClick}
               >
                 Upload new photo
@@ -204,14 +204,14 @@ const Account = () => {
               />
               {file !== undefined && file !== null && (
                 <button
-                  className=" px-5 py-2 border border-primary rounded-full text-primary"
+                  className=" lg:text-lg md:text-md sm:text-sm px-5 py-2 border border-primary rounded-full text-primary"
                   onClick={handleImageReset}
                 >
                   Remove
                 </button>
               )}
             </div>
-            <p className="text-lg block mt-3 ml-2">
+            <p className="lg:text-lg md:text-md sm:text-sm block mt-3 ml-2">
               Display content from your connected accounts on your site
             </p>
           </div>
@@ -219,27 +219,27 @@ const Account = () => {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-        // onSubmit={(e) => {
-        //   e.preventDefault();
-        //   updateUser();
-        // }}
+          // onSubmit={(e) => {
+          //   e.preventDefault();
+          //   updateUser();
+          // }}
         >
-          <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
-            <div className="-mx-3 md:flex mb-6">
-              <div className="md:w-1/2 px-3 mb-6 md:mb-0">
+          <div className="p-5 pt-0 mb-5 flex flex-col">
+            <div className="-mx-3 md:flex">
+              <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">First Name</label>
                 <input
-                  className="w-full text-black border rounded-lg py-3 px-4 mb-3"
+                  className="w-full text-black border rounded-lg py-3 px-4"
                   type="text"
                   {...register("firstName")}
                 />
                 <div></div>
                 <span className="error">{errors?.firstName?.message}</span>
               </div>
-              <div className="md:w-1/2 px-3 mb-6 md:mb-0">
+              <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Last Name</label>
                 <input
-                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                  className="w-full  text-black border  rounded-lg py-3 px-4"
                   type="text"
                   {...register("lastName")}
                 />
@@ -251,7 +251,7 @@ const Account = () => {
                 <label className="label_top text-xs">Email</label>
                 <input
                   readOnly
-                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                  className="w-full  text-black border  rounded-lg py-3 px-4"
                   name="email"
                   disabled
                   type="email"
@@ -260,8 +260,8 @@ const Account = () => {
                 <span className="error">{errors?.email?.message}</span>
               </div>
             </div>
-            <div className="-mx-3 md:flex mb-6">
-              <div className="md:w-1/2 px-3 mb-6 md:mb-0">
+            <div className="-mx-3 md:flex">
+              <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs z-10">Phone Number</label>
                 <Controller
                   name="phone"
@@ -301,7 +301,7 @@ const Account = () => {
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Address</label>
                 <input
-                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                  className="w-full  text-black border  rounded-lg py-3 px-4"
                   type="text"
                   placeholder="132, My Street, Kingston, New York 12401."
                   {...register("address")}
@@ -312,7 +312,7 @@ const Account = () => {
                 <label className="label_top text-xs">Roles</label>
                 <input
                   readOnly
-                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                  className="w-full  text-black border  rounded-lg py-3 px-4"
                   type="text"
                   placeholder="Admin"
                   {...register("role")}
@@ -320,11 +320,11 @@ const Account = () => {
                 <span className="error">{errors?.role?.message}</span>
               </div>
             </div>
-            <div className="-mx-3 md:flex mb-2">
+            <div className="-mx-3 md:flex ">
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Zip Code</label>
                 <input
-                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                  className="w-full  text-black border  rounded-lg py-3 px-4"
                   type="text"
                   name="zipCode"
                   placeholder="100010"
@@ -336,7 +336,7 @@ const Account = () => {
                 <label className="label_top text-xs">Country</label>
                 <div>
                   <select
-                    className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                    className="w-full  text-black border  rounded-lg py-3 px-4"
                     {...register("countryID", {
                       onChange: (e) => {
                         setSelectedCountry(e.target.value);
@@ -349,7 +349,7 @@ const Account = () => {
                         key={country.countryID}
                         selected={country?.countryID == getValues("countryID")}
                         value={country.countryID}
-                      // onChange={(e) => {}}
+                        // onChange={(e) => {}}
                       >
                         {country.countryName}
                       </option>
@@ -362,7 +362,7 @@ const Account = () => {
                 <label className="label_top text-xs">State</label>
                 <div>
                   <select
-                    className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                    className="w-full  text-black border  rounded-lg py-3 px-4"
                     name="state"
                     {...register("stateId")}
                   >
@@ -382,12 +382,12 @@ const Account = () => {
                 </div>
               </div>
             </div>
-            <div className="-mx-3 md:flex mb-2">
+            <div className="-mx-3 md:flex ">
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Language</label>
                 <div>
                   <select
-                    className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                    className="w-full  text-black border  rounded-lg py-3 px-4"
                     {...register("languageId")}
                   >
                     <option label="Select language"></option>
@@ -411,7 +411,7 @@ const Account = () => {
                 <label className="label_top text-xs">Timezone</label>
                 <div>
                   <select
-                    className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                    className="w-full  text-black border  rounded-lg py-3 px-4"
                     {...register("timeZoneId")}
                   >
                     <option label="Select timezone"></option>
@@ -434,7 +434,7 @@ const Account = () => {
                 <label className="label_top text-xs">Currency</label>
                 <div>
                   <select
-                    className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                    className="w-full  text-black border  rounded-lg py-3 px-4"
                     {...register("currencyId")}
                   >
                     <option label="Select currency"></option>
@@ -456,7 +456,7 @@ const Account = () => {
                 </div>
               </div>
             </div>
-            <div className="-mx-3 md:flex mt-2">
+            <div className="-mx-3 md:flex mt-5">
               <div className="md:w-full px-3 flex">
                 <button
                   type="submit"

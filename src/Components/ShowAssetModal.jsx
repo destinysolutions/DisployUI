@@ -391,7 +391,7 @@ const ShowAssetModal = ({
 
   return (
     <>
-      <div className="border-0 rounded-lg shadow-lg fixed fixed-popup z-50 max-w-[70vw] min-w-[70vw] min-w-90vw bg-white outline-none focus:outline-none ">
+      <div className="border-0 rounded-lg shadow-lg fixed fixed-popup z-9999 max-w-[70vw] min-w-[70vw] min-w-90vw bg-white outline-none focus:outline-none ">
         <div
           className={`${
             showAppModal ? "hidden" : ""
@@ -532,7 +532,7 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="table-container md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
+                <div className="table-container md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto lg:min-h-[300px] lg:max-h-[300px] min-h-[200px] max-h-[200px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
                       borderCollapse: "collapse",
@@ -639,7 +639,7 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto lg:min-h-[300px] lg:max-h-[300px]  min-h-[200px] max-h-[200px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
                       borderCollapse: "collapse",
@@ -736,7 +736,7 @@ const ShowAssetModal = ({
                     Add New App
                   </button>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto lg:min-h-[300px] lg:max-h-[300px]  min-h-[200px] max-h-[200px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
                       borderCollapse: "collapse",
@@ -810,9 +810,9 @@ const ShowAssetModal = ({
               </div>
             </div>
             {assetPreviewPopup && (
-              <div className="fixed left-1/2 top-[17%] -translate-x-1/2 w-[768px] h-[432px] bg-black z-50 inset-0">
+              <div className="fixed left-1/2 top-[17%] -translate-x-1/2 w-[768px] h-[432px] bg-black z-9990 inset-0">
                 {/* btn */}
-                <div className="fixed z-40">
+                <div className="fixed z-9999">
                   <button
                     className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
                     onClick={() => setAssetPreviewPopup(false)}
@@ -886,25 +886,27 @@ const ShowAssetModal = ({
             showAppModal ? "hidden" : ""
           } lg:flex justify-between items-center pl-5 pr-5 pb-4`}
         >
-          <p className="text-black mb-3">
+          <p className="text-black mb-3 text-left">
             Content will always be playing Confirm
           </p>
-          <button
-            className="bg-primary text-white rounded-full px-5 py-2"
-            onClick={() => {
-              handleOnConfirm(setscreenMacID);
-              from !== "new_screen" && signalROnConfirm();
-            }}
-          >
-            Confirm
-          </button>
+          <p className="text-right">
+            <button
+              className="bg-primary text-white rounded-full px-5 py-2"
+              onClick={() => {
+                handleOnConfirm(setscreenMacID);
+                from !== "new_screen" && signalROnConfirm();
+              }}
+            >
+              Confirm
+            </button>
+          </p>
         </div>
       </div>
 
       {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
       <div
         onClick={() => handleClickOutside()}
-        className="fixed inset-0 z-40 bg-black/40"
+        className="fixed inset-0 z-9990 bg-black/40"
       ></div>
     </>
   );

@@ -128,7 +128,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
                   navigate(-1);
                 } else {
                   dispatch(handleNavigateFromComposition());
-                  localStorage.setItem('isWindowClosed', 'true');
+                  localStorage.setItem("isWindowClosed", "true");
                   window.close();
                 }
               }
@@ -164,7 +164,6 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
     }
   }, [selectedImages, imageUploadProgress]);
 
-
   return (
     <>
       <div className="backdrop">
@@ -194,7 +193,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
             </div>
           </div>
 
-          <div className="unsplash-section h-[60vh] bg-white rounded-lg">
+          <div className="unsplash-section lg:max-h-80 max-h-60 bg-white rounded-lg">
             <div className="grid grid-cols-12 px-3 gap-4 ">
               {images.map((image) => (
                 <div

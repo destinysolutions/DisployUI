@@ -417,10 +417,10 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
-                  <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
+                  <h1 className="not-italic font-medium text-2xl text-[#001737] ">
                     Apps
                   </h1>
-                  <div className="lg:col-span-2 flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
+                  <div className="lg:col-span-2 flex items-center md:mt-0 lg:mt-0 justify-end flex-wrap">
                     {permissions.isSave && (
                       <Link to="/textscrolldetail">
                         <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
@@ -681,7 +681,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
                               </div>
                               {instanceView && (
-                                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                                   <div
                                     ref={appDropdownRef}
                                     className="lg:w-[960px] my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
@@ -759,7 +759,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
         </Suspense>
       )}
       {addScreenModal && (
-        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
           <div
             ref={addScreenRef}
             className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"

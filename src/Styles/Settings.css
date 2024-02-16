@@ -108,7 +108,12 @@ button.stabshow.settingtabactive::after {
 .paymentbox {
   box-shadow: 0px 0px 2px 1px #41479b36;
 }
-
+@media (max-width: 768px) and (max-width: 1024px) {
+  .user-model {
+    max-width: 800px;
+    min-width: 600px;
+  }
+}
 @media (max-width: 767px) {
   .settingtab,
   button.stabshow.settingtabactive {
@@ -123,6 +128,10 @@ button.stabshow.settingtabactive::after {
 
   .user-model {
     width: 90%;
+  }
+  .user-model {
+    max-width: 400px;
+    min-width: 300px;
   }
 }
 

@@ -108,9 +108,9 @@ const AddOrEditTagPopup = ({
     <>
       <div
         onClick={() => handleClickOutside(false)}
-        className="inset-0 fixed z-30 bg-black/20"
+        className="inset-0 fixed z-9990 bg-black/20"
       ></div>
-      <div className=" bg-white z-40 space-y-3 overflow-y-scroll hide_scrollbar fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 min-w-80vw max-h-[50vh] max-w-[50vw] min-h-[50vh] min-w-[50vw] p-5 rounded-lg">
+      <div className=" bg-white z-9999 space-y-3 overflow-y-scroll hide_scrollbar fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 min-w-80vw max-h-[50vh] max-w-[50vw] min-h-[50vh] min-w-[50vw] p-5 rounded-lg">
         <div className="flex items-center justify-between w-full bg-white sticky -top-6 p-2">
           <h3 className="text-left font-semibold text-3xl sticky top-0 bg-white w-full">
             Add Tags

@@ -768,13 +768,13 @@ const EventEditor = ({
                         <tr>
                           <td>
                             {/*{assetPreviewPopup && (
-                              <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
+                              <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-9990 outline-none focus:outline-none">
                                 <div
                                   ref={modalRef}
                                   className="fixed top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup w-full h-full flex items-end"
                                 >
                                   <div className="border-0 rounded-lg shadow-lg relative min-w-[50vw] left-1/2 -translate-x-1/2 min-h-[70vh] max-h-[70vh] max-w-[80vw] bg-black outline-none focus:outline-none">
-                                    <div className="p-1 z-50 rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
+                                    <div className="p-1 z-9990 rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
                                       <button
                                         className="text-xl"
                                         onClick={() =>
@@ -884,7 +884,7 @@ const EventEditor = ({
                       </tbody>
                     </table>
                     {assetPreviewPopup && (
-                      <div className="fixed left-1/2 top-[17%] -translate-x-1/2 w-[960px] h-[540px] bg-black z-50 inset-0">
+                      <div className="fixed left-1/2 top-[17%] -translate-x-1/2 w-[960px] h-[540px] bg-black z-9990 inset-0">
                         {/* btn */}
                         <div className="fixed z-40">
                           <button
@@ -902,7 +902,7 @@ const EventEditor = ({
                                   <img
                                     src={assetPreview.assetFolderPath}
                                     alt={assetPreview.assetName}
-                                    className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                                    className="imagebox w-full h-full top-0 left-0 z-9990 fixed"
                                   />
                                 </div>
                               )}
@@ -1003,7 +1003,7 @@ const EventEditor = ({
                   </div>
                 </div>
                 {repeatDayWarning && (
-                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                     <div className="relative w-full max-w-xl max-h-full">
                       <div className="relative bg-white rounded-lg shadow">
                         <div className="py-6 text-center">

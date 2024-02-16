@@ -111,20 +111,22 @@ const Defaultmedia = ({ permissions }) => {
     }
   };
 
+  let viewerSrc = "";
 
-  let viewerSrc = '';
-
-  if (assetPreview?.fileExtention === '.pdf' || assetPreview?.fileExtention === '.txt') {
+  if (
+    assetPreview?.fileExtention === ".pdf" ||
+    assetPreview?.fileExtention === ".txt"
+  ) {
     viewerSrc = assetPreview?.assetFolderPath;
-  } else if (assetPreview?.fileExtention === '.csv') {
+  } else if (assetPreview?.fileExtention === ".csv") {
     viewerSrc = `https://docs.google.com/gview?url=${assetPreview?.assetFolderPath}&embedded=true`;
   } else if (
-    assetPreview?.fileExtention === '.pptx' ||
-    assetPreview?.fileExtention === '.ppt' ||
-    assetPreview?.fileExtention === '.docx' ||
-    assetPreview?.fileExtention === '.doc' ||
-    assetPreview?.fileExtention === '.xlsx' ||
-    assetPreview?.fileExtention === '.xls'
+    assetPreview?.fileExtention === ".pptx" ||
+    assetPreview?.fileExtention === ".ppt" ||
+    assetPreview?.fileExtention === ".docx" ||
+    assetPreview?.fileExtention === ".doc" ||
+    assetPreview?.fileExtention === ".xlsx" ||
+    assetPreview?.fileExtention === ".xls"
   ) {
     viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
   }
@@ -364,7 +366,7 @@ const Defaultmedia = ({ permissions }) => {
               <h6 className="mr-3 text-primary lg:text-lg md:text-lg sm:text-base xs:text-base font-medium py-2">
                 Asset / Playing:
               </h6>
-              {permissions.isSave ?
+              {permissions.isSave ? (
                 <p className="pr-5">
                   <button
                     onClick={(e) => {
@@ -382,26 +384,24 @@ const Defaultmedia = ({ permissions }) => {
                     <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
                   </button>
                 </p>
-                :
+              ) : (
                 <p className="pr-5">
-                  <button
-                    className="flex mx-auto items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-1 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                  >
+                  <button className="flex mx-auto items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-1 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                     <p className="line-clamp-3">
                       {assetName === "" ? "No image" : assetName}
                     </p>
                     <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
                   </button>
                 </p>
-              }
+              )}
 
               {showAssetModal && (
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none myplaylist-popup">
                   <div
                     // ref={modalRef}
                     className={`relative w-[70vw] h-auto lg:p-6 md:p-6 sm:p-2 xs:p-1 flex items-start gap-2 bg-white rounded-2xl`}
                   >
-                    <div className="flex absolute top-0 left-0 h-fit w-full z-10 items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black">
+                    <div className="flex absolute top-0 left-0 h-fit w-full z-10 items-start justify-between lg:py-4 py-2 px-6 text-black">
                       <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
                         Set Content to Add Media
                       </h3>
@@ -419,7 +419,8 @@ const Defaultmedia = ({ permissions }) => {
                       onClick={() =>
                         assetPreviewPopup && setAssetPreviewPopup(false)
                       }
-                      className="lg:flex mt-8 lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
+                      className="lg:flex mt-8 lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block"
+                    >
                       {/* left side tabs */}
                       <div className="flex-initial">
                         <nav
@@ -430,15 +431,17 @@ const Defaultmedia = ({ permissions }) => {
                         >
                           <button
                             type="button"
-                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1 ? "active" : ""
-                              }`}
+                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                              popupActiveTab === 1 ? "active" : ""
+                            }`}
                             onClick={() => setPopupActiveTab(1)}
                           >
                             <span
-                              className={`p-1 rounded ${popupActiveTab === 1
-                                ? "bg-primary text-white"
-                                : "bg-lightgray"
-                                } `}
+                              className={`p-1 rounded ${
+                                popupActiveTab === 1
+                                  ? "bg-primary text-white"
+                                  : "bg-lightgray"
+                              } `}
                             >
                               <IoBarChartSharp size={15} />
                             </span>
@@ -509,8 +512,8 @@ const Defaultmedia = ({ permissions }) => {
 
                       <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
                         <div className={popupActiveTab !== 1 && "hidden"}>
-                          <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                            <div className="mb-5 relative ">
+                          <div className="flex flex-wrap w-full items-start lg:justify-between lg:mb-0 mb-3 md:justify-center sm:justify-center xs:justify-center">
+                            <div className="mb-3 relative ">
                               <AiOutlineSearch className="absolute top-2.5 left-2 w-5 h-5 z-10 text-gray" />
                               <input
                                 type="text"
@@ -534,7 +537,7 @@ const Defaultmedia = ({ permissions }) => {
                               Add New Assets
                             </button>
                           </div>
-                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table sc-scrollbar rounded-lg">
+                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[200px] max-h-[200px] object-cover w-full addmedia-table sc-scrollbar rounded-lg">
                             <table
                               style={{
                                 borderCollapse: "collapse",
@@ -553,43 +556,48 @@ const Defaultmedia = ({ permissions }) => {
                                 </tr>
                               </thead>
                               {filteredData.length > 0 ? (
-                                filteredData.filter((asset) => {
-                                  return (asset.assetType !== "Folder" && asset.assetType !== "DOC");
-                                }).map((asset) => (
-                                  <tbody key={asset.assetID}>
-                                    <tr
-                                      className={`${selectedAsset?.assetID ===
-                                        asset?.assetID
-                                        ? "bg-[#f3c953]"
-                                        : ""
+                                filteredData
+                                  .filter((asset) => {
+                                    return (
+                                      asset.assetType !== "Folder" &&
+                                      asset.assetType !== "DOC"
+                                    );
+                                  })
+                                  .map((asset) => (
+                                    <tbody key={asset.assetID}>
+                                      <tr
+                                        className={`${
+                                          selectedAsset?.assetID ===
+                                          asset?.assetID
+                                            ? "bg-[#f3c953]"
+                                            : ""
                                         } border-b border-[#eee] `}
-                                      onClick={() => {
-                                        handleAssetAdd(asset);
-                                        setAssetPreviewPopup(true);
-                                      }}
-                                    >
-                                      <td className="p-3 text-left">
-                                        {asset.assetName}
-                                      </td>
-                                      <td className="p-3 text-center">
-                                        {moment(asset.createdDate).format(
-                                          "YYYY-MM-DD hh:mm"
-                                        )}
-                                      </td>
-                                      <td className="p-3 text-center">
-                                        {asset.fileSize}
-                                      </td>
-                                      <td className="p-3 text-center">
-                                        {asset.assetType}
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                ))
+                                        onClick={() => {
+                                          handleAssetAdd(asset);
+                                          setAssetPreviewPopup(true);
+                                        }}
+                                      >
+                                        <td className="p-3 text-left">
+                                          {asset.assetName}
+                                        </td>
+                                        <td className="p-3 text-center">
+                                          {moment(asset.createdDate).format(
+                                            "YYYY-MM-DD hh:mm"
+                                          )}
+                                        </td>
+                                        <td className="p-3 text-center">
+                                          {asset.fileSize}
+                                        </td>
+                                        <td className="p-3 text-center">
+                                          {asset.assetType}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  ))
                               ) : (
                                 <div>No Data Available</div>
                               )}
                             </table>
-
                           </div>
                         </div>
                         <div className={popupActiveTab !== 2 && "hidden"}>
@@ -632,81 +640,85 @@ const Defaultmedia = ({ permissions }) => {
                               </thead>
                               {filteredData.length === 0
                                 ? compositionData.map((composition) => (
-                                  <tbody key={composition.compositionID}>
-                                    <tr
-                                      className={`${selectedComposition === composition
-                                        ? "bg-[#f3c953]"
-                                        : ""
+                                    <tbody key={composition.compositionID}>
+                                      <tr
+                                        className={`${
+                                          selectedComposition === composition
+                                            ? "bg-[#f3c953]"
+                                            : ""
                                         } border-b border-[#eee] `}
-                                      onClick={() => {
-                                        handleCompositionsAdd(composition);
-                                      }}
-                                    >
-                                      <td className="p-3 text-left">
-                                        {composition.compositionName}
-                                      </td>
-                                      <td className="p-3">
-                                        {moment(composition.dateAdded).format(
-                                          "YYYY-MM-DD hh:mm"
-                                        )}
-                                      </td>
-                                      <td className="p-3">
-                                        {composition.resolution}
-                                      </td>
-                                      <td className="p-3">
-                                        {moment
-                                          .utc(composition.duration * 1000)
-                                          .format("hh:mm:ss")}
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                ))
+                                        onClick={() => {
+                                          handleCompositionsAdd(composition);
+                                        }}
+                                      >
+                                        <td className="p-3 text-left">
+                                          {composition.compositionName}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment(composition.dateAdded).format(
+                                            "YYYY-MM-DD hh:mm"
+                                          )}
+                                        </td>
+                                        <td className="p-3">
+                                          {composition.resolution}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment
+                                            .utc(composition.duration * 1000)
+                                            .format("hh:mm:ss")}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  ))
                                 : filteredData.map((composition) => (
-                                  <tbody key={composition.compositionID}>
-                                    <tr
-                                      className={`${selectedComposition === composition
-                                        ? "bg-[#f3c953]"
-                                        : ""
+                                    <tbody key={composition.compositionID}>
+                                      <tr
+                                        className={`${
+                                          selectedComposition === composition
+                                            ? "bg-[#f3c953]"
+                                            : ""
                                         } border-b border-[#eee] `}
-                                      onClick={() => {
-                                        handleCompositionsAdd(composition);
-                                      }}
-                                    >
-                                      <td className="p-3 text-left">
-                                        {composition.compositionName}
-                                      </td>
-                                      <td className="p-3">
-                                        {moment(composition.dateAdded).format(
-                                          "YYYY-MM-DD hh:mm"
-                                        )}
-                                      </td>
-                                      <td className="p-3">
-                                        {composition.resolution}
-                                      </td>
-                                      <td className="p-3">
-                                        {moment
-                                          .utc(composition.duration * 1000)
-                                          .format("hh:mm:ss")}
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                ))}
+                                        onClick={() => {
+                                          handleCompositionsAdd(composition);
+                                        }}
+                                      >
+                                        <td className="p-3 text-left">
+                                          {composition.compositionName}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment(composition.dateAdded).format(
+                                            "YYYY-MM-DD hh:mm"
+                                          )}
+                                        </td>
+                                        <td className="p-3">
+                                          {composition.resolution}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment
+                                            .utc(composition.duration * 1000)
+                                            .format("hh:mm:ss")}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  ))}
                             </table>
                           </div>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center p-5 w-full">
-                        <p className="text-black">
+                      <div className="lg:flex justify-between items-center p-3 w-full">
+                        <p className="text-black text-left">
                           Content will always be playing Confirm
                         </p>
-                        <button
-                          className="bg-primary text-white rounded-full px-5 py-2"
-                          onClick={() => {
-                            handleOnConfirm();
-                          }}
-                        >
-                          Confirm
-                        </button>
+                        <p className="text-right">
+                          <button
+                            className="bg-primary text-white rounded-full px-5 py-2"
+                            onClick={() => {
+                              handleOnConfirm();
+                            }}
+                          >
+                            Confirm
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -804,7 +816,7 @@ const Defaultmedia = ({ permissions }) => {
           </>
         )} */}
       {assetPreviewPopup && (
-        <div className="fixed left-1/2 top-1/3 -translate-x-1/2 w-[768px] h-[432px] bg-black z-50 inset-0">
+        <div className="fixed left-1/2 top-1/3 -translate-x-1/2 w-80 h-48 lg:w-[768px] lg:h-[432px] bg-black z-9999 inset-0">
           {/* btn */}
           <div className="fixed z-40">
             <button
@@ -814,7 +826,7 @@ const Defaultmedia = ({ permissions }) => {
               <AiOutlineCloseCircle size={30} />
             </button>
           </div>
-          <div className="fixed">
+          <div className="fixed rounded-lg border-2 overflow-hidden">
             {assetPreview && (
               <>
                 {assetPreview.assetType === "OnlineImage" && (
@@ -822,7 +834,7 @@ const Defaultmedia = ({ permissions }) => {
                     <img
                       src={assetPreview.assetFolderPath}
                       alt={assetPreview.assetName}
-                      className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
+                      className="imagebox w-full h-full object-cover "
                     />
                   </div>
                 )}
@@ -831,7 +843,7 @@ const Defaultmedia = ({ permissions }) => {
                   <div className="relative videobox">
                     <video
                       controls
-                      className="rounded-2xl w-[768px] h-[432px]"
+                      className="rounded-2xl w-80 h-48 lg:w-[768px] lg:h-[432px]"
                     >
                       <source
                         src={assetPreview.assetFolderPath}
@@ -845,7 +857,7 @@ const Defaultmedia = ({ permissions }) => {
                   <img
                     src={assetPreview.assetFolderPath}
                     alt={assetPreview.assetName}
-                    className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
+                    className="imagebox w-full h-full object-cover  "
                   />
                 )}
                 {assetPreview.assetType === "Video" && (
@@ -872,9 +884,7 @@ const Defaultmedia = ({ permissions }) => {
           </div>
         </div>
       )}
-
     </div>
-
   );
 };
 

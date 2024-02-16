@@ -85,7 +85,7 @@ const AddEditUserRole = ({
         id="default-modal"
         tabIndex="-1"
         aria-hidden="true"
-        className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
+        className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
       >
         <div className="relative p-4 w-full max-w-3xl max-h-full">
           {/* Modal content */}
@@ -209,7 +209,7 @@ const AddEditUserRole = ({
                     </div>
                   )}
                   {nextbutton && (
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg col-span-2 sm:col-span-2 h-[550px]">
+                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg col-span-2 sm:col-span-2 max-h-325">
                       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400 table-head-bg">
                           <tr>

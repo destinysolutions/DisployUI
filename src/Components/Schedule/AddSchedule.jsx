@@ -180,20 +180,20 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       if (event.start < earliestStartTime) {
         // const originalDate = moment(event.start);
         // earliestStartTime = originalDate.format("DD/MM/YYYY, h:mm:ss A");
-        earliestStartTime = event.start
+        earliestStartTime = event.start;
       }
-      
-      if (event.end > latestEndTime) {
 
+      if (event.end > latestEndTime) {
         // const originalDate = moment(event.end);
         // latestEndTime = originalDate.format("MM/DD/YYYY, h:mm:ss A");
-        latestEndTime = event.end
+        latestEndTime = event.end;
       }
     }
 
-    latestEndTime = moment(latestEndTime).format('MM/DD/YYYY, h:mm:ss A');
-    earliestStartTime = moment(earliestStartTime).format('MM/DD/YYYY, h:mm:ss A');
-  
+    latestEndTime = moment(latestEndTime).format("MM/DD/YYYY, h:mm:ss A");
+    earliestStartTime = moment(earliestStartTime).format(
+      "MM/DD/YYYY, h:mm:ss A"
+    );
 
     return {
       earliestStartTime,
@@ -201,7 +201,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     };
   };
   const overallEventTimes = getOverallEventTimes(myEvents);
-  
+
   const saveEditedSchedule = () => {
     if (overallEventTimes === null) {
       toast.remove();
@@ -694,10 +694,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
 
-      <div className="pt-16 px-5 page-contain ">
+      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <div className="grid grid-cols-12 mt-5">
-            <div className="lg:col-span-9 md:col-span-7 sm:col-span-6 xs:col-span-12 flex flex-col gap-2 items-start">
+          <div className="grid grid-cols-12 lg:mt-5">
+            <div className="lg:col-span-7 md:col-span-12 sm:col-span-12 xs:col-span-12 flex flex-col gap-2 items-start mb-3">
               <p className="text-xl font-semibold ">Schedule Name</p>
               <div className="flex justify-center items-center">
                 <input
@@ -720,7 +720,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="lg:col-span-3 md:col-span-5 sm:col-span-6 xs:col-span-12 ml-5">
+            <div className="lg:col-span-5 md:col-span-12 sm:col-span-12 xs:col-span-12 lg:ml-5 lg:mb-0 mb-3 ">
               <select
                 className="w-full paymentlabel relative"
                 value={selectedTimezoneName}
@@ -738,8 +738,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-12 md:grid-cols-6 mt-5">
-            <div className="bg-white lg:col-span-9 md:col-span-7 sm:col-span-12 xs:col-span-12 p-3 ">
+          <div className="grid lg:grid-cols-12 md:grid-cols-6">
+            <div className="bg-white lg:col-span-9 md:col-span-7 sm:col-span-12 xs:col-span-12 lg:p-3 ">
               <DragAndDropCalendar
                 selectable
                 localizer={localizer}

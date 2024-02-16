@@ -14,14 +14,19 @@ import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import disploy_tv_img from "../../images/ScreenImg/disploy-tv-img.png";
 import { useDispatch } from "react-redux";
 
-
 const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const history = useNavigate();
   const [errorMessge, setErrorMessge] = useState(false);
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
   const [screen, setScreen] = useState();
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
-  const [permissionsNewScreen, setPermissionsNewScreen] = useState({ isSave: false });
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
+  const [permissionsNewScreen, setPermissionsNewScreen] = useState({
+    isSave: false,
+  });
 
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
   const modalRef = useRef(null);
@@ -30,12 +35,13 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
-
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
       const findData = item.payload?.data?.menu.reduce((result, menuItem) => {
         if (menuItem.submenu && Array.isArray(menuItem.submenu)) {
-          const submenuItem = menuItem.submenu.find((submenuItem) => submenuItem.pageName === "New Screen");
+          const submenuItem = menuItem.submenu.find(
+            (submenuItem) => submenuItem.pageName === "New Screen"
+          );
           if (submenuItem) {
             result = submenuItem;
           }
@@ -47,29 +53,36 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissionsNewScreen(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-    })
-  }, [])
-
+    });
+  }, []);
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.menu.find(e => e.pageName === "Screens");
+      const findData = item.payload.data.menu.find(
+        (e) => e.pageName === "Screens"
+      );
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-    })
-  }, [])
+    });
+  }, []);
 
   const handleOtpChange = (index, value) => {
     const updatedOtpValues = [...otpValues];
@@ -83,7 +96,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const completeOtp = otpValues.join("");
 
   const verifyOTP = () => {
-    let data = JSON.stringify({ otp: completeOtp, });
+    let data = JSON.stringify({ otp: completeOtp });
 
     let config = {
       method: "post",
@@ -121,17 +134,16 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      if (event.key === 'Enter') {
+      if (event.key === "Enter") {
         event.preventDefault();
         verifyOTP();
       }
     };
-    document.addEventListener('keydown', handleKeyPress);
+    document.addEventListener("keydown", handleKeyPress);
     return () => {
-      document.removeEventListener('keydown', handleKeyPress);
+      document.removeEventListener("keydown", handleKeyPress);
     };
   }, [completeOtp]); // Empty dependency array means this effect runs once after the initial render
-
 
   useEffect(() => {
     let config = {
@@ -193,7 +205,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
 
   return (
     <>
-      <div className=" justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
         <div
           className={`relative w-auto my-6 lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full sm:mx-3 xs:mx-3`}
         >
@@ -261,7 +273,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
                 </div>
               </div>
             </div>
-            {(permissions.isSave || permissionsNewScreen.isSave) &&
+            {(permissions.isSave || permissionsNewScreen.isSave) && (
               <div className="flex items-center justify-center pb-4">
                 <button
                   className="text-white bg-SlateBlue hover:bg-primary font-semibold lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
@@ -271,7 +283,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
                   Continue
                 </button>
               </div>
-            }
+            )}
           </div>
         </div>
       </div>

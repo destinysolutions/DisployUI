@@ -91,7 +91,7 @@ const ScreenAssignModal = ({
     }
   };
 
-    const filteredData = Array.isArray(screenData)
+  const filteredData = Array.isArray(screenData)
     ? screenData?.filter((item) =>
         item?.screenName?.toLowerCase()?.includes(searchScreen?.toLowerCase())
       )
@@ -303,12 +303,12 @@ const ScreenAssignModal = ({
   };
 
   return (
-    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
       <div
         ref={selectScreenRef}
-        className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+        className="w-auto my-6 mx-auto lg:max-w-[50vw] lg:min-w-[50vw] max-w-[85vw] min-w-[85vw]"
       >
-        <div className="border-0 rounded-lg w-[60vw] overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none min-h-[350px] max-h-[550px]">
+        <div className="border-0 rounded-lg overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none min-h-[350px] max-h-[550px]">
           <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
             <div className="flex items-center">
               <div className=" mt-1.5">
@@ -340,23 +340,23 @@ const ScreenAssignModal = ({
               <AiOutlineCloseCircle className="text-3xl" />
             </button>
           </div>
-          <div className="flex justify-end mt-4">
-              <div className="relative mr-5">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <AiOutlineSearch className="w-5 h-5 text-gray " />
-                </span>
-                <input
-                  type="text"
-                  placeholder="Search Screen" //location ,screen, tag
-                  className="border border-primary rounded-full px-7 pl-10 py-2 search-user sm:w-52 xs:w-52"
-                  value={searchScreen}
-                  onChange={(e) => {
-                    handleScreenSearch(e);
-                  }}
-                />
-              </div>
+          <div className="flex lg:justify-end justify-center mt-4 px-5">
+            <div className="relative w-full">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <AiOutlineSearch className="w-5 h-5 text-gray " />
+              </span>
+              <input
+                type="text"
+                placeholder="Search Screen" //location ,screen, tag
+                className="border border-primary rounded-full px-7 pl-10 py-2 search-user w-full"
+                value={searchScreen}
+                onChange={(e) => {
+                  handleScreenSearch(e);
+                }}
+              />
             </div>
-          <div className="schedual-table bg-white rounded-xl mt-2 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
+          </div>
+          <div className="schedual-table bg-white mt-2 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
             <div className="overflow-x-scroll sc-scrollbar rounded-lg">
               <table className="screen-table w-full" cellPadding={20}>
                 <thead>

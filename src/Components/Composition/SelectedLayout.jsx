@@ -132,7 +132,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           if (window.history.length > 2) {
             navigate("/composition");
           } else {
-            localStorage.setItem('isWindowClosed', 'true');
+            localStorage.setItem("isWindowClosed", "true");
             window.close();
           }
           setSavingLoader(false);
@@ -185,8 +185,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
             ? 4
             : data?.youtubeId !== null && data?.youtubeId !== undefined
-              ? 5
-              : 1,
+            ? 5
+            : 1,
         assetName: data?.assetName,
         assetFolderPath:
           data?.assetFolderPath === undefined && data?.youTubeURL !== undefined
@@ -199,8 +199,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           data?.assetType === undefined && data?.youTubeURL !== undefined
             ? "Video"
             : data?.text && data?.assetType === undefined
-              ? "Text"
-              : data?.assetType,
+            ? "Text"
+            : data?.assetType,
         type: data?.type,
         perentID: data?.perentID,
         userName: data?.userName,
@@ -224,12 +224,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
               ? 4
               : data?.youtubeId !== null && data?.youtubeId !== undefined
-                ? 5
-                : 1,
+              ? 5
+              : 1,
           assetName: data?.assetName,
           assetFolderPath:
             data?.assetFolderPath === undefined &&
-              data?.youTubeURL !== undefined
+            data?.youTubeURL !== undefined
               ? data?.youTubeURL
               : data?.assetFolderPath,
           resolutions: data?.resolutions,
@@ -239,8 +239,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             data?.assetType === undefined && data?.youTubeURL !== undefined
               ? "Video"
               : data?.text && data?.assetType === undefined
-                ? "Text"
-                : data?.assetType,
+              ? "Text"
+              : data?.assetType,
           type: data?.type,
           perentID: data?.perentID,
           userName: data?.userName,
@@ -478,17 +478,17 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     const handleStorageChange = () => {
-      const isClosed = localStorage.getItem('isWindowClosed');
-      if (isClosed === 'true') {
+      const isClosed = localStorage.getItem("isWindowClosed");
+      if (isClosed === "true") {
         handleFetchAllData();
-        localStorage.setItem('isWindowClosed', 'false');
+        localStorage.setItem("isWindowClosed", "false");
         // window.location.reload();
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -586,15 +586,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-16 px-5 page-contain ">
+      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
-              className={`fixed border left-1/2 top-1/4 -translate-x-1/2 ${screenType === "portrait"
-                ? "w-[768px] h-[432px]"
-                : "w-[768px] h-[432px]"
-                }  `}
+              className={`fixed border w-full left-1/2 top-1/4 -translate-x-1/2 ${
+                screenType === "portrait"
+                  ? "lg:w-[568px] lg:h-[332px]"
+                  : "lg:w-[568px] lg:h-[332px]"
+              }  `}
             >
               <RxCrossCircled
                 className="fixed z-50 w-[30px] h-[30px] text-white bg-black rounded-full hover:bg-white hover:text-black -top-4 -right-4 cursor-pointer"
@@ -606,14 +607,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 compositonData?.lstLayloutModelList?.map((obj, index) => (
                   <div
                     key={index}
-                    style={{
-                      position: "fixed",
-                      left: obj.leftside + "%",
-                      top: obj.topside + "%",
-                      width: obj?.width + "%",
-                      height: obj?.height + "%",
-                      backgroundColor: obj.fill,
-                    }}
+                    style={
+                      {
+                        // position: "fixed",
+                        // left: obj.leftside + "%",
+                        // top: obj.topside + "%",
+                        // width: obj?.width + "%",
+                        // height: obj?.height + "%",
+                        // backgroundColor: obj.fill,
+                      }
+                    }
                   >
                     {modalVisible && (
                       <Carousel
@@ -627,7 +630,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           </PreviewModal>
 
           {/* top div edit date&time + btns  */}
-          <div className="lg:flex lg:justify-between sm:block xs:block  items-center mt-5">
+          <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             {edited ? (
               <div className="flex items-center gap-3">
                 <input
@@ -649,7 +652,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             ) : (
               <>
                 <div className="flex">
-                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737]">
                     {compositionName}
                   </h1>
                   <button onClick={() => setEdited(true)}>
@@ -659,7 +662,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               </>
             )}
             {/* cancel + preview + save btns */}
-            <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
+            <div className="flex md:mt-5 lg:mt-0 mt-2 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn justify-end">
               <button
                 onClick={handleClickOnCancel}
                 disabled={savingLoader}
@@ -683,20 +686,22 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
           </div>
-          <div className="flex flex-wrap rounded-xl mt-8 shadow bg-white">
-            <div className="w-full xl:w-1/2 border-r-2 space-y-5 border-r-[#E4E6FF] p-5">
+          <div className="flex flex-wrap rounded-xl lg:mt-8 mt-3 shadow bg-white">
+            <div className="w-full xl:w-1/2 border-r-2 space-y-5 border-r-[#E4E6FF]">
               <div className="flex items-center justify-between  rounded-lg w-full text-white bg-SlateBlue">
                 <div
                   onClick={() => setActiveTab("asset")}
-                  className={`w-1/2 text-center p-2 ${activeTab === "asset" && "bg-black translate-x-0"
-                    }  rounded-lg cursor-pointer transition-all duration-100  ease-in`}
+                  className={`w-1/2 text-center p-2 ${
+                    activeTab === "asset" && "bg-black translate-x-0"
+                  }  rounded-lg cursor-pointer transition-all duration-100  ease-in`}
                 >
                   Assets
                 </div>
                 <div
                   onClick={() => setActiveTab("apps")}
-                  className={`w-1/2 text-center rounded-lg transition-all duration-100 ease-in-out p-2 ${activeTab === "apps" && "bg-black"
-                    } cursor-pointer`}
+                  className={`w-1/2 text-center rounded-lg transition-all duration-100 ease-in-out p-2 ${
+                    activeTab === "apps" && "bg-black"
+                  } cursor-pointer`}
                 >
                   Apps
                 </div>
@@ -704,10 +709,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="text-center">
                 {activeTab === "asset" ? (
                   <Link to="/FileUpload" target="_blank">
-                    <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    <button
+                      className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                       onClick={() => {
-                        localStorage.setItem('isWindowClosed', 'false');
-                      }}>
+                        localStorage.setItem("isWindowClosed", "false");
+                      }}
+                    >
                       Add New Assets
                     </button>
                   </Link>
@@ -728,10 +735,10 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   <thead className="sticky -top-1 z-20">
                     <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
                       <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                        App
+                        {activeTab === "asset" ? "Asset" : "App"}
                       </th>
                       <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
-                        App Name
+                        {activeTab === "asset" ? "Asset Name" : "App Name"}
                       </th>
                       <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
                         Type
@@ -744,7 +751,10 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       assetData
                         .filter((item) => {
                           if (activeTab === "asset") {
-                            if (item.hasOwnProperty("assetID") && item?.assetType !== "DOC") {
+                            if (
+                              item.hasOwnProperty("assetID") &&
+                              item?.assetType !== "DOC"
+                            ) {
                               return item;
                             }
                           } else {
@@ -766,7 +776,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                             <td className="break-words w-full text-left ">
                               {data.assetType === "OnlineImage" && (
                                 <img
-                                  className="imagebox relative w-full h-20 object-cover"
+                                  className="imagebox relative h-80px w-160px"
                                   src={data?.assetFolderPath}
                                   alt={data?.assetName}
                                 />
@@ -775,7 +785,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                 <img
                                   src={data?.assetFolderPath}
                                   alt={data?.assetName}
-                                  className="imagebox relative w-full h-20 object-cover"
+                                  className="imagebox relative h-80px w-160px"
                                 />
                               )}
                               {data.instanceName && data?.scrollType && (
@@ -793,16 +803,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                 data.assetType === "OnlineVideo" ||
                                 data.assetType === "Youtube" ||
                                 data?.youTubeURL) && (
-                                  <ReactPlayer
-                                    url={
-                                      data?.assetFolderPath || data?.youTubeURL
-                                    }
-                                    className="max-w-[100%] min-w-[100%]  relative z-10  max-h-32"
-                                    controls={true}
-                                    playing={false}
-                                    loop={false}
-                                  />
-                                )}
+                                <ReactPlayer
+                                  url={
+                                    data?.assetFolderPath || data?.youTubeURL
+                                  }
+                                  className="h-80px w-160px  relative z-10"
+                                  controls={true}
+                                  playing={false}
+                                  loop={false}
+                                />
+                              )}
 
                               {/* {data.assetType === "DOC" && (
                                 <p href={data?.assetFolderPath}>
@@ -832,10 +842,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               {/* section tabs && layout  */}
               <div className="flex flex-wrap border-b border-b-[#E4E6FF] pb-5 w-full">
                 <div
-                  className={`layout-img me-5 ${compositonData?.screenType === "portrait"
-                    ? "w-24 h-36"
-                    : "w-36 h-24"
-                    } bg-[#D5E3FF] relative`}
+                  className={`layout-img me-5 ${
+                    compositonData?.screenType === "portrait"
+                      ? "w-24 h-36"
+                      : "w-36 h-24"
+                  } bg-[#D5E3FF] relative`}
                 >
                   {!loading &&
                     compositonData !== null &&
@@ -864,13 +875,15 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       .fill(2)
                       .map((item, index) => (
                         <button
-                          className={`px-5 ${currentSection == index + 1
-                            ? "bg-primary"
-                            : "bg-white"
-                            } ${currentSection == index + 1
+                          className={`px-5 ${
+                            currentSection == index + 1
+                              ? "bg-primary"
+                              : "bg-white"
+                          } ${
+                            currentSection == index + 1
                               ? "text-white"
                               : "text-primary"
-                            }  rounded-full py-2 border border-primary `}
+                          }  rounded-full py-2 border border-primary `}
                           key={index}
                           onClick={() => setcurrentSection(index + 1)}
                         >
@@ -885,7 +898,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               <div
                 onDrop={(event) => handleDropForDivToDiv(event, "main_div")}
                 onDragOver={(event) => handleDragOverForDivToDiv(event)}
-                className="overflow-x-auto overflow-y-auto min-h-[320px] max-h-[320px] mt-3 mb-6"
+                className="overflow-x-auto overflow-y-auto mt-3 mb-6"
               >
                 <table
                   className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
@@ -911,65 +924,57 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               key={index}
                               className="w-full flex cursor-grab items-center md:gap-5 gap-3"
                             >
-                              <td className="min-w-[40%]">
-                                <div className="flex items-center w-full h-full">
-                                  <div
-                                    className={`w-1/2 break-words hyphens-auto h-28`}
+                              <td className="">
+                                {item.assetType === "OnlineImage" && (
+                                  <img
+                                    className="imagebox img_w relative  object-cover"
+                                    src={item?.assetFolderPath}
+                                    alt={item?.assetName}
+                                  />
+                                )}
+                                {item.assetType === "Image" && (
+                                  <img
+                                    src={item?.assetFolderPath}
+                                    alt={item?.assetName}
+                                    className="imagebox img_w relative object-cover"
+                                  />
+                                )}
+                                {item.instanceName && item?.scrollType && (
+                                  <marquee
+                                    className="text-lg w-full h-full flex items-center text-black"
+                                    direction={
+                                      item?.scrollType == 1 ? "right" : "left"
+                                    }
+                                    scrollamount="10"
                                   >
-                                    {item.assetType === "OnlineImage" && (
-                                      <img
-                                        className="imagebox relative w-full h-28 object-cover"
-                                        src={item?.assetFolderPath}
-                                        alt={item?.assetName}
-                                      />
-                                    )}
-                                    {item.assetType === "Image" && (
-                                      <img
-                                        src={item?.assetFolderPath}
-                                        alt={item?.assetName}
-                                        className="imagebox relative w-full h-28 object-cover"
-                                      />
-                                    )}
-                                    {item.instanceName && item?.scrollType && (
-                                      <marquee
-                                        className="text-lg w-full h-full flex items-center text-black"
-                                        direction={
-                                          item?.scrollType == 1
-                                            ? "right"
-                                            : "left"
-                                        }
-                                        scrollamount="10"
-                                      >
-                                        {item?.text}
-                                      </marquee>
-                                    )}
-                                    {(item.assetType === "Video" ||
-                                      item.assetType === "OnlineVideo" ||
-                                      item.assetType === "Youtube") && (
-                                        <ReactPlayer
-                                          url={item?.assetFolderPath}
-                                          className="w-full relative z-20 videoinner max-h-10"
-                                          controls={false}
-                                          width={"100%"}
-                                          height={"100%"}
-                                          playing={false}
-                                          loop={true}
-                                        />
-                                      )}
+                                    {item?.text}
+                                  </marquee>
+                                )}
+                                {(item.assetType === "Video" ||
+                                  item.assetType === "OnlineVideo" ||
+                                  item.assetType === "Youtube") && (
+                                  <ReactPlayer
+                                    url={item?.assetFolderPath}
+                                    className="relative z-20 videoinner img_w max-h-10"
+                                    controls={false}
+                                    playing={false}
+                                    loop={true}
+                                  />
+                                )}
 
-                                    {/* {item.assetType === "DOC" && (
+                                {/* {item.assetType === "DOC" && (
                                       <p href={item?.assetFolderPath}>
                                         {item.assetName}
                                       </p>
                                    )}*/}
-                                  </div>
-                                  <div className="ml-3 w-1/2">
-                                    <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
-                                      {item?.assetName && item?.assetName}
-                                      {item?.text && item?.text}
-                                      {item?.instanceName && item?.instanceName}
-                                    </p>
-                                  </div>
+                              </td>
+                              <td>
+                                <div className="ml-3">
+                                  <p className="text-gray-900 break-words hyphens-auto line-clamp-2">
+                                    {item?.assetName && item?.assetName}
+                                    {item?.text && item?.text}
+                                    {item?.instanceName && item?.instanceName}
+                                  </p>
                                 </div>
                               </td>
                               <td className="text-center min-w-[20%]">
@@ -1003,13 +1008,13 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                 <a onClick={() => onEditSelectedAsset(index)}>
                                   <img
                                     src={edit_icon}
-                                    className="min-w-[2vw] cursor-pointer"
+                                    className="w-10 cursor-pointer"
                                   />
                                 </a>
                                 <a onClick={() => deleteSeletedAsset(index)}>
                                   <img
                                     src={Delete_icon}
-                                    className="min-w-[2vw] cursor-pointer"
+                                    className="w-10 cursor-pointer"
                                   />
                                 </a>
                               </td>
@@ -1023,7 +1028,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
               <div className="click-add">
                 <p className="text-filthy-brown">
-                Add Assets And Apps have from Left side panel
+                  Add Assets And Apps have from Left side panel
                 </p>
               </div>
             </div>

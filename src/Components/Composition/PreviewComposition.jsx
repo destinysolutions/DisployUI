@@ -56,14 +56,16 @@ const PreviewComposition = ({
             layotuDetails?.lstLayloutModelList?.map((obj, index) => (
               <div
                 key={index}
-                style={{
-                  position: "fixed",
-                  left: obj.leftside + "%",
-                  top: obj.topside + "%",
-                  width: obj?.width + "%",
-                  height: obj?.height + "%",
-                  // backgroundColor: obj.fill,
-                }}
+                style={
+                  {
+                    // position: "fixed",
+                    // left: obj.leftside + "%",
+                    // top: obj.topside + "%",
+                    // width: obj?.width + "%",
+                    // height: obj?.height + "%",
+                    // backgroundColor: obj.fill,
+                  }
+                }
               >
                 {modalVisible && (
                   <Carousel

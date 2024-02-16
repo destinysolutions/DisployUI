@@ -1119,7 +1119,7 @@ table.screen-table {
 
 @media (min-width: 992px) {
   input.search-user {
-    width: 250px;
+    width: 215px;
   }
 
   .h-80vh {
@@ -1129,7 +1129,19 @@ table.screen-table {
     max-height: 325px;
   }
 }
+.w-160px {
+  width: 160px !important;
+}
+.h-80px {
+  height: 80px !important;
+}
 
+.account-settings-tab-li:first-child {
+  margin-left: 0px !important;
+}
+.account-settings-tab-li:last-child {
+  margin-right: 0px !important;
+}
 @media (min-width: 320px) {
   .sm\:grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -1137,6 +1149,14 @@ table.screen-table {
 }
 /* Add responsiveness */
 @media (max-width: 768px) {
+  .account-settings-tab-li:first-child {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+  }
+  .account-settings-tab-li:last-child {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+  }
   .user-model-TC {
     width: 90%;
   }
@@ -1147,6 +1167,9 @@ table.screen-table {
   .youtube-preview {
     width: 100% !important;
     height: 100% !important;
+  }
+  .max-h-325 {
+    max-height: 225px;
   }
 }
 
@@ -1206,4 +1229,7 @@ table.screen-table {
 }
 .z-9990 {
   z-index: 9990;
+}
+.z-9999 {
+  z-index: 9999;
 }

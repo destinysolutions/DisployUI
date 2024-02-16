@@ -81,8 +81,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const actionBoxRef = useRef(null);
   const addScreenRef = useRef(null);
   const { token, user } = useSelector((state) => state.root.auth);
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
-  const [sidebarload, setSidebarLoad] = useState(true)
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
+  const [sidebarload, setSidebarLoad] = useState(true);
   const [screenAssetID, setScreenAssetID] = useState();
   const authToken = `Bearer ${token}`;
 
@@ -90,20 +94,24 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.menu.find(e => e.pageName === "Assets");
+      const findData = item.payload.data.menu.find(
+        (e) => e.pageName === "Assets"
+      );
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-      setSidebarLoad(false)
-
-    })
-  }, [])
+      setSidebarLoad(false);
+    });
+  }, []);
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
@@ -133,7 +141,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           };
           socket.emit("ScreenConnected", Params);
           setTimeout(() => {
-            toast.remove()
+            toast.remove();
             setSelectScreenModal(false);
             setAddScreenModal(false);
           }, 1000);
@@ -629,9 +637,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      {sidebarload && (
-        <Loading />
-      )}
+      {sidebarload && <Loading />}
       {showImageAssetModal && (
         <ShowAssetImageModal
           setImageAssetModal={setImageAssetModal}
@@ -644,17 +650,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         <Suspense fallback={<Loading />}>
           <>
             <div className="flex border-b border-gray">
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
               <Navbar />
             </div>
-            <div className="pt-24 px-5 page-contain">
+            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="lg:flex lg:justify-between sm:block items-center">
-                  <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
+                <div className="grid lg:grid-cols-2 gap-2 lg:mt-5 mt-3">
+                  <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
                     Assets
                   </h1>
-                  <div className=" flex-wrap flex  lg:mt-0 md:mt-0 sm:mt-3">
-                    <div className="relative pr-1">
+                  <div className="lg:flex items-center md:mt-0 lg:mt-0 md:justify-end flex-wrap">
+                    <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 ">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <AiOutlineSearch className="w-5 h-5 text-gray " />
                       </span>
@@ -665,27 +674,31 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         onChange={debouncedOnChange}
                       />
                     </div>
-                    {permissions.isSave &&
-                      <div className="flex">
-                        <button
-                          className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={createFolder}
-                          disabled={FolderDisable}
-                        >
-                          <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
-                          New Folder
-                        </button>
-                        <button
-                          onClick={() => openFileUpload()}
-                          className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        >
-                          <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
-                          Upload
-                        </button>
-                      </div>
-                    }
+                  </div>
+                </div>
 
-                    <ul className="flex items-center  xs:mt-2 sm:mt-2 md:mt-0 lg:mt-0 xs:mr-1 mr-3 rounded-full border-2 border-SlateBlue">
+                <div className="lg:mt-5 mt-3 lg:flex items-center lg:justify-end justify-center ">
+                  {permissions.isSave && (
+                    <div className="flex items-center justify-center lg:mb-0 mb-3">
+                      <button
+                        className=" dashboard-btn flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        onClick={createFolder}
+                        disabled={FolderDisable}
+                      >
+                        <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
+                        New Folder
+                      </button>
+                      <button
+                        onClick={() => openFileUpload()}
+                        className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                      >
+                        <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
+                        Upload
+                      </button>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-center">
+                    <ul className="flex items-center xs:mr-1 mr-3 rounded-full border-2 border-SlateBlue">
                       <li className="flex items-center ">
                         <button
                           className={
@@ -699,7 +712,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       <li className="flex items-center ">
                         <button
                           className={
-                            asstab === 2 ? "tabshow tabassactive right " : "asstab "
+                            asstab === 2
+                              ? "tabshow tabassactive right "
+                              : "asstab "
                           }
                         >
                           <AiOutlineUnorderedList className="text-primary text-lg" />
@@ -716,14 +731,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           <RiDeleteBin5Line className="text-lg" />
                         </button>
                         <button className="flex align-middle   text-white items-center  rounded-full p-2 text-base">
-                          {permissions.isDelete &&
+                          {permissions.isDelete && (
                             <input
                               type="checkbox"
                               className="w-7 h-6"
                               checked={selectAll}
                               onChange={handleSelectAll}
                             />
-                          }
+                          )}
                         </button>
                       </>
                     )}
@@ -738,25 +753,33 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     All
                   </button>
                   <button
-                    className={activeTab === "IMAGE" ? "tabactivebtn " : "tabbtn"}
+                    className={
+                      activeTab === "IMAGE" ? "tabactivebtn " : "tabbtn"
+                    }
                     onClick={() => handleTabClick("IMAGE")}
                   >
                     Images
                   </button>
                   <button
-                    className={activeTab === "VIDEO" ? "tabactivebtn " : "tabbtn"}
+                    className={
+                      activeTab === "VIDEO" ? "tabactivebtn " : "tabbtn"
+                    }
                     onClick={() => handleTabClick("VIDEO")}
                   >
                     Video
                   </button>
                   <button
-                    className={activeTab === "DOCUMENT" ? "tabactivebtn " : "tabbtn"}
+                    className={
+                      activeTab === "DOCUMENT" ? "tabactivebtn " : "tabbtn"
+                    }
                     onClick={() => handleTabClick("DOCUMENT")}
                   >
                     Doc
                   </button>
                   <button
-                    className={activeTab === "FOLDER" ? "tabactivebtn " : "tabbtn"}
+                    className={
+                      activeTab === "FOLDER" ? "tabactivebtn " : "tabbtn"
+                    }
                     onClick={() => handleTabClick("FOLDER")}
                   >
                     Folder
@@ -829,9 +852,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 <td className="text-center flex justify-center gap-4">
                                   {selectAll && (
                                     <div className="flex items-center justify-center">
-                                      <input type="checkbox" checked={true} onChange={() => {
-                                        setSelectAll(!selectAll);
-                                      }} />
+                                      <input
+                                        type="checkbox"
+                                        checked={true}
+                                        onChange={() => {
+                                          setSelectAll(!selectAll);
+                                        }}
+                                      />
                                     </div>
                                   )}
                                   {item.assetType === "Folder" && (
@@ -862,7 +889,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                             setEditMode(null);
                                           }}
                                           onKeyDown={(e) =>
-                                            handleKeyDown(e, item.assetID, index)
+                                            handleKeyDown(
+                                              e,
+                                              item.assetID,
+                                              index
+                                            )
                                           }
                                           autoFocus
                                         />
@@ -909,8 +940,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                             src={item.assetFolderPath}
                                             type="video/mp4"
                                           />
-                                          Your browser does not support the video
-                                          tag.
+                                          Your browser does not support the
+                                          video tag.
                                         </video>
                                       </div>
                                     </div>
@@ -944,8 +975,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                             src={item.assetFolderPath}
                                             type="video/mp4"
                                           />
-                                          Your browser does not support the video
-                                          tag.
+                                          Your browser does not support the
+                                          video tag.
                                         </video>
                                       </div>
                                     </div>
@@ -992,14 +1023,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                                 <td className="text-center relative">
                                   <div className="relative">
-                                    {permissions.isSave && permissions.isDelete &&
-                                      <button
-                                        onClick={() => updateassetsdw2(item)}
-                                        className="ml-3 relative"
-                                      >
-                                        <HiDotsVertical />
-                                      </button>
-                                    }
+                                    {permissions.isSave &&
+                                      permissions.isDelete && (
+                                        <button
+                                          onClick={() => updateassetsdw2(item)}
+                                          className="ml-3 relative"
+                                        >
+                                          <HiDotsVertical />
+                                        </button>
+                                      )}
                                     {assetsdw2 === item && (
                                       <div
                                         ref={actionBoxRef}
@@ -1008,7 +1040,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         <ul className="space-y-2">
                                           {item.assetType !== "Folder" && (
                                             <div>
-                                              {permissions.isView &&
+                                              {permissions.isView && (
                                                 <li className="flex text-sm items-center">
                                                   <FiDownload className="mr-2 text-lg" />
                                                   <a
@@ -1019,12 +1051,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                     Download
                                                   </a>
                                                 </li>
-                                              }
+                                              )}
                                             </div>
                                           )}
                                           {item.assetType !== "Folder" && (
                                             <li className="flex text-sm items-center">
-                                              {permissions.isSave &&
+                                              {permissions.isSave && (
                                                 <div className="move-to-button relative">
                                                   <button
                                                     className="flex relative w-full"
@@ -1036,13 +1068,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                     Set to Screen
                                                   </button>
                                                 </div>
-                                              }
+                                              )}
                                             </li>
                                           )}
 
                                           <li className="flex text-sm items-center relative">
                                             <div className="move-to-button relative">
-                                              {permissions.isSave &&
+                                              {permissions.isSave && (
                                                 <button
                                                   onClick={() => moveTo(item)}
                                                   className="flex relative w-full"
@@ -1050,17 +1082,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                   <CgMoveRight className="mr-2 text-lg" />
                                                   Move to
                                                 </button>
-                                              }
+                                              )}
                                               {isMoveToOpen && (
                                                 <div className="move-to-dropdown">
                                                   <ul className="space-y-3">
                                                     {folderElements &&
-                                                      folderElements?.length > 0 ? (
+                                                    folderElements?.length >
+                                                      0 ? (
                                                       folderElements?.map(
                                                         (folder) => {
                                                           return (
                                                             <li
-                                                              key={folder.assetID}
+                                                              key={
+                                                                folder.assetID
+                                                              }
                                                               className="hover:bg-black hover:text-white text-left"
                                                             >
                                                               <>
@@ -1094,7 +1129,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                           </li>
                                           {item.assetType === "Folder" ? (
                                             <li>
-                                              {permissions.isDelete &&
+                                              {permissions.isDelete && (
                                                 <button
                                                   onClick={() => {
                                                     deleteFolder(item.assetID);
@@ -1104,11 +1139,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                   <RiDeleteBin5Line className="mr-2 text-lg" />
                                                   Move to Trash
                                                 </button>
-                                              }
+                                              )}
                                             </li>
                                           ) : (
                                             <li>
-                                              {permissions.isDelete &&
+                                              {permissions.isDelete && (
                                                 <button
                                                   onClick={() => {
                                                     handleWarning(item.assetID);
@@ -1118,7 +1153,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                   <RiDeleteBin5Line className="mr-2 text-lg" />
                                                   Move to Trash
                                                 </button>
-                                              }
+                                              )}
                                             </li>
                                           )}
                                         </ul>
@@ -1134,9 +1169,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             <td colSpan={8} className="text-center">
                               {/* <div className="text-center font-semibold text-2xl col-span-full p-5 "> */}
                               {store?.data?.length === 0 ? (
-                                <div className="text-center"><span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                                  No Data Available
-                                </span></div>
+                                <div className="text-center">
+                                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                                    No Data Available
+                                  </span>
+                                </div>
                               ) : (
                                 <>
                                   <div>
@@ -1184,7 +1221,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     )}
 
                     {addScreenModal && (
-                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                         <div
                           ref={addScreenRef}
                           className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
@@ -1205,7 +1242,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                             <div className="flex justify-center p-9 ">
                               <p className="break-words w-[280px] text-base text-black text-center">
-                                New Asset would be applied. Do you want to proceed?
+                                New Asset would be applied. Do you want to
+                                proceed?
                               </p>
                             </div>
                             <div className="pb-6 flex justify-center">
@@ -1241,7 +1279,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
             </div>
-            
+
             <Footer />
           </>
         </Suspense>

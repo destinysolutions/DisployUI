@@ -63,7 +63,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const authToken = `Bearer ${token}`;
 
   const dispatch = useDispatch();
-  const [sidebarload, setSidebarLoad] = useState(true)
+  const [sidebarload, setSidebarLoad] = useState(true);
   NewScreenGroup.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
@@ -108,8 +108,12 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [previewData, setPreviewData] = useState();
   const [loading, setLoading] = useState(false);
   const [layoutDetails, setLayoutDetails] = useState(null);
-  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
-  const [viewLoading, setViewLoading] = useState(true)
+  const [permissions, setPermissions] = useState({
+    isDelete: false,
+    isSave: false,
+    isView: false,
+  });
+  const [viewLoading, setViewLoading] = useState(true);
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Adjust items per page as needed
@@ -144,49 +148,52 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const paginatedData = allGroupScreen
     ? allGroupScreen.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    )
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
     : [];
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
       const findData = item.payload?.data?.menu.reduce((result, menuItem) => {
         if (menuItem.submenu && Array.isArray(menuItem.submenu)) {
-          const submenuItem = menuItem.submenu.find((submenuItem) => submenuItem.pageName === "New Screen Group");
+          const submenuItem = menuItem.submenu.find(
+            (submenuItem) => submenuItem.pageName === "New Screen Group"
+          );
           if (submenuItem) {
             result = submenuItem;
           }
         }
-        setViewLoading(false)
+        setViewLoading(false);
         return result;
       }, null);
-
-
 
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
-          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+          if (
+            Array.isArray(permissionItem.payload.data) &&
+            permissionItem.payload.data.length > 0
+          ) {
             setPermissions(permissionItem.payload.data[0]);
           }
-        })
+        });
       }
-      setSidebarLoad(false)
-
-    })
-  }, [])
+      setSidebarLoad(false);
+    });
+  }, []);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
   const callSignalR = () => {
-    const macIds = allGroupScreen?.map((item) => item?.screenGroupLists?.map((screen) => screen?.macID))
+    const macIds = allGroupScreen
+      ?.map((item) => item?.screenGroupLists?.map((screen) => screen?.macID))
       .join(",")
       .replace(/^\s+/g, "");
-      console.log('macIds', macIds)
+    console.log("macIds", macIds);
     const Params = {
       id: socket.id,
       connection: socket.connected,
@@ -281,7 +288,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => { };
+  const handleAssetUpdate = () => {};
 
   const editGroupName = (index) => {
     // GroupNameUpdate
@@ -336,13 +343,14 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectAll(false);
         // callSignalR();
         let allMacIDs = "";
-        allGroupScreen?.map((items)=>{
-          if(items?.screenGroupID === item?.screenGroupID){
-            allMacIDs = items?.screenGroupLists?.map((screen) => screen?.macID)
-            .join(",")
-            .replace(/^\s+/g, "");
+        allGroupScreen?.map((items) => {
+          if (items?.screenGroupID === item?.screenGroupID) {
+            allMacIDs = items?.screenGroupLists
+              ?.map((screen) => screen?.macID)
+              .join(",")
+              .replace(/^\s+/g, "");
           }
-        })
+        });
         const Params = {
           id: socket.id,
           connection: socket.connected,
@@ -367,17 +375,19 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         dispatch(screenGroupDeleteAll(selectedItems));
         let arrMacIDs = [];
         allGroupScreen?.forEach((items) => {
-            if (selectedItems?.includes(items?.screenGroupID)) {
-                let macIDs = items?.screenGroupLists?.map((screen) => screen?.macID).join(",");
-                arrMacIDs.push(macIDs);
-            }
+          if (selectedItems?.includes(items?.screenGroupID)) {
+            let macIDs = items?.screenGroupLists
+              ?.map((screen) => screen?.macID)
+              .join(",");
+            arrMacIDs.push(macIDs);
+          }
         });
-        
+
         const macId = arrMacIDs.join(",");
         const Params = {
-            id: socket.id,
-            connection: socket.connected,
-            macId: macId,
+          id: socket.id,
+          connection: socket.connected,
+          macId: macId,
         };
         socket.emit("ScreenConnected", Params);
         setSelectedItems([]);
@@ -425,7 +435,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
             console.error("Error invoking SignalR method:", error);
           });
       }
-
     } else {
       toast.error("Can't Delete This Screen. You Need To Delete Group.");
     }
@@ -516,16 +525,17 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
     const response = dispatch(groupAssetsInUpdateScreen(payload));
     if (!response) return;
-    
+
     if (response) {
       let allMacIDs = "";
-      allGroupScreen?.map((item)=>{
-        if(item?.screenGroupID === getGroup?.screenGroupID){
-          allMacIDs = item?.screenGroupLists?.map((screen) => screen?.macID)
-          .join(",")
-          .replace(/^\s+/g, "");
+      allGroupScreen?.map((item) => {
+        if (item?.screenGroupID === getGroup?.screenGroupID) {
+          allMacIDs = item?.screenGroupLists
+            ?.map((screen) => screen?.macID)
+            .join(",")
+            .replace(/^\s+/g, "");
         }
-      })
+      });
       const Params = {
         id: socket.id,
         connection: socket.connected,
@@ -596,17 +606,18 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      {sidebarload && (
-        <Loading />
-      )}
+      {sidebarload && <Loading />}
       {!sidebarload && (
         <Suspense fallback={<Loading />}>
           <>
             <div className="flex border-b border-gray">
-              <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+              <Sidebar
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
               <Navbar />
             </div>
-            <div className="pt-16 px-5 page-contain">
+            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 {viewLoading ? (
                   <div className="flex text-center m-5 justify-center">
@@ -633,13 +644,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 ) : (
                   <>
-                    <div className="justify-between lg:flex md:flex items-center sm:block">
+                    <div className="justify-between lg:flex md:flex items-center sm:block lg:mb-0 mb-3">
                       <div className="section-title">
                         <h1 className="not-italic font-medium text-2xl text-[#001737]">
                           Group Name
                         </h1>
                       </div>
-                      <div className="flex items-center sm:mt-3 flex-wrap gap-1">
+                      <div className="flex items-center justify-end flex-wrap gap-1">
                         <button
                           data-tip
                           data-for="Refresh Screen"
@@ -657,7 +668,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                             <span>Refresh Screen</span>
                           </ReactTooltip>
                         </button>
-                        {permissions.isSave &&
+                        {permissions.isSave && (
                           <button
                             data-tip
                             data-for="Add New Group"
@@ -675,7 +686,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               <span>Add New Group</span>
                             </ReactTooltip>
                           </button>
-                        }
+                        )}
 
                         {isModalOpen && (
                           <ScreenGroupModal
@@ -690,7 +701,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
                         {store?.data?.length > 0 && (
                           <div>
-                            {permissions.isDelete &&
+                            {permissions.isDelete && (
                               <button
                                 data-tip
                                 data-for="Select All"
@@ -699,13 +710,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               >
                                 <input
                                   type="checkbox"
-                                  className="w-6 h-5"
+                                  className="lg:w-7 lg:h-6 w-5 h-5"
                                   checked={selectAll}
                                   onChange={handleSelectAll}
                                   readOnly
                                 />
                               </button>
-                            }
+                            )}
 
                             <ReactTooltip
                               id="Select All"
@@ -744,7 +755,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </div>
 
-                    <div className="mt-5 shadow-md p-5 bg-white rounded-lg">
+                    <div className="lg:mt-5 shadow-md lg:p-5 p-3 bg-white rounded-lg">
                       {loader && (
                         <div className="flex text-center m-5 justify-center">
                           <svg
@@ -787,7 +798,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                         name="name"
                                         className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         value={newGroupName}
-                                        onChange={(e) => setNewGroupName(e.target.value)}
+                                        onChange={(e) =>
+                                          setNewGroupName(e.target.value)
+                                        }
                                       />
                                       <div>
                                         <BiSave
@@ -808,12 +821,12 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                       <h1 className="text-lg capitalize">
                                         {item?.screenGroupName}
                                       </h1>
-                                      {permissions.isSave &&
+                                      {permissions.isSave && (
                                         <MdOutlineModeEdit
                                           className="cursor-pointer text-xl text-[#0000FF]"
                                           onClick={() => editGroupName(i)}
                                         />
-                                      }
+                                      )}
                                     </>
                                   )}
                                 </div>
@@ -822,7 +835,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className=" flex items-center">
                                     {isAccordionOpen && (
                                       <>
-                                        {permissions.isSave &&
+                                        {permissions.isSave && (
                                           <button
                                             data-tip
                                             data-for="Add Screen"
@@ -839,14 +852,16 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                               <span>Add Screen</span>
                                             </ReactTooltip>
                                           </button>
-                                        }
+                                        )}
 
                                         {item.isPreview && (
                                           <button
                                             data-tip
                                             data-for="Preview"
                                             className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                                            onClick={() => handleOpenPreview(item)}
+                                            onClick={() =>
+                                              handleOpenPreview(item)
+                                            }
                                           >
                                             Preview
                                             <ReactTooltip
@@ -860,7 +875,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                           </button>
                                         )}
 
-                                        {permissions.isSave &&
+                                        {permissions.isSave && (
                                           <button
                                             data-tip
                                             data-for="Upload"
@@ -880,19 +895,21 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                               <span>Upload</span>
                                             </ReactTooltip>
                                           </button>
-                                        }
+                                        )}
 
                                         {!selectedItems?.length && (
-                                          <div>
-                                            {permissions.isDelete &&
+                                          <div className="flex items-center justify-center">
+                                            {permissions.isDelete && (
                                               <button
                                                 data-tip
                                                 data-for="All Delete"
-                                                className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                                className="border rounded-full bg-red text-white hover:shadow-xl hover:bg-primary border-white shadow-lg"
                                               >
                                                 <RiDeleteBin5Line
                                                   className="text-3xl p-1 hover:text-white"
-                                                  onClick={() => handleDeleteGroup(item)}
+                                                  onClick={() =>
+                                                    handleDeleteGroup(item)
+                                                  }
                                                 />
                                                 <ReactTooltip
                                                   id="All Delete"
@@ -903,12 +920,12 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                                   <span>Delete</span>
                                                 </ReactTooltip>
                                               </button>
-                                            }
+                                            )}
                                           </div>
                                         )}
                                       </>
                                     )}
-                                    {permissions.isDelete &&
+                                    {permissions.isDelete && (
                                       <div>
                                         {selectAll ? (
                                           <input
@@ -920,7 +937,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                               item?.screenGroupID
                                             )}
                                             onChange={() =>
-                                              handleCheckboxChange(item?.screenGroupID)
+                                              handleCheckboxChange(
+                                                item?.screenGroupID
+                                              )
                                             }
                                           />
                                         ) : (
@@ -934,7 +953,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                                 item?.screenGroupID
                                               )}
                                               onChange={() =>
-                                                handleCheckboxChange(item?.screenGroupID)
+                                                handleCheckboxChange(
+                                                  item?.screenGroupID
+                                                )
                                               }
                                             />
                                             <ReactTooltip
@@ -948,15 +969,23 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                           </div>
                                         )}
                                       </div>
-                                    }
+                                    )}
 
                                     <button>
                                       {isAccordionOpen ? (
-                                        <div onClick={() => handleAccordionClick(i)}>
+                                        <div
+                                          onClick={() =>
+                                            handleAccordionClick(i)
+                                          }
+                                        >
                                           <IoIosArrowDropup className="text-3xl" />
                                         </div>
                                       ) : (
-                                        <div onClick={() => handleAccordionClick(i)}>
+                                        <div
+                                          onClick={() =>
+                                            handleAccordionClick(i)
+                                          }
+                                        >
                                           <IoIosArrowDropdown className="text-3xl" />
                                         </div>
                                       )}
@@ -1014,51 +1043,55 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                       {isAccordionOpen &&
                                         item &&
                                         item.screenGroupLists?.length > 0 &&
-                                        item.screenGroupLists.map((screen, index) => {
-                                          return (
-                                            <tr
-                                              key={index}
-                                              className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
-                                            >
-                                              <td className="flex items-center">
-                                                {screen.screenName}
-                                              </td>
-
-                                              <td className="p-2 text-center">
-                                                <span
-                                                  id={`changetvstatus${screen.macID}`}
-                                                  className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                                    ? "bg-[#3AB700]"
-                                                    : "bg-[#FF0000]"
-                                                    }`}
-                                                >
-                                                  {screen.screenStatus == 1
-                                                    ? "Live"
-                                                    : "offline"}
-                                                </span>
-                                              </td>
-                                              <td className="p-2 text-center">
-                                                {moment(screen?.updatedDate).format(
-                                                  "LLL"
-                                                )}
-                                              </td>
-                                              <td className="p-2 text-center">
-                                                <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
-                                                  <p className="line-clamp-3">
-                                                    {screen.assetName}
-                                                  </p>
-                                                  <AiOutlineCloudUpload className="ml-2 text-3xl" />
-                                                </button>
-                                              </td>
-                                              <td className="break-words	w-[150px] p-2 text-center">
-                                                {screen.scheduleName}
-                                              </td>
-                                              <td
-                                                title={screen?.tags && screen?.tags}
-                                                className="mx-auto  p-2 text-center"
+                                        item.screenGroupLists.map(
+                                          (screen, index) => {
+                                            return (
+                                              <tr
+                                                key={index}
+                                                className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
                                               >
-                                                {(screen?.tags === "" ||
-                                                  screen?.tags === null) && (
+                                                <td className="flex items-center">
+                                                  {screen.screenName}
+                                                </td>
+
+                                                <td className="p-2 text-center">
+                                                  <span
+                                                    id={`changetvstatus${screen.macID}`}
+                                                    className={`rounded-full px-6 py-2 text-white text-center ${
+                                                      screen.screenStatus == 1
+                                                        ? "bg-[#3AB700]"
+                                                        : "bg-[#FF0000]"
+                                                    }`}
+                                                  >
+                                                    {screen.screenStatus == 1
+                                                      ? "Live"
+                                                      : "offline"}
+                                                  </span>
+                                                </td>
+                                                <td className="p-2 text-center">
+                                                  {moment(
+                                                    screen?.updatedDate
+                                                  ).format("LLL")}
+                                                </td>
+                                                <td className="p-2 text-center">
+                                                  <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
+                                                    <p className="line-clamp-2">
+                                                      {screen.assetName}
+                                                    </p>
+                                                    <AiOutlineCloudUpload className="ml-2 text-3xl" />
+                                                  </button>
+                                                </td>
+                                                <td className="break-words	w-[150px] p-2 text-center">
+                                                  {screen.scheduleName}
+                                                </td>
+                                                <td
+                                                  title={
+                                                    screen?.tags && screen?.tags
+                                                  }
+                                                  className="mx-auto  p-2 text-center"
+                                                >
+                                                  {(screen?.tags === "" ||
+                                                    screen?.tags === null) && (
                                                     <span>
                                                       <AiOutlinePlusCircle
                                                         size={30}
@@ -1066,82 +1099,104 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                                         onClick={() => {
                                                           setShowTagModal(true);
                                                           screen.tags === "" ||
-                                                            screen?.tags === null
+                                                          screen?.tags === null
                                                             ? setTags([])
                                                             : setTags(
-                                                              screen?.tags?.split(",")
-                                                            );
-                                                          setTagUpdateScreeen(screen);
+                                                                screen?.tags?.split(
+                                                                  ","
+                                                                )
+                                                              );
+                                                          setTagUpdateScreeen(
+                                                            screen
+                                                          );
                                                         }}
                                                       />
                                                     </span>
                                                   )}
-                                                {screen?.tags !== null
-                                                  ? screen.tags
-                                                    .split(",")
-                                                    .slice(
-                                                      0,
-                                                      screen.tags.split(",").length > 2
-                                                        ? 3
-                                                        : screen.tags.split(",").length
-                                                    )
-                                                    .map((text) => {
-                                                      if (text.toString().length > 10) {
-                                                        return text
-                                                          .split("")
-                                                          .slice(0, 10)
-                                                          .concat("...")
-                                                          .join("");
-                                                      }
-                                                      return text;
-                                                    })
-                                                    .join(",")
-                                                  : ""}
-                                                {screen?.tags !== "" &&
-                                                  screen?.tags !== null && (
-                                                    <AiOutlinePlusCircle
-                                                      onClick={() => {
-                                                        setShowTagModal(true);
-                                                        screen.tags === "" ||
+                                                  {screen?.tags !== null
+                                                    ? screen.tags
+                                                        .split(",")
+                                                        .slice(
+                                                          0,
+                                                          screen.tags.split(",")
+                                                            .length > 2
+                                                            ? 3
+                                                            : screen.tags.split(
+                                                                ","
+                                                              ).length
+                                                        )
+                                                        .map((text) => {
+                                                          if (
+                                                            text.toString()
+                                                              .length > 10
+                                                          ) {
+                                                            return text
+                                                              .split("")
+                                                              .slice(0, 10)
+                                                              .concat("...")
+                                                              .join("");
+                                                          }
+                                                          return text;
+                                                        })
+                                                        .join(",")
+                                                    : ""}
+                                                  {screen?.tags !== "" &&
+                                                    screen?.tags !== null && (
+                                                      <AiOutlinePlusCircle
+                                                        onClick={() => {
+                                                          setShowTagModal(true);
+                                                          screen.tags === "" ||
                                                           screen?.tags === null
-                                                          ? setTags([])
-                                                          : setTags(
-                                                            screen?.tags?.split(",")
+                                                            ? setTags([])
+                                                            : setTags(
+                                                                screen?.tags?.split(
+                                                                  ","
+                                                                )
+                                                              );
+                                                          setTagUpdateScreeen(
+                                                            screen
                                                           );
-                                                        setTagUpdateScreeen(screen);
-                                                      }}
-                                                      className="mx-auto  w-5 h-5 cursor-pointer "
+                                                        }}
+                                                        className="mx-auto  w-5 h-5 cursor-pointer "
+                                                      />
+                                                    )}
+
+                                                  {/* add or edit tag modal */}
+                                                  {showTagModal && (
+                                                    <AddOrEditTagPopup
+                                                      setShowTagModal={
+                                                        setShowTagModal
+                                                      }
+                                                      tags={tags}
+                                                      setTags={setTags}
+                                                      handleTagsUpdate={
+                                                        handleTagsUpdate
+                                                      }
+                                                      from="screen"
+                                                      setTagUpdateScreeen={
+                                                        setTagUpdateScreeen
+                                                      }
                                                     />
                                                   )}
-
-                                                {/* add or edit tag modal */}
-                                                {showTagModal && (
-                                                  <AddOrEditTagPopup
-                                                    setShowTagModal={setShowTagModal}
-                                                    tags={tags}
-                                                    setTags={setTags}
-                                                    handleTagsUpdate={handleTagsUpdate}
-                                                    from="screen"
-                                                    setTagUpdateScreeen={
-                                                      setTagUpdateScreeen
-                                                    }
-                                                  />
-                                                )}
-                                              </td>
-                                              <td className="p-2 justify-center flex ">
-                                                {permissions.isDelete &&
-                                                  <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
-                                                    <MdDeleteForever
-                                                      onClick={() =>
-                                                        deleteGroupInScreen(screen, item)
-                                                      }
-                                                    />
-                                                  </div>
-                                                }
-                                              </td>
-                                            </tr>
-                                          );
-                                        })}
+                                                </td>
+                                                <td className="p-2 justify-center flex ">
+                                                  {permissions.isDelete && (
+                                                    <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
+                                                      <MdDeleteForever
+                                                        onClick={() =>
+                                                          deleteGroupInScreen(
+                                                            screen,
+                                                            item
+                                                          )
+                                                        }
+                                                      />
+                                                    </div>
+                                                  )}
+                                                </td>
+                                              </tr>
+                                            );
+                                          }
+                                        )}
                                     </tbody>
                                   </table>
                                 </div>
@@ -1252,7 +1307,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           from="screen"
         />
       )}
-     
     </>
   );
 };

@@ -77,7 +77,7 @@ const AssetModal = ({ setShowAssetModal }) => {
   }, []);
 
   return (
-    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none myplaylist-popup">
       <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
           <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
@@ -327,13 +327,15 @@ const AssetModal = ({ setShowAssetModal }) => {
             </div>
           </div>
           <div className="flex justify-between items-center p-5">
-            <p className="text-black">Content will always be playing Confirm</p>
+            <p className="text-black text-left">Content will always be playing Confirm</p>
+            <p className="text-right">
             <button
               className="bg-primary text-white rounded-full px-5 py-2"
               onClick={() => setShowAssetModal(false)}
             >
               Confirm
             </button>
+            </p>
           </div>
         </div>
       </div>

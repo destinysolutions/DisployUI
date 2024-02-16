@@ -190,7 +190,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               ) : (
                 <>
-                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] ">
                     {instanceName}
                   </h1>
                   <button onClick={() => setEdited(true)}>
@@ -199,7 +199,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
                 </>
               )}
             </div>
-            <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
+            <div className="flex justify-end md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
               {/* <button className=" flex align-middle border-primary items-center border-2 rounded-full py-1 px-4 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
               Preview
             </button> */}
@@ -223,54 +223,52 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="mt-5 mb-5">
-            <div className="grid grid-cols-12 gap-6 mt-5">
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-10 flex flex-col">
+            <div className="grid grid-cols-12 gap-4 h-full">
+              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5  items-center">
                 <div className="shadow-md bg-white rounded-lg p-5 w-full">
-                  <div className="w-[768px] h-[432px]">
-                    <div className="mb-3 relative inline-flex items-center w-full">
-                      <label className="w-2/5 block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                        Text :
-                      </label>
-                      <textarea
-                        id="message"
-                        rows="4"
-                        className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Write your thoughts here..."
-                        onChange={(e) => setText(e.target.value)}
-                        value={text}
-                      ></textarea>
-                    </div>
-                    <div className="mb-3 relative inline-flex items-center w-full">
-                      <label className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                        Scroll Type :
-                      </label>
-                      <select
-                        onChange={(e) => setSelectedScrollType(e.target.value)}
-                        value={selectedScrollType}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      >
-                        {scrollType.map((scrolltype) => (
-                          <option
-                            key={scrolltype.scrollType_Id}
-                            value={scrolltype.scrollType_Id}
-                          >
-                            {scrolltype.scrollTypeName}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                  <div className="mb-3 relative w-full">
+                    <label className="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Text :
+                    </label>
+                    <textarea
+                      id="message"
+                      rows="4"
+                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Write your thoughts here..."
+                      onChange={(e) => setText(e.target.value)}
+                      value={text}
+                    ></textarea>
+                  </div>
+                  <div className="mb-3 relative w-full">
+                    <label className="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Scroll Type :
+                    </label>
+                    <select
+                      onChange={(e) => setSelectedScrollType(e.target.value)}
+                      value={selectedScrollType}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    >
+                      {scrollType.map((scrolltype) => (
+                        <option
+                          key={scrolltype.scrollType_Id}
+                          value={scrolltype.scrollType_Id}
+                        >
+                          {scrolltype.scrollTypeName}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </div>
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-10 flex">
-                <div className="shadow-md bg-white rounded-lg p-5 w-full">
+              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative">
+                <div className="videoplayer relative bg-white lg:h-full h-48">
                   <div
-                    className="w-[768px] h-[432px] p-12 flex items-center justify-center"
+                    className="flex items-center justify-center h-full "
                     style={{
                       borderRadius: "0.625rem",
                       border: "2px solid #FFF",
                       background: "Black",
-                      fontSize: "36px",
+                      fontSize: "24px",
                       color: "White",
                       boxShadow: "0px 10px 15px 0px rgba(0, 0, 0, 0.25)",
                       // height: "100%",

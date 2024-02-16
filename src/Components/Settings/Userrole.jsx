@@ -190,7 +190,7 @@ const Userrole = ({ searchValue }) => {
         </div>
 
         <div className="clear-both">
-          <div className="bg-white rounded-xl lg:mt-8 md:mt-8 mt-4 shadow screen-section ">
+          <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
             <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
               <table
                 className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"

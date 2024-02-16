@@ -711,15 +711,19 @@ const ShowAssetModal = ({
             showAppModal ? "hidden" : ""
           } flex justify-between items-center p-5`}
         >
-          <p className="text-black">Content will always be playing Confirm</p>
-          <button
-            className="bg-primary text-white rounded-full px-5 py-2"
-            onClick={() => {
-              handleOnConfirm();
-            }}
-          >
-            Confirm
-          </button>
+          <p className="text-black text-left">
+            Content will always be playing Confirm
+          </p>
+          <p className="text-right">
+            <button
+              className="bg-primary text-white rounded-full px-5 py-2"
+              onClick={() => {
+                handleOnConfirm();
+              }}
+            >
+              Confirm
+            </button>
+          </p>
         </div>
       </div>
       {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}

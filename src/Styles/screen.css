@@ -132,6 +132,11 @@ input::placeholder {
   .sm\:hidden {
     display: none !important;
   }
+
+  .responsive-table table,
+  .responsive-table td.inline-grid {
+    display: inline-grid;
+  }
 }
 
 /* screen player page */

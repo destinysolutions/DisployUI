@@ -262,7 +262,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
                 </div>
 
-                <div className="grid w-full lg:grid-cols-5 md:grid-cols-5 sm:grid-cols-1">
+                <div className="grid w-full lg:grid-cols-4 md:grid-cols-1 sm:grid-cols-1">
                   {/*Tab*/}
                   <div className="mainsettingtab col-span-1 w-full p-0">
                     <ul className="w-full">
@@ -372,7 +372,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
 
                   {/*Tab details*/}
-                  <div className="col-span-4 w-full bg-white  tabdetails rounded-md relative">
+                  <div className="col-span-3 w-full bg-white  tabdetails rounded-md relative">
                     <div className={STabs === 1 ? "" : "hidden"}>
                       <Users
                         searchValue={searchValue}

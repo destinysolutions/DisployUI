@@ -882,13 +882,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
+                <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
                     Screens
                   </h1>
 
-                  <div className="flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
-                    <div className="relative mr-5">
+                  <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
+                    <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <AiOutlineSearch className="w-5 h-5 text-gray " />
                       </span>
@@ -910,270 +910,261 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <VscVmConnect className="p-1 px-2 text-4xl text-white hover:text-white" />
               </button>
             */}
-
-                    {permissions.isSave && (
-                      <button
-                        data-tip
-                        data-for="New Screen"
-                        type="button"
-                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                        onClick={() => setShowOTPModal(true)}
-                      >
-                        <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
-                        <ReactTooltip
-                          id="New Screen"
-                          place="bottom"
-                          type="warning"
-                          effect="float"
+                    <div className="flex items-center justify-end">
+                      {permissions.isSave && (
+                        <button
+                          data-tip
+                          data-for="New Screen"
+                          type="button"
+                          className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                          onClick={() => setShowOTPModal(true)}
                         >
-                          <span>New Screen</span>
-                        </ReactTooltip>
-                      </button>
-                    )}
+                          <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
+                          <ReactTooltip
+                            id="New Screen"
+                            place="bottom"
+                            type="warning"
+                            effect="float"
+                          >
+                            <span>New Screen</span>
+                          </ReactTooltip>
+                        </button>
+                      )}
 
-                    {showOTPModal ? (
-                      <>
-                        <ScreenOTPModal
-                          showOTPModal={showOTPModal}
-                          setShowOTPModal={setShowOTPModal}
-                        />
-                      </>
-                    ) : null}
-                    {showNewScreenGroupPopup && (
-                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                        <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
-                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                            <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                              <button
-                                className="p-1 text-xl"
-                                onClick={() =>
-                                  setShowNewScreenGroupPopup(false)
-                                }
-                              >
-                                <AiOutlineCloseCircle className="text-2xl" />
-                              </button>
-                            </div>
-                            <div className="p-3">
-                              <label>Enter Group Name : </label>
-                              <input
-                                type="text"
-                                onChange={(e) => {
-                                  setGroupName(e.target.value);
-                                }}
-                                className="border border-primary m-5"
-                              />
-                            </div>
-                            <div className="flex justify-center">
-                              <button
-                                className="mb-4 border border-primary py-2 px-3"
-                                onClick={handleScreenGroup}
-                              >
-                                create
-                              </button>
+                      {showOTPModal ? (
+                        <>
+                          <ScreenOTPModal
+                            showOTPModal={showOTPModal}
+                            setShowOTPModal={setShowOTPModal}
+                          />
+                        </>
+                      ) : null}
+                      {showNewScreenGroupPopup && (
+                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                          <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
+                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                                <button
+                                  className="p-1 text-xl"
+                                  onClick={() =>
+                                    setShowNewScreenGroupPopup(false)
+                                  }
+                                >
+                                  <AiOutlineCloseCircle className="text-2xl" />
+                                </button>
+                              </div>
+                              <div className="p-3">
+                                <label>Enter Group Name : </label>
+                                <input
+                                  type="text"
+                                  onChange={(e) => {
+                                    setGroupName(e.target.value);
+                                  }}
+                                  className="border border-primary m-5"
+                                />
+                              </div>
+                              <div className="flex justify-center">
+                                <button
+                                  className="mb-4 border border-primary py-2 px-3"
+                                  onClick={handleScreenGroup}
+                                >
+                                  create
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* 
-            >
-              <button
-                onClick={() => handleToggleActivation()}
-                type="button"
-                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-              >
-                <RiSignalTowerLine className="p-1 px-2 text-4xl text-white hover:text-white" />
-              </button>
-             */}
-                    <button
-                      data-tip
-                      data-for="Delete"
-                      type="button"
-                      className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                      onClick={handleDeleteAllscreen}
-                      style={{ display: selectAllChecked ? "block" : "none" }}
-                    >
-                      <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
-                      <ReactTooltip
-                        id="Delete"
-                        place="bottom"
-                        type="warning"
-                        effect="float"
-                      >
-                        <span>Delete</span>
-                      </ReactTooltip>
-                    </button>
-
-                    {/* multipal remove */}
-                    {selectedItems?.length !== 0 && !selectAllChecked && (
-                      <button
-                        className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        onClick={handleDeleteAllscreen}
-                      >
-                        <RiDeleteBin5Line className="text-lg" />
-                      </button>
-                    )}
-
-                    <div className="relative mt-1">
                       <button
                         data-tip
-                        data-for="More"
+                        data-for="Delete"
                         type="button"
-                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                        onClick={() => setMoreModal(!moreModal)}
+                        className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                        onClick={handleDeleteAllscreen}
+                        style={{ display: selectAllChecked ? "block" : "none" }}
                       >
-                        <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
+                        <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
                         <ReactTooltip
-                          id="More"
+                          id="Delete"
                           place="bottom"
                           type="warning"
                           effect="float"
                         >
-                          <span>More</span>
+                          <span>Delete</span>
                         </ReactTooltip>
                       </button>
 
-                      {moreModal && (
-                        <div ref={moreModalRef} className="moredw">
-                          <ul>
-                            <li className="flex text-sm items-center ">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={screenCheckboxClick}
-                                onChange={() =>
-                                  setScreenCheckboxClick(!screenCheckboxClick)
-                                }
-                              />
-                              Screen
-                            </li>
-                            <li className="flex text-sm items-center mt-2 ">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={locCheckboxClick}
-                                onChange={() =>
-                                  setLocCheckboxClick(!locCheckboxClick)
-                                }
-                              />
-                              Google Location
-                            </li>
-                            <li className="flex text-sm items-center mt-2">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={statusCheckboxClick}
-                                onChange={() =>
-                                  setStatusCheckboxClick(!statusCheckboxClick)
-                                }
-                              />
-                              Status
-                            </li>
-                            <li className="flex text-sm items-center mt-2">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={lastSeenCheckboxClick}
-                                onChange={() =>
-                                  setLastSeenCheckboxClick(
-                                    !lastSeenCheckboxClick
-                                  )
-                                }
-                              />
-                              Last Seen
-                            </li>
-                            <li className="flex text-sm items-center mt-2">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={nowPlayingCheckboxClick}
-                                onChange={() =>
-                                  setNowPlayingCheckboxClick(
-                                    !nowPlayingCheckboxClick
-                                  )
-                                }
-                              />
-                              Now Playing
-                            </li>
-                            <li className="flex text-sm items-center mt-2 ">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={currScheduleCheckboxClick}
-                                onChange={() =>
-                                  setCurrScheduleCheckboxClick(
-                                    !currScheduleCheckboxClick
-                                  )
-                                }
-                              />
-                              Current Schedule
-                            </li>
-                            <li className="flex text-sm items-center mt-2 ">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={tagsCheckboxClick}
-                                onChange={() =>
-                                  setTagsCheckboxClick(!tagsCheckboxClick)
-                                }
-                              />
-                              Tags
-                            </li>
-                            <li className="flex text-sm items-center mt-2 ">
-                              <input
-                                type="checkbox"
-                                className="mr-2 text-lg"
-                                checked={groupCheckboxClick}
-                                onChange={() =>
-                                  setGroupCheckboxClick(!groupCheckboxClick)
-                                }
-                              />
-                              Group Apply
-                            </li>
-                            <li className="flex text-sm justify-end mt-2 ">
-                              <button
-                                className="bg-lightgray text-primary px-4 py-2 rounded-full"
-                                onClick={() => {
-                                  handleUpdateMenu();
-                                }}
-                              >
-                                Update
-                              </button>
-                            </li>
-                          </ul>
-                        </div>
+                      {/* multipal remove */}
+                      {selectedItems?.length !== 0 && !selectAllChecked && (
+                        <button
+                          className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                          onClick={handleDeleteAllscreen}
+                        >
+                          <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
+                        </button>
+                      )}
+
+                      <div className="relative mt-1">
+                        <button
+                          data-tip
+                          data-for="More"
+                          type="button"
+                          className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                          onClick={() => setMoreModal(!moreModal)}
+                        >
+                          <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
+                          <ReactTooltip
+                            id="More"
+                            place="bottom"
+                            type="warning"
+                            effect="float"
+                          >
+                            <span>More</span>
+                          </ReactTooltip>
+                        </button>
+
+                        {moreModal && (
+                          <div ref={moreModalRef} className="moredw">
+                            <ul>
+                              <li className="flex text-sm items-center ">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={screenCheckboxClick}
+                                  onChange={() =>
+                                    setScreenCheckboxClick(!screenCheckboxClick)
+                                  }
+                                />
+                                Screen
+                              </li>
+                              <li className="flex text-sm items-center mt-2 ">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={locCheckboxClick}
+                                  onChange={() =>
+                                    setLocCheckboxClick(!locCheckboxClick)
+                                  }
+                                />
+                                Google Location
+                              </li>
+                              <li className="flex text-sm items-center mt-2">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={statusCheckboxClick}
+                                  onChange={() =>
+                                    setStatusCheckboxClick(!statusCheckboxClick)
+                                  }
+                                />
+                                Status
+                              </li>
+                              <li className="flex text-sm items-center mt-2">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={lastSeenCheckboxClick}
+                                  onChange={() =>
+                                    setLastSeenCheckboxClick(
+                                      !lastSeenCheckboxClick
+                                    )
+                                  }
+                                />
+                                Last Seen
+                              </li>
+                              <li className="flex text-sm items-center mt-2">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={nowPlayingCheckboxClick}
+                                  onChange={() =>
+                                    setNowPlayingCheckboxClick(
+                                      !nowPlayingCheckboxClick
+                                    )
+                                  }
+                                />
+                                Now Playing
+                              </li>
+                              <li className="flex text-sm items-center mt-2 ">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={currScheduleCheckboxClick}
+                                  onChange={() =>
+                                    setCurrScheduleCheckboxClick(
+                                      !currScheduleCheckboxClick
+                                    )
+                                  }
+                                />
+                                Current Schedule
+                              </li>
+                              <li className="flex text-sm items-center mt-2 ">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={tagsCheckboxClick}
+                                  onChange={() =>
+                                    setTagsCheckboxClick(!tagsCheckboxClick)
+                                  }
+                                />
+                                Tags
+                              </li>
+                              <li className="flex text-sm items-center mt-2 ">
+                                <input
+                                  type="checkbox"
+                                  className="mr-2 text-lg"
+                                  checked={groupCheckboxClick}
+                                  onChange={() =>
+                                    setGroupCheckboxClick(!groupCheckboxClick)
+                                  }
+                                />
+                                Group Apply
+                              </li>
+                              <li className="flex text-sm justify-end mt-2 ">
+                                <button
+                                  className="bg-lightgray text-primary px-4 py-2 rounded-full"
+                                  onClick={() => {
+                                    handleUpdateMenu();
+                                  }}
+                                >
+                                  Update
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+
+                      {permissions.isDelete && (
+                        <button
+                          data-tip
+                          data-for="Select All"
+                          type="button"
+                          className="flex align-middle text-white items-center rounded-full p-2 text-base  "
+                        >
+                          <input
+                            type="checkbox"
+                            className="lg:w-7 lg:h-6 w-5 h-5"
+                            onChange={handleSelectAllCheckboxChange}
+                            checked={selectAllChecked}
+                          />
+                          <ReactTooltip
+                            id="Select All"
+                            place="bottom"
+                            type="warning"
+                            effect="float"
+                          >
+                            <span>Select All</span>
+                          </ReactTooltip>
+                        </button>
                       )}
                     </div>
-
-                    {permissions.isDelete && (
-                      <button
-                        data-tip
-                        data-for="Select All"
-                        type="button"
-                        className="flex align-middle text-white items-center rounded-full p-2 text-base  "
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-7 h-6"
-                          onChange={handleSelectAllCheckboxChange}
-                          checked={selectAllChecked}
-                        />
-                        <ReactTooltip
-                          id="Select All"
-                          place="bottom"
-                          type="warning"
-                          effect="float"
-                        >
-                          <span>Select All</span>
-                        </ReactTooltip>
-                      </button>
-                    )}
                   </div>
                 </div>
 
-                <div className=" bg-white rounded-xl mt-8 shadow screen-section">
-                  <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                <div className=" bg-white rounded-xl lg:mt-8 mt-5 shadow screen-section">
+                  <div className="overflow-x-scroll sc-scrollbar rounded-lg lg:mt-5 ">
                     <table
                       className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
                       cellPadding={20}
@@ -1465,7 +1456,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           )}
 
                                           {showScheduleModal && (
-                                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                                               <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
                                                 <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                                   <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">

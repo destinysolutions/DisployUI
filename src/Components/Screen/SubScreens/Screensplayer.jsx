@@ -140,7 +140,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         const fetchedData = response.data.data;
         if (response.data?.data !== "Data Is Not Found") {
-          
           handleFetchPreviewScreen(fetchedData[0]?.macid);
           setScreenData(fetchedData);
           setSelectScreenOrientation(fetchedData[0].screenOrientation);
@@ -188,7 +187,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     };
     axios
       .request(config)
-      .then(() => { })
+      .then(() => {})
       .catch((error) => {
         console.log(error);
       });
@@ -610,19 +609,19 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-        ? 4
-        : selectedYoutube?.youtubeId !== null &&
-          selectedYoutube?.youtubeId !== undefined
-          ? 5
-          : selectedComposition?.compositionID !== null &&
-            selectedComposition?.compositionID !== undefined
-            ? 3
-            : selectedSchedule?.scheduleId !== null &&
-              selectedSchedule?.scheduleId !== undefined
-              ? 2
-              : selectedDefaultAsset
-                ? 0
-                : 0;
+      ? 4
+      : selectedYoutube?.youtubeId !== null &&
+        selectedYoutube?.youtubeId !== undefined
+      ? 5
+      : selectedComposition?.compositionID !== null &&
+        selectedComposition?.compositionID !== undefined
+      ? 3
+      : selectedSchedule?.scheduleId !== null &&
+        selectedSchedule?.scheduleId !== undefined
+      ? 2
+      : selectedDefaultAsset
+      ? 0
+      : 0;
     let moduleID =
       selectedAsset?.assetID ||
       selectedSchedule?.scheduleId ||
@@ -901,14 +900,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-        ? 4
-        : selectedYoutube?.youtubeId !== null &&
-          selectedYoutube?.youtubeId !== undefined
-          ? 5
-          : selectedComposition?.compositionID !== null &&
-            selectedComposition?.compositionID !== undefined
-            ? 3
-            : 0;
+      ? 4
+      : selectedYoutube?.youtubeId !== null &&
+        selectedYoutube?.youtubeId !== undefined
+      ? 5
+      : selectedComposition?.compositionID !== null &&
+        selectedComposition?.compositionID !== undefined
+      ? 3
+      : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -1045,7 +1044,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {
-        <div className="pt-24 lg:px-5 md:px-5 sm:px-2 xs:px-1">
+        <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="justify-between flex items-center xs-block">
               <div className="section-title">
@@ -1064,8 +1063,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="relative screenplayer-section w-[960px] h-[540px] mx-auto">
-              <div className="w-full h-full pb-5 mx-auto">
+            <div className="relative screenplayer-section w-full max-h-60 lg:w-[960px] lg:h-[540px] mx-auto">
+              <div className="w-full h-60 pb-5 mx-auto">
                 {loading ? (
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="flex text-center m-5 justify-center">
@@ -1336,7 +1335,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               {showCompositionModal && (
                 <tr>
                   <td>
-                    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none myplaylist-popup">
                       <div
                         ref={compositionRef}
                         className="relative w-auto my-6 mx-auto myplaylist-popup-details"
@@ -1417,11 +1416,12 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                 key={composition.compositionID}
                                               >
                                                 <tr
-                                                  className={`${selectedComposition?.compositionName ===
-                                                      composition?.compositionName
+                                                  className={`${
+                                                    selectedComposition?.compositionName ===
+                                                    composition?.compositionName
                                                       ? "bg-[#f3c953]"
                                                       : ""
-                                                    } border-b border-[#eee] `}
+                                                  } border-b border-[#eee] `}
                                                   onClick={() => {
                                                     handleCompositionsAdd(
                                                       composition
@@ -1447,7 +1447,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                     {moment
                                                       .utc(
                                                         composition.duration *
-                                                        1000
+                                                          1000
                                                       )
                                                       .format("hh:mm:ss")}
                                                   </td>
@@ -1468,17 +1468,18 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           </div>
                           <div className="flex justify-between items-center p-5">
-                            <p className="text-black">
+                            <p className="text-black text-left">
                               Content will always be playing Confirm
                             </p>
-                            <button
+                            <p className="text-right"> <button
                               className="bg-primary text-white rounded-full px-5 py-2"
                               onClick={() => {
                                 handleConfirmOnComposition();
                               }}
                             >
                               Confirm
-                            </button>
+                            </button></p>
+                           
                           </div>
                         </div>
                       </div>
@@ -1561,10 +1562,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             <td className="text-left">
                               <span
                                 id={`changetvstatus${screen.macid}`}
-                                className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                className={`rounded-full px-6 py-2 text-white text-center ${
+                                  screen.screenStatus == 1
                                     ? "bg-[#3AB700]"
                                     : "bg-[#FF0000]"
-                                  }`}
+                                }`}
                               >
                                 {screen.screenStatus == 1 ? "Live" : "offline"}
                                 {/* {TvStatus} */}
@@ -1641,27 +1643,27 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
                                 {screen && screen?.tags !== null
                                   ? screen &&
-                                  screen?.tags
-                                    .split(",")
-                                    .slice(
-                                      0,
-                                      screen &&
-                                        screen?.tags.split(",").length > 2
-                                        ? 3
-                                        : screen &&
-                                        screen?.tags.split(",").length
-                                    )
-                                    .map((text) => {
-                                      if (text.toString().length > 10) {
-                                        return text
-                                          .split("")
-                                          .slice(0, 10)
-                                          .concat("...")
-                                          .join("");
-                                      }
-                                      return text;
-                                    })
-                                    .join(",")
+                                    screen?.tags
+                                      .split(",")
+                                      .slice(
+                                        0,
+                                        screen &&
+                                          screen?.tags.split(",").length > 2
+                                          ? 3
+                                          : screen &&
+                                              screen?.tags.split(",").length
+                                      )
+                                      .map((text) => {
+                                        if (text.toString().length > 10) {
+                                          return text
+                                            .split("")
+                                            .slice(0, 10)
+                                            .concat("...")
+                                            .join("");
+                                        }
+                                        return text;
+                                      })
+                                      .join(",")
                                   : ""}
                               </p>
                             </td>
@@ -1699,15 +1701,15 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   >
                     <tbody>
                       <tr className="border-b border-[#D5E3FF]">
-                        <td className="text-left">
-                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                        <td className="text-left lg:py-3 md:py-2 pb-0 ">
+                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base pb-0">
                             Screen Name:
                           </p>
                         </td>
-                        <td className="text-left">
+                        <td className="text-left lg:py-3 md:py-2 pt-0">
                           <input
                             type="text"
-                            className="border border-[#D5E3FF] rounded-full px-3 py-2.5"
+                            className="border border-[#D5E3FF] rounded-full px-3 py-2.5 w-full "
                             onChange={(e) => {
                               setScreenName(e.target.value);
                             }}
@@ -1716,12 +1718,12 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
                       <tr className="border-b border-[#D5E3FF]">
-                        <td className="text-left">
+                        <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                             Orientation:
                           </p>
                         </td>
-                        <td className="text-left">
+                        <td className="text-left lg:py-3 md:py-2 pt-0">
                           <div className="flex lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
                             {getScreenOrientation.length > 0 &&
                               getScreenOrientation.map((option) => (
@@ -1752,18 +1754,18 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
                       <tr className="border-b border-[#D5E3FF]">
-                        <td className="text-left">
+                        <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                             Resolution:
                           </p>
                         </td>
-                        <td className="text-left">
+                        <td className="text-left lg:py-3 md:py-2 pt-0 pb-0">
                           <div className="flex lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
                             {getScreenResolution.length > 0 &&
                               getScreenResolution.map((option) => (
                                 <div
                                   key={option.resolutionsID}
-                                  className="flex"
+                                  className="flex lg:py-3 md:py-2 pb-2"
                                 >
                                   <input
                                     type="radio"
@@ -1788,12 +1790,12 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
                       <tr className="border-b border-[#D5E3FF]">
-                        <td className="text-left">
+                        <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                             Overwrite Time Zone:
                           </p>
                         </td>
-                        <td className="text-left">
+                        <td className="text-left lg:py-3 md:py-2 pt-0">
                           <select
                             className="px-2 py-2 border border-[#D5E3FF] w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-full"
                             value={selectedTimezoneName}
@@ -1814,57 +1816,57 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
 
-                      <tr className="border-b border-[#D5E3FF]">
-                        <td className="text-left">
+                      <tr className="border-b items-center border-[#D5E3FF]">
+                        <td className="text-left lg:py-3 md:py-2 pt-1 pb-1">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                             Tags:
                           </p>
                         </td>
-                        <td className="flex items-center gap-2">
+                        <td className="flex items-center gap-2 lg:py-3 md:py-2 pt-1 pb-1">
                           {((screenData.length > 0 &&
                             screenData[0]?.tags === "") ||
                             (screenData.length > 0 &&
                               screenData[0]?.tags === null)) && (
-                              <span>
-                                <AiOutlinePlusCircle
-                                  size={30}
-                                  className="mx-auto cursor-pointer"
-                                  onClick={() => {
-                                    setShowTagModal(true);
-                                    screenData[0].tags === "" ||
-                                      screenData[0]?.tags === null
-                                      ? setTags([])
-                                      : setTags(screenData[0]?.tags?.split(","));
-                                    setTagUpdateScreeen(screenData[0]);
-                                  }}
-                                />
-                              </span>
-                            )}
+                            <span>
+                              <AiOutlinePlusCircle
+                                size={30}
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  setShowTagModal(true);
+                                  screenData[0].tags === "" ||
+                                  screenData[0]?.tags === null
+                                    ? setTags([])
+                                    : setTags(screenData[0]?.tags?.split(","));
+                                  setTagUpdateScreeen(screenData[0]);
+                                }}
+                              />
+                            </span>
+                          )}
 
                           {screenData?.length > 0 &&
-                            screenData[0]?.tags !== null
+                          screenData[0]?.tags !== null
                             ? screenData.length > 0 &&
-                            screenData[0]?.tags
-                              .split(",")
-                              .slice(
-                                0,
-                                screenData.length > 0 &&
-                                  screenData[0]?.tags.split(",").length > 2
-                                  ? 3
-                                  : screenData.length > 0 &&
-                                  screenData[0]?.tags.split(",").length
-                              )
-                              .map((text) => {
-                                if (text.toString().length > 10) {
-                                  return text
-                                    .split("")
-                                    .slice(0, 10)
-                                    .concat("...")
-                                    .join("");
-                                }
-                                return text;
-                              })
-                              .join(",")
+                              screenData[0]?.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  screenData.length > 0 &&
+                                    screenData[0]?.tags.split(",").length > 2
+                                    ? 3
+                                    : screenData.length > 0 &&
+                                        screenData[0]?.tags.split(",").length
+                                )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
+                                .join(",")
                             : ""}
                           {screenData.length > 0 &&
                             screenData[0]?.tags !== "" &&
@@ -1875,13 +1877,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   setShowTagModal(true);
                                   (screenData.length > 0 &&
                                     screenData[0].tags === "") ||
-                                    (screenData.length > 0 &&
-                                      screenData[0]?.tags === null)
+                                  (screenData.length > 0 &&
+                                    screenData[0]?.tags === null)
                                     ? setTags([])
                                     : setTags(
-                                      screenData.length > 0 &&
-                                      screenData[0]?.tags?.split(",")
-                                    );
+                                        screenData.length > 0 &&
+                                          screenData[0]?.tags?.split(",")
+                                      );
                                   setTagUpdateScreeen(
                                     screenData.length > 0 && screenData[0]
                                   );
@@ -1917,62 +1919,64 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
                       <tr className="border-b border-[#D5E3FF]">
-                        <td className="text-left">
+                        <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                             Type
                           </p>
                         </td>
                         <td
-                          className="flex items-center gap-3"
-                        // onClick={() => setShowAssetModal(true)}
+                          className="text-left lg:py-3 md:py-2 pt-0 pb-0"
+                          // onClick={() => setShowAssetModal(true)}
                         >
-                          <label
-                            onClick={() => {
-                              setShowAssetModal(true);
-                              setSelectedDefaultAsset("");
-                              setSetscreenMacID(screenData[0]?.macid);
-                            }}
-                            htmlFor="select_asset"
-                            className="flex items-center gap-1"
-                          >
-                            <input
-                              type="radio"
-                              // defaultChecked={selectedmediaTypeID !== 0}
-                              checked={selectedDefaultAsset === ""}
-                              name="type"
-                              id="select_asset"
-                            />
-                            Select type
-                          </label>
-                          <label
-                            htmlFor="default_asset"
-                            onClick={() => {
-                              setSelectedDefaultAsset("Default Asset");
-                              setSelectedApps("");
-                              setSelectedComposition("");
-                              setSelectedAsset("");
-                              setSelectedSchedule("");
-                              setSelectedTextScroll("");
-                              setSelectedYoutube("");
-                            }}
-                            className="flex items-center gap-1"
-                          >
-                            <input
-                              type="radio"
-                              name="type"
-                              // defaultChecked={selectedmediaTypeID === 0}
-                              checked={selectedDefaultAsset !== ""}
-                              id="default_asset"
-                            />
-                            Default Asset
-                          </label>
+                          <div className="flex lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
+                            <label
+                              onClick={() => {
+                                setShowAssetModal(true);
+                                setSelectedDefaultAsset("");
+                                setSetscreenMacID(screenData[0]?.macid);
+                              }}
+                              htmlFor="select_asset"
+                              className="flex items-center gap-1"
+                            >
+                              <input
+                                type="radio"
+                                // defaultChecked={selectedmediaTypeID !== 0}
+                                checked={selectedDefaultAsset === ""}
+                                name="type"
+                                id="select_asset"
+                              />
+                              Select type
+                            </label>
+                            <label
+                              htmlFor="default_asset"
+                              onClick={() => {
+                                setSelectedDefaultAsset("Default Asset");
+                                setSelectedApps("");
+                                setSelectedComposition("");
+                                setSelectedAsset("");
+                                setSelectedSchedule("");
+                                setSelectedTextScroll("");
+                                setSelectedYoutube("");
+                              }}
+                              className="flex items-center gap-1 ml-3"
+                            >
+                              <input
+                                type="radio"
+                                name="type"
+                                // defaultChecked={selectedmediaTypeID === 0}
+                                checked={selectedDefaultAsset !== ""}
+                                id="default_asset"
+                              />
+                              Default Asset
+                            </label>
+                          </div>
                         </td>
                       </tr>
                       <tr>
-                        <td></td>
-                        <td>
+                        <td className="lg:py-3 md:py-2 pb-0"></td>
+                        <td className="lg:py-3 md:py-2 pt-0">
                           <input
-                            className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                             value={
                               selectedAsset?.assetName ||
                               selectedComposition?.compositionName ||

@@ -159,7 +159,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTag("");
   };
 
-  const handleTagsUpdate = () => { };
+  const handleTagsUpdate = () => {};
 
   const handleSuggestionClick = (suggestedTag) => {
     const allTags = tags;
@@ -303,7 +303,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     if (screenName.trim() === "") {
       setScreenNameError("Screen name is required");
       return;
-    } 
+    }
     // else if (screenRatePerSec.trim() === "") {
     //   setScreenRatePerSecondError('Screen Rate is required')
     // } else if (screenMargin.trim() === "") {
@@ -312,25 +312,25 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     else {
       setScreenNameError("");
       setScreenRatePerSecondError("");
-      setScreenMargin("")
+      setScreenMargin("");
       // let mediaType = selectedDefaultAsset ? 0 : selectedScreenTypeOption || 0;
       let mediaType = selectedAsset?.assetID
         ? 1
         : selectedTextScroll?.textScroll_Id !== null &&
           selectedTextScroll?.textScroll_Id !== undefined
-          ? 4
-          : selectedYoutube?.youtubeId !== null &&
-            selectedYoutube?.youtubeId !== undefined
-            ? 5
-            : selectedComposition?.compositionID !== null &&
-              selectedComposition?.compositionID !== undefined
-              ? 3
-              : selectedSchedule?.scheduleId !== null &&
-                selectedSchedule?.scheduleId !== undefined
-                ? 2
-                : selectedDefaultAsset
-                  ? 0
-                  : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+        ? 5
+        : selectedComposition?.compositionID !== null &&
+          selectedComposition?.compositionID !== undefined
+        ? 3
+        : selectedSchedule?.scheduleId !== null &&
+          selectedSchedule?.scheduleId !== undefined
+        ? 2
+        : selectedDefaultAsset
+        ? 0
+        : 0;
 
       let getScreenID = otpData.map((item) => item.ScreenID);
       let screen_id = getScreenID[0];
@@ -488,16 +488,16 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         // setAssetData(allAssets);
         // setAssetAllData(allAssets);
         const CurrentTimeZone = new Date()
-        .toLocaleDateString(undefined, {
-          day: "2-digit",
-          timeZoneName: "long",
-        })
-        .substring(4);
-        timezoneResponse.data.data?.map((item)=>{
-          if(item?.timeZoneName === CurrentTimeZone){
-            setSelectedTimezoneName(item?.timeZoneID)
+          .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+          })
+          .substring(4);
+        timezoneResponse.data.data?.map((item) => {
+          if (item?.timeZoneName === CurrentTimeZone) {
+            setSelectedTimezoneName(item?.timeZoneID);
           }
-        })
+        });
         setGetSelectedScreenTypeOption(screenTypeResponse.data.data);
         setScreenOrientation(screenOrientationResponse.data.data);
         setScreenResolution(screenResolutionResponse.data.data);
@@ -678,14 +678,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-        ? 4
-        : selectedYoutube?.youtubeId !== null &&
-          selectedYoutube?.youtubeId !== undefined
-          ? 5
-          : selectedComposition?.compositionID !== null &&
-            selectedComposition?.compositionID !== undefined
-            ? 3
-            : 0;
+      ? 4
+      : selectedYoutube?.youtubeId !== null &&
+        selectedYoutube?.youtubeId !== undefined
+      ? 5
+      : selectedComposition?.compositionID !== null &&
+        selectedComposition?.compositionID !== undefined
+      ? 3
+      : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -971,7 +971,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                     </tr>
-                 {/*   <tr>
+                    {/*   <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
                           Screen Rate Per Second:
@@ -1042,7 +1042,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                       <td
                         className="flex items-center gap-3"
-                      // onClick={() => setShowAssetModal(true)}
+                        // onClick={() => setShowAssetModal(true)}
                       >
                         <label
                           onClick={() => {
@@ -1121,20 +1121,20 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       selectedComposition ||
                       selectedTextScroll ||
                       selectedYoutube) && (
-                        <tr>
-                          <td>
-                            <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
-                              select type:
-                            </label>
-                          </td>
-                          <td className="border border-[#D5E3FF] rounded-lg">
-                            {selectedAsset?.assetName ||
-                              selectedComposition?.compositionName ||
-                              selectedTextScroll?.instanceName ||
-                              selectedYoutube?.youtubeId}
-                          </td>
-                        </tr>
-                      )}
+                      <tr>
+                        <td>
+                          <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
+                            select type:
+                          </label>
+                        </td>
+                        <td className="border border-[#D5E3FF] rounded-lg">
+                          {selectedAsset?.assetName ||
+                            selectedComposition?.compositionName ||
+                            selectedTextScroll?.instanceName ||
+                            selectedYoutube?.youtubeId}
+                        </td>
+                      </tr>
+                    )}
 
                     {selectedScreenTypeOption === "1" && (
                       <tr className={`display-none`}>
@@ -1234,7 +1234,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     {showScheduleModal && (
                       <tr>
                         <td>
-                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                             <div
                               ref={scheduleRef}
                               className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
@@ -1480,7 +1480,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     {showCompositionModal && (
                       <tr>
                         <td>
-                          <div className="bg-black bg-opacity-50 w-screen justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                          <div className="bg-black bg-opacity-50 w-screen justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none myplaylist-popup">
                             <div
                               ref={compositionRef}
                               className="relative w-[90vw] left-1/2 -translate-x-1/3 my-2 myplaylist-popup-details"
@@ -1568,11 +1568,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                         }
                                                       >
                                                         <tr
-                                                          className={`${selectedComposition?.compositionName ===
-                                                              composition?.compositionName
+                                                          className={`${
+                                                            selectedComposition?.compositionName ===
+                                                            composition?.compositionName
                                                               ? "bg-[#f3c953]"
                                                               : ""
-                                                            } border-b border-[#eee] `}
+                                                          } border-b border-[#eee] `}
                                                           onClick={() => {
                                                             handleCompositionsAdd(
                                                               composition
@@ -1600,7 +1601,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                             {moment
                                                               .utc(
                                                                 composition.duration *
-                                                                1000
+                                                                  1000
                                                               )
                                                               .format(
                                                                 "hh:mm:ss"
@@ -1624,18 +1625,20 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                 </div>
                                 <div className="flex justify-between items-center pl-5 pr-5 pb-4">
-                                  <p className="text-black">
+                                  <p className="text-black text-left">
                                     Content will always be playing Confirm
                                   </p>
-                                  <button
-                                    className="bg-primary text-white rounded-full px-5 py-2"
-                                    onClick={() => {
-                                      // setShowCompositionModal(false);
-                                      handleConfirmOnComposition();
-                                    }}
-                                  >
-                                    Confirm
-                                  </button>
+                                  <p className="text-right">
+                                    <button
+                                      className="bg-primary text-white rounded-full px-5 py-2"
+                                      onClick={() => {
+                                        // setShowCompositionModal(false);
+                                        handleConfirmOnComposition();
+                                      }}
+                                    >
+                                      Confirm
+                                    </button>
+                                  </p>
                                 </div>
                               </div>
                             </div>
@@ -1653,9 +1656,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                                 value={
                                   selectedTextScroll !== "" ||
-                                    selectedYoutube !== ""
+                                  selectedYoutube !== ""
                                     ? selectedTextScroll?.instanceName ||
-                                    selectedYoutube?.instanceName
+                                      selectedYoutube?.instanceName
                                     : ""
                                 }
                                 placeholder="Set Apps"
@@ -1689,7 +1692,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     {showAppsModal && (
                       <tr>
                         <td>
-                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none myplaylist-popup">
                             <div
                               ref={appRef}
                               className="relative w-auto my-6 mx-auto myplaylist-popup-details"
@@ -1769,13 +1772,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                     (instance, index) => (
                                                       <tbody key={index}>
                                                         <tr
-                                                          className={`${selectedTextScroll ===
+                                                          className={`${
+                                                            selectedTextScroll ===
                                                               instance ||
-                                                              selectedYoutube ===
+                                                            selectedYoutube ===
                                                               instance
                                                               ? "bg-[#f3c953]"
                                                               : ""
-                                                            } border-b border-[#eee] `}
+                                                          } border-b border-[#eee] `}
                                                           onClick={() => {
                                                             handleAppsAdd(
                                                               instance
@@ -1816,17 +1820,19 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                 </div>
                                 <div className="flex justify-between items-center pl-5 pr-5 pb-4">
-                                  <p className="text-black">
+                                  <p className="text-black text-left">
                                     Content will always be playing Confirm
                                   </p>
-                                  <button
-                                    className="bg-primary text-white rounded-full px-5 py-2"
-                                    onClick={() => {
-                                      handleConfirmOnApps();
-                                    }}
-                                  >
-                                    Confirm
-                                  </button>
+                                  <p className="text-right">
+                                    <button
+                                      className="bg-primary text-white rounded-full px-5 py-2"
+                                      onClick={() => {
+                                        handleConfirmOnApps();
+                                      }}
+                                    >
+                                      Confirm
+                                    </button>
+                                  </p>
                                 </div>
                               </div>
                             </div>
@@ -1885,23 +1891,23 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           <p>
                             {ScreenTags !== null
                               ? ScreenTags.split(",")
-                                .slice(
-                                  0,
-                                  ScreenTags.split(",").length > 2
-                                    ? 3
-                                    : ScreenTags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
+                                  .slice(
+                                    0,
+                                    ScreenTags.split(",").length > 2
+                                      ? 3
+                                      : ScreenTags.split(",").length
+                                  )
+                                  .map((text) => {
+                                    if (text.toString().length > 10) {
+                                      return text
+                                        .split("")
+                                        .slice(0, 10)
+                                        .concat("...")
+                                        .join("");
+                                    }
+                                    return text;
+                                  })
+                                  .join(",")
                               : ""}
                           </p>
 

@@ -307,20 +307,20 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
       {!sidebarload && (
         <Suspense fallback={<Loading />}>
           <div>
-            <div className="flex border-b border-gray mt-5">
+            <div className="flex">
               <Sidebar
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
               />
               <Navbar />
             </div>
-            <div className="pt-16 px-5 page-contain">
+            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="flex justify-between items-center">
-                  <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
+                <div className="flex justify-between items-center mb-5 ">
+                  <h1 className="not-italic font-medium text-2xl text-[#001737]">
                     Trash
                   </h1>
-                  <div className="m-5 flex gap-4 items-center">
+                  <div className="flex items-center justify-center">
                     {selectedItems?.length > 0 && (
                       <button
                         data-tip
@@ -345,7 +345,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                         data-tip
                         data-for="Select All"
                         type="checkbox"
-                        className="w-7 h-6"
+                        className="lg:w-7 lg:h-6 w-5 h-5"
                         checked={selectAllChecked}
                         onChange={handleSelectAllChange}
                       />
@@ -361,7 +361,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 </div>
 
-                <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
+                <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative p-5">
                   <div>
                     <h4 className="text-1xl font-bold dark:text-white m-3 text-center">
                       This data is stored upto 30 days after that it will get
@@ -369,7 +369,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     </h4>
                   </div>
 
-                  <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
+                  <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
                     <table
                       className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                       cellPadding={20}

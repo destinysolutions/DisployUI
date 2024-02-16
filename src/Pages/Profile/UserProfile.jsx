@@ -67,7 +67,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-24 px-5 page-contain">
+      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
@@ -84,12 +84,14 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
                     onClick={() => setActiveTab(value)}
                     className={`${
                       activeTab === value
-                        ? "text-white items-center rounded-full bg-primary "
+                        ? "text-white items-center rounded-full bg-primary"
                         : ""
-                    } py-3 px-4 w-auto border border-primary  rounded-full mx-2`}
+                    } account-settings-tab-li lg:py-3 lg:px-4 py-2 px-2 w-auto border sm:text-sm border-primary rounded-full lg:mx-2 mx-1`}
                   >
-                    <div className="flex items-center">
-                      <span className="mr-2 text-xl">{icon}</span>
+                    <div className="flex items-center sm:text-sm">
+                      <span className="lg:mr-2 mr-1 lg:text-xl text-lg">
+                        {icon}
+                      </span>
                       {label}
                     </div>
                   </Tab>

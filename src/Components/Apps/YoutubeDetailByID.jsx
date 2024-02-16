@@ -124,11 +124,11 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         const Params = {
           id: socket.id,
           connection: socket.connected,
-          macId:  macids.replace(/^\s+/g, ""),
+          macId: macids.replace(/^\s+/g, ""),
         };
         socket.emit("ScreenConnected", Params);
         setTimeout(() => {
-          toast.remove()
+          toast.remove();
           history("/youtube");
         }, 1000);
         // Wrap the SignalR invocation in a Promise
@@ -164,7 +164,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         setSaveLoading(false);
       }
     } catch (error) {
-      toast.remove()
+      toast.remove();
       console.log(error);
       setSaveLoading(false);
       return error;
@@ -264,7 +264,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   ) : (
                     <>
-                      <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+                      <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737]">
                         {instanceName}
                       </h1>
                       <button onClick={() => setEdited(true)}>
@@ -273,7 +273,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                     </>
                   )}
                 </div>
-                <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
+                <div className="flex justify-end md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
                   <button
                     className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                     disabled={saveLoading}
@@ -332,7 +332,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               )}
               {showSetScreenModal && (
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                   <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
                     <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                       <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
@@ -459,7 +459,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               )}
               {playlistDeleteModal && (
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                   <div className="w-auto my-6 mx-auto lg:max-w-xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
                     <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                       <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
@@ -512,7 +512,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
               <div className="mt-6">
-                <div className="grid grid-cols-12 gap-4 h-[380px]">
+                <div className="grid grid-cols-12 gap-4 h-full">
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5  items-center">
                     <div className=" ">
                       <table
@@ -614,7 +614,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                       </table>
                     </div>
                   </div>
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative ">
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative">
                     <div className="videoplayer relative bg-white ">
                       <ReactPlayer
                         url={YoutubeVideo}
@@ -638,7 +638,10 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                   {/* Place your video player here */}
                   {showPreviewPopup && (
                     <>
-                      <div ref={modalRef} className="video-preview lg:w-[960px] lg:h-[540px]">
+                      <div
+                        ref={modalRef}
+                        className="video-preview lg:w-[960px] lg:h-[540px]"
+                      >
                         <ReactPlayer
                           url={YoutubeVideo}
                           className="youtube-preview"

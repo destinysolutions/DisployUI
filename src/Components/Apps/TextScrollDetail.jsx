@@ -138,7 +138,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 </>
               )}
             </div>
-            <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
+            <div className="flex justify-end lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
               {/* <button className=" flex align-middle border-primary items-center border-2 rounded-full py-1 px-4 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 Preview
               </button> */}
@@ -162,7 +162,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="mt-5 mb-5">
-            <div className="grid grid-cols-12 gap-4 h-[380px]">
+            <div className="grid grid-cols-12 gap-4 h-full">
               <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5  items-center ">
                 <div className="mb-3 relative w-full">
                   <label className="w-full block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -197,17 +197,16 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
               <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative ">
-                <div className="videoplayer relative bg-white h-full">
+                <div className="videoplayer relative bg-white lg:h-full h-48">
                   <div
-                    className="flex items-center justify-center h-full"
+                    className="flex items-center justify-center h-full "
                     style={{
                       borderRadius: "0.625rem",
                       border: "2px solid #FFF",
                       background: "Black",
-                      fontSize: "36px",
+                      fontSize: "24px",
                       color: "White",
                       boxShadow: "0px 10px 15px 0px rgba(0, 0, 0, 0.25)",
-                      // height: "100%",
                     }}
                   >
                     {selectedScrollType == 1 && (

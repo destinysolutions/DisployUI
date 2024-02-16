@@ -26,21 +26,30 @@ const Carousel = ({ items, compositonData, from }) => {
     <>
       <div className="h-full w-full p-1 bg-white">
         {items?.map((item, index) => {
-          let viewerSrc = '';
+          let viewerSrc = "";
 
-          if (item?.fileExtention === '.pdf' || item?.fileExtention === '.txt') {
-            viewerSrc = item?.assetFolderPath ? item?.assetFolderPath : item?.fileType;
-          } else if (item?.fileExtention === '.csv') {
-            viewerSrc = `https://docs.google.com/gview?url=${item?.assetFolderPath ? item?.assetFolderPath : item?.fileType}&embedded=true`;
-          } else if (
-            item?.fileExtention === '.pptx' ||
-            item?.fileExtention === '.ppt' ||
-            item?.fileExtention === '.docx' ||
-            item?.fileExtention === '.doc' ||
-            item?.fileExtention === '.xlsx' ||
-            item?.fileExtention === '.xls'
+          if (
+            item?.fileExtention === ".pdf" ||
+            item?.fileExtention === ".txt"
           ) {
-            viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${item?.assetFolderPath ? item?.assetFolderPath : item?.fileType}`;
+            viewerSrc = item?.assetFolderPath
+              ? item?.assetFolderPath
+              : item?.fileType;
+          } else if (item?.fileExtention === ".csv") {
+            viewerSrc = `https://docs.google.com/gview?url=${
+              item?.assetFolderPath ? item?.assetFolderPath : item?.fileType
+            }&embedded=true`;
+          } else if (
+            item?.fileExtention === ".pptx" ||
+            item?.fileExtention === ".ppt" ||
+            item?.fileExtention === ".docx" ||
+            item?.fileExtention === ".doc" ||
+            item?.fileExtention === ".xlsx" ||
+            item?.fileExtention === ".xls"
+          ) {
+            viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${
+              item?.assetFolderPath ? item?.assetFolderPath : item?.fileType
+            }`;
           }
           if (currentIndex === index) {
             return (
@@ -65,47 +74,49 @@ const Carousel = ({ items, compositonData, from }) => {
                   <img
                     src={item?.assetFolderPath}
                     alt={item?.assetName}
-                    className={`w-full h-full ${item?.assetType !== "Image" && "hidden"
-                      } rounded-sm object-fill`}
+                    className={`w-full h-full ${
+                      item?.assetType !== "Image" && "hidden"
+                    } rounded-sm object-fill`}
                   />
                 )}
                 {item?.mediaType === "Image" && (
                   <img
                     src={item?.fileType}
-                    className={`w-full h-full ${!item?.fileType && "hidden"
-                      } rounded-sm object-fill`}
+                    className={`w-full h-full ${
+                      !item?.fileType && "hidden"
+                    } rounded-sm object-fill`}
                   />
                 )}
                 {(item?.assetType === "Video" ||
                   item?.assetType === "Youtube" ||
                   item?.assetType === "OnlineVideo") && (
-                    <ReactPlayer
-                      url={item?.assetFolderPath}
-                      className="w-full h-full relative z-20 videoinner object-fill"
-                      width={"100%"}
-                      height={"100%"}
-                      controls={true}
-                      playing={true}
-                      loop={true}
-                    />
-                  )}
+                  <ReactPlayer
+                    url={item?.assetFolderPath}
+                    className="w-full h-full relative z-20 videoinner object-fill"
+                    width={"100%"}
+                    height={"100%"}
+                    controls={true}
+                    playing={true}
+                    loop={true}
+                  />
+                )}
                 {(item?.mediaType === "Video" ||
                   item?.mediaType === "Youtube") && (
-                    <ReactPlayer
-                      url={
-                        item?.assetFolderPath
-                          ? item?.assetFolderPath
-                          : item?.fileType
-                      }
-                      className="w-full h-full relative z-20 videoinner object-fill"
-                      controls={true}
-                      width={"100%"}
-                      height={"100%"}
-                      loop={true}
-                      playing={true}
-                    />
-                  )}
-               {/* {item.assetType === "DOC" && (
+                  <ReactPlayer
+                    url={
+                      item?.assetFolderPath
+                        ? item?.assetFolderPath
+                        : item?.fileType
+                    }
+                    className="w-full h-full relative z-20 videoinner object-fill"
+                    controls={true}
+                    width={"100%"}
+                    height={"100%"}
+                    loop={true}
+                    playing={true}
+                  />
+                )}
+                {/* {item.assetType === "DOC" && (
                   <iframe
                     className='w-full h-full'
                     title="Document Viewer"
@@ -122,19 +133,19 @@ const Carousel = ({ items, compositonData, from }) => {
                 {(item?.assetType === "Text" ||
                   item?.mediaType === "Text" ||
                   item?.text !== undefined) && (
-                    <marquee
-                      className="text-3xl w-full h-full flex items-center text-white bg-black"
-                      direction={
-                        item?.scrollType == 1 ||
-                          item?.direction == "Left to Right"
-                          ? "right"
-                          : "left"
-                      }
-                      scrollamount="10"
-                    >
-                      {item?.assetFolderPath || item?.fileType || item?.text}
-                    </marquee>
-                  )}
+                  <marquee
+                    className="text-3xl w-full h-full flex items-center text-white bg-black"
+                    direction={
+                      item?.scrollType == 1 ||
+                      item?.direction == "Left to Right"
+                        ? "right"
+                        : "left"
+                    }
+                    scrollamount="10"
+                  >
+                    {item?.assetFolderPath || item?.fileType || item?.text}
+                  </marquee>
+                )}
               </div>
             );
           }

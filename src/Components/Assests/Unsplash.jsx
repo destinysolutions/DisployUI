@@ -125,7 +125,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
                   navigate(-1);
                 } else {
                   dispatch(handleNavigateFromComposition());
-                  localStorage.setItem('isWindowClosed', 'true');
+                  localStorage.setItem("isWindowClosed", "true");
                   window.close();
                 }
               }
@@ -192,7 +192,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
             />
           </div>
           <div className="container mx-auto">
-            <div className="unsplash-section h-[70vh] bg-white rounded-lg">
+            <div className="unsplash-section lg:max-h-80 max-h-60 bg-white rounded-lg">
               <div className="grid grid-cols-12 px-3 gap-4 ">
                 {res.map((val) => {
                   return (
@@ -258,7 +258,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
             <button
               type="button"
               onClick={handleImageUpload}
-              className="text-white py-5 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
+              className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
               disabled={uploadInProgress}
             >
               {uploadInProgress ? "Uploading...." : "Upload Images"}

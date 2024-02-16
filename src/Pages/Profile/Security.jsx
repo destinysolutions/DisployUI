@@ -50,7 +50,6 @@ const Security = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-
         toast.loading("Updating...");
 
         const payload = {
@@ -73,12 +72,12 @@ const Security = () => {
           maxBodyLength: Infinity,
         };
 
-        const response =  await axios.request(config);
+        const response = await axios.request(config);
         if (response.status) {
           toast.dismiss();
           toast.success("Your password change was successful");
-          navigator('/userprofile')
-          formik.resetForm()
+          navigator("/userprofile");
+          formik.resetForm();
         }
       } catch (error) {
         console.error("Error updating password:", error.message);
@@ -94,11 +93,11 @@ const Security = () => {
   };
 
   return (
-    <div>
-      <div className="rounded-xl mt-8 shadow bg-white p-5">
-        <h4 className="user-name mb-3">Change Password</h4>
-        <div className="-mx-3 flex mb-6">
-          <div className="md:w-1/2 px-3 mb-6 md:mb-0">
+    <div className="lg:p-5 py-3">
+      <div className="rounded-xl shadow-lg bg-white lg:p-5 p-3">
+        <h4 className="text-xl font-bold">Change Password</h4>
+        <div className="-mx-3 lg:flex md:flex mb-6">
+          <div className="lg:w-1/2 md:w-1/2 w-full px-3 mb-6 md:mb-0">
             <form
               className="space-y-2"
               action="#"
@@ -222,9 +221,9 @@ const Security = () => {
                   </label>
                 </div>
               </div> */}
-              <div className="md:w-full flex pt-7">
+              <div className="md:w-full flex lg:pt-5 pt-3">
                 <button
-                  className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
+                  className="lg:px-5 px-3 bg-primary text-white rounded-full py-2 border border-primary me-3"
                   disabled={loading}
                 >
                   {loading ? "Saving..." : "Save Changes"}
@@ -238,7 +237,7 @@ const Security = () => {
               </div>
             </form>
           </div>
-          <div className="md:w-1/2 px-3 mb-6 md:mb-0">
+          <div className="lg:w-1/2 md:w-1/2 w-full px-3 mb-6 md:mb-0">
             <h4 className="user-name mb-3">Password Requirements:</h4>
             <ul>
               <li className="flex items-center">
@@ -302,7 +301,8 @@ const Security = () => {
                     />
                   </svg>
                 </span>{" "}
-                At least one uppercase letter, one lowercase letter, one digit, and one special character
+                At least one uppercase letter, one lowercase letter, one digit,
+                and one special character
               </li>
             </ul>
           </div>

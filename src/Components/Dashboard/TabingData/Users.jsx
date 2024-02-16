@@ -140,7 +140,7 @@ const Users = () => {
                 </div>
               </div>
               {deletePopup ? (
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                   <div className="relative w-full max-w-xl max-h-full">
                     <div className="relative bg-white rounded-lg shadow">
                       <div className="py-6 text-center">
