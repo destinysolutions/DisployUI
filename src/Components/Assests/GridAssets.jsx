@@ -797,7 +797,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="relative list-none assetsbox ">*/}
                     <div className="relative shadow-md sm:rounded-lg p-4 overflow-x-scroll sc-scrollbar">
                       <table
-                        cellPadding={10}
+                        cellPadding={15}
                         className="screen-table w-full text-sm lg:table-auto text-left rtl:text-right text-gray-500 dark:text-gray-400"
                       >
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

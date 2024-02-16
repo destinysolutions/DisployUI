@@ -106,7 +106,6 @@ const AdminSidebar = ({ sidebarOpen }) => {
                   className="cursor-pointer duration-500"
                 />
               </div>
-              <div className="h-100vh overflow-auto">
                 <ul className="space-y-1 font-medium">
                   {Menus.map((item, index) => {
                     const submenuIsOpen = submenuStates[item.title] || false;
@@ -157,7 +156,6 @@ const AdminSidebar = ({ sidebarOpen }) => {
                     );
                   })}
                 </ul>
-              </div>
             </div>
           </div>
         </>

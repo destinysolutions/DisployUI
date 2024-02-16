@@ -23,7 +23,7 @@ const ShowUserScreen = ({ showUsersRef, setShowUsers, loading, userList }) => {
               </div>
               <div className="relative overflow-x-auto shadow-md sm:rounded-lg col-span-2 sm:col-span-2 max-h-325">
                 <div className="overflow-x-scroll sc-scrollbar">
-                  <table className="w-full p-4 rounded-lg" cellPadding={10}>
+                  <table className="w-full p-4 rounded-lg" cellPadding={15}>
                     <thead>
                       <tr className="items-center table-head-bg">
                         <th className="text-[#5A5881] text-base font-semibold w-fit text-center">

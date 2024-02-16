@@ -320,7 +320,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                   <h1 className="not-italic font-medium text-2xl text-[#001737]">
                     Trash
                   </h1>
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-center gap-2">
                     {selectedItems?.length > 0 && (
                       <button
                         data-tip
@@ -372,7 +372,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                   <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
                     <table
                       className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
-                      cellPadding={10}
+                      cellPadding={15}
                     >
                       <thead>
                         <tr className="items-center table-head-bg">

@@ -517,7 +517,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className=" ">
                       <table
                         className="youtubetable w-full align-middle"
-                        cellPadding={10}
+                        cellPadding={15}
                         cellSpacing={10}
                       >
                         <tbody>

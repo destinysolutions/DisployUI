@@ -213,7 +213,7 @@ const Dashboard = () => {
               {dashboardData?.screen.map((screen, index) => (
                 <Marker
                   key={index}
-                  position={[23.0225, 72.5714]}
+                  position={[screen.lattitude, screen.longituted]}
                   icon={customIcon}
                   eventHandlers={{
                     click: () => handleScreenClick && handleScreenClick(screen),
@@ -259,7 +259,7 @@ const Dashboard = () => {
                 </div>
 
                 <div>
-                  <table cellPadding={10}>
+                  <table cellPadding={15}>
                     <tbody>
                       <tr>
                         <td className="flex items-center">
@@ -297,7 +297,7 @@ const Dashboard = () => {
                 </div>
 
                 <div>
-                  <table cellPadding={10}>
+                  <table cellPadding={15}>
                     <tbody>
                       <tr>
                         <td className="flex items-center">

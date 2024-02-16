@@ -596,7 +596,7 @@ const EventEditor = ({
                   <div className="max-w-full overflow-auto max-h-[1340px]">
                     <table
                       className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words "
-                      cellPadding={10}
+                      cellPadding={15}
                     >
                       <thead className="sticky z-20">
                         <tr className="table-head-bg text-left mb-5">

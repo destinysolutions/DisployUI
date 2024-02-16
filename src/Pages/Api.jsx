@@ -184,3 +184,8 @@ export const  UPDATE_ADS_RATE  = `${baseUrl}AdsCustomer/UpdateAdsRate`
 
 export const GETALLAPPROVAL = `${baseUrl}OrganizationUsersRole/GetApproveNotifications`
 export const APPROVEDETAILBYID = `${baseUrl}OrganizationUsersRole/ApproveDetailsByID`
+
+// Book Slot
+
+
+export const SCREEN_LIST = `${baseUrl}AdsCustomer/GetAllRetaileScreen`

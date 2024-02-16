@@ -197,7 +197,7 @@ const ScreenAssignModal = ({
               </button>
             </div>
             <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3">
-              <table className="w-full" cellPadding={10}>
+              <table className="w-full" cellPadding={15}>
                 <thead>
                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">

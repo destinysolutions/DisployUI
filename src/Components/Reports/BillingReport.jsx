@@ -63,7 +63,7 @@ const BillingReport = ({
             <div className="overflow-x-scroll sc-scrollbar rounded-lg">
               <table
                 className="sceen-table w-full text-[#5E5E5E]"
-                cellPadding={10}
+                cellPadding={15}
               >
                 <thead>
                   <tr className="table-head-bg rounded-md">

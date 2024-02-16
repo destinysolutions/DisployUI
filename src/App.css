@@ -314,20 +314,20 @@ select:-webkit-autofill:focus {
 }
 
 .nav-text {
-  position: relative;
   cursor: pointer;
-  padding: 6px 0px 6px 0px;
+  padding: 6px 0;
+  position: relative;
 }
 
 .link-items:before {
+  background: #0000;
+  border-radius: 50px;
   content: "";
-  position: absolute;
+  height: 90%;
   left: -13px;
+  position: absolute;
   top: 4px;
   width: 2px;
-  height: 90%;
-  background: transparent;
-  border-radius: 50px;
 }
 
 .link-items:focus::before,

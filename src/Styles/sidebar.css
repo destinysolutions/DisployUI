@@ -27,13 +27,13 @@
   border-radius: 50%;
 } */
 
-.nav-text {
+/* .nav-text {
   position: relative;
   cursor: pointer;
   padding: 6px 0px 6px 0px;
-}
+} */
 
-.link-items:before {
+/* .link-items:before {
   content: "";
   position: absolute;
   left: -13px;
@@ -42,17 +42,17 @@
   height: 90%;
   background: transparent;
   border-radius: 50px;
-}
+} */
 
 /* .link-items:hover::before {
   background: #fff;
   transition: 2s all;
 } */
 
-.link-items:focus::before, .link-items.active::before {
+/* .link-items:focus::before, .link-items.active::before {
   background: #fff;
   transition: 2s all;
-}
+} */
 
 li.p-2.relative.submenu:hover {
   background: #292e4a;

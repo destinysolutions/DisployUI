@@ -107,7 +107,7 @@ const ScreenGroupModal = ({
             <div className="relative overflow-x-auto sc-scrollbar rounded-lg">
               <table
                 className="screen-table min-w-full leading-normal text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
-                cellPadding={10}
+                cellPadding={15}
               >
                 <thead className="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg screen-table-th">

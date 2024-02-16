@@ -51,6 +51,7 @@ import FinalReport from "../Components/Reports/FinalReport";
 import UserDashboard from "../Components/Dashboard/UserDashboard";
 import AddWeatherSchedule from "../Components/Schedule/AddWeatherSchedule";
 import BookSlot from "../Components/Screen/SubScreens/BookSlot/BookSlot";
+import BookingSlot from "../Components/Screen/SubScreens/BookSlot/BookingSlot";
 
 const Routing = () => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -176,6 +177,15 @@ const Routing = () => {
               path="/bookslot"
               element={
                 <BookSlot
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+             <Route
+              path="/bookingslot"
+              element={
+                <BookingSlot
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />

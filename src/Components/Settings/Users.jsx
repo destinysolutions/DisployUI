@@ -664,8 +664,8 @@ const Users = ({ searchValue, permissions }) => {
               />
             </div>
             <hr className="border-gray " />
-            <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 max-h-96 overflow-auto">
-              <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl">
+            <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2">
+              <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 max-h-96 overflow-auto text-left rounded-2xl">
                 <div className="grid grid-cols-12 gap-6">
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                     <div className="relative">
@@ -959,7 +959,7 @@ const Users = ({ searchValue, permissions }) => {
                             <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                               <table
                                 className="screen-table w-full"
-                                cellPadding={10}
+                                cellPadding={15}
                               >
                                 <thead>
                                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
@@ -1095,39 +1095,39 @@ const Users = ({ searchValue, permissions }) => {
                       </div>
                     </div>
                   )}
-                  <div className="col-span-12 text-center">
-                    <button
-                      className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
-                      onClick={() => {
-                        setshowuserModal(false);
-                        handleCancelPopup();
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    {labelTitle !== "Update User" ? (
-                      <button
-                        onClick={() => {
-                          handleAddUser();
-                          setSelectedScreens([]);
-                        }}
-                        className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
-                      >
-                        Save
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          handleUpdateUser();
-                        }}
-                        className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
-                      >
-                        Update
-                      </button>
-                    )}
-                  </div>
                 </div>
               </div>
+            </div>
+            <div className="col-span-12 p-5 text-center">
+              <button
+                className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
+                onClick={() => {
+                  setshowuserModal(false);
+                  handleCancelPopup();
+                }}
+              >
+                Cancel
+              </button>
+              {labelTitle !== "Update User" ? (
+                <button
+                  onClick={() => {
+                    handleAddUser();
+                    setSelectedScreens([]);
+                  }}
+                  className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
+                >
+                  Save
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    handleUpdateUser();
+                  }}
+                  className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
+                >
+                  Update
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -1999,7 +1999,7 @@ const Users = ({ searchValue, permissions }) => {
           <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
             <h3 className="user-name mb-4">Selected Screens</h3>
             <div className="overflow-x-scroll sc-scrollbar rounded-lg shadow">
-              <table className="w-full" cellPadding={10}>
+              <table className="w-full" cellPadding={15}>
                 <thead>
                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
@@ -2130,7 +2130,7 @@ const Users = ({ searchValue, permissions }) => {
                 <div className="rounded-xl lg:mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
                   <table
                     className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
-                    cellPadding={10}
+                    cellPadding={15}
                   >
                     <thead>
                       <tr className="items-center table-head-bg">
@@ -2363,7 +2363,7 @@ const Users = ({ searchValue, permissions }) => {
                         <div className="schedual-table bg-white mt-8 shadow p-3 w-full overflow-x-scroll sc-scrollbar rounded-lg">
                           <table
                             className="screen-table w-full"
-                            cellPadding={10}
+                            cellPadding={15}
                           >
                             <thead>
                               <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">

@@ -162,6 +162,7 @@ var StoreOptions = {
 };
 
 const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
+  console.log('dashboardData', dashboardData)
   const dispatch = useDispatch();
   const { user, token } = useSelector((s) => s.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);
@@ -370,9 +371,9 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
   return (
     <>
       {/* google map start */}
-      {(user?.userRole === "1" || user?.userRole === 1) && (
-        <div className="bg-white shadow-md rounded-lg mt-5">
-          <div className="lg:p-5 md:p-4 sm:p-3 xs:p-2">
+      {/* {(user?.userRole === "1" || user?.userRole === 1) && (
+        <div className="bg-white shadow-md rounded-lg mt-9">
+          <div className="lg:p-9 md:p-6 sm:p-3 xs:p-2">
             <MapContainer
               center={center}
               zoom={4}
@@ -438,7 +439,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
             </MapContainer>
           </div>
         </div>
-      )}
+      )} */}
 
       <div className="bg-white shadow-md rounded-lg mt-5">
         <div className="lg:p-5 md:p-4 sm:p-3 xs:p-2">
@@ -454,7 +455,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
               {dashboardData?.screen.map((screen, index) => (
                 <Marker
                   key={index}
-                  position={[23.0225, 72.5714]}
+                  position={[screen.lattitude, screen.longituted]}
                   icon={customIcon}
                   eventHandlers={{
                     click: () => handleScreenClick && handleScreenClick(screen),
@@ -588,7 +589,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
                         </div>
 
                         <div>
-                          <table cellPadding={10}>
+                          <table cellPadding={15}>
                             <tbody>
                               <tr>
                                 <td className="flex items-center">
@@ -632,10 +633,9 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
       )}
 
       {/* city store popup end */}
-      {(user?.userRole === "1" || user?.userRole === 1) && (
+      {/* {(user?.userRole === "1" || user?.userRole === 1) && (
         <div className=" mt-5 ">
           <div className="grid grid-cols-12 gap-4">
-            {/* Revenue chart start*/}
             <div className="lg:col-span-6  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
               <div className="mb-4 justify-between items-center gap-4 sm:flex mt-3">
                 <div>
@@ -665,15 +665,13 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
                 </div>
               </div>
             </div>
-            {/* Revenue chart end*/}
-            {/* RevenueTable start*/}
+          
             <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-md ">
               <RevenueTable />
             </div>
-            {/* RevenueTable end*/}
           </div>
         </div>
-      )}
+      )} */}
       {allApp?.AppLists?.length > 0 && (
         <div className="mt-6">
           <div className="grid grid-cols-12 gap-4">
@@ -694,7 +692,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
                 </div>
 
                 <div>
-                  <table cellPadding={10}>
+                  <table cellPadding={15}>
                     <tbody>
                       <tr>
                         <td className="flex items-center">
@@ -732,7 +730,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
                 </div>
 
                 <div>
-                  <table cellPadding={10}>
+                  <table cellPadding={15}>
                     <tbody>
                       <tr>
                         <td className="flex items-center">

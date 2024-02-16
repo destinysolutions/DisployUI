@@ -668,7 +668,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="overflow-x-scroll sc-scrollbar  pt-4">
                         <table
                           className="screen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
-                          cellPadding={10}
+                          cellPadding={15}
                         >
                           <thead>
                             <tr className="items-center table-head-bg screen-table-th text-left">

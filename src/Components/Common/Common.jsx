@@ -161,3 +161,20 @@ export const Pagination = (page, length) => {
     return((page - 1) * length)
   }
 };
+
+export const buttons = [
+  "Su",
+  "Mo",
+  "Tu",
+  "We",
+  "Th",
+  "Fr",
+  "Sa",
+];
+
+export function multiOptions(arr) {
+  return arr.map(screen => ({
+      label: screen.screenName,
+      value: screen.screenID.toString()
+  }));
+}

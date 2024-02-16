@@ -358,7 +358,7 @@ const ScreenAssignModal = ({
           </div>
           <div className="schedual-table bg-white mt-2 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
             <div className="overflow-x-scroll sc-scrollbar rounded-lg">
-              <table className="screen-table w-full" cellPadding={10}>
+              <table className="screen-table w-full" cellPadding={15}>
                 <thead>
                   <tr className="items-center table-head-bg">
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-left">

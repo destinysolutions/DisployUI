@@ -1198,7 +1198,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           <div className="overflow-x-auto mt-8 px-5 Set-Schedule-popup  w-full h-full">
                             <table
                               className=" w-full h-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto set-schedule-table overflow-y-scroll"
-                              cellPadding={10}
+                              cellPadding={15}
                             >
                               <thead className="sticky top-0">
                                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
@@ -1549,7 +1549,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   }
                 >
                   <table
-                    cellPadding={10}
+                    cellPadding={15}
                     className="w-full border-[#D5E3FF] border rounded-xl screen-status"
                   >
                     {Array.isArray(screenData) &&
@@ -1695,7 +1695,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   }
                 >
                   <table
-                    cellPadding={10}
+                    cellPadding={15}
                     className="w-full border-[#D5E3FF] border rounded-xl synctable responsive-table"
                     onClick={() => {
                       assetPreviewPopup && setAssetPreviewPopup(false);

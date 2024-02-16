@@ -260,7 +260,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                 <table
                   className="screeen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                  cellPadding={10}
+                  cellPadding={15}
                 >
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr className="items-center table-head-bg capitalize">

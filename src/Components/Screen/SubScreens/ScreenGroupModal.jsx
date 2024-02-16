@@ -82,7 +82,7 @@ const ScreenGroupModal = ({
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -237,6 +237,8 @@ const ScreenGroupModal = ({
               >
                 Screen Group Name *
               </label>
+            </div>
+            <div className="flex justify-end gap-4 px-3">
               <input
                 type="name"
                 name="name"
@@ -251,8 +253,6 @@ const ScreenGroupModal = ({
                   {screenGroupNameError}
                 </p>
               )}
-            </div>
-            <div className="p-2 ">
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <AiOutlineSearch className="w-5 h-5 text-gray " />
@@ -260,7 +260,7 @@ const ScreenGroupModal = ({
                 <input
                   type="text"
                   placeholder="Search Screen" //location ,screen, tag
-                  className="border border-primary rounded-full px-7 pl-10 py-2 search-user sm:w-52 xs:w-52"
+                  className="border border-primary rounded-full px-7 pl-10 py-2 search-user sm:w-64 xs:w-64"
                   value={searchScreen}
                   onChange={(e) => {
                     handleScreenSearch(e);
@@ -269,11 +269,11 @@ const ScreenGroupModal = ({
               </div>
             </div>
 
-            <div className="p-2 relative overflow-x-auto shadow-md sm:rounded-lg col-span-2 sm:col-span-2 max-h-325">
+            <div className="p-2 relative overflow-x-auto shadow-md sm:rounded-lg col-span-2 sm:col-span-2 max-h-325 mt-4">
               <div className="relative overflow-x-auto sc-scrollbar rounded-lg shadow">
                 <table
                   className="screen-table min-w-full leading-normal text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
-                  cellPadding={10}
+                  cellPadding={15}
                 >
                   <thead className="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg screen-table-th">
@@ -281,7 +281,7 @@ const ScreenGroupModal = ({
                         scope="col"
                         className="text-[#5A5881] text-sm font-semibold p-2"
                       >
-                        <div className="text-center">Screen</div>
+                        <div className="text-left px-5">Screen</div>
                       </th>
 
                       <th
@@ -421,7 +421,7 @@ const ScreenGroupModal = ({
                   </tbody>
                 </table>
               </div>
-
+            </div>
               <div className="flex justify-end m-5">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
@@ -491,7 +491,6 @@ const ScreenGroupModal = ({
                   Cancel
                 </button>
               </div>
-            </div>
           </div>
         </div>
       </div>

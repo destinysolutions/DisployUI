@@ -845,7 +845,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="shadow-md lg:p-5  md:p-5 sm:p:2 rounded-md bg-white flex items-center justify-between mt-7 w-full">
             <form className="w-full newscreen-details">
-              <table className="screen-details max-w-[700px]" cellPadding={10}>
+              <table className="screen-details max-w-[700px]" cellPadding={15}>
                 {otpData.map((otpData) => (
                   <tbody key={otpData.ScreenID}>
                     <tr>
@@ -971,69 +971,77 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                     </tr>
-                    {/*   <tr>
-                      <td>
-                        <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
-                          Screen Rate Per Second:
-                        </label>
-                      </td>
-                      <td>
-                        <div className="flex items-center justify-center gap-4">
-                          <input
-                            className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
-                            type="number"
-                            placeholder="Screen Rate Per Second"
-                            value={screenRatePerSec}
-                            onChange={(e) => {
-                              setScreenRatePerSec(e.target.value);
-                              setScreenRatePerSecondError("")
-                            }}
-                          />
-                          <div className="border border-[#D5E3FF] rounded">
-                            <BiSolidDollarCircle
-                              size={30}
-                              className="text-black p-[2px]"
-                            />
-                          </div>
-                        </div>
-                        {screenRatePerSecondError && (
-                          <div className="text-red">{screenRatePerSecondError}</div>
-                        )}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
-                          Screen Margin:
-                        </label>
-                      </td>
-                      <td>
-                        <div className="flex items-center justify-center gap-4">
-                          <input
-                            className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
-                            type="number"
-                            placeholder="Screen Margin"
-                            maxLength="3"
-                            value={screenMargin}
-                            onChange={(e) => {
-                              if (e.target.value.length <= 3) {
-                                setScreenMargin(e.target.value);
-                              setScreenMarginError("")
-                              }
-                            }}
-                          />
-                          <div className="border border-[#D5E3FF] rounded">
-                            <FaPercentage
-                              size={30}
-                              className="text-black p-1"
-                            />
-                          </div>
-                        </div>
-                        {screenMarginError && (
-                          <div className="text-red">{screenMarginError}</div>
-                        )}
-                      </td>
-                        </tr>*/}
+                    {user?.userDetails?.isRetailer && (
+                      <>
+                        <tr>
+                          <td>
+                            <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
+                              Screen Rate Per Second:
+                            </label>
+                          </td>
+                          <td>
+                            <div className="flex items-center justify-center gap-4">
+                              <input
+                                className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
+                                type="number"
+                                placeholder="Screen Rate Per Second"
+                                value={screenRatePerSec}
+                                onChange={(e) => {
+                                  setScreenRatePerSec(e.target.value);
+                                  setScreenRatePerSecondError("");
+                                }}
+                              />
+                              <div className="border border-[#D5E3FF] rounded">
+                                <BiSolidDollarCircle
+                                  size={30}
+                                  className="text-black p-[2px]"
+                                />
+                              </div>
+                            </div>
+                            {screenRatePerSecondError && (
+                              <div className="text-red">
+                                {screenRatePerSecondError}
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
+                              Screen Margin:
+                            </label>
+                          </td>
+                          <td>
+                            <div className="flex items-center justify-center gap-4">
+                              <input
+                                className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
+                                type="number"
+                                placeholder="Screen Margin"
+                                maxLength="3"
+                                value={screenMargin}
+                                onChange={(e) => {
+                                  if (e.target.value.length <= 3) {
+                                    setScreenMargin(e.target.value);
+                                    setScreenMarginError("");
+                                  }
+                                }}
+                              />
+                              <div className="border border-[#D5E3FF] rounded">
+                                <FaPercentage
+                                  size={30}
+                                  className="text-black p-1"
+                                />
+                              </div>
+                            </div>
+                            {screenMarginError && (
+                              <div className="text-red">
+                                {screenMarginError}
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      </>
+                    )}
                     <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
@@ -1259,7 +1267,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="overflow-x-auto mt-8 px-5 Set-Schedule-popup">
                                   <table
                                     className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto set-schedule-table"
-                                    cellPadding={10}
+                                    cellPadding={15}
                                   >
                                     <thead className="sticky top-0">
                                       <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">

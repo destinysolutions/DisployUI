@@ -767,9 +767,8 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                               <div
                                 ref={modalRef}
-                                className="sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-80 my-6 mx-auto"
                               >
-                                <div className="sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-80 border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
                                   <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
                                     <div className="flex items-center">
                                       <div>

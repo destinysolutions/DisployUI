@@ -94,7 +94,7 @@ const UserApp = ({ selectUser, allAppsData, userloading }) => {
               <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
                 <table
                   className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
-                  cellPadding={10}
+                  cellPadding={15}
                 >
                   <thead className="table-head-bg screen-table-th">
                     <tr className="items-center table-head-bg ">

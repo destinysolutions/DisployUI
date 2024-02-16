@@ -69,7 +69,7 @@ const Storagelimit = () => {
           <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
             <table
               className="w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
-              cellPadding={10}
+              cellPadding={15}
             >
               <thead>
                 <tr className="table-head-bg">
