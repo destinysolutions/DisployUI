@@ -716,7 +716,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   <div className="rounded-xl lg:mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
                     <table
                       className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
-                      cellPadding={20}
+                      cellPadding={10}
                     >
                       <thead>
                         <tr className="items-center table-head-bg">

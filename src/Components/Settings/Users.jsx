@@ -959,7 +959,7 @@ const Users = ({ searchValue, permissions }) => {
                             <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                               <table
                                 className="screen-table w-full"
-                                cellPadding={20}
+                                cellPadding={10}
                               >
                                 <thead>
                                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
@@ -1999,7 +1999,7 @@ const Users = ({ searchValue, permissions }) => {
           <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
             <h3 className="user-name mb-4">Selected Screens</h3>
             <div className="overflow-x-scroll sc-scrollbar rounded-lg shadow">
-              <table className="w-full" cellPadding={20}>
+              <table className="w-full" cellPadding={10}>
                 <thead>
                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
@@ -2130,7 +2130,7 @@ const Users = ({ searchValue, permissions }) => {
                 <div className="rounded-xl lg:mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
                   <table
                     className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
-                    cellPadding={20}
+                    cellPadding={10}
                   >
                     <thead>
                       <tr className="items-center table-head-bg">
@@ -2363,7 +2363,7 @@ const Users = ({ searchValue, permissions }) => {
                         <div className="schedual-table bg-white mt-8 shadow p-3 w-full overflow-x-scroll sc-scrollbar rounded-lg">
                           <table
                             className="screen-table w-full"
-                            cellPadding={20}
+                            cellPadding={10}
                           >
                             <thead>
                               <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">

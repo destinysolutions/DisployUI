@@ -337,103 +337,109 @@ const Sidebar = ({ sidebarOpen }) => {
                   className="cursor-pointer duration-500"
                 />
               </div>
-              <ul className="space-y-1 font-medium">
-                {menuData
-                  .filter((item) => item.isView)
-                  .map((item, index) => {
-                    const submenuIsOpen = submenuStates[item.title] || false;
-                    const isActive = window.location.pathname === item.path; // Check if the item is active
-                    return (
-                      <li
-                        key={index}
-                        className={`${item.cName} ${isActive ? "active" : ""}`}
-                      >
-                        <div className="flex items-center">
-                          <Link to={item.path}>
-                            <div>{item.icon}</div>
-                            <span className="ml-5">{item.title}</span>
-                          </Link>
-
-                          {item.subMenus && (
-                            <div className="ml-5 absolute right-0">
-                              <FiIcons.FiChevronDown
-                                className={`${
-                                  submenuIsOpen ? "transform rotate-180" : ""
-                                } transition-transform duration-300 text-white `}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  updateSubmenuState(
-                                    item.title,
-                                    !submenuIsOpen
-                                  );
-                                }}
-                              />
-                            </div>
-                          )}
-                        </div>
-
-                        {submenuIsOpen && item.subMenus && (
-                          <ul className="ml-4 mt-3">
-                            {item.subMenus
-                              .filter((submenu) => submenu.isView) // Filter out submenu items where isView is false
-                              .map((submenu, subIndex) => (
-                                <li
-                                  key={subIndex}
-                                  className="p-2 relative submenu"
-                                >
-                                  <Link to={submenu.path}>
-                                    <div>{submenu.icon}</div>
-                                    {submenu.title === "New Screen" ? (
-                                      <span
-                                        className="ml-5"
-                                        onClick={() => setShowOTPModal(true)}
-                                      >
-                                        {submenu.title}
-                                      </span>
-                                    ) : (
-                                      <span className="ml-5">
-                                        {submenu.title}
-                                      </span>
-                                    )}
-                                  </Link>
-                                </li>
-                              ))}
-                          </ul>
-                        )}
-                      </li>
-                    );
-                  })}
-
-                <li>
-                  <div className="dotline my-4"></div>
-                </li>
-
-                {menuDataBottummenu
-                  .filter((item) => item.isView)
-                  .map((item, MIindex) => {
-                    const isActive = window.location.pathname === item.path; // Check if the item is active
-                    return (
-                      <li
-                        key={MIindex}
-                        className={`${item.cName} ${isActive ? "active" : ""}`}
-                      >
-                        <div
-                          className="flex"
-                          onClick={() => {
-                            handleChangeRoute(item.title, item.path);
-                          }}
+              <div className="h-100vh overflow-auto">
+                <ul className="space-y-1 font-medium">
+                  {menuData
+                    .filter((item) => item.isView)
+                    .map((item, index) => {
+                      const submenuIsOpen = submenuStates[item.title] || false;
+                      const isActive = window.location.pathname === item.path; // Check if the item is active
+                      return (
+                        <li
+                          key={index}
+                          className={`${item.cName} ${
+                            isActive ? "active" : ""
+                          }`}
                         >
-                          <div>{item.icon}</div>
-                          <span className="ml-5 text-[#8E94A9]">
-                            {item.title}
-                          </span>
+                          <div className="flex items-center">
+                            <Link to={item.path}>
+                              <div>{item.icon}</div>
+                              <span className="ml-5">{item.title}</span>
+                            </Link>
 
-                          {Menus.title}
-                        </div>
-                      </li>
-                    );
-                  })}
-              </ul>
+                            {item.subMenus && (
+                              <div className="ml-5 absolute right-0">
+                                <FiIcons.FiChevronDown
+                                  className={`${
+                                    submenuIsOpen ? "transform rotate-180" : ""
+                                  } transition-transform duration-300 text-white `}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    updateSubmenuState(
+                                      item.title,
+                                      !submenuIsOpen
+                                    );
+                                  }}
+                                />
+                              </div>
+                            )}
+                          </div>
+
+                          {submenuIsOpen && item.subMenus && (
+                            <ul className="ml-4 mt-3">
+                              {item.subMenus
+                                .filter((submenu) => submenu.isView) // Filter out submenu items where isView is false
+                                .map((submenu, subIndex) => (
+                                  <li
+                                    key={subIndex}
+                                    className="p-2 relative submenu"
+                                  >
+                                    <Link to={submenu.path}>
+                                      <div>{submenu.icon}</div>
+                                      {submenu.title === "New Screen" ? (
+                                        <span
+                                          className="ml-5"
+                                          onClick={() => setShowOTPModal(true)}
+                                        >
+                                          {submenu.title}
+                                        </span>
+                                      ) : (
+                                        <span className="ml-5">
+                                          {submenu.title}
+                                        </span>
+                                      )}
+                                    </Link>
+                                  </li>
+                                ))}
+                            </ul>
+                          )}
+                        </li>
+                      );
+                    })}
+
+                  <li>
+                    <div className="dotline my-4"></div>
+                  </li>
+
+                  {menuDataBottummenu
+                    .filter((item) => item.isView)
+                    .map((item, MIindex) => {
+                      const isActive = window.location.pathname === item.path; // Check if the item is active
+                      return (
+                        <li
+                          key={MIindex}
+                          className={`${item.cName} ${
+                            isActive ? "active" : ""
+                          }`}
+                        >
+                          <div
+                            className="flex"
+                            onClick={() => {
+                              handleChangeRoute(item.title, item.path);
+                            }}
+                          >
+                            <div>{item.icon}</div>
+                            <span className="ml-5 text-[#8E94A9]">
+                              {item.title}
+                            </span>
+
+                            {Menus.title}
+                          </div>
+                        </li>
+                      );
+                    })}
+                </ul>
+              </div>
             </div>
           </div>
         </>
@@ -466,63 +472,67 @@ const Sidebar = ({ sidebarOpen }) => {
                 />
               </div>
             </div>
-            <ul className="space-y-1 font-medium">
-              {menuData.map((item, index) => {
-                return (
-                  <li key={index} className={item.cName}>
-                    <div className="flex items-center">
-                      <Link to={item.path}>
-                        <div>{item.icon}</div>
-                        <span className="ml-5">{item.title}</span>
-                      </Link>
-                      {item.subMenus && (
-                        <div className="ml-5 absolute right-0">
-                          <FiIcons.FiChevronDown
-                            className={`${
-                              activeSubmenu ? "transform rotate-180" : ""
-                            } transition-transform duration-300 text-white 
+            <div className="h-100vh overflow-auto">
+              <ul className="space-y-1 font-medium">
+                {menuData.map((item, index) => {
+                  return (
+                    <li key={index} className={item.cName}>
+                      <div className="flex items-center">
+                        <Link to={item.path}>
+                          <div>{item.icon}</div>
+                          <span className="ml-5">{item.title}</span>
+                        </Link>
+                        {item.subMenus && (
+                          <div className="ml-5 absolute right-0">
+                            <FiIcons.FiChevronDown
+                              className={`${
+                                activeSubmenu ? "transform rotate-180" : ""
+                              } transition-transform duration-300 text-white 
                           `}
-                            onClick={() => setActiveSubmenu(!activeSubmenu)}
-                          />
-                        </div>
+                              onClick={() => setActiveSubmenu(!activeSubmenu)}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      {activeSubmenu && item.subMenus && (
+                        <ul className="ml-4 mt-3">
+                          {item.subMenus.map((submenu, subIndex) => (
+                            <li key={subIndex} className="p-2 relative submenu">
+                              <Link to={submenu.path}>
+                                <div>{submenu.icon}</div>
+                                <span className="ml-5">{submenu.title}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
                       )}
-                    </div>
-                    {activeSubmenu && item.subMenus && (
-                      <ul className="ml-4 mt-3">
-                        {item.subMenus.map((submenu, subIndex) => (
-                          <li key={subIndex} className="p-2 relative submenu">
-                            <Link to={submenu.path}>
-                              <div>{submenu.icon}</div>
-                              <span className="ml-5">{submenu.title}</span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                );
-              })}
-              <li>
-                <div className="dotline my-4"></div>
-              </li>
-              {menuDataBottummenu.map((item, MIindex) => {
-                return (
-                  <li key={MIindex} className={item.cName}>
-                    <div
-                      className="flex"
-                      onClick={() => {
-                        handleChangeRoute(item.title, item.path);
-                      }}
-                    >
-                      <div>{item.icon}</div>
-                      <span className="ml-5 text-[#8E94A9]">{item.title}</span>
+                    </li>
+                  );
+                })}
+                <li>
+                  <div className="dotline my-4"></div>
+                </li>
+                {menuDataBottummenu.map((item, MIindex) => {
+                  return (
+                    <li key={MIindex} className={item.cName}>
+                      <div
+                        className="flex"
+                        onClick={() => {
+                          handleChangeRoute(item.title, item.path);
+                        }}
+                      >
+                        <div>{item.icon}</div>
+                        <span className="ml-5 text-[#8E94A9]">
+                          {item.title}
+                        </span>
 
-                      {Menus.title}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+                        {Menus.title}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
         </div>
       )}

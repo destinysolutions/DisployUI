@@ -106,47 +106,58 @@ const AdminSidebar = ({ sidebarOpen }) => {
                   className="cursor-pointer duration-500"
                 />
               </div>
-              <ul className="space-y-1 font-medium">
-                {Menus.map((item, index) => {
-                  const submenuIsOpen = submenuStates[item.title] || false;
-                  const isActive = window.location.pathname === item.path;
-                  return (
-                    <li key={index} className={`${item.cName} ${isActive ? "active" : ""}`}>
-                      <div className="flex items-center">
-                        <Link to={item.path}>
-                          <div>{item.icon}</div>
-                          <span className="ml-5">{item.title}</span>
-                        </Link>
-                        {item.subMenus && (
-                          <div className="ml-5 absolute right-0">
-                            <FiIcons.FiChevronDown
-                              className={`${
-                                submenuIsOpen ? "transform rotate-180" : ""
-                              } transition-transform duration-300 text-white `}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                updateSubmenuState(item.title, !submenuIsOpen);
-                              }}
-                            />
-                          </div>
+              <div className="h-100vh overflow-auto">
+                <ul className="space-y-1 font-medium">
+                  {Menus.map((item, index) => {
+                    const submenuIsOpen = submenuStates[item.title] || false;
+                    const isActive = window.location.pathname === item.path;
+                    return (
+                      <li
+                        key={index}
+                        className={`${item.cName} ${isActive ? "active" : ""}`}
+                      >
+                        <div className="flex items-center">
+                          <Link to={item.path}>
+                            <div>{item.icon}</div>
+                            <span className="ml-5">{item.title}</span>
+                          </Link>
+                          {item.subMenus && (
+                            <div className="ml-5 absolute right-0">
+                              <FiIcons.FiChevronDown
+                                className={`${
+                                  submenuIsOpen ? "transform rotate-180" : ""
+                                } transition-transform duration-300 text-white `}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  updateSubmenuState(
+                                    item.title,
+                                    !submenuIsOpen
+                                  );
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                        {submenuIsOpen && item.subMenus && (
+                          <ul className="ml-4 mt-3">
+                            {item.subMenus.map((submenu, subIndex) => (
+                              <li
+                                key={subIndex}
+                                className="p-2 relative submenu"
+                              >
+                                <Link to={submenu.path}>
+                                  <div>{submenu.icon}</div>
+                                  <span className="ml-5">{submenu.title}</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
                         )}
-                      </div>
-                      {submenuIsOpen && item.subMenus && (
-                        <ul className="ml-4 mt-3">
-                          {item.subMenus.map((submenu, subIndex) => (
-                            <li key={subIndex} className="p-2 relative submenu">
-                              <Link to={submenu.path}>
-                                <div>{submenu.icon}</div>
-                                <span className="ml-5">{submenu.title}</span>
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           </div>
         </>
@@ -179,43 +190,45 @@ const AdminSidebar = ({ sidebarOpen }) => {
                 />
               </div>
             </div>
-            <ul className="space-y-1 font-medium">
-              {Menus.map((item, index) => {
-                return (
-                  <li key={index} className={item.cName}>
-                    <div className="flex items-center">
-                      <Link to={item.path}>
-                        <div>{item.icon}</div>
-                        <span className="ml-5">{item.title}</span>
-                      </Link>
-                      {item.subMenus && (
-                        <div className="ml-5 absolute right-0">
-                          <FiIcons.FiChevronDown
-                            className={`${
-                              activeSubmenu ? "transform rotate-180" : ""
-                            } transition-transform duration-300 text-white 
+            <div className="h-100vh overflow-auto">
+              <ul className="space-y-1 font-medium">
+                {Menus.map((item, index) => {
+                  return (
+                    <li key={index} className={item.cName}>
+                      <div className="flex items-center">
+                        <Link to={item.path}>
+                          <div>{item.icon}</div>
+                          <span className="ml-5">{item.title}</span>
+                        </Link>
+                        {item.subMenus && (
+                          <div className="ml-5 absolute right-0">
+                            <FiIcons.FiChevronDown
+                              className={`${
+                                activeSubmenu ? "transform rotate-180" : ""
+                              } transition-transform duration-300 text-white 
                           `}
-                            onClick={() => setActiveSubmenu(!activeSubmenu)}
-                          />
-                        </div>
+                              onClick={() => setActiveSubmenu(!activeSubmenu)}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      {activeSubmenu && item.subMenus && (
+                        <ul className="ml-4 mt-3">
+                          {item.subMenus.map((submenu, subIndex) => (
+                            <li key={subIndex} className="p-2 relative submenu">
+                              <Link to={submenu.path}>
+                                <div>{submenu.icon}</div>
+                                <span className="ml-5">{submenu.title}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
                       )}
-                    </div>
-                    {activeSubmenu && item.subMenus && (
-                      <ul className="ml-4 mt-3">
-                        {item.subMenus.map((submenu, subIndex) => (
-                          <li key={subIndex} className="p-2 relative submenu">
-                            <Link to={submenu.path}>
-                              <div>{submenu.icon}</div>
-                              <span className="ml-5">{submenu.title}</span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
         </div>
       )}

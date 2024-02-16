@@ -1,43 +1,46 @@
-import React, { useRef, useState } from 'react'
-import AdminSidebar from '../AdminSidebar'
-import AdminNavbar from '../AdminNavbar'
+import React, { useRef, useState } from "react";
+import AdminSidebar from "../AdminSidebar";
+import AdminNavbar from "../AdminNavbar";
 import { BiUserPlus } from "react-icons/bi";
 import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
 import * as Yup from "yup";
 import axios from "axios";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
-import AddEditAdvertisement from './AddEditAdvertisement';
-import CustomerScreen from './CustomerScreen';
-import { GET_ALL_ORGANIZATION_MASTER } from '../AdminAPI';
-import { useEffect } from 'react';
-import { ADDEDITADVERTISEMENT, GETALLADS } from '../../Pages/Api';
-import { MdOutlineResetTv, MdPreview } from 'react-icons/md';
-import moment from 'moment';
-import { assignAdvertisement, getAdvertisementData } from '../../Redux/admin/AdvertisementSlice';
-import { useDispatch } from 'react-redux';
-import { getOnBodingData } from '../../Redux/admin/OnBodingSlice';
+import AddEditAdvertisement from "./AddEditAdvertisement";
+import CustomerScreen from "./CustomerScreen";
+import { GET_ALL_ORGANIZATION_MASTER } from "../AdminAPI";
+import { useEffect } from "react";
+import { ADDEDITADVERTISEMENT, GETALLADS } from "../../Pages/Api";
+import { MdOutlineResetTv, MdPreview } from "react-icons/md";
+import moment from "moment";
+import {
+  assignAdvertisement,
+  getAdvertisementData,
+} from "../../Redux/admin/AdvertisementSlice";
+import { useDispatch } from "react-redux";
+import { getOnBodingData } from "../../Redux/admin/OnBodingSlice";
 
 const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const hiddenFileInput = useRef(null);
   const TodayDate = new Date();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [showSelectScreenModal, setShowSelectScreenModal] = useState(false);
   const [adsPreview, setAdsPreview] = useState(false);
 
   const [customerList, setCustomerList] = useState({
     allCustomer: [],
-    searchCustomer: []
-  })
+    searchCustomer: [],
+  });
   const [heading, setHeading] = useState("Add");
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState();
   const [allAdvertisement, setAllAdvertisement] = useState({
     advertisementData: [],
-    SearchData: []
-  })
+    SearchData: [],
+  });
   const [selectAds, setSelectAds] = useState("");
 
   //   Pagination
@@ -48,46 +51,43 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedItems, setSelectedItems] = useState([]); // Multipal check
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectcheck, setSelectCheck] = useState(false);
-  const [searchAds, setSearchAds] = useState("")
+  const [searchAds, setSearchAds] = useState("");
   const toggleModal = () => {
     setShowModal(!showModal);
     formik.resetForm();
   };
 
   const handleClose = () => {
-    setShowSelectScreenModal(false)
-    setSelectAllChecked(false)
-    setSelectCheck(false)
-    setSelectedItems([])
-    setSelectAds("")
-  }
+    setShowSelectScreenModal(false);
+    setSelectAllChecked(false);
+    setSelectCheck(false);
+    setSelectedItems([]);
+    setSelectAds("");
+  };
 
   const filteredData = Array.isArray(customerList?.allCustomer)
     ? customerList?.allCustomer?.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value
-        // &&
-        // value.toString().toLowerCase().includes(searchScreen.toLowerCase())
+        Object.values(item).some(
+          (value) => value
+          // &&
+          // value.toString().toLowerCase().includes(searchScreen.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
 
   const fiterAds = Array.isArray(allAdvertisement?.advertisementData)
     ? allAdvertisement?.advertisementData?.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value
-          &&
-          value.toString().toLowerCase().includes(searchAds.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value.toString().toLowerCase().includes(searchAds.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalAdsPages = Math.ceil(fiterAds?.length / itemsPerPage);
-
 
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
@@ -130,21 +130,21 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   // Pagination End
 
   function getTimeFromDate(date) {
-    const hours = String(date.getHours()).padStart(2, '0'); // Ensure two digits
-    const minutes = String(date.getMinutes()).padStart(2, '0'); // Ensure two digits
+    const hours = String(date.getHours()).padStart(2, "0"); // Ensure two digits
+    const minutes = String(date.getMinutes()).padStart(2, "0"); // Ensure two digits
     const time = `${hours}:${minutes}`;
     return time;
   }
 
   function formatDate(date) {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
 
-  const currentTime = getTimeFromDate(TodayDate)
-  const currentDate = formatDate(TodayDate)
+  const currentTime = getTimeFromDate(TodayDate);
+  const currentDate = formatDate(TodayDate);
 
   //using for validation and register api calling
   const phoneRegExp =
@@ -171,11 +171,11 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
       startDate: currentDate,
       endDate: currentDate,
       PhoneNumber: "",
-      Email: ""
+      Email: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      toast.loading("saving...")
+      toast.loading("saving...");
       const formData = new FormData();
       formData.append("Name", values.Name);
       formData.append("startTime", values.startTime);
@@ -187,7 +187,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("file", file);
       formData.append("Email", values.Email);
       formData.append("PhoneNumber", values.PhoneNumber);
-      formData.append("AssetType", file?.type?.split("/")?.[0])
+      formData.append("AssetType", file?.type?.split("/")?.[0]);
       setLoading(true);
       let config = {
         method: "post",
@@ -201,10 +201,10 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
 
       const response = await axios.request(config);
       if (response?.data?.status === true) {
-        toast?.remove()
+        toast?.remove();
         formik.resetForm();
         toast.success("Advertisement Details saved successfully!");
-        fetchAds()
+        fetchAds();
         setLoading(false);
         setShowModal(false);
       } else {
@@ -215,14 +215,16 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   });
 
   const fetchUserData = () => {
-    dispatch(getOnBodingData()).then((response) => {
-      setCustomerList({
-        allCustomer: response.payload.data,
-        searchCustomer: response.payload.data
+    dispatch(getOnBodingData())
+      .then((response) => {
+        setCustomerList({
+          allCustomer: response.payload.data,
+          searchCustomer: response.payload.data,
+        });
       })
-    }).catch((error) => {
-      console.log('error', error)
-    })
+      .catch((error) => {
+        console.log("error", error);
+      });
   };
 
   const fetchAds = () => {
@@ -230,15 +232,16 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         setAllAdvertisement({
           advertisementData: response?.payload?.data,
-          SearchData: response?.payload?.data
-        })
-      }).catch((error) => console.log('error', error))
-  }
+          SearchData: response?.payload?.data,
+        });
+      })
+      .catch((error) => console.log("error", error));
+  };
 
   useEffect(() => {
     fetchUserData();
     fetchAds();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (selectcheck && customerList?.allCustomer?.length > 0) {
@@ -253,15 +256,17 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     if (selectedItems.length === customerList?.allCustomer.length) {
       setSelectedItems([]);
     } else {
-      const allIds = customerList?.allCustomer.map((item) => item.organizationID);
+      const allIds = customerList?.allCustomer.map(
+        (item) => item.organizationID
+      );
       setSelectedItems(allIds);
     }
   };
 
   const handleChange = (e) => {
     const searchQuery = e.target.value.toLowerCase();
-    setSearchAds(searchQuery)
-  }
+    setSearchAds(searchQuery);
+  };
 
   const handleScreenCheckboxChange = (screenID) => {
     setSelectAllChecked(false);
@@ -278,27 +283,28 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     setFile(selectedFile);
   };
 
-
   const HandleSave = () => {
-    toast.loading("saving...")
+    toast.loading("saving...");
     let Params = {
-      "assignAdvertisementid": 0,
-      "adsCustomerMasterID": selectAds?.adsCustomerMasterID,
-      "organizationID": selectedItems.join(','),
-      "mode": "Save"
-    }
-    dispatch(assignAdvertisement(Params)).then((res) => {
-      if (res?.payload?.status === 200) {
-        toast?.remove()
-        toast.success("saved data Successfully")
-      }
-    }).catch((error)=> console.log('error', error))
-    setShowSelectScreenModal(false)
-    setSelectAllChecked(false)
-    setSelectCheck(false)
-    setSelectedItems([])
-    setSelectAds("")
-  }
+      assignAdvertisementid: 0,
+      adsCustomerMasterID: selectAds?.adsCustomerMasterID,
+      organizationID: selectedItems.join(","),
+      mode: "Save",
+    };
+    dispatch(assignAdvertisement(Params))
+      .then((res) => {
+        if (res?.payload?.status === 200) {
+          toast?.remove();
+          toast.success("saved data Successfully");
+        }
+      })
+      .catch((error) => console.log("error", error));
+    setShowSelectScreenModal(false);
+    setSelectAllChecked(false);
+    setSelectCheck(false);
+    setSelectedItems([]);
+    setSelectAds("");
+  };
 
   return (
     <>
@@ -347,7 +353,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                 <table
                   className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
-                  cellPadding={20}
+                  cellPadding={10}
                 >
                   <thead className="table-head-bg screen-table-th">
                     <tr className="items-center table-head-bg ">
@@ -387,7 +393,6 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                       <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
                         Action
                       </th>
-
                     </tr>
                   </thead>
                   <tbody>
@@ -463,15 +468,15 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                     {moment(screen?.endDate).format("LLL")}
                                   </td>
 
-                                  <td className='p-2 text-center'>
+                                  <td className="p-2 text-center">
                                     <div className="relative">
                                       <button
                                         data-tip
                                         data-for="Assign"
                                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-1"
                                         onClick={() => {
-                                          setShowSelectScreenModal(true)
-                                          setSelectAds(screen)
+                                          setShowSelectScreenModal(true);
+                                          setSelectAds(screen);
                                         }}
                                       >
                                         <MdOutlineResetTv />
@@ -481,8 +486,8 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                         data-for="Preview"
                                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-1"
                                         onClick={() => {
-                                          setAdsPreview(true)
-                                          setSelectAds(screen)
+                                          setAdsPreview(true);
+                                          setSelectAds(screen);
                                         }}
                                       >
                                         <MdPreview />
@@ -518,7 +523,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                       d="M13 5H1m0 0 4 4M1 5l4-4"
                     />
                   </svg>
-                  Previous
+                  {/* Previous */}
                 </button>
                 {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
                 <button
@@ -526,7 +531,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                   disabled={currentPage === totalAdsPages}
                   className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
-                  Next
+                  {/* Next */}
                   <svg
                     className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                     aria-hidden="true"
@@ -577,10 +582,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                     controls
                     className="imagebox w-full h-full top-0 left-0 z-50 fixed"
                   >
-                    <source
-                      src={selectAds.filePath}
-                      type="video/mp4"
-                    />
+                    <source src={selectAds.filePath} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                 )}
@@ -589,7 +591,6 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       )}
-
 
       {showModal && (
         <AddEditAdvertisement
@@ -615,10 +616,11 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
           selectAllChecked={selectAllChecked}
           HandleSave={HandleSave}
           selectedItems={selectedItems}
-          handleScreenCheckboxChange={handleScreenCheckboxChange} />
+          handleScreenCheckboxChange={handleScreenCheckboxChange}
+        />
       )}
     </>
-  )
-}
+  );
+};
 
-export default Advertisement
+export default Advertisement;

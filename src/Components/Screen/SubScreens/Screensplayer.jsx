@@ -1198,7 +1198,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           <div className="overflow-x-auto mt-8 px-5 Set-Schedule-popup  w-full h-full">
                             <table
                               className=" w-full h-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto set-schedule-table overflow-y-scroll"
-                              cellPadding={20}
+                              cellPadding={10}
                             >
                               <thead className="sticky top-0">
                                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
@@ -1471,15 +1471,17 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             <p className="text-black text-left">
                               Content will always be playing Confirm
                             </p>
-                            <p className="text-right"> <button
-                              className="bg-primary text-white rounded-full px-5 py-2"
-                              onClick={() => {
-                                handleConfirmOnComposition();
-                              }}
-                            >
-                              Confirm
-                            </button></p>
-                           
+                            <p className="text-right">
+                              {" "}
+                              <button
+                                className="bg-primary text-white rounded-full px-5 py-2"
+                                onClick={() => {
+                                  handleConfirmOnComposition();
+                                }}
+                              >
+                                Confirm
+                              </button>
+                            </p>
                           </div>
                         </div>
                       </div>

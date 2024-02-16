@@ -1,66 +1,66 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
-import ConfirmationDialog from '../../Common/ConfirmationDialog';
-import { BiUserPlus } from 'react-icons/bi';
-import { MdDeleteForever } from 'react-icons/md';
-import { RiUser3Fill } from 'react-icons/ri';
-import { BsEyeFill } from 'react-icons/bs';
-import ReactTooltip from 'react-tooltip';
-import { AiOutlineSearch } from 'react-icons/ai';
-import UserInfo from './UserInfo';
+import ConfirmationDialog from "../../Common/ConfirmationDialog";
+import { BiUserPlus } from "react-icons/bi";
+import { MdDeleteForever } from "react-icons/md";
+import { RiUser3Fill } from "react-icons/ri";
+import { BsEyeFill } from "react-icons/bs";
+import ReactTooltip from "react-tooltip";
+import { AiOutlineSearch } from "react-icons/ai";
+import UserInfo from "./UserInfo";
 
-const Data = [{
-  id: "1",
-  profilePhoto: "https://cdn-icons-png.flaticon.com/128/2202/2202112.png",
-  name: 'test 1',
-  Plan: 'Basic',
-  Billing: 'Axis Bank **** **** **** 8395',
-  Status: 1,
-},
-{
-  id: "2",
-  profilePhoto: "https://cdn-icons-png.flaticon.com/128/6997/6997662.png",
-  name: 'test 2',
-  Plan: 'Basic',
-  Billing: 'Axis Bank **** **** **** 8395',
-  Status: 0,
-},
-{
-  id: "3",
-  profilePhoto: "https://cdn-icons-png.flaticon.com/128/14507/14507916.png",
-  name: 'test 3',
-  Plan: 'Basic',
-  Billing: 'Axis Bank **** **** **** 8395',
-  Status: 0,
-},
-{
-  id: "4",
-  profilePhoto: "https://cdn-icons-png.flaticon.com/128/9408/9408175.png",
-  name: 'test 4',
-  Plan: 'Basic',
-  Billing: 'Axis Bank **** **** **** 8395',
-  Status: 1,
-},
-{
-  id: "5",
-  profilePhoto: "https://cdn-icons-png.flaticon.com/128/219/219970.png",
-  name: 'test 5',
-  Plan: 'Basic',
-  Billing: 'Axis Bank **** **** **** 8395',
-  Status: 1,
-},
-
-]
-
+const Data = [
+  {
+    id: "1",
+    profilePhoto: "https://cdn-icons-png.flaticon.com/128/2202/2202112.png",
+    name: "test 1",
+    Plan: "Basic",
+    Billing: "Axis Bank **** **** **** 8395",
+    Status: 1,
+  },
+  {
+    id: "2",
+    profilePhoto: "https://cdn-icons-png.flaticon.com/128/6997/6997662.png",
+    name: "test 2",
+    Plan: "Basic",
+    Billing: "Axis Bank **** **** **** 8395",
+    Status: 0,
+  },
+  {
+    id: "3",
+    profilePhoto: "https://cdn-icons-png.flaticon.com/128/14507/14507916.png",
+    name: "test 3",
+    Plan: "Basic",
+    Billing: "Axis Bank **** **** **** 8395",
+    Status: 0,
+  },
+  {
+    id: "4",
+    profilePhoto: "https://cdn-icons-png.flaticon.com/128/9408/9408175.png",
+    name: "test 4",
+    Plan: "Basic",
+    Billing: "Axis Bank **** **** **** 8395",
+    Status: 1,
+  },
+  {
+    id: "5",
+    profilePhoto: "https://cdn-icons-png.flaticon.com/128/219/219970.png",
+    name: "test 5",
+    Plan: "Basic",
+    Billing: "Axis Bank **** **** **** 8395",
+    Status: 1,
+  },
+];
 
 const Billing = () => {
-
   // pagination Start
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   // Filter data based on search term
-  const filteredData = Data.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredData = Data.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   // Get current items based on pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -74,17 +74,14 @@ const Billing = () => {
 
   const [showBillingProfile, setShowBillingProfile] = useState(false);
 
-
-
-
   return (
     <>
-      {showBillingProfile ?
+      {showBillingProfile ? (
         <UserInfo
           setShowBillingProfile={setShowBillingProfile}
           showBillingProfile={showBillingProfile}
         />
-        :
+      ) : (
         <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
           <div>
             <div className="relative">
@@ -106,7 +103,7 @@ const Billing = () => {
               <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
                 <table
                   className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
-                  cellPadding={20}
+                  cellPadding={10}
                 >
                   <thead>
                     <tr className="items-center table-head-bg">
@@ -118,7 +115,7 @@ const Billing = () => {
                           xmlns="http://www.w3.org/2000/svg"
                           fill="currentColor"
                           viewBox="0 0 24 24"
-                        // onClick={() => handleSort("compositionName")}
+                          // onClick={() => handleSort("compositionName")}
                         >
                           <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                         </svg>
@@ -139,10 +136,7 @@ const Billing = () => {
                   </thead>
                   {currentItems.length > 0 ? (
                     currentItems.map((item, index) => (
-                      <tr
-                        className="border-b border-b-[#E4E6FF]"
-                        key={index}
-                      >
+                      <tr className="border-b border-b-[#E4E6FF]" key={index}>
                         <td className="text-[#5E5E5E] text-center flex">
                           {item?.profilePhoto !== null ? (
                             <img
@@ -185,8 +179,11 @@ const Billing = () => {
                             <div
                               data-tip
                               data-for="View"
-                              className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                              <BsEyeFill onClick={() => setShowBillingProfile(true)} />
+                              className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            >
+                              <BsEyeFill
+                                onClick={() => setShowBillingProfile(true)}
+                              />
                               <ReactTooltip
                                 id="View"
                                 place="bottom"
@@ -200,7 +197,8 @@ const Billing = () => {
                             <div
                               data-tip
                               data-for="Delete"
-                              className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]" >
+                              className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
+                            >
                               <MdDeleteForever />
                               <ReactTooltip
                                 id="Delete"
@@ -211,15 +209,16 @@ const Billing = () => {
                                 <span>Delete</span>
                               </ReactTooltip>
                             </div>
-
                           </div>
                         </td>
-
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td className="text-[#5E5E5E] font-semibold text-center text-2xl" colSpan={5}>
+                      <td
+                        className="text-[#5E5E5E] font-semibold text-center text-2xl"
+                        colSpan={5}
+                      >
                         Data Not found !
                       </td>
                     </tr>
@@ -256,7 +255,10 @@ const Billing = () => {
 
                     <button
                       onClick={() => setCurrentPage(currentPage + 1)}
-                      disabled={currentPage === Math.ceil(filteredData.length / itemsPerPage)}
+                      disabled={
+                        currentPage ===
+                        Math.ceil(filteredData.length / itemsPerPage)
+                      }
                       className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                     >
                       Next
@@ -283,10 +285,9 @@ const Billing = () => {
             </div>
           </div>
         </div>
-      }
-
+      )}
     </>
-  )
-}
+  );
+};
 
-export default Billing
+export default Billing;

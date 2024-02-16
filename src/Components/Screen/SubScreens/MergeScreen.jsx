@@ -668,7 +668,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="overflow-x-scroll sc-scrollbar  pt-4">
                         <table
                           className="screen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
-                          cellPadding={20}
+                          cellPadding={10}
                         >
                           <thead>
                             <tr className="items-center table-head-bg screen-table-th text-left">
@@ -739,7 +739,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                       </td>
                                       <td className="p-2 text-center">
                                         <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
-                                          <p className="line-clamp-3">
+                                          <p className="line-clamp-2">
                                             {screen.assetName}
                                           </p>
                                           <AiOutlineCloudUpload className="ml-2 text-3xl" />

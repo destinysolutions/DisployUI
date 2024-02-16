@@ -9,12 +9,15 @@ import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { addRetailerData, getRetailerData, resetStatus, updateRetailerData } from "../../Redux/admin/RetailerSlice";
+import {
+  addRetailerData,
+  getRetailerData,
+  resetStatus,
+  updateRetailerData,
+} from "../../Redux/admin/RetailerSlice";
 import { MdOutlineModeEdit } from "react-icons/md";
 
-
 const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
-
   const store = useSelector((state) => state.root.retailerData);
 
   const dispatch = useDispatch();
@@ -31,7 +34,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const [itemsPerPage] = useState(10); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [editId, setEditId] = useState(null);
   const [orgUserID, setOrgUserID] = useState(null);
   const [editData, setEditData] = useState({
@@ -44,19 +47,15 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
     phoneNumber: "",
   });
 
-
   // Filter data based on search term
   const filteredData = Array.isArray(store.data)
     ? store.data.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value
-            .toString()
-            .toLowerCase()
-            .includes(search.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value.toString().toLowerCase().includes(search.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -96,9 +95,9 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
 
   const toggleModal = () => {
     setShowModal(!showModal);
-    setEditId(null)
-    setOrgUserID(null)
-    setEditData({})
+    setEditId(null);
+    setOrgUserID(null);
+    setEditData({});
   };
 
   //using for validation and register api calling
@@ -107,7 +106,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
 
   const validationSchema = Yup.object().shape({
     companyName: Yup.string().required("Company Name is required"),
-    password: Yup.string().when('editId', {
+    password: Yup.string().when("editId", {
       is: false,
       then: Yup.string()
         .required("Password is required")
@@ -143,7 +142,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     if (loadFist) {
       dispatch(getRetailerData());
-      setLoadFist(false)
+      setLoadFist(false);
     }
 
     if (store && store.status === "failed") {
@@ -152,13 +151,12 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
 
     if (store && store.status === "succeeded") {
       toast.success(store.message);
-      setLoadFist(true)
+      setLoadFist(true);
     }
 
     if (store && store.status) {
       dispatch(resetStatus());
     }
-
   }, [loadFist, store]);
 
   const formik = useFormik({
@@ -168,7 +166,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
     onSubmit: async (values) => {
       const formData = new FormData();
       formData.append("OrganizationName", values.companyName);
-      formData.append("Password", values.password || ''); // Set a default value if null
+      formData.append("Password", values.password || ""); // Set a default value if null
       formData.append("FirstName", values.firstName);
       formData.append("LastName", values.lastName);
       formData.append("Email", values.emailID);
@@ -177,18 +175,17 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("IsRetailer", true);
 
       if (editId) {
-        formData.append("OrgUserSpecificID", editId)
-        formData.append("orgUserID", orgUserID)
-        dispatch(updateRetailerData(formData))
+        formData.append("OrgUserSpecificID", editId);
+        formData.append("orgUserID", orgUserID);
+        dispatch(updateRetailerData(formData));
       } else {
         formData.append("Operation", "Insert");
-        dispatch(addRetailerData(formData))
+        dispatch(addRetailerData(formData));
       }
 
-      formik.resetForm()
-      setShowModal(false)
+      formik.resetForm();
+      setShowModal(false);
     },
-
   });
 
   const handleChange = (event) => {
@@ -197,10 +194,10 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleEdit = (value) => {
-    setHeading('Update')
-    setEditId(value.orgSingupID)
-    setOrgUserID(value.orgUserID)
-    setShowModal(true)
+    setHeading("Update");
+    setEditId(value.orgSingupID);
+    setOrgUserID(value.orgUserID);
+    setShowModal(true);
     const data = {
       companyName: value.organizationName,
       googleLocation: value.googleLocation,
@@ -208,17 +205,19 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
       lastName: value.lastName,
       phoneNumber: value.phone,
       emailID: value.email,
-      password: null
-    }
-    setEditData(data)
-  }
-
+      password: null,
+    };
+    setEditData(data);
+  };
 
   return (
     <>
       <div>
         <div className="flex border-b border-gray">
-          <AdminSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <AdminSidebar
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+          />
           <AdminNavbar />
         </div>
         <div className="pt-16 px-5 page-contain">
@@ -261,10 +260,10 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                 <table
                   className="screeen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                  cellPadding={20}
+                  cellPadding={10}
                 >
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr className="items-center table-head-bg capitalize" >
+                    <tr className="items-center table-head-bg capitalize">
                       <th className=" sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
                         UserName
                         <svg
@@ -301,49 +300,46 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {store.data?.length > 0 && sortedAndPaginatedData.map((item) => {
-                      return (
-                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                          <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {item.firstName + ' ' + item.lastName}
-                          </th>
-                          <td className="px-6 py-4 capitalize">
-                            {item.organizationName}
-                          </td>
-                          <td className="px-6 py-4">
-                            {item.email}
-                          </td>
-                          <td className="px-6 py-4">
-                            {item.googleLocation}
-                          </td>
-                          <td className="px-6 py-4">
-                            {item.phone}
-                          </td>
-                          <td className="px-6 py-4">
-
-                            <div className="cursor-pointer text-xl flex gap-4 ">
-                              <button
-                                type="button"
-                                className="rounded-full px-2 py-2 text-white text-center bg-[#414efa] mr-3"
-                                onClick={() => handleEdit(item)}
-                              >
-                                <MdOutlineModeEdit />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      )
-                    })}
+                    {store.data?.length > 0 &&
+                      sortedAndPaginatedData.map((item) => {
+                        return (
+                          <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <th
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                            >
+                              {item.firstName + " " + item.lastName}
+                            </th>
+                            <td className="px-6 py-4 capitalize">
+                              {item.organizationName}
+                            </td>
+                            <td className="px-6 py-4">{item.email}</td>
+                            <td className="px-6 py-4">{item.googleLocation}</td>
+                            <td className="px-6 py-4">{item.phone}</td>
+                            <td className="px-6 py-4">
+                              <div className="cursor-pointer text-xl flex gap-4 ">
+                                <button
+                                  type="button"
+                                  className="rounded-full px-2 py-2 text-white text-center bg-[#414efa] mr-3"
+                                  onClick={() => handleEdit(item)}
+                                >
+                                  <MdOutlineModeEdit />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     {sortedAndPaginatedData?.length === 0 && (
                       <tr>
-                      <td colSpan={6}>
-                        <div className="flex text-center justify-center">
-                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
-                            No Data Available
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
+                        <td colSpan={6}>
+                          <div className="flex text-center justify-center">
+                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                              No Data Available
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>
@@ -374,7 +370,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                           d="M13 5H1m0 0 4 4M1 5l4-4"
                         />
                       </svg>
-                      Previous
+                      {/* Previous */}
                     </button>
                   </li>
 
@@ -384,7 +380,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                       disabled={currentPage === totalPages}
                       className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                     >
-                      Next
+                      {/* Next */}
                       <svg
                         className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                         aria-hidden="true"
@@ -420,7 +416,6 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
           editId={editId}
         />
       )}
-
     </>
   );
 };

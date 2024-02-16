@@ -133,7 +133,7 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
                     <AdminSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
                     <AdminNavbar />
                 </div>
-                <div className="pt-5 px-5 page-contain">
+                <div className="pt-6 px-5 page-contain">
                     <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                         <div className='flex justify-end'>
                             <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 w-60">

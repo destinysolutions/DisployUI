@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { Link, useNavigate, useSearchParams, } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   AiOutlineCloseCircle,
   AiOutlineCloudUpload,
@@ -25,7 +25,6 @@ import { addData, getByIdData, resetStatus } from "../../Redux/WeatherSlice";
 import { SET_TO_SCREEN_WEATHER } from "../../Pages/Api";
 import axios from "axios";
 
-
 const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -35,30 +34,30 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   const TodayDate = new Date();
 
-
   function getTimeFromDate(date) {
-    const hours = String(date.getHours()).padStart(2, '0'); // Ensure two digits
-    const minutes = String(date.getMinutes()).padStart(2, '0'); // Ensure two digits
+    const hours = String(date.getHours()).padStart(2, "0"); // Ensure two digits
+    const minutes = String(date.getMinutes()).padStart(2, "0"); // Ensure two digits
     const time = `${hours}:${minutes}`;
     return time;
   }
 
   function formatDate(date) {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
 
-  const currentTime = getTimeFromDate(TodayDate)
-  const currentDate = formatDate(TodayDate)
-
+  const currentTime = getTimeFromDate(TodayDate);
+  const currentDate = formatDate(TodayDate);
 
   const queryParams = new URLSearchParams(window.location.search);
-  const weatherScheduleId = queryParams.get('weatherScheduleId');
+  const weatherScheduleId = queryParams.get("weatherScheduleId");
 
   const [selectScreenModal, setSelectScreenModal] = useState(false);
-  const [weatherScheduleName, setWeatherScheduleName] = useState(moment(currentDate).format("YYYY-MM-DD hh:mm"));
+  const [weatherScheduleName, setWeatherScheduleName] = useState(
+    moment(currentDate).format("YYYY-MM-DD hh:mm")
+  );
   const [edited, setEdited] = useState(false);
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const [temperatureUnit, setTempratureUnit] = useState("C");
@@ -78,25 +77,23 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [assetPreview, setAssetPreview] = useState("");
   const [popupActiveTab, setPopupActiveTab] = useState(1);
 
-
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [screenSelected, setScreenSelected] = useState([]);
 
   useEffect(() => {
-    if (store && store.status === 'succeeded') {
+    if (store && store.status === "succeeded") {
       toast.success(store.message);
       navigate("/weatherschedule");
-      dispatch(resetStatus())
+      dispatch(resetStatus());
     }
-
-  }, [store])
+  }, [store]);
 
   useEffect(() => {
     if (weatherScheduleId) {
-      setLabel("Update")
+      setLabel("Update");
       dispatch(getByIdData(weatherScheduleId)).then((items) => {
-        const data = items.payload.data.model
+        const data = items.payload.data.model;
         if (data) {
           setWeatherScheduleName(data.name);
           setStartDate(moment(data.startDate).format("YYYY-MM-DD"));
@@ -107,7 +104,11 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           setTemprature(data.temperature);
           setIsAbove(data.isAbove);
           setSelectedAsset({ assetName: data.assetName });
-          setUrlParth({ 'assetID': data.mediaID, 'assetFolderPath': data.assetFolderPath, 'assetType': data.assetType })
+          setUrlParth({
+            assetID: data.mediaID,
+            assetFolderPath: data.assetFolderPath,
+            assetType: data.assetType,
+          });
         }
       });
     }
@@ -120,11 +121,14 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSave = () => {
-    setUrlParth({ 'assetID': selectedAsset.assetID, 'assetFolderPath': selectedAsset.assetFolderPath, 'assetType': selectedAsset.assetType })
+    setUrlParth({
+      assetID: selectedAsset.assetID,
+      assetFolderPath: selectedAsset.assetFolderPath,
+      assetType: selectedAsset.assetType,
+    });
   };
 
-  const handleAssetUpdate = () => { };
-
+  const handleAssetUpdate = () => {};
 
   const handleSubmit = () => {
     let data = {
@@ -140,13 +144,13 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       temperature: Number(temperature),
       isAbove: isAbove,
     };
-    dispatch(addData(data))
+    dispatch(addData(data));
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
     let count = 0;
-    
+
     for (const key in screenIds) {
       if (screenIds[key] === true) {
         if (count > 0) {
@@ -167,20 +171,28 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       },
     };
 
-
     toast.loading("Saving...");
-    axios.request(config)
+    axios
+      .request(config)
       .then((response) => {
         if (response.data.status == 200) {
           try {
             if (macids?.includes(",")) {
               let allMacIDs = macids?.split(",");
               allMacIDs?.map((item) => {
-                let Params = { id: socket.id, connection: socket.connected, macId: item, };
+                let Params = {
+                  id: socket.id,
+                  connection: socket.connected,
+                  macId: item,
+                };
                 socket.emit("ScreenConnected", Params);
-              })
+              });
             } else {
-              const Params = { id: socket.id, connection: socket.connected, macId: macids, };
+              const Params = {
+                id: socket.id,
+                connection: socket.connected,
+                macId: macids,
+              };
               socket.emit("ScreenConnected", Params);
             }
             setTimeout(() => {
@@ -190,12 +202,14 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             }, 2000);
             if (connection.state == "Disconnected") {
               connection
-                .start().then((res) => {
+                .start()
+                .then((res) => {
                   console.log("signal connected");
                 })
                 .then(() => {
                   connection
-                    .invoke("ScreenConnected", macids).then(() => {
+                    .invoke("ScreenConnected", macids)
+                    .then(() => {
                       console.log("func. invoked");
                     })
                     .catch((err) => {
@@ -205,7 +219,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 });
             } else {
               connection
-                .invoke("ScreenConnected", macids).then(() => {
+                .invoke("ScreenConnected", macids)
+                .then(() => {
                   console.log("func. invoked");
                 })
                 .catch((err) => {
@@ -223,7 +238,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         toast.remove();
         console.log(error);
       });
-  }
+  };
 
   return (
     <>
@@ -300,11 +315,15 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   </label>
                   <div className="p-2 ml-4" style={{ wordBreak: "break-all" }}>
                     <div
-                      onClick={(e) => { setShowAssetModal(true) }}
+                      onClick={(e) => {
+                        setShowAssetModal(true);
+                      }}
                       className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                     >
-                      <p className="line-clamp-3">
-                        {selectedAsset.assetName ? selectedAsset.assetName : 'Select Asset Name'}
+                      <p className="line-clamp-2">
+                        {selectedAsset.assetName
+                          ? selectedAsset.assetName
+                          : "Select Asset Name"}
                       </p>
                       <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
                     </div>
@@ -330,9 +349,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       />
                     </div>
                     <div>
-                      <label className="text-base font-medium">
-                        End Date:
-                      </label>
+                      <label className="text-base font-medium">End Date:</label>
                       <input
                         data-tip
                         data-for="End Date"
@@ -364,9 +381,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       />
                     </div>
                     <div>
-                      <label className="text-base font-medium">
-                        End Time:
-                      </label>
+                      <label className="text-base font-medium">End Time:</label>
                       <input
                         data-tip
                         data-for="End Time"
@@ -447,39 +462,39 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
 
                   <div className="flex justify-end mt-9">
-                    <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    <button
+                      className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                       onClick={() => handleSubmit()}
                     >
                       {label}
                     </button>
-                    {weatherScheduleId &&
+                    {weatherScheduleId && (
                       <button
                         className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         onClick={() => setSelectScreenModal(true)}
                       >
                         Save & Assign screen
                       </button>
-                    }
+                    )}
                   </div>
-
                 </div>
               </div>
 
               <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative w-[768px] h-[432px]">
                 <div className="videoplayer relative bg-white w-[768px] h-[432px]">
-                  {urlParth.assetType === 'OnlineImage' &&
+                  {urlParth.assetType === "OnlineImage" && (
                     <div className="flex items-center justify-center h-full">
                       <img src={urlParth.assetFolderPath} className="m-auto" />
                     </div>
-                  }
+                  )}
 
-                  {urlParth.assetType === 'Image' &&
+                  {urlParth.assetType === "Image" && (
                     <div className="flex items-center justify-center h-full">
                       <img src={urlParth.assetFolderPath} className="m-auto" />
                     </div>
-                  }
+                  )}
 
-                  {urlParth.assetType === 'Video' &&
+                  {urlParth.assetType === "Video" && (
                     <ReactPlayer
                       url={urlParth.assetFolderPath}
                       width={"100%"}
@@ -487,9 +502,9 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       className="w-full relative z-20 videoinner"
                       controls={true}
                     />
-                  }
+                  )}
 
-                  {urlParth.assetType === 'OnlineVideo' &&
+                  {urlParth.assetType === "OnlineVideo" && (
                     <ReactPlayer
                       url={urlParth.assetFolderPath}
                       width={"100%"}
@@ -497,10 +512,9 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       className="w-full relative z-20 videoinner"
                       controls={true}
                     />
-                  }
+                  )}
 
-
-                  {urlParth.assetType === 'Youtube' &&
+                  {urlParth.assetType === "Youtube" && (
                     <ReactPlayer
                       url={urlParth.assetFolderPath}
                       width={"100%"}
@@ -508,15 +522,13 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       className="w-full relative z-20 videoinner"
                       controls={true}
                     />
-                  }
-
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
 
       {showAssetModal && (
         <AssetModal
@@ -544,7 +556,6 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           screenSelected={screenSelected}
         />
       )}
-
 
       <Footer />
     </>

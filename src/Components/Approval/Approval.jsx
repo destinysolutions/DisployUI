@@ -138,7 +138,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="overflow-x-scroll sc-scrollbar rounded-lg">
               <table
                 className="screen-table w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
-                cellPadding={20}
+                cellPadding={10}
               >
                 <thead>
                   <tr className="items-center table-head-bg">

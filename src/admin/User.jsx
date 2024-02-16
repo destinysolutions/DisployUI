@@ -75,7 +75,6 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-
         fetchUserData();
 
         if (!editMode) {
@@ -329,13 +328,15 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <div className="lg:flex lg:justify-between sm:block items-center">
-            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ">
+          <div className="grid lg:grid-cols-3 gap-2">
+            <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3 sm:text-xl">
               Users
             </h1>
-            <div className="flex gap-4">
-              <div className="text-right mb-5 mr-5 relative sm:mr-0">
-                <AiOutlineSearch className="absolute top-[13px] right-[232px] z-10 text-gray searchicon" />
+            <div className="lg:col-span-2 flex items-center justify-end flex-wrap">
+              <div className="text-right mr-3 relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                  <AiOutlineSearch className="w-5 h-5 text-gray" />
+                </span>
                 <input
                   type="text"
                   placeholder="Search Users"
@@ -343,7 +344,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                   onChange={handleFilter}
                 />
               </div>
-              <div className="lg:flex md:flex sm:block mb-5">
+              <div className="lg:flex md:flex sm:block">
                 <button
                   onClick={() => setAddUserModal(true)}
                   className="border border-primary rounded-full px-3 py-2 not-italic font-medium"
@@ -353,6 +354,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
           </div>
+
           {addUserModal && (
             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
               <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
@@ -464,14 +466,16 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
           )}
-          <div className="mt-7">
-            <DataTable
-              columns={columns}
-              data={userData}
-              fixedHeader
-              pagination
-              paginationPerPage={10}
-            ></DataTable>
+          <div className="lg:mt-7 mt-5">
+            <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
+              <DataTable
+                columns={columns}
+                data={userData}
+                fixedHeader
+                pagination
+                paginationPerPage={10}
+              ></DataTable>
+            </div>
           </div>
         </div>
       </div>

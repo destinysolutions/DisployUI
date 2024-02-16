@@ -194,7 +194,7 @@ const ScreenAccessModal = ({
             </button>
           </div>
           <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
-            <table className="w-full" cellPadding={20}>
+            <table className="w-full" cellPadding={10}>
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-left">

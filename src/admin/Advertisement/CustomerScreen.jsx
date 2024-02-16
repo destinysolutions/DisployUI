@@ -37,7 +37,7 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                 <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                                     <table
                                         className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
-                                        cellPadding={20}
+                                        cellPadding={10}
                                     >
                                         <thead className="table-head-bg screen-table-th">
                                             <tr className="items-center table-head-bg ">
@@ -209,7 +209,7 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                                 d="M13 5H1m0 0 4 4M1 5l4-4"
                                             />
                                         </svg>
-                                        Previous
+                                        {/* Previous */}
                                     </button>
                                     {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
                                     <button
@@ -217,7 +217,7 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                         disabled={currentPage === totalPages}
                                         className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                                     >
-                                        Next
+                                        {/* Next */}
                                         <svg
                                             className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                                             aria-hidden="true"

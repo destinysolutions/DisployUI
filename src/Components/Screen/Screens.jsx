@@ -1167,7 +1167,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <div className="overflow-x-scroll sc-scrollbar rounded-lg lg:mt-5 ">
                     <table
                       className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
-                      cellPadding={20}
+                      cellPadding={10}
                     >
                       <thead className="table-head-bg screen-table-th">
                         <tr className="items-center table-head-bg ">
@@ -1492,7 +1492,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   <div className=" overflow-x-scroll sc-scrollbar mt-8 px-5 min-h-[400px] max-h-[400px] ">
                                                     <table
                                                       className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white shadow-2xl p-2 mb-3"
-                                                      cellPadding={20}
+                                                      cellPadding={10}
                                                     >
                                                       <thead>
                                                         <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">

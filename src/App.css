@@ -1171,6 +1171,11 @@ table.screen-table {
   .max-h-325 {
     max-height: 225px;
   }
+  .screen-table .table-head-bg th,
+  .screen-table tr td {
+    min-width: 150px;
+    width: 150px;
+  }
 }
 
 /* Style the header */

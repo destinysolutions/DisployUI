@@ -107,7 +107,7 @@ const ScreenGroupModal = ({
             <div className="relative overflow-x-auto sc-scrollbar rounded-lg">
               <table
                 className="screen-table min-w-full leading-normal text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
-                cellPadding={20}
+                cellPadding={10}
               >
                 <thead className="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg screen-table-th">
@@ -203,7 +203,7 @@ const ScreenGroupModal = ({
                           style={{ wordBreak: "break-all" }}
                         >
                           <div className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-aut hover:shadow-primary-500/50">
-                            <p className="line-clamp-3">{screen.assetName}</p>
+                            <p className="line-clamp-2">{screen.assetName}</p>
                             <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
                           </div>
                         </td>

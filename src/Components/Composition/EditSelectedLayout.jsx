@@ -827,7 +827,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="overflow-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
                 <table
                   className="w-full bg-white overflow-x-auto lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
-                  cellPadding={20}
+                  cellPadding={10}
                 >
                   <thead className="sticky -top-1 z-20">
                     <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">

@@ -1259,7 +1259,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="overflow-x-auto mt-8 px-5 Set-Schedule-popup">
                                   <table
                                     className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto set-schedule-table"
-                                    cellPadding={20}
+                                    cellPadding={10}
                                   >
                                     <thead className="sticky top-0">
                                       <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">

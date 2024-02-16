@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { useState } from "react";
-import {
-  AiOutlineSearch,
-} from "react-icons/ai";
+import { AiOutlineSearch } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { getManageUserData, handleAddEdit, handleRemoveManageUser } from "../Redux/admin/ManageUserSlice";
+import {
+  getManageUserData,
+  handleAddEdit,
+  handleRemoveManageUser,
+} from "../Redux/admin/ManageUserSlice";
 import toast from "react-hot-toast";
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
 import Swal from "sweetalert2";
@@ -27,27 +29,24 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
   const [itemsPerPage] = useState(10); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [heading, setHeading] = useState("Add");
-  const [selectData, setSelectData] = useState("")
+  const [selectData, setSelectData] = useState("");
   useEffect(() => {
     if (loadFist) {
       dispatch(getManageUserData());
-      setLoadFist(false)
+      setLoadFist(false);
     }
   }, [loadFist, store]);
 
   const filteredData = Array.isArray(store?.data)
     ? store?.data?.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value
-            .toString()
-            .toLowerCase()
-            .includes(search.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value.toString().toLowerCase().includes(search.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -101,14 +100,16 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-          dispatch(handleRemoveManageUser(payload)).then((res) => {
-            if (res?.payload?.status === 200) {
-              toast.success("Delete data successFully")
-            }
-          }).catch((error) => {
-            console.log('error', error)
-          });
-          setLoadFist(true)
+          dispatch(handleRemoveManageUser(payload))
+            .then((res) => {
+              if (res?.payload?.status === 200) {
+                toast.success("Delete data successFully");
+              }
+            })
+            .catch((error) => {
+              console.log("error", error);
+            });
+          setLoadFist(true);
         }
       });
     } catch (error) {
@@ -132,22 +133,23 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
       operation: editMode ? "Update" : "Insert",
       userTypeID: editMode ? selectData?.userTypeID : 0,
     });
-    dispatch(handleAddEdit(data)).then((res) => {
-      if (res?.payload?.status === 200) {
-        dispatch(getManageUserData());
-        if (editMode) {
-          toast.success("Update data successFully")
-        } else {
-          toast.success("Add data successFully")
+    dispatch(handleAddEdit(data))
+      .then((res) => {
+        if (res?.payload?.status === 200) {
+          dispatch(getManageUserData());
+          if (editMode) {
+            toast.success("Update data successFully");
+          } else {
+            toast.success("Add data successFully");
+          }
+          setAddUserTypeModal(false);
         }
+      })
+      .catch((error) => {
+        console.log("error", error);
         setAddUserTypeModal(false);
-      }
-    }).catch((error) => {
-      console.log('error', error)
-      setAddUserTypeModal(false);
-    })
-
-  }
+      });
+  };
 
   return (
     <>
@@ -160,13 +162,16 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <div className="lg:flex lg:justify-between sm:block items-center">
-            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ">
+          <div className="grid lg:grid-cols-3 gap-2">
+            <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3 sm:text-xl">
               Manage User Type
             </h1>
-            <div className="flex gap-4">
-              <div className="text-right mb-5 mr-5 relative sm:mr-0">
-                <AiOutlineSearch className="absolute top-[13px] right-[232px] z-10 text-gray searchicon" />
+            <div className="lg:col-span-2 flex items-center justify-end flex-wrap">
+              <div className="text-right mr-3 relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                  <AiOutlineSearch className="w-5 h-5 text-gray " />
+                </span>
+
                 <input
                   type="text"
                   placeholder="Search UserType"
@@ -175,9 +180,16 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                   onChange={handleChange}
                 />
               </div>
-              <div className="lg:flex md:flex sm:block mb-5">
+              <div className="lg:flex md:flex sm:block">
                 <button
-                  onClick={() => { setHeading("Add"); setAddUserTypeModal(true); setUserType(""); setIsActive(false); setEditMode(false); setSelectData("") }}
+                  onClick={() => {
+                    setHeading("Add");
+                    setAddUserTypeModal(true);
+                    setUserType("");
+                    setIsActive(false);
+                    setEditMode(false);
+                    setSelectData("");
+                  }}
                   className="border border-primary rounded-full px-3 py-2 not-italic font-medium"
                 >
                   Add User Type
@@ -186,15 +198,15 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="mt-7">
+          <div className="lg:mt-7 mt-5">
             <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
               <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                 <table
                   className="screeen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                  cellPadding={20}
+                  cellPadding={10}
                 >
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr className="items-center table-head-bg capitalize" >
+                    <tr className="items-center table-head-bg capitalize">
                       <th className=" sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
                         User Type
                         <svg
@@ -222,60 +234,68 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {!store?.loading && store?.data?.length > 0 && sortedAndPaginatedData.map((item, index) => {
-                      return (
-                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
-                          <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize">
-                            {item.userType}
-                          </td>
+                    {!store?.loading &&
+                      store?.data?.length > 0 &&
+                      sortedAndPaginatedData.map((item, index) => {
+                        return (
+                          <tr
+                            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                            key={index}
+                          >
+                            <td
+                              scope="row"
+                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize"
+                            >
+                              {item.userType}
+                            </td>
 
-                          <td className="px-6 py-4 capitalize">
-                            <span>
-                              {item?.isActive === true ? (
-                                <span
-                                  className="capitalize bg-[#3AB700] rounded px-6 py-1 text-white hover:bg-primary text-sm"
-                                >
-                                  Active
-                                </span>
-                              ) : (
-                                <span
-                                  className="capitalize bg-[#FF0000] rounded px-6 py-1 text-white hover:bg-primary text-sm"
-                                >
-                                  Inactive
-                                </span>
-                              )}
-                            </span>
-
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex gap-2">
-
-                              <div className="cursor-pointer text-xl flex gap-4">
-                                <button
-                                  type="button"
-                                  className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                  onClick={() => {
-                                    setAddUserTypeModal(true); setEditMode(true); setSelectData(item); setHeading("Update"); setIsActive(item?.isActive);
-                                    setUserType(item?.userType);
-                                  }}
-                                >
-                                  <MdModeEditOutline />
-                                </button>
+                            <td className="px-6 py-4 capitalize">
+                              <span>
+                                {item?.isActive === true ? (
+                                  <span className="capitalize bg-[#3AB700] rounded px-6 py-1 text-white hover:bg-primary text-sm">
+                                    Active
+                                  </span>
+                                ) : (
+                                  <span className="capitalize bg-[#FF0000] rounded px-6 py-1 text-white hover:bg-primary text-sm">
+                                    Inactive
+                                  </span>
+                                )}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex gap-2">
+                                <div className="cursor-pointer text-xl flex gap-4">
+                                  <button
+                                    type="button"
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    onClick={() => {
+                                      setAddUserTypeModal(true);
+                                      setEditMode(true);
+                                      setSelectData(item);
+                                      setHeading("Update");
+                                      setIsActive(item?.isActive);
+                                      setUserType(item?.userType);
+                                    }}
+                                  >
+                                    <MdModeEditOutline />
+                                  </button>
+                                </div>
+                                <div className="cursor-pointer text-xl flex gap-4 ">
+                                  <button
+                                    type="button"
+                                    className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
+                                    onClick={() =>
+                                      handleDelete(item?.userTypeID)
+                                    }
+                                  >
+                                    <MdDeleteForever />
+                                  </button>
+                                </div>
                               </div>
-                              <div className="cursor-pointer text-xl flex gap-4 ">
-                                <button
-                                  type="button"
-                                  className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
-                                  onClick={() => handleDelete(item?.userTypeID)}
-                                >
-                                  <MdDeleteForever />
-                                </button>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      )
-                    })}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     {store?.loading && (
                       <tr>
                         <td colSpan={3}>
@@ -333,7 +353,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                           d="M13 5H1m0 0 4 4M1 5l4-4"
                         />
                       </svg>
-                      Previous
+                      {/* Previous */}
                     </button>
                   </li>
 
@@ -343,7 +363,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                       disabled={currentPage === totalPages}
                       className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                     >
-                      Next
+                      {/* Next */}
                       <svg
                         className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                         aria-hidden="true"
@@ -369,7 +389,15 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       {addUsertypeModal && (
-        <AddEditManageUserType setUserType={setUserType} userType={userType} heading={heading} toggleModal={toggleModal} isActive={isActive} setIsActive={setIsActive} HandleSubmit={HandleSubmit} />
+        <AddEditManageUserType
+          setUserType={setUserType}
+          userType={userType}
+          heading={heading}
+          toggleModal={toggleModal}
+          isActive={isActive}
+          setIsActive={setIsActive}
+          HandleSubmit={HandleSubmit}
+        />
       )}
     </>
   );
