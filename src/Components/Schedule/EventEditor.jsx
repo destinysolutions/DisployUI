@@ -884,7 +884,7 @@ const EventEditor = ({
                       </tbody>
                     </table>
                     {assetPreviewPopup && (
-                      <div className="fixed left-1/2 top-[17%] -translate-x-1/2 w-[960px] h-[540px] bg-black z-9990 inset-0">
+                      <div className="fixed left-1/2 lg:top-1/4 top-1/4 -translate-x-1/2 sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-9990 inset-0">
                         {/* btn */}
                         <div className="fixed z-40">
                           <button
@@ -902,7 +902,7 @@ const EventEditor = ({
                                   <img
                                     src={assetPreview.assetFolderPath}
                                     alt={assetPreview.assetName}
-                                    className="imagebox w-full h-full top-0 left-0 z-9990 fixed"
+                                    className="imagebox w-full h-full z-9990 fixed"
                                   />
                                 </div>
                               )}
@@ -925,13 +925,13 @@ const EventEditor = ({
                                 <img
                                   src={assetPreview.assetFolderPath}
                                   alt={assetPreview.assetName}
-                                  className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                                  className="imagebox w-full h-full z-50 fixed"
                                 />
                               )}
                               {assetPreview.assetType === "Video" && (
                                 <video
                                   controls
-                                  className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                                  className="imagebox w-full h-full z-50 fixed"
                                 >
                                   <source
                                     src={assetPreview.assetFolderPath}

@@ -30,8 +30,8 @@ const ShowAssetImageModal = ({
         }}
         className="inset-0 fixed bg-black/40 w-screen h-screen z-40"
       ></div>
-      <div className="fixed left-1/2 top-1/4 -translate-x-1/2 w-[960px] h-[540px] bg-lightgray z-50">
-        <div className="fixed w-full h-full">
+      <div className="fixed left-1/2 lg:top-1/4 md:top-1/4 sm:top-1/4 top-1/4 -translate-x-1/2 sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-lightgray z-50">
+        <div className="fixed sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72">
           <div
             onClick={() => {
               setShowImageAssetModal(false);
@@ -43,19 +43,19 @@ const ShowAssetImageModal = ({
           </div>
           {imageAssetModal?.assetType === "Image" && (
             <img
-              className="fixed max-h-full max-w-full min-w-full min-h-full object-fill inset-0"
+              className="fixed sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-fill inset-0"
               src={imageAssetModal?.assetFolderPath}
             />
           )}
           {imageAssetModal?.assetType === "OnlineImage" && (
             <img
-              className="fixed max-h-full max-w-full min-w-full min-h-full object-fill inset-0"
+              className="fixed sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 inset-0 object-fill"
               src={imageAssetModal?.assetFolderPath}
             />
           )}
           {imageAssetModal?.assetType === "Video" && (
             <video
-              className="fixed max-h-full max-w-full min-w-full min-h-full object-fill inset-0"
+              className="fixed sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 inset-0 object-fill"
               controls
             >
               <source src={imageAssetModal?.assetFolderPath} type="video/mp4" />
@@ -64,7 +64,7 @@ const ShowAssetImageModal = ({
           )}
           {imageAssetModal?.assetType === "OnlineVideo" && (
             <video
-              className="fixed max-h-full max-w-full min-w-full min-h-full object-fill inset-0"
+              className="fixed sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 inset-0 object-fill"
               controls
             >
               <source src={imageAssetModal?.assetFolderPath} type="video/mp4" />

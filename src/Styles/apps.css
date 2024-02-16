@@ -141,8 +141,8 @@ img.imagebox.img_w,
 }
 
 .youtube-preview {
-  width: 960px !important;
-  height: 540px !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 .previewinner {
   width: 100% !important;

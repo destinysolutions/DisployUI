@@ -614,8 +614,8 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                       </table>
                     </div>
                   </div>
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative">
-                    <div className="videoplayer relative bg-white ">
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative ">
+                    <div className="videoplayer sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full relative bg-white ">
                       <ReactPlayer
                         url={YoutubeVideo}
                         className="w-full relative z-20 videoinner"
@@ -640,7 +640,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                     <>
                       <div
                         ref={modalRef}
-                        className="video-preview lg:w-[960px] lg:h-[540px]"
+                        className="video-preview sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72"
                       >
                         <ReactPlayer
                           url={YoutubeVideo}

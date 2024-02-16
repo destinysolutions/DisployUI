@@ -684,9 +684,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                                   <div
                                     ref={appDropdownRef}
-                                    className="lg:w-[960px] my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                                    className="lg:w-[960px] sm:w-[560px] w-full my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
                                   >
-                                    <div className="lg:w-[960px] border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+                                    <div className="lg:w-[960px] sm:w-[560px] w-full border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
                                       <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
                                         <div className="flex items-center">
                                           <div>
@@ -708,7 +708,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                           <AiOutlineCloseCircle />
                                         </button>
                                       </div>
-                                      <div className="bg-black w-[960px] h-[540px] flex items-center">
+                                      <div className="bg-black sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full flex items-center">
                                         <marquee
                                           direction={
                                             scrollType == 1 ? "right" : "left"

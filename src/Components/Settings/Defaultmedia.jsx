@@ -816,7 +816,7 @@ const Defaultmedia = ({ permissions }) => {
           </>
         )} */}
       {assetPreviewPopup && (
-        <div className="fixed left-1/2 top-1/3 -translate-x-1/2 w-80 h-48 lg:w-[768px] lg:h-[432px] bg-black z-9999 inset-0">
+        <div className="fixed left-1/2 lg:top-1/3 md:top-1/3 sm:top-1/3 top-1/3 -translate-x-1/2 lg:w-[560px] lg:h-[340px] sm:w-[560px] sm:h-[340px] w-72 h-72 bg-black z-9999 inset-0">
           {/* btn */}
           <div className="fixed z-40">
             <button
@@ -826,15 +826,15 @@ const Defaultmedia = ({ permissions }) => {
               <AiOutlineCloseCircle size={30} />
             </button>
           </div>
-          <div className="fixed rounded-lg border-2 overflow-hidden">
+          <div className="fixed">
             {assetPreview && (
               <>
                 {assetPreview.assetType === "OnlineImage" && (
-                  <div className="imagebox p-3">
+                  <div>
                     <img
                       src={assetPreview.assetFolderPath}
                       alt={assetPreview.assetName}
-                      className="imagebox w-full h-full object-cover "
+                      className="imagebox lg:w-[560px] lg:h-[340px] sm:w-[560px] sm:h-[340px] w-72 h-72"
                     />
                   </div>
                 )}
@@ -843,7 +843,7 @@ const Defaultmedia = ({ permissions }) => {
                   <div className="relative videobox">
                     <video
                       controls
-                      className="rounded-2xl w-80 h-48 lg:w-[768px] lg:h-[432px]"
+                      className="rounded-2xl lg:w-[560px] lg:h-[340px] sm:w-[560px] sm:h-[340px] w-72 h-72"
                     >
                       <source
                         src={assetPreview.assetFolderPath}
@@ -857,13 +857,13 @@ const Defaultmedia = ({ permissions }) => {
                   <img
                     src={assetPreview.assetFolderPath}
                     alt={assetPreview.assetName}
-                    className="imagebox w-full h-full object-cover  "
+                    className="imagebox lg:w-[560px] lg:h-[340px] sm:w-[560px] sm:h-[340px] w-72 h-72"
                   />
                 )}
                 {assetPreview.assetType === "Video" && (
                   <video
                     controls
-                    className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                    className="imagebox lg:w-[560px] lg:h-[340px] sm:w-[560px] sm:h-[340px] w-72 h-72 z-50 fixed"
                   >
                     <source
                       src={assetPreview.assetFolderPath}

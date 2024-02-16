@@ -3,7 +3,7 @@
   border: 1px solid #8e94a9;
 }
 
-.dotline:before {
+/* .dotline:before {
   position: absolute;
   content: "";
   left: -8px;
@@ -25,7 +25,7 @@
   background: #8e94a9;
   z-index: 9;
   border-radius: 50%;
-}
+} */
 
 .nav-text {
   position: relative;

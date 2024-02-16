@@ -290,27 +290,27 @@ select:-webkit-autofill:focus {
 }
 
 .dotline:before {
-  position: absolute;
+  background: #8e94a9;
+  border-radius: 50%;
   content: "";
-  left: -8px;
+  height: 8px;
+  position: absolute;
   top: -4px;
   width: 8px;
-  height: 8px;
-  background: #8e94a9;
   z-index: 9;
-  border-radius: 50%;
+  left: -1px;
 }
 
 .dotline::after {
-  position: absolute;
+  background: #8e94a9;
+  border-radius: 50%;
   content: "";
-  right: -5px;
+  height: 8px;
+  position: absolute;
   top: -4px;
   width: 8px;
-  height: 8px;
-  background: #8e94a9;
   z-index: 9;
-  border-radius: 50%;
+  right: -1px;
 }
 
 .nav-text {

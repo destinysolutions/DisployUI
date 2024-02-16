@@ -591,10 +591,10 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
-              className={`fixed border w-full left-1/2 top-1/4 -translate-x-1/2 ${
+              className={`fixed border w-full left-1/2 lg:top-1/4 md:top-1/4 sm:top-1/4 -translate-x-1/2 ${
                 screenType === "portrait"
-                  ? "lg:w-[568px] lg:h-[332px]"
-                  : "lg:w-[568px] lg:h-[332px]"
+                  ? "sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full"
+                  : "sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full"
               }  `}
             >
               <RxCrossCircled
@@ -609,12 +609,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     key={index}
                     style={
                       {
-                        // position: "fixed",
-                        // left: obj.leftside + "%",
-                        // top: obj.topside + "%",
-                        // width: obj?.width + "%",
-                        // height: obj?.height + "%",
-                        // backgroundColor: obj.fill,
+                        position: "fixed",
+                        left: obj.leftside + "%",
+                        top: obj.topside + "%",
+                        width: obj?.width + "%",
+                        height: obj?.height + "%",
+                        backgroundColor: obj.fill,
                       }
                     }
                   >

@@ -810,7 +810,7 @@ const ShowAssetModal = ({
               </div>
             </div>
             {assetPreviewPopup && (
-              <div className="fixed left-1/2 top-[17%] -translate-x-1/2 w-[768px] h-[432px] bg-black z-9990 inset-0">
+              <div className="fixed left-1/2 lg:top-[12%] md:top-1/3 sm:top-1/3 top-1/3 -translate-x-1/2 lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 bg-black z-9990 inset-0">
                 {/* btn */}
                 <div className="fixed z-9999">
                   <button
@@ -824,11 +824,11 @@ const ShowAssetModal = ({
                   {assetPreview && (
                     <>
                       {assetPreview.assetType === "OnlineImage" && (
-                        <div className="imagebox p-3">
+                        <div>
                           <img
                             src={assetPreview.assetFolderPath}
                             alt={assetPreview.assetName}
-                            className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                            className="imagebox z-50 lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 fixed"
                           />
                         </div>
                       )}
@@ -837,7 +837,7 @@ const ShowAssetModal = ({
                         <div className="relative videobox">
                           <video
                             controls
-                            className="rounded-2xl w-[768px] h-[432px]"
+                            className="rounded-2xl lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72"
                           >
                             <source
                               src={assetPreview.assetFolderPath}
@@ -851,13 +851,13 @@ const ShowAssetModal = ({
                         <img
                           src={assetPreview.assetFolderPath}
                           alt={assetPreview.assetName}
-                          className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                          className="imagebox lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 z-50 fixed"
                         />
                       )}
                       {assetPreview.assetType === "Video" && (
                         <video
                           controls
-                          className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                          className="imagebox lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 z-50 fixed"
                         >
                           <source
                             src={assetPreview.assetFolderPath}

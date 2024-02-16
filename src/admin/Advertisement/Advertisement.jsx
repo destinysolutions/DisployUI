@@ -555,7 +555,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       {adsPreview && (
-        <div className="fixed left-1/2 top-1/3 -translate-x-1/2 w-[768px] h-[432px] bg-black z-50 inset-0">
+        <div className="fixed left-1/2 lg:top-1/3 sm:top-1/2 -translate-x-1/2 lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 bg-black z-50 inset-0">
           {/* btn */}
           <div className="fixed z-40">
             <button
@@ -569,18 +569,18 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
             {selectAds && (
               <>
                 {selectAds.assetType === "image" && (
-                  <div className="imagebox p-3">
+                  <div>
                     <img
                       src={selectAds.filePath}
                       alt={selectAds.name}
-                      className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                      className="imagebox lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 z-50 fixed"
                     />
                   </div>
                 )}
                 {selectAds.assetType === "video" && (
                   <video
                     controls
-                    className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                    className="imagebox lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 z-50 fixed"
                   >
                     <source src={selectAds.filePath} type="video/mp4" />
                     Your browser does not support the video tag.

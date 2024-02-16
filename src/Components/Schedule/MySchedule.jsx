@@ -577,7 +577,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         onChange={handleSearchSchedule}
                       />
                     </div>
-                    {/*<Link to="/weatherschedule">
+                    {/* <Link to="/weatherschedule">
                 <button className="ml-2 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <TiWeatherSunny className="text-lg mr-1" />
                   Weather Schedule

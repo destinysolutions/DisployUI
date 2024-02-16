@@ -31,7 +31,7 @@ const PreviewDoc = ({ HandleClose, fileType, assetFolderPath }) => {
                 <AiOutlineCloseCircle className="text-3xl" />
               </button>
               {/* Modal content */}
-              <div className="p-5 md:p-8 text-center w-[768px] h-[432px] max-w-full">
+              <div className="p-5 md:p-8 text-center lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-full h-full max-w-full">
                 <iframe
                   className="h-full w-full"
                   title="Document Viewer"
