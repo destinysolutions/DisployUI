@@ -1063,8 +1063,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="relative screenplayer-section sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full mx-auto">
-              <div className="pb-5 mx-auto">
+            <div className="relative screenplayer-section sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 mx-auto">
+              <div className="w-full h-full pb-5 mx-auto">
                 {loading ? (
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="flex text-center m-5 justify-center">
@@ -1103,7 +1103,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             return (
                               <div
                                 key={index}
-                                className="absolute"
                                 // style={{
                                 //   width:
                                 //     compositionData[index][index + 1][0]?.width +
@@ -1119,7 +1118,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 //     "px",
                                 // }}
                                 style={{
-                                  position: "fixed",
+                                  position: "absolute",
                                   left: data.leftside + "%",
                                   top: data.topside + "%",
                                   width: data?.width + "%",

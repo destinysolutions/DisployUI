@@ -261,7 +261,7 @@ const Security = () => {
                 </span>
                 Minimum 8 characters long - the more, the better
               </li>
-              <li className="flex items-center">
+              {/* <li className="flex items-center">
                 <span className="me-3">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -281,7 +281,7 @@ const Security = () => {
                   </svg>
                 </span>{" "}
                 At least one lowercase character
-              </li>
+              </li> */}
               <li className="flex items-center">
                 <span className="me-3">
                   <svg

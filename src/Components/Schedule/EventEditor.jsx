@@ -902,7 +902,7 @@ const EventEditor = ({
                                   <img
                                     src={assetPreview.assetFolderPath}
                                     alt={assetPreview.assetName}
-                                    className="imagebox w-full h-full z-9990 fixed"
+                                    className="imagebox sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-9990 fixed"
                                   />
                                 </div>
                               )}
@@ -911,7 +911,7 @@ const EventEditor = ({
                                 <div className="relative videobox">
                                   <video
                                     controls
-                                    className="w-full rounded-2xl h-full"
+                                    className="rounded-2xl sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72"
                                   >
                                     <source
                                       src={assetPreview.assetFolderPath}
@@ -925,13 +925,13 @@ const EventEditor = ({
                                 <img
                                   src={assetPreview.assetFolderPath}
                                   alt={assetPreview.assetName}
-                                  className="imagebox w-full h-full z-50 fixed"
+                                  className="imagebox sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
                                 />
                               )}
                               {assetPreview.assetType === "Video" && (
                                 <video
                                   controls
-                                  className="imagebox w-full h-full z-50 fixed"
+                                  className="imagebox sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
                                 >
                                   <source
                                     src={assetPreview.assetFolderPath}

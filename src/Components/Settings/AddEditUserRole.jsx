@@ -9,6 +9,7 @@ import { ADD_UPDATE_ORGANIZATION_USER_ROLE } from "../../Pages/Api";
 import toast from "react-hot-toast";
 import { handleAddNewUserRole } from "../../Redux/SettingUserSlice";
 import { useDispatch } from "react-redux";
+import { getMenuAll } from "../../Redux/SidebarSlice";
 const AddEditUserRole = ({
   toggleModal,
   userRoleData,
@@ -72,6 +73,7 @@ const AddEditUserRole = ({
         if (res?.payload?.status === 200) {
           toast.remove();
           fetchUserRole();
+          dispatch(getMenuAll())
           setShowModal(false);
           setUserDisable();
           setUserRoleData();
@@ -248,6 +250,14 @@ const AddEditUserRole = ({
                                       <input
                                         id={`${item?.alt}_Approve`}
                                         {...register(`${item?.alt}_Approve`)}
+                                      onChange={()=>{
+                                        if(isApproveChecked){
+                                          setValue(`${item?.alt}_Approve`,false);
+                                          setValue(`${item?.alt}_LevelApprove`,"")
+                                        }else{
+                                          setValue(`${item?.alt}_Approve`,true)
+                                        }
+                                      }}
                                         className="border border-primary text-center rounded h-4 w-4 cursor-pointer"
                                         type="checkbox"
                                       />
@@ -261,8 +271,8 @@ const AddEditUserRole = ({
                                         {...register(
                                           `${item?.alt}_LevelApprove`
                                         )}
-                                        className="border text-black border-primary text-center rounded h-8 w-16 cursor-pointer"
-                                      >
+                                        className="border text-black border-primary text-center rounded h-8 w-20 cursor-pointer"
+                                      ><option value="" label="Select..."/>
                                         {LevelApproval?.map((level) => (
                                           <option
                                             key={level?.id}

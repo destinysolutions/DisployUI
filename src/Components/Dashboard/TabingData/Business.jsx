@@ -162,7 +162,6 @@ var StoreOptions = {
 };
 
 const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
-  console.log('dashboardData', dashboardData)
   const dispatch = useDispatch();
   const { user, token } = useSelector((s) => s.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);

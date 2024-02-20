@@ -1164,7 +1164,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
 
                 <div className=" bg-white rounded-xl lg:mt-8 mt-5 shadow screen-section">
-                  <div className="overflow-x-scroll sc-scrollbar rounded-lg lg:mt-5 ">
+                  <div className="overflow-x-scroll sc-scrollbar rounded-lg ">
                     <table
                       className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
                       cellPadding={15}

@@ -258,7 +258,9 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                   </svg>
                   Previous
                 </button>
-
+                <div className="flex items-center me-3">
+                  <span className="text-gray-500">{`Page ${currentPage} of ${ Math.ceil(ApprovalList?.length / itemsPerPage)}`}</span>
+                </div>
                 <button
                   onClick={() => setCurrentPage(currentPage + 1)}
                   disabled={

@@ -266,7 +266,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
                   <div className="flex justify-center text-center">
                     <p className="text-[#515151] text-sm max-w-lg">
                       To get pair code, please install Disploy app on your
-                      Players (Android, LG, Samsung, FireStick, Raspberry Pi,
+                      Players (Android, LG, Samsung, FireStick, Windows,
                       etc.)
                     </p>
                   </div>

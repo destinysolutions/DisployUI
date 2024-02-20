@@ -15,7 +15,7 @@ const PreviewComposition = ({
   return (
     <PreviewModal show={modalVisible} onClose={closeModal}>
       <div
-        className={`fixed left-1/2 lg:top-1/4 md:top-1/4 sm:top-1/4 -translate-x-1/2 sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full`}
+        className={`fixed left-1/2 -translate-x-1/2 sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full`}
         ref={modalRef}
       >
         <div style={{ padding: "15px", backgroundColor: "white" }}>

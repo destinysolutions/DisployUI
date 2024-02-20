@@ -5,7 +5,6 @@ const Carousel = ({ items, compositonData, from }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    console.log("items", items);
     const slideCount = items?.length;
     let interval;
     if (from === "screen") {
@@ -24,7 +23,7 @@ const Carousel = ({ items, compositonData, from }) => {
 
   return (
     <>
-      <div className="h-full w-full p-1 bg-white">
+      <div className="h-full w-full p-1 bg-black">
         {items?.map((item, index) => {
           let viewerSrc = "";
 

@@ -144,7 +144,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   }, [dispatch, loadFirst, store]);
 
   const totalPages = Math.ceil(
-    (Array.isArray(store?.data) ? store?.data.length : 0) / itemsPerPage
+    (Array.isArray(allGroupScreen) ? allGroupScreen?.length : 0) / itemsPerPage
   );
   const paginatedData = allGroupScreen
     ? allGroupScreen.slice(
@@ -193,7 +193,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       ?.map((item) => item?.screenGroupLists?.map((screen) => screen?.macID))
       .join(",")
       .replace(/^\s+/g, "");
-    console.log("macIds", macIds);
     const Params = {
       id: socket.id,
       connection: socket.connected,
@@ -1239,7 +1238,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                             </svg>
                             Previous
                           </button>
-
+                          <div className="flex items-center me-3">
+                            <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                          </div>
                           <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}

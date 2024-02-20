@@ -189,3 +189,6 @@ export const APPROVEDETAILBYID = `${baseUrl}OrganizationUsersRole/ApproveDetails
 
 
 export const SCREEN_LIST = `${baseUrl}AdsCustomer/GetAllRetaileScreen`
+export const ALL_CITY = `${baseUrl}Common/GetAllCity`
+export const ADDALLEVENT = `${baseUrl}AdsCustomer/AddorUpdateBookingSlotCustomerEvent`
+export const ADDUPDATESLOT = `${baseUrl}AdsCustomer/AddorUpdateBookingSlotCustomer`

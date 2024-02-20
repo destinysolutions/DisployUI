@@ -688,7 +688,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
-              className={`fixed border w-full left-1/2 lg:top-1/4 md:top-1/3 sm:top-1/2 -translate-x-1/2 ${
+              className={`fixed border w-full left-1/2 -translate-x-1/2 ${
                 screenType === "portrait"
                   ? "sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full"
                   : "sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full"

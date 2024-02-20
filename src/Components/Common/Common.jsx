@@ -163,18 +163,69 @@ export const Pagination = (page, length) => {
 };
 
 export const buttons = [
-  "Su",
-  "Mo",
-  "Tu",
-  "We",
-  "Th",
-  "Fr",
-  "Sa",
+  "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
 ];
 
 export function multiOptions(arr) {
   return arr.map(screen => ({
       label: screen.screenName,
-      value: screen.screenID.toString()
+      value: screen.screenID.toString(),
+      Price : screen?.screenRatePerSec,
+      output:`${screen?.screenID}_${screen?.organizationID}`
   }));
+}
+
+export const IncludeExclude =[
+  {
+    label :"Include",
+    value :1
+  },
+  {
+    label :"Exclude",
+    value :2
+  },
+]
+
+export  const getTodayDate = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // January is 0!
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+export const getCurrentTime = () => {
+  const now = new Date();
+  // Get hours and minutes
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  // Format time as HH:MM
+  return `${hours}:${minutes}`;
+};
+
+
+// Function to convert time string (HH:MM:SS) to seconds
+function timeToSeconds(time) {
+  const [hours, minutes, seconds] = time.split(':').map(Number);
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+// Calculate the difference between two times in seconds
+export function timeDifferenceInSeconds(start, end) {
+  const startTimeInSeconds = timeToSeconds(start);
+  const endTimeInSeconds = timeToSeconds(end);
+  return endTimeInSeconds - startTimeInSeconds;
+}
+
+export function secondsToHMS(seconds) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }

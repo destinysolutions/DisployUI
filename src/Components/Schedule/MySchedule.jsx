@@ -660,7 +660,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 </div>
                 <div className="bg-white rounded-xl lg:mt-8 mt-5 shadow screen-section">
-                  <div className="schedual-tabl lg:mt-5 overflow-x-scroll sc-scrollbar rounded-lg">
+                  <div className="schedual-table overflow-x-scroll sc-scrollbar rounded-lg">
                     <table
                       className="screen-table w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
                       cellPadding={15}

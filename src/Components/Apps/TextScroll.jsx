@@ -665,88 +665,81 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                               Add tags +
                             </h4>
                             )}*/}
-                                {showTagModal && (
-                                  <AddOrEditTagPopup
-                                    setShowTagModal={setShowTagModal}
-                                    tags={tags}
-                                    setTags={setTags}
-                                    handleUpdateTagsTextScroll={
-                                      handleUpdateTagsTextScroll
-                                    }
-                                    from="textscroll"
-                                    setUpdateTextscrollTag={
-                                      setUpdateTextscrollTag
-                                    }
-                                  />
-                                )}
                               </div>
-                              {instanceView && (
-                                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-                                  <div
-                                    ref={appDropdownRef}
-                                    className="lg:w-[960px] sm:w-[560px] w-full my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-                                  >
-                                    <div className="lg:w-[960px] sm:w-[560px] w-full border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
-                                      <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
-                                        <div className="flex items-center">
-                                          <div>
-                                            <img
-                                              src={textScrollLogo}
-                                              className="w-10"
-                                            />
-                                          </div>
-                                          <div className="ml-3">
-                                            <h4 className="text-lg font-medium">
-                                              {instanceName}
-                                            </h4>
-                                          </div>
-                                        </div>
-                                        <button
-                                          className="p-1 text-3xl"
-                                          onClick={() => setInstanceView(false)}
-                                        >
-                                          <AiOutlineCloseCircle />
-                                        </button>
-                                      </div>
-                                      <div className="bg-black sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full flex items-center">
-                                        <marquee
-                                          direction={
-                                            scrollType == 1 ? "right" : "left"
-                                          }
-                                          style={{
-                                            fontSize: "36px",
-                                            color: "white",
-                                          }}
-                                        >
-                                          {textScrollData}
-                                        </marquee>
-                                      </div>
-
-                                      <div className="py-2 px-6 space-y-3">
-                                        <div className="flex items-center gap-2 w-full">
-                                          <div className="font-semibold w-fit">
-                                            Tags:-
-                                          </div>
-                                          <div className=" w-full">
-                                            {showTags}
-                                          </div>
-                                        </div>
-                                        <div>
-                                          <label className="font-semibold">
-                                            Screen Assign :
-                                          </label>
-                                          {screenAssignName == ""
-                                            ? " No Screen"
-                                            : screenAssignName}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
                             </div>
                           </div>
                         ))}
+                        {showTagModal && (
+                          <AddOrEditTagPopup
+                            setShowTagModal={setShowTagModal}
+                            tags={tags}
+                            setTags={setTags}
+                            handleUpdateTagsTextScroll={
+                              handleUpdateTagsTextScroll
+                            }
+                            from="textscroll"
+                            setUpdateTextscrollTag={
+                              setUpdateTextscrollTag
+                            }
+                          />
+                        )}
+                         {instanceView && (
+                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
+                              <div
+                                ref={appDropdownRef}
+                              >
+                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+                                  <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
+                                    <div className="flex items-center">
+                                      <div>
+                                        <img src={textScrollLogo} className="w-10" />
+                                      </div>
+                                      <div className="ml-3">
+                                        <h4 className="text-lg font-medium">
+                                          {instanceName}
+                                        </h4>
+                                      </div>
+                                    </div>
+                                    <button
+                                      className="p-1 text-3xl"
+                                      onClick={() => setInstanceView(false)}
+                                    >
+                                      <AiOutlineCloseCircle />
+                                    </button>
+                                  </div>
+                                  <div className="bg-black sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full flex items-center">
+                                  <marquee
+                                    direction={
+                                      scrollType == 1 ? "right" : "left"
+                                    }
+                                    style={{
+                                      fontSize: "36px",
+                                      color: "white",
+                                    }}
+                                  >
+                                    {textScrollData}
+                                  </marquee>
+                                </div>
+                                  <div className="py-2 px-6">
+                                    <div className="flex items-center gap-2 w-full">
+                                      <div className="font-semibold w-fit">
+                                        Tags:-
+                                      </div>
+                                      <div className=" w-full">{showTags}</div>
+                                    </div>
+                                    <div>
+                                      <label className="font-semibold">
+                                        Screen Assign :
+                                      </label>
+                                      {screenAssignName == ""
+                                        ? " No Screen"
+                                        : screenAssignName}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                       </div>
                     ) : (
                       <p>No Text Scroll data available.</p>

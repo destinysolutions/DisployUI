@@ -7,7 +7,10 @@ function Modal({ show, onClose, children }) {
   return (
     <>
       <div className="fixed inset-0 bg-black/20 z-40 "></div>
-      <div className="z-40 fixed w-[80vw] h-[80vw] lg:w-[50vw] lg:h-[50vw] left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+      <div
+        className="z-40 fixed sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 left-1/2 -translate-x-1/2 lg:top-1/2 md:top-1/2 sm:top-1/2 top-1/2 -translate-y-1/2"
+        style={{ zIndex: 11111 }}
+      >
         {children}
       </div>
     </>

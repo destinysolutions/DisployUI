@@ -541,7 +541,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       tabs: activeTab,
       selectedIds: selectedIds,
     };
-    console.log("Selected IDs:", payload);
     setTabsDelete(payload);
     setSelectAll(!selectAll);
   };

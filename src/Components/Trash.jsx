@@ -602,7 +602,11 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                           Previous
                         </button>
                       </li>
-
+                      <li className="flex">
+                      <div className="flex items-center me-3">
+                        <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                      </div>
+                      </li>
                       <li>
                         <button
                           onClick={() => handlePageChange(currentPage + 1)}
