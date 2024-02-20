@@ -169,7 +169,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
       <div className="backdrop">
         <div
           ref={pixabayModalRef}
-          className="fixed unsplash-model h-[80vh] bg-black lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
+          className="fixed unsplash-model lg:h-[80vh] h-60vh bg-black lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
         >
           <button
             onClick={closeModal}
@@ -193,7 +193,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
             </div>
           </div>
 
-          <div className="unsplash-section lg:max-h-80 max-h-60 bg-white rounded-lg">
+          <div className="unsplash-section lg:max-h-80 max-h-70 bg-white rounded-lg">
             <div className="grid grid-cols-12 px-3 gap-4 ">
               {images.map((image) => (
                 <div

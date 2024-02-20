@@ -1515,7 +1515,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
                                         <div className="lg:p-10 md:p-10 sm:p-10 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
                                           <div>
-                                            <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                            <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center mb-3">
                                               <div className="mb-5 relative ">
                                                 <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                                                 <input
@@ -1529,7 +1529,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                 />
                                               </div>
                                               <button
-                                                className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                                                className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm lg:mb-0 mb-3  hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
                                                 onClick={() => {
                                                   window.open(
                                                     window.location.origin.concat(
@@ -1727,7 +1727,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
                                         <div className="lg:p-10 md:p-10 sm:p-10 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
                                           <div>
-                                            <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                            <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center mb-3">
                                               <div className="mb-5 relative ">
                                                 <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                                                 <input
@@ -1739,7 +1739,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                 />
                                               </div>
                                               <button
-                                                className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                                                className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm  hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
                                                 onClick={() => {
                                                   window.open(
                                                     window.location.origin.concat(

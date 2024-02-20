@@ -399,9 +399,9 @@ const Defaultmedia = ({ permissions }) => {
                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none myplaylist-popup">
                   <div
                     // ref={modalRef}
-                    className={`relative w-[70vw] h-auto lg:p-6 md:p-6 sm:p-2 xs:p-1 flex items-start gap-2 bg-white rounded-2xl`}
+                    className={`relative w-[70vw] h-auto lg:p-6 md:p-6 sm:p-2 xs:p-1 gap-2 bg-white rounded-2xl`}
                   >
-                    <div className="flex absolute top-0 left-0 h-fit w-full z-10 items-start justify-between lg:py-4 py-2 px-6 text-black">
+                    <div className="flex items-center justify-between lg:py-4 lg:p-5 py-2 px-3 border-b  border-slate-200 rounded-t text-black">
                       <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
                         Set Content to Add Media
                       </h3>
@@ -415,11 +415,12 @@ const Defaultmedia = ({ permissions }) => {
                         <AiOutlineCloseCircle className="text-2xl" />
                       </button>
                     </div>
+
                     <div
                       onClick={() =>
                         assetPreviewPopup && setAssetPreviewPopup(false)
                       }
-                      className="lg:flex mt-8 lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block"
+                      className="lg:flex lg:mt-8 mt-3 lg:flex-wrap lg:items-center w-full md:flex md:flex-wrap md:items-center sm:block xs:block"
                     >
                       {/* left side tabs */}
                       <div className="flex-initial">

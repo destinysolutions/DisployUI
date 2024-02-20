@@ -456,10 +456,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             <h1 className="col-span-2 not-italic font-medium text-2xl text-[#001737] sm-mb-3">
               Media Upload
             </h1>
-            <div className="lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
+            <div className="flex items-center justify-end">
               <Link>
                 <button
-                  className="flex align-middle border-primary items-center border rounded-full lg:px-8 md:px-8 sm:px-4 xs:px-4 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  className="flex align-middle border-primary items-center border rounded-full lg:px-5 px-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   onClick={() => handleCancel()}
                 >
                   Cancel

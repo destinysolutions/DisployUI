@@ -113,6 +113,9 @@ button.stabshow.settingtabactive::after {
     max-width: 800px;
     min-width: 600px;
   }
+  button.stabshow.settingtabactive::after {
+    display: none;
+  }
 }
 @media (max-width: 767px) {
   .settingtab,
@@ -132,6 +135,9 @@ button.stabshow.settingtabactive::after {
   .user-model {
     max-width: 400px;
     min-width: 300px;
+  }
+  button.stabshow.settingtabactive::after {
+    display: none;
   }
 }
 

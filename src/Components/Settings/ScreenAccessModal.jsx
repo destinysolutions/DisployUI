@@ -180,7 +180,7 @@ const ScreenAccessModal = ({
               </div>
               <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
                 All Select
-              </h3>
+3              </h3>
             </div>
             <button
               className="p-1 text-xl"

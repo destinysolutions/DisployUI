@@ -449,7 +449,7 @@ const AddSlot = () => {
       event: savedFile,
       isRepeat: repeat,
       repeatDays: day.join(", "),
-      screenIDs: Screenoptions.map(item => item.output).join(", "),
+      screenIDs: Screenoptions.map((item) => item.output).join(", "),
       totalCost: totalCost,
       timezoneID: 0,
     });
@@ -459,7 +459,7 @@ const AddSlot = () => {
       maxBodyLength: Infinity,
       url: `${ADDUPDATESLOT}`,
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       data: Params,
     };
@@ -478,287 +478,315 @@ const AddSlot = () => {
       {sidebarload && <Loading />}
 
       {!sidebarload && <Suspense fallback={<Loading />}></Suspense>}
-      <div className="rounded-lg bg-white p-5">
+      <div className="h-screen w-screen">
         {fileLoading && <Loading />}
         {page === 1 && (
           <>
-            <div className="text-2xl font-semibold">Book Slot</div>
-            <div className="rounded-lg shadow-md bg-white p-5">
-              <form
-                className="flex flex-col gap-2"
-                onSubmit={handleSubmit(onSubmit)}
-              >
-                <label
-                  htmlFor="name"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Name *
-                </label>
-                <input
-                  {...register("name", {
-                    required: "Name is required",
-                  })}
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Enter Your Name"
-                  className="formInput"
-                />
-                {errors.name && (
-                  <span className="error">{errors.name.message}</span>
-                )}
-
-                <label
-                  htmlFor="name"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Email *
-                </label>
-                <input
-                  {...register("email", {
-                    required: "Email is required",
-                    pattern: {
-                      value: /^\S+@\S+$/i,
-                      message: "Invalid email address",
-                    },
-                  })}
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="Enter Your Email"
-                  className="formInput"
-                />
-                {errors.email && (
-                  <span className="error">{errors.email.message}</span>
-                )}
-
-                <label
-                  htmlFor="name"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Phone Number *
-                </label>
-                <input
-                  type="number"
-                  name="phone"
-                  id="phone"
-                  placeholder="Enter Your Phone Number"
-                  {...register("phone", {
-                    required: "Phone Number is required",
-                    pattern: {
-                      value: /^\d{10}$/, // Adjust the regular expression as per your phone number format
-                      message: "Invalid phone number",
-                    },
-                  })}
-                  className="formInput"
-                />
-                {errors.phone && (
-                  <span className="error">{errors.phone.message}</span>
-                )}
-
-                <div className="flex justify-end pt-4">
-                  <button
-                    className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                    type="submit"
+            <div className="w-full h-full p-5 flex items-center justify-center">
+              <div className="lg:w-[900px] md:w-[700px] w-full  h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg">
+                <div className="text-2xl font-semibold">Book Slot</div>
+                <div className="rounded-lg shadow-md bg-white p-5">
+                  <form
+                    className="flex flex-col gap-2"
+                    onSubmit={handleSubmit(onSubmit)}
                   >
-                    Next
-                  </button>
+                    <label
+                      htmlFor="name"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Name *
+                    </label>
+                    <input
+                      {...register("name", {
+                        required: "Name is required",
+                      })}
+                      type="text"
+                      name="name"
+                      id="name"
+                      placeholder="Enter Your Name"
+                      className="formInput"
+                    />
+                    {errors.name && (
+                      <span className="error">{errors.name.message}</span>
+                    )}
+
+                    <label
+                      htmlFor="name"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Email *
+                    </label>
+                    <input
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^\S+@\S+$/i,
+                          message: "Invalid email address",
+                        },
+                      })}
+                      type="email"
+                      name="email"
+                      id="email"
+                      placeholder="Enter Your Email"
+                      className="formInput"
+                    />
+                    {errors.email && (
+                      <span className="error">{errors.email.message}</span>
+                    )}
+
+                    <label
+                      htmlFor="name"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Phone Number *
+                    </label>
+                    <input
+                      type="number"
+                      name="phone"
+                      id="phone"
+                      placeholder="Enter Your Phone Number"
+                      {...register("phone", {
+                        required: "Phone Number is required",
+                        pattern: {
+                          value: /^\d{10}$/, // Adjust the regular expression as per your phone number format
+                          message: "Invalid phone number",
+                        },
+                      })}
+                      className="formInput"
+                    />
+                    {errors.phone && (
+                      <span className="error">{errors.phone.message}</span>
+                    )}
+
+                    <div className="flex justify-end pt-4">
+                      <button
+                        className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        type="submit"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </form>
                 </div>
-              </form>
+              </div>
             </div>
           </>
         )}
         {page === 2 && (
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-4">
-              <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4">
-                {!repeat && (
-                  <div className="grid grid-cols-4 gap-4">
-                    <div className="relative w-full col-span-2">
-                      <input
-                        type="date"
-                        value={startDate}
-                        onChange={handleStartDateChange}
-                        className="formInput"
-                      />
-                    </div>
-                    <div className="relative w-full col-span-2">
-                      <input
-                        type="date"
-                        value={endDate}
-                        className="formInput"
-                        disabled={!repeat}
-                      />
-                    </div>
-                  </div>
-                )}
-                {repeat && (
-                  <div>
-                    <div className="icons flex items-center">
+          <div className="w-full h-full p-5 flex items-center justify-center">
+            <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+              <div className="grid grid-cols-4 gap-4">
+                <div className="col-span-4">
+                  <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4">
+                    {!repeat && (
+                      <div className="grid grid-cols-4 gap-4">
+                        <div className="relative w-full col-span-2">
+                          <input
+                            type="date"
+                            value={startDate}
+                            onChange={handleStartDateChange}
+                            className="formInput"
+                          />
+                        </div>
+                        <div className="relative w-full col-span-2">
+                          <input
+                            type="date"
+                            value={endDate}
+                            className="formInput"
+                            disabled={!repeat}
+                          />
+                        </div>
+                      </div>
+                    )}
+                    {repeat && (
                       <div>
-                        <button
-                          className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                          onClick={() => setRepeat(false)}
-                        >
-                          <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
-                        </button>
+                        <div className="icons flex items-center">
+                          <div>
+                            <button
+                              className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                              onClick={() => setRepeat(false)}
+                            >
+                              <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
+                            </button>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-4 gap-4">
+                          <div className="relative w-full col-span-2">
+                            <input
+                              type="date"
+                              value={startDate}
+                              onChange={handleStartDateChange}
+                              className="formInput"
+                            />
+                          </div>
+                          <div className="relative w-full col-span-2">
+                            <input
+                              type="date"
+                              value={endDate}
+                              onChange={handleEndDateChange}
+                              className="formInput"
+                            />
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="grid grid-cols-4 gap-4">
-                      <div className="relative w-full col-span-2">
-                        <input
-                          type="date"
-                          value={startDate}
-                          onChange={handleStartDateChange}
-                          className="formInput"
-                        />
-                      </div>
-                      <div className="relative w-full col-span-2">
-                        <input
-                          type="date"
-                          value={endDate}
-                          onChange={handleEndDateChange}
-                          className="formInput"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {getallTime?.map((item, index) => {
-                  return (
-                    <div className="grid grid-cols-5 gap-4" key={index}>
-                      <div className="relative w-full col-span-1">
-                        <input
-                          value={item?.startTime}
-                          type="time"
-                          className="formInput"
-                          onChange={(e) =>
-                            handleStartTimeChange(index, e.target.value)
-                          }
-                        />
-                      </div>
-                      <div className="relative w-full col-span-1">
-                        <select
-                          value={item?.startTimeSecond}
-                          className="formInput"
-                          onChange={(e) =>
-                            handleStartTimeSecondChange(index, e.target.value)
-                          }
-                        >
-                          <option label="Select Second" value="" />
-                          {options.map((number) => (
-                            <option key={number} value={number}>
-                              {number}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="relative w-full col-span-1">
-                        <input
-                          type="time"
-                          value={item?.endTime}
-                          className="formInput"
-                          onChange={(e) =>
-                            handleEndTimeChange(index, e.target.value)
-                          }
-                        />
-                      </div>
-                      <div className="relative w-full col-span-1">
-                        <select
-                          value={item?.endTimeSecond}
-                          className="formInput"
-                          onChange={(e) =>
-                            handleEndTimeSecondChange(index, e.target.value)
-                          }
-                        >
-                          <option label="Select Second" value="" />
-                          {options.map((number) => (
-                            <option key={number} value={number}>
-                              {number}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="relative w-full col-span-1 flex gap-4 items-center">
-                        <button onClick={handleClick}>
-                          <MdCloudUpload size={30} />
-                        </button>
-                        <input
-                          type="file"
-                          id="upload-button"
-                          accept="image/*, video/*"
-                          style={{ display: "none" }}
-                          ref={hiddenFileInput}
-                          onChange={(e) => handleFileChange(index, e)}
-                        />
-                        <FaPlusCircle
-                          className="cursor-pointer"
-                          size={30}
-                          onClick={() => {
-                            setGetAllTime([
-                              ...getallTime,
-                              {
-                                startTime: getCurrentTime(),
-                                startTimeSecond: 10,
-                                endTimeSecond: 15,
-                                file: "",
-                                endTime: getCurrentTime(),
-                              },
-                            ]);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-                {!repeat && (
-                  <div className="flex gap-3 items-center">
-                    <input type="checkbox" onChange={() => setRepeat(true)} />
-                    <div>Repeat</div>
-                  </div>
-                )}
-                {repeat && (
-                  <div className="flex flex-col gap-3 py-4">
-                    <div className="mt-5 text-black font-medium text-lg">
-                      <label>Repeating {countAllDaysInRange()} Day(s)</label>
-                    </div>
-                    <div className="flex flex-row gap-3">
-                      <input
-                        type="checkbox"
-                        checked={selectAllDays}
-                        onChange={handleCheckboxChange}
-                        id="repeat_all_day"
-                      />
-                      <label
-                        className="ml-3 select-none"
-                        htmlFor="repeat_all_day"
-                      >
-                        Repeat for All Day
-                      </label>
-                    </div>
-                    <div>
-                      {buttons.map((label, index) => (
-                        <button
-                          className={`border border-primary px-3 py-1 mr-2 rounded-full ${
-                            selectedDays[index] && "bg-SlateBlue border-white"
-                          } 
+                    )}
+                    <div className="overflow-auto max-h-60">
+                      {getallTime?.map((item, index) => {
+                        return (
+                          <div
+                            className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-2 gap-4 mb-3"
+                            key={index}
+                          >
+                            <div className="relative w-full col-span-1">
+                              <input
+                                value={item?.startTime}
+                                type="time"
+                                className="formInput"
+                                onChange={(e) =>
+                                  handleStartTimeChange(index, e.target.value)
+                                }
+                              />
+                            </div>
+                            <div className="relative w-full col-span-1">
+                              <select
+                                value={item?.startTimeSecond}
+                                className="formInput"
+                                onChange={(e) =>
+                                  handleStartTimeSecondChange(
+                                    index,
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                <option label="Select Second" value="" />
+                                {options.map((number) => (
+                                  <option key={number} value={number}>
+                                    {number}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <div className="relative w-full col-span-1">
+                              <input
+                                type="time"
+                                value={item?.endTime}
+                                className="formInput"
+                                onChange={(e) =>
+                                  handleEndTimeChange(index, e.target.value)
+                                }
+                              />
+                            </div>
+                            <div className="relative w-full col-span-1">
+                              <select
+                                value={item?.endTimeSecond}
+                                className="formInput"
+                                onChange={(e) =>
+                                  handleEndTimeSecondChange(
+                                    index,
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                <option label="Select Second" value="" />
+                                {options.map((number) => (
+                                  <option key={number} value={number}>
+                                    {number}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            <div className="relative w-full col-span-1 flex gap-4 items-center">
+                              <button onClick={handleClick}>
+                                <MdCloudUpload size={30} />
+                              </button>
+                              <input
+                                type="file"
+                                id="upload-button"
+                                accept="image/*, video/*"
+                                style={{ display: "none" }}
+                                ref={hiddenFileInput}
+                                onChange={(e) => handleFileChange(index, e)}
+                              />
+                              <FaPlusCircle
+                                className="cursor-pointer"
+                                size={30}
+                                onClick={() => {
+                                  setGetAllTime([
+                                    ...getallTime,
+                                    {
+                                      startTime: getCurrentTime(),
+                                      startTimeSecond: 10,
+                                      endTimeSecond: 15,
+                                      file: "",
+                                      endTime: getCurrentTime(),
+                                    },
+                                  ]);
+                                }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      {!repeat && (
+                        <div className="flex gap-3 items-center">
+                          <input
+                            type="checkbox"
+                            onChange={() => setRepeat(true)}
+                          />
+                          <div>Repeat</div>
+                        </div>
+                      )}
+                      {repeat && (
+                        <div className="flex flex-col gap-3">
+                          <div className=" text-black font-medium text-lg">
+                            <label>
+                              Repeating {countAllDaysInRange()} Day(s)
+                            </label>
+                          </div>
+                          <div className="flex flex-row gap-3">
+                            <input
+                              type="checkbox"
+                              checked={selectAllDays}
+                              onChange={handleCheckboxChange}
+                              id="repeat_all_day"
+                            />
+                            <label
+                              className="ml-3 select-none"
+                              htmlFor="repeat_all_day"
+                            >
+                              Repeat for All Day
+                            </label>
+                          </div>
+                          <div>
+                            {buttons.map((label, index) => (
+                              <button
+                                className={`border border-primary px-3 py-1 mr-2 mb-2 rounded-full ${
+                                  selectedDays[index] &&
+                                  "bg-SlateBlue border-white"
+                                } 
                           `}
-                          key={index}
-                          onClick={() => handleDayButtonClick(index, label)}
+                                key={index}
+                                onClick={() =>
+                                  handleDayButtonClick(index, label)
+                                }
+                              >
+                                {label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex justify-end">
+                        <button
+                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          onClick={() => handleBookSlot()}
                         >
-                          {label}
+                          Next
                         </button>
-                      ))}
+                      </div>
                     </div>
                   </div>
-                )}
-                <div className="flex justify-end">
-                  <button
-                    className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                    onClick={() => handleBookSlot()}
-                  >
-                    Next
-                  </button>
                 </div>
               </div>
             </div>
@@ -766,215 +794,223 @@ const AddSlot = () => {
         )}
         {page === 3 && (
           <>
-            <div className="flex flex-row items-center gap-2">
-              <div className="icons flex items-center">
-                <div>
-                  <button
-                    className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                    onClick={() => handleBack()}
-                  >
-                    <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
-                  </button>
-                </div>
-              </div>
-              <div className="text-2xl font-semibold">Find Your Screen</div>
-            </div>
-            <div className="grid grid-cols-3 gap-4 h-full">
-              <div className="col-span-2 rounded-lg shadow-md bg-white p-5">
-                <div className="flex flex-col gap-2">
-                  <div>TimeZone</div>
-                  <div className="flex items-center gap-2">
-                    <IoEarthSharp />
-                    {new Date()
-                      .toLocaleDateString(undefined, {
-                        day: "2-digit",
-                        timeZoneName: "long",
-                      })
-                      .substring(4)}
-                  </div>
-                  {allArea?.map((item, index) => {
-                    return (
-                      <div
-                        className="flex flex-row gap-2 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full p-2 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        key={index}
+            <div className="w-full h-full p-5 flex items-center justify-center ">
+              <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg ">
+                <div className="flex flex-row items-center gap-2">
+                  <div className="icons flex items-center">
+                    <div>
+                      <button
+                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                        onClick={() => handleBack()}
                       >
-                        <span className="flex items-center ">
-                          <FiMapPin className="w-5 h-5 text-black " />
-                        </span>
-                        <div className="text-base flex items-center">
-                          <h2>{item?.searchValue?.text}</h2>
-                        </div>
-
-                        <span className="flex items-center justify-end">
-                          <div className=" flex flex-row items-center border rounded-lg">
-                            <div
-                              className="flex items-center"
-                              onClick={() => {
-                                setSelectedItem(item);
-                                setOpen(true);
-                              }}
-                            >
-                              <div className="text-black p-1 px-2 no-underline hidden md:block lg:block cursor-pointer">
-                                +{item?.area} km
-                              </div>
+                        <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="text-2xl font-semibold">Find Your Screen</div>
+                </div>
+                <div className="grid grid-cols-3 gap-4 max-h-[350px] overflow-auto">
+                  <div className="col-span-2 rounded-lg shadow-md bg-white p-5">
+                    <div className="flex flex-col gap-2">
+                      <div>TimeZone</div>
+                      <div className="flex items-center gap-2">
+                        <IoEarthSharp />
+                        {new Date()
+                          .toLocaleDateString(undefined, {
+                            day: "2-digit",
+                            timeZoneName: "long",
+                          })
+                          .substring(4)}
+                      </div>
+                      {allArea?.map((item, index) => {
+                        return (
+                          <div
+                            className="flex flex-row gap-2 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full p-2 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            key={index}
+                          >
+                            <span className="flex items-center ">
+                              <FiMapPin className="w-5 h-5 text-black " />
+                            </span>
+                            <div className="text-base flex items-center">
+                              <h2>{item?.searchValue?.text}</h2>
                             </div>
-                            {selectedItem === item && Open && (
-                              <div
-                                id="ProfileDropDown"
-                                className={`rounded ${
-                                  Open ? "none" : "hidden"
-                                } shadow-md bg-white absolute mt-44 z-[9999] w-48`}
-                              >
-                                <div>
-                                  <div className="border-b flex justify-center">
-                                    <div className="p-2">Current city only</div>
-                                  </div>
-                                  <div className="p-2 flex gap-2 items-center">
-                                    <BsCheckCircleFill className="text-blue-6 00" />
-                                    Cities Within Radius
-                                  </div>
-                                  <div className="relative mb-8 mx-2">
-                                    <div>
-                                      <input
-                                        id="labels-range-input"
-                                        type="range"
-                                        min="0"
-                                        max="30"
-                                        step="5"
-                                        value={item?.area}
-                                        onChange={(e) =>
-                                          handleRangeChange(e, item)
-                                        }
-                                        className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                                      />
-                                      <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">
-                                        5
-                                      </span>
 
-                                      <span className="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">
-                                        30
-                                      </span>
-                                    </div>
+                            <span className="flex items-center justify-end">
+                              <div className=" flex flex-row items-center border rounded-lg">
+                                <div
+                                  className="flex items-center"
+                                  onClick={() => {
+                                    setSelectedItem(item);
+                                    setOpen(true);
+                                  }}
+                                >
+                                  <div className="text-black p-1 px-2 no-underline hidden md:block lg:block cursor-pointer">
+                                    +{item?.area} km
                                   </div>
                                 </div>
+                                {selectedItem === item && Open && (
+                                  <div
+                                    id="ProfileDropDown"
+                                    className={`rounded ${
+                                      Open ? "none" : "hidden"
+                                    } shadow-md bg-white absolute mt-44 z-[9999] w-48`}
+                                  >
+                                    <div>
+                                      <div className="border-b flex justify-center">
+                                        <div className="p-2">
+                                          Current city only
+                                        </div>
+                                      </div>
+                                      <div className="p-2 flex gap-2 items-center">
+                                        <BsCheckCircleFill className="text-blue-6 00" />
+                                        Cities Within Radius
+                                      </div>
+                                      <div className="relative mb-8 mx-2">
+                                        <div>
+                                          <input
+                                            id="labels-range-input"
+                                            type="range"
+                                            min="0"
+                                            max="30"
+                                            step="5"
+                                            value={item?.area}
+                                            onChange={(e) =>
+                                              handleRangeChange(e, item)
+                                            }
+                                            className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                                          />
+                                          <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">
+                                            5
+                                          </span>
+
+                                          <span className="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">
+                                            30
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                            )}
+                            </span>
                           </div>
-                        </span>
-                      </div>
-                    );
-                  })}
-                  <div className="grid grid-cols-3 gap-4">
-                    <select
-                      className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
-                      value={selectedValue} // Set the selected value from state
-                      onChange={handleChange} // Handle change event
-                    >
-                      {IncludeExclude.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-
-                    <div className="col-span-2">
-                      <InputAuto
-                        pholder="Search"
-                        data={city}
-                        onSelected={getSelectedVal}
-                        onChange={getChanges}
-                        // handleKeyPress={handleKeyPress}
-                        setSelectedVal={setSelectedVal}
-                        selectedVal={selectedVal}
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-5">
-                    <div className="lg:p-6 md:p-3 sm:p-3 xs:p-2">
-                      <MapContainer
-                        center={center}
-                        zoom={4}
-                        maxZoom={18}
-                        style={{
-                          width: "100%",
-                          height: "460px",
-                          zIndex: 0,
-                        }}
-                      >
-                        <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
-                        <MarkerClusterGroup>
-                          {screenData.map((screen, index) => (
-                            <Marker
-                              key={index}
-                              position={[screen.latitude, screen.longitude]}
-                              icon={customIcon}
-                              eventHandlers={{
-                                click: () =>
-                                  handleScreenClick &&
-                                  handleScreenClick(screen),
-                              }}
-                            >
-                              <Popup>
-                                <h3 className="flex flex-row gap-1">
-                                  <span>Location :</span>
-                                  <span>{selectedScreen?.googleLocation}</span>
-                                </h3>
-                              </Popup>
-                            </Marker>
+                        );
+                      })}
+                      <div className="grid grid-cols-3 gap-4">
+                        <select
+                          className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
+                          value={selectedValue} // Set the selected value from state
+                          onChange={handleChange} // Handle change event
+                        >
+                          {IncludeExclude.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
                           ))}
-                        </MarkerClusterGroup>
-                      </MapContainer>
+                        </select>
+
+                        <div className="col-span-2">
+                          <InputAuto
+                            pholder="Search"
+                            data={city}
+                            onSelected={getSelectedVal}
+                            onChange={getChanges}
+                            // handleKeyPress={handleKeyPress}
+                            setSelectedVal={setSelectedVal}
+                            selectedVal={selectedVal}
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-5">
+                        <div className="lg:p-6 md:p-3 sm:p-3 xs:p-2">
+                          <MapContainer
+                            center={center}
+                            zoom={4}
+                            maxZoom={18}
+                            style={{
+                              width: "100%",
+                              height: "260px",
+                              zIndex: 0,
+                            }}
+                          >
+                            <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
+                            <MarkerClusterGroup>
+                              {screenData.map((screen, index) => (
+                                <Marker
+                                  key={index}
+                                  position={[screen.latitude, screen.longitude]}
+                                  icon={customIcon}
+                                  eventHandlers={{
+                                    click: () =>
+                                      handleScreenClick &&
+                                      handleScreenClick(screen),
+                                  }}
+                                >
+                                  <Popup>
+                                    <h3 className="flex flex-row gap-1">
+                                      <span>Location :</span>
+                                      <span>
+                                        {selectedScreen?.googleLocation}
+                                      </span>
+                                    </h3>
+                                  </Popup>
+                                </Marker>
+                              ))}
+                            </MarkerClusterGroup>
+                          </MapContainer>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className="rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">
-                <div>Reach</div>
-                <div className="text-2xl">
-                  {selectedScreens?.length} Screens
-                </div>
-                <div>
-                  Do you want to book your slot for all screens or any
-                  particular screen?
-                </div>
+                  <div className="rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">
+                    <div>Reach</div>
+                    <div className="text-2xl">
+                      {selectedScreens?.length} Screens
+                    </div>
+                    <div>
+                      Do you want to book your slot for all screens or any
+                      particular screen?
+                    </div>
 
-                <div className="grid grid-cols-4 gap-4 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                  <div className="col-span-3">
-                    <h2>All Screen</h2>
-                  </div>
+                    <div className="grid grid-cols-4 gap-4 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                      <div className="col-span-3">
+                        <h2>All Screen</h2>
+                      </div>
 
-                  <span className="col-span-1 flex items-center justify-end">
-                    <input
-                      type="checkbox"
-                      className="cursor-pointer"
-                      value={selectAllScreen}
-                      disabled={screenData?.length === 0}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectAllScreen(true);
-                          setSelectedScreens(Screenoptions);
-                        } else {
-                          setSelectAllScreen(false);
-                          setSelectedScreens([]);
-                        }
-                      }}
+                      <span className="col-span-1 flex items-center justify-end">
+                        <input
+                          type="checkbox"
+                          className="cursor-pointer"
+                          value={selectAllScreen}
+                          disabled={screenData?.length === 0}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectAllScreen(true);
+                              setSelectedScreens(Screenoptions);
+                            } else {
+                              setSelectAllScreen(false);
+                              setSelectedScreens([]);
+                            }
+                          }}
+                        />
+                      </span>
+                    </div>
+                    <Select
+                      value={selectedScreens}
+                      onChange={handleSelectChange}
+                      options={Screenoptions}
+                      isMulti
                     />
-                  </span>
-                </div>
-                <Select
-                  value={selectedScreens}
-                  onChange={handleSelectChange}
-                  options={Screenoptions}
-                  isMulti
-                />
-                <div className="h-full w-full flex justify-center items-end">
-                  <div className="flex justify-center">
-                    <button
-                      className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                      onClick={() => handleNext()}
-                    >
-                      Book Your Slot
-                    </button>
+                    <div className="h-full w-full flex justify-center items-end">
+                      <div className="flex justify-center">
+                        <button
+                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          onClick={() => handleNext()}
+                        >
+                          Book Your Slot
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -982,14 +1018,18 @@ const AddSlot = () => {
           </>
         )}
         {page === 4 && (
-          <AddPayment
-            selectedScreens={selectedScreens}
-            totalDuration={totalDuration}
-            totalPrice={totalPrice}
-            totalCost={totalCost}
-            handlebook={handlebook}
-            handleBack={handleBack}
-          />
+          <div className="w-full h-full p-5 flex items-center justify-center">
+            <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+              <AddPayment
+                selectedScreens={selectedScreens}
+                totalDuration={totalDuration}
+                totalPrice={totalPrice}
+                totalCost={totalCost}
+                handlebook={handlebook}
+                handleBack={handleBack}
+              />
+            </div>
+          </div>
         )}
         {page === 5 && <ThankYouPage navigate={navigate} />}
       </div>

@@ -80,7 +80,7 @@ const AssetModal = ({ setShowAssetModal }) => {
     <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none myplaylist-popup">
       <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-          <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+          <div className="flex items-center justify-between p-4 px-6 border-b  border-slate-200 rounded-t text-black">
             <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
               Set Content to Add Media
             </h3>
@@ -180,8 +180,8 @@ const AssetModal = ({ setShowAssetModal }) => {
 
                   <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
                     <div className={popupActiveTab === 1 ? "" : "hidden"}>
-                      <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                        <div className="mb-5 relative ">
+                      <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center lg:mb-0 mb-3">
+                        <div className="lg:mb-5 mb-3 relative ">
                           <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                           <input
                             type="text"
@@ -327,14 +327,16 @@ const AssetModal = ({ setShowAssetModal }) => {
             </div>
           </div>
           <div className="flex justify-between items-center p-5">
-            <p className="text-black text-left">Content will always be playing Confirm</p>
+            <p className="text-black text-left">
+              Content will always be playing Confirm
+            </p>
             <p className="text-right">
-            <button
-              className="bg-primary text-white rounded-full px-5 py-2"
-              onClick={() => setShowAssetModal(false)}
-            >
-              Confirm
-            </button>
+              <button
+                className="bg-primary text-white rounded-full px-5 py-2"
+                onClick={() => setShowAssetModal(false)}
+              >
+                Confirm
+              </button>
             </p>
           </div>
         </div>

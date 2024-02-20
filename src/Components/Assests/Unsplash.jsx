@@ -171,7 +171,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
       <div className="backdrop">
         <div
           ref={unsplashModalRef}
-          className="fixed h-[80vh] unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
+          className="fixed lg:h-[80vh] h-60vh unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
         >
           <button
             onClick={closeModal}
@@ -192,7 +192,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
             />
           </div>
           <div className="container mx-auto">
-            <div className="unsplash-section lg:max-h-80 max-h-60 bg-white rounded-lg">
+            <div className="unsplash-section lg:max-h-80 max-h-70 bg-white rounded-lg">
               <div className="grid grid-cols-12 px-3 gap-4 ">
                 {res.map((val) => {
                   return (

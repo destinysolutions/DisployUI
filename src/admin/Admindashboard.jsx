@@ -22,16 +22,16 @@ const AdminDashboard = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <div className="lg:flex lg:justify-between sm:block items-center">
-            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+          <div className="grid lg:grid-cols-3 gap-2">
+            <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
               Overview dashboard
             </h1>
-            <div className="lg:col-span-2 lg:flex items-center justify-end flex-wrap">
-              <button className="dashboard-btn  flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+            <div className="lg:col-span-2 flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
+              <button className="dashboard-btn  flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 px-3 py-2.5 text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <BsLightningCharge className="text-lg mr-1" />
                 Book a Demo
               </button>
-              <button className="dashboard-btn  flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 text-base sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="dashboard-btn  flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 px-3 py-2.5 text-base sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <MdOutlineSlowMotionVideo className="text-lg mr-1" />
                 Watch Video
               </button>

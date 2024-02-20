@@ -395,7 +395,7 @@ const ShowAssetModal = ({
         <div
           className={`${
             showAppModal ? "hidden" : ""
-          } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
+          } flex items-center justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
         >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
@@ -615,8 +615,8 @@ const ShowAssetModal = ({
                 </div>
               </div>
               <div className={popupActiveTab !== 2 && "hidden"}>
-                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                  <div className="mb-5 relative">
+                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center lg:mb-0 mb-3">
+                  <div className="lg:mb-5 mb-3 relative">
                     <AiOutlineSearch className="absolute top-2 left-3 w-6 h-5 z-10 text-gray" />
                     <input
                       type="text"
@@ -715,8 +715,8 @@ const ShowAssetModal = ({
               </div>
 
               <div className={popupActiveTab !== 3 && "hidden"}>
-                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                  <div className="mb-5 relative">
+                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center lg:mb-0 mb-3">
+                  <div className="lg:mb-5 mb-3 relative">
                     <AiOutlineSearch className="absolute top-2 left-3 w-6 h-5 z-10 text-gray" />
                     <input
                       type="text"

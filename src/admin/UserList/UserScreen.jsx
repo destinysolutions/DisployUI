@@ -68,7 +68,7 @@ const UserScreen = ({ selectUser, screens, loading }) => {
   };
   return (
     <div className="w-full mt-8">
-      <div className="block p-5 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+      <div className="block lg:p-5 p-3 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
         {selectUser === "" ? (
           <div className="flex flex-col items-center justify-center gap-3">
             <FaUserCheck
@@ -81,8 +81,8 @@ const UserScreen = ({ selectUser, screens, loading }) => {
           </div>
         ) : (
           <>
-            <div className="flex justify-end items-center">
-              <div className="relative mr-5">
+            <div className="lg:flex md:flex justify-end items-center">
+              <div className="relative lg:mr-5">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <AiOutlineSearch className="w-5 h-5 text-gray " />
                 </span>

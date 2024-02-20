@@ -332,8 +332,8 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3 sm:text-xl">
               Users
             </h1>
-            <div className="lg:col-span-2 flex items-center justify-end flex-wrap">
-              <div className="text-right mr-3 relative">
+            <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
+              <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
                   <AiOutlineSearch className="w-5 h-5 text-gray" />
                 </span>
@@ -344,7 +344,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                   onChange={handleFilter}
                 />
               </div>
-              <div className="lg:flex md:flex sm:block">
+              <div className="flex items-center justify-end">
                 <button
                   onClick={() => setAddUserModal(true)}
                   className="border border-primary rounded-full px-3 py-2 not-italic font-medium"

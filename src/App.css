@@ -1176,6 +1176,10 @@ table.screen-table {
     min-width: 150px;
     width: 150px;
   }
+  .table-head-bg th {
+    font-size: 15px;
+    font-weight: 500;
+  }
 }
 
 /* Style the header */
