@@ -459,7 +459,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             <div className="flex items-center justify-end">
               <Link>
                 <button
-                  className="flex align-middle border-primary items-center border rounded-full lg:px-5 px-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  className="flex align-middle border-primary items-center border rounded-full lg:px-5 px-3 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   onClick={() => handleCancel()}
                 >
                   Cancel

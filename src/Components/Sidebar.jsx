@@ -311,7 +311,7 @@ const Sidebar = ({ sidebarOpen }) => {
       setSubmenuStates(JSON.parse(storedStates));
     }
   }, []);
-
+ 
   return (
     <>
       {/* screen otp modal start */}
@@ -337,107 +337,103 @@ const Sidebar = ({ sidebarOpen }) => {
                   className="cursor-pointer duration-500"
                 />
               </div>
-                <ul className="space-y-1 font-medium">
-                  {menuData
-                    .filter((item) => item.isView)
-                    .map((item, index) => {
-                      const submenuIsOpen = submenuStates[item.title] || false;
-                      const isActive = window.location.pathname === item.path; // Check if the item is active
-                      return (
-                        <li
-                          key={index}
-                          className={`${item.cName} ${
-                            isActive ? "active" : ""
-                          }`}
-                        >
-                          <div className="flex items-center">
-                            <Link to={item.path}>
-                              <div>{item.icon}</div>
-                              <span className="ml-5">{item.title}</span>
-                            </Link>
-
-                            {item.subMenus && (
-                              <div className="ml-5 absolute right-0">
-                                <FiIcons.FiChevronDown
-                                  className={`${
-                                    submenuIsOpen ? "transform rotate-180" : ""
-                                  } transition-transform duration-300 text-white `}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    updateSubmenuState(
-                                      item.title,
-                                      !submenuIsOpen
-                                    );
-                                  }}
-                                />
-                              </div>
-                            )}
-                          </div>
-
-                          {submenuIsOpen && item.subMenus && (
-                            <ul className="ml-4 mt-3">
-                              {item.subMenus
-                                .filter((submenu) => submenu.isView) // Filter out submenu items where isView is false
-                                .map((submenu, subIndex) => (
-                                  <li
-                                    key={subIndex}
-                                    className="p-2 relative submenu"
-                                  >
-                                    <Link to={submenu.path}>
-                                      <div>{submenu.icon}</div>
-                                      {submenu.title === "New Screen" ? (
-                                        <span
-                                          className="ml-5"
-                                          onClick={() => setShowOTPModal(true)}
-                                        >
-                                          {submenu.title}
-                                        </span>
-                                      ) : (
-                                        <span className="ml-5">
-                                          {submenu.title}
-                                        </span>
-                                      )}
-                                    </Link>
-                                  </li>
-                                ))}
-                            </ul>
-                          )}
-                        </li>
-                      );
-                    })}
-
-                  <li>
-                    <div className="dotline my-4"></div>
-                  </li>
-
-                  {menuDataBottummenu
-                    .filter((item) => item.isView)
-                    .map((item, MIindex) => {
-                      const isActive = window.location.pathname === item.path; // Check if the item is active
-                      return (
-                        <li
-                          key={MIindex}
-                          className={`${item.cName} ${
-                            isActive ? "active" : ""
-                          }`}
-                        >
-                          <div
-                            className="flex"
-                            onClick={() => {
-                              handleChangeRoute(item.title, item.path);
-                            }}
-                          >
+              <ul className="space-y-1 font-medium">
+                {menuData
+                  .filter((item) => item.isView)
+                  .map((item, index) => {
+                    const submenuIsOpen = submenuStates[item.title] || false;
+                    const isActive = window.location.pathname === item.path; // Check if the item is active
+                    return (
+                      <li
+                        key={index}
+                        className={`${item.cName} ${isActive ? "active" : ""}`}
+                      >
+                        <div className="flex items-center">
+                          <Link to={item.path}>
                             <div>{item.icon}</div>
-                            <span className="ml-5 text-[#8E94A9]">
-                              {item.title}
-                            </span>
+                            <span className="ml-5">{item.title}</span>
+                          </Link>
 
-                            {Menus.title}
-                          </div>
-                        </li>
-                      );
-                    })}
-                </ul>
+                          {item.subMenus && (
+                            <div className="ml-5 absolute right-0">
+                              <FiIcons.FiChevronDown
+                                className={`${
+                                  submenuIsOpen ? "transform rotate-180" : ""
+                                } transition-transform duration-300 text-white `}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  updateSubmenuState(
+                                    item.title,
+                                    !submenuIsOpen
+                                  );
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {submenuIsOpen && item.subMenus && (
+                          <ul className="ml-4 mt-3">
+                            {item.subMenus
+                              .filter((submenu) => submenu.isView) // Filter out submenu items where isView is false
+                              .map((submenu, subIndex) => (
+                                <li
+                                  key={subIndex}
+                                  className="p-2 relative submenu"
+                                >
+                                  <Link to={submenu.path}>
+                                    <div>{submenu.icon}</div>
+                                    {submenu.title === "New Screen" ? (
+                                      <span
+                                        className="ml-5"
+                                        onClick={() => setShowOTPModal(true)}
+                                      >
+                                        {submenu.title}
+                                      </span>
+                                    ) : (
+                                      <span className="ml-5">
+                                        {submenu.title}
+                                      </span>
+                                    )}
+                                  </Link>
+                                </li>
+                              ))}
+                          </ul>
+                        )}
+                      </li>
+                    );
+                  })}
+
+                <li>
+                  <div className="dotline my-4"></div>
+                </li>
+
+                {menuDataBottummenu
+                  .filter((item) => item.isView)
+                  .map((item, MIindex) => {
+                    const isActive = window.location.pathname === item.path; // Check if the item is active
+                    return (
+                      <li
+                        key={MIindex}
+                        className={`${item.cName} ${isActive ? "active" : ""}`}
+                      >
+                        <div
+                          className="flex"
+                          onClick={() => {
+                            handleChangeRoute(item.title, item.path);
+                          }}
+                        >
+                          <div>{item.icon}</div>
+                          <span className="ml-5 text-[#8E94A9]">
+                            {item.title}
+                          </span>
+
+                          {Menus.title}
+                        </div>
+                      </li>
+                    );
+                  })}
+              </ul>
             </div>
           </div>
         </>
@@ -445,7 +441,7 @@ const Sidebar = ({ sidebarOpen }) => {
         <div className="menu-bars self-center z-[99] min-h-[60px] max-h-[60px] flex items-center">
           <HiOutlineMenuAlt2
             onClick={handleSidebarToggle}
-            className={` text-SlateBlue text-3xl fixed ${
+            className={` text-SlateBlue text-3xl fixed cursor-pointer ${
               mobileSidebar && "hidden"
             } ${mobileSidebar ? "ml-0" : "ml-5"}`}
           />
@@ -498,7 +494,19 @@ const Sidebar = ({ sidebarOpen }) => {
                             <li key={subIndex} className="p-2 relative submenu">
                               <Link to={submenu.path}>
                                 <div>{submenu.icon}</div>
-                                <span className="ml-5">{submenu.title}</span>
+                                {submenu.title === "New Screen" ? (
+                                  <span
+                                    className="ml-5"
+                                    onClick={() => {
+                                      setShowOTPModal(true);
+                                      setMobileSidebar(false);
+                                    }}
+                                  >
+                                    {submenu.title}
+                                  </span>
+                                ) : (
+                                  <span className="ml-5">{submenu.title}</span>
+                                )}
                               </Link>
                             </li>
                           ))}
