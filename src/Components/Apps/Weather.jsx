@@ -936,6 +936,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
           selectedScreens={selectedScreens}
           setSelectedScreens={setSelectedScreens}
           screenSelected={screenSelected}
+          sidebarOpen={sidebarOpen}
         />
       )}
       {showTagModal && (

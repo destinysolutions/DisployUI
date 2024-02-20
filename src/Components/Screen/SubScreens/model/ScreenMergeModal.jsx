@@ -21,6 +21,7 @@ const ScreenGroupModal = ({
   editSelectedScreen,
   updateScreen,
   isOpen,
+  sidebarOpen
 }) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.root.screenGroup.screenData);

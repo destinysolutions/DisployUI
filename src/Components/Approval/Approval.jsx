@@ -22,7 +22,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = ApprovalList.slice(indexOfFirstItem, indexOfLastItem);
-
+  const totalPages = Math.ceil(ApprovalList?.length / itemsPerPage);
   // pagination End
 
   const fetchApproval = () => {
@@ -119,6 +119,9 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   return (
     <>
       {/* sidebar and navbar display start */}
@@ -234,10 +237,13 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
 
             {/* Pagination start */}
-            <div className=" flex justify-end p-5">
+            <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+              <div className="flex items-center">
+                <span className="text-gray-500">{`Total ${ApprovalList?.length} Approval`}</span>
+              </div>
               <div className="flex justify-end">
                 <button
-                  onClick={() => setCurrentPage(currentPage - 1)}
+                  onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
@@ -256,20 +262,18 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                       d="M13 5H1m0 0 4 4M1 5l4-4"
                     />
                   </svg>
-                  Previous
+                  {sidebarOpen ? "Previous" : ""} 
                 </button>
                 <div className="flex items-center me-3">
-                  <span className="text-gray-500">{`Page ${currentPage} of ${ Math.ceil(ApprovalList?.length / itemsPerPage)}`}</span>
+                  <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
                 </div>
+                {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
                 <button
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  disabled={
-                    currentPage ===
-                    Math.ceil(ApprovalList?.length / itemsPerPage)
-                  }
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
                   className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
-                  Next
+                   {sidebarOpen ? "Next" : ""}
                   <svg
                     className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                     aria-hidden="true"

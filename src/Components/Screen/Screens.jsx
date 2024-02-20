@@ -1454,181 +1454,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                               screen.endDate
                                             ).format("YYYY-MM-DD hh:mm")}`
                                           )}
-
-                                          {showScheduleModal && (
-                                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-                                              <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                                                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                                                    <div className="flex items-center">
-                                                      <Link
-                                                        to="/addschedule"
-                                                        target="_blank"
-                                                      >
-                                                        <button
-                                                          className="bg-SlateBlue text-white px-5 py-2 rounded-full ml-3"
-                                                          onClick={() => {
-                                                            localStorage.setItem(
-                                                              "isWindowClosed",
-                                                              "false"
-                                                            );
-                                                          }}
-                                                        >
-                                                          Set New Schedule
-                                                        </button>
-                                                      </Link>
-                                                    </div>
-                                                    <button
-                                                      className="p-1"
-                                                      onClick={() =>
-                                                        setShowScheduleModal(
-                                                          false
-                                                        )
-                                                      }
-                                                    >
-                                                      <AiOutlineCloseCircle className="text-3xl" />
-                                                    </button>
-                                                  </div>
-                                                  <div className=" overflow-x-scroll sc-scrollbar mt-8 px-5 min-h-[400px] max-h-[400px] ">
-                                                    <table
-                                                      className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white shadow-2xl p-2 mb-3"
-                                                      cellPadding={15}
-                                                    >
-                                                      <thead>
-                                                        <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                                            Schedule Name
-                                                          </th>
-                                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                                            Time Zones
-                                                          </th>
-                                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                                            Date Added
-                                                          </th>
-                                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                                            start date
-                                                          </th>
-                                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                                            End date
-                                                          </th>
-                                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                                            screens Assigned
-                                                          </th>
-                                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                                            Tags
-                                                          </th>
-                                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                                            Action
-                                                          </th>
-                                                        </tr>
-                                                      </thead>
-                                                      <tbody>
-                                                        {loading ? (
-                                                          <tr>
-                                                            <td
-                                                              colSpan={8}
-                                                              className="text-center font-semibold text-xl"
-                                                            >
-                                                              Loading...
-                                                            </td>
-                                                          </tr>
-                                                        ) : (
-                                                          schedules.map(
-                                                            (schedule) => (
-                                                              <tr
-                                                                className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                                                key={
-                                                                  schedule.scheduleId
-                                                                }
-                                                              >
-                                                                <td className="flex items-center">
-                                                                  <input
-                                                                    type="checkbox"
-                                                                    className="mr-3"
-                                                                    onChange={() =>
-                                                                      handleScheduleAdd(
-                                                                        schedule
-                                                                      )
-                                                                    }
-                                                                  />
-                                                                  <div>
-                                                                    <div>
-                                                                      {
-                                                                        schedule.scheduleName
-                                                                      }
-                                                                    </div>
-                                                                  </div>
-                                                                </td>
-                                                                <td className="text-center">
-                                                                  {
-                                                                    schedule.timeZoneName
-                                                                  }
-                                                                </td>
-                                                                <td className="text-center">
-                                                                  {moment(
-                                                                    schedule.createdDate
-                                                                  ).format(
-                                                                    "YYYY-MM-DD hh:mm"
-                                                                  )}
-                                                                </td>
-                                                                <td className="text-center">
-                                                                  {moment(
-                                                                    schedule.startDate
-                                                                  ).format(
-                                                                    "YYYY-MM-DD hh:mm"
-                                                                  )}
-                                                                </td>
-
-                                                                <td className="text-center">
-                                                                  {moment(
-                                                                    schedule.endDate
-                                                                  ).format(
-                                                                    "YYYY-MM-DD hh:mm"
-                                                                  )}
-                                                                </td>
-                                                                <td className="p-2 text-center">
-                                                                  {
-                                                                    schedule.screenAssigned
-                                                                  }
-                                                                </td>
-                                                                <td className="p-2 text-center">
-                                                                  {
-                                                                    schedule.tags
-                                                                  }
-                                                                </td>
-                                                                <td className="text-center">
-                                                                  <Link
-                                                                    to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
-                                                                    target="_blank"
-                                                                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                                  >
-                                                                    <BiEdit />
-                                                                  </Link>
-                                                                </td>
-                                                              </tr>
-                                                            )
-                                                          )
-                                                        )}
-                                                      </tbody>
-                                                    </table>
-                                                  </div>
-
-                                                  <div className="py-4 flex justify-center">
-                                                    <button
-                                                      onClick={() => {
-                                                        handleScheduleUpdate(
-                                                          screen.screenID
-                                                        );
-                                                      }}
-                                                      className="border border-primary rounded-full px-6 py-2 not-italic font-medium text-lg"
-                                                    >
-                                                      Save
-                                                    </button>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          )}
                                         </td>
                                       )}
 
@@ -1823,10 +1648,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </tbody>
                     </table>
                   </div>
-                  <div className="flex flex-col justify-end p-5 gap-3">
-                    {/* <div className="flex items-center justify-end">
-                      <span className="text-gray-500">{`Total listing of ${screens?.length} entries`}</span>
-                    </div> */}
+                  <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+                    <div className="flex items-center">
+                      <span className="text-gray-500">{`Total ${screens?.length} Screens`}</span>
+                    </div>
                     <div className="flex justify-end">
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
@@ -1848,7 +1673,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             d="M13 5H1m0 0 4 4M1 5l4-4"
                           />
                         </svg>
-                        Previous
+                       {sidebarOpen ? "Previous" : ""} 
                       </button>
                       <div className="flex items-center me-3">
                         <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
@@ -1859,7 +1684,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         disabled={currentPage === totalPages}
                         className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                        Next
+                        {sidebarOpen ? "Next" : ""}
                         <svg
                           className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                           aria-hidden="true"
@@ -1884,6 +1709,147 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             <Footer />
           </>
         </Suspense>
+      )}
+
+      {showScheduleModal && (
+        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
+          <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="flex items-center justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                <div>Select Schedule</div>
+
+                <div>
+                  <button
+                    className="p-1"
+                    onClick={() => setShowScheduleModal(false)}
+                  >
+                    <AiOutlineCloseCircle className="text-3xl" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center justify-end mt-3 mr-5">
+                <Link to="/addschedule" target="_blank">
+                  <button
+                    className="bg-SlateBlue text-white px-5 py-2 rounded-full ml-3"
+                    onClick={() => {
+                      localStorage.setItem("isWindowClosed", "false");
+                    }}
+                  >
+                    Set New Schedule
+                  </button>
+                </Link>
+              </div>
+              <div className=" overflow-x-scroll sc-scrollbar mt-5 px-5 min-h-[400px] max-h-[400px] ">
+                <table
+                  className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white shadow-2xl p-2 mb-3"
+                  cellPadding={15}
+                >
+                  <thead>
+                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Schedule Name
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Time Zones
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Date Added
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        start date
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        End date
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        screens Assigned
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Tags
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr>
+                        <td
+                          colSpan={8}
+                          className="text-center font-semibold text-xl"
+                        >
+                          Loading...
+                        </td>
+                      </tr>
+                    ) : (
+                      schedules.map((schedule) => (
+                        <tr
+                          className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                          key={schedule.scheduleId}
+                        >
+                          <td className="flex items-center">
+                            <input
+                              type="checkbox"
+                              className="mr-3"
+                              onChange={() => handleScheduleAdd(schedule)}
+                            />
+                            <div>
+                              <div>{schedule.scheduleName}</div>
+                            </div>
+                          </td>
+                          <td className="text-center">
+                            {schedule.timeZoneName}
+                          </td>
+                          <td className="text-center">
+                            {moment(schedule.createdDate).format(
+                              "YYYY-MM-DD hh:mm"
+                            )}
+                          </td>
+                          <td className="text-center">
+                            {moment(schedule.startDate).format(
+                              "YYYY-MM-DD hh:mm"
+                            )}
+                          </td>
+
+                          <td className="text-center">
+                            {moment(schedule.endDate).format(
+                              "YYYY-MM-DD hh:mm"
+                            )}
+                          </td>
+                          <td className="p-2 text-center">
+                            {schedule.screenAssigned}
+                          </td>
+                          <td className="p-2 text-center">{schedule.tags}</td>
+                          <td className="text-center">
+                            <Link
+                              to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
+                              target="_blank"
+                              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            >
+                              <BiEdit />
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="py-4 flex justify-center">
+                <button
+                  onClick={() => {
+                    handleScheduleUpdate(scheduleScreenID);
+                  }}
+                  className="border border-primary rounded-full px-6 py-2 not-italic font-medium text-lg"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
       {showAssetModal && (
         <ShowAssetModal

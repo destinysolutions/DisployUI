@@ -85,10 +85,10 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      if (!isCheckboxChecked) {
-        toast.error("Please check & accept the terms and conditions.");
-        return; // Exit the submission process if checkbox is not checked
-      }
+      // if (!isCheckboxChecked) {
+      //   toast.error("Please check & accept the terms and conditions.");
+      //   return; // Exit the submission process if checkbox is not checked
+      // }
 
       let data = JSON.stringify({
         emailID: values.emailID,
@@ -412,7 +412,7 @@ const Login = () => {
                       <div className="error">{formik.errors.password}</div>
                     )}
                   </div>
-                  <div className="flex items-start">
+                  {/* <div className="flex items-start">
                     <div className="flex items-center h-5">
                       <input
                         id="terms"
@@ -427,7 +427,6 @@ const Login = () => {
                       <p className="not-italic text-white font-medium">
                         I accept the
                       </p>
-                      {/* Modal trigger */}
                       <p
                         className="ml-1 not-italic text-white font-medium decoration-white border-b cursor-pointer"
                         onClick={() => setShowModal(true)}
@@ -435,7 +434,7 @@ const Login = () => {
                         terms and conditions
                       </p>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="relative">
                     <div className="relative">

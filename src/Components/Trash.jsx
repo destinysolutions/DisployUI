@@ -572,67 +572,62 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       </tbody>
                     </table>
                   </div>
-
-                  <nav
-                    className="flex items-center flex-column flex-wrap md:flex-row justify-end p-5"
-                    aria-label="Table navigation"
-                  >
-                    <ul className="-space-x-px rtl:space-x-reverse text-sm h-8 flex justify-end mt-2">
-                      <li className="">
-                        <button
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
-                          className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+                    <div className="flex items-center">
+                      <span className="text-gray-500">{`Total ${store?.deletedData?.length} Trash`}</span>
+                    </div>
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                      >
+                        <svg
+                          className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
                         >
-                          <svg
-                            className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 14 10"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M13 5H1m0 0 4 4M1 5l4-4"
-                            />
-                          </svg>
-                          Previous
-                        </button>
-                      </li>
-                      <li className="flex">
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 5H1m0 0 4 4M1 5l4-4"
+                          />
+                        </svg>
+                        {sidebarOpen ? "Previous" : ""} 
+                      </button>
                       <div className="flex items-center me-3">
                         <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
                       </div>
-                      </li>
-                      <li>
-                        <button
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                          className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                      {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                      >
+                         {sidebarOpen ? "Next" : ""}
+                        <svg
+                          className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
                         >
-                          Next
-                          <svg
-                            className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 14 10"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M1 5h12m0 0L9 1m4 4L9 9"
-                            />
-                          </svg>
-                        </button>
-                      </li>
-                    </ul>
-                  </nav>
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                 
                 </div>
               </div>
             </div>

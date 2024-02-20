@@ -438,6 +438,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         handleSaveNew={handleSaveNew}
         label={label}
         type="MergeScreen"
+        sidebarOpen={sidebarOpen}
       />
       {/* )} */}
 

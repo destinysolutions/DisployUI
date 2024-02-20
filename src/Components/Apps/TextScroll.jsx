@@ -815,6 +815,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
           selectedScreens={selectedScreens}
           setSelectedScreens={setSelectedScreens}
           screenSelected={screenSelected}
+          sidebarOpen={sidebarOpen}
         />
       )}
     </>

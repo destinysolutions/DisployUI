@@ -19,6 +19,7 @@ const ScreenGroupModal = ({
   handleSaveNew,
   editSelectedScreen,
   updateScreen,
+  sidebarOpen,
 }) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.root.screenGroup.screenData);
@@ -238,7 +239,7 @@ const ScreenGroupModal = ({
                 Screen Group Name *
               </label>
             </div>
-            <div className="flex justify-end gap-4 px-3">
+            <div className="flex lg:justify-end lg:flex-row md:flex-row md:justify-end sm:flex-col flex-col gap-4 px-3">
               <input
                 type="name"
                 name="name"
@@ -422,7 +423,11 @@ const ScreenGroupModal = ({
                 </table>
               </div>
             </div>
-              <div className="flex justify-end m-5">
+            <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+              <div className="flex items-center">
+                <span className="text-gray-500">{`Total ${store?.data?.length} Screen`}</span>
+              </div>
+              <div className="flex justify-end">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -443,17 +448,18 @@ const ScreenGroupModal = ({
                       d="M13 5H1m0 0 4 4M1 5l4-4"
                     />
                   </svg>
-                  Previous
+                  {sidebarOpen ? "Previous" : ""} 
                 </button>
                 <div className="flex items-center me-3">
                   <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
                 </div>
+                {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
-                  Next
+                  {sidebarOpen ? "Next" : ""}
                   <svg
                     className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                     aria-hidden="true"
@@ -471,6 +477,7 @@ const ScreenGroupModal = ({
                   </svg>
                 </button>
               </div>
+            </div>
 
               {/* Modal footer */}
               <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-start">

@@ -893,6 +893,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
           selectedScreens={selectedScreens}
           setSelectedScreens={setSelectedScreens}
           screenSelected={screenSelected}
+          sidebarOpen={sidebarOpen}
         />
       )}
     </>

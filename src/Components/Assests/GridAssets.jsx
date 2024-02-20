@@ -1217,6 +1217,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         handleUpdateScreenAssign={handleUpdateScreenAssign}
                         selectedScreens={selectedScreens}
                         setSelectedScreens={setSelectedScreens}
+                        sidebarOpen={sidebarOpen}
                       />
                     )}
 

@@ -377,6 +377,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       <Users
                         searchValue={searchValue}
                         permissions={permissions}
+                        sidebarOpen={sidebarOpen}
                       />
                     </div>
                     {/*End of userrole details*/}
@@ -384,6 +385,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       <Userrole
                         searchValue={searchValue}
                         permissions={permissions}
+                        sidebarOpen={sidebarOpen}
                       />
                     </div>
                     {/*End of users details*/}

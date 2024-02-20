@@ -953,6 +953,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 handleUpdateScreenAssign={handleUpdateScreenAssign}
                 selectedScreens={selectedScreens}
                 setSelectedScreens={setSelectedScreens}
+                sidebarOpen={sidebarOpen}
               />
             )}
           </div>
