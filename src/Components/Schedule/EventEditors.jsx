@@ -595,13 +595,13 @@ const EventEditors = ({
                 />
               </div>
 
-              <div className="grid grid-cols-12 relative lg:max-h-[600px] md:max-h-[600px] sm:md:max-h-[500px] max-h-[400px] overflow-y-auto">
-                <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 rounded-lg px-4">
+              <div className="grid grid-cols-12 relative lg:max-h-[600px] md:max-h-[600px] sm:md:max-h-[500px] max-h-[400px] overflow-y-auto p-5">
+                <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 rounded-lg">
                   <div className="my-4 relative ">
                     <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                     <input
                       type="text"
-                      placeholder=" Search by Name"
+                      placeholder=" Search by Asset"
                       className="border border-primary rounded-full px-7 py-2 search-user"
                       onChange={(e) =>
                         debounceForSearchAsset(
@@ -983,8 +983,8 @@ const EventEditors = ({
                   </div>
                 </div>
 
-                <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-4 md:mt-4 overflow-x-scroll sc-scrollbar">
-                  <div className="bg-white shadow-2xl rounded-md overflow-auto max-h-[1340px]">
+                <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-4 md:mt-4">
+                  <div className="bg-white shadow-2xl rounded-md max-h-[1340px]">
                     <div className="p-3">
                       <div>
                         <ul className="border-2 border-lightgray rounded">
@@ -1064,8 +1064,8 @@ const EventEditors = ({
                     )}
                     {showRepeatSettings ? (
                       <>
-                        <div className="relative md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0  p-4">
-                          <div className="backbtn absolute top-[5px] left-[-10px] ">
+                        <div className="relative rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0  p-4">
+                          <div className="backbtn absolute top-[5px] left-[5px] ">
                             <button
                               className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
                               onClick={() => setShowRepeatSettings(false)}
