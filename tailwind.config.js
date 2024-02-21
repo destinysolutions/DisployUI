@@ -4,6 +4,10 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@apideck/file-picker/dist/*.js",
   ],
+  darkMode: ['variant', [
+    '@media (prefers-color-scheme: dark) { &:not(.light *) }',
+    '&:is(.dark *)',
+  ]],
   theme: {
     extend: {
       colors: {
