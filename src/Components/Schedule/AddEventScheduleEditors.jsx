@@ -19,7 +19,7 @@ import {
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
 import { useDispatch } from "react-redux";
-const EventEditors = ({
+const AddEventScheduleEditors = ({
   isOpen,
   onClose,
   onSave,
@@ -1314,4 +1314,4 @@ const EventEditors = ({
   );
 };
 
-export default EventEditors;
+export default AddEventScheduleEditors;

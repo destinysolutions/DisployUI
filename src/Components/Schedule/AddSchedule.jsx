@@ -32,7 +32,7 @@ import {
 } from "../../Redux/AppsSlice";
 import { connection } from "../../SignalR";
 import { socket } from "../../App";
-import EventEditors from "./EventEditors";
+import AddEventScheduleEditors from "./AddEventScheduleEditors";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
@@ -791,7 +791,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 myEvents={myEvents}
               /> */}
               {isCreatePopupOpen && (
-                <EventEditors
+                <AddEventScheduleEditors
                   isOpen={isCreatePopupOpen}
                   onClose={handleCloseCreatePopup}
                   onSave={handleSaveEvent}
@@ -977,7 +977,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </button>
 
             <button
-              className="mb-3 border-2 border-lightgray bg-SlateBlue text-white hover:bg-primary hover:text-white   px-4 py-2 rounded-full ml-3"
+              className="mb-3 border-2 border-lightgray bg-SlateBlue text-white hover:bg-primary hover:text-white px-4 py-2 rounded-full lg:ml-3 md:ml-3 sm:ml-3 ml-0"
               onClick={() => setSelectScreenModal(true)}
             >
               Save & Assign screen
