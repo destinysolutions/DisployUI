@@ -269,10 +269,10 @@ const ShowAssetModal = ({
           onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
           className={`${
             showAppModal ? "hidden" : ""
-          } relative w-full flex items-start gap-2 bg-white rounded-2xl`}
+          } relative p-2 w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
-          <div className="lg:flex lg:flex-wrap lg:items-center w-full lg:mt-0 md:mt-0 sm:mt-5 mt-5 md:flex md:flex-wrap md:items-center sm:block xs:block">
-            <div className="flex-initial">
+          <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
+            <div className="flex-initial mb-5">
               {type !== "merged_screens" && (
                 <>
                   <nav
@@ -343,9 +343,9 @@ const ShowAssetModal = ({
 
             <div className="lg:p-10 md:p-10 sm:p-2 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1 w-full">
               <div className={popupActiveTab !== 1 && "hidden"}>
-                <div className="flex flex-wrap w-full items-start lg:justify-between lg-gap-0 md-gap-4 sm:gap-4 md:justify-center sm:justify-center xs:justify-center">
-                  <div className="lg:mb-5 md:mb-5 mb-2 relative ">
-                    <AiOutlineSearch className="absolute top-2 left-2 w-5 h-5 z-10 text-gray" />
+                <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center mb-3">
+                  <div className="mb-3 relative ">
+                    <AiOutlineSearch className="absolute top-2 left-3 w-5 h-5 z-10 text-gray" />
                     <input
                       type="text"
                       placeholder="Search Assest"
@@ -365,7 +365,7 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover sc-scrollbar rounded-lg w-full addmedia-table">
+                <div className="table-container md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto lg:min-h-[300px] lg:max-h-[300px] min-h-[200px] max-h-[200px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
                       borderCollapse: "collapse",
@@ -453,9 +453,9 @@ const ShowAssetModal = ({
                 </div>
               </div>
               <div className={popupActiveTab !== 2 && "hidden"}>
-                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                  <div className="mb-5 relative w-fit">
-                    <AiOutlineSearch className="absolute top-2 left-2 w-6 h-5 z-10 text-gray" />
+                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center lg:mb-0 mb-3">
+                  <div className="lg:mb-5 mb-3 relative">
+                    <AiOutlineSearch className="absolute top-2 left-3 w-6 h-5 z-10 text-gray" />
                     <input
                       type="text"
                       placeholder="Search Composition"
@@ -475,7 +475,7 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto lg:min-h-[300px] lg:max-h-[300px]  min-h-[200px] max-h-[200px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
                       borderCollapse: "collapse",
@@ -577,7 +577,7 @@ const ShowAssetModal = ({
                     Add New App
                   </button>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto lg:min-h-[300px] lg:max-h-[300px]  min-h-[200px] max-h-[200px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
                       borderCollapse: "collapse",

@@ -835,11 +835,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                   )}
                                 </div>
 
-                                <div className="flex items-center">
-                                  <div className=" flex items-center">
+                                <div className="flex items-center justify-start">
+                                  <div className=" flex items-center w-full">
                                     {isAccordionOpen && (
-                                      <div className="flex sm:flex-row lg:flex-row md:flex-row flex-col gap-2">
-                                        <div>
+                                      <div className="flex sm:flex-row lg:flex-row md:flex-row flex-col gap-2 w-full">
+                                        <div className="flex justify-start items-center">
                                           {permissions.isSave && (
                                             <button
                                               data-tip
@@ -880,7 +880,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                             </button>
                                           )}
                                         </div>
-                                        <div className="flex">
+                                        <div className="flex justify-end items-center">
                                           {permissions.isSave && (
                                             <button
                                               data-tip
