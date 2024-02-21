@@ -249,11 +249,11 @@ const ShowAssetModal = ({
 
   return (
     <>
-      <div className="border-0 rounded-lg shadow-lg fixed fixed-popup z-50 lg:max-w-[70vw] lg:min-w-[70vw] md:max-w-[70vw] md:min-w-[70vw] sm:max-w-[70vw] sm:min-w-[70vw] max-w-[85vw] min-w-[85vw] lg:m-auto md:m-auto sm:m-auto m-5 bg-white outline-none focus:outline-none ">
+      <div className="border-0 rounded-lg shadow-lg fixed fixed-popup z-9999 lg:max-w-[70vw] lg:min-w-[70vw] md:max-w-[70vw] md:min-w-[70vw] sm:max-w-[70vw] sm:min-w-[70vw] max-w-[85vw] min-w-[85vw] lg:m-auto md:m-auto sm:m-auto m-5 bg-white outline-none focus:outline-none ">
         <div
           className={`${
             showAppModal ? "hidden" : ""
-          } flex items-center justify-between p-5 xs:p-3 sm:p-4 border-b border-slate-200 rounded-t text-black`}
+          } flex items-center justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
         >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
@@ -557,8 +557,8 @@ const ShowAssetModal = ({
               </div>
 
               <div className={popupActiveTab !== 3 && "hidden"}>
-                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                  <div className="mb-5 relative">
+                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center lg:mb-0 mb-3">
+                  <div className="lg:mb-5 mb-3 relative">
                     <AiOutlineSearch className="absolute top-2 left-3 w-6 h-5 z-10 text-gray" />
                     <input
                       type="text"
@@ -570,6 +570,7 @@ const ShowAssetModal = ({
                   </div>
                   <button
                     onClick={() => {
+                      localStorage.setItem("isWindowClosed", "false");
                       setShowAppModal(true);
                     }}
                     className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
@@ -601,7 +602,7 @@ const ShowAssetModal = ({
                               selectedYoutube === instance
                                 ? "bg-[#f3c953]"
                                 : ""
-                            } border-b border-[#eee] text-center cursor-pointer hover:bg-black hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+                            } border-b border-[#eee]`}
                             onClick={() => {
                               handleAppsAdd(instance);
                               handleAssetAdd("");
@@ -611,7 +612,7 @@ const ShowAssetModal = ({
                             <td className="p-3 text-left">
                               {instance.instanceName}
                             </td>
-                            <td className="p-3">
+                            <td className="p-3 text-center">
                               {instance.youTubePlaylist
                                 ? "Youtube Video"
                                 : "Text scroll"}
@@ -639,7 +640,7 @@ const ShowAssetModal = ({
         <div
           className={`${
             showAppModal ? "hidden" : ""
-          } flex lg:flex-row md:flex-row sm:flex-col flex-col lg:justify-between md:justify-between sm:justify-between lg:items-center md:items-center items-stretch p-5`}
+          } lg:flex justify-between items-center pl-5 pr-5 pb-4`}
         >
           <p className="text-black text-left">
             Content will always be playing Confirm
@@ -729,7 +730,7 @@ const ShowAssetModal = ({
       {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
       <div
         onClick={() => handleClickOutside()}
-        className="fixed inset-0 z-30 bg-black/20"
+        className="fixed inset-0 z-9990 bg-black/40"
       ></div>
     </>
   );

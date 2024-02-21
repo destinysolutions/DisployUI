@@ -1224,57 +1224,56 @@ const EventEditor = ({
                 </div>
               </div>
             </div>
+          </div>
+          <div className="col-span-12 bg-white schedual-btn">
+            <div className="flex justify-center ">
+              <button
+                className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
+                onClick={() => {
+                  onClose();
+                  setSelectedDays([]);
+                  setSearchAsset("");
+                  setSelectedAsset(null);
+                  setTitle("");
+                  setAllAssets([...assets]);
+                  setShowRepeatSettings(false);
+                }}
+              >
+                Cancel
+              </button>
 
-            <div className="col-span-12 bg-white schedual-btn">
-              <div className="flex justify-center ">
+              {isEditMode ? (
                 <button
-                  className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
+                  className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                   onClick={() => {
-                    onClose();
-                    setSelectedDays([]);
-                    setSearchAsset("");
-                    setSelectedAsset(null);
-                    setTitle("");
-                    setAllAssets([...assets]);
+                    selectedEvent?.isfutureDateExists == 0
+                      ? handleSave()
+                      : handleWarn();
+                  }}
+                >
+                  Update
+                </button>
+              ) : (
+                <button
+                  className="border-2 border-white text-white hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                  onClick={() => {
+                    handleSave();
+                  }}
+                >
+                  Save
+                </button>
+              )}
+              {isEditMode && (
+                <button
+                  className="border-2 border-lightgray hover:bg-primary hover:text-white   px-6 py-2 rounded-full ml-3"
+                  onClick={() => {
+                    handelDeletedata();
                     setShowRepeatSettings(false);
                   }}
                 >
-                  Cancel
+                  Delete
                 </button>
-
-                {isEditMode ? (
-                  <button
-                    className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
-                    onClick={() => {
-                      selectedEvent?.isfutureDateExists == 0
-                        ? handleSave()
-                        : handleWarn();
-                    }}
-                  >
-                    Update
-                  </button>
-                ) : (
-                  <button
-                    className="border-2 border-white text-white hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
-                    onClick={() => {
-                      handleSave();
-                    }}
-                  >
-                    Save
-                  </button>
-                )}
-                {isEditMode && (
-                  <button
-                    className="border-2 border-lightgray hover:bg-primary hover:text-white   px-6 py-2 rounded-full ml-3"
-                    onClick={() => {
-                      handelDeletedata();
-                      setShowRepeatSettings(false);
-                    }}
-                  >
-                    Delete
-                  </button>
-                )}
-              </div>
+              )}
             </div>
           </div>
         </div>

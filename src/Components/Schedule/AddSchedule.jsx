@@ -32,6 +32,7 @@ import {
 } from "../../Redux/AppsSlice";
 import { connection } from "../../SignalR";
 import { socket } from "../../App";
+import EventEditors from "./EventEditors";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
@@ -713,7 +714,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="grid grid-cols-12 lg:mt-5">
-            <div className="lg:col-span-7 md:col-span-12 sm:col-span-12 xs:col-span-12 flex flex-col gap-2 items-start mb-3">
+            <div className="lg:col-span-9 md:col-span-12 sm:col-span-12 xs:col-span-12 flex flex-col gap-2 items-start mb-3">
               <p className="text-xl font-semibold ">Schedule Name</p>
               <div className="flex justify-center items-center">
                 <input
@@ -736,7 +737,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="lg:col-span-5 md:col-span-12 sm:col-span-12 xs:col-span-12 lg:ml-5 lg:mb-0 mb-3 ">
+            <div className="lg:col-span-3 md:col-span-12 sm:col-span-12 xs:col-span-12 lg:ml-5 lg:mb-0 mb-3 ">
               <select
                 className="w-full paymentlabel relative"
                 value={selectedTimezoneName}
@@ -773,7 +774,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 eventPropGetter={eventStyleGetter}
                 length={31}
               />
-              <EventEditor
+              {/* <EventEditor
                 isOpen={isCreatePopupOpen}
                 onClose={handleCloseCreatePopup}
                 onSave={handleSaveEvent}
@@ -788,9 +789,28 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 handleAssetChange={handleAssetChange}
                 scheduleAsset={scheduleAsset}
                 myEvents={myEvents}
-              />
+              /> */}
+              {isCreatePopupOpen && (
+                <EventEditors
+                  isOpen={isCreatePopupOpen}
+                  onClose={handleCloseCreatePopup}
+                  onSave={handleSaveEvent}
+                  onDelete={handleEventDelete}
+                  selectedSlot={selectedSlot}
+                  selectedEvent={selectedEvent}
+                  assetData={assetData}
+                  setAssetData={setAssetData}
+                  allAssets={allAssets}
+                  setAllAssets={setAllAssets}
+                  setSelectedEvent={setSelectedEvent}
+                  handleAssetChange={handleAssetChange}
+                  scheduleAsset={scheduleAsset}
+                  myEvents={myEvents}
+                /> 
+              )}
+              
             </div>
-            <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-6 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
+            <div className=" bg-white lg:ml-5 md:ml-0  sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-6 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-5 sm:mt-3 xs:mt-3 ">
               {/* <div className="flex justify-center my-3 text-black font-semibold text-xl">
                 Schedule Name
               </div> */}
