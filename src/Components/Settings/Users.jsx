@@ -44,7 +44,7 @@ import moment from "moment";
 import "../../Styles/Settings.css";
 import ReactTooltip from "react-tooltip";
 
-const Users = ({ searchValue, permissions,sidebarOpen }) => {
+const Users = ({ searchValue, permissions, sidebarOpen }) => {
   const [loadFist, setLoadFist] = useState(true);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [showuserModal, setshowuserModal] = useState(false);
@@ -807,7 +807,9 @@ const Users = ({ searchValue, permissions,sidebarOpen }) => {
                         value={countryID}
                         onChange={(e) => setCountryID(e.target.value)}
                       >
-                        <option label="select Country"></option>
+                        {labelTitle !== "Update User" && (
+                          <option label="Select Country"></option>
+                        )}
                         {Countries.map((country) => (
                           <option
                             key={country.countryID}
@@ -827,7 +829,9 @@ const Users = ({ searchValue, permissions,sidebarOpen }) => {
                         onChange={(e) => setSelectedState(e.target.value)}
                         value={selectedState}
                       >
-                        <option label="select State"></option>
+                        {labelTitle !== "Update User" && (
+                          <option label="Select State"></option>
+                        )}
                         {countryID &&
                           Array.isArray(states) &&
                           states.map((state) => (
@@ -846,7 +850,9 @@ const Users = ({ searchValue, permissions,sidebarOpen }) => {
                         value={selectRoleID}
                         onChange={(e) => setSelectRoleID(e.target.value)}
                       >
-                        <option label="select User Role"></option>
+                        {labelTitle !== "Update User" && (
+                          <option label="Select User Role"></option>
+                        )}
                         {userRoleData && userRoleData?.length > 0 ? (
                           userRoleData.map((userrole) => (
                             <option
@@ -2495,7 +2501,7 @@ const Users = ({ searchValue, permissions,sidebarOpen }) => {
                           d="M13 5H1m0 0 4 4M1 5l4-4"
                         />
                       </svg>
-                      {sidebarOpen ? "Previous" : ""} 
+                      {sidebarOpen ? "Previous" : ""}
                     </button>
                     <div className="flex items-center me-3">
                       <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>

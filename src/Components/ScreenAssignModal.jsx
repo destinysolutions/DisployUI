@@ -342,6 +342,7 @@ const ScreenAssignModal = ({
             </button>
           </div>
           <div className="flex lg:justify-end justify-center mt-4 px-5">
+            <div className="flex justify-end items-center mb-2">
             <div className="relative w-full">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <AiOutlineSearch className="w-5 h-5 text-gray " />
@@ -355,6 +356,8 @@ const ScreenAssignModal = ({
                   handleScreenSearch(e);
                 }}
               />
+            </div>
+
             </div>
           </div>
           <div className="schedual-table bg-white mt-2 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
@@ -395,7 +398,8 @@ const ScreenAssignModal = ({
                         key={screen.screenID}
                         className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                       >
-                        <td className="flex items-center">
+                        <td className="items-center">
+                          <div className="flex">
                           <input
                             type="checkbox"
                             className="mr-3"
@@ -406,6 +410,8 @@ const ScreenAssignModal = ({
                           />
 
                           {screen.screenName}
+
+                          </div>
                         </td>
 
                         <td className="text-center">

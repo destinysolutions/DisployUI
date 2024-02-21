@@ -349,7 +349,7 @@ const ShowAssetModal = ({
                     <input
                       type="text"
                       placeholder="Search Assest"
-                      className="border border-primary rounded-full pl-8 py-2 search-user"
+                      className="border border-primary rounded-full pl-9 py-2 search-user w-56"
                       value={searchAssest}
                       onChange={(e) => handleSearchAssest(e, "asset")}
                     />
@@ -459,7 +459,7 @@ const ShowAssetModal = ({
                     <input
                       type="text"
                       placeholder="Search Composition"
-                      className="border border-primary rounded-full px-7 py-2 search-user w-full"
+                      className="border border-primary rounded-full pl-9 py-2 search-user w-56"
                       value={searchComposition}
                       onChange={(e) => handleSearchAssest(e, "composition")}
                     />

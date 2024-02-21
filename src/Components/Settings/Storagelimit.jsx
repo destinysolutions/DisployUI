@@ -103,7 +103,8 @@ const Storagelimit = () => {
                       {storageDegtails?.totalStorage} GB
                     </span>
                   </td>
-                  <td className="text-[#5E5E5E] text-center ">
+                  <td className="text-[#5E5E5E] text-center">
+                    <div className="flex justify-center">
                     <span
                       style={{
                         background: "#E4E6FF",
@@ -113,6 +114,8 @@ const Storagelimit = () => {
                     >
                       {storageDegtails?.consumedSpace} GB
                     </span>
+
+                    </div>
                   </td>
                   <td className="text-[#5E5E5E] text-center flex justify-center">
                     <span

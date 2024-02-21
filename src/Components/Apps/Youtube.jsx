@@ -494,28 +494,32 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                       <AiOutlineCloseCircle />
                                     </button>
                                   </div>
-                                  <div className="p-2">
-                                    <ReactPlayer
-                                      url="https://www.youtube.com/watch?v=WKOYp_7P71Y"
-                                      className="app-instance-preview"
-                                      loop={true}
-                                      controls={true}
-                                    />
-                                  </div>
-                                  <p className="max-w-xl px-6">
-                                    Lorem Ipsum is simply dummy text of the
-                                    printing and typesetting industry. Lorem
-                                    Ipsum has been the industry&apos;s standard
-                                    dummy text ever since the 1500s, when an
-                                    unknown printer took a galley of type and
-                                    scrambled it to make a type specimen book.
-                                  </p>
-                                  <div className="py-2 px-6">
-                                    <p>- Add videos by YouTube URL</p>
-                                    <p>- Mute videos</p>
-                                    <p>
-                                      - Choose to play with or without subtitles
+                                  <div className="p-2 lg:h-[500px] md:h-[500px] sm:h-[400px] h-[400px] overflow-y-scroll">
+                                    <div className="py-2">
+                                      <ReactPlayer
+                                        url="https://www.youtube.com/watch?v=WKOYp_7P71Y"
+                                        className="app-instance-preview"
+                                        loop={true}
+                                        controls={true}
+                                      />
+                                    </div>
+                                    <p className="max-w-xl px-6">
+                                      Lorem Ipsum is simply dummy text of the
+                                      printing and typesetting industry. Lorem
+                                      Ipsum has been the industry&apos;s
+                                      standard dummy text ever since the 1500s,
+                                      when an unknown printer took a galley of
+                                      type and scrambled it to make a type
+                                      specimen book.
                                     </p>
+                                    <div className="py-2 px-6">
+                                      <p>- Add videos by YouTube URL</p>
+                                      <p>- Mute videos</p>
+                                      <p>
+                                        - Choose to play with or without
+                                        subtitles
+                                      </p>
+                                    </div>
                                   </div>
                                   <div className="flex items-center justify-center p-5">
                                     <button className="border-primary border-2 text-primary py-1.5 px-5 rounded-full hover:bg-primary hover:text-white">
@@ -765,9 +769,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                           )}
                           {instanceView && (
                             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-                              <div
-                                ref={modalRef}
-                              >
+                              <div ref={modalRef}>
                                 <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
                                   <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
                                     <div className="flex items-center">

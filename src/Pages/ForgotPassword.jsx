@@ -200,7 +200,7 @@ const ForgotPassword = () => {
                         onClick={() => navigate("/")}
                         disabled={loading}
                       >
-                        Sign up here
+                        Sign in here
                       </button>
                     </div>
                   </form>
@@ -343,7 +343,7 @@ const ForgotPassword = () => {
                         onClick={() => navigate("/")}
                         disabled={loading}
                       >
-                        Sign up here
+                        Sign in here
                       </button>
                     </div>
                   </form>

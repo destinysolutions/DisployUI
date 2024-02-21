@@ -789,8 +789,12 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               key={i}
                               className="accordions shadow-md p-5 bg-slate-200 rounded-lg mb-4"
                             >
-                              <div className="section lg:flex md:flex  sm:block items-center justify-between ">
-                                <div className="flex gap-2 items-center">
+                              <div
+                                className={`section lg:flex md:flex sm:flex ${
+                                  isAccordionOpen ? "" : "flex-row flex"
+                                } items-center justify-between`}
+                              >
+                                <div className="flex gap-2 lg:mb-0 md:mb-0 sm:mb-0 mb-2 items-center">
                                   {editIndex === i ? (
                                     <>
                                       <input
@@ -834,153 +838,157 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="flex items-center">
                                   <div className=" flex items-center">
                                     {isAccordionOpen && (
-                                      <>
-                                        {permissions.isSave && (
-                                          <button
-                                            data-tip
-                                            data-for="Add Screen"
-                                            className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                                            onClick={() => newAddGroup(item)}
-                                          >
-                                            Add <b>+</b>
-                                            <ReactTooltip
-                                              id="Add Screen"
-                                              place="bottom"
-                                              type="warning"
-                                              effect="float"
+                                      <div className="flex sm:flex-row lg:flex-row md:flex-row flex-col gap-2">
+                                        <div>
+                                          {permissions.isSave && (
+                                            <button
+                                              data-tip
+                                              data-for="Add Screen"
+                                              className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
+                                              onClick={() => newAddGroup(item)}
                                             >
-                                              <span>Add Screen</span>
-                                            </ReactTooltip>
-                                          </button>
-                                        )}
-
-                                        {item.isPreview && (
-                                          <button
-                                            data-tip
-                                            data-for="Preview"
-                                            className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                                            onClick={() =>
-                                              handleOpenPreview(item)
-                                            }
-                                          >
-                                            Preview
-                                            <ReactTooltip
-                                              id="Preview"
-                                              place="bottom"
-                                              type="warning"
-                                              effect="float"
-                                            >
-                                              <span>Preview</span>
-                                            </ReactTooltip>
-                                          </button>
-                                        )}
-
-                                        {permissions.isSave && (
-                                          <button
-                                            data-tip
-                                            data-for="Upload"
-                                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                                            onClick={() => {
-                                              setShowAssetModal(true);
-                                              setGetGroup(item);
-                                            }}
-                                          >
-                                            <TbUpload className="text-3xl p-1 hover:text-white" />
-                                            <ReactTooltip
-                                              id="Upload"
-                                              place="bottom"
-                                              type="warning"
-                                              effect="float"
-                                            >
-                                              <span>Upload</span>
-                                            </ReactTooltip>
-                                          </button>
-                                        )}
-
-                                        {!selectedItems?.length && (
-                                          <div className="flex items-center justify-center">
-                                            {permissions.isDelete && (
-                                              <button
-                                                data-tip
-                                                data-for="All Delete"
-                                                className="border rounded-full bg-red text-white hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                              Add <b>+</b>
+                                              <ReactTooltip
+                                                id="Add Screen"
+                                                place="bottom"
+                                                type="warning"
+                                                effect="float"
                                               >
-                                                <RiDeleteBin5Line
-                                                  className="text-3xl p-1 hover:text-white"
-                                                  onClick={() =>
-                                                    handleDeleteGroup(item)
+                                                <span>Add Screen</span>
+                                              </ReactTooltip>
+                                            </button>
+                                          )}
+
+                                          {item.isPreview && (
+                                            <button
+                                              data-tip
+                                              data-for="Preview"
+                                              className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
+                                              onClick={() =>
+                                                handleOpenPreview(item)
+                                              }
+                                            >
+                                              Preview
+                                              <ReactTooltip
+                                                id="Preview"
+                                                place="bottom"
+                                                type="warning"
+                                                effect="float"
+                                              >
+                                                <span>Preview</span>
+                                              </ReactTooltip>
+                                            </button>
+                                          )}
+                                        </div>
+                                        <div className="flex">
+                                          {permissions.isSave && (
+                                            <button
+                                              data-tip
+                                              data-for="Upload"
+                                              className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                              onClick={() => {
+                                                setShowAssetModal(true);
+                                                setGetGroup(item);
+                                              }}
+                                            >
+                                              <TbUpload className="text-3xl p-1 hover:text-white" />
+                                              <ReactTooltip
+                                                id="Upload"
+                                                place="bottom"
+                                                type="warning"
+                                                effect="float"
+                                              >
+                                                <span>Upload</span>
+                                              </ReactTooltip>
+                                            </button>
+                                          )}
+
+                                          {!selectedItems?.length && (
+                                            <div className="flex items-center justify-center">
+                                              {permissions.isDelete && (
+                                                <button
+                                                  data-tip
+                                                  data-for="All Delete"
+                                                  className="border rounded-full bg-red text-white hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                                >
+                                                  <RiDeleteBin5Line
+                                                    className="text-3xl p-1 hover:text-white"
+                                                    onClick={() =>
+                                                      handleDeleteGroup(item)
+                                                    }
+                                                  />
+                                                  <ReactTooltip
+                                                    id="All Delete"
+                                                    place="bottom"
+                                                    type="warning"
+                                                    effect="float"
+                                                  >
+                                                    <span>Delete</span>
+                                                  </ReactTooltip>
+                                                </button>
+                                              )}
+                                            </div>
+                                          )}
+                                          {permissions.isDelete && (
+                                            <div>
+                                              {selectAll ? (
+                                                <input
+                                                  type="checkbox"
+                                                  data-tip
+                                                  data-for="Select"
+                                                  className=" mx-1 w-6 h-5 mt-2"
+                                                  checked={selectedItems.includes(
+                                                    item?.screenGroupID
+                                                  )}
+                                                  onChange={() =>
+                                                    handleCheckboxChange(
+                                                      item?.screenGroupID
+                                                    )
                                                   }
                                                 />
-                                                <ReactTooltip
-                                                  id="All Delete"
-                                                  place="bottom"
-                                                  type="warning"
-                                                  effect="float"
-                                                >
-                                                  <span>Delete</span>
-                                                </ReactTooltip>
-                                              </button>
-                                            )}
-                                          </div>
-                                        )}
-                                      </>
-                                    )}
-                                    {permissions.isDelete && (
-                                      <div>
-                                        {selectAll ? (
-                                          <input
-                                            type="checkbox"
-                                            data-tip
-                                            data-for="Select"
-                                            className=" mx-1 w-6 h-5 mt-2"
-                                            checked={selectedItems.includes(
-                                              item?.screenGroupID
-                                            )}
-                                            onChange={() =>
-                                              handleCheckboxChange(
-                                                item?.screenGroupID
-                                              )
-                                            }
-                                          />
-                                        ) : (
-                                          <div>
-                                            <input
-                                              type="checkbox"
-                                              data-tip
-                                              data-for="Select"
-                                              className=" mx-1 w-6 h-5 mt-2"
-                                              checked={selectedItems.includes(
-                                                item?.screenGroupID
+                                              ) : (
+                                                <div>
+                                                  <input
+                                                    type="checkbox"
+                                                    data-tip
+                                                    data-for="Select"
+                                                    className=" mx-1 w-6 h-5 mt-2"
+                                                    checked={selectedItems.includes(
+                                                      item?.screenGroupID
+                                                    )}
+                                                    onChange={() =>
+                                                      handleCheckboxChange(
+                                                        item?.screenGroupID
+                                                      )
+                                                    }
+                                                  />
+                                                  <ReactTooltip
+                                                    id="Select"
+                                                    place="bottom"
+                                                    type="warning"
+                                                    effect="float"
+                                                  >
+                                                    <span>Select</span>
+                                                  </ReactTooltip>
+                                                </div>
                                               )}
-                                              onChange={() =>
-                                                handleCheckboxChange(
-                                                  item?.screenGroupID
-                                                )
+                                            </div>
+                                          )}
+                                          <button>
+                                            <div
+                                              onClick={() =>
+                                                handleAccordionClick(i)
                                               }
-                                            />
-                                            <ReactTooltip
-                                              id="Select"
-                                              place="bottom"
-                                              type="warning"
-                                              effect="float"
                                             >
-                                              <span>Select</span>
-                                            </ReactTooltip>
-                                          </div>
-                                        )}
+                                              <IoIosArrowDropup className="text-3xl" />
+                                            </div>
+                                          </button>
+                                        </div>
                                       </div>
                                     )}
 
                                     <button>
-                                      {isAccordionOpen ? (
-                                        <div
-                                          onClick={() =>
-                                            handleAccordionClick(i)
-                                          }
-                                        >
-                                          <IoIosArrowDropup className="text-3xl" />
-                                        </div>
-                                      ) : (
+                                      {!isAccordionOpen && (
                                         <div
                                           onClick={() =>
                                             handleAccordionClick(i)
@@ -1069,13 +1077,15 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                                   </span>
                                                 </td>
                                                 <td className="p-2 text-center">
-                                                  {moment(
-                                                    screen?.updatedDate
-                                                  ).format("LLL")}
+                                                  {screen?.lastSeen
+                                                    ? moment(
+                                                        screen?.lastSeen
+                                                      ).format("LLL")
+                                                    : null}
                                                 </td>
                                                 <td className="p-2 text-center">
                                                   <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
-                                                    <p className="line-clamp-2">
+                                                    <p className="line-clamp-1">
                                                       {screen.assetName}
                                                     </p>
                                                     <AiOutlineCloudUpload className="ml-2 text-3xl" />
@@ -1241,7 +1251,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                   d="M13 5H1m0 0 4 4M1 5l4-4"
                                 />
                               </svg>
-                              {sidebarOpen ? "Previous" : ""} 
+                              {sidebarOpen ? "Previous" : ""}
                             </button>
                             <div className="flex items-center me-3">
                               <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
@@ -1252,7 +1262,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               disabled={currentPage === totalPages}
                               className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                             >
-                               {sidebarOpen ? "Next" : ""}
+                              {sidebarOpen ? "Next" : ""}
                               <svg
                                 className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                                 aria-hidden="true"
