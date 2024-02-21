@@ -242,8 +242,8 @@ const Dashboard = () => {
       {allApp?.AppLists?.length > 0 && (
         <div className="my-6">
           <div className="grid grid-cols-12 gap-4">
-            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md p-4">
-              <h5 className="text-xl font-semibold text-black">
+            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white dark:bg-black p-7.5 shadow-2xl rounded-md p-4">
+              <h5 className="text-xl font-semibold text-black dark:text-white">
                 Total Stores
               </h5>
 
@@ -281,8 +281,8 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md p-4 ">
-              <h5 className="text-xl font-semibold text-black">
+            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white dark:bg-black p-7.5 shadow-2xl rounded-md p-4 ">
+              <h5 className="text-xl font-semibold text-black dark:text-white">
                 Total Screens
               </h5>
               <div className="flex items-center justify-center flex-wrap">
