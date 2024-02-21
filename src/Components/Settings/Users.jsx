@@ -803,7 +803,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                     <div className="relative">
                       <label className="formLabel">Country</label>
                       <select
-                        className="formInput user-Input"
+                        className="formInput user-Input bg-white"
                         value={countryID}
                         onChange={(e) => setCountryID(e.target.value)}
                       >
@@ -825,7 +825,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                     <div className="relative">
                       <label className="formLabel">State</label>
                       <select
-                        className="formInput user-Input"
+                        className="formInput user-Input bg-white"
                         onChange={(e) => setSelectedState(e.target.value)}
                         value={selectedState}
                       >
@@ -846,7 +846,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                     <div className="relative">
                       <label className="formLabel">Roles</label>
                       <select
-                        className="formInput user-Input"
+                        className="formInput user-Input bg-white"
                         value={selectRoleID}
                         onChange={(e) => setSelectRoleID(e.target.value)}
                       >

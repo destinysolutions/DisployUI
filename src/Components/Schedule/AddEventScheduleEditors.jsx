@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { SketchPicker } from "react-color";
 import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
-import ReactModal from "react-modal";
 import { ADD_EVENT } from "../../Pages/Api";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import { useSelector } from "react-redux";

@@ -399,7 +399,7 @@ const Defaultmedia = ({ permissions }) => {
                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none myplaylist-popup">
                   <div
                     // ref={modalRef}
-                    className={`relative w-[70vw] h-auto lg:p-6 md:p-6 sm:p-2 xs:p-1 gap-2 bg-white rounded-2xl`}
+                    className={`border-0 rounded-lg shadow-lg fixed fixed-popup z-9999 lg:max-w-[70vw] lg:min-w-[70vw] md:max-w-[70vw] md:min-w-[70vw] sm:max-w-[70vw] sm:min-w-[70vw] max-w-[85vw] min-w-[85vw] lg:m-auto md:m-auto sm:m-auto m-5 bg-white outline-none focus:outline-none `}
                   >
                     <div className="flex items-center justify-between lg:py-4 lg:p-5 py-2 px-3 border-b  border-slate-200 rounded-t text-black">
                       <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
@@ -420,10 +420,12 @@ const Defaultmedia = ({ permissions }) => {
                       onClick={() =>
                         assetPreviewPopup && setAssetPreviewPopup(false)
                       }
-                      className="lg:flex lg:mt-8 mt-3 lg:flex-wrap lg:items-center w-full md:flex md:flex-wrap md:items-center sm:block xs:block"
+                      className="lg:flex lg:mt-8 mt-3 p-2 lg:flex-wrap lg:items-center w-full md:flex md:flex-wrap md:items-center sm:block xs:block"
                     >
                       {/* left side tabs */}
-                      <div className="flex-initial">
+
+                      <div className="lg:flex lg:flex-wrap lg:items-center w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
+                      <div className="flex-initial mb-5">
                         <nav
                           className="flex flex-col space-y-2 "
                           aria-label="Tabs"
@@ -448,70 +450,9 @@ const Defaultmedia = ({ permissions }) => {
                             </span>
                             Assets
                           </button>
-                          {/* <button
-                                type="button"
-                                className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                  popupActiveTab === 2 ? "active" : ""
-                                }`}
-                                onClick={() => setPopupActiveTab(2)}
-                              >
-                                <span
-                                  className={`p-1 rounded ${
-                                    popupActiveTab === 2
-                                      ? "bg-primary text-white"
-                                      : "bg-lightgray"
-                                  } `}
-                                >
-                                  <RiPlayListFill size={15} />
-                                </span>
-                                Compositions
-                              </button> */}
-                          {/* <button
-                        type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                          popupActiveTab === 3
-                            ? "active"
-                            : ""
-                        }`}
-                        // onClick={() => handleTabClick(3)}
-                      >
-                        <span
-                          className={`p-1 rounded ${
-                            popupActiveTab === 3
-                              ? "bg-primary text-white"
-                              : "bg-lightgray"
-                          } `}
-                        >
-                          <BiAnchor size={15} />
-                        </span>
-                        Disploy Studio
-                      </button>
-                      <button
-                        type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                          popupActiveTab === 4
-                            ? "active"
-                            : ""
-                        }`}
-                        // onClick={() => handleTabClick(4)}
-                      >
-                        <span
-                          className={`p-1 rounded ${
-                            popupActiveTab === 4
-                              ? "bg-primary text-white"
-                              : "bg-lightgray"
-                          } `}
-                        >
-                          <AiOutlineAppstoreAdd
-                            size={15}
-                          />
-                        </span>
-                        Apps
-                      </button> */}
                         </nav>
                       </div>
-
-                      <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
+                      <div className="lg:p-4 drop-shadow-2xl bg-white rounded-3xl flex-1">
                         <div className={popupActiveTab !== 1 && "hidden"}>
                           <div className="flex flex-wrap w-full items-start lg:justify-between lg:mb-0 mb-3 md:justify-center sm:justify-center xs:justify-center">
                             <div className="mb-3 relative ">
@@ -538,7 +479,7 @@ const Defaultmedia = ({ permissions }) => {
                               Add New Assets
                             </button>
                           </div>
-                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[200px] max-h-[200px] object-cover w-full addmedia-table sc-scrollbar rounded-lg">
+                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[250px] max-h-[250px] object-cover w-full addmedia-table sc-scrollbar rounded-lg">
                             <table
                               style={{
                                 borderCollapse: "collapse",
@@ -705,6 +646,7 @@ const Defaultmedia = ({ permissions }) => {
                             </table>
                           </div>
                         </div>
+                      </div>
                       </div>
                       <div className="lg:flex justify-between items-center p-3 w-full">
                         <p className="text-black text-left">

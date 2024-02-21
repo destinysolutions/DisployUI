@@ -336,7 +336,7 @@ const Account = () => {
                 <label className="label_top text-xs">Country</label>
                 <div>
                   <select
-                    className="w-full  text-black border  rounded-lg py-3 px-4"
+                    className="w-full text-black border rounded-lg py-3 px-4 bg-white"
                     {...register("countryID", {
                       onChange: (e) => {
                         setSelectedCountry(e.target.value);
@@ -362,7 +362,7 @@ const Account = () => {
                 <label className="label_top text-xs">State</label>
                 <div>
                   <select
-                    className="w-full  text-black border  rounded-lg py-3 px-4"
+                    className="w-full text-black border rounded-lg py-3 px-4 bg-white"
                     name="state"
                     {...register("stateId")}
                   >
@@ -387,7 +387,7 @@ const Account = () => {
                 <label className="label_top text-xs">Language</label>
                 <div>
                   <select
-                    className="w-full  text-black border  rounded-lg py-3 px-4"
+                    className="w-full text-black border rounded-lg py-3 px-4 bg-white"
                     {...register("languageId")}
                   >
                     <option label="Select language"></option>
@@ -411,7 +411,7 @@ const Account = () => {
                 <label className="label_top text-xs">Timezone</label>
                 <div>
                   <select
-                    className="w-full  text-black border  rounded-lg py-3 px-4"
+                    className="w-full text-black border rounded-lg py-3 px-4 bg-white"
                     {...register("timeZoneId")}
                   >
                     <option label="Select timezone"></option>
@@ -434,7 +434,7 @@ const Account = () => {
                 <label className="label_top text-xs">Currency</label>
                 <div>
                   <select
-                    className="w-full  text-black border  rounded-lg py-3 px-4"
+                    className="w-full text-black border rounded-lg py-3 px-4 bg-white"
                     {...register("currencyId")}
                   >
                     <option label="Select currency"></option>

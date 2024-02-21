@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { SketchPicker } from "react-color";
 import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
-import ReactModal from "react-modal";
+// import ReactModal from "react-modal";
 import { ADD_EVENT } from "../../Pages/Api";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import { useSelector } from "react-redux";
@@ -561,7 +561,7 @@ const EventEditor = ({
 
   return (
     <>
-      <ReactModal
+      {/* <ReactModal
         isOpen={isOpen}
         onRequestClose={onClose}
         contentLabel="Event Create Popup"
@@ -572,7 +572,7 @@ const EventEditor = ({
           },
         }}
         appElement={document.getElementById("root")}
-      >
+      > */}
         <div className="relative">
           <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737] border-b border-lightgray pb-2  ">
             Select Assets and Schedule Time
@@ -1277,7 +1277,7 @@ const EventEditor = ({
             </div>
           </div>
         </div>
-      </ReactModal>
+      {/* </ReactModal> */}
     </>
   );
 };
