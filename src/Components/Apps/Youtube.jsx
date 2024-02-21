@@ -787,7 +787,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                       <AiOutlineCloseCircle />
                                     </button>
                                   </div>
-                                  <div className="p-2 sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72">
+                                  <div className="p-2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72">
                                     <ReactPlayer
                                       url={YoutubeVideo}
                                       className="youtube-preview"

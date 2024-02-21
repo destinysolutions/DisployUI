@@ -707,7 +707,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                       <AiOutlineCloseCircle />
                                     </button>
                                   </div>
-                                  <div className="bg-black sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full flex items-center">
+                                  <div className="bg-black md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 flex items-center">
                                   <marquee
                                     direction={
                                       scrollType == 1 ? "right" : "left"

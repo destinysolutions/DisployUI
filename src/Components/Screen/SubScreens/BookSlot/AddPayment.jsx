@@ -2,7 +2,7 @@ import React from "react";
 import { FaRegClock, FaRegQuestionCircle } from "react-icons/fa";
 import { FiMapPin } from "react-icons/fi";
 import { IoEarthSharp } from "react-icons/io5";
-import { secondsToHMS } from "../../../Common/Common";
+import { getTimeZoneName, secondsToHMS } from "../../../Common/Common";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { useForm } from "react-hook-form";
 
@@ -13,7 +13,10 @@ const AddPayment = ({
   totalCost,
   handlebook,
   handleBack,
+  selectedTimeZone,
+  allTimeZone
 }) => {
+
   const {
     register,
     handleSubmit,
@@ -36,12 +39,7 @@ const AddPayment = ({
           <div className="flex items-center gap-2 border-b border-black">
             <IoEarthSharp className="mb-2" />
             <div className="mb-2">
-              {new Date()
-                .toLocaleDateString(undefined, {
-                  day: "2-digit",
-                  timeZoneName: "long",
-                })
-                .substring(4)}
+              {(allTimeZone.find(item => item.timeZoneID === selectedTimeZone))?.timeZoneName}
             </div>
           </div>
           <div className="flex gap-2 items-center">
@@ -75,7 +73,7 @@ const AddPayment = ({
             </div>
           </div>
           <div className="flex justify-center items-center w-full">
-            <div className="lg:mx-12 md:mx-8 sm:mx-4 mx-2 text-xl font-semibold">
+            <div className="lg:mx-8 md:mx-8 sm:mx-4 mx-2 text-base font-semibold">
               You will be automatically charged every month in advance based on
               your scheduled time slot.
             </div>
@@ -122,7 +120,7 @@ const AddPayment = ({
               )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col col-span-2 gap-2">
                 <div>Expiration</div>
                 <div className="relative w-full">
                   <input
@@ -144,7 +142,7 @@ const AddPayment = ({
                   )}
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col col-span-2 gap-2">
                 <div className="flex items-center gap-2">
                   CVV <FaRegQuestionCircle />
                 </div>

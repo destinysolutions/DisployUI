@@ -480,8 +480,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
 
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72">
-                <div className="videoplayer relative bg-white lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72">
+              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72">
+                <div className="videoplayer relative bg-white md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72">
                   {urlParth.assetType === 'OnlineImage' &&(
                     <div className="flex items-center justify-center h-full">
                       <img src={urlParth.assetFolderPath} className="m-auto" />

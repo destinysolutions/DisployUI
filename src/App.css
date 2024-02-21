@@ -1061,7 +1061,7 @@ button.daysbtn {
   top: 50%;
   left: 0;
   right: 0;
-  margin: auto;
+  /* margin: auto; */
   transform: translateY(-50%);
 }
 

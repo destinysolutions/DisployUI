@@ -229,3 +229,32 @@ export function secondsToHMS(seconds) {
   const remainingSeconds = seconds % 60;
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
+
+
+
+
+export  const greenOptions = {
+  color: "blue",
+  fillColor: "blue",
+};
+
+export function removeDuplicates(arr) {
+  // Create a map to store unique combinations of 'let', 'lon', and 'dis'
+  let uniqueMap = new Map();
+
+  // Filter out duplicates
+  let uniqueArr = arr.filter(obj => {
+      const key = obj.let + obj.lon + obj.dis;
+      const isNew = !uniqueMap.has(key);
+      if (isNew) {
+          uniqueMap.set(key, obj);
+      }
+      return isNew;
+  });
+
+  return uniqueArr;
+}
+
+export function kilometersToMeters(kilometers) {
+  return kilometers * 1000; // 1 kilometer = 1000 meters
+}

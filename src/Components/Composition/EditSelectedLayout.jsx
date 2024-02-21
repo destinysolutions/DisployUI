@@ -690,8 +690,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
               ref={modalRef}
               className={`fixed border w-full left-1/2 -translate-x-1/2 ${
                 screenType === "portrait"
-                  ? "sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full"
-                  : "sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-full h-full"
+                  ? "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
+                  : "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
               }  `}
             >
               <RxCrossCircled

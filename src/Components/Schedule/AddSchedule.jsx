@@ -687,6 +687,22 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  const isTouchDevice = () => {
+    return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+  };
+
+  const handleSelectSlotWithTouch = (slotInfo) => {
+    if (isTouchDevice()) {
+      // Handle touch event for selecting slot
+      // console.log('Selected slot:', slotInfo);
+      handleSelectSlot(slotInfo);
+
+    } else {
+      // Handle mouse event for selecting slot
+      handleSelectSlot(slotInfo);
+    }
+  };
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -753,7 +769,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 step={30}
                 showMultiDayTimes
                 onSelectEvent={handleSelectEvent}
-                onSelectSlot={handleSelectSlot}
+                onSelectSlot={handleSelectSlotWithTouch}
                 eventPropGetter={eventStyleGetter}
                 length={31}
               />

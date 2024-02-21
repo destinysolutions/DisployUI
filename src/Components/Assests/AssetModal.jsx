@@ -255,7 +255,7 @@ const AssetModal = ({ setShowAssetModal }) => {
                                       <>
                                         {assetPreview.assetType ===
                                           "OnlineImage" && (
-                                          <div className="imagebox p-3">
+                                          <div className="imagebox">
                                             <img
                                               src={assetPreview.assetFolderPath}
                                               alt={assetPreview.assetName}

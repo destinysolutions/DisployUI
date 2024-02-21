@@ -9,7 +9,10 @@ import {
   buttons,
   getCurrentTime,
   getTodayDate,
+  greenOptions,
+  kilometersToMeters,
   multiOptions,
+  removeDuplicates,
   secondsToHMS,
   timeDifferenceInSeconds,
 } from "../../../Common/Common";
@@ -19,10 +22,18 @@ import {
   ADDALLEVENT,
   ADDUPDATESLOT,
   ALL_CITY,
+  GET_TIMEZONE,
   SCREEN_LIST,
 } from "../../../../Pages/Api";
 import { FiMapPin } from "react-icons/fi";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import {
+  Circle,
+  LayerGroup,
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+} from "react-leaflet";
 import Select from "react-select";
 import axios from "axios";
 import { IoEarthSharp } from "react-icons/io5";
@@ -55,11 +66,13 @@ const AddSlot = () => {
   const [sidebarload, setSidebarLoad] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [day, setDay] = useState([]);
-
+  const [selectedTimeZone, setSelectedTimeZone] = useState();
   const [repeat, setRepeat] = useState(false);
   const [page, setPage] = useState(1);
   const hiddenFileInput = useRef(null);
   const [screenData, setScreenData] = useState([]);
+  const [screenArea, setScreenArea] = useState([]);
+  console.log("screenArea", screenArea);
   const [allCity, setAllCity] = useState([]);
   const [city, setCity] = useState([]);
   const [Open, setOpen] = useState(false);
@@ -91,6 +104,8 @@ const AddSlot = () => {
   const [endDate, setEndDate] = useState(getTodayDate());
   const [selectAllDays, setSelectAllDays] = useState(false);
   const [repeatDays, setRepeatDays] = useState([]);
+  const [allTimeZone, setAllTimeZone] = useState([]);
+
   const [allArea, setAllArea] = useState([]);
   const [selectedValue, setSelectedValue] = useState(1); // State to store the selected value
   const start = new Date(startDate);
@@ -145,6 +160,18 @@ const AddSlot = () => {
         if (response.data.data?.length > 0) {
           let arr = [...screenData];
           let combinedArray = arr.concat(response?.data?.data);
+          console.log("combinedArray", combinedArray);
+          let arr1 = [];
+          combinedArray?.map((item) => {
+            let obj = {
+              let: item?.latitude,
+              lon: item?.longitude,
+              dis: Params?.Distance,
+            };
+            arr1?.push(obj);
+          });
+          let uniqueArr = removeDuplicates(arr1);
+          setScreenArea(uniqueArr);
           setScreenData(combinedArray);
         }
       })
@@ -451,7 +478,7 @@ const AddSlot = () => {
       repeatDays: day.join(", "),
       screenIDs: Screenoptions.map((item) => item.output).join(", "),
       totalCost: totalCost,
-      timezoneID: 0,
+      timezoneID: selectedTimeZone,
     });
 
     const config = {
@@ -473,6 +500,45 @@ const AddSlot = () => {
       });
   };
 
+  const TimeZone = () => {
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${GET_TIMEZONE}`,
+      headers: {},
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        const CurrentTimeZone = new Date()
+          .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+          })
+          .substring(4);
+        response?.data?.data?.map((item) => {
+          if (item?.timeZoneName === CurrentTimeZone) {
+            setSelectedTimeZone(item?.timeZoneID);
+          }
+        });
+        setAllTimeZone(response?.data?.data);
+        console.log("response", response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    if (page === 3) {
+      TimeZone();
+    }
+  }, [page]);
+
+  const handleSelectTimeZoneChange = (event) => {
+    setSelectedTimeZone(event?.target.value);
+  };
+
   return (
     <>
       {sidebarload && <Loading />}
@@ -485,9 +551,9 @@ const AddSlot = () => {
             <div className="w-full h-full p-5 flex items-center justify-center">
               <div className="lg:w-[900px] md:w-[700px] w-full  h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg">
                 <div className="text-2xl font-semibold">Book Slot</div>
-                <div className="rounded-lg shadow-md bg-white p-5">
+                <div className="rounded-lg shadow-md bg-white p-5 h-[95%]">
                   <form
-                    className="flex flex-col gap-2"
+                    className="flex flex-col gap-2 h-full"
                     onSubmit={handleSubmit(onSubmit)}
                   >
                     <label
@@ -557,14 +623,15 @@ const AddSlot = () => {
                     {errors.phone && (
                       <span className="error">{errors.phone.message}</span>
                     )}
-
-                    <div className="flex justify-end pt-4">
-                      <button
-                        className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        type="submit"
-                      >
-                        Next
-                      </button>
+                    <div className="w-full h-full">
+                      <div className="flex justify-end pt-4 h-full items-end">
+                        <button
+                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          type="submit"
+                        >
+                          Next
+                        </button>
+                      </div>
                     </div>
                   </form>
                 </div>
@@ -575,9 +642,9 @@ const AddSlot = () => {
         {page === 2 && (
           <div className="w-full h-full p-5 flex items-center justify-center">
             <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-4 gap-4 w-full h-full">
                 <div className="col-span-4">
-                  <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4">
+                  <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4 h-full">
                     {!repeat && (
                       <div className="grid grid-cols-4 gap-4">
                         <div className="relative w-full col-span-2">
@@ -630,106 +697,108 @@ const AddSlot = () => {
                         </div>
                       </div>
                     )}
-                    <div className="overflow-auto max-h-60">
-                      {getallTime?.map((item, index) => {
-                        return (
-                          <div
-                            className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-2 gap-4 mb-3"
-                            key={index}
-                          >
-                            <div className="relative w-full col-span-1">
-                              <input
-                                value={item?.startTime}
-                                type="time"
-                                className="formInput"
-                                onChange={(e) =>
-                                  handleStartTimeChange(index, e.target.value)
-                                }
-                              />
+                    <div>
+                      <div className="overflow-auto max-h-80">
+                        {getallTime?.map((item, index) => {
+                          return (
+                            <div
+                              className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-2 gap-4 mb-3"
+                              key={index}
+                            >
+                              <div className="relative w-full col-span-1">
+                                <input
+                                  value={item?.startTime}
+                                  type="time"
+                                  className="formInput"
+                                  onChange={(e) =>
+                                    handleStartTimeChange(index, e.target.value)
+                                  }
+                                />
+                              </div>
+                              <div className="relative w-full col-span-1">
+                                <select
+                                  value={item?.startTimeSecond}
+                                  className="formInput"
+                                  onChange={(e) =>
+                                    handleStartTimeSecondChange(
+                                      index,
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  <option label="Select Second" value="" />
+                                  {options.map((number) => (
+                                    <option key={number} value={number}>
+                                      {number}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div className="relative w-full col-span-1">
+                                <input
+                                  type="time"
+                                  value={item?.endTime}
+                                  className="formInput"
+                                  onChange={(e) =>
+                                    handleEndTimeChange(index, e.target.value)
+                                  }
+                                />
+                              </div>
+                              <div className="relative w-full col-span-1">
+                                <select
+                                  value={item?.endTimeSecond}
+                                  className="formInput"
+                                  onChange={(e) =>
+                                    handleEndTimeSecondChange(
+                                      index,
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  <option label="Select Second" value="" />
+                                  {options.map((number) => (
+                                    <option key={number} value={number}>
+                                      {number}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                              <div className="relative w-full col-span-1 flex gap-4 items-center">
+                                <button onClick={handleClick}>
+                                  <MdCloudUpload size={30} />
+                                </button>
+                                <input
+                                  type="file"
+                                  id="upload-button"
+                                  accept="image/*, video/*"
+                                  style={{ display: "none" }}
+                                  ref={hiddenFileInput}
+                                  onChange={(e) => handleFileChange(index, e)}
+                                />
+                                <FaPlusCircle
+                                  className="cursor-pointer"
+                                  size={30}
+                                  onClick={() => {
+                                    setGetAllTime([
+                                      ...getallTime,
+                                      {
+                                        startTime: getCurrentTime(),
+                                        startTimeSecond: 10,
+                                        endTimeSecond: 15,
+                                        file: "",
+                                        endTime: getCurrentTime(),
+                                      },
+                                    ]);
+                                  }}
+                                />
+                              </div>
                             </div>
-                            <div className="relative w-full col-span-1">
-                              <select
-                                value={item?.startTimeSecond}
-                                className="formInput"
-                                onChange={(e) =>
-                                  handleStartTimeSecondChange(
-                                    index,
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                <option label="Select Second" value="" />
-                                {options.map((number) => (
-                                  <option key={number} value={number}>
-                                    {number}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                            <div className="relative w-full col-span-1">
-                              <input
-                                type="time"
-                                value={item?.endTime}
-                                className="formInput"
-                                onChange={(e) =>
-                                  handleEndTimeChange(index, e.target.value)
-                                }
-                              />
-                            </div>
-                            <div className="relative w-full col-span-1">
-                              <select
-                                value={item?.endTimeSecond}
-                                className="formInput"
-                                onChange={(e) =>
-                                  handleEndTimeSecondChange(
-                                    index,
-                                    e.target.value
-                                  )
-                                }
-                              >
-                                <option label="Select Second" value="" />
-                                {options.map((number) => (
-                                  <option key={number} value={number}>
-                                    {number}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                            <div className="relative w-full col-span-1 flex gap-4 items-center">
-                              <button onClick={handleClick}>
-                                <MdCloudUpload size={30} />
-                              </button>
-                              <input
-                                type="file"
-                                id="upload-button"
-                                accept="image/*, video/*"
-                                style={{ display: "none" }}
-                                ref={hiddenFileInput}
-                                onChange={(e) => handleFileChange(index, e)}
-                              />
-                              <FaPlusCircle
-                                className="cursor-pointer"
-                                size={30}
-                                onClick={() => {
-                                  setGetAllTime([
-                                    ...getallTime,
-                                    {
-                                      startTime: getCurrentTime(),
-                                      startTimeSecond: 10,
-                                      endTimeSecond: 15,
-                                      file: "",
-                                      endTime: getCurrentTime(),
-                                    },
-                                  ]);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
 
                       {!repeat && (
-                        <div className="flex gap-3 items-center">
+                        <div className="flex gap-3 items-center mt-2">
                           <input
                             type="checkbox"
                             onChange={() => setRepeat(true)}
@@ -738,7 +807,7 @@ const AddSlot = () => {
                         </div>
                       )}
                       {repeat && (
-                        <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-3 mt-2">
                           <div className=" text-black font-medium text-lg">
                             <label>
                               Repeating {countAllDaysInRange()} Day(s)
@@ -777,7 +846,9 @@ const AddSlot = () => {
                           </div>
                         </div>
                       )}
-                      <div className="flex justify-end">
+                    </div>
+                    <div className="w-full h-full">
+                      <div className="flex justify-end h-full items-end">
                         <button
                           className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           onClick={() => handleBookSlot()}
@@ -809,18 +880,29 @@ const AddSlot = () => {
                   </div>
                   <div className="text-2xl font-semibold">Find Your Screen</div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 max-h-[350px] overflow-auto">
+                <div className="grid grid-cols-3 gap-4 h-[93%] overflow-auto">
                   <div className="col-span-2 rounded-lg shadow-md bg-white p-5">
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 h-full">
                       <div>TimeZone</div>
                       <div className="flex items-center gap-2">
-                        <IoEarthSharp />
-                        {new Date()
-                          .toLocaleDateString(undefined, {
-                            day: "2-digit",
-                            timeZoneName: "long",
-                          })
-                          .substring(4)}
+                        {/* <IoEarthSharp /> */}
+                        <select
+                          className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
+                          id="selectOption"
+                          value={selectedTimeZone}
+                          onChange={handleSelectTimeZoneChange}
+                        >
+                          {allTimeZone?.map((timezone) => {
+                            return (
+                              <option
+                                value={timezone.timeZoneID}
+                                key={timezone.timeZoneID}
+                              >
+                                {timezone.timeZoneName}
+                              </option>
+                            );
+                          })}
+                        </select>
                       </div>
                       {allArea?.map((item, index) => {
                         return (
@@ -921,41 +1003,59 @@ const AddSlot = () => {
                           />
                         </div>
                       </div>
-                      <div className="mt-5">
-                        <div className="lg:p-6 md:p-3 sm:p-3 xs:p-2">
+                      <div className="mt-5 h-full">
+                        <div className="h-full">
                           <MapContainer
                             center={center}
                             zoom={4}
                             maxZoom={18}
                             style={{
                               width: "100%",
-                              height: "260px",
+                              height: "100%",
                               zIndex: 0,
                             }}
                           >
                             <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
+                            <LayerGroup>
+                              {screenArea?.map((item) => {
+                                return (
+                                  <Circle
+                                    center={[item?.let, item?.lon]}
+                                    pathOptions={greenOptions}
+                                    radius={kilometersToMeters(item?.dis)}
+                                  />
+                                );
+                              })}
+                            </LayerGroup>
                             <MarkerClusterGroup>
-                              {screenData.map((screen, index) => (
-                                <Marker
-                                  key={index}
-                                  position={[screen.latitude, screen.longitude]}
-                                  icon={customIcon}
-                                  eventHandlers={{
-                                    click: () =>
-                                      handleScreenClick &&
-                                      handleScreenClick(screen),
-                                  }}
-                                >
-                                  <Popup>
-                                    <h3 className="flex flex-row gap-1">
-                                      <span>Location :</span>
-                                      <span>
-                                        {selectedScreen?.googleLocation}
-                                      </span>
-                                    </h3>
-                                  </Popup>
-                                </Marker>
-                              ))}
+                              {screenData.map((screen, index) => {
+                                return (
+                                  <>
+                                    <Marker
+                                      key={index}
+                                      position={[
+                                        screen.latitude,
+                                        screen.longitude,
+                                      ]}
+                                      icon={customIcon}
+                                      eventHandlers={{
+                                        click: () =>
+                                          handleScreenClick &&
+                                          handleScreenClick(screen),
+                                      }}
+                                    >
+                                      <Popup>
+                                        <h3 className="flex flex-row gap-1">
+                                          <span>Location :</span>
+                                          <span>
+                                            {selectedScreen?.googleLocation}
+                                          </span>
+                                        </h3>
+                                      </Popup>
+                                    </Marker>
+                                  </>
+                                );
+                              })}
                             </MarkerClusterGroup>
                           </MapContainer>
                         </div>
@@ -1027,6 +1127,8 @@ const AddSlot = () => {
                 totalCost={totalCost}
                 handlebook={handlebook}
                 handleBack={handleBack}
+                selectedTimeZone={selectedTimeZone}
+                allTimeZone={allTimeZone}
               />
             </div>
           </div>

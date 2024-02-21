@@ -884,7 +884,7 @@ const EventEditor = ({
                       </tbody>
                     </table>
                     {assetPreviewPopup && (
-                      <div className="fixed left-1/2 lg:top-1/4 top-1/4 -translate-x-1/2 sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-9990 inset-0">
+                      <div className="fixed left-1/2 lg:top-1/4 top-1/4 -translate-x-1/2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-9990 inset-0">
                         {/* btn */}
                         <div className="fixed z-40">
                           <button
@@ -898,11 +898,11 @@ const EventEditor = ({
                           {assetPreview && (
                             <>
                               {assetPreview.assetType === "OnlineImage" && (
-                                <div className="imagebox p-3">
+                                <div className="imagebox">
                                   <img
                                     src={assetPreview.assetFolderPath}
                                     alt={assetPreview.assetName}
-                                    className="imagebox sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-9990 fixed"
+                                    className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-9990 fixed"
                                   />
                                 </div>
                               )}
@@ -911,7 +911,7 @@ const EventEditor = ({
                                 <div className="relative videobox">
                                   <video
                                     controls
-                                    className="rounded-2xl sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72"
+                                    className="rounded-2xl md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
                                   >
                                     <source
                                       src={assetPreview.assetFolderPath}
@@ -925,13 +925,13 @@ const EventEditor = ({
                                 <img
                                   src={assetPreview.assetFolderPath}
                                   alt={assetPreview.assetName}
-                                  className="imagebox sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
+                                  className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
                                 />
                               )}
                               {assetPreview.assetType === "Video" && (
                                 <video
                                   controls
-                                  className="imagebox sm:w-[560px] sm:h-[340px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
+                                  className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
                                 >
                                   <source
                                     src={assetPreview.assetFolderPath}

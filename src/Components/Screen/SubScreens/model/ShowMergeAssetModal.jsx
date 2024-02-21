@@ -262,7 +262,7 @@ const ShowAssetModal = ({
                   </table>
 
                   {assetPreviewPopup && (
-                    <div className="fixed left-1/2 lg:top-[12%] md:top-1/3 sm:top-1/3 top-1/3 -translate-x-1/2 lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 bg-black z-50 inset-0">
+                    <div className="fixed left-1/2 lg:top-[12%] md:top-1/3 sm:top-1/3 top-1/3 -translate-x-1/2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-50 inset-0">
                       {/* btn */}
                       <div className="p-1 rounded-full text-white bg-primary absolute -top-3 -right-3">
                         <button
@@ -276,11 +276,11 @@ const ShowAssetModal = ({
                         {assetPreview && (
                           <>
                             {assetPreview.assetType === "OnlineImage" && (
-                              <div className="imagebox p-3">
+                              <div className="imagebox">
                                 <img
                                   src={assetPreview.assetFolderPath}
                                   alt={assetPreview.assetName}
-                                  className="imagebox w-full h-full object-contain z-50 fixed"
+                                  className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-contain z-50 fixed"
                                 />
                               </div>
                             )}
@@ -289,7 +289,7 @@ const ShowAssetModal = ({
                               <div className="relative videobox">
                                 <video
                                   controls
-                                  className="rounded-2xl lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-full h-full"
+                                  className="rounded-2xl md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
                                 >
                                   <source
                                     src={assetPreview.assetFolderPath}
@@ -303,13 +303,13 @@ const ShowAssetModal = ({
                               <img
                                 src={assetPreview.assetFolderPath}
                                 alt={assetPreview.assetName}
-                                className="imagebox w-full h-full object-contain z-50 fixed"
+                                className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-contain z-50 fixed"
                               />
                             )}
                             {assetPreview.assetType === "Video" && (
                               <video
                                 controls
-                                className="imagebox w-full h-full object-contain  z-50 fixed"
+                                className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-contain  z-50 fixed"
                               >
                                 <source
                                   src={assetPreview.assetFolderPath}
@@ -323,7 +323,7 @@ const ShowAssetModal = ({
                                 href={assetPreview.assetFolderPath}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="imagebox w-full h-full object-contain z-50 fixed"
+                                className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-contain z-50 fixed"
                               >
                                 {assetPreview.assetName}
                               </a>

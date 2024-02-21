@@ -249,11 +249,11 @@ const ShowAssetModal = ({
 
   return (
     <>
-      <div className="border-0 rounded-lg shadow-lg fixed fixed-popup z-50 max-w-[70vw] min-w-[70vw] bg-white outline-none focus:outline-none ">
+      <div className="border-0 rounded-lg shadow-lg fixed fixed-popup z-50 lg:max-w-[70vw] lg:min-w-[70vw] md:max-w-[70vw] md:min-w-[70vw] sm:max-w-[70vw] sm:min-w-[70vw] max-w-[85vw] min-w-[85vw] lg:m-auto md:m-auto sm:m-auto m-5 bg-white outline-none focus:outline-none ">
         <div
           className={`${
             showAppModal ? "hidden" : ""
-          } flex items-start justify-between pt-3 px-6 border-b border-slate-200 rounded-t text-black`}
+          } flex items-center justify-between p-5 xs:p-3 sm:p-4 border-b border-slate-200 rounded-t text-black`}
         >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
@@ -271,7 +271,7 @@ const ShowAssetModal = ({
             showAppModal ? "hidden" : ""
           } relative w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
-          <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
+          <div className="lg:flex lg:flex-wrap lg:items-center w-full lg:mt-0 md:mt-0 sm:mt-5 mt-5 md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
               {type !== "merged_screens" && (
                 <>
@@ -341,10 +341,10 @@ const ShowAssetModal = ({
               )}
             </div>
 
-            <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
+            <div className="lg:p-10 md:p-10 sm:p-2 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1 w-full">
               <div className={popupActiveTab !== 1 && "hidden"}>
-                <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                  <div className="mb-5 relative ">
+                <div className="flex flex-wrap w-full items-start lg:justify-between lg-gap-0 md-gap-4 sm:gap-4 md:justify-center sm:justify-center xs:justify-center">
+                  <div className="lg:mb-5 md:mb-5 mb-2 relative ">
                     <AiOutlineSearch className="absolute top-2 left-2 w-5 h-5 z-10 text-gray" />
                     <input
                       type="text"
@@ -356,7 +356,7 @@ const ShowAssetModal = ({
                   </div>
                   <Link to="/fileupload" target="_blank">
                     <button
-                      className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                      className="flex lg:mb-0 md:mb-0 sm:mb-2 mb-2 align-middle  items-center rounded-full xs:px-3 xs:py-2 sm:px-3 md:px-4 sm:py-2 text-sm hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
                       onClick={() => {
                         localStorage.setItem("isWindowClosed", "false");
                       }}
@@ -639,7 +639,7 @@ const ShowAssetModal = ({
         <div
           className={`${
             showAppModal ? "hidden" : ""
-          } flex justify-between items-center p-5`}
+          } flex lg:flex-row md:flex-row sm:flex-col flex-col lg:justify-between md:justify-between sm:justify-between lg:items-center md:items-center items-stretch p-5`}
         >
           <p className="text-black text-left">
             Content will always be playing Confirm
@@ -657,7 +657,7 @@ const ShowAssetModal = ({
         </div>
       </div>
       {assetPreviewPopup && (
-        <div className="fixed left-1/2 lg:top-1/5 md:top-1/3 sm:top-1/3 top-1/3 -translate-x-1/2 lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 bg-black z-50 inset-0">
+        <div className="fixed left-1/2 lg:top-1/5 md:top-1/4 sm:top-1/3 top-1/3 -translate-x-1/2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-50 inset-0">
           {/* btn */}
 
           <div className="fixed z-40">
@@ -676,7 +676,7 @@ const ShowAssetModal = ({
                     <img
                       src={assetPreview.assetFolderPath}
                       alt={assetPreview.assetName}
-                      className="imagebox lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 object-fill z-50 fixed"
+                      className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-fill z-50 fixed"
                     />
                   </div>
                 )}
@@ -685,7 +685,7 @@ const ShowAssetModal = ({
                   <div className="relative videobox">
                     <video
                       controls
-                      className="rounded-2xl lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 object-fill"
+                      className="rounded-2xl md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-fill"
                     >
                       <source
                         src={assetPreview.assetFolderPath}
@@ -699,13 +699,13 @@ const ShowAssetModal = ({
                   <img
                     src={assetPreview.assetFolderPath}
                     alt={assetPreview.assetName}
-                    className="imagebox lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 object-fill z-50 fixed"
+                    className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-fill z-50 fixed"
                   />
                 )}
                 {assetPreview.assetType === "Video" && (
                   <video
                     controls
-                    className="imagebox lg:w-[768px] lg:h-[432px] sm:w-[560px] sm:h-[340px] w-72 h-72 object-fill z-50 fixed"
+                    className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-fill z-50 fixed"
                   >
                     <source
                       src={assetPreview.assetFolderPath}
