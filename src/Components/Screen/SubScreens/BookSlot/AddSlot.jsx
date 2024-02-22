@@ -160,7 +160,6 @@ const AddSlot = () => {
         if (response.data.data?.length > 0) {
           let arr = [...screenData];
           let combinedArray = arr.concat(response?.data?.data);
-          console.log("combinedArray", combinedArray);
           let arr1 = [];
           combinedArray?.map((item) => {
             let obj = {
@@ -522,7 +521,6 @@ const AddSlot = () => {
           }
         });
         setAllTimeZone(response?.data?.data);
-        console.log("response", response);
       })
       .catch((error) => {
         console.log(error);

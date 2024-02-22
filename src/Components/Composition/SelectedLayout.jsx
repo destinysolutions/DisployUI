@@ -7,6 +7,7 @@ import { AiOutlineSave, AiOutlineSearch } from "react-icons/ai";
 import { useFabricJSEditor } from "fabricjs-react";
 import { fabric } from "fabric";
 import axios from "axios";
+import { FaSave } from "react-icons/fa";
 import {
   ADDPLAYLIST,
   ADDSUBPLAYLIST,
@@ -21,6 +22,7 @@ import Carousel from "./DynamicCarousel";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Delete_icon from "../../images/Settings/delete-icon.svg";
 import edit_icon from "../../images/Settings/edit-icon.svg";
+import view_icon from "../../images/Settings/view-icon.svg";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { GoPencil } from "react-icons/go";
@@ -28,6 +30,7 @@ import toast from "react-hot-toast";
 import { useRef } from "react";
 import ReactPlayer from "react-player";
 import ShowAppsModal from "../ShowAppsModal";
+import { Button, Input } from "@material-tailwind/react";
 
 const DEFAULT_IMAGE = "";
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -606,16 +609,14 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 compositonData?.lstLayloutModelList?.map((obj, index) => (
                   <div
                     key={index}
-                    style={
-                      {
-                        position: "fixed",
-                        left: obj.leftside + "%",
-                        top: obj.topside + "%",
-                        width: obj?.width + "%",
-                        height: obj?.height + "%",
-                        backgroundColor: obj.fill,
-                      }
-                    }
+                    style={{
+                      position: "fixed",
+                      left: obj.leftside + "%",
+                      top: obj.topside + "%",
+                      width: obj?.width + "%",
+                      height: obj?.height + "%",
+                      backgroundColor: obj.fill,
+                    }}
                   >
                     {modalVisible && (
                       <Carousel
@@ -985,8 +986,10 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                     {item.duration} Sec
                                   </p>
                                 ) : (
-                                  <p className="flex items-center gap-2 border-[#E4E6FF] rounded-full w-full min-w-[3rem]">
-                                    <input
+                                  // <p className="flex items-center gap-2 border-[#E4E6FF] rounded-full w-full min-w-[3rem]">
+
+                                  <div className="relative flex items-center gap-2 border-[#E4E6FF] rounded-full w-full min-w-[3rem]">
+                                    <Input
                                       className="outline-none border border-[#E4E6FF] rounded-full p-2 w-full min-w-full"
                                       value={item.duration}
                                       type="number"
@@ -999,16 +1002,29 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                       min="0"
                                       max="999"
                                     />
-                                    <span>sec</span>
-                                  </p>
+                                    <span
+                                      // size="sm"
+                                      // color={item.duration? "gray":"blue-gray" }
+                                      className="!absolute right-5 text-black font-normal shadow-none"
+                                    >
+                                      Sec
+                                    </span>
+                                  </div>
                                 )}
                               </td>
                               <td className="text-sm flex justify-end items-center gap-4 min-w-[20%]">
                                 <a onClick={() => onEditSelectedAsset(index)}>
-                                  <img
-                                    src={edit_icon}
-                                    className="w-10 cursor-pointer"
-                                  />
+                                  {!item?.isEdited ? (
+                                    <img
+                                      src={edit_icon}
+                                      className="w-10 cursor-pointer"
+                                    />
+                                  ) : (
+                                    <img
+                                      src={edit_icon}
+                                      className="w-10 cursor-pointer"
+                                    />
+                                  )}
                                 </a>
                                 <a onClick={() => deleteSeletedAsset(index)}>
                                   <img
