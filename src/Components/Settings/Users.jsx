@@ -882,7 +882,9 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                     </div>
                   </div>
                   <div className="lg:col-span-8 md:col-span-12 sm:col-span-12 xs:col-span-12">
-                    <div className="flex items-center justify-end">
+                    <div className="flex items-center justify-end lg:flex-row md:flex-row sm:flex-row flex-col gap-2 ">
+                      <div className="flex items-center justify-center">
+
                       <div className="layout-img me-3">
                         {file && editProfile !== 1 ? (
                           <img
@@ -911,8 +913,10 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                           id="upload-button"
                           style={{ display: "none" }}
                           ref={hiddenFileInput}
+                          accept="image/*"
                           onChange={(e) => handleFileChange(e)}
                         />
+                      </div>
                       </div>
                       <button
                         onClick={() => setSelectScreenModal(true)}
@@ -926,7 +930,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                     <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                       <div
                         ref={selectScreenRef}
-                        className="w-auto mx-auto lg:max-w-2xl md:max-w-sm sm:max-w-xs"
+                        className="w-auto mx-auto lg:max-w-2xl md:max-w-sm sm:max-w-xs max-w-xs"
                       >
                         <div className="border-0 rounded-lg min-w-[20vw] overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none min-h-[350px] max-h-[550px]">
                           <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">

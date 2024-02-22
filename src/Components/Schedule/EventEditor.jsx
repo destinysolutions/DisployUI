@@ -19,6 +19,7 @@ import {
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
 import { useDispatch } from "react-redux";
+import PreviewAssets from "../Common/PreviewAssets";
 const EventEditor = ({
   isOpen,
   onClose,
@@ -573,117 +574,117 @@ const EventEditor = ({
         }}
         appElement={document.getElementById("root")}
       > */}
-        <div className="relative">
-          <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737] border-b border-lightgray pb-2  ">
-            Select Assets and Schedule Time
-          </h1>
+      <div className="relative">
+        <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737] border-b border-lightgray pb-2  ">
+          Select Assets and Schedule Time
+        </h1>
 
-          <div className="grid grid-cols-12 relative">
-            <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 rounded-lg">
-              <div className="my-4 relative ">
-                <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
-                <input
-                  type="text"
-                  placeholder=" Search by Name"
-                  className="border border-primary rounded-full px-7 py-2 search-user"
-                  onChange={(e) =>
-                    debounceForSearchAsset(e.target.value.toLocaleLowerCase())
-                  }
-                />
-              </div>
-              <div className="overflow-auto">
-                <div className="overflow-x-scroll sc-scrollbar rounded-lg bg-white shadow-2xl md:pb-1">
-                  <div className="max-w-full overflow-auto max-h-[1340px]">
-                    <table
-                      className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words "
-                      cellPadding={15}
-                    >
-                      <thead className="sticky z-20">
-                        <tr className="table-head-bg text-left mb-5">
-                          <th className="py-4 px-4 font-semibold text-black md:pl-10">
-                            Assets
-                          </th>
-                          <th className="py-4 px-4 font-semibold text-black">
-                            Assets Name
-                          </th>
-                          <th className="py-4 px-4 font-semibold text-black">
-                            Date Added
-                          </th>
-                          {/* <th className="min-w-[120px] py-4 px-4 font-semibold text-black">
+        <div className="grid grid-cols-12 relative">
+          <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 rounded-lg">
+            <div className="my-4 relative ">
+              <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+              <input
+                type="text"
+                placeholder=" Search by Name"
+                className="border border-primary rounded-full px-7 py-2 search-user"
+                onChange={(e) =>
+                  debounceForSearchAsset(e.target.value.toLocaleLowerCase())
+                }
+              />
+            </div>
+            <div className="overflow-auto">
+              <div className="overflow-x-scroll sc-scrollbar rounded-lg bg-white shadow-2xl md:pb-1">
+                <div className="max-w-full overflow-auto max-h-[1340px]">
+                  <table
+                    className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words "
+                    cellPadding={15}
+                  >
+                    <thead className="sticky z-20">
+                      <tr className="table-head-bg text-left mb-5">
+                        <th className="py-4 px-4 font-semibold text-black md:pl-10">
+                          Assets
+                        </th>
+                        <th className="py-4 px-4 font-semibold text-black">
+                          Assets Name
+                        </th>
+                        <th className="py-4 px-4 font-semibold text-black">
+                          Date Added
+                        </th>
+                        {/* <th className="min-w-[120px] py-4 px-4 font-semibold text-black">
                             Associated Schedule
                           </th> */}
-                          <th className="py-4 px-4 font-semibold text-black">
-                            Resolution
-                          </th>
-                          {/* <th className="py-4 px-4 font-semibold text-black">
+                        <th className="py-4 px-4 font-semibold text-black">
+                          Resolution
+                        </th>
+                        {/* <th className="py-4 px-4 font-semibold text-black">
                             Tags
                           </th> */}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {allAssets.length > 0 ? (
-                          allAssets
-                            .filter(
-                              (item) =>
-                                item?.assetType !== "Folder" &&
-                                item?.assetType !== "DOC"
-                            )
-                            .map((item, index) => (
-                              <tr
-                                key={index}
-                                className={`${
-                                  selectedAsset === item ? "bg-[#f3c953]" : ""
-                                } border-b border-[#eee] mt-5`}
-                                onClick={() => {
-                                  handleAssetAdd(item);
-                                }}
-                              >
-                                <td className="">
-                                  {item.assetType === "OnlineImage" && (
-                                    <div className="imagebox relative z-0">
-                                      <img
-                                        src={item.assetFolderPath}
-                                        alt={item.assetName}
-                                        className="videoTab rounded-2xl object-cover"
-                                      />
-                                    </div>
-                                  )}
-
-                                  {item.assetType === "Image" && (
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {allAssets.length > 0 ? (
+                        allAssets
+                          .filter(
+                            (item) =>
+                              item?.assetType !== "Folder" &&
+                              item?.assetType !== "DOC"
+                          )
+                          .map((item, index) => (
+                            <tr
+                              key={index}
+                              className={`${
+                                selectedAsset === item ? "bg-[#f3c953]" : ""
+                              } border-b border-[#eee] mt-5`}
+                              onClick={() => {
+                                handleAssetAdd(item);
+                              }}
+                            >
+                              <td className="">
+                                {item.assetType === "OnlineImage" && (
+                                  <div className="imagebox relative z-0">
                                     <img
                                       src={item.assetFolderPath}
                                       alt={item.assetName}
                                       className="videoTab rounded-2xl object-cover"
                                     />
-                                  )}
-                                  {(item.assetType === "Video" ||
-                                    item.assetType === "OnlineVideo") && (
-                                    <div className="max-w-[10vw] min-w-[10vw] min-h-[10vh] max-h-[10vh]">
-                                      <ReactPlayer
-                                        url={item?.assetFolderPath}
-                                        className="rounded-2xl videoTab "
-                                        controls={false}
-                                        playing={false}
-                                      />
-                                    </div>
-                                  )}
+                                  </div>
+                                )}
 
-                                  {item.text && (
-                                    <div className="w-full h-full ">
-                                      <marquee
-                                        className="text-lg h-full w-full text-black"
-                                        scrollamount="10"
-                                        direction={
-                                          assetPreview?.scrollType == 1
-                                            ? "right"
-                                            : "left"
-                                        }
-                                      >
-                                        {assetPreview?.text}
-                                      </marquee>
-                                    </div>
-                                  )}
-                                  {/* {item.assetType === "DOC" && (
+                                {item.assetType === "Image" && (
+                                  <img
+                                    src={item.assetFolderPath}
+                                    alt={item.assetName}
+                                    className="videoTab rounded-2xl object-cover"
+                                  />
+                                )}
+                                {(item.assetType === "Video" ||
+                                  item.assetType === "OnlineVideo") && (
+                                  <div className="max-w-[10vw] min-w-[10vw] min-h-[10vh] max-h-[10vh]">
+                                    <ReactPlayer
+                                      url={item?.assetFolderPath}
+                                      className="rounded-2xl videoTab "
+                                      controls={false}
+                                      playing={false}
+                                    />
+                                  </div>
+                                )}
+
+                                {item.text && (
+                                  <div className="w-full h-full ">
+                                    <marquee
+                                      className="text-lg h-full w-full text-black"
+                                      scrollamount="10"
+                                      direction={
+                                        assetPreview?.scrollType == 1
+                                          ? "right"
+                                          : "left"
+                                      }
+                                    >
+                                      {assetPreview?.text}
+                                    </marquee>
+                                  </div>
+                                )}
+                                {/* {item.assetType === "DOC" && (
                                     <a
                                       href={item.assetFolderPath}
                                       target="_blank"
@@ -692,395 +693,299 @@ const EventEditor = ({
                                       {item.assetName}
                                     </a>
                                  )}*/}
-                                </td>
-                                <td className="">
-                                  <h5
-                                    className="font-medium text-black cursor-pointer"
-                                    onClick={() => {
-                                      handleAssetAdd(item);
-                                    }}
-                                  >
-                                    {item.assetName && item?.assetName}
-                                    {item.instanceName && item?.instanceName}
-                                  </h5>
-                                </td>
-                                <td className="">
-                                  <p className="text-black font-medium">
-                                    {moment(item.createdDate).format(
-                                      "DD-MM-YYYY HH:mm"
-                                    )}
-                                  </p>
-                                </td>
-                                {/* <td className="">
+                              </td>
+                              <td className="">
+                                <h5
+                                  className="font-medium text-black cursor-pointer"
+                                  onClick={() => {
+                                    handleAssetAdd(item);
+                                  }}
+                                >
+                                  {item.assetName && item?.assetName}
+                                  {item.instanceName && item?.instanceName}
+                                </h5>
+                              </td>
+                              <td className="">
+                                <p className="text-black font-medium">
+                                  {moment(item.createdDate).format(
+                                    "DD-MM-YYYY HH:mm"
+                                  )}
+                                </p>
+                              </td>
+                              {/* <td className="">
                                   <p className="text-black font-medium">
                                     Schedule Name Till 28 June 2023
                                   </p>
                                 </td> */}
-                                <td className="">
-                                  <p className="text-black font-medium">
-                                    {item.resolutions}
-                                  </p>
-                                </td>
-                                {/* <td className="">
+                              <td className="">
+                                <p className="text-black font-medium">
+                                  {item.resolutions}
+                                </p>
+                              </td>
+                              {/* <td className="">
                                   <p className="text-black font-medium">
                                     Tags, Tags
                                   </p>
                                 </td> */}
-                              </tr>
-                            ))
-                        ) : searchAsset !== "" ? (
-                          <tr>
-                            <td
-                              colSpan={4}
-                              className="text-center text-xl font-semibold h-60"
-                            >
-                              <p>No assets found related "{searchAsset}"</p>
-                            </td>
-                          </tr>
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={4}
-                              className="text-center font-semibold h-60"
-                            >
-                              <p>No assets here, please upload some assets.</p>
-                              <br />
-                              <Link
-                                to="/fileupload"
-                                target="_blank"
-                                className="border-2 mt-4 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
-                              >
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    localStorage.setItem(
-                                      "isWindowClosed",
-                                      "false"
-                                    );
-                                  }}
-                                >
-                                  Upload asset
-                                </button>
-                              </Link>
-                            </td>
-                          </tr>
-                        )}
+                            </tr>
+                          ))
+                      ) : searchAsset !== "" ? (
                         <tr>
-                          <td>
-                            {/*{assetPreviewPopup && (
-                              <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-9990 outline-none focus:outline-none">
-                                <div
-                                  ref={modalRef}
-                                  className="fixed top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup w-full h-full flex items-end"
-                                >
-                                  <div className="border-0 rounded-lg shadow-lg relative min-w-[50vw] left-1/2 -translate-x-1/2 min-h-[70vh] max-h-[70vh] max-w-[80vw] bg-black outline-none focus:outline-none">
-                                    <div className="p-1 z-9990 rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
-                                      <button
-                                        className="text-xl"
-                                        onClick={() =>
-                                          setAssetPreviewPopup(false)
-                                        }
-                                      >
-                                        <AiOutlineCloseCircle className="text-2xl" />
-                                      </button>
-                                    </div>
-                                    <div className="absolute inset-0 w-[768px] h-[432px]">
-                                      {assetPreview && (
-                                        <>
-                                          {assetPreview?.assetType ===
-                                            "OnlineImage" && (
-                                              <div className="imagebox relative z-0 w-full h-full">
-                                                <img
-                                                  src={
-                                                    assetPreview.assetFolderPath
-                                                  }
-                                                  alt={assetPreview.assetName}
-                                                  className="imagebox relative h-full w-full"
-                                                />
-                                              </div>
-                                            )}
-                                          {assetPreview?.assetType ===
-                                            "OnlineVideo" && (
-                                              <div className="imagebox z-0 relative h-full">
-                                                <video
-                                                  controls
-                                                  autoPlay={true}
-                                                  className="h-full w-full"
-                                                >
-                                                  <source
-                                                    src={
-                                                      assetPreview.assetFolderPath
-                                                    }
-                                                    type="video/mp4"
-                                                  />
-                                                  Your browser does not support
-                                                  the video tag.
-                                                </video>
-                                              </div>
-                                            )}
-                                          {assetPreview?.assetType ===
-                                            "Image" && (
-                                              <img
-                                                src={assetPreview.assetFolderPath}
-                                                alt={assetPreview.assetName}
-                                                className="imagebox relative h-full w-full"
-                                              />
-                                            )}
-                                          {assetPreview?.assetType ===
-                                            "Video" && (
-                                              <div className="relative videobox w-full z-0">
-                                                <ReactPlayer
-                                                  url={
-                                                    assetPreview?.assetFolderPath
-                                                  }
-                                                  className="w-[90%] relative z-20 h-[90%] videoinner object-fill"
-                                                  controls={true}
-                                                  playing={true}
-                                                />
-                                              </div>
-                                            )}
-                                          {assetPreview?.youTubeURL && (
-                                            <div className="relative videobox w-full">
-                                              <ReactPlayer
-                                                url={assetPreview?.youTubeURL}
-                                                className="w-[90%] relative z-20 h-[90%] videoinner object-fill"
-                                                controls={true}
-                                                playing={true}
-                                              />
-                                            </div>
-                                          )}
-                                          {assetPreview?.text && (
-                                            <div className="w-full h-full ">
-                                              <marquee
-                                                className="text-lg  h-full min-w-full max-w-full flex items-center text-white"
-                                                scrollamount="10"
-                                                direction={
-                                                  assetPreview?.scrollType == 1
-                                                    ? "right"
-                                                    : "left"
-                                                }
-                                              >
-                                                {assetPreview?.text}
-                                              </marquee>
-                                            </div>
-                                          )}
-                                          // {{assetPreview?.assetType ===
-                                          //   "DOC" && (
-                                          //     <iframe
-                                          //     className='w-[768px] h-[432px]'
-                                          //     title="Document Viewer"
-                                          //     src={viewerSrc}
-                                          // ></iframe>
-                                          //   )}}
-                                        </>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                                            )}*/}
+                          <td
+                            colSpan={4}
+                            className="text-center text-xl font-semibold h-60"
+                          >
+                            <p>No assets found related "{searchAsset}"</p>
                           </td>
                         </tr>
-                      </tbody>
-                    </table>
-                    {assetPreviewPopup && (
-                      <div className="fixed left-1/2 lg:top-1/4 top-1/4 -translate-x-1/2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-9990 inset-0">
-                        {/* btn */}
-                        <div className="fixed z-40">
-                          <button
-                            className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
-                            onClick={() => setAssetPreviewPopup(false)}
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={4}
+                            className="text-center font-semibold h-60"
                           >
-                            <AiOutlineCloseCircle size={30} />
-                          </button>
-                        </div>
-                        <div className="fixed">
-                          {assetPreview && (
-                            <>
-                              {assetPreview.assetType === "OnlineImage" && (
-                                <div className="imagebox">
-                                  <img
-                                    src={assetPreview.assetFolderPath}
-                                    alt={assetPreview.assetName}
-                                    className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-9990 fixed"
-                                  />
-                                </div>
-                              )}
-
-                              {assetPreview.assetType === "OnlineVideo" && (
-                                <div className="relative videobox">
-                                  <video
-                                    controls
-                                    className="rounded-2xl md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
-                                  >
-                                    <source
-                                      src={assetPreview.assetFolderPath}
-                                      type="video/mp4"
-                                    />
-                                    Your browser does not support the video tag.
-                                  </video>
-                                </div>
-                              )}
-                              {assetPreview.assetType === "Image" && (
-                                <img
-                                  src={assetPreview.assetFolderPath}
-                                  alt={assetPreview.assetName}
-                                  className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
-                                />
-                              )}
-                              {assetPreview.assetType === "Video" && (
-                                <video
-                                  controls
-                                  className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
-                                >
-                                  <source
-                                    src={assetPreview.assetFolderPath}
-                                    type="video/mp4"
-                                  />
-                                  Your browser does not support the video tag.
-                                </video>
-                              )}
-                              {/*{assetPreview.assetType === "DOC" && (
-                                <iframe
-                                className='w-[960px] h-[540px]'
-                                title="Document Viewer"
-                                src={viewerSrc}
-                            ></iframe>
-                              )}*/}
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                            <p>No assets here, please upload some assets.</p>
+                            <br />
+                            <Link
+                              to="/fileupload"
+                              target="_blank"
+                              className="border-2 mt-4 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                            >
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  localStorage.setItem(
+                                    "isWindowClosed",
+                                    "false"
+                                  );
+                                }}
+                              >
+                                Upload asset
+                              </button>
+                            </Link>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-4 md:mt-4">
-              <div className="bg-white shadow-2xl">
-                <div className="p-3">
-                  <div>
-                    <ul className="border-2 border-lightgray rounded">
-                      <li className="border-b-2 border-lightgray p-3">
-                        <h3>Title :</h3>
-                        <div className="mt-2">
-                          <input
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Enter Title"
-                            className="bg-lightgray rounded-full px-3 py-2 w-full"
-                          />
-                        </div>
-                      </li>
+          <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-4 md:mt-4">
+            <div className="bg-white shadow-2xl">
+              <div className="p-3">
+                <div>
+                  <ul className="border-2 border-lightgray rounded">
+                    <li className="border-b-2 border-lightgray p-3">
+                      <h3>Title :</h3>
+                      <div className="mt-2">
+                        <input
+                          type="text"
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                          placeholder="Enter Title"
+                          className="bg-lightgray rounded-full px-3 py-2 w-full"
+                        />
+                      </div>
+                    </li>
 
-                      <li className="border-b-2 border-lightgray p-3">
-                        <h3>Asset :</h3>
-                        <div className="mt-2 ">
-                          <div className="bg-lightgray rounded-full px-4 py-2 w-full overflow-hidden whitespace-nowrap text-ellipsis">
-                            {selectedAsset === "" && "Set Media"}
-                            {selectedAsset &&
-                              selectedAsset?.assetName &&
-                              selectedAsset?.assetName}
-                            {selectedAsset &&
-                              selectedAsset?.assetName &&
-                              selectedAsset?.instanceName}
-                          </div>
-                          <div className="flex items-center justify-center mt-4">
-                            <button
-                              className="border text-sm border-white bg-SlateBlue hover:bg-primary text-white rounded-full px-4 py-2 "
-                              onClick={() => {
-                                assetPreview && setAssetPreviewPopup(true);
-                              }}
-                            >
-                              Preview
-                            </button>
-                          </div>
+                    <li className="border-b-2 border-lightgray p-3">
+                      <h3>Asset :</h3>
+                      <div className="mt-2 ">
+                        <div className="bg-lightgray rounded-full px-4 py-2 w-full overflow-hidden whitespace-nowrap text-ellipsis">
+                          {selectedAsset === "" && "Set Media"}
+                          {selectedAsset &&
+                            selectedAsset?.assetName &&
+                            selectedAsset?.assetName}
+                          {selectedAsset &&
+                            selectedAsset?.assetName &&
+                            selectedAsset?.instanceName}
                         </div>
-                      </li>
-                    </ul>
-                  </div>
+                        <div className="flex items-center justify-center mt-4">
+                          <button
+                            className="border text-sm border-white bg-SlateBlue hover:bg-primary text-white rounded-full px-4 py-2 "
+                            onClick={() => {
+                              assetPreview && setAssetPreviewPopup(true);
+                            }}
+                          >
+                            Preview
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
                 </div>
-                {repeatDayWarning && (
-                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-                    <div className="relative w-full max-w-xl max-h-full">
-                      <div className="relative bg-white rounded-lg shadow">
-                        <div className="py-6 text-center">
-                          <h3 className="mb-5 text-xl text-primary">
-                            can you update all event ?
-                          </h3>
-                          <div className="flex justify-center items-center space-x-4">
-                            <button
-                              className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-                              onClick={() => {
-                                handleSave(0);
-                                setRepeatDayWarning(false);
-                              }}
-                            >
-                              No, cancel
-                            </button>
+              </div>
+              {repeatDayWarning && (
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
+                  <div className="relative w-full max-w-xl max-h-full">
+                    <div className="relative bg-white rounded-lg shadow">
+                      <div className="py-6 text-center">
+                        <h3 className="mb-5 text-xl text-primary">
+                          can you update all event ?
+                        </h3>
+                        <div className="flex justify-center items-center space-x-4">
+                          <button
+                            className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
+                            onClick={() => {
+                              handleSave(0);
+                              setRepeatDayWarning(false);
+                            }}
+                          >
+                            No, cancel
+                          </button>
 
-                            <button
-                              className="text-white bg-SlateBlue rounded text-lg font-bold px-5 py-2"
-                              onClick={() => {
-                                handleSave(1);
-                                setRepeatDayWarning(false);
-                              }}
-                            >
-                              Yes, I'm sure
-                            </button>
-                          </div>
+                          <button
+                            className="text-white bg-SlateBlue rounded text-lg font-bold px-5 py-2"
+                            onClick={() => {
+                              handleSave(1);
+                              setRepeatDayWarning(false);
+                            }}
+                          >
+                            Yes, I'm sure
+                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
-                {showRepeatSettings ? (
-                  <>
-                    <div className="relative md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0  p-4">
-                      <div className="backbtn absolute top-[5px] left-[-10px] ">
-                        <button
-                          className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
-                          onClick={() => setShowRepeatSettings(false)}
-                        >
-                          <MdOutlineArrowBackIosNew className="text-white" />
-                        </button>
+                </div>
+              )}
+              {showRepeatSettings ? (
+                <>
+                  <div className="relative md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0  p-4">
+                    <div className="backbtn absolute top-[5px] left-[-10px] ">
+                      <button
+                        className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
+                        onClick={() => setShowRepeatSettings(false)}
+                      >
+                        <MdOutlineArrowBackIosNew className="text-white" />
+                      </button>
+                    </div>
+                    <div className="mt-3">
+                      <div>
+                        <label>Start Date:</label>
+                        <div className="mt-1">
+                          <input
+                            type="date"
+                            value={editedStartDate}
+                            min={today}
+                            onChange={handleStartDateChange}
+                            className="bg-lightgray rounded-full px-3 py-2 w-full"
+                          />
+                        </div>
                       </div>
-                      <div className="mt-3">
+                      <div className=" mt-5">
+                        <label>End Date:</label>
+                        <div className="mt-1">
+                          <input
+                            type="date"
+                            min={editedStartDate}
+                            value={editedEndDate}
+                            onChange={handleEndDateChange}
+                            className="bg-lightgray rounded-full px-3 py-2 w-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 text-black font-medium text-lg">
+                      <label>Repeating {countAllDaysInRange()} Day(s)</label>
+                    </div>
+                    <div className="lg:flex md:block sm:block xs:block items-center mt-5 lg:flex-nowrap md:flex-wrap sm:flex-wrap">
+                      <div className="mr-2 w-full">
+                        <label className="ml-2">Start Time</label>
                         <div>
-                          <label>Start Date:</label>
-                          <div className="mt-1">
+                          <input
+                            type="time"
+                            value={editedStartTime}
+                            onChange={handleStartTimeChange}
+                            className="bg-lightgray rounded-full px-3 py-2 w-full"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="w-full">
+                        <label className="ml-2">End Time</label>
+                        <div>
+                          <input
+                            type="time"
+                            value={editedEndTime}
+                            onChange={handleEndTimeChange}
+                            className="bg-lightgray rounded-full px-3 py-2 w-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <>
+                      <div className="mt-5 text-black font-medium text-lg mr-2">
+                        <input
+                          type="checkbox"
+                          checked={selectAllDays}
+                          onChange={handleCheckboxChange}
+                          id="repeat_all_day"
+                        />
+                        <label
+                          className="ml-3 select-none"
+                          htmlFor="repeat_all_day"
+                        >
+                          Repeat for All Day
+                        </label>
+                      </div>
+
+                      <div>
+                        {buttons.map((label, index) => (
+                          <button
+                            className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
+                              selectedDays[index] && "bg-SlateBlue border-white"
+                            } 
+                                `}
+                            key={index}
+                            onClick={() => handleDayButtonClick(index, label)}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  </div>
+                  <div className="border-b-2 border-lightgray mt-2"></div>
+                </>
+              ) : (
+                <>
+                  <div className="border-b-2 border-lightgray mt-2"></div>
+                  <div className="p-3">
+                    <div className="mb-2">Schedule Date time</div>
+                    <div>
+                      <ul className="border-2 border-lightgray rounded">
+                        <li className="border-b-2 border-lightgray p-3">
+                          <h3>Start Date:</h3>
+                          <div className="mt-2">
                             <input
                               type="date"
-                              value={editedStartDate}
                               min={today}
+                              value={editedStartDate}
                               onChange={handleStartDateChange}
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
-                        </div>
-                        <div className=" mt-5">
-                          <label>End Date:</label>
-                          <div className="mt-1">
+                        </li>
+                        <li className="border-b-2 border-lightgray p-3">
+                          <h3>End Date:</h3>
+                          <div className="mt-2">
                             <input
                               type="date"
-                              min={editedStartDate}
-                              value={editedEndDate}
-                              onChange={handleEndDateChange}
+                              value={editedStartDate}
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
+                              readOnly
                             />
                           </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-5 text-black font-medium text-lg">
-                        <label>Repeating {countAllDaysInRange()} Day(s)</label>
-                      </div>
-                      <div className="lg:flex md:block sm:block xs:block items-center mt-5 lg:flex-nowrap md:flex-wrap sm:flex-wrap">
-                        <div className="mr-2 w-full">
-                          <label className="ml-2">Start Time</label>
-                          <div>
+                        </li>
+                        <li className="border-b-2 border-lightgray p-3">
+                          <h3>Start Time:</h3>
+                          <div className="mt-2">
                             <input
                               type="time"
                               value={editedStartTime}
@@ -1088,11 +993,10 @@ const EventEditor = ({
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
-                        </div>
-
-                        <div className="w-full">
-                          <label className="ml-2">End Time</label>
-                          <div>
+                        </li>
+                        <li className=" p-3">
+                          <h3>End Time:</h3>
+                          <div className="mt-2">
                             <input
                               type="time"
                               value={editedEndTime}
@@ -1100,183 +1004,100 @@ const EventEditor = ({
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
-                        </div>
-                      </div>
-
-                      <>
-                        <div className="mt-5 text-black font-medium text-lg mr-2">
-                          <input
-                            type="checkbox"
-                            checked={selectAllDays}
-                            onChange={handleCheckboxChange}
-                            id="repeat_all_day"
-                          />
-                          <label
-                            className="ml-3 select-none"
-                            htmlFor="repeat_all_day"
-                          >
-                            Repeat for All Day
-                          </label>
-                        </div>
-
-                        <div>
-                          {buttons.map((label, index) => (
-                            <button
-                              className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
-                                selectedDays[index] &&
-                                "bg-SlateBlue border-white"
-                              } 
-                                `}
-                              key={index}
-                              onClick={() => handleDayButtonClick(index, label)}
-                            >
-                              {label}
-                            </button>
-                          ))}
-                        </div>
-                      </>
+                        </li>
+                      </ul>
                     </div>
-                    <div className="border-b-2 border-lightgray mt-2"></div>
-                  </>
-                ) : (
-                  <>
-                    <div className="border-b-2 border-lightgray mt-2"></div>
+
                     <div className="p-3">
-                      <div className="mb-2">Schedule Date time</div>
+                      <div className="mb-2">Repeat Multiple Day</div>
                       <div>
-                        <ul className="border-2 border-lightgray rounded">
-                          <li className="border-b-2 border-lightgray p-3">
-                            <h3>Start Date:</h3>
-                            <div className="mt-2">
-                              <input
-                                type="date"
-                                min={today}
-                                value={editedStartDate}
-                                onChange={handleStartDateChange}
-                                className="bg-lightgray rounded-full px-3 py-2 w-full"
-                              />
-                            </div>
-                          </li>
-                          <li className="border-b-2 border-lightgray p-3">
-                            <h3>End Date:</h3>
-                            <div className="mt-2">
-                              <input
-                                type="date"
-                                value={editedStartDate}
-                                className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                readOnly
-                              />
-                            </div>
-                          </li>
-                          <li className="border-b-2 border-lightgray p-3">
-                            <h3>Start Time:</h3>
-                            <div className="mt-2">
-                              <input
-                                type="time"
-                                value={editedStartTime}
-                                onChange={handleStartTimeChange}
-                                className="bg-lightgray rounded-full px-3 py-2 w-full"
-                              />
-                            </div>
-                          </li>
-                          <li className=" p-3">
-                            <h3>End Time:</h3>
-                            <div className="mt-2">
-                              <input
-                                type="time"
-                                value={editedEndTime}
-                                onChange={handleEndTimeChange}
-                                className="bg-lightgray rounded-full px-3 py-2 w-full"
-                              />
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-
-                      <div className="p-3">
-                        <div className="mb-2">Repeat Multiple Day</div>
-                        <div>
-                          <button
-                            onClick={() => setShowRepeatSettings(true)}
-                            className="border border-primary rounded-full px-4 py-1"
-                          >
-                            Repeat
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => setShowRepeatSettings(true)}
+                          className="border border-primary rounded-full px-4 py-1"
+                        >
+                          Repeat
+                        </button>
                       </div>
                     </div>
-                  </>
-                )}
-                <div className="border-b-2 border-lightgray"></div>
-                <div className="bg-white shadow-2xl mt-4 ">
-                  <div className="p-3 w-full">
-                    <h3>Select Color :</h3>
-                    {selectedColor !== null && (
-                      <div className="mt-2">
-                        <SketchPicker
-                          color={selectedColor}
-                          onChange={(color) => setSelectedColor(color.hex)}
-                          className="sketch-picker"
-                        />
-                      </div>
-                    )}
                   </div>
+                </>
+              )}
+              <div className="border-b-2 border-lightgray"></div>
+              <div className="bg-white shadow-2xl mt-4 ">
+                <div className="p-3 w-full">
+                  <h3>Select Color :</h3>
+                  {selectedColor !== null && (
+                    <div className="mt-2">
+                      <SketchPicker
+                        color={selectedColor}
+                        onChange={(color) => setSelectedColor(color.hex)}
+                        className="sketch-picker"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-span-12 bg-white schedual-btn">
-            <div className="flex justify-center ">
+        </div>
+        <div className="col-span-12 bg-white schedual-btn">
+          <div className="flex justify-center ">
+            <button
+              className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
+              onClick={() => {
+                onClose();
+                setSelectedDays([]);
+                setSearchAsset("");
+                setSelectedAsset(null);
+                setTitle("");
+                setAllAssets([...assets]);
+                setShowRepeatSettings(false);
+              }}
+            >
+              Cancel
+            </button>
+
+            {isEditMode ? (
               <button
-                className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
+                className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                 onClick={() => {
-                  onClose();
-                  setSelectedDays([]);
-                  setSearchAsset("");
-                  setSelectedAsset(null);
-                  setTitle("");
-                  setAllAssets([...assets]);
+                  selectedEvent?.isfutureDateExists == 0
+                    ? handleSave()
+                    : handleWarn();
+                }}
+              >
+                Update
+              </button>
+            ) : (
+              <button
+                className="border-2 border-white text-white hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                onClick={() => {
+                  handleSave();
+                }}
+              >
+                Save
+              </button>
+            )}
+            {isEditMode && (
+              <button
+                className="border-2 border-lightgray hover:bg-primary hover:text-white   px-6 py-2 rounded-full ml-3"
+                onClick={() => {
+                  handelDeletedata();
                   setShowRepeatSettings(false);
                 }}
               >
-                Cancel
+                Delete
               </button>
-
-              {isEditMode ? (
-                <button
-                  className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
-                  onClick={() => {
-                    selectedEvent?.isfutureDateExists == 0
-                      ? handleSave()
-                      : handleWarn();
-                  }}
-                >
-                  Update
-                </button>
-              ) : (
-                <button
-                  className="border-2 border-white text-white hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
-                  onClick={() => {
-                    handleSave();
-                  }}
-                >
-                  Save
-                </button>
-              )}
-              {isEditMode && (
-                <button
-                  className="border-2 border-lightgray hover:bg-primary hover:text-white   px-6 py-2 rounded-full ml-3"
-                  onClick={() => {
-                    handelDeletedata();
-                    setShowRepeatSettings(false);
-                  }}
-                >
-                  Delete
-                </button>
-              )}
-            </div>
+            )}
           </div>
         </div>
+      </div>
+      {assetPreviewPopup && (
+        <PreviewAssets
+          assetPreview={assetPreview}
+          setAssetPreviewPopup={setAssetPreviewPopup}
+        />
+      )}
       {/* </ReactModal> */}
     </>
   );

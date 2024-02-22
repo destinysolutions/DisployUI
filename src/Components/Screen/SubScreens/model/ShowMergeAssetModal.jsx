@@ -11,6 +11,7 @@ import ShowAppsModal from "../../../ShowAppsModal";
 import { useDispatch } from "react-redux";
 import { handleGetAllAssets, handleGetAllAssetsTypeBase } from "../../../../Redux/Assetslice";
 import { GET_ASSET_DETAILS } from "../../../../Pages/Api";
+import PreviewAssets from "../../../Common/PreviewAssets";
 
 const ShowAssetModal = ({
   setShowAssetModal,
@@ -261,9 +262,8 @@ const ShowAssetModal = ({
                       })}
                   </table>
 
-                  {assetPreviewPopup && (
+                  {/* {assetPreviewPopup && (
                     <div className="fixed left-1/2 lg:top-[12%] md:top-1/3 sm:top-1/3 top-1/3 -translate-x-1/2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-50 inset-0">
-                      {/* btn */}
                       <div className="p-1 rounded-full text-white bg-primary absolute -top-3 -right-3">
                         <button
                           className="text-xl"
@@ -332,7 +332,7 @@ const ShowAssetModal = ({
                         )}
                       </div>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
@@ -354,6 +354,12 @@ const ShowAssetModal = ({
           </button>
         </div>
       </div>
+      {assetPreviewPopup && (
+        <PreviewAssets
+          assetPreview={assetPreview}
+          setAssetPreviewPopup={setAssetPreviewPopup}
+        />
+      )}
       {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
       <div
         onClick={() => handleClickOutside()}

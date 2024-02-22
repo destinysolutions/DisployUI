@@ -17,7 +17,6 @@ import {
   SELECT_BY_LIST,
   SIGNAL_R,
 } from "../../Pages/Api";
-import AssetModal from "../Assests/AssetModal";
 import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";

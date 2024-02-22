@@ -199,6 +199,7 @@ const Account = () => {
                 type="file"
                 id="upload-button"
                 style={{ display: "none" }}
+                accept="image/*"
                 ref={hiddenFileInput}
                 onChange={(e) => handleFileChange(e)}
               />

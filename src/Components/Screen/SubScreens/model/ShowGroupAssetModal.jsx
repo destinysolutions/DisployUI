@@ -21,6 +21,7 @@ import {
 import { useDispatch } from "react-redux";
 import { handleGetCompositions } from "../../../../Redux/CompositionSlice";
 import { handleGetAllSchedule } from "../../../../Redux/ScheduleSlice";
+import PreviewAssets from "../../../Common/PreviewAssets";
 
 const ShowAssetModal = ({
   setShowAssetModal,
@@ -657,75 +658,12 @@ const ShowAssetModal = ({
           </p>
         </div>
       </div>
+
       {assetPreviewPopup && (
-        <div className="fixed left-1/2 lg:top-1/5 md:top-1/4 sm:top-1/3 top-1/3 -translate-x-1/2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-50 inset-0">
-          {/* btn */}
-
-          <div className="fixed z-40">
-            <button
-              className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
-              onClick={() => setAssetPreviewPopup(false)}
-            >
-              <AiOutlineCloseCircle size={30} />
-            </button>
-          </div>
-          <div className="fixed">
-            {assetPreview && (
-              <>
-                {assetPreview.assetType === "OnlineImage" && (
-                  <div>
-                    <img
-                      src={assetPreview.assetFolderPath}
-                      alt={assetPreview.assetName}
-                      className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-fill z-50 fixed"
-                    />
-                  </div>
-                )}
-
-                {assetPreview.assetType === "OnlineVideo" && (
-                  <div className="relative videobox">
-                    <video
-                      controls
-                      className="rounded-2xl md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-fill"
-                    >
-                      <source
-                        src={assetPreview.assetFolderPath}
-                        type="video/mp4"
-                      />
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                )}
-                {assetPreview.assetType === "Image" && (
-                  <img
-                    src={assetPreview.assetFolderPath}
-                    alt={assetPreview.assetName}
-                    className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-fill z-50 fixed"
-                  />
-                )}
-                {assetPreview.assetType === "Video" && (
-                  <video
-                    controls
-                    className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-fill z-50 fixed"
-                  >
-                    <source
-                      src={assetPreview.assetFolderPath}
-                      type="video/mp4"
-                    />
-                    Your browser does not support the video tag.
-                  </video>
-                )}
-                {/*  {assetPreview.assetType === "DOC" && (
-                              <iframe
-                              className='w-[768px] h-[432px]'
-                              title="Document Viewer"
-                              src={viewerSrc}
-                          ></iframe>
-                          )}*/}
-              </>
-            )}
-          </div>
-        </div>
+        <PreviewAssets
+          assetPreview={assetPreview}
+          setAssetPreviewPopup={setAssetPreviewPopup}
+        />
       )}
       {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
       <div

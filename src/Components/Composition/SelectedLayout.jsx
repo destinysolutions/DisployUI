@@ -15,7 +15,6 @@ import {
   GET_ALL_YOUTUBEDATA,
   SELECT_BY_LIST,
 } from "../../Pages/Api";
-import AssetModal from "../Assests/AssetModal";
 import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";

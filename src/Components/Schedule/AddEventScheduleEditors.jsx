@@ -18,6 +18,7 @@ import {
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
 import { useDispatch } from "react-redux";
+import PreviewAssets from "../Common/PreviewAssets";
 const AddEventScheduleEditors = ({
   isOpen,
   onClose,
@@ -788,195 +789,8 @@ const AddEventScheduleEditors = ({
                                 </td>
                               </tr>
                             )}
-                            <tr>
-                              <td>
-                                {/*{assetPreviewPopup && (
-                              <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-9990 outline-none focus:outline-none">
-                                <div
-                                  ref={modalRef}
-                                  className="fixed top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup w-full h-full flex items-end"
-                                >
-                                  <div className="border-0 rounded-lg shadow-lg relative min-w-[50vw] left-1/2 -translate-x-1/2 min-h-[70vh] max-h-[70vh] max-w-[80vw] bg-black outline-none focus:outline-none">
-                                    <div className="p-1 z-9990 rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
-                                      <button
-                                        className="text-xl"
-                                        onClick={() =>
-                                          setAssetPreviewPopup(false)
-                                        }
-                                      >
-                                        <AiOutlineCloseCircle className="text-2xl" />
-                                      </button>
-                                    </div>
-                                    <div className="absolute inset-0 w-[768px] h-[432px]">
-                                      {assetPreview && (
-                                        <>
-                                          {assetPreview?.assetType ===
-                                            "OnlineImage" && (
-                                              <div className="imagebox relative z-0 w-full h-full">
-                                                <img
-                                                  src={
-                                                    assetPreview.assetFolderPath
-                                                  }
-                                                  alt={assetPreview.assetName}
-                                                  className="imagebox relative h-full w-full"
-                                                />
-                                              </div>
-                                            )}
-                                          {assetPreview?.assetType ===
-                                            "OnlineVideo" && (
-                                              <div className="imagebox z-0 relative h-full">
-                                                <video
-                                                  controls
-                                                  autoPlay={true}
-                                                  className="h-full w-full"
-                                                >
-                                                  <source
-                                                    src={
-                                                      assetPreview.assetFolderPath
-                                                    }
-                                                    type="video/mp4"
-                                                  />
-                                                  Your browser does not support
-                                                  the video tag.
-                                                </video>
-                                              </div>
-                                            )}
-                                          {assetPreview?.assetType ===
-                                            "Image" && (
-                                              <img
-                                                src={assetPreview.assetFolderPath}
-                                                alt={assetPreview.assetName}
-                                                className="imagebox relative h-full w-full"
-                                              />
-                                            )}
-                                          {assetPreview?.assetType ===
-                                            "Video" && (
-                                              <div className="relative videobox w-full z-0">
-                                                <ReactPlayer
-                                                  url={
-                                                    assetPreview?.assetFolderPath
-                                                  }
-                                                  className="w-[90%] relative z-20 h-[90%] videoinner object-fill"
-                                                  controls={true}
-                                                  playing={true}
-                                                />
-                                              </div>
-                                            )}
-                                          {assetPreview?.youTubeURL && (
-                                            <div className="relative videobox w-full">
-                                              <ReactPlayer
-                                                url={assetPreview?.youTubeURL}
-                                                className="w-[90%] relative z-20 h-[90%] videoinner object-fill"
-                                                controls={true}
-                                                playing={true}
-                                              />
-                                            </div>
-                                          )}
-                                          {assetPreview?.text && (
-                                            <div className="w-full h-full ">
-                                              <marquee
-                                                className="text-lg  h-full min-w-full max-w-full flex items-center text-white"
-                                                scrollamount="10"
-                                                direction={
-                                                  assetPreview?.scrollType == 1
-                                                    ? "right"
-                                                    : "left"
-                                                }
-                                              >
-                                                {assetPreview?.text}
-                                              </marquee>
-                                            </div>
-                                          )}
-                                          // {{assetPreview?.assetType ===
-                                          //   "DOC" && (
-                                          //     <iframe
-                                          //     className='w-[768px] h-[432px]'
-                                          //     title="Document Viewer"
-                                          //     src={viewerSrc}
-                                          // ></iframe>
-                                          //   )}}
-                                        </>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                                            )}*/}
-                              </td>
-                            </tr>
                           </tbody>
                         </table>
-                        {assetPreviewPopup && (
-                          <div className="fixed left-1/2 lg:top-1/4 top-1/4 -translate-x-1/2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-9990 inset-0">
-                            {/* btn */}
-                            <div className="fixed z-40">
-                              <button
-                                className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
-                                onClick={() => setAssetPreviewPopup(false)}
-                              >
-                                <AiOutlineCloseCircle size={30} />
-                              </button>
-                            </div>
-                            <div className="fixed">
-                              {assetPreview && (
-                                <>
-                                  {assetPreview.assetType === "OnlineImage" && (
-                                    <div className="imagebox">
-                                      <img
-                                        src={assetPreview.assetFolderPath}
-                                        alt={assetPreview.assetName}
-                                        className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-9990 fixed"
-                                      />
-                                    </div>
-                                  )}
-
-                                  {assetPreview.assetType === "OnlineVideo" && (
-                                    <div className="relative videobox">
-                                      <video
-                                        controls
-                                        className="rounded-2xl md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
-                                      >
-                                        <source
-                                          src={assetPreview.assetFolderPath}
-                                          type="video/mp4"
-                                        />
-                                        Your browser does not support the video
-                                        tag.
-                                      </video>
-                                    </div>
-                                  )}
-                                  {assetPreview.assetType === "Image" && (
-                                    <img
-                                      src={assetPreview.assetFolderPath}
-                                      alt={assetPreview.assetName}
-                                      className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
-                                    />
-                                  )}
-                                  {assetPreview.assetType === "Video" && (
-                                    <video
-                                      controls
-                                      className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
-                                    >
-                                      <source
-                                        src={assetPreview.assetFolderPath}
-                                        type="video/mp4"
-                                      />
-                                      Your browser does not support the video
-                                      tag.
-                                    </video>
-                                  )}
-                                  {/*{assetPreview.assetType === "DOC" && (
-                                <iframe
-                                className='w-[960px] h-[540px]'
-                                title="Document Viewer"
-                                src={viewerSrc}
-                            ></iframe>
-                              )}*/}
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -1309,6 +1123,13 @@ const AddEventScheduleEditors = ({
           </div>
         </div>
       </div>
+
+      {assetPreviewPopup && (
+        <PreviewAssets
+          assetPreview={assetPreview}
+          setAssetPreviewPopup={setAssetPreviewPopup}
+        />
+      )}
     </>
   );
 };
