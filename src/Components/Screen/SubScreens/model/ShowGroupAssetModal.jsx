@@ -54,8 +54,6 @@ const ShowAssetModal = ({
 
   const { assets } = useSelector((s) => s.root.asset);
   const { compositions } = useSelector((s) => s.root.composition);
-  const { youtube, textScroll } = useSelector((s) => s.root.apps);
-  const allAppsData = [...youtube?.youtubeData, ...textScroll?.textScrollData];
 
   const modalRef = useRef(null);
 
@@ -69,12 +67,22 @@ const ShowAssetModal = ({
     // get all schedule
     dispatch(handleGetAllSchedule({ token }));
 
-    // get youtube data
-    dispatch(handleGetYoutubeData({ token }));
-
-    //get text scroll data
-    dispatch(handleGetTextScrollData({ token }));
-    setAppsData(allAppsData);
+    // get youtube data and textscroll data
+    Promise.all([
+      dispatch(handleGetYoutubeData({ token })),
+      dispatch(handleGetTextScrollData({ token }))
+    ])
+      .then(([youtubeResponse, textScrollResponse]) => {
+        const youtubeData = youtubeResponse?.payload?.data || [];
+        const textScrollData = textScrollResponse?.payload?.data || [];
+    
+        const combinedData = [...youtubeData, ...textScrollData];
+        setAppsData(combinedData);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    
   }, []);
 
   const handleOnConfirm = async () => {
@@ -222,9 +230,9 @@ const ShowAssetModal = ({
     setSearchApps(event.target.value);
     const searchQuery = event.target.value.toLowerCase();
     if (searchQuery === "") {
-      setAppsData(allAppsData);
+      setAppsData(appsData);
     } else {
-      const filteredScreen = allAppsData.filter((entry) =>
+      const filteredScreen = appsData.filter((entry) =>
         Object.values(entry).some((val) => {
           if (typeof val === "string") {
             const keyWords = searchQuery.split(" ");
