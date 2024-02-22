@@ -82,7 +82,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     useState(true);
   const [tagsContentVisible, setTagsContentVisible] = useState(true);
   const [groupContentVisible, setGroupContentVisible] = useState(true);
-  const [showfrom, setShowfrom] = useState(false);
   const [showActionBox, setShowActionBox] = useState(false);
   const [isEditingScreen, setIsEditingScreen] = useState(false);
   const [assetScreenID, setAssetScreenID] = useState(null);
@@ -903,23 +902,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       />
                     </div>
 
-                    <button
-                      data-tip
-                      data-for="Gmail"
-                      type="button"
-                      className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                      onClick={() => setShowfrom(true)}
-                    >
-                      <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
-                      <ReactTooltip
-                        id="Gmail"
-                        place="bottom"
-                        type="warning"
-                        effect="float"
-                      >
-                        <span>Gmail</span>
-                      </ReactTooltip>
-                    </button>
+                  
                     {/* 
               <button
                 type="button"
@@ -1888,31 +1871,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           setscreenMacID={setscreenMacID}
           setSelectedAsset={setSelectedAsset}
         />
-      )}
-      {showfrom && (
-        <div
-          id="email-modal"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-        >
-          <div className="relative w-full max-w-2xl p-4">
-            <div className="relative bg-white rounded-lg shadow">
-              <div className="flex items-center justify-end p-3 border-b rounded-t">
-                {/* <AiOutlineCloseCircle
-                        className="text-4xl text-primary cursor-pointer"
-                        onClick={toggleModal}
-                    /> */}
-              </div>
-              <div className="gmail-embed-container">
-                <iframe
-                  src="https://mail.google.com"
-                  title="Gmail"
-                  width="100%"
-                  height="800px"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
       )}
     </>
   );
