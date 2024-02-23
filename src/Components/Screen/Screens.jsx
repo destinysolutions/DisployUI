@@ -925,7 +925,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             id="New Screen"
                             place="bottom"
                             type="warning"
-                            effect="float"
+                            effect="solid"
                           >
                             <span>New Screen</span>
                           </ReactTooltip>
@@ -990,7 +990,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           id="Delete"
                           place="bottom"
                           type="warning"
-                          effect="float"
+                          effect="solid"
                         >
                           <span>Delete</span>
                         </ReactTooltip>
@@ -1019,7 +1019,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             id="More"
                             place="bottom"
                             type="warning"
-                            effect="float"
+                            effect="solid"
                           >
                             <span>More</span>
                           </ReactTooltip>
@@ -1154,7 +1154,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             id="Select All"
                             place="bottom"
                             type="warning"
-                            effect="float"
+                            effect="solid"
                           >
                             <span>Select All</span>
                           </ReactTooltip>
@@ -1572,7 +1572,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                 id={screen.groupName}
                                                 place="bottom"
                                                 type="warning"
-                                                effect="float"
+                                                effect="solid"
                                               >
                                                 <span>{screen.groupName}</span>
                                               </ReactTooltip>
@@ -1621,7 +1621,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                     id="Edit"
                                                     place="bottom"
                                                     type="warning"
-                                                    effect="float"
+                                                    effect="solid"
                                                   >
                                                     <span>Edit</span>
                                                   </ReactTooltip>

@@ -230,7 +230,7 @@ const ScreenGroupModal = ({
                                 id="show in screen"
                                 place="bottom"
                                 type="warning"
-                                effect="float"
+                                effect="solid"
                               >
                                 <span>{screen.groupName}</span>
                               </ReactTooltip>

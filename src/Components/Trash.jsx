@@ -333,7 +333,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                           id="Delete"
                           place="bottom"
                           type="warning"
-                          effect="float"
+                          effect="solid"
                         >
                           <span>Delete</span>
                         </ReactTooltip>
@@ -354,7 +354,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       id="Select All"
                       place="bottom"
                       type="warning"
-                      effect="float"
+                      effect="solid"
                     >
                       <span>Select All</span>
                     </ReactTooltip>

@@ -484,7 +484,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   id="Camera"
                   place="bottom"
                   type="warning"
-                  effect="float"
+                  effect="solid"
                 >
                   <span>Camera</span>
                 </ReactTooltip>
@@ -512,7 +512,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   id="Video"
                   place="bottom"
                   type="warning"
-                  effect="float"
+                  effect="solid"
                 >
                   <span>Video</span>
                 </ReactTooltip>
@@ -541,7 +541,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   id="Unsplash"
                   place="bottom"
                   type="warning"
-                  effect="float"
+                  effect="solid"
                 >
                   <span>Unsplash</span>
                 </ReactTooltip>
@@ -569,7 +569,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   id="Pexels"
                   place="bottom"
                   type="warning"
-                  effect="float"
+                  effect="solid"
                 >
                   <span>Pexels</span>
                 </ReactTooltip>
@@ -596,7 +596,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   id="Pixabay"
                   place="bottom"
                   type="warning"
-                  effect="float"
+                  effect="solid"
                 >
                   <span>Pixabay</span>
                 </ReactTooltip>

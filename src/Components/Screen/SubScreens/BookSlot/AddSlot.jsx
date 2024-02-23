@@ -114,6 +114,7 @@ const AddSlot = () => {
   const dayDifference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
   const [selectedVal, setSelectedVal] = useState("");
   const [savedFile, setSavedFile] = useState([]);
+  console.log('savedFile', savedFile)
   const Screenoptions = multiOptions(screenData);
   const handleStartDateChange = (event) => {
     if (!repeat) {
@@ -503,6 +504,12 @@ const AddSlot = () => {
       screenIDs: Screenoptions.map((item) => item.output).join(", "),
       totalCost: totalCost,
       timezoneID: selectedTimeZone,
+      systemTimeZone: new Date()
+        .toLocaleDateString(undefined, {
+          day: "2-digit",
+          timeZoneName: "long",
+        })
+        .substring(4)
     });
 
     const config = {

@@ -396,7 +396,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   id="Refresh Screen"
                   place="bottom"
                   type="warning"
-                  effect="float"
+                  effect="solid"
                 >
                   <span>Refresh Screen</span>
                 </ReactTooltip>
@@ -414,7 +414,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   id="New MergeScreen"
                   place="bottom"
                   type="warning"
-                  effect="float"
+                  effect="solid"
                 >
                   <span>Add New MergeScreen</span>
                 </ReactTooltip>
@@ -441,7 +441,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                     id="Select All"
                     place="bottom"
                     type="warning"
-                    effect="float"
+                    effect="solid"
                   >
                     <span>Select All</span>
                   </ReactTooltip>
@@ -465,7 +465,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                     id="All Delete"
                     place="bottom"
                     type="warning"
-                    effect="float"
+                    effect="solid"
                   >
                     <span>Delete</span>
                   </ReactTooltip>
@@ -562,7 +562,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                   id="Preview"
                                   place="bottom"
                                   type="warning"
-                                  effect="float"
+                                  effect="solid"
                                 >
                                   <span>Preview</span>
                                 </ReactTooltip>
@@ -582,7 +582,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                   id="Upload"
                                   place="bottom"
                                   type="warning"
-                                  effect="float"
+                                  effect="solid"
                                 >
                                   <span>Upload</span>
                                 </ReactTooltip>
@@ -602,7 +602,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                     id="All Delete"
                                     place="bottom"
                                     type="warning"
-                                    effect="float"
+                                    effect="solid"
                                   >
                                     <span>Delete</span>
                                   </ReactTooltip>
@@ -642,7 +642,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                 id="Select"
                                 place="bottom"
                                 type="warning"
-                                effect="float"
+                                effect="solid"
                               >
                                 <span>Select</span>
                               </ReactTooltip>

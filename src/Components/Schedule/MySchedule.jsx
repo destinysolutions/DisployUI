@@ -608,7 +608,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           id="Delete"
                           place="bottom"
                           type="warning"
-                          effect="float"
+                          effect="solid"
                         >
                           <span>Delete</span>
                         </ReactTooltip>
@@ -627,7 +627,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             id="Delete"
                             place="bottom"
                             type="warning"
-                            effect="float"
+                            effect="solid"
                           >
                             <span>Delete</span>
                           </ReactTooltip>
@@ -650,7 +650,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             id="Select All"
                             place="bottom"
                             type="warning"
-                            effect="float"
+                            effect="solid"
                           >
                             <span>Select All</span>
                           </ReactTooltip>
@@ -900,7 +900,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                                 id="Edit"
                                                 place="bottom"
                                                 type="warning"
-                                                effect="float"
+                                                effect="solid"
                                               >
                                                 <span>Edit</span>
                                               </ReactTooltip>
@@ -930,7 +930,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                                 id="Set to Screen"
                                                 place="bottom"
                                                 type="warning"
-                                                effect="float"
+                                                effect="solid"
                                               >
                                                 <span>Set to Screen</span>
                                               </ReactTooltip>

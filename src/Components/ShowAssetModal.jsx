@@ -20,7 +20,6 @@ import {
   GET_ALL_SCHEDULE,
 } from "../Pages/Api";
 import { connection } from "../SignalR";
-import ReactPlayer from "react-player";
 import ShowAppsModal from "./ShowAppsModal";
 import {
   handleGetTextScrollData,

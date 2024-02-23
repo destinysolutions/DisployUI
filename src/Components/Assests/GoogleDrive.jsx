@@ -137,7 +137,7 @@ const GoogleDrive = () => {
           id="Google Drive"
           place="bottom"
           type="warning"
-          effect="float"
+          effect="solid"
         >
           <span>Google Drive</span>
         </ReactTooltip>

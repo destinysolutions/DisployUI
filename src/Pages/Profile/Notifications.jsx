@@ -245,7 +245,7 @@ const Billing = () => {
                               id="View"
                               place="bottom"
                               type="warning"
-                              effect="float"
+                              effect="solid"
                             >
                               <span>View</span>
                             </ReactTooltip>
@@ -266,7 +266,7 @@ const Billing = () => {
                               id="Add Price"
                               place="bottom"
                               type="warning"
-                              effect="float"
+                              effect="solid"
                             >
                               <span>Add Price</span>
                             </ReactTooltip>

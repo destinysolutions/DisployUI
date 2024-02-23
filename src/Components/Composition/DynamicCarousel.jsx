@@ -26,6 +26,7 @@ const Carousel = ({ items, compositonData, from }) => {
       <div className="h-full w-full p-1 bg-black">
         {items?.map((item, index) => {
           let viewerSrc = "";
+          console.log('item', item)
 
           if (
             item?.fileExtention === ".pdf" ||

@@ -284,7 +284,7 @@ const Userrole = ({ searchValue,sidebarOpen }) => {
                                     id="Edit"
                                     place="bottom"
                                     type="warning"
-                                    effect="float"
+                                    effect="solid"
                                   >
                                     <span>Edit</span>
                                   </ReactTooltip>

@@ -76,7 +76,7 @@ const DropboxUpload = () => {
             className="text-[#007de4] border-[#007de4]"
           />
         </button>
-        <ReactTooltip id="Dropbox" place="bottom" type="warning" effect="float">
+        <ReactTooltip id="Dropbox" place="bottom" type="warning" effect="solid">
           <span>Dropbox</span>
         </ReactTooltip>
       </DropboxChooser>

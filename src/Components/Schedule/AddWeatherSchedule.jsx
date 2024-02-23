@@ -270,7 +270,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       id="Save"
                       place="bottom"
                       type="warning"
-                      effect="float"
+                      effect="solid"
                     >
                       <span>Save</span>
                     </ReactTooltip>
@@ -291,7 +291,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       id="Edit Weather Schedule Name"
                       place="bottom"
                       type="warning"
-                      effect="float"
+                      effect="solid"
                     >
                       <span>Edit Weather Schedule Name</span>
                     </ReactTooltip>

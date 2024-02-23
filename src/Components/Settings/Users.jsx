@@ -2278,7 +2278,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                           id="View"
                                           place="bottom"
                                           type="warning"
-                                          effect="float"
+                                          effect="solid"
                                         >
                                           <span>View</span>
                                         </ReactTooltip>
@@ -2302,7 +2302,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                           id="Edit"
                                           place="bottom"
                                           type="warning"
-                                          effect="float"
+                                          effect="solid"
                                         >
                                           <span>Edit</span>
                                         </ReactTooltip>
@@ -2324,7 +2324,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                         id="Delete"
                                         place="bottom"
                                         type="warning"
-                                        effect="float"
+                                        effect="solid"
                                       >
                                         <span>Delete</span>
                                       </ReactTooltip>

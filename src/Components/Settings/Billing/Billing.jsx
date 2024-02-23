@@ -188,7 +188,7 @@ const Billing = () => {
                                 id="View"
                                 place="bottom"
                                 type="warning"
-                                effect="float"
+                                effect="solid"
                               >
                                 <span>View</span>
                               </ReactTooltip>
@@ -204,7 +204,7 @@ const Billing = () => {
                                 id="Delete"
                                 place="bottom"
                                 type="warning"
-                                effect="float"
+                                effect="solid"
                               >
                                 <span>Delete</span>
                               </ReactTooltip>

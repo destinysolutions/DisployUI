@@ -28,7 +28,6 @@ import toast from "react-hot-toast";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import ScreenAssignModal from "../ScreenAssignModal";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
-import ReactPlayer from "react-player";
 import textScrollLogo from "../../images/AppsImg/text-scroll-icon.svg";
 import { HiBackward } from "react-icons/hi2";
 import { connection } from "../../SignalR";

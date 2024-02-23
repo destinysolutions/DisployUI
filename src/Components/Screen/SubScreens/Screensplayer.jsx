@@ -46,6 +46,8 @@ import { handleUpdateScreenAsset } from "../../../Redux/Screenslice";
 import { TvStatus, connection } from "../../../SignalR";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { socket } from "../../../App";
+import { FaPauseCircle, FaPlayCircle } from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -57,6 +59,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [searchParams] = useSearchParams();
   const getScreenID = searchParams.get("screenID");
   const [screenData, setScreenData] = useState([]);
+  console.log('screenData', screenData)
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
   const [getScreenOrientation, setScreenOrientation] = useState([]);
@@ -116,14 +119,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedmediaTypeID, setSelectedMediaTypeID] = useState();
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [setscreenMacID, setSetscreenMacID] = useState(null);
-
+  const [isPlay, setIsPlay] = useState(true);
   const dispatch = useDispatch();
 
   const { timezones } = useSelector((s) => s.root.globalstates);
   const { allAppsData } = useSelector((s) => s.root.apps);
 
   const modalRef = useRef(null);
-  const modalPreviewRef = useRef(null);
   const scheduleRef = useRef(null);
   const compositionRef = useRef(null);
   const appRef = useRef(null);
@@ -453,6 +455,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
+          console.log('response', response)
           setLayotuDetails(response.data?.data[0]);
           setScreenType(response?.data?.data[0]?.screenType);
           setFetchLayoutLoading(false);
@@ -1506,7 +1509,63 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       "Default Media"}
                   </h4>
                 </div>
-                <div className="w-full flex justify-end">
+                <div className="w-full flex items-center gap-4 justify-end">
+                  {!isPlay ? (
+                    <button
+                      data-tip
+                      data-for="Play"
+                      type="button"
+                      // className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                      onClick={() => {
+                        setIsPlay(!isPlay);
+                        const Params = {
+                          id: socket.id,
+                          connection: socket.connected,
+                          macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
+                        };
+                        socket.emit('play',Params);
+                        // socket.emit('updateTime', time);
+
+                      }}
+                    >
+                      <FaPlayCircle size={24} />
+                      <ReactTooltip
+                        id="Play"
+                        place="bottom"
+                        type="warning"
+                        effect="solid"
+                      >
+                        <span>Play</span>
+                      </ReactTooltip>
+                    </button>
+                  ) : (
+                    <button
+                      data-tip
+                      data-for="Pause"
+                      type="button"
+                      // className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                      onClick={() => {
+                        setIsPlay(!isPlay);
+                        const Params = {
+                          id: socket.id,
+                          connection: socket.connected,
+                          macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
+                        };
+                        socket.emit('pause',Params);
+                        // socket.emit('updateTime', time);
+                      }}
+                    >
+                      <FaPauseCircle size={24} />
+                      <ReactTooltip
+                        id="Pause"
+                        place="bottom"
+                        type="warning"
+                        effect="solid"
+                      >
+                        <span>Pause</span>
+                      </ReactTooltip>
+                    </button>
+                  )}
                   <IoCloudUploadOutline
                     className="cursor-pointer"
                     size={24}
