@@ -258,3 +258,27 @@ export function removeDuplicates(arr) {
 export function kilometersToMeters(kilometers) {
   return kilometers * 1000; // 1 kilometer = 1000 meters
 }
+
+export function constructTimeObjects(getallTime, startDate, endDate, repeat, day, selectedTimeZone,allTimeZone) {
+  let arr1 = [];
+
+  getallTime?.map((item) => {
+      let data = {
+          startDate: `${startDate} 00:00:00`,
+          endDate: `${endDate} 00:00:00`,
+          startTime: `${item?.startTime}:${item?.startTimeSecond}`,
+          endTime: `${item?.endTime}:${item?.endTimeSecond}`,
+          isRepeat: repeat,
+          repeatDays: day.join(", "),
+          systemTimeZone: getTimeZoneName(allTimeZone,selectedTimeZone),
+      };
+      arr1?.push(data);
+  });
+
+  return arr1;
+}
+
+export const getTimeZoneName = (allTimeZone, selectedTimeZone) => {
+  const timeZoneObject = allTimeZone.find(item => item.timeZoneID === selectedTimeZone);
+  return timeZoneObject?.timeZoneName;
+};

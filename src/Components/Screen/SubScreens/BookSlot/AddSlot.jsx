@@ -7,7 +7,9 @@ import { FaPlusCircle, FaRegClock, FaRegQuestionCircle } from "react-icons/fa";
 import {
   IncludeExclude,
   buttons,
+  constructTimeObjects,
   getCurrentTime,
+  getTimeZoneName,
   getTodayDate,
   greenOptions,
   kilometersToMeters,
@@ -72,7 +74,6 @@ const AddSlot = () => {
   const hiddenFileInput = useRef(null);
   const [screenData, setScreenData] = useState([]);
   const [screenArea, setScreenArea] = useState([]);
-  console.log("screenArea", screenArea);
   const [allCity, setAllCity] = useState([]);
   const [city, setCity] = useState([]);
   const [Open, setOpen] = useState(false);
@@ -105,7 +106,7 @@ const AddSlot = () => {
   const [selectAllDays, setSelectAllDays] = useState(false);
   const [repeatDays, setRepeatDays] = useState([]);
   const [allTimeZone, setAllTimeZone] = useState([]);
-
+  
   const [allArea, setAllArea] = useState([]);
   const [selectedValue, setSelectedValue] = useState(1); // State to store the selected value
   const start = new Date(startDate);
@@ -124,7 +125,7 @@ const AddSlot = () => {
   const handleEndDateChange = (event) => {
     setEndDate(event.target.value);
   };
-
+  
   const FetchAllCity = () => {
     const config = {
       method: "get",
@@ -149,10 +150,13 @@ const AddSlot = () => {
 
   const FetchScreen = (Params) => {
     const config = {
-      method: "get",
+      method: "post",
       maxBodyLength: Infinity,
-      url: `${SCREEN_LIST}?latitude=${Params?.latitude}&&longitude=${Params?.longitude}&&Distance=${Params?.Distance}`,
-      headers: {},
+      url: `${SCREEN_LIST}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify(Params),
     };
     axios
       .request(config)
@@ -165,7 +169,7 @@ const AddSlot = () => {
             let obj = {
               let: item?.latitude,
               lon: item?.longitude,
-              dis: Params?.Distance,
+              dis: Params?.distance,
             };
             arr1?.push(obj);
           });
@@ -207,8 +211,18 @@ const AddSlot = () => {
         let Params = {
           latitude: item?.searchValue?.latitude,
           longitude: item?.searchValue?.longitude,
-          Distance: parseInt(e.target.value),
+          distance: parseInt(e.target.value),
+          dates: constructTimeObjects(
+            getallTime,
+            startDate,
+            endDate,
+            repeat,
+            day,
+            selectedTimeZone,
+            allTimeZone
+          ),
         };
+
         FetchScreen(Params);
         return {
           searchValue: item?.searchValue,
@@ -441,11 +455,22 @@ const AddSlot = () => {
         include: Number(selectedValue),
         area: 20,
       };
+
       let Params = {
         latitude: foundItem?.latitude,
         longitude: foundItem?.longitude,
-        Distance: 20,
+        distance: 20,
+        dates: constructTimeObjects(
+          getallTime,
+          startDate,
+          endDate,
+          repeat,
+          day,
+          selectedTimeZone,
+          allTimeZone
+        ),
       };
+      
       FetchScreen(Params);
       let arr = [...allArea];
       arr.push(obj);
@@ -528,7 +553,7 @@ const AddSlot = () => {
   };
 
   useEffect(() => {
-    if (page === 3) {
+    if (page === 2) {
       TimeZone();
     }
   }, [page]);
@@ -643,6 +668,27 @@ const AddSlot = () => {
               <div className="grid grid-cols-4 gap-4 w-full h-full">
                 <div className="col-span-4">
                   <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4 h-full">
+                    <div>TimeZone</div>
+                    <div className="flex items-center gap-2">
+                      {/* <IoEarthSharp /> */}
+                      <select
+                        className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
+                        id="selectOption"
+                        value={selectedTimeZone}
+                        onChange={handleSelectTimeZoneChange}
+                      >
+                        {allTimeZone?.map((timezone) => {
+                          return (
+                            <option
+                              value={timezone.timeZoneID}
+                              key={timezone.timeZoneID}
+                            >
+                              {timezone.timeZoneName}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
                     {!repeat && (
                       <div className="grid grid-cols-4 gap-4">
                         <div className="relative w-full col-span-2">
@@ -881,26 +927,9 @@ const AddSlot = () => {
                 <div className="grid grid-cols-3 gap-4 h-[93%] overflow-auto">
                   <div className="col-span-2 rounded-lg shadow-md bg-white p-5">
                     <div className="flex flex-col gap-2 h-full">
-                      <div>TimeZone</div>
-                      <div className="flex items-center gap-2">
-                        {/* <IoEarthSharp /> */}
-                        <select
-                          className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
-                          id="selectOption"
-                          value={selectedTimeZone}
-                          onChange={handleSelectTimeZoneChange}
-                        >
-                          {allTimeZone?.map((timezone) => {
-                            return (
-                              <option
-                                value={timezone.timeZoneID}
-                                key={timezone.timeZoneID}
-                              >
-                                {timezone.timeZoneName}
-                              </option>
-                            );
-                          })}
-                        </select>
+                      <div className="flex gap-2 items-center">
+                      <IoEarthSharp />
+                      <span className="">{getTimeZoneName(allTimeZone,selectedTimeZone)}</span>
                       </div>
                       {allArea?.map((item, index) => {
                         return (
