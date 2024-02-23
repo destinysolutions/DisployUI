@@ -120,6 +120,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [setscreenMacID, setSetscreenMacID] = useState(null);
   const [isPlay, setIsPlay] = useState(true);
+  console.log('isPlay', isPlay)
   const dispatch = useDispatch();
 
   const { timezones } = useSelector((s) => s.root.globalstates);
@@ -1151,7 +1152,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       url={playerData?.fileType}
                       className="w-full relative z-20 videoinner"
                       controls={true}
-                      playing={true}
+                      playing={isPlay}
                       loop={true}
                     />
                   )}
@@ -1519,11 +1520,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       onClick={() => {
                         setIsPlay(!isPlay);
                         const Params = {
-                          id: socket.id,
-                          connection: socket.connected,
+                          play:isPlay,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
-                        socket.emit('play',Params);
+                        socket.emit('play_pause',Params);
                         // socket.emit('updateTime', time);
 
                       }}
@@ -1547,11 +1547,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       onClick={() => {
                         setIsPlay(!isPlay);
                         const Params = {
-                          id: socket.id,
-                          connection: socket.connected,
+                        
+                          play:isPlay,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
-                        socket.emit('pause',Params);
+                        socket.emit('play_pause',Params);
                         // socket.emit('updateTime', time);
                       }}
                     >
