@@ -59,7 +59,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const currentDate = new Date();
   const [instanceName, setInstanceName] = useState(
-    moment(currentDate).format("YYYY-MM-DD hh:mm")
+    moment(currentDate).format("YYYY-MM-DD hh:mm A")
   );
 
   const modalRef = useRef(null);
@@ -96,6 +96,10 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   //Insert  API
   const addYoutubeApp = () => {
+    if (!YoutubeVideo?.includes("youtu.be")) {
+      toast.remove();
+      return toast.error("Please Enter Vaild Youtube URL");
+    }
     if (instanceName === "" || YoutubeVideo === "") {
       toast.remove();
       return toast.error("Please fill all the details");
@@ -208,6 +212,8 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => {
                   if (YoutubeVideo === "")
                     return toast.error("Please enter YouTube URL");
+                  if (!YoutubeVideo?.includes("youtu.be"))
+                    return toast.error("Please enter Valid YouTube URL");
                   setShowPreviewPopup(true);
                 }}
               >

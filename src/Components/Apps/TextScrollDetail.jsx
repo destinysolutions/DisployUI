@@ -34,7 +34,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const currentDate = new Date();
   const history = useNavigate();
   const [instanceName, setInstanceName] = useState(
-    moment(currentDate).format("YYYY-MM-DD hh:mm")
+    moment(currentDate).format("YYYY-MM-DD hh:mm A")
   );
 
   useEffect(() => {

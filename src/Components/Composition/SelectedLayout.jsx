@@ -44,7 +44,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [currentSection, setcurrentSection] = useState(1);
   const [Testasset, setTestasset] = useState({});
   const [compositionName, setCompositionName] = useState(
-    moment().format("YYYY-MM-DD hh:mm")
+    moment().format("YYYY-MM-DD hh:mm A")
   );
   const [assetData, setAssetData] = useState([]);
   const [addAsset, setAddAsset] = useState([]);

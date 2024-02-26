@@ -64,6 +64,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [assetAllData, setAssetAllData] = useState([]);
   const [getScreenOrientation, setScreenOrientation] = useState([]);
   const [selectScreenOrientation, setSelectScreenOrientation] = useState();
+  const [orientation, setOrientation] = useState();
   const [selectedTag, setSelectedTag] = useState("");
   const [tagsData, setTagsData] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
@@ -146,6 +147,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           handleFetchPreviewScreen(fetchedData[0]?.macid);
           setScreenData(fetchedData);
           setSelectScreenOrientation(fetchedData[0].screenOrientation);
+          setOrientation(fetchedData[0].screenOrientation)
           setSelectScreenResolution(fetchedData[0].screenResolution);
           setSelectedTimezoneName(fetchedData[0].timeZone);
           setSelectedTag(fetchedData[0].tags);
@@ -1067,7 +1069,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="relative screenplayer-section md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 mx-auto">
+            <div className="relative screenplayer-section mx-auto">
               <div className="w-full h-full pb-5 mx-auto">
                 {loading ? (
                   <div className="w-full h-full flex items-center justify-center">
@@ -1097,7 +1099,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                 ) : (
                   compositionData?.length > 0 &&
                   !loading && (
-                    <div className="relative z-0 mx-auto rounded-lg p-4 h-full w-full ">
+                    <div className={`relative z-0 mx-auto rounded-lg p-4
+                    ${orientation === 1 && "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"|| orientation === 2 && "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72" || orientation === 3 && "rotate180 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72" || orientation === 4 && "rotate270 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72" }
+                    `}>
                       {!fetchLayoutLoading &&
                         !loading &&
                         layotuDetails !== null &&
@@ -1151,7 +1155,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     Object.values(playerData).includes("OnlineVideo")) && (
                     <ReactPlayer
                       url={playerData?.fileType}
-                      className="md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 relative z-20 screenvideoinner"
+                      className={` ${orientation === 1 && "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"|| orientation === 2 && "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72" || orientation === 3 && "rotate180 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72" || orientation === 4 && "rotate270 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72" } relative z-20 screenvideoinner`}
                       controls={true}
                       playing={true}
                       loop={true}
@@ -1167,7 +1171,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     <img
                       src={playerData?.fileType}
                       alt="Media"
-                      className="md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 mx-auto object-fill"
+                      className={` ${orientation === 1 && "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"|| orientation === 2 && "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72" || orientation === 3 && "rotate180 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72" || orientation === 4 && "rotate270 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72" } mx-auto object-fill`}
                     />
                   )}
               </div>
