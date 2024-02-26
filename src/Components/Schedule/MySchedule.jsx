@@ -273,14 +273,22 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectedItems([]);
         dispatch(handleGetAllSchedule({ token }));
       }
+      let arr =[]
+      schedules?.map((item)=>{
+        selectedItems?.map((item1)=>{
+          if(item1 === item?.scheduleId){
+            arr.push(item?.maciDs)
+          }
+        })
+      })
       const Params = {
         id: socket.id,
         connection: socket.connected,
-        macId: schedules
-          ?.map((item) => item?.maciDs)
-          .join(",")
-          .replace(/^\s+/g, ""),
+        macId: arr
+        .join(",")
+        .replace(/^\s+/g, ""),
       };
+      
       socket.emit("ScreenConnected", Params);
       if (connection.state == "Disconnected") {
         connection
