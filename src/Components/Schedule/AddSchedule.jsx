@@ -620,6 +620,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 timeZoneName: timezone,
                 screenAssigned: selectedScreenIdsString,
                 operation: "Insert",
+                CreatedDate: new Date(),
               },
               {
                 headers: {
@@ -689,7 +690,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const isTouchDevice = () => {
-    return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+    return (
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      navigator.msMaxTouchPoints > 0
+    );
   };
 
   const handleSelectSlotWithTouch = (slotInfo) => {
@@ -697,7 +702,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       // Handle touch event for selecting slot
       // console.log('Selected slot:', slotInfo);
       handleSelectSlot(slotInfo);
-
     } else {
       // Handle mouse event for selecting slot
       handleSelectSlot(slotInfo);
@@ -806,9 +810,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   handleAssetChange={handleAssetChange}
                   scheduleAsset={scheduleAsset}
                   myEvents={myEvents}
-                /> 
+                />
               )}
-              
             </div>
             <div className=" bg-white lg:ml-5 md:ml-0  sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-6 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-5 sm:mt-3 xs:mt-3 ">
               {/* <div className="flex justify-center my-3 text-black font-semibold text-xl">
