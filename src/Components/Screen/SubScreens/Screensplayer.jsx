@@ -1133,6 +1133,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 <Carousel
                                   from="screen"
                                   items={compositionData[index][index + 1]}
+                                  isPlay={isPlay}
                                 />
                               </div>
                             );
@@ -1150,9 +1151,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     Object.values(playerData).includes("OnlineVideo")) && (
                     <ReactPlayer
                       url={playerData?.fileType}
-                      className="w-full relative z-20 videoinner"
+                      className="md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 relative z-20 screenvideoinner"
                       controls={true}
-                      playing={isPlay}
+                      playing={true}
                       loop={true}
                     />
                   )}
@@ -1166,7 +1167,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     <img
                       src={playerData?.fileType}
                       alt="Media"
-                      className="w-full h-full mx-auto object-fill"
+                      className="md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 mx-auto object-fill"
                     />
                   )}
               </div>
@@ -1511,14 +1512,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   </h4>
                 </div>
                 <div className="w-full flex items-center gap-4 justify-end">
-                  {!isPlay ? (
+                  {/* {!isPlay ? (
                     <button
                       data-tip
+                      id="toggleButton"
                       data-for="Play"
                       type="button"
                       // className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                       onClick={() => {
-                        setIsPlay(!isPlay);
+                        // setIsPlay(!isPlay);
+                        setIsPlay(prevIsPlay => !prevIsPlay);
                         const Params = {
                           play:isPlay,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
@@ -1541,13 +1544,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   ) : (
                     <button
                       data-tip
+                      id="toggleButton"
                       data-for="Pause"
                       type="button"
                       // className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                       onClick={() => {
-                        setIsPlay(!isPlay);
+                        // setIsPlay(!isPlay);
+                        setIsPlay(prevIsPlay => !prevIsPlay);
                         const Params = {
-                        
                           play:isPlay,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
@@ -1565,7 +1569,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         <span>Pause</span>
                       </ReactTooltip>
                     </button>
-                  )}
+                  )} */}
                   <IoCloudUploadOutline
                     className="cursor-pointer"
                     size={24}

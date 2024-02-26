@@ -1,32 +1,45 @@
 import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 
-const Carousel = ({ items, compositonData, from }) => {
+const Carousel = ({
+  items,
+  compositonData,
+  from,
+  isPlay,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const slideCount = items?.length;
     let interval;
     if (from === "screen") {
-      interval = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % slideCount);
-      }, items[currentIndex]?.durationInSecond * 1000);
+      if (isPlay) {
+        interval = setInterval(() => {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % slideCount);
+        }, items[currentIndex]?.durationInSecond * 1000);
+      } else {
+        clearInterval(interval);
+      }
     } else {
-      interval = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % slideCount);
-      }, items[currentIndex]?.duration * 1000);
+      if (isPlay) {
+        interval = setInterval(() => {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % slideCount);
+        }, items[currentIndex]?.duration * 1000);
+      } else {
+        clearInterval(interval);
+      }
     }
     return () => {
       clearInterval(interval);
     };
-  }, [items, currentIndex]);
+  }, [items, currentIndex, isPlay]);
 
   return (
     <>
       <div className="h-full w-full p-1 bg-black">
         {items?.map((item, index) => {
           let viewerSrc = "";
-          console.log('item', item)
+          console.log("item", item);
 
           if (
             item?.fileExtention === ".pdf" ||
@@ -96,7 +109,7 @@ const Carousel = ({ items, compositonData, from }) => {
                     width={"100%"}
                     height={"100%"}
                     controls={true}
-                    playing={true}
+                    playing={isPlay ? true : false}
                     loop={true}
                   />
                 )}
@@ -113,7 +126,7 @@ const Carousel = ({ items, compositonData, from }) => {
                     width={"100%"}
                     height={"100%"}
                     loop={true}
-                    playing={true}
+                    playing={isPlay ? true : false}
                   />
                 )}
                 {/* {item.assetType === "DOC" && (
@@ -141,10 +154,33 @@ const Carousel = ({ items, compositonData, from }) => {
                         ? "right"
                         : "left"
                     }
-                    scrollamount="10"
+                    scrollamount={isPlay === true ? "10" : "0"}
                   >
                     {item?.assetFolderPath || item?.fileType || item?.text}
                   </marquee>
+                  // <div class="marquee-container">
+                  //   <div class="marquee">Your scrolling text goes here</div>
+                  // </div>
+                  // <>
+                  //   {isPlay ? (
+                  //     <marquee
+                  //     ref={marqueeRef}
+                  //       className="text-3xl w-full h-full flex items-center text-white bg-black"
+                  //       direction={
+                  //         item?.scrollType === 1 ||
+                  //         item?.direction === "Left to Right"
+                  //           ? "right"
+                  //           : "left"
+                  //       }
+                  //     >
+                  //       {item?.assetFolderPath || item?.fileType || item?.text}
+                  //     </marquee>
+                  //   ) : (
+                  //     <div className="text-3xl w-full h-full flex items-center text-white bg-black">
+                  //       {item?.assetFolderPath || item?.fileType || item?.text}
+                  //     </div>
+                  //   )}
+                  // </>
                 )}
               </div>
             );

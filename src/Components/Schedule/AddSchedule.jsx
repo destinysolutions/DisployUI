@@ -58,7 +58,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [newScheduleNameInput, setNewScheduleNameInput] = useState(
     getScheduleName
       ? getScheduleName
-      : moment(current_date).format("YYYY-MM-DD hh:mm")
+      : moment(current_date).format("YYYY-MM-DD hh:mm A")
   );
   const [screenData, setScreenData] = useState([]);
   const [selectedScreens, setSelectedScreens] = useState([]);

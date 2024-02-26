@@ -781,7 +781,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
                                       {moment(schedule.createdDate).format(
-                                        "YYYY-MM-DD hh:mm"
+                                        "YYYY-MM-DD hh:mm A"
                                       )}
                                     </td>
                                     <td className="text-center text-[#5E5E5E]">
