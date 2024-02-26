@@ -17,6 +17,7 @@ import {
   UPDATED_SCHEDULE_DATA,
   UPDATE_SCREEN_ASSIGN,
   GET_SCEDULE_TIMEZONE,
+  GET_TIME_ZONE,
 } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
@@ -35,6 +36,7 @@ import { socket } from "../../App";
 import AddEventScheduleEditors from "./AddEventScheduleEditors";
 
 const localizer = momentLocalizer(moment);
+console.log("localizer", localizer);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
@@ -66,9 +68,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [getTimezone, setTimezone] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState();
-
+  const [selectedCurrentTime, setSelectedCurrentTime] = useState(new Date());
   const addedTimezoneName = searchParams.get("timeZoneName");
   const selectedScreenIdsString = selectedScreens.join(",");
+  
 
   const { user, token } = useSelector((s) => s.root.auth);
   const { assets } = useSelector((s) => s.root.asset);
@@ -145,6 +148,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const handleTimezoneSelect = (e) => {
     if (e.target.value != selectedTimezoneName && isEditingSchedule) {
       if (!window.confirm("Are you sure?")) return;
+      axios
+        .get(`${GET_TIME_ZONE}?TimeZone=${e.target.value}`, {
+          headers: {
+            Authorization: authToken,
+          },
+        })
+        .then((res) => {
+          setSelectedCurrentTime(new Date(res?.data?.currentDateTime));
+        });
       setSelectedTimezoneName(e.target.value);
       const id = isEditingSchedule ? getScheduleId : createdScheduleId;
 
@@ -157,6 +169,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         })
       );
     } else {
+      axios
+        .get(`${GET_TIME_ZONE}?TimeZone=${e.target.value}`, {
+          headers: {
+            Authorization: authToken,
+          },
+        })
+        .then((res) => {
+          setSelectedCurrentTime(new Date(res?.data?.currentDateTime));
+        });
       setSelectedTimezoneName(e.target.value);
       const id = isEditingSchedule ? getScheduleId : createdScheduleId;
 
@@ -609,7 +630,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 timeZoneName: "long",
               })
               .substring(4);
-
+        axios
+          .get(`${GET_TIME_ZONE}?TimeZone=${timezone}`, {
+            headers: {
+              Authorization: authToken,
+            },
+          })
+          .then((res) => {
+            setSelectedCurrentTime(new Date(res?.data?.currentDateTime));
+          });
         setSelectedTimezoneName(timezone);
         if (!isEditingSchedule) {
           axios
@@ -776,7 +805,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 onSelectEvent={handleSelectEvent}
                 onSelectSlot={handleSelectSlotWithTouch}
                 eventPropGetter={eventStyleGetter}
+                defaultDate={selectedCurrentTime}
                 length={31}
+                
               />
               {/* <EventEditor
                 isOpen={isCreatePopupOpen}

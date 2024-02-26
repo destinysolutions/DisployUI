@@ -110,7 +110,7 @@ export const ADD_UPDATE_ORGANIZATION_USER_ROLE = `${baseUrl}OrganizationUsersRol
 export const GET_ORG_USERS = `${baseUrl}UserMaster/GetOrgUsers`;
 export const GET_USER_SCREEN_DETAILS = `${baseUrl}UserMaster/GetUsetScreenDetails`;
 export const DELETE_ORG_USER = `${baseUrl}UserMaster/DeleteOrgUser`;
-
+export const GET_TIME_ZONE = `${baseUrl}ScheduleMaster/GetTimeZoneCurrentTime`
 // Weather App Api
 export const WEATHER_APP = `${baseUrl}WeatherApp/AddWeatherApp`;
 export const GET_All_WEATHER = `${baseUrl}WeatherApp/GetWeatherApp`;
