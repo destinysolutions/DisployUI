@@ -122,13 +122,13 @@ const App = () => {
 
     socket.on('ScreenConnected', (data) => {
       console.log('Received data from server:', data);
-      var b = document.getElementById(`changetvstatus${data.macId}`);
-      b.setAttribute(
-        "class",
-        "rounded-full px-6 py-2 text-white text-center " +
-          (data?.connection === true ? "bg-[#3AB700]" : "bg-[#FF0000]")
-      );
-      b.textContent = data?.connection === true ? "Live" : "offline";
+      // var b = document.getElementById(`changetvstatus${data.macId}`);
+      // b.setAttribute(
+      //   "class",
+      //   "rounded-full px-6 py-2 text-white text-center " +
+      //     (data?.connection === true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+      // );
+      // b.textContent = data?.connection === true ? "Live" : "offline";
     });
 
     socket.on('SendTvStatus', (data) => {

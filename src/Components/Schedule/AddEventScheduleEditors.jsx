@@ -19,6 +19,7 @@ import {
 } from "../../Redux/AppsSlice";
 import { useDispatch } from "react-redux";
 import PreviewAssets from "../Common/PreviewAssets";
+import { CurrentDateFormat } from "../Common/Common";
 const AddEventScheduleEditors = ({
   isOpen,
   onClose,
@@ -89,7 +90,12 @@ const AddEventScheduleEditors = ({
   };
 
   const currentDate = moment();
-  const today = moment().format("YYYY-MM-DD");
+  // const today = moment().format("YYYY-MM-DD");
+  // console.log('today', today)
+    let currTimestamp = Date.now();
+   const todaydate = (new Date(currTimestamp)).toUTCString(); 
+   const today = CurrentDateFormat(todaydate)
+   console.log('todaydate', todaydate)
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
     if (!showRepeatSettings) {
@@ -228,12 +234,14 @@ const AddEventScheduleEditors = ({
       toast.error("Please select Asset");
       return;
     }
-    if (editedStartDate < currentDate.format("YYYY-MM-DD")) {
+    // if (editedStartDate < currentDate.format("YYYY-MM-DD")) {
+    if (editedStartDate < today) {
       toast.remove();
       toast.error("Please Change Start Date.");
       return;
     } else if (showRepeatSettings) {
-      if (editedEndDate < currentDate.format("YYYY-MM-DD")) {
+      // if (editedEndDate < currentDate.format("YYYY-MM-DD")) {
+      if (editedEndDate < today) {
         toast.remove();
         toast.error("Please Change End Date.");
         return;

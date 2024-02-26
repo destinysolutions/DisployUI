@@ -282,3 +282,15 @@ export const getTimeZoneName = (allTimeZone, selectedTimeZone) => {
   const timeZoneObject = allTimeZone.find(item => item.timeZoneID === selectedTimeZone);
   return timeZoneObject?.timeZoneName;
 };
+
+export function CurrentDateFormat(dateString) {
+  // Create a Date object
+  var date = new Date(dateString);
+  // Extract year, month, and day components
+  var year = date.getUTCFullYear();
+  var month = ("0" + (date.getUTCMonth() + 1)).slice(-2); // Adding 1 because getUTCMonth() returns zero-based months
+  var day = ("0" + date.getUTCDate()).slice(-2);
+  // Construct the desired format
+  var convertedDate = year + "-" + month + "-" + day;
+  return convertedDate;
+}
