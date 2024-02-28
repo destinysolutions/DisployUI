@@ -373,45 +373,56 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
                   {/*Tab details*/}
                   <div className="col-span-3 w-full bg-white  tabdetails rounded-md relative">
-                    <div className={STabs === 1 ? "" : "hidden"}>
-                      <Users
-                        searchValue={searchValue}
-                        permissions={permissions}
-                        sidebarOpen={sidebarOpen}
-                      />
-                    </div>
-                    {/*End of userrole details*/}
-                    <div className={STabs === 2 ? "" : "hidden"}>
-                      <Userrole
-                        searchValue={searchValue}
-                        permissions={permissions}
-                        sidebarOpen={sidebarOpen}
-                      />
-                    </div>
-                    {/*End of users details*/}
-                    <div className={STabs === 3 ? "" : "hidden"}>
-                      <Storagelimit permissions={permissions} />
-                    </div>
+                    {STabs === 1 && (
+                      <div>
+                        <Users
+                          searchValue={searchValue}
+                          permissions={permissions}
+                          sidebarOpen={sidebarOpen}
+                        />
+                      </div>
+                    )}
+                    {STabs === 2 && (
+                      <div>
+                        <Userrole
+                          searchValue={searchValue}
+                          permissions={permissions}
+                          sidebarOpen={sidebarOpen}
+                        />
+                      </div>
+                    )}
+                    {STabs === 3 && (
+                      <div>
+                        <Storagelimit permissions={permissions} />
+                      </div>
+                    )}
                     {/*Storage Limits*/}
-                    <div className={STabs === 4 ? "" : "hidden"}>
-                      <Defaultmedia permissions={permissions} />
-                    </div>
-                    <div className={STabs === 5 ? "" : "hidden"}>
-                      <Billing permissions={permissions} />
-                    </div>
-                    <div className={STabs === 6 ? "" : "hidden"}>
-                      <Invoice
-                        permissions={permissions}
-                        showInvoice={showInvoice}
-                        setShowInvoice={setShowInvoice}
-                        InvoiceRef={InvoiceRef}
-                        DownloadInvoice={DownloadInvoice}
-                      />
-                    </div>
-
-                    <div className={STabs === 7 ? "" : "hidden"}>
-                      <Myplan />
-                    </div>
+                    {STabs === 4 && (
+                      <div>
+                        <Defaultmedia permissions={permissions} />
+                      </div>
+                    )}
+                    {STabs === 5 && (
+                      <div>
+                        <Billing permissions={permissions} />
+                      </div>
+                    )}
+                    {STabs === 6 && (
+                      <div>
+                        <Invoice
+                          permissions={permissions}
+                          showInvoice={showInvoice}
+                          setShowInvoice={setShowInvoice}
+                          InvoiceRef={InvoiceRef}
+                          DownloadInvoice={DownloadInvoice}
+                        />
+                      </div>
+                    )}
+                    {STabs === 7 && (
+                      <div>
+                        <Myplan />
+                      </div>
+                    )}
 
                     {/*Default Media*/}
                   </div>
