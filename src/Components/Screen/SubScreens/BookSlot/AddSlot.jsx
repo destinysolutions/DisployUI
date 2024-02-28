@@ -71,7 +71,7 @@ const AddSlot = () => {
   const [selectedTimeZone, setSelectedTimeZone] = useState();
   const [repeat, setRepeat] = useState(false);
   const [page, setPage] = useState(1);
-  const hiddenFileInput = useRef(null);
+  const hiddenFileInput = useRef([]);
   const [screenData, setScreenData] = useState([]);
   const [screenArea, setScreenArea] = useState([]);
   const [allCity, setAllCity] = useState([]);
@@ -106,7 +106,7 @@ const AddSlot = () => {
   const [selectAllDays, setSelectAllDays] = useState(false);
   const [repeatDays, setRepeatDays] = useState([]);
   const [allTimeZone, setAllTimeZone] = useState([]);
-  
+
   const [allArea, setAllArea] = useState([]);
   const [selectedValue, setSelectedValue] = useState(1); // State to store the selected value
   const start = new Date(startDate);
@@ -114,7 +114,7 @@ const AddSlot = () => {
   const dayDifference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
   const [selectedVal, setSelectedVal] = useState("");
   const [savedFile, setSavedFile] = useState([]);
-  console.log('savedFile', savedFile)
+
   const Screenoptions = multiOptions(screenData);
   const handleStartDateChange = (event) => {
     if (!repeat) {
@@ -126,7 +126,7 @@ const AddSlot = () => {
   const handleEndDateChange = (event) => {
     setEndDate(event.target.value);
   };
-  
+
   const FetchAllCity = () => {
     const config = {
       method: "get",
@@ -260,8 +260,8 @@ const AddSlot = () => {
     setPage(page - 1);
   };
 
-  const handleClick = (e) => {
-    hiddenFileInput.current.click();
+  const handleClick = (index) => {
+    hiddenFileInput.current[index].click();
   };
 
   const handleStartTimeChange = (index, value) => {
@@ -290,9 +290,9 @@ const AddSlot = () => {
 
   const handleFileChange = (index, event) => {
     const file = event.target.files[0];
-    const updatedTime = [...getallTime];
-    updatedTime[index].file = file;
-    setGetAllTime(updatedTime);
+    const updatedAllTime = [...getallTime];
+    updatedAllTime[index] = { ...updatedAllTime[index], file: file };
+    setGetAllTime(updatedAllTime);
   };
 
   const FileUpload = (formData) => {
@@ -471,7 +471,7 @@ const AddSlot = () => {
           allTimeZone
         ),
       };
-      
+
       FetchScreen(Params);
       let arr = [...allArea];
       arr.push(obj);
@@ -509,7 +509,7 @@ const AddSlot = () => {
           day: "2-digit",
           timeZoneName: "long",
         })
-        .substring(4)
+        .substring(4),
     });
 
     const config = {
@@ -815,17 +815,19 @@ const AddSlot = () => {
                                 </select>
                               </div>
                               <div className="relative w-full col-span-1 flex gap-4 items-center">
-                                <button onClick={handleClick}>
-                                  <MdCloudUpload size={30} />
-                                </button>
                                 <input
                                   type="file"
-                                  id="upload-button"
+                                  id={`upload-button-${index}`}
                                   accept="image/*, video/*"
                                   style={{ display: "none" }}
-                                  ref={hiddenFileInput}
+                                  ref={(input) =>
+                                    (hiddenFileInput.current[index] = input)
+                                  }
                                   onChange={(e) => handleFileChange(index, e)}
                                 />
+                                <button onClick={() => handleClick(index)}>
+                                  <MdCloudUpload size={30} />
+                                </button>
                                 <FaPlusCircle
                                   className="cursor-pointer"
                                   size={30}
@@ -935,8 +937,10 @@ const AddSlot = () => {
                   <div className="col-span-2 rounded-lg shadow-md bg-white p-5">
                     <div className="flex flex-col gap-2 h-full">
                       <div className="flex gap-2 items-center">
-                      <IoEarthSharp />
-                      <span className="">{getTimeZoneName(allTimeZone,selectedTimeZone)}</span>
+                        <IoEarthSharp />
+                        <span className="">
+                          {getTimeZoneName(allTimeZone, selectedTimeZone)}
+                        </span>
                       </div>
                       {allArea?.map((item, index) => {
                         return (
