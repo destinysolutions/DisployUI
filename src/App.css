@@ -1344,3 +1344,224 @@ table.screen-table {
 .rotate270 {
   transform: rotate(270deg);
 }
+
+.time-0-1 .rbc-current-time-indicator {
+  top: 1.39% !important;
+}
+.time-0-2 .rbc-current-time-indicator {
+  top: 2.78 !important;
+}
+.time-0-3 .rbc-current-time-indicator {
+  top: 4.167% !important;
+}
+.time-1-1 .rbc-current-time-indicator {
+  top: 5.56% !important;
+}
+.time-1-2 .rbc-current-time-indicator {
+  top: 6.95% !important;
+}
+.time-1-3 .rbc-current-time-indicator {
+  top: 8.33% !important;
+}
+.time-2-1 .rbc-current-time-indicator {
+  top: 9.73% !important;
+}
+.time-2-2 .rbc-current-time-indicator {
+  top: 11.12% !important;
+}
+.time-2-3 .rbc-current-time-indicator {
+  top: 12.5% !important;
+}
+.time-3-1 .rbc-current-time-indicator {
+  top: 13.9% !important;
+}
+.time-3-2 .rbc-current-time-indicator {
+  top: 15.29% !important;
+}
+.time-3-3 .rbc-current-time-indicator {
+  top: 16.67% !important;
+}
+.time-4-1 .rbc-current-time-indicator {
+  top: 18.07% !important;
+}
+.time-4-2 .rbc-current-time-indicator {
+  top: 19.46% !important;
+}
+.time-4-3 .rbc-current-time-indicator {
+  top: 20.83% !important;
+}
+.time-5-1 .rbc-current-time-indicator {
+  top: 22.24% !important;
+}
+.time-5-2 .rbc-current-time-indicator {
+  top: 23.63% !important;
+}
+.time-5-3 .rbc-current-time-indicator {
+  top: 25.02% !important;
+}
+.time-6-1 .rbc-current-time-indicator {
+  top: 26.41% !important;
+}
+.time-6-2 .rbc-current-time-indicator {
+  top: 27.8% !important;
+}
+.time-6-3 .rbc-current-time-indicator {
+  top: 29.169% !important;
+}
+.time-7-1 .rbc-current-time-indicator {
+  top: 30.58% !important;
+}
+.time-7-2 .rbc-current-time-indicator {
+  top: 31.97% !important;
+}
+.time-7-3 .rbc-current-time-indicator {
+  top: 33.33% !important;
+}
+.time-8-1 .rbc-current-time-indicator {
+  top: 34.75% !important;
+}
+.time-8-2 .rbc-current-time-indicator {
+  top: 36.14% !important;
+}
+.time-8-3 .rbc-current-time-indicator {
+  top: 37.5% !important;
+}
+.time-9-1 .rbc-current-time-indicator {
+  top: 38.92% !important;
+}
+.time-9-2 .rbc-current-time-indicator {
+  top: 40.31% !important;
+}
+.time-9-3 .rbc-current-time-indicator {
+  top: 41.67% !important;
+}
+.time-10-1 .rbc-current-time-indicator {
+  top: 43.09% !important;
+}
+.time-10-2 .rbc-current-time-indicator {
+  top: 44.48% !important;
+}
+.time-10-3 .rbc-current-time-indicator {
+  top: 45.84% !important;
+}
+.time-11-1 .rbc-current-time-indicator {
+  top: 47.26% !important;
+}
+.time-11-2 .rbc-current-time-indicator {
+  top: 48.65% !important;
+}
+.time-11-3 .rbc-current-time-indicator {
+  top: 50% !important;
+}
+.time-12-1 .rbc-current-time-indicator {
+  top: 51.43% !important;
+}
+.time-12-2 .rbc-current-time-indicator {
+  top: 52.82% !important;
+}
+.time-12-3 .rbc-current-time-indicator {
+  top: 54.17% !important;
+}
+.time-13-1 .rbc-current-time-indicator {
+  top: 55.6% !important;
+}
+.time-13-2 .rbc-current-time-indicator {
+  top: 56.99% !important;
+}
+.time-13-3 .rbc-current-time-indicator {
+  top: 58.34% !important;
+}
+.time-14-1 .rbc-current-time-indicator {
+  top: 59.7% !important;
+}
+.time-14-2 .rbc-current-time-indicator {
+  top: 61.16% !important;
+}
+.time-14-3 .rbc-current-time-indicator {
+  top: 62.5% !important;
+}
+.time-15-1 .rbc-current-time-indicator {
+  top: 63.94% !important;
+}
+.time-15-2 .rbc-current-time-indicator {
+  top: 65.33% !important;
+}
+.time-15-3 .rbc-current-time-indicator {
+  top: 66.66% !important;
+}
+.time-16-1 .rbc-current-time-indicator {
+  top: 68.11% !important;
+}
+.time-16-2 .rbc-current-time-indicator {
+  top: 69.5% !important;
+}
+.time-16-3 .rbc-current-time-indicator {
+  top: 70.84% !important;
+}
+.time-17-1 .rbc-current-time-indicator {
+  top: 72.28% !important;
+}
+.time-17-2 .rbc-current-time-indicator {
+  top: 73.67% !important;
+}
+.time-17-3 .rbc-current-time-indicator {
+  top: 75% !important;
+}
+.time-18-1 .rbc-current-time-indicator {
+  top: 76.45% !important;
+}
+.time-18-2 .rbc-current-time-indicator {
+  top: 77.84% !important;
+}
+.time-18-3 .rbc-current-time-indicator {
+  top: 79.17% !important;
+}
+.time-19-1 .rbc-current-time-indicator {
+  top: 80.62% !important;
+}
+.time-19-2 .rbc-current-time-indicator {
+  top: 82.01% !important;
+}
+.time-19-3 .rbc-current-time-indicator {
+  top: 83.34% !important;
+}
+.time-20-1 .rbc-current-time-indicator {
+  top: 84.79% !important;
+}
+.time-20-2 .rbc-current-time-indicator {
+  top: 86.18% !important;
+}
+.time-20-3 .rbc-current-time-indicator {
+  top: 87.5% !important;
+}
+.time-21-1 .rbc-current-time-indicator {
+  top: 88.96% !important;
+}
+.time-21-2 .rbc-current-time-indicator {
+  top: 90.35% !important;
+}
+.time-21-3 .rbc-current-time-indicator {
+  top: 91.67% !important;
+}
+.time-22-1 .rbc-current-time-indicator {
+  top: 93.13% !important;
+}
+.time-22-2 .rbc-current-time-indicator {
+  top: 94.52% !important;
+}
+.time-22-3 .rbc-current-time-indicator {
+  top: 95.84% !important;
+}
+.time-23-1 .rbc-current-time-indicator {
+  top: 97.3% !important;
+}
+.time-23-2 .rbc-current-time-indicator {
+  top: 98.69% !important;
+}
+.time-23-3 .rbc-current-time-indicator {
+  top: 100% !important;
+}
+
+.rbc-time-column {
+  background-color: #eaf6ff !important;
+}

@@ -36,7 +36,6 @@ import { socket } from "../../App";
 import AddEventScheduleEditors from "./AddEventScheduleEditors";
 
 const localizer = momentLocalizer(moment);
-console.log("localizer", localizer);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
@@ -71,8 +70,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedCurrentTime, setSelectedCurrentTime] = useState(new Date());
   const addedTimezoneName = searchParams.get("timeZoneName");
   const selectedScreenIdsString = selectedScreens.join(",");
-  
-
+  const currentHour = selectedCurrentTime.getHours();
+  const currentMinute = selectedCurrentTime.getMinutes();
+  const interval =
+    currentMinute < 20 ? 1 : currentMinute >= 20 && currentMinute <= 40 ? 2 : 3;
   const { user, token } = useSelector((s) => s.root.auth);
   const { assets } = useSelector((s) => s.root.asset);
 
@@ -630,15 +631,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 timeZoneName: "long",
               })
               .substring(4);
-        axios
-          .get(`${GET_TIME_ZONE}?TimeZone=${timezone}`, {
-            headers: {
-              Authorization: authToken,
-            },
-          })
-          .then((res) => {
-            setSelectedCurrentTime(new Date(res?.data?.currentDateTime));
-          });
+        // axios
+        //   .get(`${GET_TIME_ZONE}?TimeZone=${timezone}`, {
+        //     headers: {
+        //       Authorization: authToken,
+        //     },
+        //   })
+        //   .then((res) => {
+        //      setSelectedCurrentTime(new Date(res?.data?.currentDateTime));
+        //   });
         setSelectedTimezoneName(timezone);
         if (!isEditingSchedule) {
           axios
@@ -789,7 +790,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
 
           <div className="grid lg:grid-cols-12 md:grid-cols-6">
-            <div className="bg-white lg:col-span-9 md:col-span-7 sm:col-span-12 xs:col-span-12 lg:p-3 ">
+            <div
+              className={`bg-white lg:col-span-9 md:col-span-7 sm:col-span-12 xs:col-span-12 lg:p-3 time-${currentHour}-${interval}`}
+            >
               <DragAndDropCalendar
                 selectable
                 localizer={localizer}
@@ -805,9 +808,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 onSelectEvent={handleSelectEvent}
                 onSelectSlot={handleSelectSlotWithTouch}
                 eventPropGetter={eventStyleGetter}
-                defaultDate={selectedCurrentTime}
+                date={selectedCurrentTime}
                 length={31}
-                
+
               />
               {/* <EventEditor
                 isOpen={isCreatePopupOpen}
