@@ -223,15 +223,19 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     };
     let Screenkeys = Object.keys(DataRowAndCol);
     let allmacId = Screenkeys?.join(",");
-    dispatch(saveMergeData({ payload }));
-    const Params = {
-      id: socket.id,
-      connection: socket.connected,
-      macId: allmacId,
-    };
-    socket.emit("ScreenConnected", Params);
+    dispatch(saveMergeData({ payload }))?.then((res)=>{
+      if(res?.payload?.status === true){
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: allmacId,
+        };
+        socket.emit("ScreenConnected", Params);
+        navigation("/mergescreen");
+        
+      }
+    })
 
-    navigation("/mergescreen");
   };
 
   const onMergeClose = () => {
