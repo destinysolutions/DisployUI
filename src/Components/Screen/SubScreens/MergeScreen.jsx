@@ -100,7 +100,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const [itemsPerPage] = useState(10); // Adjust items per page as needed
   const [mergeData, setMergeData] = useState([]);
   const [loader, setLoader] = useState(false);
-
+  
   useEffect(() => {
     if (loadFirst) {
       setLoader(true);
@@ -145,15 +145,19 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const callSignalR = () => {
+    const macIds = mergeData
+      ?.map((item) =>
+        item?.mergeSubScreenDeatils?.map((screen) => screen?.macID)
+      )
+      .join(",")
+      .replace(/^\s+/g, "");
     const Params = {
       id: socket.id,
       connection: socket.connected,
-      macId: store?.data
-        ?.map((item) => item?.maciDs)
-        .join(",")
-        .replace(/^\s+/g, ""),
+      macId: macIds,
     };
     socket.emit("ScreenConnected", Params);
+
     if (connection.state === "Disconnected") {
       connection
         .start()
@@ -278,7 +282,22 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         dispatch(screenGroupDelete(item.mergeScreenId));
         setSelectedItems([]);
         setSelectAll(false);
-        callSignalR();
+        // callSignalR();
+        let allMacIDs = "";
+        mergeData?.map((items) => {
+          if (items?.mergeScreenId === item?.mergeScreenId) {
+            allMacIDs = items?.mergeSubScreenDeatils
+              ?.map((screen) => screen?.macID)
+              .join(",")
+              .replace(/^\s+/g, "");
+          }
+        });
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: allMacIDs,
+        };
+        socket.emit("ScreenConnected", Params);
       }
     });
   };
@@ -297,7 +316,24 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         dispatch(screenMergeDeleteAll(selectedItems));
         setSelectedItems([]);
         setSelectAll(false);
-        callSignalR();
+        let arrMacIDs = [];
+        mergeData?.forEach((items) => {
+          if (selectedItems?.includes(items?.mergeScreenId)) {
+            let macIDs = items?.mergeSubScreenDeatils
+              ?.map((screen) => screen?.macID)
+              .join(",");
+            arrMacIDs.push(macIDs);
+          }
+        });
+
+        const macId = arrMacIDs.join(",");
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: macId,
+        };
+        socket.emit("ScreenConnected", Params);
+        // callSignalR();
       }
     });
   };
@@ -871,7 +907,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                       d="M13 5H1m0 0 4 4M1 5l4-4"
                     />
                   </svg>
-                  {sidebarOpen ? "Previous" : ""} 
+                  {sidebarOpen ? "Previous" : ""}
                 </button>
 
                 <button
@@ -879,7 +915,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   disabled={currentPage === totalPages}
                   className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
-                   {sidebarOpen ? "Next" : ""}
+                  {sidebarOpen ? "Next" : ""}
                   <svg
                     className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                     aria-hidden="true"
