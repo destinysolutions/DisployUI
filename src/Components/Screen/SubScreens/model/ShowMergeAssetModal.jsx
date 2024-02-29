@@ -9,7 +9,10 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import ShowAppsModal from "../../../ShowAppsModal";
 import { useDispatch } from "react-redux";
-import { handleGetAllAssets, handleGetAllAssetsTypeBase } from "../../../../Redux/Assetslice";
+import {
+  handleGetAllAssets,
+  handleGetAllAssetsTypeBase,
+} from "../../../../Redux/Assetslice";
 import { GET_ASSET_DETAILS } from "../../../../Pages/Api";
 import PreviewAssets from "../../../Common/PreviewAssets";
 
@@ -100,25 +103,23 @@ const ShowAssetModal = ({
   }, [loadFist, store]);
 
   useEffect(() => {
-     if (type === 'Weather') {
-       const filteredAssets = store.data?.filter(
-         (asset) =>
-           asset.assetType !== "Folder" &&  asset.assetType !== "DOC" &&
-           asset.assetName.toLowerCase().includes(searchAssest)
-       );
-     setFilteredAssets(filteredAssets);
-
-     }else{
+    if (type === "Weather") {
+      const filteredAssets = store.data?.filter(
+        (asset) =>
+          asset.assetType !== "Folder" &&
+          asset.assetType !== "DOC" &&
+          asset.assetName.toLowerCase().includes(searchAssest)
+      );
+      setFilteredAssets(filteredAssets);
+    } else {
       const filteredAssets = store.data?.filter(
         (asset) =>
           asset.assetType !== "Folder" &&
           asset.assetName.toLowerCase().includes(searchAssest)
       );
       setFilteredAssets(filteredAssets);
-     }
-
+    }
   }, [searchAssest, store]);
-
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -136,13 +137,13 @@ const ShowAssetModal = ({
     };
   }, []);
 
-
   return (
     <>
-      <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-1/4 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
+      <div className="border-0 rounded-lg shadow-lg fixed fixed-popup z-9999 lg:max-w-[70vw] lg:min-w-[70vw] md:max-w-[70vw] md:min-w-[70vw] sm:max-w-[70vw] sm:min-w-[70vw] max-w-[85vw] min-w-[85vw] lg:m-auto md:m-auto sm:m-auto m-5 bg-white outline-none focus:outline-none ">
         <div
-          className={`${showAppModal ? "hidden" : ""
-            } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
+          className={`${
+            showAppModal ? "hidden" : ""
+          } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
         >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
@@ -156,8 +157,9 @@ const ShowAssetModal = ({
         </div>
         <div
           onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
-          className={`${showAppModal ? "hidden" : ""
-            } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
+          className={`${
+            showAppModal ? "hidden" : ""
+          } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
@@ -171,15 +173,17 @@ const ShowAssetModal = ({
                   >
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1 ? "active" : ""
-                        }`}
+                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                        popupActiveTab === 1 ? "active" : ""
+                      }`}
                       onClick={() => setPopupActiveTab(1)}
                     >
                       <span
-                        className={`p-1 rounded ${popupActiveTab === 1
+                        className={`p-1 rounded ${
+                          popupActiveTab === 1
                             ? "bg-primary text-white"
                             : "bg-lightgray"
-                          } `}
+                        } `}
                       >
                         <IoBarChartSharp size={15} />
                       </span>
@@ -190,7 +194,7 @@ const ShowAssetModal = ({
               )}
             </div>
 
-            <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
+            <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1 w-full">
               <div className={popupActiveTab !== 1 && "hidden"}>
                 <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                   <div className="mb-5 relative ">
@@ -204,10 +208,12 @@ const ShowAssetModal = ({
                     />
                   </div>
                   <Link to="/fileupload" target="_blank">
-                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                    <button
+                      className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
                       onClick={() => {
                         localStorage.setItem("isWindowClosed", "false");
-                      }}>
+                      }}
+                    >
                       Add New Assets
                     </button>
                   </Link>
@@ -235,11 +241,12 @@ const ShowAssetModal = ({
                           <>
                             <tbody key={asset.assetID}>
                               <tr
-                                className={`${selectedAsset === asset ||
-                                    selectedAsset === asset?.assetName
+                                className={`${
+                                  selectedAsset === asset ||
+                                  selectedAsset === asset?.assetName
                                     ? "bg-[#f3c953]"
                                     : ""
-                                  } border-b border-[#eee] text-center cursor-pointer hover:bg-black hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+                                } border-b border-[#eee] text-center cursor-pointer hover:bg-black hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
                                 onClick={() => {
                                   handleAssetAdd(asset);
                                   setAssetPreviewPopup(true);
@@ -261,78 +268,6 @@ const ShowAssetModal = ({
                         );
                       })}
                   </table>
-
-                  {/* {assetPreviewPopup && (
-                    <div className="fixed left-1/2 lg:top-[12%] md:top-1/3 sm:top-1/3 top-1/3 -translate-x-1/2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-50 inset-0">
-                      <div className="p-1 rounded-full text-white bg-primary absolute -top-3 -right-3">
-                        <button
-                          className="text-xl"
-                          onClick={() => setAssetPreviewPopup(false)}
-                        >
-                          <AiOutlineCloseCircle className="text-2xl" />
-                        </button>
-                      </div>
-                      <div className="fixed">
-                        {assetPreview && (
-                          <>
-                            {assetPreview.assetType === "OnlineImage" && (
-                              <div className="imagebox">
-                                <img
-                                  src={assetPreview.assetFolderPath}
-                                  alt={assetPreview.assetName}
-                                  className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-contain z-50 fixed"
-                                />
-                              </div>
-                            )}
-
-                            {assetPreview.assetType === "OnlineVideo" && (
-                              <div className="relative videobox">
-                                <video
-                                  controls
-                                  className="rounded-2xl md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
-                                >
-                                  <source
-                                    src={assetPreview.assetFolderPath}
-                                    type="video/mp4"
-                                  />
-                                  Your browser does not support the video tag.
-                                </video>
-                              </div>
-                            )}
-                            {assetPreview.assetType === "Image" && (
-                              <img
-                                src={assetPreview.assetFolderPath}
-                                alt={assetPreview.assetName}
-                                className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-contain z-50 fixed"
-                              />
-                            )}
-                            {assetPreview.assetType === "Video" && (
-                              <video
-                                controls
-                                className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-contain  z-50 fixed"
-                              >
-                                <source
-                                  src={assetPreview.assetFolderPath}
-                                  type="video/mp4"
-                                />
-                                Your browser does not support the video tag.
-                              </video>
-                            )}
-                            {assetPreview.assetType === "DOC" && (
-                              <a
-                                href={assetPreview.assetFolderPath}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 object-contain z-50 fixed"
-                              >
-                                {assetPreview.assetName}
-                              </a>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )} */}
                 </div>
               </div>
             </div>
@@ -340,18 +275,23 @@ const ShowAssetModal = ({
         </div>
 
         <div
-          className={`${showAppModal ? "hidden" : ""
-            } flex justify-between items-center p-5`}
+          className={`${
+            showAppModal ? "hidden" : ""
+          } lg:flex justify-between items-center pl-5 pr-5 pb-4`}
         >
-          <p className="text-black">Content will always be playing Confirm</p>
-          <button
-            className="bg-primary text-white rounded-full px-5 py-2"
-            onClick={() => {
-              handleOnConfirm();
-            }}
-          >
-            Confirm
-          </button>
+          <p className="text-black mb-3 text-left">
+            Content will always be playing Confirm
+          </p>
+          <p className="text-right">
+            <button
+              className="bg-primary text-white rounded-full px-5 py-2"
+              onClick={() => {
+                handleOnConfirm();
+              }}
+            >
+              Confirm
+            </button>
+          </p>
         </div>
       </div>
       {assetPreviewPopup && (

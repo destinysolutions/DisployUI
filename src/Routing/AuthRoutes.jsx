@@ -16,21 +16,31 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
             <Route path="/edituser" element={<Navigate to="/" />} />
             <Route path="/userprofile" element={<Navigate to="/" />} />
             <Route path="/mergescreen" element={<Navigate to="/" />} />
+            <Route path="/add-mergescreen" element={<Navigate to="/" />} />
             <Route path="/newscreengroup" element={<Navigate to="/" />} />
             <Route path="/screensplayer" element={<Navigate to="/" />} />
             <Route path="/newscreendetail" element={<Navigate to="/" />} />
             <Route path="/fileupload" element={<Navigate to="/" />} />
             <Route path="/assets" element={<Navigate to="/" />} />
+            <Route path="/assets-grid" element={<Navigate to="/" />} />
             <Route path="/apps" element={<Navigate to="/" />} />
             <Route path="/youtube" element={<Navigate to="/" />} />
             <Route path="/youtubedetail" element={<Navigate to="/" />} />
+            <Route path="/youtubedetail/:id" element={<Navigate to="/" />} />
             <Route path="/weather" element={<Navigate to="/" />} />
+            <Route path="/weatherdetail" element={<Navigate to="/" />} />
+            <Route path="/weatherdetail/:id" element={<Navigate to="/" />} />
             <Route path="/text-scroll" element={<Navigate to="/" />} />
+            <Route path="/textscrolldetail" element={<Navigate to="/" />} />
+            <Route path="/textscrolldetail/:id" element={<Navigate to="/" />} />
             <Route path="/composition" element={<Navigate to="/" />} />
             <Route path="/addcomposition" element={<Navigate to="/" />} />
+            <Route path="/addcomposition/:id" element={<Navigate to="/" />} />
+            <Route path="/editcomposition/:id/:layoutId" element={<Navigate to="/" />} />
             <Route path="/selectedlayout" element={<Navigate to="/" />} />
             <Route path="/disploystudio" element={<Navigate to="/" />} />
             <Route path="/reports" element={<Navigate to="/" />} />
+            <Route path="/reports/:report/:daily/:date" element={<Navigate to="/" />} />
             <Route path="/uptimereport" element={<Navigate to="/" />} />
             <Route path="/auditlogreport" element={<Navigate to="/" />} />
             <Route path="/salesreport" element={<Navigate to="/" />} />
@@ -39,6 +49,7 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
             <Route path="/myschedule" element={<Navigate to="/" />} />
             <Route path="/weatherschedule" element={<Navigate to="/" />} />
             <Route path="/addschedule" element={<Navigate to="/" />} />
+            <Route path="/addweatherschedule" element={<Navigate to="/" />} />
             <Route path="/saveassignscreenmodal" element={<Navigate to="/" />}/>
             <Route path="/approval" element={<Navigate to="/" />} />
             <Route path="/settings" element={<Navigate to="/" />} />

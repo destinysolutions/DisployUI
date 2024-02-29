@@ -211,6 +211,8 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       AssetName: selectedAsset?.assetName,
       AssetType: selectedAsset?.assetType,
       AssetURL: selectedAsset?.assetFolderPath,
+      Columns:selectedColumn?.value,
+      Rows:selectedRow?.value,
       userID: user?.userID,
       mediaDetailId: 0,
       noofScreens: allScreen,
