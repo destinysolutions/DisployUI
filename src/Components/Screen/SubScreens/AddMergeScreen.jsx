@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { SelectByUserScreen } from "../../../Redux/ScreenGroupSlice";
 import toast from "react-hot-toast";
 import { saveMergeData } from "../../../Redux/ScreenMergeSlice";
+import { socket } from "../../../App";
 
 const selectRow = [
   { value: 1, label: "1 Row" },
@@ -109,7 +110,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => { };
+  const handleAssetUpdate = () => {};
 
   const handleSave = () => {
     setAssetError(false);
@@ -136,12 +137,13 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       col,
       screenId: payload.screenID,
       screenName: payload.screenName,
+      macid: payload?.macid,
     };
 
     // Update DataRowAndCol to include the new button data
     setDataRowAndCol((prevState) => ({
       ...prevState,
-      [payload.screenID]: newButtonText,
+      [payload?.macid]: newButtonText,
     }));
 
     setButtonTexts((prevState) => ({
@@ -211,15 +213,24 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       AssetName: selectedAsset?.assetName,
       AssetType: selectedAsset?.assetType,
       AssetURL: selectedAsset?.assetFolderPath,
-      Columns:selectedColumn?.value,
-      Rows:selectedRow?.value,
+      Columns: selectedColumn?.value,
+      Rows: selectedRow?.value,
       userID: user?.userID,
       mediaDetailId: 0,
       noofScreens: allScreen,
       updatedDate: "2024-01-23T13:27:46.404Z",
       mergeSubScreenDeatils: transformScreenObject(DataRowAndCol, user),
     };
+    let Screenkeys = Object.keys(DataRowAndCol);
+    let allmacId = Screenkeys?.join(",");
     dispatch(saveMergeData({ payload }));
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId: allmacId,
+    };
+    socket.emit("ScreenConnected", Params);
+
     navigation("/mergescreen");
   };
 
@@ -375,11 +386,12 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                 ).map((col) => (
                                   <div
                                     key={col}
-                                    className={`shadow btn-display rounded-lg text-black ${selectedButton.row === row &&
-                                        selectedButton.col === col
+                                    className={`shadow btn-display rounded-lg text-black ${
+                                      selectedButton.row === row &&
+                                      selectedButton.col === col
                                         ? "selected"
                                         : ""
-                                      }`}
+                                    }`}
                                     onClick={() =>
                                       handleDisplayButtonClick(row, col)
                                     }
@@ -393,7 +405,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                       textAlign: "center",
                                       backgroundColor:
                                         selectedButton.row === row &&
-                                          selectedButton.col === col
+                                        selectedButton.col === col
                                           ? "#FFD700"
                                           : "#f0f8ff",
                                     }}

@@ -82,6 +82,7 @@ const ScreenGroupModal = ({
       screenID: selectedItems,
       screenName: getName.screenName,
       screenStatus: getName.screenStatus,
+      macid:getName?.macid,
       tags: getName.tags,
     };
     await handleSaveNew(payLoad);
