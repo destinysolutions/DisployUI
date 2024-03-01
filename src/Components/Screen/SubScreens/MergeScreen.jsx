@@ -393,7 +393,25 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       FilePath: selectedAsset.assetFolderPath,
       MediaDetailID: 1,
     };
-    dispatch(groupAssetsInUpdateScreen(payload));
+    dispatch(groupAssetsInUpdateScreen(payload)).then((res)=>{
+      if(res?.payload?.status === true){
+        let allMacIDs = "";
+        mergeData?.map((item) => {
+          if (item?.mergeScreenId === getGroup?.mergeScreenId) {
+            allMacIDs = item?.mergeSubScreenDeatils
+              ?.map((screen) => screen?.macID)
+              .join(",")
+              .replace(/^\s+/g, "");
+          }
+        });
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: allMacIDs,
+        };
+        socket.emit("ScreenConnected", Params);
+      }
+    });
   };
 
   const handleOpenPreview = (item) => {
