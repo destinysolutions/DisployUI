@@ -977,9 +977,10 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
           </div>
+          <Footer />
         </>
       )}
-      
+
       {/* Model */}
       {showAssetModal && (
         <ShowAssetModal
@@ -1014,8 +1015,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           setAssetPreviewPopup={setIsPreviewOpen}
         />
       )}
-
-      <Footer />
     </>
   );
 };

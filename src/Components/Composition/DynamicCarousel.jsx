@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 
-const Carousel = ({
-  items,
-  compositonData,
-  from,
-  isPlay,
-}) => {
+const Carousel = ({ items, compositonData, from, isPlay }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const marqueeRef = useRef(null);
   useEffect(() => {
     const slideCount = items?.length;
     let interval;
@@ -146,41 +141,39 @@ const Carousel = ({
                 {(item?.assetType === "Text" ||
                   item?.mediaType === "Text" ||
                   item?.text !== undefined) && (
-                  <marquee
-                    className="text-3xl w-full h-full flex items-center text-white bg-black"
-                    direction={
-                      item?.scrollType == 1 ||
-                      item?.direction == "Left to Right"
-                        ? "right"
-                        : "left"
-                    }
-                    scrollamount={isPlay === true ? "10" : "0"}
-                  >
-                    {item?.assetFolderPath || item?.fileType || item?.text}
-                  </marquee>
-                  // <div class="marquee-container">
-                  //   <div class="marquee">Your scrolling text goes here</div>
-                  // </div>
-                  // <>
-                  //   {isPlay ? (
-                  //     <marquee
-                  //     ref={marqueeRef}
-                  //       className="text-3xl w-full h-full flex items-center text-white bg-black"
-                  //       direction={
-                  //         item?.scrollType === 1 ||
-                  //         item?.direction === "Left to Right"
-                  //           ? "right"
-                  //           : "left"
-                  //       }
-                  //     >
-                  //       {item?.assetFolderPath || item?.fileType || item?.text}
-                  //     </marquee>
-                  //   ) : (
-                  //     <div className="text-3xl w-full h-full flex items-center text-white bg-black">
-                  //       {item?.assetFolderPath || item?.fileType || item?.text}
-                  //     </div>
-                  //   )}
-                  // </>
+                  // <marquee
+                  //   className="text-3xl w-full h-full flex items-center text-white bg-black"
+                  //   direction={
+                  //     item?.scrollType == 1 ||
+                  //     item?.direction == "Left to Right"
+                  //       ? "right"
+                  //       : "left"
+                  //   }
+                  //   scrollamount={isPlay === true ? "10" : "0"}
+                  // >
+                  //   {item?.assetFolderPath || item?.fileType || item?.text}
+                  // </marquee>
+
+                  <>
+                    {isPlay ? (
+                      <marquee
+                        ref={marqueeRef}
+                        className="text-3xl w-full h-full flex items-center text-white bg-black"
+                        direction={
+                          item?.scrollType === 1 ||
+                          item?.direction === "Left to Right"
+                            ? "right"
+                            : "left"
+                        }
+                      >
+                        {item?.assetFolderPath || item?.fileType || item?.text}
+                      </marquee>
+                    ) : (
+                      <div className="text-3xl w-full h-full flex items-center justify-center text-white bg-black line-clamp-1">
+                        {item?.assetFolderPath || item?.fileType || item?.text}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             );

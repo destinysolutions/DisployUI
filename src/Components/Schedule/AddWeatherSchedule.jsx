@@ -320,7 +320,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       }}
                       className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                     >
-                      <p className="line-clamp-2">
+                      <p className="line-clamp-1">
                         {selectedAsset.assetName
                           ? selectedAsset.assetName
                           : "Select Asset Name"}

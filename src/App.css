@@ -1894,3 +1894,19 @@ table.screen-table {
   width: 20% !important;
   height: 20% !important;
 }
+
+.row-1{
+  height: 100% !important;
+}
+.row-2{
+  height: 50% !important;
+}
+.row-3{
+  height: 33.33% !important;
+}
+.row-4{
+  height: 25% !important;
+}
+.row-5{
+  height: 20% !important;
+}

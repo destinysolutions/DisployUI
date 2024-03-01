@@ -1,5 +1,6 @@
 import React from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import ReactPlayer from "react-player";
 
 const PreviewMerge = ({ assetPreview, setAssetPreviewPopup }) => {
   console.log("assetPreview", assetPreview);
@@ -121,10 +122,13 @@ const PreviewMerge = ({ assetPreview, setAssetPreviewPopup }) => {
                   });
                 })}
               </div> */}
-              <div className="fixed flex bg-white flex-col gap-2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72">
+              <div className="fixed flex bg-white flex-col md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72">
                 {/* Loop through each row */}
                 {Rows.map((row) => (
-                  <div key={`row-${row}`} className="flex flex-row gap-2 w-full h-full">
+                  <div
+                    key={`row-${row}`}
+                    className={`flex flex-row w-full row-${assetPreview?.rows}`}
+                  >
                     {/* Loop through each column in the row */}
                     {Cols.map((col) => {
                       // Find the asset that matches the current row and column
@@ -134,69 +138,105 @@ const PreviewMerge = ({ assetPreview, setAssetPreviewPopup }) => {
                             asset.positionX === col && asset.positionY === row
                         );
                       // Render the asset if found
-                      return matchingAsset && (
-                        // <div key={`asset-${matchingAsset.mergeSubScreenDeatilsId}`} className={`asset-crop-${assetPreview?.rows}-${assetPreview?.columns}`}>
-                        <div key={`asset-${matchingAsset.mergeSubScreenDeatilsId}`}>
+                      return (
+                        matchingAsset && (
+                          // <div key={`asset-${matchingAsset.mergeSubScreenDeatilsId}`} className={`asset-crop-${assetPreview?.rows}-${assetPreview?.columns}`}>
+                          <div
+                            key={`asset-${matchingAsset.mergeSubScreenDeatilsId}`}
+                            className="w-full h-full border-2 border-white"
+                          >
+                            {matchingAsset.assetType === "OnlineImage" && (
+                              <img
+                                src={
+                                  matchingAsset.assetFolderPath ||
+                                  matchingAsset.assetURL ||
+                                  matchingAsset.filePath
+                                }
+                                alt={
+                                  matchingAsset.assetName ||
+                                  matchingAsset.assetURL ||
+                                  matchingAsset.filePath
+                                }
+                                className="imagebox z-50 w-full h-full"
+                              />
+                            )}
+                            {matchingAsset.assetType === "OnlineVideo" && (
+                              // <div className="relative videobox">
+                              //   <video
+                              //     controls={false}
+                              //     className="rounded-2xl w-full h-full"
+                              //     autoPlay
+                              //     loop
+                              //     playsInline
+                              //   >
+                              //     <source
+                              //       src={
+                              //         matchingAsset.assetFolderPath ||
+                              //         matchingAsset.assetURL ||
+                              //         matchingAsset.filePath
+                              //       }
+                              //       type="video/mp4"
+                              //     />
+                              //     Your browser does not support the video tag.
+                              //   </video>
+                              // </div>
+                              <ReactPlayer
+                                url={
+                                  matchingAsset.assetFolderPath ||
+                                  matchingAsset.assetURL ||
+                                  matchingAsset.filePath
+                                }
+                                className="w-full h-full object-fill"
+                                width={"100%"}
+                                height={"100%"}
+                                controls={false}
+                                playing={true}
+                                loop={true}
+                              />
+                            )}
+                            {matchingAsset.assetType === "Image" && (
+                              <img
+                                src={
+                                  matchingAsset.assetFolderPath ||
+                                  matchingAsset?.assetURL ||
+                                  matchingAsset?.filePath
+                                }
+                                alt={
+                                  matchingAsset.assetName ||
+                                  matchingAsset?.assetURL ||
+                                  matchingAsset?.filePath
+                                }
+                                className="imagebox w-full h-full"
+                              />
+                            )}
+                            {matchingAsset.assetType === "Video" && (
+                              // <video
+                              //   controls={false}
+                              //   autoPlay
+                              //   loop
+                              //   playsInline
+                              //   className="imagebox w-full h-full"
+                              // >
+                              //   <source
+                              //     src={matchingAsset?.filePath}
+                              //     type="video/mp4"
+                              //   />
+                              //   Your browser does not support the video tag.
+                              // </video>
 
-                          {matchingAsset.assetType === "OnlineImage" && (
-                            <img
-                              src={
-                                matchingAsset.assetFolderPath ||
-                                matchingAsset.assetURL ||
-                                matchingAsset.filePath
-                              }
-                              alt={
-                                matchingAsset.assetName ||
-                                matchingAsset.assetURL ||
-                                matchingAsset.filePath
-                              }
-                              className="imagebox z-50 w-full h-full"
-                            />
-                          )}
-                          {matchingAsset.assetType === "OnlineVideo" && (
-                            <div className="relative videobox">
-                              <video
-                                controls
-                                className="rounded-2xl w-full h-full"
-                              >
-                                <source
-                                  src={
-                                    matchingAsset.assetFolderPath ||
-                                    matchingAsset.assetURL ||
-                                    matchingAsset.filePath
-                                  }
-                                  type="video/mp4"
-                                />
-                                Your browser does not support the video tag.
-                              </video>
-                            </div>
-                          )}
-                          {matchingAsset.assetType === "Image" && (
-                            <img
-                              src={
-                                matchingAsset.assetFolderPath ||
-                                matchingAsset?.assetURL ||
-                                matchingAsset?.filePath
-                              }
-                              alt={
-                                matchingAsset.assetName ||
-                                matchingAsset?.assetURL ||
-                                matchingAsset?.filePath
-                              }
-                              className="imagebox w-full h-full"
-                            />
-                          )}
-                          {matchingAsset.assetType === "Video" && (
-                            <video
-                              controls
-                              className="imagebox w-full h-full"
-                            >
-                              <source src={matchingAsset?.filePath} type="video/mp4" />
-                              Your browser does not support the video tag.
-                            </video>
-                          )}
-                        </div>
-                      )
+                              <ReactPlayer
+                                url={matchingAsset?.filePath}
+                                className="w-full h-full object-fill"
+                                width={"100%"}
+                                height={"100%"}
+                                controls={false}
+                                playing={true}
+                                loop={true}
+                              />
+                            )}
+                          </div>
+                        )
+                      );
                     })}
                   </div>
                 ))}

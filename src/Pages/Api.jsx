@@ -104,7 +104,11 @@ export const GET_ASSET_DETAILS = `${baseUrl}AssetMaster/GetAssetDetails`;
 export const DELETE_ALL_ASSET = `${baseUrl}AssetMaster/DeleteAllAsset`;
 export const ASSIGN_COMPOSITION_TO_SCREEN = `${baseUrl}CompositionMaster/AssignCompoitiontoScreen`;
 export const GET_DEFAULT_ASSET = `${baseUrl}UserMaster/GetDefaultAsset`;
+export const GET_EMERGENCY_ASSET = `${baseUrl}UserMaster/GetEmergencyAsset`;
+
 export const SAVE_DEFAULT_ASSET = `${baseUrl}UserMaster/SaveDefaultAsset`;
+export const SAVE_EMERGENCY_ASSET = `${baseUrl}UserMaster/SaveEmergencyAsset`;
+
 export const ADD_STORAGE = `${baseUrl}Storage/AddStorage`;
 export const ADD_UPDATE_ORGANIZATION_USER_ROLE = `${baseUrl}OrganizationUsersRole/AddUpdateOrganizationUsersRole`;
 export const GET_ORG_USERS = `${baseUrl}UserMaster/GetOrgUsers`;
