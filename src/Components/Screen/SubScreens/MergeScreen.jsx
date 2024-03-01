@@ -387,6 +387,8 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSave = () => {
     const payload = {
       MergeScreenId: getGroup.mergeScreenId,
+      Columns: getGroup?.columns,
+      Rows: getGroup?.rows,
       MediaID: selectedAsset.assetID,
       AssetName: selectedAsset.assetName,
       AssetType: selectedAsset.assetType,
