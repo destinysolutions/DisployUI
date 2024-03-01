@@ -29,8 +29,8 @@ const PreviewAssets = ({ assetPreview, setAssetPreviewPopup }) => {
                     {assetPreview.assetType === "OnlineImage" && (
                       <div>
                         <img
-                          src={assetPreview.assetFolderPath}
-                          alt={assetPreview.assetName}
+                          src={assetPreview.assetFolderPath || assetPreview?.assetURL}
+                          alt={assetPreview.assetName || assetPreview?.assetURL}
                           className="imagebox z-50 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 fixed"
                         />
                       </div>
@@ -43,7 +43,7 @@ const PreviewAssets = ({ assetPreview, setAssetPreviewPopup }) => {
                           className="rounded-2xl md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
                         >
                           <source
-                            src={assetPreview.assetFolderPath}
+                            src={assetPreview.assetFolderPath || assetPreview?.assetURL}
                             type="video/mp4"
                           />
                           Your browser does not support the video tag.
@@ -52,8 +52,8 @@ const PreviewAssets = ({ assetPreview, setAssetPreviewPopup }) => {
                     )}
                     {assetPreview.assetType === "Image" && (
                       <img
-                        src={assetPreview.assetFolderPath}
-                        alt={assetPreview.assetName}
+                        src={assetPreview.assetFolderPath || assetPreview?.assetURL}
+                        alt={assetPreview.assetName || assetPreview?.assetURL}
                         className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
                       />
                     )}
@@ -63,7 +63,7 @@ const PreviewAssets = ({ assetPreview, setAssetPreviewPopup }) => {
                         className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
                       >
                         <source
-                          src={assetPreview.assetFolderPath}
+                          src={assetPreview.assetFolderPath || assetPreview?.assetURL}
                           type="video/mp4"
                         />
                         Your browser does not support the video tag.

@@ -44,6 +44,7 @@ import ReactTooltip from "react-tooltip";
 import axios from "axios";
 import moment from "moment";
 import { socket } from "../../../App";
+import PreviewAssets from "../../Common/PreviewAssets";
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
 
@@ -980,11 +981,18 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {isPreviewOpen && (
+      {/* {isPreviewOpen && (
         <PreviewModel
           open={isPreviewOpen}
           onClose={handleClosePreview}
           previewData={previewData}
+        />
+      )} */}
+
+      {isPreviewOpen && (
+        <PreviewAssets
+        assetPreview={previewData}
+        setAssetPreviewPopup={setIsPreviewOpen}
         />
       )}
 
