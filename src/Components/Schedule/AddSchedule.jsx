@@ -34,6 +34,7 @@ import {
 import { connection } from "../../SignalR";
 import { socket } from "../../App";
 import AddEventScheduleEditors from "./AddEventScheduleEditors";
+import { formatDate } from "../Common/Common";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
@@ -68,6 +69,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [getTimezone, setTimezone] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState();
   const [selectedCurrentTime, setSelectedCurrentTime] = useState(new Date());
+  console.log('first', selectedCurrentTime)
+  const selectDate = formatDate(selectedCurrentTime)
+  const TodayDate = formatDate(new Date())
+
   const addedTimezoneName = searchParams.get("timeZoneName");
   const selectedScreenIdsString = selectedScreens.join(",");
   const currentHour = selectedCurrentTime.getHours();
@@ -794,6 +799,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               className={`bg-white lg:col-span-9 md:col-span-7 sm:col-span-12 xs:col-span-12 lg:p-3 time-${currentHour}-${interval}`}
             >
               <DragAndDropCalendar
+                className={`${
+                  selectDate === TodayDate ? "" : `date-line timezone-${currentHour}-${interval}`
+                }`}
                 selectable
                 localizer={localizer}
                 events={myEvents}
@@ -810,8 +818,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 eventPropGetter={eventStyleGetter}
                 date={selectedCurrentTime}
                 length={31}
-
               />
+
               {/* <EventEditor
                 isOpen={isCreatePopupOpen}
                 onClose={handleCloseCreatePopup}

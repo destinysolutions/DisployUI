@@ -80,7 +80,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const [label, setLabel] = useState("");
   const allScreen = selectedRow?.value * selectedColumn?.value;
   const objectLength = Object.keys(DataRowAndCol).length;
-
+  
   useEffect(() => {
     let config = {
       method: "get",
@@ -204,6 +204,8 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     if (allScreen !== objectLength) {
       setScreenError(true);
       hasError = true;
+    }else{
+      setScreenError(false);
     }
     if (hasError) {
       return;
@@ -268,7 +270,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
               </Link>
             </div>
 
-            {store && store.data?.length > 0 ? (
+            {!loadFirst && store?.data?.length > 0 && (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                   <div className="flex justify-center">
@@ -435,7 +437,8 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 </div>
               </>
-            ) : (
+            )}
+            {!loadFirst && store?.data?.length === 0 && (
               <>
                 <div className="mt-5 w-full flex flex-col gap-2 p-4 text-center bg-white rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
                   <div className="w-full h-full flex items-center justify-center">

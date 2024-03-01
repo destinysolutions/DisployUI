@@ -21,7 +21,7 @@ const ScreenGroupModal = ({
   editSelectedScreen,
   updateScreen,
   isOpen,
-  sidebarOpen
+  sidebarOpen,
 }) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.root.screenGroup.screenData);
@@ -71,7 +71,7 @@ const ScreenGroupModal = ({
   };
 
   const handleSaveScreen = async () => {
-    if(selectedItems === null){
+    if (selectedItems === null) {
       toast.error("Please Select Screen");
       return;
     }
@@ -82,7 +82,7 @@ const ScreenGroupModal = ({
       screenID: selectedItems,
       screenName: getName.screenName,
       screenStatus: getName.screenStatus,
-      macid:getName?.macid,
+      macid: getName?.macid,
       tags: getName.tags,
     };
     await handleSaveNew(payLoad);
@@ -115,9 +115,9 @@ const ScreenGroupModal = ({
                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg screen-table-th">
                     <th
                       scope="col"
-                      className="text-[#5A5881] text-sm font-semibold p-2"
+                      className="text-[#5A5881] text-sm font-semibold p-2 pl-5"
                     >
-                      <div className="text-center">Screen</div>
+                      <div className="text-left">Screen</div>
                     </th>
 
                     <th
@@ -160,13 +160,11 @@ const ScreenGroupModal = ({
                     paginatedData?.map((screen) => (
                       <tr
                         key={screen.screenID}
-                        onClick={() =>
-                          handleCheckboxChange(screen.screenID)
-                        }
+                        onClick={() => handleCheckboxChange(screen.screenID)}
                         className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
                       >
-                        <td className="">
-                          <div className="text-center">
+                        <td className="text-left">
+                          <div className="text-left">
                             <input
                               type="checkbox"
                               className="mr-3"
@@ -205,14 +203,18 @@ const ScreenGroupModal = ({
                           style={{ wordBreak: "break-all" }}
                         >
                           <div className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-aut hover:shadow-primary-500/50">
-                            <p className="line-clamp-2">{screen.assetName}</p>
+                            <p className="line-clamp-1">{screen.assetName}</p>
                             <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
                           </div>
                         </td>
 
                         <td className="text-center break-words">
-                          {screen.scheduleName} Till{" "}
-                          {moment(screen.endDate).format("YYYY-MM-DD hh:mm")}
+                          {screen.scheduleName === ""
+                            ? ""
+                            : `${screen.scheduleName} Till ${moment(
+                                screen.endDate
+                              ).format("YYYY-MM-DD hh:mm")}`}
+                          
                         </td>
 
                         <td className="text-center break-words">

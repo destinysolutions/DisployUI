@@ -294,3 +294,15 @@ export function CurrentDateFormat(dateString) {
   var convertedDate = year + "-" + month + "-" + day;
   return convertedDate;
 }
+
+export function formatDate(dateString) {
+  let date = new Date(dateString);
+
+  let day = date.getDate().toString().padStart(2, '0');
+  let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+  let year = date.getFullYear();
+
+  let formattedDate = `${day}/${month}/${year}`;
+  
+  return formattedDate;
+}

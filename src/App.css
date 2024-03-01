@@ -1243,7 +1243,6 @@ table.screen-table {
   z-index: 9999;
 }
 
-
 .sugesstion-auto {
   display: block;
   border-radius: 7px;
@@ -1349,7 +1348,7 @@ table.screen-table {
   top: 1.39% !important;
 }
 .time-0-2 .rbc-current-time-indicator {
-  top: 2.78 !important;
+  top: 2.78% !important;
 }
 .time-0-3 .rbc-current-time-indicator {
   top: 4.167% !important;
@@ -1564,4 +1563,334 @@ table.screen-table {
 
 .rbc-time-column {
   background-color: #eaf6ff !important;
+}
+
+.rbc-day-slot1 .rbc-timeslot-group,
+.date-line .rbc-events-container {
+  position: absolute;
+  background: #74ad31;
+  height: 1px;
+  bottom: inherit;
+}
+
+.timezone-0-1 .rbc-day-slot .rbc-events-container {
+  top: 1.39% !important;
+}
+.timezone-0-2 .rbc-day-slot .rbc-events-container {
+  top: 2.78% !important;
+}
+.timezone-0-3 .rbc-day-slot .rbc-events-container {
+  top: 4.167% !important;
+}
+.timezone-1-1 .rbc-day-slot .rbc-events-container {
+  top: 5.56% !important;
+}
+.timezone-1-2 .rbc-day-slot .rbc-events-container {
+  top: 6.95% !important;
+}
+.timezone-1-3 .rbc-day-slot .rbc-events-container {
+  top: 8.33% !important;
+}
+.timezone-2-1 .rbc-day-slot .rbc-events-container {
+  top: 9.73% !important;
+}
+.timezone-2-2 .rbc-day-slot .rbc-events-container {
+  top: 11.12% !important;
+}
+.timezone-2-3 .rbc-day-slot .rbc-events-container {
+  top: 12.5% !important;
+}
+.timezone-3-1 .rbc-day-slot .rbc-events-container {
+  top: 13.9% !important;
+}
+.timezone-3-2 .rbc-day-slot .rbc-events-container {
+  top: 15.29% !important;
+}
+.timezone-3-3 .rbc-day-slot .rbc-events-container {
+  top: 16.67% !important;
+}
+.timezone-4-1 .rbc-day-slot .rbc-events-container {
+  top: 18.07% !important;
+}
+.timezone-4-2 .rbc-day-slot .rbc-events-container {
+  top: 19.46% !important;
+}
+.timezone-4-3 .rbc-day-slot .rbc-events-container {
+  top: 20.83% !important;
+}
+.timezone-5-1 .rbc-day-slot .rbc-events-container {
+  top: 22.24% !important;
+}
+.timezone-5-2 .rbc-day-slot .rbc-events-container {
+  top: 23.63% !important;
+}
+.timezone-5-3 .rbc-day-slot .rbc-events-container {
+  top: 25.02% !important;
+}
+.timezone-6-1 .rbc-day-slot .rbc-events-container {
+  top: 26.41% !important;
+}
+.timezone-6-2 .rbc-day-slot .rbc-events-container {
+  top: 27.8% !important;
+}
+.timezone-6-3 .rbc-day-slot .rbc-events-container {
+  top: 29.169% !important;
+}
+.timezone-7-1 .rbc-day-slot .rbc-events-container {
+  top: 30.58% !important;
+}
+.timezone-7-2 .rbc-day-slot .rbc-events-container {
+  top: 31.97% !important;
+}
+.timezone-7-3 .rbc-day-slot .rbc-events-container {
+  top: 33.33% !important;
+}
+.timezone-8-1 .rbc-day-slot .rbc-events-container {
+  top: 34.75% !important;
+}
+.timezone-8-2 .rbc-day-slot .rbc-events-container {
+  top: 36.14% !important;
+}
+.timezone-8-3 .rbc-day-slot .rbc-events-container {
+  top: 37.5% !important;
+}
+.timezone-9-1 .rbc-day-slot .rbc-events-container {
+  top: 38.92% !important;
+}
+.timezone-9-2 .rbc-day-slot .rbc-events-container {
+  top: 40.31% !important;
+}
+.timezone-9-3 .rbc-day-slot .rbc-events-container {
+  top: 41.67% !important;
+}
+.timezone-10-1 .rbc-day-slot .rbc-events-container {
+  top: 43.09% !important;
+}
+.timezone-10-2 .rbc-day-slot .rbc-events-container {
+  top: 44.48% !important;
+}
+.timezone-10-3 .rbc-day-slot .rbc-events-container {
+  top: 45.84% !important;
+}
+.timezone-11-1 .rbc-day-slot .rbc-events-container {
+  top: 47.26% !important;
+}
+.timezone-11-2 .rbc-day-slot .rbc-events-container {
+  top: 48.65% !important;
+}
+.timezone-11-3 .rbc-day-slot .rbc-events-container {
+  top: 50% !important;
+}
+.timezone-12-1 .rbc-day-slot .rbc-events-container {
+  top: 51.43% !important;
+}
+.timezone-12-2 .rbc-day-slot .rbc-events-container {
+  top: 52.82% !important;
+}
+.timezone-12-3 .rbc-day-slot .rbc-events-container {
+  top: 54.17% !important;
+}
+.timezone-13-1 .rbc-day-slot .rbc-events-container {
+  top: 55.6% !important;
+}
+.timezone-13-2 .rbc-day-slot .rbc-events-container {
+  top: 56.99% !important;
+}
+.timezone-13-3 .rbc-day-slot .rbc-events-container {
+  top: 58.34% !important;
+}
+.timezone-14-1 .rbc-day-slot .rbc-events-container {
+  top: 59.7% !important;
+}
+.timezone-14-2 .rbc-day-slot .rbc-events-container {
+  top: 61.16% !important;
+}
+.timezone-14-3 .rbc-day-slot .rbc-events-container {
+  top: 62.5% !important;
+}
+.timezone-15-1 .rbc-day-slot .rbc-events-container {
+  top: 63.94% !important;
+}
+.timezone-15-2 .rbc-day-slot .rbc-events-container {
+  top: 65.33% !important;
+}
+.timezone-15-3 .rbc-day-slot .rbc-events-container {
+  top: 66.66% !important;
+}
+.timezone-16-1 .rbc-day-slot .rbc-events-container {
+  top: 68.11% !important;
+}
+.timezone-16-2 .rbc-day-slot .rbc-events-container {
+  top: 69.5% !important;
+}
+.timezone-16-3 .rbc-day-slot .rbc-events-container {
+  top: 70.84% !important;
+}
+.timezone-17-1 .rbc-day-slot .rbc-events-container {
+  top: 72.28% !important;
+}
+.timezone-17-2 .rbc-day-slot .rbc-events-container {
+  top: 73.67% !important;
+}
+.timezone-17-3 .rbc-day-slot .rbc-events-container {
+  top: 75% !important;
+}
+.timezone-18-1 .rbc-day-slot .rbc-events-container {
+  top: 76.45% !important;
+}
+.timezone-18-2 .rbc-day-slot .rbc-events-container {
+  top: 77.84% !important;
+}
+.timezone-18-3 .rbc-day-slot .rbc-events-container {
+  top: 79.17% !important;
+}
+.timezone-19-1 .rbc-day-slot .rbc-events-container {
+  top: 80.62% !important;
+}
+.timezone-19-2 .rbc-day-slot .rbc-events-container {
+  top: 82.01% !important;
+}
+.timezone-19-3 .rbc-day-slot .rbc-events-container {
+  top: 83.34% !important;
+}
+.timezone-20-1 .rbc-day-slot .rbc-events-container {
+  top: 84.79% !important;
+}
+.timezone-20-2 .rbc-day-slot .rbc-events-container {
+  top: 86.18% !important;
+}
+.timezone-20-3 .rbc-day-slot .rbc-events-container {
+  top: 87.5% !important;
+}
+.timezone-21-1 .rbc-day-slot .rbc-events-container {
+  top: 88.96% !important;
+}
+.timezone-21-2 .rbc-day-slot .rbc-events-container {
+  top: 90.35% !important;
+}
+.timezone-21-3 .rbc-day-slot .rbc-events-container {
+  top: 91.67% !important;
+}
+.timezone-22-1 .rbc-day-slot .rbc-events-container {
+  top: 93.13% !important;
+}
+.timezone-22-2 .rbc-day-slot .rbc-events-container {
+  top: 94.52% !important;
+}
+.timezone-22-3 .rbc-day-slot .rbc-events-container {
+  top: 95.84% !important;
+}
+.timezone-23-1 .rbc-day-slot .rbc-events-container {
+  top: 97.3% !important;
+}
+.timezone-23-2 .rbc-day-slot .rbc-events-container {
+  top: 98.69% !important;
+}
+.timezone-23-3 .rbc-day-slot .rbc-events-container {
+  top: 100% !important;
+}
+
+.asset-crop-1-1 {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.asset-crop-1-2 {
+  width: 50% !important;
+  height: 100% !important;
+}
+.asset-crop-1-3 {
+  width: 33.33% !important;
+  height: 100% !important;
+}
+
+.asset-crop-1-4 {
+  width: 25% !important;
+  height: 100% !important;
+}
+
+.asset-crop-1-5 {
+  width: 20% !important;
+  height: 100% !important;
+}
+
+.asset-crop-2-1 {
+  width: 100% !important;
+  height: 50% !important;
+}
+.asset-crop-2-2 {
+  width: 50% !important;
+  height: 50% !important;
+}
+.asset-crop-2-3 {
+  width: 33.33% !important;
+  height: 50% !important;
+}
+.asset-crop-2-4 {
+  width: 25% !important;
+  height: 50% !important;
+}
+.asset-crop-2-5 {
+  width: 20% !important;
+  height: 50% !important;
+}
+.asset-crop-3-1 {
+  width: 100% !important;
+  height: 33.33% !important;
+}
+.asset-crop-3-2 {
+  width: 50% !important;
+  height: 33.33% !important;
+}
+.asset-crop-3-3 {
+  width: 33.33% !important;
+  height: 33.33% !important;
+}
+.asset-crop-3-4 {
+  width: 25% !important;
+  height: 33.33% !important;
+}
+.asset-crop-3-5 {
+  width: 20% !important;
+  height: 33.33% !important;
+}
+.asset-crop-4-1 {
+  width: 100% !important;
+  height: 25% !important;
+}
+.asset-crop-4-2 {
+  width: 50% !important;
+  height: 25% !important;
+}
+.asset-crop-4-3 {
+  width: 33.33% !important;
+  height: 25% !important;
+}
+.asset-crop-4-4 {
+  width: 25% !important;
+  height: 25% !important;
+}
+.asset-crop-4-5 {
+  width: 20% !important;
+  height: 25% !important;
+}
+.asset-crop-5-1 {
+  width: 100% !important;
+  height: 20% !important;
+}
+.asset-crop-5-2 {
+  width: 50% !important;
+  height: 20% !important;
+}
+.asset-crop-5-3 {
+  width: 33.33% !important;
+  height: 20% !important;
+}
+.asset-crop-5-4 {
+  width: 25% !important;
+  height: 20% !important;
+}
+.asset-crop-5-5 {
+  width: 20% !important;
+  height: 20% !important;
 }
