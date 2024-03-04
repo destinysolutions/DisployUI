@@ -27,7 +27,6 @@ const App = () => {
   const [timer, setTimer] = useState(0);
 
   const { user, token, loading } = useSelector((state) => state.root.auth);
-console.log('user', user)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -138,7 +137,7 @@ console.log('user', user)
       b.setAttribute(
         "class",
         "rounded-full px-6 py-2 text-white text-center " +
-          (data?.connection === true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+        (data?.connection === true ? "bg-[#3AB700]" : "bg-[#FF0000]")
       );
       b.textContent = data?.connection === true ? "Live" : "offline";
       // TvStatus = data?.connection == true ? "Live" : "Offline";
@@ -151,7 +150,7 @@ console.log('user', user)
       socket.disconnect();
       console.log("Socket disconnected");
       socket.emit("OnDisconnectedAsync", socket.id);
-      socket.emit("SendTvStatus",socket.id)
+      socket.emit("SendTvStatus", socket.id)
     };
   }, [socket]);
 
