@@ -158,41 +158,41 @@ export const Pagination = (page, length) => {
   if (page === 1) {
     return 1;
   } else {
-    return((page - 1) * length)
+    return ((page - 1) * length)
   }
 };
 
 export const buttons = [
   "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ];
 
 export function multiOptions(arr) {
   return arr.map(screen => ({
-      label: screen.screenName,
-      value: screen.screenID.toString(),
-      Price : screen?.screenRatePerSec,
-      output:`${screen?.screenID}_${screen?.organizationID}`
+    label: screen.screenName,
+    value: screen.screenID.toString(),
+    Price: screen?.screenRatePerSec,
+    output: `${screen?.screenID}_${screen?.organizationID}`
   }));
 }
 
-export const IncludeExclude =[
+export const IncludeExclude = [
   {
-    label :"Include",
-    value :1
+    label: "Include",
+    value: 1
   },
   {
-    label :"Exclude",
-    value :2
+    label: "Exclude",
+    value: 2
   },
 ]
 
-export  const getTodayDate = () => {
+export const getTodayDate = () => {
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0"); // January is 0!
@@ -233,7 +233,7 @@ export function secondsToHMS(seconds) {
 
 
 
-export  const greenOptions = {
+export const greenOptions = {
   color: "blue",
   fillColor: "blue",
 };
@@ -244,12 +244,12 @@ export function removeDuplicates(arr) {
 
   // Filter out duplicates
   let uniqueArr = arr.filter(obj => {
-      const key = obj.let + obj.lon + obj.dis;
-      const isNew = !uniqueMap.has(key);
-      if (isNew) {
-          uniqueMap.set(key, obj);
-      }
-      return isNew;
+    const key = obj.let + obj.lon + obj.dis;
+    const isNew = !uniqueMap.has(key);
+    if (isNew) {
+      uniqueMap.set(key, obj);
+    }
+    return isNew;
   });
 
   return uniqueArr;
@@ -259,20 +259,20 @@ export function kilometersToMeters(kilometers) {
   return kilometers * 1000; // 1 kilometer = 1000 meters
 }
 
-export function constructTimeObjects(getallTime, startDate, endDate, repeat, day, selectedTimeZone,allTimeZone) {
+export function constructTimeObjects(getallTime, startDate, endDate, repeat, day, selectedTimeZone, allTimeZone) {
   let arr1 = [];
 
   getallTime?.map((item) => {
-      let data = {
-          startDate: `${startDate} 00:00:00`,
-          endDate: `${endDate} 00:00:00`,
-          startTime: `${item?.startTime}:${item?.startTimeSecond}`,
-          endTime: `${item?.endTime}:${item?.endTimeSecond}`,
-          isRepeat: repeat,
-          repeatDays: day.join(", "),
-          systemTimeZone: getTimeZoneName(allTimeZone,selectedTimeZone),
-      };
-      arr1?.push(data);
+    let data = {
+      startDate: `${startDate} 00:00:00`,
+      endDate: `${endDate} 00:00:00`,
+      startTime: `${item?.startTime}:${item?.startTimeSecond}`,
+      endTime: `${item?.endTime}:${item?.endTimeSecond}`,
+      isRepeat: repeat,
+      repeatDays: day.join(", "),
+      systemTimeZone: getTimeZoneName(allTimeZone, selectedTimeZone),
+    };
+    arr1?.push(data);
   });
 
   return arr1;
@@ -303,6 +303,36 @@ export function formatDate(dateString) {
   let year = date.getFullYear();
 
   let formattedDate = `${day}/${month}/${year}`;
-  
+
   return formattedDate;
 }
+
+export const Operating_hours = [{
+  id: "1",
+  value: "Always on"
+},
+{
+  id: "2",
+  value: "Custom"
+}
+];
+
+export const Operating_hours_actions = [{
+  id: "1",
+  value: "Shut Down"
+},
+{
+  id: "2",
+  value: "Sleep"
+}
+];
+
+export const TotalDay = [
+  "Sun",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+];

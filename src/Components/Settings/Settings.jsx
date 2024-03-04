@@ -3,7 +3,7 @@ import { useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import PropTypes from "prop-types";
-import { FaCertificate, FaDownload, FaFileInvoiceDollar } from "react-icons/fa";
+import { FaCertificate, FaDownload, FaFileInvoiceDollar, FaUserShield } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi";
 import { MdOutlineStorage } from "react-icons/md";
 import { SiMediamarkt } from "react-icons/si";
@@ -25,6 +25,7 @@ import html2pdf from "html2pdf.js";
 import ReactToPrint from "react-to-print";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import Loading from "../Loading";
+import ScreenAuthorize from "./ScreenAuthorize";
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   Settings.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -328,21 +329,8 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </li>
 
-                      {/* <li>
-                    <button
-                      className={
-                        STabs === 5 ? "stabshow settingtabactive" : "settingtab"
-                      }
-                      onClick={() => updateTab(5)}
-                    >
-                      <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                      <span className="text-base text-primary">
-                        Billing
-                      </span>
-                    </button>
-                  </li> */}
 
-                      {/*  <li>
+                      {/* <li>
                         <button
                           className={
                             STabs === 6 ? "stabshow settingtabactive" : "settingtab"
@@ -354,20 +342,21 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             Invoice
                           </span>
                         </button>
-                        </li>*/}
-                      {/* <li>
-                    <button
-                      className={
-                        STabs === 7 ? "stabshow settingtabactive" : "settingtab"
-                      }
-                      onClick={() => updateTab(7)}
-                    >
-                      <HiClipboardDocumentList className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                      <span className="text-base text-primary">
-                        My Plan
-                      </span>
-                    </button>
-                    </li>*/}
+                      </li>
+                     
+                      <li>
+                      <button
+                        className={
+                          STabs === 8 ? "stabshow settingtabactive" : "settingtab"
+                        }
+                        onClick={() => updateTab(8)}
+                      >
+                        <FaUserShield className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                        <span className="text-base text-primary">
+                          Screen Authorize
+                        </span>
+                      </button>
+                      </li>*/}
                     </ul>
                   </div>
 
@@ -402,11 +391,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         <Defaultmedia permissions={permissions} />
                       </div>
                     )}
-                    {STabs === 5 && (
-                      <div>
-                        <Billing permissions={permissions} />
-                      </div>
-                    )}
+
                     {STabs === 6 && (
                       <div>
                         <Invoice
@@ -418,9 +403,10 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                       </div>
                     )}
-                    {STabs === 7 && (
+
+                    {STabs === 8 && (
                       <div>
-                        <Myplan />
+                        <ScreenAuthorize />
                       </div>
                     )}
 

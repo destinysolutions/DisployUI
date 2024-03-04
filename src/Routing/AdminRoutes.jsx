@@ -7,6 +7,7 @@ import Pending from "../admin/Pending";
 import Retailer from "../admin/Retailer/Retailer";
 import Advertisement from "../admin/Advertisement/Advertisement";
 import UserList from "../admin/UserList/UserList";
+import AdminSetting from "../admin/AdminSetting";
 
 const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
@@ -78,6 +79,16 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
             />
           }
         />
+
+        <Route
+        path="/settings"
+        element={
+          <AdminSetting
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+          />
+        }
+      />
 
           <Route
             path="/user"

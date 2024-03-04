@@ -1910,3 +1910,13 @@ table.screen-table {
 .row-5{
   height: 20% !important;
 }
+
+.label_top_authorize{
+  background: #fff;
+  position: relative;
+  top: 10px;
+  left: -85px;
+  padding: 5px;
+  color: #515151;
+  font-weight: 500;
+}

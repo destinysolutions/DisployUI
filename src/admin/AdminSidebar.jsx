@@ -12,7 +12,7 @@ import { FaUserAlt, FaUserCheck, FaUsers } from "react-icons/fa";
 import { SlOrganization } from "react-icons/sl";
 import logo from "../images/DisployImg/White-Logo2.png";
 import { FaUserGroup } from "react-icons/fa6";
-
+import settingIcon from "../images/MenuIcons/setting_icon.svg"
 const AdminSidebar = ({ sidebarOpen }) => {
   AdminSidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -85,6 +85,12 @@ const AdminSidebar = ({ sidebarOpen }) => {
       path: "/client",
       icon: <FaUserGroup className="text-2xl" />,
     },
+    // {
+    //   title: "Settings",
+    //   cName: "nav-text link-items",
+    //   path: "/settings",
+    //   icon: <img src={settingIcon} alt="Settings" className="w-6" />,
+    // },
   ];
 
   //using for mobile sidebar
