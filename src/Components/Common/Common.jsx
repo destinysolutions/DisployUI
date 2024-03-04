@@ -336,3 +336,18 @@ export const TotalDay = [
   "Fri",
   "Sat",
 ];
+
+function getDayOfWeek(index) {
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  return daysOfWeek[index];
+}
+
+export function getTrueDays(arr) {
+  const trueDays = [];
+  arr.forEach((value, index) => {
+      if (value) {
+          trueDays.push(getDayOfWeek(index));
+      }
+  });
+  return trueDays;
+}

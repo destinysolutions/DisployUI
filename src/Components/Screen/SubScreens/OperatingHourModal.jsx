@@ -78,7 +78,7 @@ const OperatingHourModal = ({
                                     )
                                 })}
                             </div>
-                            <div className='flex flex-row items-center gap-4'>
+                            {/* <div className='flex flex-row items-center gap-4'>
                                 <span>Action</span>
                                 <select
                                     className="px-2 py-2 border border-[#D5E3FF] w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-full"
@@ -98,7 +98,7 @@ const OperatingHourModal = ({
                                             </option>
                                         ))}
                                 </select>
-                            </div>
+                            </div> */}
 
 
                         </div>
