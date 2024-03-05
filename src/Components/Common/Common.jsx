@@ -351,3 +351,9 @@ export function getTrueDays(arr) {
   });
   return trueDays;
 }
+
+export function extractTime(timeString) {
+  let timeParts = timeString.split(":"); // Split the time string by colon
+  let hourMinute = timeParts.slice(0, 2).join(":"); // Join the first two parts (hours and minutes)
+  return hourMinute;
+}

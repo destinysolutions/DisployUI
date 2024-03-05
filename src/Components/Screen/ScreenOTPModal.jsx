@@ -13,11 +13,13 @@ import BlackLogo from "../../images/DisployImg/Black-Logo2.png";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import disploy_tv_img from "../../images/ScreenImg/disploy-tv-img.png";
 import { useDispatch } from "react-redux";
+import VerifyOTPModal from "./VerifyOTPModal";
 
 const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const history = useNavigate();
   const [errorMessge, setErrorMessge] = useState(false);
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
+  const [otpModelValues, setOtpModelValues] = useState(["", "", "", "", "", ""]);
   const [screen, setScreen] = useState();
   const [permissions, setPermissions] = useState({
     isDelete: false,
@@ -27,8 +29,10 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const [permissionsNewScreen, setPermissionsNewScreen] = useState({
     isSave: false,
   });
+  const [openVerifyModel, setOpenVerifyModel] = useState(false);
 
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
+  const otpModalRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
   const modalRef = useRef(null);
   const dispatch = useDispatch();
 
@@ -93,6 +97,15 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
     }
   };
 
+  const handleOtpModelChange = (index, value) => {
+    const updatedOtpValues = [...otpModelValues];
+    updatedOtpValues[index] = value;
+    setOtpModelValues(updatedOtpValues);
+    if (value.length === 1 && index < otpModalRefs.length - 1) {
+      otpModalRefs[index + 1].current.focus();
+    }
+  };
+
   const completeOtp = otpValues.join("");
 
   const verifyOTP = () => {
@@ -114,12 +127,51 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
       .then((response) => {
         // console.log(response);
         if (response.data.status === 200) {
-          history("/newscreendetail", {
-            state: {
-              otpData: response.data.data,
-              message: response.data.message,
-            },
-          });
+          setOpenVerifyModel(true)
+          // history("/newscreendetail", {
+          //   state: {
+          //     otpData: response.data.data,
+          //     message: response.data.message,
+          //   },
+          // });
+          toast.remove();
+        } else {
+          setErrorMessge(response.data.message);
+          toast.remove();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.remove();
+      });
+  };
+
+  const verifyOTPmodal = () => {
+    let data = JSON.stringify({ otp: completeOtp });
+
+    let config = {
+      method: "post",
+      url: OTP_VERIFY,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      data,
+    };
+
+    toast.loading("Validating....");
+    axios
+      .request(config)
+      .then((response) => {
+        // console.log(response);
+        if (response.data.status === 200) {
+          setOpenVerifyModel(true)
+          // history("/newscreendetail", {
+          //   state: {
+          //     otpData: response.data.data,
+          //     message: response.data.message,
+          //   },
+          // });
           toast.remove();
         } else {
           setErrorMessge(response.data.message);
@@ -202,6 +254,10 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
       window.removeEventListener("keydown", () => null);
     };
   }, []);
+
+  const toggleModal =()=>{
+    setOpenVerifyModel(!openVerifyModel)
+  }
 
   return (
     <>
@@ -288,6 +344,16 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
         </div>
       </div>
       <div className="opacity-25 fixed inset-0 z-10 bg-black"></div>
+      {openVerifyModel
+        &&
+        <VerifyOTPModal
+          toggleModal={toggleModal}
+          otpValues={otpModelValues}
+          handleOtpChange={handleOtpModelChange}
+          otpRefs={otpModalRefs}
+          verifyOTP={verifyOTPmodal}
+          errorMessge={errorMessge}
+        />}
     </>
   );
 };

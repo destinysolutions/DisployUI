@@ -53,6 +53,7 @@ import {
   TotalDay,
   getCurrentTime,
   getTrueDays,
+  extractTime
 } from "../../Common/Common";
 import OperatingHourModal from "./OperatingHourModal";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
@@ -143,7 +144,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedDays, setSelectedDays] = useState(
     new Array(TotalDay.length).fill(false)
   );
-  console.log("selectedDays", selectedDays);
   const { timezones } = useSelector((s) => s.root.globalstates);
   const { allAppsData } = useSelector((s) => s.root.apps);
 
@@ -173,7 +173,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         const fetchedData = response.data.data;
         if (response.data?.data !== "Data Is Not Found") {
-          console.log("fetchedData", fetchedData);
           let arr = fetchedData[0]?.screenOperatingHours?.dayName.split(",");
           const daysOfWeek = [
             "Sunday",
@@ -184,14 +183,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
             "Friday",
             "Saturday",
           ];
-
+          console.log('fetchedData[0]?.screenOperatingHours', fetchedData[0]?.screenOperatingHours)
           const boolArr = daysOfWeek.map((day) => arr.includes(day));
           setSelectedOperatingHour(
             fetchedData[0]?.screenOperatingHours?.operatingType
           );
-          if(fetchedData[0]?.screenOperatingHours?.operatingType === "Always on"){
-            setStartTime(fetchedData[0]?.screenOperatingHours?.startTime);
-            setEndTime(fetchedData[0]?.screenOperatingHours?.endTime);
+          if (fetchedData[0]?.screenOperatingHours?.operatingType !== "Always on") {
+            setStartTime(extractTime(fetchedData[0]?.screenOperatingHours?.startTime));
+            setEndTime(extractTime(fetchedData[0]?.screenOperatingHours?.endTime));
             setSelectedDays(boolArr);
           }
           handleFetchPreviewScreen(fetchedData[0]?.macid);
@@ -242,7 +241,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     };
     axios
       .request(config)
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         console.log(error);
       });
@@ -508,7 +507,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          console.log("response", response);
           setLayotuDetails(response.data?.data[0]);
           setScreenType(response?.data?.data[0]?.screenType);
           setFetchLayoutLoading(false);
@@ -665,19 +663,19 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-      ? 4
-      : selectedYoutube?.youtubeId !== null &&
-        selectedYoutube?.youtubeId !== undefined
-      ? 5
-      : selectedComposition?.compositionID !== null &&
-        selectedComposition?.compositionID !== undefined
-      ? 3
-      : selectedSchedule?.scheduleId !== null &&
-        selectedSchedule?.scheduleId !== undefined
-      ? 2
-      : selectedDefaultAsset
-      ? 0
-      : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : selectedSchedule?.scheduleId !== null &&
+              selectedSchedule?.scheduleId !== undefined
+              ? 2
+              : selectedDefaultAsset
+                ? 0
+                : 0;
     let moduleID =
       selectedAsset?.assetID ||
       selectedSchedule?.scheduleId ||
@@ -695,7 +693,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           ? getTrueDays(selectedDays)?.join(",")
           : "",
     };
-    console.log("screenOperatingHours", screenOperatingHours);
     let data = JSON.stringify({
       screenID: getScreenID,
       timeZone: selectedTimezoneName,
@@ -708,7 +705,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       operation: "Update",
       screenOperatingHours: screenOperatingHours,
     });
-    console.log("data", data);
     toast.loading("Saving...");
 
     let config = {
@@ -968,14 +964,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-      ? 4
-      : selectedYoutube?.youtubeId !== null &&
-        selectedYoutube?.youtubeId !== undefined
-      ? 5
-      : selectedComposition?.compositionID !== null &&
-        selectedComposition?.compositionID !== undefined
-      ? 3
-      : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -1175,16 +1171,15 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   !loading && (
                     <div
                       className={`relative z-0 mx-auto rounded-lg p-4
-                    ${
-                      (orientation === 1 &&
-                        "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
-                      (orientation === 2 &&
-                        "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72") ||
-                      (orientation === 3 &&
-                        "rotate180 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
-                      (orientation === 4 &&
-                        "rotate270 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72")
-                    }
+                    ${(orientation === 1 &&
+                          "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
+                        (orientation === 2 &&
+                          "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72") ||
+                        (orientation === 3 &&
+                          "rotate180 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
+                        (orientation === 4 &&
+                          "rotate270 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72")
+                        }
                     `}
                     >
                       {!fetchLayoutLoading &&
@@ -1240,8 +1235,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     Object.values(playerData).includes("OnlineVideo")) && (
                     <ReactPlayer
                       url={playerData?.fileType}
-                      className={` ${
-                        (orientation === 1 &&
+                      className={` ${(orientation === 1 &&
                           "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
                         (orientation === 2 &&
                           "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72") ||
@@ -1249,7 +1243,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           "rotate180 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
                         (orientation === 4 &&
                           "rotate270 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72")
-                      } relative z-20 screenvideoinner`}
+                        } relative z-20 screenvideoinner`}
                       controls={true}
                       playing={true}
                       loop={true}
@@ -1265,8 +1259,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     <img
                       src={playerData?.fileType}
                       alt="Media"
-                      className={` ${
-                        (orientation === 1 &&
+                      className={` ${(orientation === 1 &&
                           "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
                         (orientation === 2 &&
                           "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72") ||
@@ -1274,7 +1267,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           "rotate180 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
                         (orientation === 4 &&
                           "rotate270 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72")
-                      } mx-auto object-fill`}
+                        } mx-auto object-fill`}
                     />
                   )}
               </div>
@@ -1527,12 +1520,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                 key={composition.compositionID}
                                               >
                                                 <tr
-                                                  className={`${
-                                                    selectedComposition?.compositionName ===
-                                                    composition?.compositionName
+                                                  className={`${selectedComposition?.compositionName ===
+                                                      composition?.compositionName
                                                       ? "bg-[#f3c953]"
                                                       : ""
-                                                  } border-b border-[#eee] `}
+                                                    } border-b border-[#eee] `}
                                                   onClick={() => {
                                                     handleCompositionsAdd(
                                                       composition
@@ -1558,7 +1550,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                     {moment
                                                       .utc(
                                                         composition.duration *
-                                                          1000
+                                                        1000
                                                       )
                                                       .format("hh:mm:ss")}
                                                   </td>
@@ -1733,11 +1725,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             <td className="text-left">
                               <span
                                 id={`changetvstatus${screen.macid}`}
-                                className={`rounded-full px-6 py-2 text-white text-center ${
-                                  screen.screenStatus == 1
+                                className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                     ? "bg-[#3AB700]"
                                     : "bg-[#FF0000]"
-                                }`}
+                                  }`}
                               >
                                 {screen.screenStatus == 1 ? "Live" : "offline"}
                                 {/* {TvStatus} */}
@@ -1814,27 +1805,27 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
                                 {screen && screen?.tags !== null
                                   ? screen &&
-                                    screen?.tags
-                                      .split(",")
-                                      .slice(
-                                        0,
-                                        screen &&
-                                          screen?.tags.split(",").length > 2
-                                          ? 3
-                                          : screen &&
-                                              screen?.tags.split(",").length
-                                      )
-                                      .map((text) => {
-                                        if (text.toString().length > 10) {
-                                          return text
-                                            .split("")
-                                            .slice(0, 10)
-                                            .concat("...")
-                                            .join("");
-                                        }
-                                        return text;
-                                      })
-                                      .join(",")
+                                  screen?.tags
+                                    .split(",")
+                                    .slice(
+                                      0,
+                                      screen &&
+                                        screen?.tags.split(",").length > 2
+                                        ? 3
+                                        : screen &&
+                                        screen?.tags.split(",").length
+                                    )
+                                    .map((text) => {
+                                      if (text.toString().length > 10) {
+                                        return text
+                                          .split("")
+                                          .slice(0, 10)
+                                          .concat("...")
+                                          .join("");
+                                      }
+                                      return text;
+                                    })
+                                    .join(",")
                                   : ""}
                               </p>
                             </td>
@@ -1998,46 +1989,46 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             screenData[0]?.tags === "") ||
                             (screenData.length > 0 &&
                               screenData[0]?.tags === null)) && (
-                            <span>
-                              <AiOutlinePlusCircle
-                                size={30}
-                                className="cursor-pointer"
-                                onClick={() => {
-                                  setShowTagModal(true);
-                                  screenData[0].tags === "" ||
-                                  screenData[0]?.tags === null
-                                    ? setTags([])
-                                    : setTags(screenData[0]?.tags?.split(","));
-                                  setTagUpdateScreeen(screenData[0]);
-                                }}
-                              />
-                            </span>
-                          )}
+                              <span>
+                                <AiOutlinePlusCircle
+                                  size={30}
+                                  className="cursor-pointer"
+                                  onClick={() => {
+                                    setShowTagModal(true);
+                                    screenData[0].tags === "" ||
+                                      screenData[0]?.tags === null
+                                      ? setTags([])
+                                      : setTags(screenData[0]?.tags?.split(","));
+                                    setTagUpdateScreeen(screenData[0]);
+                                  }}
+                                />
+                              </span>
+                            )}
 
                           {screenData?.length > 0 &&
-                          screenData[0]?.tags !== null
+                            screenData[0]?.tags !== null
                             ? screenData.length > 0 &&
-                              screenData[0]?.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  screenData.length > 0 &&
-                                    screenData[0]?.tags.split(",").length > 2
-                                    ? 3
-                                    : screenData.length > 0 &&
-                                        screenData[0]?.tags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
+                            screenData[0]?.tags
+                              .split(",")
+                              .slice(
+                                0,
+                                screenData.length > 0 &&
+                                  screenData[0]?.tags.split(",").length > 2
+                                  ? 3
+                                  : screenData.length > 0 &&
+                                  screenData[0]?.tags.split(",").length
+                              )
+                              .map((text) => {
+                                if (text.toString().length > 10) {
+                                  return text
+                                    .split("")
+                                    .slice(0, 10)
+                                    .concat("...")
+                                    .join("");
+                                }
+                                return text;
+                              })
+                              .join(",")
                             : ""}
                           {screenData.length > 0 &&
                             screenData[0]?.tags !== "" &&
@@ -2048,13 +2039,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   setShowTagModal(true);
                                   (screenData.length > 0 &&
                                     screenData[0].tags === "") ||
-                                  (screenData.length > 0 &&
-                                    screenData[0]?.tags === null)
+                                    (screenData.length > 0 &&
+                                      screenData[0]?.tags === null)
                                     ? setTags([])
                                     : setTags(
-                                        screenData.length > 0 &&
-                                          screenData[0]?.tags?.split(",")
-                                      );
+                                      screenData.length > 0 &&
+                                      screenData[0]?.tags?.split(",")
+                                    );
                                   setTagUpdateScreeen(
                                     screenData.length > 0 && screenData[0]
                                   );
@@ -2108,7 +2099,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               }
                             }}
                           >
-                            <option value="">Select Operating Hours</option>
                             {Operating_hours &&
                               Operating_hours?.map((hour) => (
                                 <option value={hour.value} key={hour.value}>
@@ -2126,7 +2116,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                         <td
                           className="text-left lg:py-3 md:py-2 pt-0 pb-0"
-                          // onClick={() => setShowAssetModal(true)}
+                        // onClick={() => setShowAssetModal(true)}
                         >
                           <div className="flex lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
                             <label
