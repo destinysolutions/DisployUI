@@ -341,16 +341,18 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
                 selectUser={selectUser}
                 screens={screens}
                 loading={loading}
+                sidebarOpen={sidebarOpen}
               />
             )}
             {activeTab === 1 && (
-              <UserAssets selectUser={selectUser} Asseststore={Asseststore} />
+              <UserAssets selectUser={selectUser} Asseststore={Asseststore} sidebarOpen={sidebarOpen}/>
             )}
             {activeTab === 2 && (
               <UserComposition
                 selectUser={selectUser}
                 compositions={compositions}
                 loading={compositionLoading}
+                sidebarOpen={sidebarOpen}
               />
             )}
             {activeTab === 3 && (
@@ -358,6 +360,7 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
                 selectUser={selectUser}
                 schedules={storeSchedule?.schedules}
                 loading={storeSchedule?.loading}
+                sidebarOpen={sidebarOpen}
               />
             )}
             {activeTab === 4 && (
@@ -365,10 +368,11 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
                 selectUser={selectUser}
                 allAppsData={allAppsData}
                 userloading={userloading}
+                sidebarOpen={sidebarOpen}
               />
             )}
             {activeTab === 5 && (
-              <UserTrash selectUser={selectUser} TrashData={TrashData} />
+              <UserTrash selectUser={selectUser} TrashData={TrashData} sidebarOpen={sidebarOpen}/>
             )}
           </div>
         </div>

@@ -14,96 +14,9 @@ import {
 import moment from "moment/moment";
 import toast from "react-hot-toast";
 
-const Data = [
-  {
-    id: "1",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/2202/2202112.png",
-    name: "Leroy",
-    Phone: "1234567895",
-    Email: "leroy@gmail.com",
-    Date: "11-02-2024",
-    assetType: "video",
-    filePath:
-      "https://disployapi.thedestinysolutions.com/Video/eba595d6-3d6a-4d52-8246-9b3c8b9e409f.mp4",
-    Status: 1,
-  },
-  {
-    id: "2",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/2202/2202112.png",
-    name: "Livingston",
-    Phone: "1234567895",
-    Email: "livingston@gmail.com",
-    Date: "11-02-2024",
-    assetType: "image",
-    filePath:
-      "https://disployapi.thedestinysolutions.com/Images/b01fb529-7c99-46d7-9b91-b9c0ac2a48d7.jpg",
-    Status: 0,
-  },
-  {
-    id: "3",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/2202/2202112.png",
-    name: "Madison",
-    Phone: "1234567895",
-    Email: "madison@gmail.com",
-    Date: "11-02-2024",
-    assetType: "image",
-    filePath:
-      "https://disployapi.thedestinysolutions.com/Images/ce09349c-1cb4-46a8-aebc-75ade81202b1.jpg",
-    Status: 0,
-  },
-  {
-    id: "4",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/2202/2202112.png",
-    name: "McCormick",
-    Phone: "1234567895",
-    Email: "mcCormick@gmail.com",
-    Date: "11-02-2024",
-    assetType: "image",
-    filePath:
-      "https://disployapi.thedestinysolutions.com/Images/ce09349c-1cb4-46a8-aebc-75ade81202b1.jpg",
-    Status: 1,
-  },
-  {
-    id: "5",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/2202/2202112.png",
-    name: "Memphis",
-    Phone: "1234567895",
-    Email: "memphis@gmail.com",
-    Date: "11-02-2024",
-    assetType: "video",
-    filePath:
-      "https://disployapi.thedestinysolutions.com/Video/cf33ca04-c650-4359-b88d-0ed00d184f32.mp4",
-    Status: 1,
-  },
-  {
-    id: "6",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/2202/2202112.png",
-    name: "Presley",
-    Phone: "1234567895",
-    Email: "presley@gmail.com",
-    Date: "11-02-2024",
-    assetType: "video",
-    filePath:
-      "https://disployapi.thedestinysolutions.com/Video/eba595d6-3d6a-4d52-8246-9b3c8b9e409f.mp4",
-    Status: 0,
-  },
-  {
-    id: "6",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/2202/2202112.png",
-    name: "Ross",
-    Phone: "1234567895",
-    Email: "ross@gmail.com",
-    Date: "11-02-2024",
-    assetType: "image",
-    filePath:
-      "https://disployapi.thedestinysolutions.com/Images/ce09349c-1cb4-46a8-aebc-75ade81202b1.jpg",
-    Status: 1,
-  },
-];
-
 const Billing = () => {
   const store = useSelector((state) => state.root.advertisementData);
-
+console.log('store?.getNotification', store?.getNotification)
   const dispatch = useDispatch();
 
   // pagination Start

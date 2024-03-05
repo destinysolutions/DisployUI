@@ -405,7 +405,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                     )}
 
                     {STabs === 8 && (
-                      <div>
+                      <div className="h-full w-full">
                         <ScreenAuthorize />
                       </div>
                     )}

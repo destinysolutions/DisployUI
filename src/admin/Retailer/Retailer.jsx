@@ -220,7 +220,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
           />
           <AdminNavbar />
         </div>
-        <div className="pt-16 px-5 page-contain">
+        <div className="pt-6 px-5 page-contain">
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="lg:flex lg:justify-between sm:block items-center">
               <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
@@ -229,11 +229,14 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="m-5 flex gap-4 items-center">
                 <div className="flex gap-3">
                   <div className="text-right mb-5 mr-5 relative sm:mr-0">
-                    <div>
-                      <AiOutlineSearch className="absolute top-[13px] right-[232px] z-10 text-gray searchicon" />
+                    <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                        <AiOutlineSearch className="w-5 h-5 text-gray " />
+                      </span>
+
                       <input
                         type="text"
-                        placeholder=" Search Retailers "
+                        placeholder=" Search Retailers"
                         className="border border-gray rounded-full px-7 py-2 search-user"
                         value={search}
                         onChange={handleChange}
@@ -370,7 +373,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                           d="M13 5H1m0 0 4 4M1 5l4-4"
                         />
                       </svg>
-                      {/* Previous */}
+                      {sidebarOpen ? "Previous" : ""}
                     </button>
                   </li>
 
@@ -380,7 +383,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                       disabled={currentPage === totalPages}
                       className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                     >
-                      {/* Next */}
+                     {sidebarOpen ? "Next" : ""}
                       <svg
                         className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                         aria-hidden="true"

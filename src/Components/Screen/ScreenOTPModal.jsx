@@ -19,7 +19,14 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const history = useNavigate();
   const [errorMessge, setErrorMessge] = useState(false);
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
-  const [otpModelValues, setOtpModelValues] = useState(["", "", "", "", "", ""]);
+  const [otpModelValues, setOtpModelValues] = useState([
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+  ]);
   const [screen, setScreen] = useState();
   const [permissions, setPermissions] = useState({
     isDelete: false,
@@ -30,9 +37,17 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
     isSave: false,
   });
   const [openVerifyModel, setOpenVerifyModel] = useState(false);
+  const [OTPdata, setOTPData] = useState();
 
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
-  const otpModalRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
+  const otpModalRefs = [
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+  ];
   const modalRef = useRef(null);
   const dispatch = useDispatch();
 
@@ -122,28 +137,34 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
     };
 
     toast.loading("Validating....");
-    axios
-      .request(config)
-      .then((response) => {
-        // console.log(response);
-        if (response.data.status === 200) {
-          setOpenVerifyModel(true)
-          // history("/newscreendetail", {
-          //   state: {
-          //     otpData: response.data.data,
-          //     message: response.data.message,
-          //   },
-          // });
-          toast.remove();
-        } else {
-          setErrorMessge(response.data.message);
-          toast.remove();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.remove();
-      });
+    setOpenVerifyModel(true);
+    // axios
+    //   .request(config)
+    //   .then((response) => {
+    //     // console.log(response);
+    //     if (response.data.status === 200) {
+    //       console.log('response', response)
+    //       if (response?.data?.data?.[0]?.IsNeedToValidate === true) {
+    //         setOpenVerifyModel(true);
+    //         setOTPData(response?.data);
+    //       } else {
+    //         history("/newscreendetail", {
+    //           state: {
+    //             otpData: response?.data?.data,
+    //             message: response?.data?.message,
+    //           },
+    //         });
+    //       }
+    //       toast.remove();
+    //     } else {
+    //       setErrorMessge(response?.data?.message);
+    //       toast.remove();
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     toast.remove();
+    //   });
   };
 
   const verifyOTPmodal = () => {
@@ -165,20 +186,22 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
       .then((response) => {
         // console.log(response);
         if (response.data.status === 200) {
-          setOpenVerifyModel(true)
-          // history("/newscreendetail", {
-          //   state: {
-          //     otpData: response.data.data,
-          //     message: response.data.message,
-          //   },
-          // });
+          setOpenVerifyModel(false);
+          history("/newscreendetail", {
+            state: {
+              otpData: OTPdata?.data,
+              message: OTPdata?.message,
+            },
+          });
           toast.remove();
         } else {
-          setErrorMessge(response.data.message);
+          setOpenVerifyModel(false);
+          setErrorMessge(response?.data?.message);
           toast.remove();
         }
       })
       .catch((error) => {
+        setOpenVerifyModel(false);
         console.log(error);
         toast.remove();
       });
@@ -255,9 +278,9 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
     };
   }, []);
 
-  const toggleModal =()=>{
-    setOpenVerifyModel(!openVerifyModel)
-  }
+  const toggleModal = () => {
+    setOpenVerifyModel(!openVerifyModel);
+  };
 
   return (
     <>
@@ -322,8 +345,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
                   <div className="flex justify-center text-center">
                     <p className="text-[#515151] text-sm max-w-lg">
                       To get pair code, please install Disploy app on your
-                      Players (Android, LG, Samsung, FireStick, Windows,
-                      etc.)
+                      Players (Android, LG, Samsung, FireStick, Windows, etc.)
                     </p>
                   </div>
                 </div>
@@ -344,8 +366,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
         </div>
       </div>
       <div className="opacity-25 fixed inset-0 z-10 bg-black"></div>
-      {openVerifyModel
-        &&
+      {openVerifyModel && (
         <VerifyOTPModal
           toggleModal={toggleModal}
           otpValues={otpModelValues}
@@ -353,7 +374,8 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
           otpRefs={otpModalRefs}
           verifyOTP={verifyOTPmodal}
           errorMessge={errorMessge}
-        />}
+        />
+      )}
     </>
   );
 };

@@ -25,7 +25,7 @@ const VerifyOTPModal = ({ toggleModal, otpValues, handleOtpChange, otpRefs, veri
 
            <div className='p-3'>
                <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000] text-center">
-                   Enter the Verification Code to Vaidate New Screen
+                   Enter the Verification Code to Validate New Screen
                </div>
                <div
                    id="otp"

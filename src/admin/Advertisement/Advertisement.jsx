@@ -21,6 +21,7 @@ import {
 } from "../../Redux/admin/AdvertisementSlice";
 import { useDispatch } from "react-redux";
 import { getOnBodingData } from "../../Redux/admin/OnBodingSlice";
+import AssetsPreview from "../../Components/Common/AssetsPreview";
 
 const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const hiddenFileInput = useRef(null);
@@ -323,11 +324,13 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
             </h1>
             <div className="flex gap-3">
               <div className="text-right mb-5 mr-5 relative sm:mr-0">
-                <div>
-                  <AiOutlineSearch className="absolute top-[13px] right-[232px] z-10 text-gray searchicon" />
+                <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                    <AiOutlineSearch className="w-5 h-5 text-gray " />
+                  </span>
                   <input
                     type="text"
-                    placeholder=" Search Advertisements "
+                    placeholder="Search Advertisement"
                     className="border border-gray rounded-full px-7 py-2 search-user"
                     value={searchAds}
                     onChange={(e) => handleChange(e)}
@@ -523,15 +526,18 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                       d="M13 5H1m0 0 4 4M1 5l4-4"
                     />
                   </svg>
-                  {/* Previous */}
+                  {sidebarOpen ? "Previous" : ""}
                 </button>
                 {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={(currentPage === totalAdsPages) || (allAdvertisement?.SearchData?.length === 0)}
+                  disabled={
+                    currentPage === totalAdsPages ||
+                    allAdvertisement?.SearchData?.length === 0
+                  }
                   className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
-                  {/* Next */}
+                  {sidebarOpen ? "Next" : ""}
                   <svg
                     className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                     aria-hidden="true"
@@ -555,43 +561,12 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       {adsPreview && (
-        <div className="fixed left-1/2 lg:top-1/3 sm:top-1/2 -translate-x-1/2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 bg-black z-50 inset-0">
-          {/* btn */}
-          <div className="fixed z-40">
-            <button
-              className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
-              onClick={() => setAdsPreview(false)}
-            >
-              <AiOutlineCloseCircle size={30} />
-            </button>
-          </div>
-          <div className="fixed">
-            {selectAds && (
-              <>
-                {selectAds.assetType === "image" && (
-                  <div>
-                    <img
-                      src={selectAds.filePath}
-                      alt={selectAds.name}
-                      className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
-                    />
-                  </div>
-                )}
-                {selectAds.assetType === "video" && (
-                  <video
-                    controls
-                    className="imagebox md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 z-50 fixed"
-                  >
-                    <source src={selectAds.filePath} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                )}
-              </>
-            )}
-          </div>
-        </div>
+        <AssetsPreview
+          open={adsPreview}
+          setOpen={setAdsPreview}
+          openPreview={selectAds}
+        />
       )}
-
       {showModal && (
         <AddEditAdvertisement
           heading={heading}

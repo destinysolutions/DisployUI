@@ -196,3 +196,8 @@ export const SCREEN_LIST = `${baseUrl}AdsCustomer/GetAllRetaileScreen`
 export const ALL_CITY = `${baseUrl}Common/GetAllCity`
 export const ADDALLEVENT = `${baseUrl}AdsCustomer/AddorUpdateBookingSlotCustomerEvent`
 export const ADDUPDATESLOT = `${baseUrl}AdsCustomer/AddorUpdateBookingSlotCustomer`
+
+// Screen Authorize
+
+export const PHONENUMBERVERIFY = `${baseUrl}UserMaster/SendOTP`
+export const PHONE_OTP_VERIFY = `${baseUrl}UserMaster/SetAuthNumber`;
