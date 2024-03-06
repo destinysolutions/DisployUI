@@ -18,6 +18,7 @@ import VerifyOTPModal from "./VerifyOTPModal";
 const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const history = useNavigate();
   const [errorMessge, setErrorMessge] = useState(false);
+  console.log('errorMessge', errorMessge)
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
   const [otpModelValues, setOtpModelValues] = useState([
     "",
@@ -137,34 +138,32 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
     };
 
     toast.loading("Validating....");
-    setOpenVerifyModel(true);
-    // axios
-    //   .request(config)
-    //   .then((response) => {
-    //     // console.log(response);
-    //     if (response.data.status === 200) {
-    //       console.log('response', response)
-    //       if (response?.data?.data?.[0]?.IsNeedToValidate === true) {
-    //         setOpenVerifyModel(true);
-    //         setOTPData(response?.data);
-    //       } else {
-    //         history("/newscreendetail", {
-    //           state: {
-    //             otpData: response?.data?.data,
-    //             message: response?.data?.message,
-    //           },
-    //         });
-    //       }
-    //       toast.remove();
-    //     } else {
-    //       setErrorMessge(response?.data?.message);
-    //       toast.remove();
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     toast.remove();
-    //   });
+    axios
+      .request(config)
+      .then((response) => {
+        // console.log(response);
+        if (response.data.status === 200) {
+          if (response?.data?.data?.[0]?.IsNeedToValidate === true) {
+            setOpenVerifyModel(true);
+            setOTPData(response?.data);
+          } else {
+            history("/newscreendetail", {
+              state: {
+                otpData: response?.data?.data,
+                message: response?.data?.message,
+              },
+            });
+          }
+          toast.remove();
+        } else {
+          setErrorMessge(response?.data?.message);
+          toast.remove();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.remove();
+      });
   };
 
   const verifyOTPmodal = () => {
@@ -362,20 +361,22 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
                 </button>
               </div>
             )}
+
+            {openVerifyModel && (
+              <VerifyOTPModal
+                toggleModal={toggleModal}
+                otpValues={otpModelValues}
+                handleOtpChange={handleOtpModelChange}
+                otpRefs={otpModalRefs}
+                verifyOTP={verifyOTPmodal}
+                errorMessge={errorMessge}
+              />
+            )}
           </div>
         </div>
       </div>
       <div className="opacity-25 fixed inset-0 z-10 bg-black"></div>
-      {openVerifyModel && (
-        <VerifyOTPModal
-          toggleModal={toggleModal}
-          otpValues={otpModelValues}
-          handleOtpChange={handleOtpModelChange}
-          otpRefs={otpModalRefs}
-          verifyOTP={verifyOTPmodal}
-          errorMessge={errorMessge}
-        />
-      )}
+    
     </>
   );
 };
