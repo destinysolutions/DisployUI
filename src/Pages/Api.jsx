@@ -201,3 +201,4 @@ export const ADDUPDATESLOT = `${baseUrl}AdsCustomer/AddorUpdateBookingSlotCustom
 
 export const PHONENUMBERVERIFY = `${baseUrl}UserMaster/SendOTP`
 export const PHONE_OTP_VERIFY = `${baseUrl}UserMaster/SetAuthNumber`;
+export const OTP_SCREEN_VERIFY = `${baseUrl}NewScreen/VerifyScreenOTP`;

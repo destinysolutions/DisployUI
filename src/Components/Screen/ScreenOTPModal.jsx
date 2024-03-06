@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { OTP_VERIFY } from "../../Pages/Api";
+import { OTP_SCREEN_VERIFY, OTP_VERIFY } from "../../Pages/Api";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -18,7 +18,7 @@ import VerifyOTPModal from "./VerifyOTPModal";
 const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const history = useNavigate();
   const [errorMessge, setErrorMessge] = useState(false);
-  console.log('errorMessge', errorMessge)
+
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
   const [otpModelValues, setOtpModelValues] = useState([
     "",
@@ -123,6 +123,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   };
 
   const completeOtp = otpValues.join("");
+  const completeModelOtp = otpModelValues.join("");
 
   const verifyOTP = () => {
     let data = JSON.stringify({ otp: completeOtp });
@@ -167,24 +168,20 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   };
 
   const verifyOTPmodal = () => {
-    let data = JSON.stringify({ otp: completeOtp });
 
     let config = {
-      method: "post",
-      url: OTP_VERIFY,
+      method: "get",
+      url: `${OTP_SCREEN_VERIFY}?OTP=${completeModelOtp}&ScreenID=${OTPdata?.data?.[0]?.ScreenID}`,
       headers: {
-        "Content-Type": "application/json",
         Authorization: authToken,
       },
-      data,
     };
 
     toast.loading("Validating....");
     axios
       .request(config)
       .then((response) => {
-        // console.log(response);
-        if (response.data.status === 200) {
+        if (response?.data?.status === true) {
           setOpenVerifyModel(false);
           history("/newscreendetail", {
             state: {
