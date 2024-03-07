@@ -296,6 +296,19 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                           </span>
                         </button>
                       </li>
+                      <li>
+                        <button
+                          className={
+                            STabs === 8 ? "stabshow settingtabactive" : "settingtab"
+                          }
+                          onClick={() => updateTab(8)}
+                        >
+                          <FaUserShield className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">
+                            Screen Authorize
+                          </span>
+                        </button>
+                      </li>
 
                       <li>
                         <button
@@ -330,7 +343,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       </li>
 
 
-                      <li>
+                      {/* <li>
                         <button
                           className={
                             STabs === 6 ? "stabshow settingtabactive" : "settingtab"
@@ -342,21 +355,8 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             Invoice
                           </span>
                         </button>
-                      </li>
+                        </li>*/}
 
-                      <li>
-                        <button
-                          className={
-                            STabs === 8 ? "stabshow settingtabactive" : "settingtab"
-                          }
-                          onClick={() => updateTab(8)}
-                        >
-                          <FaUserShield className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                          <span className="text-base text-primary">
-                            Screen Authorize
-                          </span>
-                        </button>
-                      </li>
                     </ul>
                   </div>
 
