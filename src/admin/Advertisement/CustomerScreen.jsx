@@ -127,20 +127,14 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                                             sortedAndPaginatedData?.length > 0 &&
                                                             sortedAndPaginatedData.map((screen, index) => {
                                                                 return (
-                                                                    <tr key={index}>
+                                                                    <tr key={index} className='cursor-pointer'  onClick={() => handleScreenCheckboxChange(screen.organizationID)} >
                                                                         <td className="text-[#5E5E5E]">
                                                                             <div className="flex">
                                                                                 <input
                                                                                     type="checkbox"
                                                                                     className="mr-3"
-                                                                                    onChange={() =>
-                                                                                        handleScreenCheckboxChange(
-                                                                                            screen.organizationID
-                                                                                        )
-                                                                                    }
-                                                                                    checked={selectedItems.includes(
-                                                                                        screen.organizationID
-                                                                                    )}
+                                                                                    onChange={() => handleScreenCheckboxChange(screen.organizationID)}
+                                                                                    checked={selectedItems.includes(screen.organizationID)}
                                                                                 />
                                                                                 {screen.firstName + ' ' + screen.lastName}
                                                                             </div>

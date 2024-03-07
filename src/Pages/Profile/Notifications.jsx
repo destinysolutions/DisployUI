@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { RiAddFill, RiUser3Fill } from "react-icons/ri";
+import { RiAddFill } from "react-icons/ri";
 import { BsEyeFill } from "react-icons/bs";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -92,7 +92,7 @@ console.log('store?.getNotification', store?.getNotification)
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Name
                     </th>
-                    <th className="                                                                                                      text-[#5A5881] text-base font-semibold w-fit text-center">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       GoogleLocation
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
@@ -113,29 +113,29 @@ console.log('store?.getNotification', store?.getNotification)
                   currentItems.map((item, index) => (
                     <tr className="border-b border-b-[#E4E6FF]" key={index}>
                       <td className="text-[#5E5E5E] ">
-                        <div className="text-base text-center font-semibold capitalize">
+                        <div className="text-base text-center font-medium capitalize">
                           {item.name}
                         </div>
                       </td>
                       <td className="text-[#5E5E5E]">
-                        <div className="text-base text-center font-semibold">
+                        <div className="text-base text-center font-medium">
                           {item.googleLocation}
                         </div>
                       </td>
                       <td className="text-[#5E5E5E]">
-                        <div className="text-base text-center font-semibold">
+                        <div className="text-base text-center font-medium">
                           {item.screen}
                         </div>
                       </td>
                       <td className="text-[#5E5E5E] text-center">
-                        <div className="text-base text-center font-semibold">
+                        <div className="text-base text-center font-medium">
                           {moment(item?.startDate).format(
                             "DD-MM-YYYY" + " - " + "HH:mm:ss"
                           )}
                         </div>
                       </td>
                       <td className="text-[#5E5E5E] text-center">
-                        <div className="text-base text-center font-semibold">
+                        <div className="text-base text-center font-medium">
                           {moment(item?.endDate).format(
                             "DD-MM-YYYY" + " - " + "HH:mm:ss"
                           )}
