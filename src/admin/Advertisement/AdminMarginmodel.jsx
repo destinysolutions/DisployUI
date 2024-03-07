@@ -3,6 +3,8 @@ import { AiOutlineCloseCircle, AiOutlineSearch } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
 import { ADD_USER_LIST } from '../../Pages/Api';
 import axios from 'axios';
+import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io';
+import moment from 'moment';
 
 const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen }) => {
     const [margin, setMargin] = useState("");
@@ -17,6 +19,9 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen }) => {
     const [loading, setLoading] = useState(false);
     const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
     const [sortedField, setSortedField] = useState(null);
+    const [openAccordionIndex, setOpenAccordionIndex] = useState(null);
+    const [userCheckboxState, setUserCheckboxState] = useState({});
+    const [accordionCheckboxState, setAccordionCheckboxState] = useState({});
 
     // get all Screen
     useEffect(() => {
@@ -75,30 +80,61 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen }) => {
         setCurrentPage(pageNumber);
     };
 
-    const handleScreenCheckboxChange = (screenID) => {
-        // Check if the screenID is already selected
-        const isSelected = selectUser.includes(screenID);
+    // const  handleScreenCheckboxChange = (screenID) => {
+    //     // Check if the screenID is already selected
+    //     const isSelected = selectUser.includes(screenID);
 
-        // Create a new array with the updated selection
-        let newSelectedScreens;
-        if (isSelected) {
-            // Remove the screenID if it's already selected
-            newSelectedScreens = selectUser.filter(id => id !== screenID);
-        } else {
-            // Add the screenID if it's not already selected
-            newSelectedScreens = [...selectUser, screenID];
-        }
+    //     // Create a new array with the updated selection
+    //     let newSelectedScreens;
+    //     if (isSelected) {
+    //         // Remove the screenID if it's already selected
+    //         newSelectedScreens = selectUser.filter(id => id !== screenID);
+    //     } else {
+    //         // Add the screenID if it's not already selected
+    //         newSelectedScreens = [...selectUser, screenID];
+    //     }
 
-        // Update the state with the new selection
-        setSelectUser(newSelectedScreens);
-        const updatedCheckboxes = { ...screenCheckboxes };
-        updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
-        setScreenCheckboxes(updatedCheckboxes);
-    };
+    //     // Update the state with the new selection
+    //     setSelectUser(newSelectedScreens);
+    //     const updatedCheckboxes = { ...screenCheckboxes };
+    //     updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
+    //     setScreenCheckboxes(updatedCheckboxes);
+    // };
 
-    const handleAddMargin =()=>{
+
+    const handleAddMargin = () => {
 
     }
+
+    const handleAccordionClick = (index) => {
+        setOpenAccordionIndex((prevIndex) => (prevIndex === index ? null : index));
+    };
+
+    // Handle change for user checkboxes
+    const handleUserCheckboxChange = (userScreenID) => {
+        setUserCheckboxState(prevState => ({
+            ...prevState,
+            [userScreenID]: !prevState[userScreenID]
+        }));
+
+        // If the user checkbox is selected, update checkboxes inside the accordion
+        if (!userCheckboxState[userScreenID]) {
+            const updatedAccordionCheckboxes = { ...accordionCheckboxState };
+            sortedAndPaginatedData[userScreenID].screenList.forEach(screen => {
+                updatedAccordionCheckboxes[screen.screenID] = true;
+            });
+            setAccordionCheckboxState(updatedAccordionCheckboxes);
+        }
+    };
+
+    // Handle change for checkboxes inside the accordion
+    const handleScreenCheckboxChange = (screenID) => {
+        setAccordionCheckboxState(prevState => ({
+            ...prevState,
+            [screenID]: !prevState[screenID]
+        }));
+    };
+
 
 
     return (
@@ -164,6 +200,9 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen }) => {
                                                 <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                                                     Price
                                                 </th>
+                                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -177,73 +216,139 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen }) => {
                                                     </td>
                                                 </tr>
                                             ) : !loading && sortedAndPaginatedData?.length > 0 ? (
-                                                sortedAndPaginatedData.map((screen) => (
-                                                    <tr
-                                                        key={screen.screenID}
-                                                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                                    >
-                                                        <td className="items-center">
-                                                            <div className="flex">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    className="mr-3"
-                                                                    onChange={() =>
-                                                                        handleScreenCheckboxChange(screen.screenID)
-                                                                    }
-                                                                    checked={screenCheckboxes[screen.screenID]}
-                                                                />
-
-                                                                {screen.screenName}
-
-                                                            </div>
-                                                        </td>
-
-                                                        <td className="text-center">
-                                                            <span
-                                                                id={`changetvstatus${screen?.macid}`}
-                                                                className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                                                    ? "bg-[#3AB700]"
-                                                                    : "bg-[#FF0000]"
-                                                                    }`}
+                                                sortedAndPaginatedData.map((user, i) => {
+                                                    const isAccordionOpen = openAccordionIndex === i;
+                                                    return (
+                                                        <>
+                                                            <tr
+                                                                key={i}
+                                                                className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                                                             >
-                                                                {screen.screenStatus == 1 ? "Live" : "offline"}
-                                                            </span>
-                                                            {/* <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
-                      Live
-                    </button> */}
-                                                        </td>
-                                                        <td className="text-center break-words">
-                                                            {screen.googleLocation}
-                                                        </td>
+                                                                <td className="items-center">
+                                                                    <div className="flex">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            className="mr-3"
+                                                                            onChange={() =>
+                                                                                handleUserCheckboxChange(user.screenID)
+                                                                            }
+                                                                            checked={userCheckboxState[user.screenID]}
+                                                                        />
+                                                                        {user.name}
+                                                                    </div>
+                                                                </td>
 
-                                                        <td className="text-center break-words">
-                                                          hello
-                                                        </td>
-                                                        <td className="text-center break-words">
-                                                            {screen?.tags !== null
-                                                                ? screen?.tags
-                                                                    .split(",")
-                                                                    .slice(
-                                                                        0,
-                                                                        screen?.tags.split(",").length > 2
-                                                                            ? 3
-                                                                            : screen?.tags.split(",").length
-                                                                    )
-                                                                    .map((text) => {
-                                                                        if (text.toString().length > 10) {
-                                                                            return text
-                                                                                .split("")
-                                                                                .slice(0, 10)
-                                                                                .concat("...")
-                                                                                .join("");
-                                                                        }
-                                                                        return text;
-                                                                    })
-                                                                    .join(",")
-                                                                : ""}
-                                                        </td>
-                                                    </tr>
-                                                ))
+                                                                <td className="text-center">
+                                                                    {user?.email}
+                                                                </td>
+                                                                <td className="text-center break-words">
+                                                                    {user.googleLocation}
+                                                                </td>
+
+                                                                <td className="text-center break-words">
+                                                                    {user?.totalScreen}
+                                                                </td>
+                                                                <td className="text-center break-words">
+                                                                    {user?.price}
+                                                                </td>
+                                                                <td>
+                                                                    {isAccordionOpen && (
+                                                                        <button>
+                                                                            <div
+                                                                                onClick={() =>
+                                                                                    handleAccordionClick(i)
+                                                                                }
+                                                                            >
+                                                                                <IoIosArrowDropup className="text-3xl" />
+                                                                            </div>
+                                                                        </button>
+                                                                    )}
+                                                                    {!isAccordionOpen && (
+                                                                        <button>
+                                                                            <div
+                                                                                onClick={() =>
+                                                                                    handleAccordionClick(i)
+                                                                                }
+                                                                            >
+                                                                                <IoIosArrowDropdown className="text-3xl" />
+                                                                            </div>
+                                                                        </button>
+                                                                    )}
+                                                                </td>
+                                                            </tr>
+                                                            {isAccordionOpen && (
+                                                                <table className="screen-table w-full" cellPadding={15}>
+                                                                    <thead>
+                                                                        <tr className="items-center table-head-bg">
+                                                                            <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
+                                                                                Screen Name
+                                                                            </th>
+                                                                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                                                                Status
+                                                                            </th>
+                                                                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                                                                Google Location
+                                                                            </th>
+                                                                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                                                                Last Seen
+                                                                            </th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {isAccordionOpen && user && user.screenList?.length > 0 && user.screenList?.map((screen, index) => {
+                                                                            return (
+                                                                                <tr
+                                                                                    key={index}
+                                                                                    className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
+                                                                                >
+                                                                                    <td className="p-2 text-center">
+                                                                                        <div className="flex">
+                                                                                            <input
+                                                                                                type="checkbox"
+                                                                                                className="mr-3"
+                                                                                                onChange={() =>
+                                                                                                    handleScreenCheckboxChange(screen.screenID)
+                                                                                                }
+                                                                                                checked={accordionCheckboxState[screen.screenID]}
+                                                                                            />
+                                                                                            {screen.screenName}
+                                                                                        </div>
+                                                                                    </td>
+
+                                                                                    <td className="p-2 text-center">
+                                                                                        <span
+                                                                                            id={`changetvstatus${screen.macID}`}
+                                                                                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus === 1
+                                                                                                ? "bg-[#3AB700]"
+                                                                                                : "bg-[#FF0000]"
+                                                                                                }`}
+                                                                                        >
+                                                                                            {screen.screenStatus === 1
+                                                                                                ? "Live"
+                                                                                                : "offline"}
+                                                                                        </span>
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center">
+                                                                                        {screen?.googleLocation}
+                                                                                    </td>
+                                                                                    <td className="p-2 text-center">
+                                                                                        {screen?.lastSeen
+                                                                                            ? moment(
+                                                                                                screen?.lastSeen
+                                                                                            ).format("LLL")
+                                                                                            : null}
+                                                                                    </td>
+
+                                                                                </tr>
+                                                                            )
+                                                                        })}
+                                                                    </tbody>
+                                                                </table>
+                                                            )}
+                                                        </>
+                                                    )
+
+                                                })
                                             ) : (
                                                 <tr>
                                                     <td colSpan={6}>
@@ -251,6 +356,7 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen }) => {
                                                     </td>
                                                 </tr>
                                             )}
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -329,7 +435,7 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen }) => {
                             <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
                                 <button
                                     className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
-                                    onClick={()=> handleAddMargin()}
+                                    onClick={() => handleAddMargin()}
 
                                 >
                                     Save
