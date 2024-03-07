@@ -72,11 +72,11 @@ const AdminSidebar = ({ sidebarOpen }) => {
         //   path: "/retailer",
         //   icon: <FaUserCheck className="  text-xl  " />,
         // },
-        // {
-        //   title: "Advertisement",
-        //   path: "/advertisement",
-        //   icon: <FaUserCheck className="  text-xl  " />,
-        // },
+        {
+          title: "Advertisement",
+          path: "/advertisement",
+          icon: <FaUserCheck className="  text-xl  " />,
+        },
       ],
     },
     {

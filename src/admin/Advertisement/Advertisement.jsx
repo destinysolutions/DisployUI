@@ -21,6 +21,8 @@ import {
 } from "../../Redux/admin/AdvertisementSlice";
 import { useDispatch } from "react-redux";
 import { getOnBodingData } from "../../Redux/admin/OnBodingSlice";
+import AssetsPreview from "../../Components/Common/AssetsPreview";
+import { BsEyeFill } from "react-icons/bs";
 
 const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const hiddenFileInput = useRef(null);
@@ -193,12 +195,9 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
         method: "post",
         maxBodyLength: Infinity,
         url: ADDEDITADVERTISEMENT,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: {"Content-Type": "multipart/form-data",},
         data: formData,
       };
-
       const response = await axios.request(config);
       if (response?.data?.status === true) {
         toast?.remove();
@@ -470,6 +469,19 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
 
                                   <td className="p-2 text-center">
                                     <div className="relative">
+
+                                      <button
+                                        data-tip
+                                        data-for="Assign"
+                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-1"
+                                        onClick={() => {
+                                          setShowSelectScreenModal(true);
+                                          setSelectAds(screen);
+                                        }}
+                                      >
+                                        <BsEyeFill />
+                                      </button>
+
                                       <button
                                         data-tip
                                         data-for="Assign"

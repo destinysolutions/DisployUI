@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { FaPlusCircle } from 'react-icons/fa';
+import { IoClose } from 'react-icons/io5';
 const AddEditAdvertisement = ({
   heading,
   toggleModal,
@@ -8,6 +10,29 @@ const AddEditAdvertisement = ({
   hiddenFileInput,
   handleFileChange
 }) => {
+
+  const [inputs, setInputs] = useState(['']);
+
+
+  const addInput = () => {
+    setInputs([...inputs, '']);
+  };
+
+  const handleInputChange = (index, event) => {
+    const newInputs = [...inputs];
+    newInputs[index] = event.target.value;
+    setInputs(newInputs);
+    const googleLocations = newInputs.filter(Boolean).join(' | '); // Filter out empty values and join with commas
+    formik.setFieldValue(`googleLocation`, googleLocations);
+  };
+
+  const removeInput = (index) => {
+    const newInputs = [...inputs];
+    newInputs.splice(index, 1);
+    setInputs(newInputs);
+    const googleLocations = newInputs.filter(Boolean).join(' | '); // Filter out empty values and join with commas
+    formik.setFieldValue(`googleLocation`, googleLocations);
+  };
 
   const handleClick = (e) => {
     hiddenFileInput.current.click();
@@ -30,9 +55,7 @@ const AddEditAdvertisement = ({
               </h3>
               <AiOutlineCloseCircle
                 className="text-4xl text-primary cursor-pointer"
-                onClick={() => {
-                  toggleModal();
-                }}
+                onClick={() => {toggleModal()}}
               />
             </div>
             {/* Modal body */}
@@ -41,41 +64,52 @@ const AddEditAdvertisement = ({
                 onSubmit={formik.handleSubmit}
                 className="space-y-3 md:space-y-5"
               >
+
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="Name"
+                    id="Name"
+                    placeholder="Enter Name"
+                    className="formInput"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.Name}
+                  />
+                  {formik.errors.Name &&
+                    formik.touched.Name && (
+                      <div className="error">{formik.errors.Name}</div>
+                    )}
+                </div>
+
+                <div className="relative">
+                  <div className='flex flex-col gap-2'>
+                  {inputs.map((input, index) => (
+                      <div className="relative" key={index}>
+                        <input
+                          type="text"
+                          name={`googleLocation${index}`}
+                          id={`googleLocation${index}`}
+                          placeholder="Enter Your Google Location"
+                          className="formInput"
+                          value={input}
+                          onChange={(event) => handleInputChange(index, event)}
+                        />
+                        {formik.errors.googleLocation && formik.touched.googleLocation && (
+                          <div className="error">
+                            {formik.errors.googleLocation}
+                          </div>
+                        )}
+                        {index > 0 && (
+                          <IoClose  className='cursor-pointer' onClick={() => removeInput(index)} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <FaPlusCircle className='cursor-pointer' onClick={addInput} />
+                </div>
+
                 <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
-                  <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
-                    <input
-                      type="text"
-                      name="Name"
-                      id="Name"
-                      placeholder="Enter Name"
-                      className="formInput"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.Name}
-                    />
-                    {formik.errors.Name &&
-                      formik.touched.Name && (
-                        <div className="error">{formik.errors.Name}</div>
-                      )}
-                  </div>
-                  <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
-                    <input
-                      type="text"
-                      name="googleLocation"
-                      id="googleLocation"
-                      placeholder="Enter Your Google Location"
-                      className="formInput"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.googleLocation}
-                    />
-                    {formik.errors.googleLocation &&
-                      formik.touched.googleLocation && (
-                        <div className="error">
-                          {formik.errors.googleLocation}
-                        </div>
-                      )}
-                  </div>
                   <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
                     <input
                       type="text"
@@ -180,7 +214,7 @@ const AddEditAdvertisement = ({
                       type="Number"
                       name="Screen"
                       id="Screen"
-                      placeholder="Enter Require Screen"
+                      placeholder="Required Number Screen"
                       className="formInput"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -189,11 +223,11 @@ const AddEditAdvertisement = ({
                     {formik.errors.Screen && formik.touched.Screen && (
                       <div className="error">{formik.errors.Screen}</div>
                     )}
-                    </div>
+                  </div>
                   <div className="relative lg:w-64 md:w-64 sm:max-w-[376px] flex items-center justify-center">
                     <div className="flex">
                       <button
-                      type='button'
+                        type='button'
                         className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3 "
                         onClick={handleClick}
                       >
@@ -221,9 +255,10 @@ const AddEditAdvertisement = ({
                   <button
                     type="submit"
                     className="w-40 text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-full py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
-                    disabled={loading}
+                    // disabled={loading}
                   >
-                    {loading ? "Saving" : "Save"}
+                    {/* {loading ? "Saving" : "Save"} */}
+                    Save
                   </button>
                 </div>
               </form>
