@@ -184,7 +184,8 @@ export const ASSIGN_ADS = `${baseUrl}AdsCustomer/InsertAdvertisementScreen`
 export const  GET_NOTIFICATIONS  = `${baseUrl}AdsCustomer/GetAdsDatabyID`
 export const  UPDATE_ADS_RATE  = `${baseUrl}AdsCustomer/UpdateAdsRate`
 export const  ADVERTISEMENT_SCREEN  = `${baseUrl}Common/AdvertisementScreen`
-export const  ADD_USER_LIST  = `${baseUrl}Common/AdvertisementScreen`
+export const  ADD_USER_LIST  = `${baseUrl}AdsCustomer/GetAdsDatabyAdsID`
+
 
 
 
