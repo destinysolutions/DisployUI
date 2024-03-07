@@ -50,7 +50,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
     {
       label: "Notifications",
       value: "notifications",
-      desc: <Notifications />,
+      desc: <Notifications sidebarOpen={sidebarOpen} />,
       icon: <IoIosNotificationsOutline />,
     },
     // {

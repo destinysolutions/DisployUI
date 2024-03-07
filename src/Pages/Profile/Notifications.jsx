@@ -13,10 +13,10 @@ import {
 } from "../../Redux/admin/AdvertisementSlice";
 import moment from "moment/moment";
 import toast from "react-hot-toast";
+import AddUserAdsForPrice from "../../Components/Common/AddUserAdsForPrice";
 
-const Billing = () => {
+const Billing = ({ sidebarOpen }) => {
   const store = useSelector((state) => state.root.advertisementData);
-console.log('store?.getNotification', store?.getNotification)
   const dispatch = useDispatch();
 
   // pagination Start
@@ -42,6 +42,7 @@ console.log('store?.getNotification', store?.getNotification)
   const [loadFirst, setloadFirst] = useState(true);
   const [label, setLabel] = useState("");
   const [editIdAds, setEditAdsId] = useState("");
+  console.log('editIdAds', editIdAds)
 
   useEffect(() => {
     if (loadFirst) {
@@ -56,11 +57,13 @@ console.log('store?.getNotification', store?.getNotification)
     }
   }, [loadFirst, store]);
 
-  const AddPriceAds = (item) => {
-    const payload = { AssignAdvertisementid: editIdAds, AdsPrice: item };
-    dispatch(UpdateAdsRate(payload));
-    setOpenPriceAds(false);
-  };
+
+
+  const toggleModal = () => {
+    setOpenPriceAds(!openPriceAds)
+  }
+
+
 
   return (
     <>
@@ -96,7 +99,7 @@ console.log('store?.getNotification', store?.getNotification)
                       GoogleLocation
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Screen
+                      Required Screen
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Start Date
@@ -167,13 +170,13 @@ console.log('store?.getNotification', store?.getNotification)
                             data-tip
                             data-for="Add Price"
                             className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            onClick={() => {
+                              setOpenPriceAds(true);
+                              setLabel("Add Price");
+                              setEditAdsId(item);
+                            }}
                           >
                             <RiAddFill
-                              onClick={() => {
-                                setOpenPriceAds(true);
-                                setLabel("Add Price");
-                                setEditAdsId(item.adsCustomerMasterID);
-                              }}
                             />
                             <ReactTooltip
                               id="Add Price"
@@ -269,13 +272,16 @@ console.log('store?.getNotification', store?.getNotification)
         />
       )}
 
-      {openPriceAds && (
+      {/* {openPriceAds && (
         <AddPriceForAds
           openPriceAds={openPriceAds}
           setOpenPriceAds={setOpenPriceAds}
           label={label}
           AddPriceAds={AddPriceAds}
         />
+     )}*/}
+      {openPriceAds && (
+        <AddUserAdsForPrice toggleModal={toggleModal} sidebarOpen={sidebarOpen} editIdAds={editIdAds} setloadFirst={setloadFirst}/>
       )}
     </>
   );

@@ -317,6 +317,16 @@ export const Operating_hours = [{
 }
 ];
 
+export const Screen_Type = [{
+  id: "1",
+  value: "Regular"
+},
+{
+  id: "2",
+  value: "Advertisement"
+}
+];
+
 export const Operating_hours_actions = [{
   id: "1",
   value: "Shut Down"

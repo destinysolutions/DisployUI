@@ -23,6 +23,7 @@ import { useDispatch } from "react-redux";
 import { getOnBodingData } from "../../Redux/admin/OnBodingSlice";
 import AssetsPreview from "../../Components/Common/AssetsPreview";
 import { BsEyeFill } from "react-icons/bs";
+import AdminMarginmodel from "./AdminMarginmodel";
 
 const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const hiddenFileInput = useRef(null);
@@ -30,6 +31,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [showSelectScreenModal, setShowSelectScreenModal] = useState(false);
+  const [showSelectMarginModal, setShowSelectMarginModal] = useState(false);
   const [adsPreview, setAdsPreview] = useState(false);
 
   const [customerList, setCustomerList] = useState({
@@ -69,24 +71,24 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
 
   const filteredData = Array.isArray(customerList?.allCustomer)
     ? customerList?.allCustomer?.filter((item) =>
-        Object.values(item).some(
-          (value) => value
-          // &&
-          // value.toString().toLowerCase().includes(searchScreen.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) => value
+        // &&
+        // value.toString().toLowerCase().includes(searchScreen.toLowerCase())
       )
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
 
   const fiterAds = Array.isArray(allAdvertisement?.advertisementData)
     ? allAdvertisement?.advertisementData?.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value.toString().toLowerCase().includes(searchAds.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value.toString().toLowerCase().includes(searchAds.toLowerCase())
       )
+    )
     : [];
 
   const totalAdsPages = Math.ceil(fiterAds?.length / itemsPerPage);
@@ -195,7 +197,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
         method: "post",
         maxBodyLength: Infinity,
         url: ADDEDITADVERTISEMENT,
-        headers: {"Content-Type": "multipart/form-data",},
+        headers: { "Content-Type": "multipart/form-data", },
         data: formData,
       };
       const response = await axios.request(config);
@@ -304,6 +306,10 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedItems([]);
     setSelectAds("");
   };
+
+  const toggleMarginModal = () => {
+    setShowSelectMarginModal(!showSelectMarginModal)
+  }
 
   return (
     <>
@@ -471,19 +477,19 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
 
                                   <td className="p-2 text-center">
                                     <div className="relative">
-
-                                      <button
-                                        data-tip
-                                        data-for="Assign"
-                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-1"
-                                        onClick={() => {
-                                          setShowSelectScreenModal(true);
-                                          setSelectAds(screen);
-                                        }}
-                                      >
-                                        <BsEyeFill />
-                                      </button>
-
+                                      {screen?.isRemove && (
+                                        <button
+                                          data-tip
+                                          data-for="Assign"
+                                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-1"
+                                          onClick={() => {
+                                            setShowSelectMarginModal(true);
+                                            setSelectAds(screen);
+                                          }}
+                                        >
+                                          <BsEyeFill />
+                                        </button>
+                                      )}
                                       <button
                                         data-tip
                                         data-for="Assign"
@@ -604,6 +610,9 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
           selectedItems={selectedItems}
           handleScreenCheckboxChange={handleScreenCheckboxChange}
         />
+      )}
+      {showSelectMarginModal && (
+        <AdminMarginmodel toggleMarginModal={toggleMarginModal} sidebarOpen={sidebarOpen} />
       )}
     </>
   );

@@ -53,7 +53,8 @@ import {
   TotalDay,
   getCurrentTime,
   getTrueDays,
-  extractTime
+  extractTime,
+  Screen_Type
 } from "../../Common/Common";
 import OperatingHourModal from "./OperatingHourModal";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
@@ -77,6 +78,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [tagsData, setTagsData] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
   const [selectedOperatingHour, setSelectedOperatingHour] = useState("");
+  const [selectedScreenType, setSelectedScreenType] = useState("");
+
 
   const [selectedHours, setSelectedHours] = useState("");
 
@@ -187,6 +190,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           const boolArr = daysOfWeek.map((day) => arr.includes(day));
           setSelectedOperatingHour(
             fetchedData[0]?.screenOperatingHours?.operatingType
+          );
+          setSelectedScreenType(
+            fetchedData[0]?.screenType
           );
           if (fetchedData[0]?.screenOperatingHours?.operatingType !== "Always on") {
             setStartTime(extractTime(fetchedData[0]?.screenOperatingHours?.startTime));
@@ -508,7 +514,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           setLayotuDetails(response.data?.data[0]);
-          setScreenType(response?.data?.data[0]?.screenType);
+          // setScreenType(response?.data?.data[0]?.screenType);
           setFetchLayoutLoading(false);
         }
       })
@@ -704,6 +710,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       screenName: screenName,
       operation: "Update",
       screenOperatingHours: screenOperatingHours,
+      screenType:selectedScreenType
     });
     toast.loading("Saving...");
 
@@ -1236,7 +1243,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     <ReactPlayer
                       url={playerData?.fileType}
                       className={` ${(orientation === 1 &&
-                          "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
+                        "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
                         (orientation === 2 &&
                           "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72") ||
                         (orientation === 3 &&
@@ -1260,7 +1267,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       src={playerData?.fileType}
                       alt="Media"
                       className={` ${(orientation === 1 &&
-                          "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
+                        "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
                         (orientation === 2 &&
                           "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72") ||
                         (orientation === 3 &&
@@ -1521,9 +1528,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                               >
                                                 <tr
                                                   className={`${selectedComposition?.compositionName ===
-                                                      composition?.compositionName
-                                                      ? "bg-[#f3c953]"
-                                                      : ""
+                                                    composition?.compositionName
+                                                    ? "bg-[#f3c953]"
+                                                    : ""
                                                     } border-b border-[#eee] `}
                                                   onClick={() => {
                                                     handleCompositionsAdd(
@@ -1726,8 +1733,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               <span
                                 id={`changetvstatus${screen.macid}`}
                                 className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                    ? "bg-[#3AB700]"
-                                    : "bg-[#FF0000]"
+                                  ? "bg-[#3AB700]"
+                                  : "bg-[#FF0000]"
                                   }`}
                               >
                                 {screen.screenStatus == 1 ? "Live" : "offline"}
@@ -2108,6 +2115,30 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           </select>
                         </td>
                       </tr>
+                      <tr className="border-b border-[#D5E3FF]">
+                        <td className="text-left lg:py-3 md:py-2 pb-0">
+                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                            Screen Type
+                          </p>
+                        </td>
+                        <td className="text-left lg:py-3 md:py-2 pt-0">
+                          <select
+                            className="px-2 py-2 border border-[#D5E3FF] w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-full"
+                            value={selectedScreenType}
+                            onChange={(e) => {
+                              setSelectedScreenType(e.target.value);
+                            }}
+                          >
+                            {Screen_Type &&
+                              Screen_Type?.map((screen) => (
+                                <option value={screen?.value} key={screen?.value}>
+                                  {screen?.value}
+                                </option>
+                              ))}
+                          </select>
+                        </td>
+                      </tr>
+
                       <tr className="border-b border-[#D5E3FF]">
                         <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
