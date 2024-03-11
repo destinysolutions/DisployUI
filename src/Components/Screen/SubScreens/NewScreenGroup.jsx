@@ -835,52 +835,51 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                   )}
                                 </div>
 
-                                <div className="flex items-center justify-start">
-                                  <div className=" flex items-center w-full">
-                                    {isAccordionOpen && (
-                                      <div className="flex sm:flex-row lg:flex-row md:flex-row flex-col gap-2 w-full">
-                                        <div className="flex justify-start items-center">
-                                          {permissions.isSave && (
-                                            <button
-                                              data-tip
-                                              data-for="Add Screen"
-                                              className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                                              onClick={() => newAddGroup(item)}
-                                            >
-                                              Add <b>+</b>
-                                              <ReactTooltip
-                                                id="Add Screen"
-                                                place="bottom"
-                                                type="warning"
-                                                effect="solid"
-                                              >
-                                                <span>Add Screen</span>
-                                              </ReactTooltip>
-                                            </button>
-                                          )}
-
-                                          {item.isPreview && (
-                                            <button
-                                              data-tip
-                                              data-for="Preview"
-                                              className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                                              onClick={() =>
-                                                handleOpenPreview(item)
-                                              }
-                                            >
-                                              Preview
-                                              <ReactTooltip
-                                                id="Preview"
-                                                place="bottom"
-                                                type="warning"
-                                                effect="solid"
-                                              >
-                                                <span>Preview</span>
-                                              </ReactTooltip>
-                                            </button>
-                                          )}
-                                        </div>
+                                
+                                  <div className=" flex items-center w-full justify-end">
+                                    {isAccordionOpen && (                                     
+                                        
                                         <div className="flex justify-end items-center">
+                                        {permissions.isSave && (
+                                          <button
+                                            data-tip
+                                            data-for="Add Screen"
+                                            className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
+                                            onClick={() => newAddGroup(item)}
+                                          >
+                                            Add <b>+</b>
+                                            <ReactTooltip
+                                              id="Add Screen"
+                                              place="bottom"
+                                              type="warning"
+                                              effect="solid"
+                                            >
+                                              <span>Add Screen</span>
+                                            </ReactTooltip>
+                                          </button>
+                                        )}
+
+                                        {item.isPreview && (
+                                          <button
+                                            data-tip
+                                            data-for="Preview"
+                                            className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
+                                            onClick={() =>
+                                              handleOpenPreview(item)
+                                            }
+                                          >
+                                            Preview
+                                            <ReactTooltip
+                                              id="Preview"
+                                              place="bottom"
+                                              type="warning"
+                                              effect="solid"
+                                            >
+                                              <span>Preview</span>
+                                            </ReactTooltip>
+                                          </button>
+                                        )}
+
                                           {permissions.isSave && (
                                             <button
                                               data-tip
@@ -984,7 +983,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                             </div>
                                           </button>
                                         </div>
-                                      </div>
+                                      
                                     )}
 
                                     <button>
@@ -998,7 +997,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                         </div>
                                       )}
                                     </button>
-                                  </div>
+                                 
                                 </div>
                               </div>
 

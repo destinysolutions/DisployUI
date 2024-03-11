@@ -115,6 +115,10 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
   );
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchValue])
+
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
@@ -204,8 +208,8 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
       newErrors.email = !email
         ? "Email is required"
         : !emailRegex.test(email)
-        ? "Please Enter Valid Email"
-        : "";
+          ? "Please Enter Valid Email"
+          : "";
 
       newErrors.password = !password ? "Password is required" : "";
     }
@@ -885,38 +889,38 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                     <div className="flex items-center justify-end lg:flex-row md:flex-row sm:flex-row flex-col gap-2 ">
                       <div className="flex items-center justify-center">
 
-                      <div className="layout-img me-3">
-                        {file && editProfile !== 1 ? (
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt="Uploaded"
-                            className="w-10 rounded-lg"
+                        <div className="layout-img me-3">
+                          {file && editProfile !== 1 ? (
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt="Uploaded"
+                              className="w-10 rounded-lg"
+                            />
+                          ) : null}
+                          {editProfile === 1 && fileEdit !== null ? (
+                            <img
+                              src={fileEdit}
+                              alt="Uploaded"
+                              className="w-10 rounded-lg"
+                            />
+                          ) : null}
+                        </div>
+                        <div className="layout-detaills me-3">
+                          <button
+                            className="lg:px-5 md:px-5 px-2 bg-primary text-white rounded-full py-2 border border-primary "
+                            onClick={handleClick}
+                          >
+                            Profile photo
+                          </button>
+                          <input
+                            type="file"
+                            id="upload-button"
+                            style={{ display: "none" }}
+                            ref={hiddenFileInput}
+                            accept="image/*"
+                            onChange={(e) => handleFileChange(e)}
                           />
-                        ) : null}
-                        {editProfile === 1 && fileEdit !== null ? (
-                          <img
-                            src={fileEdit}
-                            alt="Uploaded"
-                            className="w-10 rounded-lg"
-                          />
-                        ) : null}
-                      </div>
-                      <div className="layout-detaills me-3">
-                        <button
-                          className="lg:px-5 md:px-5 px-2 bg-primary text-white rounded-full py-2 border border-primary "
-                          onClick={handleClick}
-                        >
-                          Profile photo
-                        </button>
-                        <input
-                          type="file"
-                          id="upload-button"
-                          style={{ display: "none" }}
-                          ref={hiddenFileInput}
-                          accept="image/*"
-                          onChange={(e) => handleFileChange(e)}
-                        />
-                      </div>
+                        </div>
                       </div>
                       <button
                         onClick={() => setSelectScreenModal(true)}
@@ -1026,11 +1030,10 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                         <td className="text-center">
                                           <span
                                             id={`changetvstatus${screen.macid}`}
-                                            className={`rounded-full px-6 py-2 text-white text-center ${
-                                              screen.screenStatus == 1
+                                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                                 ? "bg-[#3AB700]"
                                                 : "bg-[#FF0000]"
-                                            }`}
+                                              }`}
                                           >
                                             {screen.screenStatus == 1
                                               ? "Live"
@@ -1046,34 +1049,34 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                             ? ""
                                             : `${screen.scheduleName} Till
                                     ${moment(screen.endDate).format(
-                                      "YYYY-MM-DD hh:mm"
-                                    )}`}
+                                              "YYYY-MM-DD hh:mm"
+                                            )}`}
                                         </td>
                                         <td className="text-center break-words">
                                           {screen?.tags !== null
                                             ? screen?.tags
-                                                .split(",")
-                                                .slice(
-                                                  0,
-                                                  screen?.tags.split(",")
-                                                    .length > 2
-                                                    ? 3
-                                                    : screen?.tags.split(",")
-                                                        .length
-                                                )
-                                                .map((text) => {
-                                                  if (
-                                                    text.toString().length > 10
-                                                  ) {
-                                                    return text
-                                                      .split("")
-                                                      .slice(0, 10)
-                                                      .concat("...")
-                                                      .join("");
-                                                  }
-                                                  return text;
-                                                })
-                                                .join(",")
+                                              .split(",")
+                                              .slice(
+                                                0,
+                                                screen?.tags.split(",")
+                                                  .length > 2
+                                                  ? 3
+                                                  : screen?.tags.split(",")
+                                                    .length
+                                              )
+                                              .map((text) => {
+                                                if (
+                                                  text.toString().length > 10
+                                                ) {
+                                                  return text
+                                                    .split("")
+                                                    .slice(0, 10)
+                                                    .concat("...")
+                                                    .join("");
+                                                }
+                                                return text;
+                                              })
+                                              .join(",")
                                             : ""}
                                         </td>
                                       </tr>
@@ -1380,7 +1383,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                             </div>
                           </div>
                           {formik.touched.currentPassword &&
-                          formik.errors.currentPassword ? (
+                            formik.errors.currentPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.currentPassword}
                             </div>
@@ -1416,7 +1419,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                             </div>
                           </div>
                           {formik.touched.newPassword &&
-                          formik.errors.newPassword ? (
+                            formik.errors.newPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.newPassword}
                             </div>
@@ -1452,7 +1455,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                             </div>
                           </div>
                           {formik.touched.confirmPassword &&
-                          formik.errors.confirmPassword ? (
+                            formik.errors.confirmPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.confirmPassword}
                             </div>
@@ -2050,11 +2053,10 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                         <td className="text-center">
                           <span
                             id={`changetvstatus${screen.macid}`}
-                            className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenStatus == 1
+                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"
-                            }`}
+                              }`}
                           >
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </span>
@@ -2071,24 +2073,24 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                         <td className="text-center break-words">
                           {screen?.tags !== null
                             ? screen?.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  screen?.tags.split(",").length > 2
-                                    ? 3
-                                    : screen?.tags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
+                              .split(",")
+                              .slice(
+                                0,
+                                screen?.tags.split(",").length > 2
+                                  ? 3
+                                  : screen?.tags.split(",").length
+                              )
+                              .map((text) => {
+                                if (text.toString().length > 10) {
+                                  return text
+                                    .split("")
+                                    .slice(0, 10)
+                                    .concat("...")
+                                    .join("");
+                                }
+                                return text;
+                              })
+                              .join(",")
                             : ""}
                         </td>
                       </tr>
@@ -2417,11 +2419,10 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                     <td className="text-center">
                                       <span
                                         id={`changetvstatus${screen.macid}`}
-                                        className={`rounded-full px-6 py-2 text-white text-center ${
-                                          screen.screenStatus == 1
+                                        className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                             ? "bg-[#3AB700]"
                                             : "bg-[#FF0000]"
-                                        }`}
+                                          }`}
                                       >
                                         {screen.screenStatus == 1
                                           ? "Live"
@@ -2436,30 +2437,30 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                         ? ""
                                         : `${screen.scheduleName} Till
                                 ${moment(screen.endDate).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}`}
+                                          "YYYY-MM-DD hh:mm"
+                                        )}`}
                                     </td>
                                     <td className="text-center break-words">
                                       {screen?.tags !== null
                                         ? screen?.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              screen?.tags.split(",").length > 2
-                                                ? 3
-                                                : screen?.tags.split(",").length
-                                            )
-                                            .map((text) => {
-                                              if (text.toString().length > 10) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                          .split(",")
+                                          .slice(
+                                            0,
+                                            screen?.tags.split(",").length > 2
+                                              ? 3
+                                              : screen?.tags.split(",").length
+                                          )
+                                          .map((text) => {
+                                            if (text.toString().length > 10) {
+                                              return text
+                                                .split("")
+                                                .slice(0, 10)
+                                                .concat("...")
+                                                .join("");
+                                            }
+                                            return text;
+                                          })
+                                          .join(",")
                                         : ""}
                                     </td>
                                   </tr>

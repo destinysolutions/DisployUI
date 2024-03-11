@@ -612,7 +612,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
       {showSelectMarginModal && (
-        <AdminMarginmodel toggleMarginModal={toggleMarginModal} sidebarOpen={sidebarOpen} selectAds={selectAds}/>
+        <AdminMarginmodel toggleMarginModal={toggleMarginModal} sidebarOpen={sidebarOpen} selectAds={selectAds} fetchAds={fetchAds}/>
       )}
     </>
   );

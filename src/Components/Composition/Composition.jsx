@@ -97,6 +97,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchComposition])
+
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
@@ -846,53 +850,53 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="flex items-center justify-center w-full flex-wrap gap-2 text-[#5E5E5E]">
                                         {(composition?.tags === "" ||
                                           composition?.tags === null) && (
-                                          <span>
-                                            <AiOutlinePlusCircle
-                                              size={30}
-                                              className="mx-auto cursor-pointer"
-                                              onClick={() => {
-                                                setShowTagModal(true);
-                                                composition?.tags === "" ||
-                                                composition?.tags === null
-                                                  ? setTags([])
-                                                  : setTags(
+                                            <span>
+                                              <AiOutlinePlusCircle
+                                                size={30}
+                                                className="mx-auto cursor-pointer"
+                                                onClick={() => {
+                                                  setShowTagModal(true);
+                                                  composition?.tags === "" ||
+                                                    composition?.tags === null
+                                                    ? setTags([])
+                                                    : setTags(
                                                       composition?.tags?.split(
                                                         ","
                                                       )
                                                     );
-                                                handleFetchCompositionById(
-                                                  composition?.compositionID,
-                                                  "tags"
-                                                );
-                                              }}
-                                            />
-                                          </span>
-                                        )}
+                                                  handleFetchCompositionById(
+                                                    composition?.compositionID,
+                                                    "tags"
+                                                  );
+                                                }}
+                                              />
+                                            </span>
+                                          )}
                                         {composition?.tags !== null
                                           ? composition?.tags
-                                              ?.split(",")
-                                              ?.slice(
-                                                0,
-                                                composition?.tags?.split(",")
-                                                  ?.length > 2
-                                                  ? 3
-                                                  : composition?.tags?.split(
-                                                      ","
-                                                    )?.length
-                                              )
-                                              ?.map((text) => {
-                                                if (
-                                                  text?.toString()?.length > 10
-                                                ) {
-                                                  return text
-                                                    .split("")
-                                                    .slice(0, 10)
-                                                    .concat("...")
-                                                    .join("");
-                                                }
-                                                return text;
-                                              })
-                                              .join(",")
+                                            ?.split(",")
+                                            ?.slice(
+                                              0,
+                                              composition?.tags?.split(",")
+                                                ?.length > 2
+                                                ? 3
+                                                : composition?.tags?.split(
+                                                  ","
+                                                )?.length
+                                            )
+                                            ?.map((text) => {
+                                              if (
+                                                text?.toString()?.length > 10
+                                              ) {
+                                                return text
+                                                  .split("")
+                                                  .slice(0, 10)
+                                                  .concat("...")
+                                                  .join("");
+                                              }
+                                              return text;
+                                            })
+                                            .join(",")
                                           : ""}
                                         {composition?.tags !== "" &&
                                           composition?.tags !== null && (
@@ -900,13 +904,13 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               onClick={() => {
                                                 setShowTagModal(true);
                                                 composition?.tags === "" ||
-                                                composition?.tags === null
+                                                  composition?.tags === null
                                                   ? setTags([])
                                                   : setTags(
-                                                      composition?.tags?.split(
-                                                        ","
-                                                      )
-                                                    );
+                                                    composition?.tags?.split(
+                                                      ","
+                                                    )
+                                                  );
                                                 handleFetchCompositionById(
                                                   composition?.compositionID,
                                                   "tags"
@@ -1054,7 +1058,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             d="M13 5H1m0 0 4 4M1 5l4-4"
                           />
                         </svg>
-                        {sidebarOpen ? "Previous" : ""} 
+                        {sidebarOpen ? "Previous" : ""}
                       </button>
                       <div className="flex items-center me-3">
                         <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
@@ -1065,7 +1069,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         disabled={(currentPage === totalPages) || (compositionData?.length === 0)}
                         className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                         {sidebarOpen ? "Next" : ""}
+                        {sidebarOpen ? "Next" : ""}
                         <svg
                           className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                           aria-hidden="true"

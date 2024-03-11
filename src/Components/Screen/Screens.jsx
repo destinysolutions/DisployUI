@@ -190,13 +190,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(screens)
     ? screens?.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value.toString().toLowerCase().includes(searchScreen.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value.toString().toLowerCase().includes(searchScreen.toLowerCase())
       )
+    )
     : [];
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchScreen])
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
 
@@ -501,14 +505,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-      ? 4
-      : selectedYoutube?.youtubeId !== null &&
-        selectedYoutube?.youtubeId !== undefined
-      ? 5
-      : selectedComposition?.compositionID !== null &&
-        selectedComposition?.compositionID !== undefined
-      ? 3
-      : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -742,7 +746,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then((response) => {})
+      .then((response) => { })
       .catch((error) => {
         console.log(error);
       });
@@ -902,7 +906,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       />
                     </div>
 
-                  
+
                     {/* 
               <button
                 type="button"
@@ -1300,7 +1304,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                               )}
                                             </div>
                                             {isEditingScreen &&
-                                            editingScreenID ===
+                                              editingScreenID ===
                                               screen.screenID ? (
                                               <div className="flex items-center gap-2">
                                                 <input
@@ -1336,9 +1340,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                       {screen?.screenName
                                                         ?.length > 10
                                                         ? screen?.screenName.slice(
-                                                            0,
-                                                            10
-                                                          ) + "..."
+                                                          0,
+                                                          10
+                                                        ) + "..."
                                                         : screen.screenName}
                                                     </Link>
                                                     <button
@@ -1363,9 +1367,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                     {screen?.screenName
                                                       ?.length > 10
                                                       ? screen?.screenName.slice(
-                                                          0,
-                                                          10
-                                                        ) + "..."
+                                                        0,
+                                                        10
+                                                      ) + "..."
                                                       : screen.screenName}{" "}
                                                   </>
                                                 )}
@@ -1384,11 +1388,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         <td className="text-center">
                                           <span
                                             id={`changetvstatus${screen.macid}`}
-                                            className={`rounded-full px-6 py-2 text-white text-center ${
-                                              screen.screenStatus == 1
+                                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                                 ? "bg-[#3AB700]"
                                                 : "bg-[#FF0000]"
-                                            }`}
+                                              }`}
                                           >
                                             {screen.screenStatus == 1
                                               ? "Live"
@@ -1401,8 +1404,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         <td className="p-2 text-center break-words text-[#5E5E5E]">
                                           {screen?.lastSeen
                                             ? moment(screen?.lastSeen).format(
-                                                "LLL"
-                                              )
+                                              "LLL"
+                                            )
                                             : null}
                                         </td>
                                       )}
@@ -1449,8 +1452,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                               Set a schedule
                                             </button>
                                           ) : (
-                                            `${
-                                              screen.scheduleName
+                                            `${screen.scheduleName
                                             } Till ${moment(
                                               screen.endDate
                                             ).format("YYYY-MM-DD hh:mm")}`
@@ -1474,51 +1476,51 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
                                             {(screen?.tags === "" ||
                                               screen?.tags === null) && (
-                                              <span>
-                                                <AiOutlinePlusCircle
-                                                  size={30}
-                                                  className="mx-auto cursor-pointer"
-                                                  onClick={() => {
-                                                    setShowTagModal(true);
-                                                    screen.tags === "" ||
-                                                    screen?.tags === null
-                                                      ? setTags([])
-                                                      : setTags(
+                                                <span>
+                                                  <AiOutlinePlusCircle
+                                                    size={30}
+                                                    className="mx-auto cursor-pointer"
+                                                    onClick={() => {
+                                                      setShowTagModal(true);
+                                                      screen.tags === "" ||
+                                                        screen?.tags === null
+                                                        ? setTags([])
+                                                        : setTags(
                                                           screen?.tags?.split(
                                                             ","
                                                           )
                                                         );
-                                                    setTagUpdateScreeen(screen);
-                                                  }}
-                                                />
-                                              </span>
-                                            )}
+                                                      setTagUpdateScreeen(screen);
+                                                    }}
+                                                  />
+                                                </span>
+                                              )}
 
                                             {screen?.tags !== null
                                               ? screen.tags
-                                                  .split(",")
-                                                  .slice(
-                                                    0,
-                                                    screen.tags.split(",")
-                                                      .length > 2
-                                                      ? 3
-                                                      : screen.tags.split(",")
-                                                          .length
-                                                  )
-                                                  .map((text) => {
-                                                    if (
-                                                      text.toString().length >
-                                                      10
-                                                    ) {
-                                                      return text
-                                                        .split("")
-                                                        .slice(0, 10)
-                                                        .concat("...")
-                                                        .join("");
-                                                    }
-                                                    return text;
-                                                  })
-                                                  .join(",")
+                                                .split(",")
+                                                .slice(
+                                                  0,
+                                                  screen.tags.split(",")
+                                                    .length > 2
+                                                    ? 3
+                                                    : screen.tags.split(",")
+                                                      .length
+                                                )
+                                                .map((text) => {
+                                                  if (
+                                                    text.toString().length >
+                                                    10
+                                                  ) {
+                                                    return text
+                                                      .split("")
+                                                      .slice(0, 10)
+                                                      .concat("...")
+                                                      .join("");
+                                                  }
+                                                  return text;
+                                                })
+                                                .join(",")
                                               : ""}
                                             {screen?.tags !== "" &&
                                               screen?.tags !== null && (
@@ -1526,13 +1528,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   onClick={() => {
                                                     setShowTagModal(true);
                                                     screen.tags === "" ||
-                                                    screen?.tags === null
+                                                      screen?.tags === null
                                                       ? setTags([])
                                                       : setTags(
-                                                          screen?.tags?.split(
-                                                            ","
-                                                          )
-                                                        );
+                                                        screen?.tags?.split(
+                                                          ","
+                                                        )
+                                                      );
                                                     setTagUpdateScreeen(screen);
                                                   }}
                                                   className="w-5 h-5 cursor-pointer"

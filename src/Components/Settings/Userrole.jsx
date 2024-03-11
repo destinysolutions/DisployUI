@@ -15,7 +15,7 @@ import { ADD_UPDATE_ORGANIZATION_USER_ROLE } from "../../Pages/Api";
 import { useSelector } from "react-redux";
 import { combineUserroleObjects } from "../Common/Common";
 
-const Userrole = ({ searchValue,sidebarOpen }) => {
+const Userrole = ({ searchValue, sidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
   const [userRoleData, setUserRoleData] = useState();
   const authToken = `Bearer ${token}`;
@@ -72,6 +72,10 @@ const Userrole = ({ searchValue,sidebarOpen }) => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchValue])
 
   // Handle sorting when a table header is clicked
   const handleSort = (field) => {
@@ -339,7 +343,7 @@ const Userrole = ({ searchValue,sidebarOpen }) => {
                       d="M13 5H1m0 0 4 4M1 5l4-4"
                     />
                   </svg>
-                  {sidebarOpen ? "Previous" : ""} 
+                  {sidebarOpen ? "Previous" : ""}
                 </button>
                 <div className="flex items-center me-3">
                   <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
@@ -350,7 +354,7 @@ const Userrole = ({ searchValue,sidebarOpen }) => {
                   disabled={(currentPage === totalPages) || (allUserRoleData?.SearchData?.length === 0)}
                   className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
-                   {sidebarOpen ? "Next" : ""}
+                  {sidebarOpen ? "Next" : ""}
                   <svg
                     className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                     aria-hidden="true"

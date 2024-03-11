@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { ASSIGN_ADS, GETALLADS, GET_NOTIFICATIONS, UPDATE_ADS_RATE } from "../../Pages/Api";
+import { ADD_ADMIN_RATE, ASSIGN_ADS, GETALLADS, GET_NOTIFICATIONS, UPDATE_ADS_RATE } from "../../Pages/Api";
 
 
 const initialState = {
@@ -59,6 +59,18 @@ export const assignAdvertisement = createAsyncThunk("data/postData", async (payl
         const token = thunkAPI.getState().root.auth.token;
         const queryParams = new URLSearchParams(payload).toString();
         const response = await axios.post(`${UPDATE_ADS_RATE}?${queryParams}`, null, { headers: { Authorization: `Bearer ${token}` } });
+        return response.data;
+      } catch (error) {
+        console.log("error", error);
+        throw error;
+      }
+    }
+    );
+
+    export const AddMarginRate = createAsyncThunk("data/AddMarginRate", async (payload, thunkAPI) => {
+      try {
+        const token = thunkAPI.getState().root.auth.token;
+        const response = await axios.post(`${ADD_ADMIN_RATE}`, payload, { headers: { Authorization: `Bearer ${token}` } });
         return response.data;
       } catch (error) {
         console.log("error", error);
@@ -125,6 +137,18 @@ export const assignAdvertisement = createAsyncThunk("data/postData", async (payl
           state.message = action.payload.message;
         })
         .addCase(UpdateAdsRate.rejected, (state, action) => {    
+          state.status = "failed";
+          state.error = action.error.message;
+        })
+
+        .addCase(AddMarginRate.pending, (state) => {    
+          state.status = null;
+        })
+        .addCase(AddMarginRate.fulfilled, (state, action) => {
+          state.status = "succeeded";
+          state.message = action.payload.message;
+        })
+        .addCase(AddMarginRate.rejected, (state, action) => {    
           state.status = "failed";
           state.error = action.error.message;
         })

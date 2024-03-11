@@ -441,7 +441,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             />
             <Navbar />
           </div>
-          <div className="pt-16 px-5 page-contain">
+          <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
             <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
               <div className="justify-between lg:flex md:flex items-center sm:block">
                 <div className="section-title">
@@ -614,8 +614,8 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                           </div>
 
-                          <div className="flex items-center">
-                            <div className=" flex items-center">
+                         
+                            <div className=" flex items-center justify-end">
                               {isAccordionOpen && (
                                 <>
                                   <button
@@ -728,7 +728,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
                               </button>
                             </div>
-                          </div>
                         </div>
 
                         {isAccordionOpen && (

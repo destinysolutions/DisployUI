@@ -5,13 +5,15 @@ import { ADD_USER_LIST } from "../../Pages/Api";
 import axios from "axios";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import moment from "moment";
+import { AddMarginRate } from "../../Redux/admin/AdvertisementSlice";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
-const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds }) => {
-  const [margin, setMargin] = useState("");
+const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds, fetchAds }) => {
+  const dispatch = useDispatch();
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-  const [screenCheckboxes, setScreenCheckboxes] = useState({});
-  const [selectUser, setSelectUser] = useState([]);
+  const [margin, setMargin] = useState("");
   const [searchUser, setSearchUser] = useState("");
   const [userData, setUserData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,6 +24,8 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds }) => {
   const [openAccordionIndex, setOpenAccordionIndex] = useState(null);
   const [userCheckboxState, setUserCheckboxState] = useState({});
   const [accordionCheckboxState, setAccordionCheckboxState] = useState({});
+  const [marginError, setMarginError] = useState(false)
+  const [screenError, setScreenError] = useState(false);
 
   // get all Screen
   useEffect(() => {
@@ -53,8 +57,8 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds }) => {
 
   const filteredData = Array.isArray(userData)
     ? userData?.filter((item) =>
-        item?.name?.toLowerCase()?.includes(searchUser?.toLowerCase())
-      )
+      item?.name?.toLowerCase()?.includes(searchUser?.toLowerCase())
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -81,61 +85,137 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds }) => {
     setCurrentPage(pageNumber);
   };
 
-  // const  handleScreenCheckboxChange = (screenID) => {
-  //     // Check if the screenID is already selected
-  //     const isSelected = selectUser.includes(screenID);
-
-  //     // Create a new array with the updated selection
-  //     let newSelectedScreens;
-  //     if (isSelected) {
-  //         // Remove the screenID if it's already selected
-  //         newSelectedScreens = selectUser.filter(id => id !== screenID);
-  //     } else {
-  //         // Add the screenID if it's not already selected
-  //         newSelectedScreens = [...selectUser, screenID];
-  //     }
-
-  //     // Update the state with the new selection
-  //     setSelectUser(newSelectedScreens);
-  //     const updatedCheckboxes = { ...screenCheckboxes };
-  //     updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
-  //     setScreenCheckboxes(updatedCheckboxes);
-  // };
-
-  const handleAddMargin = () => {};
-
   const handleAccordionClick = (index) => {
     setOpenAccordionIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
-  // Handle change for user checkboxes
-  const handleUserCheckboxChange = (userScreenID) => {
+  const handleUserCheckboxChange = (userScreenID, value) => {
+    setScreenError(false)
     setUserCheckboxState((prevState) => ({
       ...prevState,
-      [userScreenID]: !prevState[userScreenID],
+      [userScreenID]: value?.checked,
     }));
 
-    userData?.map((item)=>{
-        if(item?.organizationID === userScreenID){
-            item?.screens?.map((screen)=>{
-                setAccordionCheckboxState((prevState) => ({
-                    ...prevState,
-                    [screen.screenID]: !prevState[screen.screenID],
-                  }));
-            })
-        }
+    userData?.map((item) => {
+      if (item?.organizationID === userScreenID) {
+        item?.screens?.map((screen) => {
+          setAccordionCheckboxState((prevState) => ({
+            ...prevState,
+            [screen.screenID]: value?.checked,
+          }));
+        })
+      }
     })
-
-    
   };
 
-  // Handle change for checkboxes inside the accordion
   const handleScreenCheckboxChange = (screenID) => {
     setAccordionCheckboxState((prevState) => ({
       ...prevState,
       [screenID]: !prevState[screenID],
     }));
   };
+
+  useEffect(() => {
+    // let keys = [];
+    // for (let key in accordionCheckboxState) {
+    //   if (accordionCheckboxState[key] === true) {
+    //     keys.push(key);
+    //   }
+    // }
+    // if (keys?.length > 0) {
+    //   userData?.map((user) => {
+    //     let arr = []
+    //     user?.screens?.map((item) => {
+    //       keys?.map((items) => {
+    //         if (Number(items) === item?.screenID) {
+    //           arr?.push(item?.screenID)
+    //         }
+    //       })
+    //     })
+    //     if (arr?.length === user?.screens?.length) {
+    //       arr?.map((item1) => {
+    //         setUserCheckboxState((prevState) => ({
+    //           ...prevState,
+    //           [user?.organizationID]: true,
+    //         }));
+    //       })
+    //     } else {
+    //       setUserCheckboxState((prevState) => ({
+    //         ...prevState,
+    //         [user?.organizationID]: false,
+    //       }));
+    //     }
+    //   })
+    // }
+
+
+    let keys = Object.keys(accordionCheckboxState).filter(key => accordionCheckboxState[key]);
+    setScreenError(false)
+    userData?.forEach(user => {
+      let arr = user.screens?.map(item => item.screenID).filter(screenID => keys.includes(screenID.toString()));
+      setUserCheckboxState(prevState => ({
+        ...prevState,
+        [user.organizationID]: arr && arr.length === user.screens.length,
+      }));
+    });
+
+  }, [accordionCheckboxState])
+
+  const handleAddMargin = () => {
+    let keys = Object.keys(accordionCheckboxState).filter(key => accordionCheckboxState[key]);
+    if (margin === "" && keys?.length === 0) {
+      setMarginError(true);
+      setScreenError(true);
+      return;
+    }
+    if (margin === "") {
+      return (setMarginError(true))
+    }
+    if (keys?.length === 0) {
+      return setScreenError(true);
+    }
+
+    let data = []
+    userData?.map((user) => {
+      let arr = []
+      user?.screens?.map((screen) => {
+        keys?.map((key) => {
+          if (Number(key) === screen?.screenID) {
+            console.log('key', key)
+            arr?.push(screen?.screenID)
+          }
+        })
+      })
+      if (arr?.length > 0) {
+        let obj = {
+          name: user?.name,
+          organizationID: user?.organizationID,
+          adsPrice: user?.adsPrice,
+          AssignAdvertisementid:user?.assignAdvertisementid,
+          ScreenIDS: arr?.join(",")
+        }
+        data?.push(obj)
+      }
+    })
+
+
+    if (keys?.length <= selectAds?.screen) {
+      let payload = {
+        adsCustomerMasterID: selectAds?.adsCustomerMasterID,
+        margin: margin,
+        user: data
+      }
+      dispatch(AddMarginRate(payload)).then((res) => {
+        if (res?.payload?.status === true) {
+          fetchAds()
+          toggleMarginModal()
+        }
+      });
+    } else {
+      toast.error("You can only Select Required screen")
+    }
+  };
+
 
   return (
     <>
@@ -226,8 +306,8 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds }) => {
                                     <input
                                       type="checkbox"
                                       className="mr-3"
-                                      onChange={() =>
-                                        handleUserCheckboxChange(user.organizationID)
+                                      onChange={(e) =>
+                                        handleUserCheckboxChange(user.organizationID, e.target)
                                       }
                                       checked={userCheckboxState[user.organizationID]}
                                     />
@@ -269,85 +349,84 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds }) => {
                               </tr>
                               {isAccordionOpen && (
                                 <div className="overflow-x-scroll sc-scrollbar  pt-4">
-                                <table
-                                  className="screen-table w-full"
-                                  cellPadding={15}
-                                >
-                                  <thead>
-                                    <tr className="items-center table-head-bg">
-                                      <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
-                                        Screen Name
-                                      </th>
-                                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                        Status
-                                      </th>
-                                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                        Google Location
-                                      </th>
-                                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                        Last Seen
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {isAccordionOpen &&
-                                      user &&
-                                      user.screens?.length > 0 &&
-                                      user.screens?.map((screen, index) => {
-                                        return (
-                                          <tr
-                                            key={index}
-                                            className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
-                                          >
-                                            <td className="p-2 text-center">
-                                              <div className="flex">
-                                                <input
-                                                  type="checkbox"
-                                                  className="mr-3"
-                                                  onChange={() =>
-                                                    handleScreenCheckboxChange(
+                                  <table
+                                    className="screen-table w-full"
+                                    cellPadding={15}
+                                  >
+                                    <thead>
+                                      <tr className="items-center table-head-bg">
+                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
+                                          Screen Name
+                                        </th>
+                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                          Status
+                                        </th>
+                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                          Google Location
+                                        </th>
+                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                          Last Seen
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {isAccordionOpen &&
+                                        user &&
+                                        user.screens?.length > 0 &&
+                                        user.screens?.map((screen, index) => {
+                                          return (
+                                            <tr
+                                              key={index}
+                                              className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
+                                            >
+                                              <td className="p-2 text-center">
+                                                <div className="flex">
+                                                  <input
+                                                    type="checkbox"
+                                                    className="mr-3"
+                                                    onChange={() =>
+                                                      handleScreenCheckboxChange(
+                                                        screen.screenID
+                                                      )
+                                                    }
+                                                    checked={
+                                                      accordionCheckboxState[
                                                       screen.screenID
-                                                    )
-                                                  }
-                                                  checked={
-                                                    accordionCheckboxState[
-                                                      screen.screenID
-                                                    ]
-                                                  }
-                                                />
-                                                {screen.screenName}
-                                              </div>
-                                            </td>
+                                                      ]
+                                                    }
+                                                  />
+                                                  {screen.screenName}
+                                                </div>
+                                              </td>
 
-                                            <td className="p-2 text-center">
-                                              <span
-                                                id={`changetvstatus${screen.macid}`}
-                                                className={`rounded-full px-6 py-2 text-white text-center ${
-                                                  screen.screenStatus === 1
+                                              <td className="p-2 text-center">
+                                                <span
+                                                  id={`changetvstatus${screen.macid}`}
+                                                  className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus === 1
                                                     ? "bg-[#3AB700]"
                                                     : "bg-[#FF0000]"
-                                                }`}
-                                              >
-                                                {screen.screenStatus === 1
-                                                  ? "Live"
-                                                  : "offline"}
-                                              </span>
-                                            </td>
-                                            <td className="p-2 text-center">
-                                              {screen?.googleLocation}
-                                            </td>
-                                            <td className="p-2 text-center">
-                                              {screen?.lastSeen
-                                                ? moment(
+                                                    }`}
+                                                >
+                                                  {screen.screenStatus === 1
+                                                    ? "Live"
+                                                    : "offline"}
+                                                </span>
+                                              </td>
+                                              <td className="p-2 text-center">
+                                                {screen?.googleLocation}
+                                              </td>
+                                              <td className="p-2 text-center">
+                                                {screen?.lastSeen
+                                                  ? moment(
                                                     screen?.lastSeen
                                                   ).format("LLL")
-                                                : null}
-                                            </td>
-                                          </tr>
-                                        );
-                                      })}
-                                  </tbody>
-                                </table>
+                                                  : null}
+                                              </td>
+                                            </tr>
+                                          );
+                                        })}
+                                    </tbody>
+                                  </table>
                                 </div>
                               )}
                             </>
@@ -365,6 +444,9 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds }) => {
                     </tbody>
                   </table>
                 </div>
+                {screenError && (
+                  <span className='error'>Select Screen</span>
+                )}
                 <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                   <div className="flex items-center">
                     <span className="text-gray-500">{`Total ${userData?.length} Screen`}</span>
@@ -432,10 +514,16 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds }) => {
                     type="number"
                     name="add_price"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                    placeholder="Enter Margin"
+                    placeholder="Enter Per User Margin"
                     value={margin}
-                    onChange={(e) => setMargin(e.target.value)} // Update price state on input change
+                    onChange={(e) => {
+                      setMargin(e.target.value)
+                      setMarginError(false)
+                    }}
                   />
+                  {marginError && (
+                    <span className='error'>Enter Margin</span>
+                  )}
                 </div>
               </div>
 
