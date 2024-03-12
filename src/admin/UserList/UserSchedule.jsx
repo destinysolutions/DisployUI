@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlinePlusCircle, AiOutlineSearch } from "react-icons/ai";
 import { BiEdit } from "react-icons/bi";
 import { FaUserCheck } from "react-icons/fa6";
@@ -66,6 +66,10 @@ const UserSchedule = ({ selectUser, schedules, loading,sidebarOpen }) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchSchedule(searchQuery);
   };
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchSchedule])
 
   return (
     <div className="w-full mt-8">
@@ -277,11 +281,15 @@ const UserSchedule = ({ selectUser, schedules, loading,sidebarOpen }) => {
                 </table>
               </div>
 
-              <div className="flex justify-end p-5">
+              <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+              <div className="flex items-center">
+                <span className="text-gray-500">{`Total ${schedules?.length} Schedules`}</span>
+              </div>
+              <div className="flex justify-end">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                 >
                   <svg
                     className="w-3.5 h-3.5 me-2 rtl:rotate-180"
@@ -300,11 +308,13 @@ const UserSchedule = ({ selectUser, schedules, loading,sidebarOpen }) => {
                   </svg>
                   {sidebarOpen ? "Previous" : ""}
                 </button>
-                {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                <div className="flex items-center me-3">
+                  <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                </div>
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  disabled={(currentPage === totalPages) || (schedules?.length === 0)}
+                  className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                 >
                   {sidebarOpen ? "Next" : ""}
                   <svg
@@ -324,6 +334,7 @@ const UserSchedule = ({ selectUser, schedules, loading,sidebarOpen }) => {
                   </svg>
                 </button>
               </div>
+            </div>
             </div>
           </>
         )}

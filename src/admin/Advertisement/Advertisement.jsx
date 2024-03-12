@@ -310,6 +310,10 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const toggleMarginModal = () => {
     setShowSelectMarginModal(!showSelectMarginModal)
   }
+  
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchAds])
 
   return (
     <>
@@ -522,11 +526,15 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                   </tbody>
                 </table>
               </div>
-              <div className="flex justify-end p-5">
+              <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+              <div className="flex items-center">
+                <span className="text-gray-500">{`Total ${allAdvertisement?.SearchData?.length} Advertisement`}</span>
+              </div>
+              <div className="flex justify-end">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                 >
                   <svg
                     className="w-3.5 h-3.5 me-2 rtl:rotate-180"
@@ -545,14 +553,13 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                   </svg>
                   {sidebarOpen ? "Previous" : ""}
                 </button>
-                {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                <div className="flex items-center me-3">
+                  <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                </div>
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={
-                    currentPage === totalAdsPages ||
-                    allAdvertisement?.SearchData?.length === 0
-                  }
-                  className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  disabled={(currentPage === totalPages) || (allAdvertisement?.SearchData?.length === 0)}
+                  className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                 >
                   {sidebarOpen ? "Next" : ""}
                   <svg
@@ -572,6 +579,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                   </svg>
                 </button>
               </div>
+            </div>
             </div>
           </div>
         </div>
