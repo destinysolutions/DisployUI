@@ -26,7 +26,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
   const [allApps, setAllApps] = useState([])
   const dispatch = useDispatch();
-
+console.log('allApps', allApps)
   useEffect(() => {
     dispatch(handleGetAllApps({ token })).then((res) => {
       setAllApps(res?.payload?.data);
@@ -141,7 +141,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           )}
                         </div> */}
-                                <Link to={`/${app.appName}`}>
+                                <Link to={`/${app.appURL}`}>
                                   <div className="text-center clear-both">
                                     <img
                                       src={app.appPath}

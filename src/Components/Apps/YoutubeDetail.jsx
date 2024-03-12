@@ -128,8 +128,8 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (window.history.length === 1) {
-          dispatch(handleNavigateFromComposition());
-          dispatch(handleChangeNavigateFromComposition(false));
+          // dispatch(handleNavigateFromComposition());
+          // dispatch(handleChangeNavigateFromComposition(false));
           localStorage.setItem("isWindowClosed", "true");
           window.close();
         } else {

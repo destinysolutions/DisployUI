@@ -53,6 +53,8 @@ import AddWeatherSchedule from "../Components/Schedule/AddWeatherSchedule";
 import BookSlot from "../Components/Screen/SubScreens/BookSlot/BookSlot";
 import BookingSlot from "../Components/Screen/SubScreens/BookSlot/BookingSlot";
 import AddSlot from "../Components/Screen/SubScreens/BookSlot/AddSlot";
+import DigitalMenuBoard from "../Components/Apps/DigitalMenuBoard";
+import DigitalMenuBoardDetail from "../Components/Apps/DigitalMenuBoardDetail";
 
 const Routing = () => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -174,13 +176,13 @@ const Routing = () => {
                 />
               }
             />
-             <Route
+            <Route
               path="/bookslot"
               element={
                 <AddSlot />
               }
             />
-             <Route
+            <Route
               path="/bookingslot"
               element={
                 <BookingSlot
@@ -324,6 +326,35 @@ const Routing = () => {
               path="/text-scroll"
               element={
                 <TextScroll
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            {/* Digital Menu Board route */}
+            <Route
+              path="/Digital-Menu-Board"
+              element={
+                <DigitalMenuBoard
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+
+            <Route
+              path="/digitalmenudetail"
+              element={
+                <DigitalMenuBoardDetail
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/digitalmenudetail/:id"
+              element={
+                <DigitalMenuBoardDetail
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />

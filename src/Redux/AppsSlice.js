@@ -65,6 +65,27 @@ export const handleGetAllApps = createAsyncThunk(
   }
 );
 
+export const handleGetDigitalMenuData = createAsyncThunk(
+  "apps/handleGetDigitalMenuData",
+  async ({ token }, { rejectWithValue, signal }) => {
+    try {
+      const { data } = await getUrl(`YoutubeApp/GetAllYoutubeApp`, {
+        headers: {
+          Authorization: token,
+        },
+        signal,
+      });
+      if (data?.status == 200) return data;
+      else {
+        toast.error(data?.message);
+        return rejectWithValue(data?.message);
+      }
+    } catch (error) {
+      rejectWithValue(error?.response?.data?.message);
+    }
+  }
+);
+
 const initialState = {
   allApps: {
     loading: false,
@@ -79,6 +100,11 @@ const initialState = {
   textScroll: {
     loading: false,
     textScrollData: [],
+    error: null,
+  },
+  DigitalMenu: {
+    loading: false,
+    DigitalMenuData: [],
     error: null,
   },
   allAppsData: [],
@@ -159,6 +185,28 @@ const AppsSlice = createSlice({
       state.allApps.loading = false;
       state.allApps.error = payload ?? null;
       state.allApps.data = [];
+    });
+
+     //get Digital Menu data
+     builder.addCase(
+      handleGetDigitalMenuData.pending,
+      (state, { payload, meta, type }) => {
+        state.DigitalMenu.loading = true;
+        state.DigitalMenu.error = null;
+      }
+    );
+    builder.addCase(
+      handleGetDigitalMenuData.fulfilled,
+      (state, { payload, meta }) => {
+        state.DigitalMenu.loading = false;
+        state.DigitalMenu.DigitalMenuData = payload?.data ? payload?.data : [];
+        state.error = null;
+      }
+    );
+    builder.addCase(handleGetDigitalMenuData.rejected, (state, { payload }) => {
+      state.DigitalMenu.loading = false;
+      state.DigitalMenu.error = payload ?? null;
+      state.DigitalMenu.DigitalMenuData = [];
     });
   },
 });

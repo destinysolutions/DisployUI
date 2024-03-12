@@ -78,6 +78,7 @@ export const SCROLL_TYPE_OPTION = `${baseUrl}YoutubeApp/AllScrollType`;
 export const SCROLL_ADD_TEXT = `${baseUrl}YoutubeApp/AddTextScroll`;
 export const SCROLLDATA_BY_ID = `${baseUrl}YoutubeApp/SelectByTextScrollId`;
 export const GET_ALL_TEXT_SCROLL_INSTANCE = `${baseUrl}YoutubeApp/GetAlltextScroll`;
+export const GET_ALL_DIGITAL_MENU = `${baseUrl}YoutubeApp/GetAllDigitalMenu`;
 export const DELETE_ALL_TEXT_SCROLL = `${baseUrl}YoutubeApp/DeleteAllTextScroll`;
 export const SELECT_BY_ASSET_ID = `${baseUrl}AssetMaster/SelectByAssetID`;
 export const ADDPLAYLIST = `${baseUrl}CompositionMaster/AddCompositionMaster`;
