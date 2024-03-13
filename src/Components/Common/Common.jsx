@@ -355,9 +355,9 @@ function getDayOfWeek(index) {
 export function getTrueDays(arr) {
   const trueDays = [];
   arr.forEach((value, index) => {
-      if (value) {
-          trueDays.push(getDayOfWeek(index));
-      }
+    if (value) {
+      trueDays.push(getDayOfWeek(index));
+    }
   });
   return trueDays;
 }
@@ -367,3 +367,39 @@ export function extractTime(timeString) {
   let hourMinute = timeParts.slice(0, 2).join(":"); // Join the first two parts (hours and minutes)
   return hourMinute;
 }
+
+export const PageArray = [
+  { page: "auto" },
+  { page: 1 },
+  { page: 2 },
+  { page: 3 },
+  { page: 4 },
+  { page: 5 },
+  { page: 6 },
+  { page: 7 },
+  { page: 8 }
+];
+
+export const ImageLayout = [
+  { layout: "When I attach an image" },
+  { layout: "Always" },
+  { layout: "Never" },
+];
+
+export const Currency = [
+  { currency: "USD" },
+  { currency: "GBP" },
+  { currency: "EUR" },
+];
+
+export const FontSize = [
+  { size: "Small" },
+  { size: "Medium" },
+  { size: "Large" },
+  { size: "Extra Large" },
+];
+
+export const Theme = [
+  { theme: "Light Theme" },
+  { theme: "Dark Theme" },
+];
