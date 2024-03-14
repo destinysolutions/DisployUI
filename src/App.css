@@ -1920,3 +1920,7 @@ table.screen-table {
   color: #515151;
   font-weight: 500;
 }
+
+.sketch-picker-digital-menu{
+  width: 40% !important;
+}

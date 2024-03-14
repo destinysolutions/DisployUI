@@ -343,7 +343,7 @@ const Routing = () => {
             />
 
             <Route
-              path="/digitalmenudetail"
+              path="/digital-menu-detail"
               element={
                 <DigitalMenuBoardDetail
                   sidebarOpen={sidebarOpen}
@@ -352,7 +352,7 @@ const Routing = () => {
               }
             />
             <Route
-              path="/digitalmenudetail/:id"
+              path="/digital-menu-detail/:id"
               element={
                 <DigitalMenuBoardDetail
                   sidebarOpen={sidebarOpen}

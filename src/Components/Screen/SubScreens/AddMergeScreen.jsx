@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import ShowAssetModal from "./model/ShowMergeAssetModal";
 import { AiOutlineCloudUpload } from "react-icons/ai";
-import Draggable from "react-draggable";
 import ScreenGroupModal from "./model/ScreenMergeModal";
 import { useDispatch } from "react-redux";
 import { SELECT_BY_USER_SCREENDETAIL } from "../../../Pages/Api";

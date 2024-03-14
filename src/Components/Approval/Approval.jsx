@@ -86,7 +86,8 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
             .catch((error) => {
               console.log("error", error);
             });
-        } else {
+        }
+        if (result.isDismissed) {
           let config = {
             method: "post",
             maxBodyLength: Infinity,
@@ -262,7 +263,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                       d="M13 5H1m0 0 4 4M1 5l4-4"
                     />
                   </svg>
-                  {sidebarOpen ? "Previous" : ""} 
+                  {sidebarOpen ? "Previous" : ""}
                 </button>
                 <div className="flex items-center me-3">
                   <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
@@ -273,7 +274,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                   disabled={(currentPage === totalPages) || (ApprovalList?.length === 0)}
                   className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
-                   {sidebarOpen ? "Next" : ""}
+                  {sidebarOpen ? "Next" : ""}
                   <svg
                     className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                     aria-hidden="true"

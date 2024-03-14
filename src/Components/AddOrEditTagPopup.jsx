@@ -15,10 +15,12 @@ const AddOrEditTagPopup = ({
   setUpdateTagSchedule,
   handleUpdateTagsYoutube,
   handleUpdateTagsTextScroll,
+  handleUpdateTagsDitigitalMenu,
   setUpdateTextscrollTag,
   setUpdateTagYoutube,
   handleUpdateTagsWeather,
   setUpdateTagWeather,
+  setUpdateDigitalMenuTag,
   action,
 }) => {
   const [tagValue, setTagValue] = useState("");
@@ -44,6 +46,9 @@ const AddOrEditTagPopup = ({
     }
     if (from === "textscroll") {
       setUpdateTextscrollTag(null);
+    }
+    if(from === "digitalMenu"){
+      setUpdateDigitalMenuTag(null);
     }
   }
 
@@ -75,6 +80,9 @@ const AddOrEditTagPopup = ({
     if (from === "textscroll") {
       return handleUpdateTagsTextScroll([...tags, tagValue].join(","));
     }
+    if(from === "digitalMenu"){
+      return handleUpdateTagsDitigitalMenu([...tags, tagValue].join(","))
+    }
   };
 
   const handleDeleteTag = (val) => {
@@ -97,6 +105,9 @@ const AddOrEditTagPopup = ({
     }
     if (from === "textscroll") {
       return handleUpdateTagsTextScroll(newTags.join(","));
+    }
+    if(from === "digitalMenu"){
+      return handleUpdateTagsDitigitalMenu(newTags.join(","))
     }
   };
 

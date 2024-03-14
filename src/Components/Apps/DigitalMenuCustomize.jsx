@@ -1,10 +1,9 @@
 import React from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { Currency, FontSize, ImageLayout, PageArray, Theme } from '../Common/Common';
-import { Switch } from '@material-tailwind/react';
-import { useForm } from 'react-hook-form';
+import { SketchPicker } from 'react-color';
 
-const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, errors }) => {
+const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, errors, selectedColor, setSelectedColor }) => {
 
     return (
         <>
@@ -14,7 +13,7 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                 aria-hidden="true"
                 className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
             >
-                <div className="relative p-4 w-full max-w-3xl max-h-full">
+                <div className="relative p-4 w-full max-w-4xl max-h-full">
                     {/* Modal content */}
                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         {/* Modal header */}
@@ -30,8 +29,8 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                             />
                         </div>
                         <div className="p-6">
-                            <form onSubmit={handleSubmit(onSubmit)}>
-                                <div>
+                            <form onSubmit={handleSubmit(onSubmit)} >
+                                <div className='h-96 overflow-y-auto'>
                                     <div className='flex justify-between m-3 items-center'>
                                         <span>
                                             Time spent on each page
@@ -113,6 +112,22 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                     </div>
                                     <div className='flex justify-between m-3 items-center'>
                                         <span>
+                                            Move 'featured' items to the top of category
+                                        </span>
+                                        <div>
+                                            <label className="relative inline-flex items-center me-5 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="sr-only peer"
+                                                    id='Topfeature'
+                                                    {...register("Topfeature")}
+                                                />
+                                                <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className='flex justify-between m-3 items-center'>
+                                        <span>
                                             Font Size
                                         </span>
                                         <select id="FontSize" name="FontSize" className="w-48 relative border border-black rounded-md p-3"
@@ -127,12 +142,12 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                     </div>
 
                                     <div className='m-3'>
-                                        <span>
+                                        <span className='text-3xl font-medium'>
                                             Appearance
                                         </span>
 
                                     </div>
-                                    <div className='m-3'>
+                                    {/*       <div className='m-3'>
                                         <select id="Theme" name="Theme" className="formInput"
                                             {...register("Theme")}
                                         >
@@ -143,6 +158,18 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                             })}
                                         </select>
 
+                                        </div>*/}
+                                    <div className='flex justify-between m-3 items-center'>
+                                        <span>
+                                            Background Color
+                                        </span>
+                                        <SketchPicker
+                                            id="Color"
+                                            name="Color"
+                                            color={selectedColor}
+                                            onChange={(color) => setSelectedColor(color.hex)}
+                                            className="sketch-picker-digital-menu"
+                                        />
                                     </div>
                                     <div className='m-3'>
                                         <input type='file' className="formInput" id='Image'

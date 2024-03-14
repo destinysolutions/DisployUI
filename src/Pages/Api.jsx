@@ -78,7 +78,6 @@ export const SCROLL_TYPE_OPTION = `${baseUrl}YoutubeApp/AllScrollType`;
 export const SCROLL_ADD_TEXT = `${baseUrl}YoutubeApp/AddTextScroll`;
 export const SCROLLDATA_BY_ID = `${baseUrl}YoutubeApp/SelectByTextScrollId`;
 export const GET_ALL_TEXT_SCROLL_INSTANCE = `${baseUrl}YoutubeApp/GetAlltextScroll`;
-export const GET_ALL_DIGITAL_MENU = `${baseUrl}YoutubeApp/GetAllDigitalMenu`;
 export const DELETE_ALL_TEXT_SCROLL = `${baseUrl}YoutubeApp/DeleteAllTextScroll`;
 export const SELECT_BY_ASSET_ID = `${baseUrl}AssetMaster/SelectByAssetID`;
 export const ADDPLAYLIST = `${baseUrl}CompositionMaster/AddCompositionMaster`;
@@ -209,3 +208,14 @@ export const ADDUPDATESLOT = `${baseUrl}AdsCustomer/AddorUpdateBookingSlotCustom
 export const PHONENUMBERVERIFY = `${baseUrl}UserMaster/SendOTP`
 export const PHONE_OTP_VERIFY = `${baseUrl}UserMaster/SetAuthNumber`;
 export const OTP_SCREEN_VERIFY = `${baseUrl}NewScreen/VerifyScreenOTP`;
+
+
+// Digital Menu Board
+export const POS_ITEM_LIST = `${baseUrl}DigitalMenu/GetPOSItemDetails`
+export const ADD_EDIT_DIGITAL_MENU = `${baseUrl}DigitalMenu/AddORUpdateDigitalMenuApp`
+export const GET_ALL_DIGITAL_MENU = `${baseUrl}DigitalMenu/GetAllDigitalMenuApp`
+export const DELETE_DIGITAL_MENU = `${baseUrl}DigitalMenu/DeleteDigitalMenuApp`
+export const GET_DIGITAL_MENU_BY_ID = `${baseUrl}DigitalMenu/GetDigitalMenuAppByID`
+export const ADD_TAGS_DIGITAL_MENU = `${baseUrl}DigitalMenu/AddDigitalMenuAppTags`
+export const ASSIGN_SCREEN_DIGITAL_MENU = `${baseUrl}DigitalMenu/AssignDigitalMenuAppToScreen`
+

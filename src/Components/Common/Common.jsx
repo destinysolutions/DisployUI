@@ -403,3 +403,61 @@ export const Theme = [
   { theme: "Light Theme" },
   { theme: "Dark Theme" },
 ];
+
+
+export function generateAllCategory(addCategory) {
+  const allCategory = addCategory.map(category => {
+    const items = category.allItem.map(item => ({
+      itemID: item?.itemID ? item?.itemID : 0,
+      digitalMenuAppId: item?.digitalMenuAppId ? item?.digitalMenuAppId : 0,
+      categoryID: item?.categoryID ? item?.categoryID : 0,
+      itemName: item.name,
+      description: item.description,
+      price: item.price,
+      calories: item.calories,
+      image: item?.image?.assetFolderPath,
+      isFeatured: item.features,
+      isSoldout: item.soldOut,
+      itemSort: 0
+    }));
+
+    return {
+      categoryID: category?.categoryID ? category?.categoryID : 0,
+      digitalMenuAppId: category?.digitalMenuAppId ? category?.digitalMenuAppId : 0,
+      categoryName: category.categoryname,
+      isShow: category.show,
+      categorySort: 0,
+      items: items
+    };
+  });
+
+  return allCategory;
+}
+
+export function generateCategorybyID(data) {
+  console.log('data', data)
+  const allcategory = data?.category?.map(cate => {
+    const allitem = cate?.items?.map(item => ({
+      name: item.itemName,
+      description: item.description,
+      price: item.price,
+      calories: item.calories,
+      image: item.image ? item.image : "",
+      features: item.isFeatured,
+      soldOut: item.isSoldout,
+      itemID: item?.itemID,
+      categoryID: item?.categoryID,
+      digitalMenuAppId: item?.digitalMenuAppId
+    }));
+
+    return {
+      categoryname: cate.categoryName,
+      show: cate.isShow,
+      digitalMenuAppId: cate?.digitalMenuAppId,
+      categoryID: cate?.categoryID,
+      allItem: allitem
+    };
+  });
+
+  return allcategory;
+}

@@ -9,7 +9,7 @@ import { TbAppsFilled } from 'react-icons/tb';
 import { MdArrowBackIosNew, MdOutlineEdit } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { GET_ALL_DIGITAL_MENU } from '../../Pages/Api';
+import { ADD_TAGS_DIGITAL_MENU, ASSIGN_SCREEN_DIGITAL_MENU, DELETE_DIGITAL_MENU, GET_ALL_DIGITAL_MENU, GET_DIGITAL_MENU_BY_ID } from '../../Pages/Api';
 import { BiDotsHorizontalRounded } from 'react-icons/bi';
 import { FiUpload } from 'react-icons/fi';
 import { RiDeleteBin5Line, RiDeleteBinLine } from 'react-icons/ri';
@@ -19,6 +19,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import toast from 'react-hot-toast';
 import { socket } from '../../App';
 import ScreenAssignModal from '../ScreenAssignModal';
+import { BsInfoLg } from 'react-icons/bs';
 
 const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user } = useSelector((state) => state.root.auth);
@@ -40,10 +41,8 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
   const [showTags, setShowTags] = useState(null);
   const [screenAssignName, setScreenAssignName] = useState("");
   const [selectAll, setSelectAll] = useState(false);
-  const [digitalMenuId, setDigitalMenuId] = useState();
   const [selectdata, setSelectData] = useState({});
   const [addScreenModal, setAddScreenModal] = useState(false);
-  const [digitalMenuData, setDigitalMenuData] = useState("");
   const [screenSelected, setScreenSelected] = useState([]);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
@@ -84,23 +83,22 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
         },
       })
       .then((response) => {
-        setInstanceData(response.data.data);
+        console.log('response', response)
+        setInstanceData(response?.data?.data);
         setLoading(false);
       });
   };
 
   useEffect(() => {
-    // FetchData();
+    FetchData();
   }, []);
 
-  const handleUpdateTagsTextScroll = (tags) => {
-    const empty = "";
+  const handleUpdateTagsDitigitalMenu = (tags) => {
+
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      // url: `${ADD_TEXTSCROLL_TAGS}?TextScrollId=${
-      //   updateDigitalMenuTag?.textScroll_Id
-      // }&Tags=${tags.length === 0 ? "" : tags}`,
+      url: `${ADD_TAGS_DIGITAL_MENU}?DigitalMenuAppId=${updateDigitalMenuTag?.digitalMenuAppId}&Tags=${tags?.length === 0 ? "" : tags}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
@@ -112,7 +110,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           const updatedData = instanceData.map((item) => {
-            if (item?.textScroll_Id === updateDigitalMenuTag?.textScroll_Id) {
+            if (item?.digitalMenuAppId === updateDigitalMenuTag?.digitalMenuAppId) {
               return { ...item, tags: tags };
             } else {
               return item;
@@ -136,12 +134,17 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handelDeleteAllInstance = () => {
+
+    let arr = [];
+    instanceData?.map((item) => {
+      arr?.push(item?.digitalMenuAppId)
+    })
     if (!window.confirm("Are you sure?")) return;
     toast.loading("Deleting...");
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      // url: DELETE_ALL_TEXT_SCROLL,
+      url: `${DELETE_DIGITAL_MENU}?DigitalMenuAppIds=${arr?.join(",")}`,
       headers: { Authorization: authToken },
     };
 
@@ -160,7 +163,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleCheckboxChange = (instanceId) => {
     const updatedInstance = instanceData.map((instance) =>
-      instance.textScroll_Id === instanceId
+      instance.digitalMenuAppId === instanceId
         ? {
           ...instance,
           isChecked: !instance.isChecked,
@@ -175,7 +178,6 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAppDropDownClick = (id) => {
-    setDigitalMenuId(id);
     if (appDropDown === id) {
       setAppDropDown(null);
     } else {
@@ -187,19 +189,13 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
     if (!window.confirm("Are you sure?")) return;
 
     toast.loading("Deleting...");
-    let data = JSON.stringify({
-      textScroll_Id: scrollId,
-      operation: "Delete",
-    });
-
     let config = {
-      method: "post",
-      // url: SCROLL_ADD_TEXT,
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${DELETE_DIGITAL_MENU}?DigitalMenuAppIds=${scrollId}`,
       headers: {
-        "Content-Type": "application/json",
         Authorization: authToken,
       },
-      data: data,
     };
 
     axios
@@ -212,7 +208,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
         };
         socket.emit("ScreenConnected", Params);
         const updatedInstanceData = instanceData.filter(
-          (instanceData) => instanceData.textScroll_Id !== scrollId
+          (instanceData) => instanceData.digitalMenuAppId !== scrollId
         );
         setInstanceData(updatedInstanceData);
         toast.remove();
@@ -226,7 +222,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
   const handleFetchDigitalMenuById = (id, showpopup) => {
     let config = {
       method: "get",
-      // url: `${SELECT_BY_TEXTSCROLL_ID}?ID=${id}`,
+      url: `${GET_DIGITAL_MENU_BY_ID}?DigitalMenuAppId=${id}`,
       headers: {
         Authorization: authToken,
       },
@@ -236,13 +232,13 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        if (response?.data?.status == 200) {
-          const data = response?.data?.data[0];
+        console.log('response', response)
+        if (response?.data?.status === true) {
+          const data = response?.data?.data;
           if (showpopup) {
             setInstanceView(true);
           }
-          setDigitalMenuData(data?.text);
-          setInstanceName(data?.instanceName);
+          setInstanceName(data?.appName);
           setScreenAssignName(data?.screens);
           setShowTags(data?.tags);
           setScreenSelected(data?.screens?.split(","));
@@ -256,19 +252,18 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
         toast.remove();
       });
   };
-
   const handleUpdateScreenAssign = (screenIds, macids) => {
-    let idS = "";
+    let arr = [];
     for (const key in screenIds) {
       if (screenIds[key] === true) {
-        idS += `${key},`;
+        arr?.push(key)
       }
     }
 
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      // url: `${ASSIGN_TEXTSCROLL_TO_SCREEN}?TextScrollId=${textScrollId}&ScreenID=${idS}`,
+      url: `${ASSIGN_SCREEN_DIGITAL_MENU}?DigitalMenuAppId=${selectdata?.digitalMenuAppId}&ScreenID=${arr?.join(",")}`,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
@@ -343,7 +338,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                   </h1>
                   <div className="lg:col-span-2 flex items-center md:mt-0 lg:mt-0 justify-end flex-wrap">
                     {permissions.isSave && (
-                      <Link to="/digitalmenudetail">
+                      <Link to="/digital-menu-detail">
                         <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                           <TbAppsFilled className="text-2xl mr-2 text-white" />
                           New Instance
@@ -366,9 +361,9 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                         Digital Menu Board
                       </h1>
                       <div className="flex items-center">
-                        {/* <button className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                    <BsInfoLg />
-                  </button> */}
+                        {/*<button className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                          <BsInfoLg />
+                    </button>*/}
                         <button
                           onClick={handelDeleteAllInstance}
                           style={{ display: selectAll ? "block" : "none" }}
@@ -418,7 +413,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                         {instanceData.map((instance) => (
                           <div
                             className="xl:col-span-2 lg:col-span-3 md:col-span-4 sm:col-span-12"
-                            key={instance.textScroll_Id}
+                            key={instance.digitalMenuAppId}
                           >
                             <div className="shadow-md bg-[#EFF3FF] rounded-lg h-full">
                               <div className="relative flex justify-between">
@@ -432,7 +427,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                                     checked={instance.isChecked || false}
                                     onChange={() =>
                                       handleCheckboxChange(
-                                        instance.textScroll_Id
+                                        instance.digitalMenuAppId
                                       )
                                     }
                                   />
@@ -445,13 +440,13 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                                           className="text-2xl"
                                           onClick={() =>
                                             handleAppDropDownClick(
-                                              instance.textScroll_Id
+                                              instance.digitalMenuAppId
                                             )
                                           }
                                         />
                                       </button>
                                     )}
-                                  {appDropDown === instance.textScroll_Id && (
+                                  {appDropDown === instance.digitalMenuAppId && (
                                     <div className="appdw" ref={appDropdownRef}>
                                       <ul className="space-y-2">
                                         {permissions.isSave && (
@@ -459,7 +454,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                                             <li
                                               onClick={() => {
                                                 navigate(
-                                                  `/digitalmenudetail/${instance?.textScroll_Id}`
+                                                  `/digital-menu-detail/${instance?.digitalMenuAppId}`
                                                 );
                                               }}
                                               className="flex text-sm items-center cursor-pointer"
@@ -484,7 +479,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                                             className="flex text-sm items-center cursor-pointer"
                                             onClick={() =>
                                               handelDeleteInstance(
-                                                instance.textScroll_Id,
+                                                instance.digitalMenuAppId,
                                                 instance?.maciDs
                                               )
                                             }
@@ -503,7 +498,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                                   className="cursor-pointer"
                                   onClick={() =>
                                     handleFetchDigitalMenuById(
-                                      instance?.textScroll_Id,
+                                      instance?.digitalMenuAppId,
                                       true
                                     )
                                   }
@@ -514,7 +509,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                                     className="mx-auto h-30 w-30"
                                   />
                                   <h4 className="text-lg font-medium mt-3">
-                                    {instance.instanceName}
+                                    {instance.appName}
                                   </h4>
                                 </div>
                                 <h4
@@ -530,61 +525,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                                   className="text-sm font-normal cursor-pointer"
                                 >
                                   Add tags +
-                                </h4>{" "}
-                                {/* {instance?.tags ? (
-                            <div className="flex items-center justify-center gap-2">
-                              <h4 className="text-sm font-normal cursor-pointer break-all">
-                                {instance?.tags !== null
-                                  ? instance.tags
-                                      .split(",")
-                                      .slice(
-                                        0,
-                                        instance.tags.split(",").length > 2
-                                          ? 3
-                                          : instance.tags.split(",").length
-                                      )
-                                      .map((text) => {
-                                        if (text.toString().length > 10) {
-                                          return text
-                                            .split("")
-                                            .slice(0, 10)
-                                            .concat("...")
-                                            .join("");
-                                        }
-                                        return text;
-                                      })
-                                      .join(",")
-                                  : ""}
-                              </h4>
-                              <MdOutlineModeEdit
-                                className="w-5 h-5 cursor-pointer"
-                                onClick={() => {
-                                  instance?.tags !== null &&
-                                  instance?.tags !== undefined &&
-                                  instance?.tags !== ""
-                                    ? setTags(instance?.tags?.split(","))
-                                    : setTags([]);
-                                  setShowTagModal(true);
-                                  setUpdateDigitalMenuTag(instance);
-                                }}
-                              />
-                            </div>
-                          ) : (
-                            <h4
-                              onClick={() => {
-                                instance?.tags !== null &&
-                                instance?.tags !== undefined &&
-                                instance?.tags !== ""
-                                  ? setTags(instance?.tags?.split(","))
-                                  : setTags([]);
-                                setShowTagModal(true);
-                                setUpdateDigitalMenuTag(instance);
-                              }}
-                              className="text-sm font-normal cursor-pointer"
-                            >
-                              Add tags +
-                            </h4>
-                            )}*/}
+                                </h4>
                               </div>
                             </div>
                           </div>
@@ -594,11 +535,11 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                             setShowTagModal={setShowTagModal}
                             tags={tags}
                             setTags={setTags}
-                            handleUpdateTagsTextScroll={
-                              handleUpdateTagsTextScroll
+                            handleUpdateTagsDitigitalMenu={
+                              handleUpdateTagsDitigitalMenu
                             }
-                            from="textscroll"
-                            setUpdateTextscrollTag={
+                            from="digitalMenu"
+                            setUpdateDigitalMenuTag={
                               setUpdateDigitalMenuTag
                             }
                           />
@@ -627,8 +568,8 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                                     <AiOutlineCloseCircle />
                                   </button>
                                 </div>
-                                <div className="bg-black md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 flex items-center">
-
+                                <div className="bg-black flex justify-center items-center md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 flex items-center">
+                                  <img src={digitalMenuLogo} />
                                 </div>
                                 <div className="py-2 px-6">
                                   <div className="flex items-center gap-2 w-full">
