@@ -296,7 +296,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                           </span>
                         </button>
                       </li>
-                      <li>
+                      {/*<li>
                         <button
                           className={
                             STabs === 8 ? "stabshow settingtabactive" : "settingtab"
@@ -308,7 +308,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             Screen Authorize
                           </span>
                         </button>
-                      </li>
+                        </li>*/}
 
                       <li>
                         <button
