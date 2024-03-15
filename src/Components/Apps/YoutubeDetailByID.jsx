@@ -91,7 +91,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   // }
 
   const handleUpdateYoutubeApp = async () => {
-    if (!YoutubeVideo?.includes("youtu.be")) {
+    if (!YoutubeVideo?.includes("youtube")) {
       toast.remove();
       return toast.error("Please Enter Vaild Youtube URL");
     } 
@@ -284,7 +284,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                     onClick={() => {
                       if (YoutubeVideo === "")
                         return toast.error("Please enter YouTube URL");
-                      if(!YoutubeVideo?.includes("youtu.be"))
+                      if(!YoutubeVideo?.includes("youtube"))
                       return toast.error("Please enter Valid YouTube URL");
 
                       setShowPreviewPopup(true);
