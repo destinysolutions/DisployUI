@@ -1337,13 +1337,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                     <Link
                                                       to={`/screensplayer?screenID=${screen.screenID}`}
                                                     >
-                                                      {screen?.screenName
-                                                        ?.length > 10
-                                                        ? screen?.screenName.slice(
-                                                          0,
-                                                          10
-                                                        ) + "..."
-                                                        : screen.screenName}
+                                                      {screen.screenName}
                                                     </Link>
                                                     <button
                                                       onClick={() => {
@@ -1363,14 +1357,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   </div>
                                                 ) : (
                                                   <>
-                                                    {" "}
-                                                    {screen?.screenName
-                                                      ?.length > 10
-                                                      ? screen?.screenName.slice(
-                                                        0,
-                                                        10
-                                                      ) + "..."
-                                                      : screen.screenName}{" "}
+                                                    
+                                                    {screen.screenName}
                                                   </>
                                                 )}
                                               </div>

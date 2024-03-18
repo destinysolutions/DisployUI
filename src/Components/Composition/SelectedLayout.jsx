@@ -622,6 +622,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       <Carousel
                         items={addAsset[index][index + 1]}
                         compositonData={obj}
+                        isPlay={true}
                       />
                     )}
                   </div>

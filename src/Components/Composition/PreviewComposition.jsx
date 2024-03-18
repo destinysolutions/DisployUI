@@ -71,6 +71,7 @@ const PreviewComposition = ({
                   <Carousel
                     items={previewModalData?.[index]?.[index + 1]}
                     composition={obj}
+                    isPlay={true}
                     from={from}
                   />
                 )}
