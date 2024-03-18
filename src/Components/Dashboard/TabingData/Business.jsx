@@ -114,7 +114,7 @@ const ScreenOption = {
   },
   series: [80, 25, 37, 18],
   colors: ["#404f8b", "#59709a", "#8ca0b9", "#b2c7d0"],
-  labels: ["Android", "Tizen", "Webos", "Raspberry"],
+  labels: ["Android", "Tizen", "Webos", "Raspberry","Fire Stick"],
   legend: {
     show: true,
     position: "bottom",
@@ -215,7 +215,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
       type: "donut",
     },
     series: allApp?.AppPercentages,
-    colors: ["#404f8b", "#59709a", "#8ca0b9", "#b2c7d0"],
+    colors: ["#404f8b", "#59709a", "#8ca0b9", "#b2c7d0","#141e4a"],
     labels: allApp?.AppLists,
     legend: {
       show: true,
@@ -758,6 +758,13 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
                           {dashboardData?.totalScreen?.[3]?.name}
                         </td>
                         <td>{dashboardData?.totalScreen?.[3]?.percentage}%</td>
+                      </tr>
+                      <tr>
+                        <td className="flex items-center">
+                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#141e4a]"></span>
+                          {dashboardData?.totalScreen?.[4]?.name}
+                        </td>
+                        <td>{dashboardData?.totalScreen?.[4]?.percentage}%</td>
                       </tr>
                     </tbody>
                   </table>
