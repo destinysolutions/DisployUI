@@ -105,7 +105,7 @@ console.log('allApps', allApps)
                     ) : (
                       allApps?.map(
                         (app) =>
-                          app.appType === "Apps" && app.appName !== "Weather" && (
+                          app.appType === "Apps" && (
                             <div
                               className="lg:col-span-2 md:col-span-5 sm:col-span-10 xs:col-span-10 "
                               key={app.app_Id}

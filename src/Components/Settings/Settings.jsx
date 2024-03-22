@@ -357,6 +357,18 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                         </li>*/}
 
+                      {/*<li>
+                        <button
+                          className={
+                            STabs === 7 ? "stabshow settingtabactive" : "settingtab"
+                          }
+                          onClick={() => updateTab(7)}
+                        >
+                          <HiClipboardDocumentList className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">My Plan</span>
+                        </button>
+                        </li>*/}
+
                     </ul>
                   </div>
 
@@ -407,6 +419,12 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                     {STabs === 8 && (
                       <div className="h-full w-full">
                         <ScreenAuthorize />
+                      </div>
+                    )}
+
+                    {STabs === 7 && (
+                      <div>
+                        <Myplan />
                       </div>
                     )}
 

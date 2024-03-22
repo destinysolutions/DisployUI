@@ -1,13 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { SlCalender } from 'react-icons/sl';
+import AddSuppliarPlan from './AddSuppliarPlan';
 
 const SupplierPlan = () => {
+  const [planModel, setPlanModal] = useState(false);
+
   return (
     <>
-    <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2 mt-5">
-    <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl mb-5">
-        Supplier Pricing Plans
-    </h1>
-</div>
+      <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
+        <div className="flex items-center justify-between mx-2 mb-5">
+          <div className="title">
+            <h2 className="font-bold text-xl">Supplier Pricing Plans</h2>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
+              onClick={() => setPlanModal(true)}
+            >
+              <SlCalender className="text-2xl mr-1" />
+              Add New Plan
+            </button>
+          </div>
+          
+        </div>
+
+      </div>
+      {planModel && (
+        <AddSuppliarPlan
+          planModel={planModel}
+          setPlanModal={setPlanModal}
+        />
+      )}
     </>
   )
 }

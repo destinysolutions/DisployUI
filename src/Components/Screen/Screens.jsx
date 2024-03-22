@@ -45,12 +45,13 @@ import {
 import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import { addTagsAndUpdate, resetStatus } from "../../Redux/ScreenGroupSlice";
-import { BiEdit } from "react-icons/bi";
+import { BiEdit, BiSolidPurchaseTag } from "react-icons/bi";
 import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
 import { Pagination } from "../Common/Common";
+import PurchaseScreen from "./SubScreens/PurchaseScreen";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -142,7 +143,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     isSave: false,
     isView: false,
   });
-
+  const [openScreen, setOpenScreen] = useState(false)
+  const [addScreen, setAddScreen] = useState(1)
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const moreModalRef = useRef(null);
@@ -916,6 +918,23 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             */}
                     <div className="flex items-center justify-end">
+                      {/*<button
+                        data-tip
+                        data-for="Purchase Screen"
+                        type="button"
+                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                        onClick={() => setOpenScreen(true)}
+                      >
+                        <BiSolidPurchaseTag className="p-1 px-2 text-4xl text-white hover:text-white" />
+                        <ReactTooltip
+                          id="Purchase Screen"
+                          place="bottom"
+                          type="warning"
+                          effect="solid"
+                        >
+                          <span>Purchase</span>
+                        </ReactTooltip>
+          </button>*/}
                       {permissions.isSave && (
                         <button
                           data-tip
@@ -1357,7 +1376,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   </div>
                                                 ) : (
                                                   <>
-                                                    
+
                                                     {screen.screenName}
                                                   </>
                                                 )}
@@ -1377,8 +1396,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           <span
                                             id={`changetvstatus${screen.macid}`}
                                             className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                                ? "bg-[#3AB700]"
-                                                : "bg-[#FF0000]"
+                                              ? "bg-[#3AB700]"
+                                              : "bg-[#FF0000]"
                                               }`}
                                           >
                                             {screen.screenStatus == 1
@@ -1860,6 +1879,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           selectedAsset={selectedAsset}
           setscreenMacID={setscreenMacID}
           setSelectedAsset={setSelectedAsset}
+        />
+      )}
+      {openScreen && (
+        <PurchaseScreen
+          openScreen={openScreen}
+          setOpenScreen={setOpenScreen}
+          addScreen={addScreen}
+          setAddScreen={setAddScreen}
         />
       )}
     </>
