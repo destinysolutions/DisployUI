@@ -144,17 +144,17 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
       .then((response) => {
         // console.log(response);
         if (response.data.status === 200) {
-          if (response?.data?.data?.[0]?.IsNeedToValidate === true) {
-            setOpenVerifyModel(true);
-            setOTPData(response?.data);
-          } else {
+        //   if (response?.data?.data?.[0]?.IsNeedToValidate === true) {
+        //     setOpenVerifyModel(true);
+        //     setOTPData(response?.data);
+        //   } else {
           history("/newscreendetail", {
             state: {
               otpData: response?.data?.data,
               message: response?.data?.message,
             },
           });
-          }
+          // }
           toast.remove();
         } else {
           setErrorMessge(response?.data?.message);
