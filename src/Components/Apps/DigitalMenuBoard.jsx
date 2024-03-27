@@ -14,6 +14,7 @@ import { BiDotsHorizontalRounded } from 'react-icons/bi';
 import { FiUpload } from 'react-icons/fi';
 import { RiDeleteBin5Line, RiDeleteBinLine } from 'react-icons/ri';
 import digitalMenuLogo from "../../images/AppsImg/foods.svg";
+import Digital_Menu from "../../images/AppsImg/Digital_Menu.jpg"
 import AddOrEditTagPopup from '../AddOrEditTagPopup';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import toast from 'react-hot-toast';
@@ -569,7 +570,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                                   </button>
                                 </div>
                                 <div className="bg-black flex justify-center items-center md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72 flex items-center">
-                                  <img src={digitalMenuLogo} />
+                                  <img src={Digital_Menu} />
                                 </div>
                                 <div className="py-2 px-6">
                                   <div className="flex items-center gap-2 w-full">
