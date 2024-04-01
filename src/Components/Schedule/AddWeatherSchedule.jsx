@@ -22,7 +22,7 @@ import { useDispatch } from "react-redux";
 import { connection } from "../../SignalR";
 import { socket } from "../../App";
 import { addData, getByIdData, resetStatus } from "../../Redux/WeatherSlice";
-import { SET_TO_SCREEN_WEATHER } from "../../Pages/Api";
+import { GET_SCEDULE_TIMEZONE, SET_TO_SCREEN_WEATHER } from "../../Pages/Api";
 import axios from "axios";
 
 const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
@@ -71,12 +71,13 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const getWeatherScheduleId = searchParams.get("weatherScheduleId");
   const [label, setLabel] = useState("Save");
   const [urlParth, setUrlParth] = useState({});
-
+  const [selectedTimezoneName, setSelectedTimezoneName] = useState();
+  console.log('selectedTimezoneName', selectedTimezoneName)
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetPreview, setAssetPreview] = useState("");
   const [popupActiveTab, setPopupActiveTab] = useState(1);
-
+  const [getTimezone, setTimezone] = useState([]);
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [screenSelected, setScreenSelected] = useState([]);
@@ -88,6 +89,25 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       dispatch(resetStatus());
     }
   }, [store]);
+
+  useEffect(() => {
+    axios
+      .get(GET_SCEDULE_TIMEZONE, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((response) => {
+        setTimezone(response.data.data);
+        const timezone = new Date()
+          .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+          })
+          .substring(4);
+        setSelectedTimezoneName(timezone);
+      })
+  }, [])
 
   useEffect(() => {
     if (weatherScheduleId) {
@@ -103,6 +123,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           setTempratureUnit(data.tempUnit);
           setTemprature(data.temperature);
           setIsAbove(data.isAbove);
+          const timeZone = getTimezone?.filter((item) => item?.timeZoneID === data?.timeZoneID)
+          setSelectedTimezoneName(timeZone?.[0]?.timeZoneName)
           setSelectedAsset({ assetName: data.assetName });
           setUrlParth({
             assetID: data.mediaID,
@@ -113,6 +135,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
     }
   }, [weatherScheduleId]);
+
+
 
   // Model Function
   const handleAssetAdd = (asset) => {
@@ -128,9 +152,11 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
-  const handleAssetUpdate = () => {};
+  const handleAssetUpdate = () => { };
 
   const handleSubmit = () => {
+    const timeZone = getTimezone?.filter((item) => item?.timeZoneName === selectedTimezoneName)
+    console.log('timeZone', timeZone)
     let data = {
       weatherSchedulingID: Number(weatherScheduleId) || 0,
       name: weatherScheduleName,
@@ -143,6 +169,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       tempUnit: temperatureUnit,
       temperature: Number(temperature),
       isAbove: isAbove,
+      timeZoneID: timeZone?.[0]?.timeZoneID,
     };
     dispatch(addData(data));
   };
@@ -240,6 +267,10 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  const handleTimezoneSelect = (e) => {
+    setSelectedTimezoneName(e.target.value);
+  };
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -307,8 +338,26 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </Link>
           </div>
           <div className="mt-6">
-            <div className="grid grid-cols-12 gap-4">
+            <div className="grid grid-cols-12 gap-4 ">
               <div className="lg:col-span-6 md:col-span-12 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5">
+                <div>
+                  <label className="text-base font-medium">
+                    TimeZone : </label>
+                  <select
+                    className="w-full paymentlabel relative"
+                    value={selectedTimezoneName}
+                    onChange={(e) => handleTimezoneSelect(e)}
+                  >
+                    {getTimezone.map((timezone) => (
+                      <option
+                        value={timezone.timeZoneName}
+                        key={timezone.timeZoneID}
+                      >
+                        {timezone.timeZoneName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <div className="flex items-center p-2">
                   <label className="text-base font-medium">
                     Asset / Playing :
@@ -480,9 +529,9 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
 
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72">
-                <div className="videoplayer relative bg-white md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72">
-                  {urlParth.assetType === 'OnlineImage' &&(
+              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative md:h-[324px] sm:h-[216px] lg:h-[540px] w-full h-72">
+                <div className="videoplayer relative bg-white w-full h-full">
+                  {urlParth.assetType === 'OnlineImage' && (
                     <div className="flex items-center justify-center h-full">
                       <img src={urlParth.assetFolderPath} className="m-auto" />
                     </div>

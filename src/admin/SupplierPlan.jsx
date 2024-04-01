@@ -54,7 +54,45 @@ const SupplierPlan = () => {
               Add New Plan
             </button>
           </div>
-
+        </div>
+        <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
+          <table
+            className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
+            cellPadding={15}
+          >
+            <thead className="items-center table-head-bg">
+              <tr>
+                <th className="px-5 py-3 text-left text-lg font-semibold text-gray-900 ">
+                  Plan Name
+                </th>
+                <th className="px-5 py-3 text-left text-lg font-semibold text-gray-900 ">
+                  Cost
+                </th>
+                <th className="px-5 py-3 text-left text-lg font-semibold text-gray-900 ">
+                 Status 
+                </th>
+               
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-gray-200 bg-white">
+                <td className="px-5 py-3 text-lg">
+                  <p className="text-gray-900 whitespace-no-wrap">
+                    Lavern Laboy
+                  </p>
+                </td>
+                <td className="px-5 py-3 text-lg">
+                  <p className="text-gray-900 whitespace-no-wrap">$5875</p>
+                </td>
+                <td className="px-5 py-3 text-lg">
+                  <span className="relative inline-block px-3 py-1 font-semibold bg-orange-200 text-orange-400 leading-tight rounded-full">
+                    Pending
+                  </span>
+                </td>
+               
+              </tr>
+            </tbody>
+          </table>
         </div>
 
       </div>

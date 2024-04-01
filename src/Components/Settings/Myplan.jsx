@@ -109,23 +109,25 @@ const Myplan = () => {
                     })}
 
                 </div>
-                <div className="flex items-center justify-center w-full mt-12">
-                    <label
-                        htmlFor="toogleA"
-                        className="flex items-center cursor-pointer border border-blue-500 bg-blue-lighter p-4 rounded-full">
-                        <div className="text-3xl font-semibold mr-5">
-                            Start with a 14-day FREE trial!
-                        </div>
-
-                        <div className="relative">
-                            <input id="toogleA" type="checkbox" className="sr-only" />
-
-                            <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
-
-                            <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
-                        </div>
-                    </label>
-                </div>
+                {user?.role === "1" && (
+                    <div className="flex items-center justify-center w-full mt-12">
+                        <label
+                            htmlFor="toogleA"
+                            className="flex items-center cursor-pointer border border-blue-500 bg-blue-lighter p-4 rounded-full">
+                            <div className="text-3xl font-semibold mr-5">
+                                Start with a 14-day FREE trial!
+                            </div>
+    
+                            <div className="relative">
+                                <input id="toogleA" type="checkbox" className="sr-only" />
+    
+                                <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+    
+                                <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                )}
             </div>
             {planModel && (
                 <>
