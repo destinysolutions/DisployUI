@@ -5,55 +5,19 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from 'react-icons/md'
 import '../../Styles/Settings.css'
 import { useSelector } from 'react-redux';
+import { GET_ALL_PLANS } from '../../Pages/Api';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { handleGetAllPlans } from '../../Redux/CommonSlice';
 const Myplan = () => {
     const { token, user } = useSelector((state) => state.root.auth);
-    const [myplan, setmyPlan] = useState([
-        {
-            name: 'Plan Name',
-            totalscreen: '1',
-            plan: 'Basic',
-            storage: '3GB',
-            cost: '$25',
-            discount: '50%',
-            statusEnabled: true,
-        },
-        {
-            name: 'Plan Name',
-            totalscreen: '1',
-            plan: 'Basic',
-            storage: '3GB',
-            cost: '$25',
-            discount: '50%',
-            statusEnabled: true,
-        },
-        {
-            name: 'Plan Name',
-            totalscreen: '1',
-            plan: 'Basic',
-            storage: '3GB',
-            cost: '$25',
-            discount: '50%',
-            statusEnabled: true,
-        },
-        {
-            name: 'Plan Name',
-            totalscreen: '1',
-            plan: 'Basic',
-            storage: '3GB',
-            cost: '$25',
-            discount: '50%',
-            statusEnabled: true,
-        },
-        {
-            name: 'Plan Name',
-            totalscreen: '1',
-            plan: 'Basic',
-            storage: '3GB',
-            cost: '$25',
-            discount: '50%',
-            statusEnabled: true,
-        }
-    ]);
+    const authToken = `Bearer ${token}`;
+    const dispatch = useDispatch()
+    const [myplan, setmyPlan] = useState([]);
+    const [Statusenabled, setStatusEnabled] = useState(false)
+    const [planModel, showPlanModal] = useState(false);
+    const [discoupon, setshowdiscoupon] = useState(false)
+    const [discouponcodes, setshowcouponcodes] = useState(false)
 
 
     const handleStatusToggle = (index) => {
@@ -61,11 +25,28 @@ const Myplan = () => {
         updatedPlans[index].statusEnabled = !updatedPlans[index].statusEnabled;
         setmyPlan(updatedPlans);
     };
-    const [Statusenabled, setStatusEnabled] = useState(false)
-    const [planModel, showPlanModal] = useState(false);
-    const [discoupon, setshowdiscoupon] = useState(false)
-    const [discouponcodes, setshowcouponcodes] = useState(false)
     { /* Add new discount Model */ }
+
+
+
+    const fetchAllPlan = () => {
+        const config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: GET_ALL_PLANS,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: authToken
+            },
+        }
+        dispatch(handleGetAllPlans({ config })).then((res) => {
+            setmyPlan(res?.payload?.data)
+        })
+    }
+
+    useEffect(() => {
+        fetchAllPlan()
+    }, [])
 
     return (
         <>
@@ -87,41 +68,45 @@ const Myplan = () => {
                     )}
                 </div>
                 <div className="flex flex-wrap -mx-3 mb-8">
-                    <div className="w-full md:w-1/3 px-3 mb-4">
-                        <div className="bg-[#ECF0F1] p-4 rounded-lg h-full">
-                            <div className="flex justify-between">
-                                <div className="role-name">
-                                    <p>Total 5 Users</p>
-                                    <h3 className="text-2xl font-semibold my-2">
-                                        Basic Plan
-                                    </h3>
-                                    <p>A simple start for Everyone</p>
-                                </div>
-                                {user?.role === "1" && (
-                                    <div className="role-user ">
-                                        <div className="role-user flex justify-center">
-                                            <span>
-                                                <img src="./dist/images/1user-img.png" />
-                                            </span>
-                                            <span>
-                                                <img src="./dist/images/2user-img.png" />
-                                            </span>
-                                            <span className="pulus-user text-2xl text-white">
-                                                +3
-                                            </span>
+                    {myplan?.map((item) => {
+                        return (
+                            <div className="w-full md:w-1/3 px-3 mb-4">
+                                <div className="bg-[#ECF0F1] p-4 rounded-lg h-full">
+                                    <div className="flex justify-between">
+                                        <div className="role-name">
+                                            <p>Total 5 Users</p>
+                                            <h3 className="text-2xl font-semibold my-2">
+                                                {item?.planName}
+                                            </h3>
+                                            <p>A simple start for Everyone</p>
                                         </div>
-                                        <div className="role-user flex justify-center mt-6">
-                                            <button
-                                                className="text-white items-center justify-center rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-lg  text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
-                                            >
-                                                Edit Plan
-                                            </button>
-                                        </div>
+                                        {user?.role === "1" && (
+                                            <div className="role-user ">
+                                                <div className="role-user flex justify-center">
+                                                    <span>
+                                                        <img src="./dist/images/1user-img.png" />
+                                                    </span>
+                                                    <span>
+                                                        <img src="./dist/images/2user-img.png" />
+                                                    </span>
+                                                    <span className="pulus-user text-2xl text-white">
+                                                        +3
+                                                    </span>
+                                                </div>
+                                                <div className="role-user flex justify-center mt-6">
+                                                    <button
+                                                        className="text-white items-center justify-center rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-lg  text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                                                    >
+                                                        Edit Plan
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        )
+                    })}
 
                 </div>
                 <div className="flex items-center justify-center w-full mt-12">

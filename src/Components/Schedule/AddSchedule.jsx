@@ -69,7 +69,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [getTimezone, setTimezone] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState();
   const [selectedCurrentTime, setSelectedCurrentTime] = useState(new Date());
-  console.log('first', selectedCurrentTime)
   const selectDate = formatDate(selectedCurrentTime)
   const TodayDate = formatDate(new Date())
 
@@ -743,6 +742,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  const handleNavigate = (newDate, view) => {
+    // Update the selected date in your component state
+    setSelectedCurrentTime(newDate);
+  };
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -803,6 +807,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   selectDate === TodayDate ? "" : `date-line timezone-${currentHour}-${interval}`
                 }`}
                 selectable
+                onNavigate={handleNavigate}
                 localizer={localizer}
                 events={myEvents}
                 defaultView={Views.DAY}

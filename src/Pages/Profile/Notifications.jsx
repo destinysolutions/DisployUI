@@ -57,35 +57,33 @@ const Billing = ({ sidebarOpen }) => {
     }
   }, [loadFirst, store]);
 
-
-
   const toggleModal = () => {
     setOpenPriceAds(!openPriceAds)
   }
 
-
-
   return (
     <>
-      <div className="rounded-xl mt-5 shadow-lg bg-white">
+      <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
         <div className="flex md:justify-end sm:justify-center lg:mb-5 mb-2">
-          <div className="relative w-full">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <AiOutlineSearch className="w-5 h-5 text-gray" />
-            </span>
-            <input
-              type="text"
-              placeholder="Searching.."
-              className="border border-primary rounded-full pl-10 py-1.5 search-user"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
+          <div className="flex justify-end">
+            <div className="relative w-full">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <AiOutlineSearch className="w-5 h-5 text-gray" />
+              </span>
+              <input
+                type="text"
+                placeholder="Searching.."
+                className="border border-primary rounded-full pl-10 py-1.5 search-user"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+            </div>
           </div>
         </div>
 
         <div className="clear-both">
-          <div className="bg-white rounded-xl shadow screen-section">
-            <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
+          <div className="screen-section">
+            <div className="mt-5 overflow-x-scroll sc-scrollbar">
               <table
                 className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                 cellPadding={15}
@@ -195,7 +193,7 @@ const Billing = ({ sidebarOpen }) => {
                   <tr>
                     <td
                       className="text-[#5E5E5E] font-semibold text-center text-2xl"
-                      colSpan={5}
+                      colSpan={6}
                     >
                       Data Not found !
                     </td>
@@ -281,7 +279,7 @@ const Billing = ({ sidebarOpen }) => {
         />
      )}*/}
       {openPriceAds && (
-        <AddUserAdsForPrice toggleModal={toggleModal} sidebarOpen={sidebarOpen} editIdAds={editIdAds} setloadFirst={setloadFirst}/>
+        <AddUserAdsForPrice toggleModal={toggleModal} sidebarOpen={sidebarOpen} editIdAds={editIdAds} setloadFirst={setloadFirst} />
       )}
     </>
   );

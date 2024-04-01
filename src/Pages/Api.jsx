@@ -219,3 +219,6 @@ export const GET_DIGITAL_MENU_BY_ID = `${baseUrl}DigitalMenu/GetDigitalMenuAppBy
 export const ADD_TAGS_DIGITAL_MENU = `${baseUrl}DigitalMenu/AddDigitalMenuAppTags`
 export const ASSIGN_SCREEN_DIGITAL_MENU = `${baseUrl}DigitalMenu/AssignDigitalMenuAppToScreen`
 
+// Billing
+
+export const GET_ALL_PLANS = `${baseUrl}Common/GetAllPlans`

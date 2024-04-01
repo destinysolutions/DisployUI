@@ -296,7 +296,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                           </span>
                         </button>
                       </li>
-                      {/*<li>
+                      {/* <li>
                         <button
                           className={
                             STabs === 8 ? "stabshow settingtabactive" : "settingtab"
@@ -306,6 +306,31 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                           <FaUserShield className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                           <span className="text-base text-primary">
                             Screen Authorize
+                          </span>
+                        </button>
+                      </li>
+
+                      <li>
+                        <button
+                          className={
+                            STabs === 7 ? "stabshow settingtabactive" : "settingtab"
+                          }
+                          onClick={() => updateTab(7)}
+                        >
+                          <HiClipboardDocumentList className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">My Plan</span>
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          className={
+                            STabs === 6 ? "stabshow settingtabactive" : "settingtab"
+                          }
+                          onClick={() => updateTab(6)}
+                        >
+                          <FaFileInvoiceDollar className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">
+                            Invoice
                           </span>
                         </button>
                         </li>*/}
@@ -343,31 +368,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       </li>
 
 
-                      {/* <li>
-                        <button
-                          className={
-                            STabs === 6 ? "stabshow settingtabactive" : "settingtab"
-                          }
-                          onClick={() => updateTab(6)}
-                        >
-                          <FaFileInvoiceDollar className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                          <span className="text-base text-primary">
-                            Invoice
-                          </span>
-                        </button>
-                        </li>*/}
 
-                      {/*<li>
-                        <button
-                          className={
-                            STabs === 7 ? "stabshow settingtabactive" : "settingtab"
-                          }
-                          onClick={() => updateTab(7)}
-                        >
-                          <HiClipboardDocumentList className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                          <span className="text-base text-primary">My Plan</span>
-                        </button>
-                        </li>*/}
+
+
 
                     </ul>
                   </div>

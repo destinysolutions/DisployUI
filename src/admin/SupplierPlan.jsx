@@ -4,6 +4,38 @@ import AddSuppliarPlan from './AddSuppliarPlan';
 
 const SupplierPlan = () => {
   const [planModel, setPlanModal] = useState(false);
+  const [planDetail, setPlanDetail] = useState({
+    planName: "",
+    cost: "",
+    isActive: false
+  })
+  const [error, setError] = useState({
+    planName: false,
+    cost: false
+  });
+
+  const handleNewSupllierPlan = () => {
+    let errorFound = false;
+    if (!planDetail.planName) {
+      setError({
+        ...error,
+        planName: true
+      });
+      errorFound = true;
+    }
+    if (!planDetail.cost) {
+      setError({
+        ...error,
+        cost: true
+      });
+      errorFound = true;
+    }
+
+    if (errorFound) {
+      return;
+    }
+
+  }
 
   return (
     <>
@@ -22,7 +54,7 @@ const SupplierPlan = () => {
               Add New Plan
             </button>
           </div>
-          
+
         </div>
 
       </div>
@@ -30,6 +62,10 @@ const SupplierPlan = () => {
         <AddSuppliarPlan
           planModel={planModel}
           setPlanModal={setPlanModal}
+          setPlanDetail={setPlanDetail}
+          planDetail={planDetail}
+          handleNewSupllierPlan={handleNewSupllierPlan}
+          error={error}
         />
       )}
     </>
