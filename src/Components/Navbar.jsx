@@ -9,7 +9,8 @@ import { auth } from "../FireBase/firebase";
 import { MdNotifications, MdOutlineLogout, MdOutlineNavigateNext } from "react-icons/md";
 import { handleLogout } from "../Redux/Authslice";
 import { useDispatch } from "react-redux";
-
+import notificationIcon from "../images/NavbarIcons/notification.svg"
+import NavbarNotification from "./NavbarNotification";
 const getInitials = (name) => {
   let initials;
   const nameSplit = name.split(" ");
@@ -103,7 +104,7 @@ const Navbar = () => {
       <div>
         <div className="flex-col flex">
           <div className="w-full">
-            <div className=" justify-end items-center mx-auto px-4 flex relative">
+            <div className=" justify-end items-center mx-auto gap-3 px-4 flex relative">
               {/* <div className="mr-3 dayremaining-box">
                 {daysRemaining > 0 ? (
                   <p className="text-sm ">
@@ -119,54 +120,17 @@ const Navbar = () => {
                 className="m-1  bg-lightgray"
               /> */}
               {/* Notification box start */}
-              {/* <div className="relative">
+              <div className="relative">
                 <img
-                  src="/NavbarIcons/notification.svg"
+                  src={notificationIcon}
                   alt="notification"
-                  className="m-1  relative bg-lightgray"
+                  className="m-1 cursor-pointer relative bg-lightgray"
                   onClick={handleNotificationClick}
                 />
                 {showNotificationBox && (
-                  <>
-                    <div className="absolute top-[50px] right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg notificationpopup">
-                      <div className="lg:flex md:flex sm:block items-start">
-                        <div className="p-3">
-                          <h4 className="text-[#7C82A7] text-sm font-bold mb-1">
-                            Screen ID
-                          </h4>
-                          <p className="font-medium text-sm text-[#ACB0C7]">
-                            HD-EF014
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <h4 className="text-[#7C82A7] text-sm font-bold mb-1">
-                            Store
-                          </h4>
-                          <p className="font-medium text-sm text-[#ACB0C7]">
-                            Store Name
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <h4 className="text-[#7C82A7] text-sm font-bold mb-1">
-                            Location
-                          </h4>
-                          <p className="font-medium text-sm text-[#ACB0C7] break-words	w-[200px]">
-                            132, My Street, Kingston, New York 12401.
-                          </p>
-                        </div>
-                        <div className="p-3">
-                          <h4 className="text-[#7C82A7] text-sm font-bold mb-1">
-                            Status
-                          </h4>
-                          <p className="font-medium text-sm text-[#ACB0C7]">
-                            Offline
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </>
+                  <NavbarNotification />
                 )}
-              </div> */}
+              </div>
               {/* Notification box end */}
               {/* profile box start */}
               <div className="relative">
@@ -197,7 +161,7 @@ const Navbar = () => {
                         <div className="flex items-center space-x-3  p-2">
                           {userDetails?.profilePhoto === "" ? (
                             <img
-                              src={createImageFromInitials(500,userDetails?.firstName,color)}
+                              src={createImageFromInitials(500, userDetails?.firstName, color)}
                               alt="profile"
                               className=" profile rounded-full "
                               onClick={handleProfileClick}
@@ -220,7 +184,7 @@ const Navbar = () => {
 
                         <div className="flex justify-start items-center p-2">
                           <div className="mr-2">
-                            <RiUserShared2Fill   className="text-xl" />
+                            <RiUserShared2Fill className="text-xl" />
                           </div>
                           <Link to="/userprofile">
                             <button className="text-[#001737] font-bold text-base ">

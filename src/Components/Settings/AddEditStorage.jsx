@@ -1,8 +1,12 @@
+import { loadStripe } from '@stripe/stripe-js';
 import { round } from 'lodash';
 import React from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
-const AddEditStorage = ({ toggleModal, setAddStorage, addStorage }) => {
+
+const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay }) => {
+
+
     return (
         <>
             <div
@@ -45,7 +49,9 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage }) => {
                                 <div className='flex items-center justify-evenly'>
                                     <p>Cost</p>
                                     <div className='flex items-center gap-1'>
-                                        <input disabled type='number'
+                                        <input
+                                            disabled
+                                            type='number'
                                             className="relative border border-black rounded-md p-2 w-24"
                                             value={round((addStorage * 0.05), 2)}
                                         />
@@ -65,6 +71,7 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage }) => {
                                 <button
                                     className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                                     type="button"
+                                    onClick={() => handlePay()}
                                 >
                                     Pay
                                 </button>

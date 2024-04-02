@@ -18,7 +18,7 @@ import ScreenOTPModal from "./ScreenOTPModal";
 import { RiArrowDownSLine, RiDeleteBin5Line } from "react-icons/ri";
 import Footer from "../Footer";
 
-import { SCREEN_DELETE_ALL, SCREEN_GROUP } from "../../Pages/Api";
+import { PAYMENT_INTENT_CREATE_REQUEST, SCREEN_DELETE_ALL, SCREEN_GROUP } from "../../Pages/Api";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -52,6 +52,15 @@ import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
 import { Pagination } from "../Common/Common";
 import PurchaseScreen from "./SubScreens/PurchaseScreen";
+import { Elements } from "@stripe/react-stripe-js";
+import PaymentDialog from "../Common/PaymentDialog";
+import { round } from "lodash";
+import { loadStripe } from "@stripe/stripe-js";
+import { handlePaymentIntegration } from "../../Redux/CommonSlice";
+
+
+const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
+
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -88,7 +97,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [assetScreenID, setAssetScreenID] = useState(null);
   const [scheduleScreenID, setScheduleScreenID] = useState();
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
-
+  const [openPayment, setOpenPayment] = useState(false)
   const [editedScreenName, setEditedScreenName] = useState("");
 
   const [editingScreenID, setEditingScreenID] = useState(null);
@@ -145,11 +154,19 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   });
   const [openScreen, setOpenScreen] = useState(false)
   const [addScreen, setAddScreen] = useState(1)
+  const [clientSecret, setClientSecret] = useState("");
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const moreModalRef = useRef(null);
   const showActionModalRef = useRef(null);
 
+  const appearance = {
+    theme: 'stripe',
+  };
+  const options = {
+    clientSecret,
+    appearance,
+  };
   const handleAssetAdd = (asset) => {
     setSelectedAsset(asset);
     setAssetPreview(asset);
@@ -871,6 +888,34 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     };
   }, []);
 
+  const handlePay = () => {
+    const price = round((addScreen * 10), 2);
+    const params = {
+      "items": {
+        "id": "0",
+        "amount": String(price * 100)
+      }
+    }
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: PAYMENT_INTENT_CREATE_REQUEST,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify(params),
+    }
+
+    dispatch(handlePaymentIntegration({ config })).then((res) => {
+      setClientSecret(res?.payload?.clientSecret)
+    })
+    setOpenPayment(true)
+  }
+
+  const togglePaymentModal = () => {
+    setOpenPayment(!openPayment)
+  }
+
   return (
     <>
       {sidebarload && <Loading />}
@@ -918,7 +963,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             */}
                     <div className="flex items-center justify-end">
-                      {/*<button
+                      <button
                         data-tip
                         data-for="Purchase Screen"
                         type="button"
@@ -934,7 +979,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         >
                           <span>Purchase</span>
                         </ReactTooltip>
-          </button>*/}
+                      </button>
                       {permissions.isSave && (
                         <button
                           data-tip
@@ -1887,7 +1932,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           setOpenScreen={setOpenScreen}
           addScreen={addScreen}
           setAddScreen={setAddScreen}
+          handlePay={handlePay}
         />
+      )}
+
+      {openPayment && clientSecret && (
+        <Elements options={options} stripe={stripePromise}>
+          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} />
+        </Elements>
       )}
     </>
   );

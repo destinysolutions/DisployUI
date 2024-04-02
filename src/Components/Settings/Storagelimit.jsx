@@ -6,8 +6,16 @@ import { GrAddCircle } from "react-icons/gr";
 import { FaCodePullRequest } from "react-icons/fa6";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { ADD_STORAGE } from "../../Pages/Api";
+import { ADD_STORAGE, PAYMENT_INTENT_CREATE_REQUEST } from "../../Pages/Api";
 import AddEditStorage from "./AddEditStorage";
+import PaymentDialog from "../Common/PaymentDialog";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import { round } from "lodash";
+import { handlePaymentIntegration } from "../../Redux/CommonSlice";
+
+const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
+
 
 const Storagelimit = () => {
   const { token, user } = useSelector((state) => state.root.auth);
@@ -18,7 +26,18 @@ const Storagelimit = () => {
   const [request, setRequest] = useState(false);
   const dispatch = useDispatch();
   const [openStorage, setOpenStorage] = useState(false)
+  const [openPayment, setOpenPayment] = useState(false)
   const [addStorage, setAddStorage] = useState(2)
+  const [clientSecret, setClientSecret] = useState("");
+  console.log('clientSecret', clientSecret)
+  const appearance = {
+    theme: 'stripe',
+  };
+  const options = {
+    clientSecret,
+    appearance,
+  };
+
   useEffect(() => {
     const response = dispatch(handleGetStorageDetails({ token }));
     if (!response) return;
@@ -63,6 +82,45 @@ const Storagelimit = () => {
   const toggleModal = () => {
     setOpenStorage(!openStorage)
   }
+
+  const togglePaymentModal = () => {
+    setOpenPayment(!openPayment)
+  }
+
+  const handlePay = () => {
+    const price = round((addStorage * 0.05), 2);
+    const params = {
+      "items": {
+        "id": "0",
+        "amount": String(price * 100)
+      }
+    }
+    console.log('params', params)
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: PAYMENT_INTENT_CREATE_REQUEST,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify(params),
+    }
+
+
+
+    dispatch(handlePaymentIntegration({ config })).then((res) => {
+      setClientSecret(res?.payload?.clientSecret)
+    })
+    setOpenPayment(true)
+    // fetch("/create-payment-intent", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ items: { price: round((addStorage * 0.05), 2) } }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => setClientSecret(data.clientSecret));
+  }
+
 
   return (
     <>
@@ -153,7 +211,14 @@ const Storagelimit = () => {
           toggleModal={toggleModal}
           addStorage={addStorage}
           setAddStorage={setAddStorage}
+          handlePay={handlePay}
         />
+      )}
+
+      {openPayment && clientSecret && (
+        <Elements options={options} stripe={stripePromise}>
+          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} />
+        </Elements>
       )}
     </>
   );

@@ -222,3 +222,7 @@ export const ASSIGN_SCREEN_DIGITAL_MENU = `${baseUrl}DigitalMenu/AssignDigitalMe
 // Billing
 
 export const GET_ALL_PLANS = `${baseUrl}Common/GetAllPlans`
+export const PAYMENT_INTENT_CREATE_REQUEST = `${baseUrl}Common/PaymentIntentCreateRequest`
+// Notifications
+
+export const GET_ALL_NOTIFICATIONS = `${baseUrl}Common/GetAllPlans`

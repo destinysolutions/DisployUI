@@ -21,6 +21,7 @@ import WeatherSlice from "./WeatherSlice";
 import ManageUserSlice from "./admin/ManageUserSlice";
 import AdvertisementSlice from "./admin/AdvertisementSlice";
 import CommonSlice from "./CommonSlice";
+import NotificationSlice from "./NotificationSlice";
 // const rootPersistConfig = {
 //   key: "root",
 //   storage,
@@ -54,12 +55,13 @@ const rootReducer = combineReducers({
   trashData: TrashSlice,
   sidebarData: SidebarSlice,
   userRole: UserRoleSlice,
-  retailerData : RetailersSlice,
-  onBoding : OnBodingSlice,
-  weather : WeatherSlice,
-  ManageUser:ManageUserSlice,
-  advertisementData : AdvertisementSlice,
-  common:CommonSlice,
+  retailerData: RetailersSlice,
+  onBoding: OnBodingSlice,
+  weather: WeatherSlice,
+  ManageUser: ManageUserSlice,
+  advertisementData: AdvertisementSlice,
+  common: CommonSlice,
+  notification: NotificationSlice
 });
 
 const persisteRoot = rootReducer;

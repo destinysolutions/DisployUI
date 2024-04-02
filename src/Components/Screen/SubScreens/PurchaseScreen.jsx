@@ -2,7 +2,7 @@ import { round } from 'lodash';
 import React from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
-const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen }) => {
+const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, handlePay }) => {
     return (
         <div
             id="default-modal"
@@ -30,7 +30,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen }) 
                             <span className='flex justify-center items-center font-semibold text-xl'>
                                 Enter the Screen required
                             </span>
-                            
+
                             <div className='flex items-center justify-evenly'>
                                 <p>Add Storage</p>
                                 <div className='flex items-center gap-1 ml-6'>
@@ -65,6 +65,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen }) 
                             <button
                                 className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                                 type="button"
+                                onClick={() => handlePay()}
                             >
                                 Pay
                             </button>
