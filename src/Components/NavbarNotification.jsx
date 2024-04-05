@@ -51,7 +51,8 @@ const NavbarNotification = ({ setShowNotificationBox }) => {
         }
 
         dispatch(handleGetAllRemoveNotifications({ config })).then((res) => {
-            if (res?.payload?.status) {
+            console.log('res', res)
+            if (res?.payload?.data) {
                 setNotification([])
                 setLoading(false)
             }
