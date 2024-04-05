@@ -137,10 +137,10 @@ div#tooltip-bottom:before {
   min-width: 250px;
 }
 
-.notificationpopup {
+/* .notificationpopup {
   min-width: 500px;
   z-index: 99;
-}
+} */
 
 .loginpopup:before,
 .notificationpopup:before {

@@ -37,7 +37,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const history = useNavigate();
@@ -107,7 +107,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
       toggleSubtitles: areSubtitlesOn,
       youTubePlaylist: maxVideos,
       operation: "Update",
-      userID: JSON.parse(window.localStorage.getItem("userID"))?.userID,
+      userID: user?.userID,
     });
 
     let config = {

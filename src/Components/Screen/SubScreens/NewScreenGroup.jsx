@@ -637,9 +637,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         fill="#1C64F2"
                       />
                     </svg>
-                    <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
-                      Loading...
-                    </span>
+                   
                   </div>
                 ) : (
                   <>
@@ -775,9 +773,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               fill="#1C64F2"
                             />
                           </svg>
-                          <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2  dark:bg-green-900 dark:text-green-300">
-                            Loading...
-                          </span>
+                          
                         </div>
                       )}
                       {!loader &&

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const InvoiceBilling = ({ InvoiceRef }) => {
+const InvoiceBilling = ({ InvoiceRef ,selectData}) => {
     return (
         <>
             <div ref={InvoiceRef} className='p-6'>
@@ -8,6 +8,9 @@ const InvoiceBilling = ({ InvoiceRef }) => {
                     <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0"><img src="dist/images/black-logo.png" alt="" />
                         <div className="screen-count text-left py-3"><strong>Customer ID:</strong>
                             <p>#5036</p>
+                        </div>
+                        <div className="screen-count text-left py-3"><strong>Customer Name:</strong>
+                            <p>Charlie</p>
                         </div>
                         <div className="screen-count text-left py-3"><strong>Bill To Address:</strong>
                             <p> 100 Water Plant Avenue, Building 303 Wake Island</p>

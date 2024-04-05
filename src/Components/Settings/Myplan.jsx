@@ -2,22 +2,38 @@ import React from 'react'
 import { useState } from 'react';
 import { SlCalender } from 'react-icons/sl'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
-import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from 'react-icons/md'
+import { MdOutlineEdit, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from 'react-icons/md'
 import '../../Styles/Settings.css'
 import { useSelector } from 'react-redux';
-import { GET_ALL_PLANS } from '../../Pages/Api';
+import { ADD_EDIT_TRIAL_PLAN, GET_ALL_PLANS, GET_TRIAL_PERIOD_DETAILS } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { handleGetAllPlans } from '../../Redux/CommonSlice';
+import { BsEyeFill } from 'react-icons/bs';
+import ViewPlan from './ViewPlan';
+import { GrPlan } from "react-icons/gr";
+import TrialPlan from './TrialPlan';
 const Myplan = () => {
     const { token, user } = useSelector((state) => state.root.auth);
+    console.log('user', user)
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [myplan, setmyPlan] = useState([]);
     const [Statusenabled, setStatusEnabled] = useState(false)
     const [planModel, showPlanModal] = useState(false);
+    const [trialPlanModel, setTrialPlanModal] = useState(false);
     const [discoupon, setshowdiscoupon] = useState(false)
     const [discouponcodes, setshowcouponcodes] = useState(false)
+    const [openView, setOpenView] = useState("")
+    const [selectPlan, setSelectPlan] = useState("")
+    const [trialData, setTrialData] = useState({
+        trialDays: 14,
+        isActive: true
+    })
+    const [trialDetails, setTrialDetails] = useState({
+        trialDays: 14,
+        isActive: true
+    })
 
 
     const handleStatusToggle = (index) => {
@@ -26,8 +42,6 @@ const Myplan = () => {
         setmyPlan(updatedPlans);
     };
     { /* Add new discount Model */ }
-
-
 
     const fetchAllPlan = () => {
         const config = {
@@ -44,25 +58,72 @@ const Myplan = () => {
         })
     }
 
+    const fetchTrialDetails = () =>{
+        const config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: GET_TRIAL_PERIOD_DETAILS,
+            headers: {
+                Authorization: authToken
+            },
+        }
+        dispatch(handleGetAllPlans({ config })).then((res) => {
+            setTrialDetails(res?.payload?.data)
+        })
+    }
+
     useEffect(() => {
         fetchAllPlan()
+        fetchTrialDetails()
     }, [])
+
+    const toggleModal = () => {
+        setOpenView(!openView)
+    }
+
+    const handleSaveTrialPlan = () => {
+        const config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: `${ADD_EDIT_TRIAL_PLAN}?TrialDays=${trialData?.trialDays}&IsActive=${trialData?.isActive}`,
+            headers: {
+                Authorization: authToken
+            },
+        }
+        dispatch(handleGetAllPlans({ config })).then((res) => {
+            if (res?.payload?.status) {
+                fetchTrialDetails()
+                setTrialPlanModal(!trialPlanModel);
+            }
+        }).catch((error) => {
+            console.log('error', error)
+            setTrialPlanModal(!trialPlanModel);
+        })
+    }
 
     return (
         <>
             <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
                 <div className="flex items-center justify-between mx-2 mb-5">
-                    <div className="title">
-                        <h2 className="font-bold text-xl">Pricing Plans</h2>
-                    </div>
+                    <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
+                        Pricing Plans
+                    </h1>
                     {user?.role === "1" && (
                         <div className="flex items-center gap-2">
+                            <button
+                                className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
+                                onClick={() => setTrialPlanModal(!trialPlanModel)}
+                            >
+                                <GrPlan className="text-2xl mr-1" />
+                                Trial Plan
+                            </button>
+
                             <button
                                 className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
                                 onClick={() => showPlanModal(true)}
                             >
                                 <SlCalender className="text-2xl mr-1" />
-                                Add New Plan
+                                Add New Custom Plan
                             </button>
                         </div>
                     )}
@@ -80,8 +141,8 @@ const Myplan = () => {
                                             </h3>
                                             <p>A simple start for Everyone</p>
                                         </div>
-                                        {user?.role === "1" && (
-                                            <div className="role-user ">
+                                        <div className="role-user ">
+                                            {user?.role === "1" && (
                                                 <div className="role-user flex justify-center">
                                                     <span>
                                                         <img src="./dist/images/1user-img.png" />
@@ -93,15 +154,28 @@ const Myplan = () => {
                                                         +3
                                                     </span>
                                                 </div>
-                                                <div className="role-user flex justify-center mt-6">
-                                                    <button
-                                                        className="text-white items-center justify-center rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-lg  text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                                            )}
+                                            <div className="role-user flex justify-center mt-6 gap-2">
+                                                {user?.role === "1" && (
+                                                    <div
+                                                        data-tip
+                                                        data-for="Edit"
+                                                        className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                     >
-                                                        Edit Plan
-                                                    </button>
+                                                        <MdOutlineEdit />
+                                                    </div>
+                                                )}
+                                                <div
+                                                    data-tip
+                                                    data-for="View"
+                                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                    onClick={() => { setOpenView(true); setSelectPlan(item) }}
+                                                >
+                                                    <BsEyeFill />
                                                 </div>
                                             </div>
-                                        )}
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -115,15 +189,25 @@ const Myplan = () => {
                             htmlFor="toogleA"
                             className="flex items-center cursor-pointer border border-blue-500 bg-blue-lighter p-4 rounded-full">
                             <div className="text-3xl font-semibold mr-5">
-                                Start with a 14-day FREE trial!
+                                Start with a {trialDetails?.trialDays} 14-days FREE trial!
                             </div>
-    
+
                             <div className="relative">
-                                <input id="toogleA" type="checkbox" className="sr-only" />
-    
+       {/*                         <input id="toogleA" type="checkbox" className="sr-only" checked={trialData?.isActive} />
+
                                 <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
-    
-                                <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+
+                <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>*/}
+                                <label className="relative inline-flex items-center me-5 cursor-not-allowed mt-1">
+                                    <input
+                                        type="checkbox"
+                                        checked={trialDetails?.isActive}
+                                        className="sr-only peer"
+                                        disabled
+
+                                    />
+                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                </label>
                             </div>
                         </label>
                     </div>
@@ -135,7 +219,7 @@ const Myplan = () => {
                         <div className="user-model">
 
                             <div className="hours-heading flex justify-between items-center p-5 border-b border-gray sticky top-0 shadow-md z-[99] bg-white">
-                                <h1 className='text-lg font-medium text-primary'>Add New Plan</h1>
+                                <h1 className='text-lg font-medium text-primary'>Add New Custom Plan</h1>
                                 <AiOutlineCloseCircle className='text-4xl text-primary cursor-pointer' onClick={() => showPlanModal(false)} />
 
                             </div>
@@ -313,6 +397,12 @@ const Myplan = () => {
                         </div>
                     </div>
                 </>
+            )}
+            {openView && (
+                <ViewPlan toggleModal={toggleModal} selectPlan={selectPlan} />
+            )}
+            {trialPlanModel && (
+                <TrialPlan setTrialPlanModal={setTrialPlanModal} trialPlanModel={trialPlanModel} handleSaveTrialPlan={handleSaveTrialPlan} setTrialData={setTrialData} trialData={trialData} />
             )}
         </>
     )

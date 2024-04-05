@@ -62,9 +62,7 @@ const ShowUserScreen = ({ showUsersRef, setShowUsers, loading, userList }) => {
                                   fill="#1C64F2"
                                 />
                               </svg>
-                              <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
-                                Loading...
-                              </span>
+                             
                             </div>
                           </td>
                         </tr>

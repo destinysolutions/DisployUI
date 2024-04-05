@@ -171,13 +171,13 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                             className="sketch-picker-digital-menu"
                                         />
                                     </div>
-                                    <div className='m-3'>
+                                    {/*<div className='m-3'>
                                         <input type='file' className="formInput" id='Image'
                                             {...register("Image")}
                                         />
-                                    </div>
+                                    </div>*/}
                                 </div>
-                                <div className="flex items-center justify-center gap-2">
+                                <div className="flex items-center justify-center gap-2 border-t border-black">
                                     <button
                                         type="button"
                                         className="w-40 text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-full py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
@@ -188,6 +188,7 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                     <button
                                         type="submit"
                                         className="w-40 text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-full py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
+                                       
                                     >
                                         Save
                                     </button>

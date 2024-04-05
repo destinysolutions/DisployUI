@@ -57,7 +57,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);
-
+  const [selectDrag, setSelectDrag] = useState(false)
   const [selectedAsset, setSelectedAsset] = useState("");
   const [assetPreview, setAssetPreview] = useState("");
   const [edited, setEdited] = useState(false);
@@ -73,8 +73,8 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     allItem: [{
       name: "",
       description: "",
-      price: 0,
-      calories: 0,
+      price: "",
+      calories: "",
       image: "",
       features: false,
       soldOut: false,
@@ -354,8 +354,8 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
             allItem: [{
               name: "",
               description: "",
-              price: 0,
-              calories: 0,
+              price: "",
+              calories: "",
               image: "",
               features: false,
               soldOut: false,
@@ -438,7 +438,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const onSubmit = (data) => {
     setCustomizeData(data)
     // Handle form submission here
-    console.log(data);
+    toggleModal()
   };
 
   const handleAssetAdd = (asset) => {
@@ -855,9 +855,6 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           fill="#1C64F2"
                         />
                       </svg>
-                      <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
-                        Loading...
-                      </span>
                     </div>
                   )}
                   {!loading && addCategory && addCategory?.map((category, index) => {
@@ -914,7 +911,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 <th className="text-[#5A5881] text-base font-semibold  text-center w-32">
                                   Price
                                 </th>
-                                <th className="text-[#5A5881] text-base font-semibold  text-center w-24">
+                                <th className="text-[#5A5881] text-base font-semibold  text-center w-32">
                                   Calories
                                 </th>
                                 <th className="text-[#5A5881] text-base font-semibold  text-center w-64">
@@ -926,7 +923,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 <th className="text-[#5A5881] text-base font-semibold  text-center w-24">
                                   Sold Out
                                 </th>
-                                <th className="text-[#5A5881] text-base font-semibold  text-center w-56">
+                                <th className="text-[#5A5881] text-base font-semibold  text-center w-48">
                                   Actions
                                 </th>
                               </tr>
@@ -964,7 +961,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
                                         <td className="text-[#5E5E5E] text-center">
                                           <input type='number' value={item?.calories} className="w-full relative border border-black rounded-md p-3"
-                                            placeholder='0'
+                                            placeholder='Calories'
                                             onChange={(e) =>
                                               handleCaloriesChange(index, indexs, e.target.value)
                                             } />

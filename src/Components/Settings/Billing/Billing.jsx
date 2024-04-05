@@ -193,22 +193,6 @@ const Billing = () => {
                                 <span>View</span>
                               </ReactTooltip>
                             </div>
-
-                            <div
-                              data-tip
-                              data-for="Delete"
-                              className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
-                            >
-                              <MdDeleteForever />
-                              <ReactTooltip
-                                id="Delete"
-                                place="bottom"
-                                type="warning"
-                                effect="solid"
-                              >
-                                <span>Delete</span>
-                              </ReactTooltip>
-                            </div>
                           </div>
                         </td>
                       </tr>
@@ -226,7 +210,6 @@ const Billing = () => {
                 </table>
               </div>
 
-              {/* Pagination start */}
               {filteredData.length > 0 && (
                 <div className="mt-4 flex justify-end p-5">
                   <div className="flex justify-end mar-btm-15">
@@ -281,7 +264,6 @@ const Billing = () => {
                   </div>
                 </div>
               )}
-              {/* Pagination End */}
             </div>
           </div>
         </div>

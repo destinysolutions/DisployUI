@@ -41,9 +41,9 @@ const SupplierPlan = () => {
     <>
       <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
         <div className="flex items-center justify-between mx-2 mb-5">
-          <div className="title">
-            <h2 className="font-bold text-xl">Supplier Pricing Plans</h2>
-          </div>
+          <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
+            Supplier Pricing Plans
+          </h1>
 
           <div className="flex items-center gap-2">
             <button
@@ -51,7 +51,7 @@ const SupplierPlan = () => {
               onClick={() => setPlanModal(true)}
             >
               <SlCalender className="text-2xl mr-1" />
-              Add New Plan
+              Add New Custom Plan
             </button>
           </div>
         </div>
@@ -69,9 +69,9 @@ const SupplierPlan = () => {
                   Cost
                 </th>
                 <th className="px-5 py-3 text-left text-lg font-semibold text-gray-900 ">
-                 Status 
+                  Status
                 </th>
-               
+
               </tr>
             </thead>
             <tbody>
@@ -89,7 +89,7 @@ const SupplierPlan = () => {
                     Pending
                   </span>
                 </td>
-               
+
               </tr>
             </tbody>
           </table>

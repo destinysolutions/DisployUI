@@ -10,7 +10,6 @@ import {
 } from "react-icons/fa";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import Invoice from "../Components/Settings/Invoice";
-import Billing from "../Pages/Profile/Notifications";
 import Myplan from "../Components/Settings/Myplan";
 import { BsFillPrinterFill, BsFillSendFill } from "react-icons/bs";
 import ReactToPrint from "react-to-print";
@@ -21,6 +20,8 @@ import Discount from "./Discount";
 import { MdDiscount } from "react-icons/md";
 import { FiCodesandbox } from "react-icons/fi";
 import SupplierPlan from "./SupplierPlan";
+import Footer from "../Components/Footer";
+import Billing from "../Components/Settings/Billing/Billing";
 
 const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
   AdminSetting.propTypes = {
@@ -163,7 +164,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                     <span className="text-base text-primary">Discount</span>
                   </button>
                 </li>
-                <li>
+                {/*<li>
                   <button
                     className={
                       STabs === 10 ? "stabshow settingtabactive" : "settingtab"
@@ -175,7 +176,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                       Supplier Plan
                     </span>
                   </button>
-                </li>
+                  </li>*/}
               </ul>
             </div>
 
@@ -224,6 +225,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

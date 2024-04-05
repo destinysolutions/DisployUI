@@ -25,7 +25,9 @@ import {
   ADDUPDATESLOT,
   ALL_CITY,
   GET_TIMEZONE,
+  PAYMENT_INTENT_CREATE_REQUEST,
   SCREEN_LIST,
+  stripePromise,
 } from "../../../../Pages/Api";
 import { FiMapPin } from "react-icons/fi";
 import {
@@ -46,6 +48,9 @@ import InputAuto from "../../../Common/InputAuto";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import ThankYouPage from "./ThankYouPage";
 import AddPayment from "./AddPayment";
+import { Elements } from "@stripe/react-stripe-js";
+import { handlePaymentIntegration } from "../../../../Redux/PaymentSlice";
+import { useDispatch } from "react-redux";
 
 const AddSlot = () => {
   const {
@@ -60,11 +65,12 @@ const AddSlot = () => {
     iconAnchor: [16, 16],
     popupAnchor: [0, -16],
   });
+  const dispatch = useDispatch()
   const Name = watch("name");
   const Email = watch("email");
   const PhoneNumber = watch("phone");
   const navigate = useNavigate();
-  const options = Array.from({ length: 60 }, (_, index) => index + 1); // Create an array of numbers from 1 to 60
+  const optionSelect = Array.from({ length: 60 }, (_, index) => index + 1); // Create an array of numbers from 1 to 60
   const [sidebarload, setSidebarLoad] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [day, setDay] = useState([]);
@@ -79,7 +85,6 @@ const AddSlot = () => {
   const [Open, setOpen] = useState(false);
   const [selectAllScreen, setSelectAllScreen] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
-
   const [selectedItem, setSelectedItem] = useState();
   const [selectedScreen, setSelectedScreen] = useState("");
   const [selectedDays, setSelectedDays] = useState(
@@ -89,7 +94,6 @@ const AddSlot = () => {
   const [totalDuration, setTotalDuration] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
-
   const [getallTime, setGetAllTime] = useState([
     {
       startTime: getCurrentTime(),
@@ -106,7 +110,6 @@ const AddSlot = () => {
   const [selectAllDays, setSelectAllDays] = useState(false);
   const [repeatDays, setRepeatDays] = useState([]);
   const [allTimeZone, setAllTimeZone] = useState([]);
-
   const [allArea, setAllArea] = useState([]);
   const [selectedValue, setSelectedValue] = useState(1); // State to store the selected value
   const start = new Date(startDate);
@@ -114,8 +117,17 @@ const AddSlot = () => {
   const dayDifference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
   const [selectedVal, setSelectedVal] = useState("");
   const [savedFile, setSavedFile] = useState([]);
-
+  const [clientSecret, setClientSecret] = useState("");
   const Screenoptions = multiOptions(screenData);
+
+  const appearance = {
+    theme: 'stripe',
+  };
+  const options = {
+    clientSecret,
+    appearance,
+  };
+
   const handleStartDateChange = (event) => {
     if (!repeat) {
       setEndDate(event.target.value);
@@ -189,6 +201,7 @@ const AddSlot = () => {
   }, []);
 
   const handleNext = () => {
+    let total = ""
     if (selectedScreens?.length === 0) {
       return toast.error("Please Select Screen");
     } else {
@@ -198,8 +211,31 @@ const AddSlot = () => {
       });
       setTotalPrice(Price);
       setTotalCost(totalDuration * Price);
+      total = totalDuration * Price
     }
-    setPage(page + 1);
+    const params = {
+      "items": {
+        "id": "0",
+        "amount": String(total * 100)
+      }
+    }
+
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: PAYMENT_INTENT_CREATE_REQUEST,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify(params),
+    }
+
+    dispatch(handlePaymentIntegration({ config })).then((res) => {
+      setClientSecret(res?.payload?.clientSecret)
+      setPage(page + 1);
+    }).catch((error) => {
+      console.log('error', error)
+    })
   };
 
   const onSubmit = (data) => {
@@ -490,8 +526,12 @@ const AddSlot = () => {
     setSelectedScreen(screen);
   };
 
-  const handlebook = () => {
+  const handlebook = (paymentIntent) => {
     let Params = JSON.stringify({
+      PaymentDetails : {
+        ...paymentIntent,
+        type:"Book Slot",
+      },
       bookingSlotCustomerID: 0,
       name: Name,
       email: Email,
@@ -778,7 +818,7 @@ const AddSlot = () => {
                                   }
                                 >
                                   <option label="Select Second" value="" />
-                                  {options.map((number) => (
+                                  {optionSelect.map((number) => (
                                     <option key={number} value={number}>
                                       {number}
                                     </option>
@@ -807,7 +847,7 @@ const AddSlot = () => {
                                   }
                                 >
                                   <option label="Select Second" value="" />
-                                  {options.map((number) => (
+                                  {optionSelect.map((number) => (
                                     <option key={number} value={number}>
                                       {number}
                                     </option>
@@ -883,10 +923,9 @@ const AddSlot = () => {
                           <div>
                             {buttons.map((label, index) => (
                               <button
-                                className={`border border-primary px-3 py-1 mr-2 mb-2 rounded-full ${
-                                  selectedDays[index] &&
+                                className={`border border-primary px-3 py-1 mr-2 mb-2 rounded-full ${selectedDays[index] &&
                                   "bg-SlateBlue border-white"
-                                } 
+                                  } 
                           `}
                                 key={index}
                                 onClick={() =>
@@ -971,9 +1010,8 @@ const AddSlot = () => {
                                 {selectedItem === item && Open && (
                                   <div
                                     id="ProfileDropDown"
-                                    className={`rounded ${
-                                      Open ? "none" : "hidden"
-                                    } shadow-md bg-white absolute mt-44 z-[9999] w-48`}
+                                    className={`rounded ${Open ? "none" : "hidden"
+                                      } shadow-md bg-white absolute mt-44 z-[9999] w-48`}
                                   >
                                     <div>
                                       <div className="border-b flex justify-center">
@@ -1155,19 +1193,23 @@ const AddSlot = () => {
             </div>
           </>
         )}
-        {page === 4 && (
+        {page === 4 && clientSecret && (
           <div className="w-full h-full p-5 flex items-center justify-center">
             <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
-              <AddPayment
-                selectedScreens={selectedScreens}
-                totalDuration={totalDuration}
-                totalPrice={totalPrice}
-                totalCost={totalCost}
-                handlebook={handlebook}
-                handleBack={handleBack}
-                selectedTimeZone={selectedTimeZone}
-                allTimeZone={allTimeZone}
-              />
+              <Elements options={options} stripe={stripePromise}>
+                <AddPayment
+                  selectedScreens={selectedScreens}
+                  totalDuration={totalDuration}
+                  totalPrice={totalPrice}
+                  totalCost={totalCost}
+                  handlebook={handlebook}
+                  handleBack={handleBack}
+                  selectedTimeZone={selectedTimeZone}
+                  allTimeZone={allTimeZone}
+                  setPage={setPage}
+                  page={page}
+                />
+              </Elements>
             </div>
           </div>
         )}

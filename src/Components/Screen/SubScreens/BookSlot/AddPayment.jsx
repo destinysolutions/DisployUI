@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaRegClock, FaRegQuestionCircle } from "react-icons/fa";
 import { FiMapPin } from "react-icons/fi";
 import { IoEarthSharp } from "react-icons/io5";
 import { getTimeZoneName, secondsToHMS } from "../../../Common/Common";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { useForm } from "react-hook-form";
+import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const AddPayment = ({
   selectedScreens,
@@ -14,7 +17,9 @@ const AddPayment = ({
   handlebook,
   handleBack,
   selectedTimeZone,
-  allTimeZone
+  allTimeZone,
+  page,
+  setPage
 }) => {
 
   const {
@@ -22,6 +27,97 @@ const AddPayment = ({
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const { user, userDetails } = useSelector((state) => state.root.auth);
+  const stripe = useStripe();
+  const elements = useElements();
+  const navigation = useNavigate()
+  const [message, setMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!stripe) {
+      return;
+    }
+    if (!elements) {
+      return;
+    }
+
+    const clientSecret = new URLSearchParams(window.location.search).get(
+      "payment_intent_client_secret"
+    );
+
+    if (!clientSecret) {
+      return;
+    }
+
+    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+      switch (paymentIntent.status) {
+        case "succeeded":
+          setMessage("Payment succeeded!");
+          break;
+        case "processing":
+          setMessage("Your payment is processing.");
+          break;
+        case "requires_payment_method":
+          setMessage("Your payment was not successful, please try again.");
+          break;
+        default:
+          setMessage("Something went wrong.");
+          break;
+      }
+    });
+  }, [stripe, elements]);
+
+  const paymentElementOptions = {
+    layout: "tabs"
+  }
+
+  const handleSubmitPayment = async (e) => {
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const { paymentIntent, error } = await stripe.confirmPayment({
+        elements,
+        redirect: 'if_required'
+      });
+
+      // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+      //     payment_method: {
+      //         card: elements.getElement(CardElement),
+      //         billing_details: {
+      //             name: userDetails?.firstName ? userDetails?.firstName : "Admin" ,
+      //         },
+      //     },
+      // });
+
+      if (error) {
+        if (error.type === "card_error" || error.type === "validation_error") {
+          setMessage(error.message);
+        } else {
+          setMessage("An unexpected error occurred.");
+        }
+      } else {
+        // Payment was successful, you can access paymentIntent for confirmation data
+        console.log(paymentIntent, "paymentIntent");
+        handlebook(paymentIntent)
+        setPage(page + 1)
+        setMessage("Payment successful!");
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error confirming payment:", error);
+      setIsLoading(false);
+      // Handle error, display error message to user, etc.
+    }
+  };
+
   return (
     <>
       <div className="icons flex items-center">
@@ -81,7 +177,7 @@ const AddPayment = ({
         </div>
         <div className="md:col-span-3 lg:col-span-3 flex flex-col gap-5">
           <div className="text-3xl font-semibold">Payment Method</div>
-          <div className="rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">
+          {/*<div className="rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">
             <div className="text-xl font-semibold">Card Details</div>
             <div>Name on card</div>
             <div className="relative w-full">
@@ -174,16 +270,27 @@ const AddPayment = ({
                 Pay
               </button>
             </div>
+                  </div>*/}
+
+          <div id="payment-form" className='Payment'>
+            {/*<CardElement id="payment-element" options={paymentElementOptions} />*/}
+            <PaymentElement id="payment-element" options={paymentElementOptions} />
+
+            <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type='button'>
+              <span id="button-text">
+                {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
+              </span>
+            </button>
           </div>
 
-          <div className="flex justify-end">
+          {/* <div className="flex justify-end">
             <button
               className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
               onClick={() => handlebook()}
             >
               Schedule Event
             </button>
-          </div>
+                </div>*/}
         </div>
       </div>
     </>

@@ -461,3 +461,29 @@ export function generateCategorybyID(data) {
 
   return allcategory;
 }
+
+export function getTimeFromDate(date) {
+  const hours = String(date.getHours()).padStart(2, "0"); // Ensure two digits
+  const minutes = String(date.getMinutes()).padStart(2, "0"); // Ensure two digits
+  const time = `${hours}:${minutes}`;
+  return time;
+}
+
+export const SegmentArr = [
+  {
+    id: 1,
+    value: "Customer Who Haven't Purchased"
+  },
+  {
+    id: 2,
+    value: "Customer Who Have Purchased More Than Once"
+  },
+  {
+    id: 3,
+    value: "Abandoned Checkouts In The Last 30 Days"
+  },
+  // {
+  //   id: 4,
+  //   value: "Email Subscribers"
+  // }
+]

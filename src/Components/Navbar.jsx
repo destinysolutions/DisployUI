@@ -68,18 +68,18 @@ const Navbar = () => {
     setShowProfileBox(false);
   };
 
-  useEffect(() => {
-    const handleDocumentClick = () => {
-      setShowProfileBox(false);
-      setShowNotificationBox(false);
-    };
+  // useEffect(() => {
+  //   const handleDocumentClick = () => {
+  //     setShowProfileBox(false);
+  //     setShowNotificationBox(false);
+  //   };
 
-    document.addEventListener("click", handleDocumentClick);
+  //   document.addEventListener("click", handleDocumentClick);
 
-    return () => {
-      document.removeEventListener("click", handleDocumentClick);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("click", handleDocumentClick);
+  //   };
+  // }, []);
 
   //used for apply navigation
   const history = useNavigate();
@@ -128,7 +128,7 @@ const Navbar = () => {
                   onClick={handleNotificationClick}
                 />
                 {showNotificationBox && (
-                  <NavbarNotification />
+                  <NavbarNotification setShowNotificationBox={setShowNotificationBox}/>
                 )}
               </div>
               {/* Notification box end */}

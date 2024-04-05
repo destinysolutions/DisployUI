@@ -17,8 +17,8 @@ export const handleGetAllPlans = createAsyncThunk(
   }
 );
 
-export const handlePaymentIntegration = createAsyncThunk(
-  "Common/handlePaymentIntegration",
+export const handleTrialPlan = createAsyncThunk(
+  "Common/handleTrialPlan",
   async ({ config }, { rejectWithValue }) => {
     try {
       const response = await axios.request(config);
@@ -32,16 +32,14 @@ export const handlePaymentIntegration = createAsyncThunk(
 );
 
 
-
-
 const initialState = {
   loading: false,
   allPlans: [],
+  trial: [],
   error: null,
   data: null,
   message: "",
   status: null,
-  payment: ""
 };
 
 const CommonSlice = createSlice({
@@ -69,15 +67,15 @@ const CommonSlice = createSlice({
       state.message = action.payload?.message;
     });
 
-    builder.addCase(handlePaymentIntegration.pending, (state) => {
+    builder.addCase(handleTrialPlan.pending, (state) => {
       state.status = "loading";
     });
-    builder.addCase(handlePaymentIntegration.fulfilled, (state, action) => {
+    builder.addCase(handleTrialPlan.fulfilled, (state, action) => {
       state.status = "succeeded";
-      state.payment = action.payload;
+      state.trial = action.payload;
       state.message = action.payload?.message;
     });
-    builder.addCase(handlePaymentIntegration.rejected, (state, action) => {
+    builder.addCase(handleTrialPlan.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload.message;
       state.message = action.payload?.message;

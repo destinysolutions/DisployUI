@@ -18,7 +18,7 @@ import ScreenOTPModal from "./ScreenOTPModal";
 import { RiArrowDownSLine, RiDeleteBin5Line } from "react-icons/ri";
 import Footer from "../Footer";
 
-import { PAYMENT_INTENT_CREATE_REQUEST, SCREEN_DELETE_ALL, SCREEN_GROUP } from "../../Pages/Api";
+import { PAYMENT_INTENT_CREATE_REQUEST, SCREEN_DELETE_ALL, SCREEN_GROUP, stripePromise } from "../../Pages/Api";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -56,11 +56,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import PaymentDialog from "../Common/PaymentDialog";
 import { round } from "lodash";
 import { loadStripe } from "@stripe/stripe-js";
-import { handlePaymentIntegration } from "../../Redux/CommonSlice";
-
-
-const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
-
+import { handlePaymentIntegration } from "../../Redux/PaymentSlice";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -120,7 +116,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedComposition, setSelectedComposition] = useState({
     compositionName: "",
   });
-
+  const [discountCoupon, setDiscountCoupon] = useState("")
   const [showNewScreenGroupPopup, setShowNewScreenGroupPopup] = useState(false);
   const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
@@ -893,7 +889,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     const params = {
       "items": {
         "id": "0",
-        "amount": String(price * 100)
+        "amount": String(round(price * 100))
       }
     }
     const config = {
@@ -963,23 +959,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             */}
                     <div className="flex items-center justify-end">
+                   {/* {!user?.userDetails?.isRetailer && (
                       <button
-                        data-tip
-                        data-for="Purchase Screen"
-                        type="button"
-                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                         onClick={() => setOpenScreen(true)}
+                        className="sm:mx-2 xs:mx-1 flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                       >
-                        <BiSolidPurchaseTag className="p-1 px-2 text-4xl text-white hover:text-white" />
-                        <ReactTooltip
-                          id="Purchase Screen"
-                          place="bottom"
-                          type="warning"
-                          effect="solid"
-                        >
-                          <span>Purchase</span>
-                        </ReactTooltip>
+                        Purchase Screen
                       </button>
+                   )}*/}
                       {permissions.isSave && (
                         <button
                           data-tip
@@ -1319,9 +1306,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                     fill="#1C64F2"
                                   />
                                 </svg>
-                                <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
-                                  Loading...
-                                </span>
+
                               </div>
                             </td>
                           </tr>
@@ -1933,12 +1918,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           addScreen={addScreen}
           setAddScreen={setAddScreen}
           handlePay={handlePay}
+          setDiscountCoupon={setDiscountCoupon}
+          discountCoupon={discountCoupon}
         />
       )}
 
       {openPayment && clientSecret && (
         <Elements options={options} stripe={stripePromise}>
-          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} />
+          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Screen" PaymentValue={addScreen} />
         </Elements>
       )}
     </>

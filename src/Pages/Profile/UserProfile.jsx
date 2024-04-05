@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Account from "./Account";
 import Security from "./Security";
+import AdNotifications from "./AdNotifications"
 import BillingsPlans from "./Billings_&_Plans";
 import Notifications from "./Notifications";
 import Connection from "./Connection";
@@ -20,13 +21,16 @@ import { AiOutlineLink, AiOutlineUser } from "react-icons/ai";
 import { CiLock } from "react-icons/ci";
 import { BsSdCard } from "react-icons/bs";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
   UserProfile.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const [activeTab, setActiveTab] = useState("account");
+  const notification = useLocation().state;
+  const [activeTab, setActiveTab] = useState(notification !== null ? notification?.notificationData : "account");
   const data = [
     {
       label: "Account",
@@ -47,6 +51,12 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
     //   desc: <BillingsPlans />,
     //   icon: <BsSdCard />,
     // },
+    {
+      label: "Advertisement",
+      value: "ad-notifications",
+      desc: <AdNotifications sidebarOpen={sidebarOpen} />,
+      icon: <IoIosNotificationsOutline />,
+    },
     {
       label: "Notifications",
       value: "notifications",
@@ -82,11 +92,10 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
                     key={value}
                     value={value}
                     onClick={() => setActiveTab(value)}
-                    className={`${
-                      activeTab === value
-                        ? "text-white items-center rounded-full bg-primary"
-                        : ""
-                    } account-settings-tab-li lg:py-3 lg:px-4 py-2 px-2 w-auto border sm:text-sm border-primary rounded-full lg:mx-2 mx-1`}
+                    className={`${activeTab === value
+                      ? "text-white items-center rounded-full bg-primary"
+                      : ""
+                      } account-settings-tab-li lg:py-3 lg:px-4 py-2 px-2 w-auto border sm:text-sm border-primary rounded-full lg:mx-2 mx-1`}
                   >
                     <div className="flex items-center sm:text-sm">
                       <span className="lg:mr-2 mr-1 lg:text-xl text-lg">

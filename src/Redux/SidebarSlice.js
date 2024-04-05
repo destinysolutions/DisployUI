@@ -17,8 +17,8 @@ const initialState = {
 export const getMenuAll = createAsyncThunk('data/fetchApiData', async (payload, thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
-    const getRole = JSON.parse(localStorage.getItem("userID"))
-    const queryParams = new URLSearchParams({ RoleID: getRole.userRole }).toString();
+    const user = thunkAPI.getState().root.auth.user;
+    const queryParams = new URLSearchParams({ RoleID: user?.userRole }).toString();
     const response = await axios.get(`${GET_SIDEBAR_MENU}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` } });
     return response.data;
   } catch (error) {

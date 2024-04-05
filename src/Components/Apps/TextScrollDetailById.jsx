@@ -22,7 +22,7 @@ import { connection } from "../../SignalR";
 import { socket } from "../../App";
 
 const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token } = useSelector((state) => state.root.auth);
+  const { token ,user} = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [scrollType, setScrollType] = useState([]);
@@ -61,7 +61,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
       textScroll_Id: id,
       text: text,
       scrollType: selectedScrollType,
-      userID: JSON.parse(window.localStorage.getItem("userID"))?.userID,
+      userID: user?.userID,
       operation: "Update",
     });
 

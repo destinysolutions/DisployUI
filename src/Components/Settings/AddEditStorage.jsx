@@ -4,7 +4,7 @@ import React from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
 
-const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay }) => {
+const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, setDiscountCoupon, discountCoupon }) => {
 
 
     return (
@@ -56,6 +56,37 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay }) =
                                             value={round((addStorage * 0.05), 2)}
                                         />
                                         <span>$</span>
+                                    </div>
+                                </div>
+                                <div className='flex items-center justify-evenly'>
+                                    <div className='flex items-center gap-1'>
+                                        <input
+                                            type='text'
+                                            placeholder='Discount Coupon'
+                                            className="relative border border-black rounded-md p-2 w-48"
+                                            onChange={(e) => setDiscountCoupon(e.target.value)}
+                                            value={discountCoupon}
+                                        />
+                                        <button
+                                            className="bg-primary text-white text-base px-5 py-2 border border-primary shadow-md rounded-full "
+                                            type="button"
+                                        >
+                                            Verify
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className='flex justify-end items-center gap-4'>
+                                    <div className='mt-3'>
+                                        <label>Total Price:</label>
+                                    </div>
+                                    <div className='border-t border-black dark:border-gray-600'>
+                                        <input
+                                            type='text'
+                                            placeholder='Total Price'
+                                            className="relative border border-black rounded-md p-2 w-36 mt-3"
+                                            disabled
+                                            value={round((addStorage * 0.05), 2)}
+                                        />
                                     </div>
                                 </div>
                             </div>

@@ -405,9 +405,6 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                             fill="#1C64F2"
                           />
                         </svg>
-                        <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
-                          Loading...
-                        </span>
                       </div>
                     ) : instanceData.length > 0 ? (
                       <div className="grid grid-cols-12 gap-4 mt-5">

@@ -22,6 +22,7 @@ import ManageUserSlice from "./admin/ManageUserSlice";
 import AdvertisementSlice from "./admin/AdvertisementSlice";
 import CommonSlice from "./CommonSlice";
 import NotificationSlice from "./NotificationSlice";
+import PaymentSlice from "./PaymentSlice";
 // const rootPersistConfig = {
 //   key: "root",
 //   storage,
@@ -61,7 +62,8 @@ const rootReducer = combineReducers({
   ManageUser: ManageUserSlice,
   advertisementData: AdvertisementSlice,
   common: CommonSlice,
-  notification: NotificationSlice
+  notification: NotificationSlice,
+  payment:PaymentSlice
 });
 
 const persisteRoot = rootReducer;

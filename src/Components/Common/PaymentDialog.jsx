@@ -4,11 +4,16 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom';
 import "../../Styles/PaymentModal.css"
 import { useSelector } from 'react-redux';
+import { PAYMENT_DETAILS } from '../../Pages/Api';
+import { useDispatch } from 'react-redux';
+import { handlePaymentDetails } from '../../Redux/PaymentSlice';
 
-const PaymentDialog = ({ togglePaymentModal, clientSecret }) => {
+const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue }) => {
 
     const { user, userDetails } = useSelector((state) => state.root.auth);
-    console.log('user', user)
+    const { token } = useSelector((s) => s.root.auth);
+    const authToken = `Bearer ${token}`;
+    const dispatch = useDispatch()
     const stripe = useStripe();
     const elements = useElements();
     const navigation = useNavigate()
@@ -64,9 +69,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret }) => {
         try {
             const { paymentIntent, error } = await stripe.confirmPayment({
                 elements,
-                confirmParams: {
-                    return_url: "https://disploy-react.vercel.app/",
-                },
+                redirect: 'if_required'
             });
 
             // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
@@ -86,12 +89,34 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret }) => {
                 }
             } else {
                 // Payment was successful, you can access paymentIntent for confirmation data
-                console.log(paymentIntent, "paymentIntent");
                 setMessage("Payment successful!");
+
+                let params = {
+                    ...paymentIntent,
+                    PaymentType: type,
+                    PaymentValue: PaymentValue,
+                    organizationId:user?.organizationId
+                }
+                console.log('params', params)
+
+                const config = {
+                    method: "post",
+                    maxBodyLength: Infinity,
+                    url: PAYMENT_DETAILS,
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: authToken,
+                    },
+                    data: JSON.stringify(params),
+                }
+                dispatch(handlePaymentDetails({ config })).then((res) => {
+                    if(res?.payload?.status){
+                        navigation("/dashboard"); // Navigate to dashboard after processing payment
+                    }
+                })
             }
 
             setIsLoading(false);
-            navigation("/dashboard"); // Navigate to dashboard after processing payment
         } catch (error) {
             console.error("Error confirming payment:", error);
             setIsLoading(false);

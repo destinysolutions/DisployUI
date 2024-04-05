@@ -6,16 +6,12 @@ import { GrAddCircle } from "react-icons/gr";
 import { FaCodePullRequest } from "react-icons/fa6";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { ADD_STORAGE, PAYMENT_INTENT_CREATE_REQUEST } from "../../Pages/Api";
+import { ADD_STORAGE, PAYMENT_INTENT_CREATE_REQUEST, stripePromise } from "../../Pages/Api";
 import AddEditStorage from "./AddEditStorage";
 import PaymentDialog from "../Common/PaymentDialog";
-import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { round } from "lodash";
-import { handlePaymentIntegration } from "../../Redux/CommonSlice";
-
-const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
-
+import { handlePaymentIntegration } from "../../Redux/PaymentSlice";
 
 const Storagelimit = () => {
   const { token, user } = useSelector((state) => state.root.auth);
@@ -27,9 +23,9 @@ const Storagelimit = () => {
   const dispatch = useDispatch();
   const [openStorage, setOpenStorage] = useState(false)
   const [openPayment, setOpenPayment] = useState(false)
-  const [addStorage, setAddStorage] = useState(2)
+  const [addStorage, setAddStorage] = useState(20)
+  const [discountCoupon,setDiscountCoupon] = useState("")
   const [clientSecret, setClientSecret] = useState("");
-  console.log('clientSecret', clientSecret)
   const appearance = {
     theme: 'stripe',
   };
@@ -92,10 +88,9 @@ const Storagelimit = () => {
     const params = {
       "items": {
         "id": "0",
-        "amount": String(price * 100)
+        "amount": String(round(price * 100))
       }
     }
-    console.log('params', params)
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -150,6 +145,11 @@ const Storagelimit = () => {
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Used in Percentage
                   </th>
+                  {user?.userDetails?.isRetailer && (
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Increase Storage
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -193,18 +193,62 @@ const Storagelimit = () => {
                   <td className="text-center">
                     {storageDegtails?.usedInPercentage} %
                   </td>
-
+                  {user?.userDetails?.isRetailer &&(
+                    <td className="text-center">
+                      {increaseStorage ? (
+                        <div className="flex justify-center items-center">
+                          <input
+                            type="number"
+                            minLength={2}
+                            className="border border-[#5E5E5E] w-12 h-8 rounded"
+                            onChange={(e) => {
+                              let value = e.target.value.trim();
+                              if (value.length > 2) {
+                                toast.error("Please enter only two characters.");
+                                e.target.value = value.slice(0, 2);
+                                return;
+                              }
+                              setStorageValue(value);
+                            }}
+                          />
+                          <div className="flex items-center ">
+                            <label className="ml-2 text-xl"> GB</label>
+                            <button onClick={() => handleSave()}>
+                              <FaCodePullRequest className="text-3xl ml-4 border border-[#E4E6FF] p-1 rounded bg-[#E4E6FF] text-[#5E5E5E]" />
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          {storageDegtails?.isRquested == 1 || request ? (
+                            <span className="text-[#BC7100] bg-[#FFF2DE] px-3 py-2 rounded">
+                              Pending
+                            </span>
+                          ) : (
+                            <button
+                              className="flex items-center justify-center w-full"
+                              onClick={() => setIncreaseStorage(true)}
+                            >
+                              <GrAddCircle className="text-2xl" />
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </td>
+                  )}
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-
-        <div className="flex justify-center items-center mt-10">
-          <button className="flex items-center border-primary border rounded-full lg:pr-3 sm:px-5 py-3 text-sm px-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" onClick={() => setOpenStorage(true)}>
-            Buy More Space
-          </button>
-        </div>
+       {/* {!user?.userDetails?.isRetailer && (
+          <div className="flex justify-center items-center mt-10">
+            <button className="flex items-center border-primary border rounded-full lg:pr-3 sm:px-5 py-3 text-sm px-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" 
+            onClick={() => setOpenStorage(true)}>
+              Buy More Space
+            </button>
+          </div>
+       )}*/}
       </div>
       {openStorage && (
         <AddEditStorage
@@ -212,12 +256,14 @@ const Storagelimit = () => {
           addStorage={addStorage}
           setAddStorage={setAddStorage}
           handlePay={handlePay}
+          setDiscountCoupon={setDiscountCoupon}
+          discountCoupon={discountCoupon}
         />
       )}
 
       {openPayment && clientSecret && (
         <Elements options={options} stripe={stripePromise}>
-          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} />
+          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Storage" PaymentValue={addStorage} />
         </Elements>
       )}
     </>

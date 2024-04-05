@@ -43,12 +43,12 @@ const AddSuppliarPlan = ({ setPlanModal, planModel, planDetail, setPlanDetail, h
                                         <input type='text' placeholder='Enter Cost' name="totalscreen" className="formInput" value={planDetail?.cost} onChange={(e) => setPlanDetail({ ...planDetail, cost: e.target.value })} />
                                     </div>
                                 </div>
-                                <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
+                              {/*  <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
                                     <div className="flex flex-row items-center gap-3">
                                         <input type='checkbox' placeholder='Enter Cost' name="active" checked={planDetail?.isActive} onChange={(e) => setPlanDetail({ ...planDetail, isActive: e.target.checked })} />
                                         <label>Active</label>
                                     </div>
-                                </div>
+                                    </div>*/}
                             </div>
 
                             <div className="flex items-center justify-center p-2 md:p-2 border-t border-gray-200 rounded-b dark:border-gray-600 gap-2">

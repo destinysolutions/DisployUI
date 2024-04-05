@@ -17,6 +17,20 @@ export const handleGetAllNotifications = createAsyncThunk(
     }
   );
 
+  export const handleGetAllRemoveNotifications = createAsyncThunk(
+    "Common/handleGetAllRemoveNotifications",
+    async ({ config }, { rejectWithValue }) => {
+      try {
+        const response = await axios.request(config);
+        return response.data;
+      } catch (error) {
+        if (error?.response) {
+          return rejectWithValue(error?.response?.data);
+        }
+      }
+    }
+  );
+
 
   
 const initialState = {
@@ -49,6 +63,20 @@ const initialState = {
         state.message = action.payload?.message;
       });
       builder.addCase(handleGetAllNotifications.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload.message;
+        state.message = action.payload?.message;
+      });
+
+      builder.addCase(handleGetAllRemoveNotifications.pending, (state) => {
+        state.status = "loading";
+      });
+      builder.addCase(handleGetAllRemoveNotifications.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.allNotifications = action.payload;
+        state.message = action.payload?.message;
+      });
+      builder.addCase(handleGetAllRemoveNotifications.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload.message;
         state.message = action.payload?.message;
