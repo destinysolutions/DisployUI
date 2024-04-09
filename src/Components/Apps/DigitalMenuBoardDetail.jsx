@@ -22,7 +22,7 @@ import DigitalMenuAssets from './DigitalMenuAssets';
 import { ADD_EDIT_DIGITAL_MENU, GET_DIGITAL_MENU_BY_ID, POS_ITEM_LIST } from '../../Pages/Api';
 import Swal from 'sweetalert2';
 import { HiOutlineViewList } from 'react-icons/hi';
-import { generateAllCategory, generateCategorybyID } from '../Common/Common';
+import { chunkArray, generateAllCategory, generateCategorybyID } from '../Common/Common';
 import Loading from '../Loading';
 
 const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
@@ -68,6 +68,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [firstCategory, setFirstCategory] = useState(0);
   const [showCustomizemodal, setShowCustomizemodal] = useState(false);
   const [dragStartForDivToDiv, setDragStartForDivToDiv] = useState(false);
+  const [PreviewData,setPreviewData] = useState([])
   const [addCategory, setAddCategory] = useState([{
     categoryname: "UNNAMED CATEGORY",
     allItem: [{
@@ -81,8 +82,48 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }],
     show: false
   }])
-  console.log('addCategory', addCategory)
 
+
+  useEffect(() => {
+    console.log('customizeData', customizeData)
+    let allData = []
+    addCategory?.map((item) => {
+      let arr = [];
+      console.log('item', item)
+      if (customizeData?.EachPage === "auto") {
+        let obj ={
+          categoryname: item?.categoryname,
+          show: item?.show,
+          categoryID: item?.categoryID,
+          digitalMenuAppId: item?.digitalMenuAppId,
+          list:item?.allItem
+        }
+        arr?.push(obj)
+      } else {
+      const  filterarr = chunkArray(item?.allItem, parseInt(customizeData?.EachPage));
+        let allArray =[]
+        filterarr?.map((data)=>{
+          let obj ={
+            categoryname: item?.categoryname,
+            show: item?.show,
+            categoryID: item?.categoryID,
+            digitalMenuAppId: item?.digitalMenuAppId,
+            list:data
+          }
+          allArray?.push(obj)
+        })
+        arr = allArray
+      }
+      let obj = {
+        ...item,
+        allItem: arr
+      };
+      allData?.push(obj)
+    })
+    setPreviewData(allData)
+    console.log('allData', allData)
+
+  }, [addCategory, customizeData])
 
   const handleOnSaveInstanceName = (e) => {
     if (!instanceName.replace(/\s/g, "").length) {
@@ -1074,7 +1115,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           )}
           {showPreviewPopup && (
-            <DigitalMenuPreview customizeData={customizeData} addCategory={addCategory} />
+            <DigitalMenuPreview customizeData={customizeData} PreviewData={PreviewData} />
           )}
         </div>
       </div>

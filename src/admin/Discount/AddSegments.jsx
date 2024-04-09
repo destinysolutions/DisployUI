@@ -1,7 +1,8 @@
 import React from 'react'
 import { AiOutlineCloseCircle, AiOutlineSearch } from 'react-icons/ai'
 import { SegmentArr } from "../../Components/Common/Common"
-const AddSegments = ({ togglemodal, segment, setSegment, handleBrowser }) => {
+const AddSegments = ({ togglemodal, segment, setSegment, handleBrowser, allSegment }) => {
+
     return (
         <>
             <div
@@ -37,10 +38,10 @@ const AddSegments = ({ togglemodal, segment, setSegment, handleBrowser }) => {
 
                                     />
                                 </div>
-                                {SegmentArr?.map((item, index) => {
+                                {allSegment?.map((item, index) => {
                                     return (
                                         <label className="flex items-center cursor-pointer text-lg" key={index}>
-                                            <input type='checkbox' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setSegment(item?.value)} value={segment === item?.value} />{item?.value}
+                                            <input type='checkbox' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setSegment(item?.customerSegmentsID)} value={segment === item?.customerSegmentsID} />{item?.segments}
                                         </label>
                                     )
                                 })}

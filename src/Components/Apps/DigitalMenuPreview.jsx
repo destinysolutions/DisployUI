@@ -8,13 +8,15 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
-const DigitalMenuPreview = ({ customizeData, addCategory }) => {
+const DigitalMenuPreview = ({ customizeData, PreviewData }) => {
     const progressCircle = useRef(null);
     const progressContent = useRef(null);
     const onAutoplayTimeLeft = (s, time, progress) => {
         progressCircle.current.style.setProperty('--progress', 1 - progress);
         progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
     };
+
+    console.log('PreviewData', PreviewData)
     return (
         <>
             <div className="mt-6">
@@ -32,44 +34,54 @@ const DigitalMenuPreview = ({ customizeData, addCategory }) => {
                             onAutoplayTimeLeft={onAutoplayTimeLeft}
                             className="mySwiper"
                         >
-                            {addCategory?.map((category) => {
+                            {PreviewData?.map((category) => {
                                 return (
-                                    <SwiperSlide>
-                                        <div>
-                                            <div className='flex justify-between items-center border-b border-black'>
-                                                <span>
-                                                    {category?.show ? category?.categoryname : ""}
-                                                </span>
-                                                <img src={digitalMenuLogo} className='mb-2 w-36 h-36' />
-                                            </div>
-                                            <div className='mt-2 grid grid-cols-12 gap-4'>                                                
-                                                    {category?.allItem?.map((item) => {
-                                                        return (
-                                                            <div className='lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-6 '>
-                                                                <div className="p-4 border border-gray-300 rounded-md h-full">
-                                                                    <div className='flex justify-center'>
-                                                                        {item?.image ? (
-                                                                            <img src={item?.image?.assetFolderPath} className='w-36 h-36' />
-                                                                        ) : (
-                                                                            <img src={digitalMenuLogo} className='w-36 h-36' />
-                                                                        )}
-                                                                    </div>
+                                    <div>
+                                        {category?.allItem?.map((cate) => {
+                                            return (
+                                                <>
+                                                    <SwiperSlide>
+                                                        <div className='flex justify-between items-center border-b border-black'>
+                                                            <span>
+                                                                {category?.show ? category?.categoryname : ""}
+                                                            </span>
+                                                            <img src={digitalMenuLogo} className='mb-2 w-36 h-36' />
+                                                        </div>
+                                                        <div className='mt-2 grid grid-cols-12 gap-4'>
+                                                            {cate?.list?.map((item, index) => {
+                                                                return (
+                                                                    <>
+                                                                        <div className='lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-6 '>
+                                                                            <div className="p-4 border border-gray-300 rounded-md h-full">
+                                                                                <div className='flex justify-center'>
+                                                                                    {item?.image ? (
+                                                                                        <img src={item?.image?.assetFolderPath} className='w-36 h-36' />
+                                                                                    ) : (
+                                                                                        <img src={digitalMenuLogo} className='w-36 h-36' />
+                                                                                    )}
+                                                                                </div>
 
-                                                                    <div className='flex justify-between gap-3 mx-5'>
-                                                                        <span>
-                                                                            {item?.name}
-                                                                        </span>
-                                                                        <span>
-                                                                            {item?.price}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    })}
-                                            </div>
-                                        </div>
-                                    </SwiperSlide>
+                                                                                <div className='flex justify-between gap-3 mx-5'>
+                                                                                    <span>
+                                                                                        {item?.name}
+                                                                                    </span>
+                                                                                    <span>
+                                                                                        {item?.price}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </>
+                                                                )
+                                                            })
+                                                            }
+                                                        </div>
+                                                    </SwiperSlide>
+                                                </>
+                                            )
+                                        })}
+
+                                    </div>
                                 )
                             })}
                             <div className="autoplay-progress" slot="container-end">

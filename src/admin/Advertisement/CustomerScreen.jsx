@@ -1,7 +1,7 @@
 import React from 'react'
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
-const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChange, loading, sortedAndPaginatedData, currentPage, totalPages, selectAllChecked, handleSelectAllCheckboxChange, selectedItems, handleScreenCheckboxChange,HandleSave }) => {
+const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChange, loading, sortedAndPaginatedData, currentPage, totalPages, selectAllChecked, handleSelectAllCheckboxChange, selectedItems, handleScreenCheckboxChange, HandleSave ,sidebarOpen}) => {
     return (
         <>
             <div
@@ -99,7 +99,7 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                                                     fill="#1C64F2"
                                                                 />
                                                             </svg>
-                                                            
+
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -125,7 +125,7 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                                             sortedAndPaginatedData?.length > 0 &&
                                                             sortedAndPaginatedData.map((screen, index) => {
                                                                 return (
-                                                                    <tr key={index} className='cursor-pointer'  onClick={() => handleScreenCheckboxChange(screen.organizationID)} >
+                                                                    <tr key={index} className='cursor-pointer' onClick={() => handleScreenCheckboxChange(screen.organizationID)} >
                                                                         <td className="text-[#5E5E5E]">
                                                                             <div className="flex">
                                                                                 <input
@@ -180,58 +180,67 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="flex justify-end p-5">
-                                    <button
-                                        onClick={() => handlePageChange(currentPage - 1)}
-                                        disabled={currentPage === 1}
-                                        className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                    >
-                                        <svg
-                                            className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                                            aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 14 10"
-                                        >
-                                            <path
-                                                stroke="currentColor"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M13 5H1m0 0 4 4M1 5l4-4"
-                                            />
-                                        </svg>
-                                        {/* Previous */}
-                                    </button>
-                                    {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
-                                    <button
-                                        onClick={() => handlePageChange(currentPage + 1)}
-                                        disabled={(currentPage === totalPages) || (customerList?.allCustomer?.length === 0) }
-                                        className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                    >
-                                        {/* Next */}
-                                        <svg
-                                            className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                                            aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 14 10"
-                                        >
-                                            <path
-                                                stroke="currentColor"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M1 5h12m0 0L9 1m4 4L9 9"
-                                            />
-                                        </svg>
-                                    </button>
+
+                                <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+                                <div className="flex items-center">
+                                  <span className="text-gray-500">{`Total ${customerList?.allCustomer?.length} Customers`}</span>
                                 </div>
+                                <div className="flex justify-end">
+                                  <button
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
+                                  >
+                                    <svg
+                                      className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                                      aria-hidden="true"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 14 10"
+                                    >
+                                      <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M13 5H1m0 0 4 4M1 5l4-4"
+                                      />
+                                    </svg>
+                                    {sidebarOpen ? "Previous" : ""}
+                                  </button>
+                                  <div className="flex items-center me-3">
+                                    <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                                  </div>
+                                  {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                                  <button
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={(currentPage === totalPages) || (customerList?.allCustomer?.length === 0)}
+                                    className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
+                                  >
+                                    {sidebarOpen ? "Next" : ""}
+                                    <svg
+                                      className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                                      aria-hidden="true"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 14 10"
+                                    >
+                                      <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M1 5h12m0 0L9 1m4 4L9 9"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </div>
                             </div>
                             <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
                                 <button
                                     className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
-                                    onClick={()=> HandleSave()}
+                                    onClick={() => HandleSave()}
                                 >
                                     Save
                                 </button>

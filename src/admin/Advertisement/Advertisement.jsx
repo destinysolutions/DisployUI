@@ -615,6 +615,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
           HandleSave={HandleSave}
           selectedItems={selectedItems}
           handleScreenCheckboxChange={handleScreenCheckboxChange}
+          sidebarOpen={sidebarOpen}
         />
       )}
       {showSelectMarginModal && (

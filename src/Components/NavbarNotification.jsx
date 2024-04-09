@@ -65,7 +65,7 @@ const NavbarNotification = ({ setShowNotificationBox }) => {
     return (
         <>
             <div className="absolute top-[50px] right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg notificationpopup">
-                {notification?.length > 0 && (
+                {!loading && notification?.length > 0 && (
                     <div className='flex items-center justify-end px-5 pt-4'>
                         <p className='underline text-gray-600 cursor-pointer' onClick={() => handleRemoveNotification()}>Clear All Notification</p>
                     </div>

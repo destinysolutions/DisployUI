@@ -3,11 +3,18 @@ import { IoIosArrowBack } from 'react-icons/io'
 import { getTimeFromDate } from '../../Components/Common/Common';
 import AddSegments from './AddSegments';
 import Select from "react-select";
-const FeatureDiscount = ({ discount, setDiscount }) => {
+import { handleAddEditDiscount } from '../../Redux/AdminSettingSlice';
+import { ADD_EDIT_DISCOUNT } from '../../Pages/Api';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+const FeatureDiscount = ({ discount, setDiscount, allSegment }) => {
+  const { token } = useSelector((s) => s.root.auth);
+  const dispatch = useDispatch()
+  const authToken = `Bearer ${token}`;
   const [activeTab, setActiveTab] = useState(0);
-  const [method, setMethod] = useState(0)
-  const [purchase, setPurchase] = useState(1)
-  const [maximumDiscount, setMaximumDiscount] = useState(0)
+  const [method, setMethod] = useState("Discount Code")
+  const [purchase, setPurchase] = useState("Minimum Purchase Amount ($)")
+  const [maximumDiscount, setMaximumDiscount] = useState("Limit Number Of Times This Discount Can Be Used in Total")
   const [shipping, setShipping] = useState(false)
   const [selectEnd, setSelectEnd] = useState(false)
   const [discountCode, setDiscountCode] = useState("")
@@ -15,6 +22,8 @@ const FeatureDiscount = ({ discount, setDiscount }) => {
   const [purchaseAmount, setPurchaseAmount] = useState("")
   const [amount, setAmount] = useState("")
   const [openBrowser, setOpenBrowser] = useState(false)
+  const [purchaseItems, setPurchaseItems] = useState("")
+  const [maximumValue, setMaximumValue] = useState("")
   const [date, setDate] = useState({
     startDate: new Date().toISOString().split('T')[0],
     endDate: new Date().toISOString().split('T')[0],
@@ -34,8 +43,55 @@ const FeatureDiscount = ({ discount, setDiscount }) => {
     togglemodal()
   }
 
+  const generateDiscountCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 8; i++) {
+      code += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    setDiscountCode(code);
+  };
+
+
   const handleSave = () => {
-    setDiscount("")
+    const Params = {
+      DiscountType: discount,
+      method: method,
+      discountCode: discountCode,
+      PercentageValue: activeTab === 0 ? amount : "",
+      FixedValue: activeTab === 1 ? amount : "",
+      MinimumPurchase: purchase,
+      PurchaseAmount: purchaseAmount,
+      PurchaseItems: purchaseItems,
+      // Customer: customer,
+      CustomerSegmentID: segment,
+      MaximumDiscountUses: maximumDiscount,
+      MaximumDiscount: maximumValue,
+      Combinations: shipping,
+      StartDate: date?.startDate,
+      StartTime: date?.startTime,
+      ActiveEndDate: selectEnd,
+      EndDate: date?.endDate,
+      EndTime: date?.endTime,
+      FeatureList :""
+    }
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: ADD_EDIT_DISCOUNT,
+      headers: {
+        Authorization: authToken,
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify(Params),
+    };
+    dispatch(handleAddEditDiscount({ config })).then((res) => {
+      if (res?.payload?.data) {
+        setDiscount("")
+      }
+    }).catch((error) => {
+      console.log('error', error)
+    })
   }
 
   return (
@@ -73,19 +129,19 @@ const FeatureDiscount = ({ discount, setDiscount }) => {
               <div className="p-4">
                 <h1 className="font-medium text-xl mb-3"> Method </h1>
                 <div className="flex items-center mb-3">
-                  <input id="radio1" type="radio" name="radio" className="hidden" defaultChecked="" />
-                  <label htmlFor="radio1" className="flex items-center cursor-pointer text-xl">
-                    <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={(e) => setMethod(0)} checked={method === 0} />
+                <input id="radio1" type="radio" name="radio" className="hidden" defaultChecked="" />
+                <label htmlFor="radio1" className="flex items-center cursor-pointer text-xl">
+                    <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={(e) => setMethod("Discount Code")} checked={method === "Discount Code"} />
                     Discount Code
-                  </label>
-                </div>
-                <div className="flex items-center mb-3">
-                  <input id="radio2" type="radio" name="radio" className="hidden" />
-                  <label htmlFor="radio2" className="flex items-center cursor-pointer text-xl">
-                    <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={(e) => setMethod(1)} checked={method === 1} />
+                </label>
+            </div>
+            <div className="flex items-center mb-3">
+                <input id="radio2" type="radio" name="radio" className="hidden" />
+                <label htmlFor="radio2" className="flex items-center cursor-pointer text-xl">
+                    <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={(e) => setMethod('Automatic Discount')} checked={method === "Automatic Discount"} />
                     Automatic Discount
-                  </label>
-                </div>
+                </label>
+            </div>
                 <div className="flex items-center mb-3">
                   <div className="w-full md:w-1/2 inputDiv relative">
                     <label className="label_top text-xs">Discount Code</label>
@@ -95,13 +151,15 @@ const FeatureDiscount = ({ discount, setDiscount }) => {
                       placeholder='Welcome20'
                       type="text"
                       value={discountCode}
-                      onChange={(e) => setDiscountCode(e.target.value)}
+                      disabled
+                    // onChange={(e) => setDiscountCode(e.target.value)}
                     />
                   </div>
                   <div className="w-full md:w-1/2 px-3 mt-5">
                     <button
                       className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                       type="button"
+                      onClick={generateDiscountCode}
                     >
                       Generate
                     </button>
@@ -136,7 +194,7 @@ const FeatureDiscount = ({ discount, setDiscount }) => {
               <div className="flex items-center mb-3">
                 <label htmlFor="radio3" className="flex items-center cursor-pointer text-xl w-full">
                   <Select
-                  className='w-80'
+                    className='w-80'
                     // value={selectedScreens}
                     // onChange={handleSelectChange}
                     // options={Screenoptions}
@@ -149,53 +207,58 @@ const FeatureDiscount = ({ discount, setDiscount }) => {
 
 
             <div className="border border-light-blue rounded-xl mb-4 p-4">
-              <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3">Minimum Purchase Requirement </h1>
-              <div className="flex items-center mb-3">
+            <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3">Minimum Purchase Requirement </h1>
+            <div className="flex items-center mb-3">
                 <label htmlFor="radio3" className="flex items-center cursor-pointer text-xl">
-                  <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase(0)} checked={purchase === 0} />No Minimum Requirement
+                    <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase('No Minimum Requirement')} checked={purchase === "No Minimum Requirement"} />No Minimum Requirement
                 </label>
-              </div>
-              <div className="flex items-center mb-3">
+            </div>
+            <div className="flex items-center mb-3">
                 <input id="radio4" type="radio" name="radio" className="hidden" />
                 <label htmlFor="radio4" className="flex items-center cursor-pointer text-xl">
-                  <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase(1)} checked={purchase === 1} />Minimum Purchase Amount ($)
+                    <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase("Minimum Purchase Amount ($)")} checked={purchase === "Minimum Purchase Amount ($)"} />Minimum Purchase Amount ($)
                 </label>
-              </div>
-              {purchase === 1 && (
+            </div>
+            {purchase === "Minimum Purchase Amount ($)" && (
                 <div className="flex items-center mb-3">
-                  <input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="$ 0.00" onChange={(e) => setPurchaseAmount(e.target.value)} value={[purchaseAmount]} />
+                    <input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="$ 0.00" onChange={(e) => setPurchaseAmount(e.target.value)} value={purchaseAmount} />
                 </div>
-              )}
-              <div className="flex items-center">
+            )}
+            <div className={`flex items-center ${purchase === "Minimum Quantity Of Items" ? "mb-3" : ""}`}>
                 <input id="radio5" type="radio" name="radio" className="hidden" />
                 <label htmlFor="radio5" className="flex items-center cursor-pointer text-xl">
-                  <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase(2)} checked={purchase === 2} />
-                  Minimum Quantity Of Items
+                    <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase("Minimum Quantity Of Items")} checked={purchase === "Minimum Quantity Of Items"} />
+                    Minimum Quantity Of Items
                 </label>
-              </div>
             </div>
+            {purchase === "Minimum Quantity Of Items" && (
+                <div className="flex items-center mb-3">
+                    <input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="Enter Items" onChange={(e) => setPurchaseItems(e.target.value)} value={purchaseItems} />
+                </div>
+            )}
+        </div>
 
 
-            <div className="border border-light-blue rounded-xl mb-4 p-4">
-              <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3">Maximum Discount Uses </h1>
-              <div className="flex items-center mb-3">
-                <label className="checkbox flex items-center gap-1" htmlFor="screen1">
-                  <input type="checkbox" className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" id="screen1" onChange={() => setMaximumDiscount(0)} checked={maximumDiscount === 0} />
-                  <div className="checkbox__indicator"></div>
-                  <span className="checkbox__label">Limit Number Of Times This Discount Can Be Used in Total</span>
-                </label>
-              </div>
-              {maximumDiscount === 0 && (
-                <div className="flex items-center mb-3"><input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="Maximum Discount" /></div>
-              )}
-              <div className="flex items-center">
-                <label className="checkbox flex items-center gap-1 cursor-pointer" htmlFor="screen2">
-                  <input type="checkbox" className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" id="screen2" onChange={() => setMaximumDiscount(1)} checked={maximumDiscount === 1} />
-                  <div className="checkbox__indicator"></div>
-                  <span className="checkbox__label">Limit To One Use Per Customer</span>
-                </label>
-              </div>
-            </div>
+        <div className="border border-light-blue rounded-xl mb-4 p-4">
+        <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3">Maximum Discount Uses </h1>
+        <div className="flex items-center mb-3">
+            <label className="checkbox flex items-center gap-1" htmlFor="screen1">
+                <input type="checkbox" className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" id="screen1" onChange={() => setMaximumDiscount("Limit Number Of Times This Discount Can Be Used in Total")} checked={maximumDiscount === "Limit Number Of Times This Discount Can Be Used in Total"} />
+                <div className="checkbox__indicator"></div>
+                <span className="checkbox__label">Limit Number Of Times This Discount Can Be Used in Total</span>
+            </label>
+        </div>
+        {maximumDiscount === "Limit Number Of Times This Discount Can Be Used in Total" && (
+            <div className="flex items-center mb-3"><input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="Maximum Discount" onChange={(e)=> setMaximumValue(e.target.value) } value={maximumValue} /></div>
+        )}
+        <div className="flex items-center">
+            <label className="checkbox flex items-center gap-1 cursor-pointer" htmlFor="screen2">
+                <input type="checkbox" className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" id="screen2" onChange={() => setMaximumDiscount("Limit To One Use Per Customer")} checked={maximumDiscount === "Limit To One Use Per Customer"} />
+                <div className="checkbox__indicator"></div>
+                <span className="checkbox__label">Limit To One Use Per Customer</span>
+            </label>
+        </div>
+    </div>
             <div className="border border-light-blue rounded-xl mb-4 p-4">
               <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-2"> Combinations </h1>
               <p className="mb-2"><strong>Welcome20 Can Be Combined With:</strong></p>
@@ -277,7 +340,7 @@ const FeatureDiscount = ({ discount, setDiscount }) => {
       </div>
 
       {openBrowser && (
-        <AddSegments togglemodal={togglemodal} setSegment={setSegment} segment={segment} handleBrowser={handleBrowser} />
+        <AddSegments togglemodal={togglemodal} setSegment={setSegment} segment={segment} handleBrowser={handleBrowser} allSegment={allSegment} />
       )}
     </>
   )

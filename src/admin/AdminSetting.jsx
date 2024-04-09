@@ -211,7 +211,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
 
               {STabs === 9 && (
                 <div>
-                  <Discount />
+                  <Discount sidebarOpen={sidebarOpen}/>
                 </div>
               )}
               {STabs === 10 && (

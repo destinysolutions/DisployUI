@@ -142,7 +142,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
         </div>
       </div>
       <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 mb-5 m-1">
-        <h3 className="user-name mb-4">Credi &amp; Debit Cards</h3>
+        <h3 className="user-name mb-4">Credit &amp; Debit Cards</h3>
         <form className="w-full space-y-6" action="">
           <div className="mb-5">
             <input

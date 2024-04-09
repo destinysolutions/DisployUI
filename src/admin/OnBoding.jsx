@@ -278,24 +278,24 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
                               </td>
                               <td className="px-6 py-4 capitalize">
-                                <span>
-                                  {item?.isActive ? (
-                                    <span
-                                      style={{ backgroundColor: "#cee9d6" }}
-                                      className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                    >
-                                      Active
-                                    </span>
-                                  ) : (
-                                    <span
-                                      style={{ backgroundColor: "#cee9d6" }}
-                                      className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                    >
-                                      Inactive
-                                    </span>
-                                  )}
-                                </span>
-                              </td>
+                              <span>
+                                {item?.isActive ? (
+                                  <span
+                                    style={{ backgroundColor: "#cee9d6" }}
+                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  >
+                                    Active
+                                  </span>
+                                ) : (
+                                  <span
+                                    style={{ backgroundColor: "#f1b2b2" }}
+                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  >
+                                    Inactive
+                                  </span>
+                                )}
+                              </span>
+                            </td>
                               <td className="px-6 py-4">
                                 <div className="cursor-pointer text-xl flex gap-4 ">
                                   <button

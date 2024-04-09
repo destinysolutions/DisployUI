@@ -178,7 +178,6 @@ export const USERDASHBOARD = `${baseUrl}NewScreen/GetDashboardData`
 export const ADMINDASHBOARD = `${baseUrl}NewScreen/GetALLUserDashboardData`
 export const ADMINUSERTOKEN = `${baseUrl}Register/GetUserToken`
 
-
 // Advertisement
 
 export const ADDEDITADVERTISEMENT = `${baseUrl}AdsCustomer/AddorUpdateAdsCustomer`
@@ -226,7 +225,7 @@ export const ASSIGN_SCREEN_DIGITAL_MENU = `${baseUrl}DigitalMenu/AssignDigitalMe
 
 export const GET_ALL_PLANS = `${baseUrl}Common/GetAllPlans`
 export const GET_TRIAL_PERIOD_DETAILS = `${baseUrl}Common/GetTrialPeriodDetails`
-export const ADD_EDIT_TRIAL_PLAN = `${baseUrl}Common/AddEditTrialPeriod`
+export const ADD_EDIT_TRIAL_PLAN = `${baseUrl}Common/EditTrialPeriod`
 export const PAYMENT_INTENT_CREATE_REQUEST = `${baseUrl}Common/PaymentIntentCreateRequest`
 export const PAYMENT_DETAILS = `${baseUrl}PaymentDetails/AddorUpdatePaymentDetails`
 
@@ -238,6 +237,15 @@ export const GET_ALL_REMOVE_NOTIFICATIONS = `${baseUrl}Common/GetRemoveAllNotifi
 
 // Invoice
 
-export const GET_ALL_INVOICE = `${baseUrl}Common/GetAllInvoiceMaster`
-export const GET_INVOICE_BY_ID = `${baseUrl}Common/GetInvoiceById`
+export const GET_ALL_INVOICE = `${baseUrl}Invoice/GetAllInvoiceMaster`
+export const GET_INVOICE_BY_ID = `${baseUrl}Invoice/GetInvoiceById`
+
+// Discount
+
+export const GET_ALL_DISCOUNT = `${baseUrl}DiscountMaster/GetAllDiscountMaster`
+export const GET_DISCOUNT_BY_ID = `${baseUrl}DiscountMaster/GetDiscountMaster`
+export const ADD_EDIT_DISCOUNT = `${baseUrl}DiscountMaster/AddorUpdateDiscountMaster`
+export const DELETE_DISCOUNT = `${baseUrl}DiscountMaster/DeleteDiscount`
+export const GET_ALL_SEGMENT = `${baseUrl}common/GetAllSegment`
+
 

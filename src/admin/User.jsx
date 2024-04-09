@@ -18,6 +18,10 @@ import {
   GET_ALL_USER_MASTER,
   GET_ALL_USER_TYPE_MASTER,
 } from "./AdminAPI";
+import AddEditUser from "./AddEditUser";
+import ReactTooltip from "react-tooltip";
+import { BiEdit } from "react-icons/bi";
+import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
 
 const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [addUserModal, setAddUserModal] = useState(false);
@@ -25,6 +29,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [isActive, setIsActive] = useState(false);
   const [userTypeData, setUserTypeData] = useState([]);
   const [userData, setUserData] = useState([]);
+  console.log('userData', userData)
   const [showActionBox, setShowActionBox] = useState(false);
   const [deletePopup, setdeletePopup] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -40,6 +45,13 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
+  const [loading, setLoading] = useState(true)
+  const [searchValue, setSearchValue] = useState("")
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6); // Adjust items per page as needed
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortedField, setSortedField] = useState(null);
+  const [selectData, setSelectData] = useState()
   const handleActionClick = (rowId) => {
     setShowActionBox(rowId);
   };
@@ -155,6 +167,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         setUserData(response.data.data);
         setOriginalUserData(response.data.data);
+        setLoading(false)
       })
       .catch((error) => {
         console.log(error);
@@ -192,131 +205,55 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const columns = [
-    {
-      name: "User Name",
-      selector: (row) => row.userName,
-      sortable: true,
-    },
-    {
-      name: "First Name",
-      selector: (row) => row.firstName,
-      sortable: true,
-    },
-    {
-      name: "Last Name",
-      selector: (row) => row.lastName,
-      sortable: true,
-    },
-    {
-      name: "Phone Number",
-      selector: (row) => row.phone,
-      sortable: true,
-    },
-    {
-      name: "User Type",
-      selector: (row) => row.userTypeName,
-      sortable: true,
-    },
-    {
-      name: "Email",
-      selector: (row) => row.email,
-      sortable: true,
-    },
+  const filteredData = userData?.filter((item) =>
+    Object.values(item).some(
+      (value) =>
+        value &&
+        value.toString().toLowerCase().includes(searchValue.toLowerCase())
+    )
+  );
+  const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
 
-    {
-      name: "Active",
-      selector: (row) => row.isActive,
-      sortable: true,
-      cell: (row) => (
-        <div>
-          {row.isActive ? (
-            <span style={{ color: "green" }}>Active</span>
-          ) : (
-            <span style={{ color: "red" }}>Inactive</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      name: "Action",
-      cell: (row) => (
-        <div className="relative">
-          <button onClick={() => handleActionClick(row.userID)}>
-            <CiMenuKebab />
-          </button>
-          {showActionBox === row.userID && (
-            <>
-              <div className="actionpopup z-10 ">
-                <button
-                  onClick={() => setShowActionBox(false)}
-                  className="bg-white absolute top-[-14px] left-[-8px] z-10  rounded-full drop-shadow-sm p-1"
-                >
-                  <AiOutlineClose />
-                </button>
+  // Function to sort the data based on a field and order
+  const sortData = (data, field, order) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => {
+      if (order === "asc") {
+        return a[field] > b[field] ? 1 : -1;
+      } else {
+        return a[field] < b[field] ? 1 : -1;
+      }
+    });
+    return sortedData;
+  };
 
-                <div className=" my-1">
-                  <button onClick={() => handleEditClick(row)}>Edit</button>
-                </div>
+  const sortedAndPaginatedData = sortData(
+    filteredData,
+    sortedField,
+    sortOrder
+  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
-                <div className="mb-1 border border-[#F2F0F9]"></div>
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchValue])
 
-                <div className=" mb-1 text-[#D30000]">
-                  <button onClick={() => setdeletePopup(true)}>Delete</button>
-                </div>
-              </div>
-              {deletePopup ? (
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-                  <div className="relative w-full max-w-xl max-h-full">
-                    <div className="relative bg-white rounded-lg shadow">
-                      <div className="py-6 text-center">
-                        <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
-                        <h3 className="mb-5 text-xl text-primary">
-                          Are you sure you want to delete this User?
-                        </h3>
-                        <div className="flex justify-center items-center space-x-4">
-                          <button
-                            className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-                            onClick={() => setdeletePopup(false)}
-                          >
-                            No, cancel
-                          </button>
-
-                          <button
-                            className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
-                            onClick={() => {
-                              handleDelete(row.userID);
-                              setdeletePopup(false);
-                              setAddUserModal(false);
-                            }}
-                          >
-                            Yes, I'm sure
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </>
-          )}
-        </div>
-      ),
-    },
-  ];
+  const handleSort = (field) => {
+    if (sortedField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortOrder("asc");
+      setSortedField(field);
+    }
+  };
 
   function handleFilter(event) {
     const searchValue = event.target.value.toLowerCase();
-
-    if (searchValue === "") {
-      setUserData(originalUserData);
-    } else {
-      const newData = userData.filter((row) => {
-        return row.firstName.toLowerCase().includes(searchValue);
-      });
-      setUserData(newData);
-    }
+    setSearchValue(searchValue)
   }
+
   return (
     <>
       <div className="flex border-b border-gray ">
@@ -354,131 +291,306 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
           </div>
-
-          {addUserModal && (
-            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-              <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                    <div className="flex items-center">
-                      <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                        Add User Type
-                      </h3>
-                    </div>
-                    <button
-                      className="p-1 text-xl ml-8"
-                      onClick={() => setAddUserModal(false)}
-                    >
-                      <AiOutlineCloseCircle className="text-2xl" />
-                    </button>
-                  </div>
-                  <div className="p-4">
-                    <input
-                      type="text"
-                      placeholder="User Name"
-                      className="formInput"
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
-                    />
-
-                    <input
-                      type="text"
-                      placeholder="First Name"
-                      className="formInput mt-4"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Last Name"
-                      className="formInput mt-4"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                    />
-
-                    <input
-                      type="text"
-                      placeholder="Phone Number"
-                      className="formInput mt-4"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                    {!editMode && (
-                      <>
-                        <input
-                          type="email"
-                          placeholder="Email"
-                          className="formInput mt-4"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Password"
-                          className="formInput mt-4"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <div className="eyeIcon">
-                          {showPassword ? (
-                            <BsFillEyeFill
-                              onClick={() => setShowPassword(!showPassword)}
-                            />
-                          ) : (
-                            <BsFillEyeSlashFill
-                              onClick={() => setShowPassword(!showPassword)}
-                            />
-                          )}
+          <div className="clear-both">
+            <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
+              <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
+                <table
+                  className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
+                  cellPadding={15}
+                >
+                  <thead>
+                    <tr className="items-center table-head-bg">
+                      <th className="text-[#5A5881] text-base font-semibold text-center flex items-center">
+                        <div className="flex w-full items-center justify-center">
+                          User Name
+                          <svg
+                            className="w-3 h-3 ms-1.5 cursor-pointer"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            onClick={() => handleSort("userName")}
+                          >
+                            <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                          </svg>
                         </div>
-                      </>
-                    )}
-                    <select
-                      onChange={(e) => setSelectedUserType(e.target.value)}
-                      value={selectedUserType}
-                      className="formInput mt-4"
-                    >
-                      {userTypeData.map((user) => (
-                        <option key={user.userTypeID} value={user.userTypeID}>
-                          {user.userType}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="mt-5 flex items-center">
-                      <input
-                        className="border border-primary mr-3 ml-1 rounded h-6 w-6"
-                        type="checkbox"
-                        checked={isActive}
-                        onChange={handleCheckboxChange}
-                      />
-                      <label>isActive </label>
-                    </div>
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                        First Name
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                        Last Name
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                        Phone Number
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                        User Type
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                        Email
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                        Active
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
 
-                    <div className="flex justify-center items-center mt-5">
-                      <button
-                        onClick={handleInsertUser}
-                        className="border border-primary rounded-full px-6 py-2 not-italic font-medium"
-                      >
-                        {editMode ? "Edit" : "Save"}
-                      </button>
-                    </div>
+                  <tbody>
+                    {loading && sortedAndPaginatedData.length === 0 && (
+                      <tr>
+                        <td colSpan={5}>
+                          <div className="flex text-center m-5 justify-center">
+                            <svg
+                              aria-hidden="true"
+                              role="status"
+                              className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                              viewBox="0 0 100 101"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor"
+                              />
+                              <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="#1C64F2"
+                              />
+                            </svg>
+
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    {!loading &&
+                      userData &&
+                      sortedAndPaginatedData?.length > 0 &&
+                      sortedAndPaginatedData.map((item, index) => {
+                        return (
+                          <tr className="border-b border-b-[#E4E6FF]" key={index}>
+                            <td className="text-[#5E5E5E] text-center">
+                              {item?.userName}
+                            </td>
+                            <td
+                              className="text-[#5E5E5E] text-center cursor-pointer"
+                            >
+                              {item?.firstName}
+                            </td>
+                            <td
+                              className="text-[#5E5E5E] text-center cursor-pointer"
+                            >
+                              {item?.lastName}
+                            </td>
+                            <td
+                              className="text-[#5E5E5E] text-center cursor-pointer"
+                            >
+                              {item?.phone}
+                            </td>
+                            <td
+                              className="text-[#5E5E5E] text-center cursor-pointer"
+                            >
+                              {item?.userTypeName}
+                            </td>
+                            <td
+                              className="text-[#5E5E5E] text-center cursor-pointer"
+                            >
+                              {item?.email}
+                            </td>
+                            <td className="px-6 py-4 capitalize">
+                              <span>
+                                {item?.isActive ? (
+                                  <span
+                                    style={{ backgroundColor: "#cee9d6" }}
+                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  >
+                                    Active
+                                  </span>
+                                ) : (
+                                  <span
+                                    style={{ backgroundColor: "#f1b2b2" }}
+                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  >
+                                    Inactive
+                                  </span>
+                                )}
+                              </span>
+                            </td>
+
+                            <td className="px-6 py-4">
+                              <div className="flex gap-2">
+                                <div className="cursor-pointer text-xl flex gap-4">
+                                  <button
+                                    type="button"
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    onClick={() => {
+                                      handleEditClick(item);
+                                    }}
+                                  >
+                                    <MdModeEditOutline />
+                                  </button>
+                                </div>
+                                <div className="cursor-pointer text-xl flex gap-4 ">
+                                  <button
+                                    type="button"
+                                    className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
+                                    onClick={() => {
+                                      setdeletePopup(true);
+                                      setSelectData(item);
+                                    }
+                                    }
+                                  >
+                                    <MdDeleteForever />
+                                  </button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    {!loading &&
+                      userData &&
+                      sortedAndPaginatedData?.length === 0 && (
+                        <>
+                          <tr>
+                            <td colSpan={8}>
+                              <div className="flex text-center justify-center">
+                                <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
+                                  No Data Available
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        </>
+                      )}
+                  </tbody>
+                </table>
+              </div>
+              <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+                <div className="flex items-center">
+                  <span className="text-gray-500">{`Total ${userData?.length} Users`}</span>
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    <svg
+                      className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 5H1m0 0 4 4M1 5l4-4"
+                      />
+                    </svg>
+                    {sidebarOpen ? "Previous" : ""}
+                  </button>
+                  <div className="flex items-center me-3">
+                    <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
                   </div>
+                  {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={(currentPage === totalPages) || (userData?.length === 0)}
+                    className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    {sidebarOpen ? "Next" : ""}
+                    <svg
+                      className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9"
+                      />
+                    </svg>
+                  </button>
                 </div>
               </div>
-            </div>
-          )}
-          <div className="lg:mt-7 mt-5">
-            <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
-              <DataTable
-                columns={columns}
-                data={userData}
-                fixedHeader
-                pagination
-                paginationPerPage={10}
-              ></DataTable>
             </div>
           </div>
         </div>
       </div>
+      {deletePopup ? (
+        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
+          <div className="relative w-full max-w-xl max-h-full">
+            <div className="relative bg-white rounded-lg shadow">
+              <div className="py-6 text-center">
+                <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
+                <h3 className="mb-5 text-xl text-primary">
+                  Are you sure you want to delete this User?
+                </h3>
+                <div className="flex justify-center items-center space-x-4">
+                  <button
+                    className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
+                    onClick={() => setdeletePopup(false)}
+                  >
+                    No, cancel
+                  </button>
+
+                  <button
+                    className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
+                    onClick={() => {
+                      handleDelete(selectData?.userID);
+                      setdeletePopup(false);
+                      setAddUserModal(false);
+                    }}
+                  >
+                    Yes, I'm sure
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {addUserModal && (
+        <AddEditUser
+          editMode={editMode}
+          setAddUserModal={setAddUserModal}
+          setUserName={setUserName}
+          setFirstName={setFirstName}
+          setLastName={setLastName}
+          setPhoneNumber={setPhoneNumber}
+          setEmail={setEmail}
+          setSelectedUserType={setSelectedUserType}
+          setIsActive={setIsActive}
+          setEditMode={setEditMode}
+          setEditUserId={setEditUserId}
+          setShowPassword={setShowPassword}
+          showPassword={showPassword}
+          selectedUserType={selectedUserType}
+          userName={userName}
+          firstName={firstName}
+          lastName={lastName}
+          phoneNumber={phoneNumber}
+          email={email}
+          password={password}
+          userTypeData={userTypeData}
+          isActive={isActive}
+          handleCheckboxChange={handleCheckboxChange}
+          handleInsertUser={handleInsertUser}
+          setPassword={setPassword}
+        />
+      )}
     </>
   );
 };

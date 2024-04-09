@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { ADD_EDIT_TRIAL_PLAN, GET_ALL_PLANS, GET_TRIAL_PERIOD_DETAILS } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { handleGetAllPlans } from '../../Redux/CommonSlice';
+import { handleEditTrialPlan, handleGetAllPlans, handleGetTrialPlan } from '../../Redux/CommonSlice';
 import { BsEyeFill } from 'react-icons/bs';
 import ViewPlan from './ViewPlan';
 import { GrPlan } from "react-icons/gr";
@@ -58,7 +58,7 @@ const Myplan = () => {
         })
     }
 
-    const fetchTrialDetails = () =>{
+    const fetchTrialDetails = () => {
         const config = {
             method: "get",
             maxBodyLength: Infinity,
@@ -67,8 +67,9 @@ const Myplan = () => {
                 Authorization: authToken
             },
         }
-        dispatch(handleGetAllPlans({ config })).then((res) => {
+        dispatch(handleGetTrialPlan({ config })).then((res) => {
             setTrialDetails(res?.payload?.data)
+            setTrialData(res?.payload?.data)
         })
     }
 
@@ -87,10 +88,10 @@ const Myplan = () => {
             maxBodyLength: Infinity,
             url: `${ADD_EDIT_TRIAL_PLAN}?TrialDays=${trialData?.trialDays}&IsActive=${trialData?.isActive}`,
             headers: {
-                Authorization: authToken
+                Authorization: authToken,
             },
         }
-        dispatch(handleGetAllPlans({ config })).then((res) => {
+        dispatch(handleEditTrialPlan({ config })).then((res) => {
             if (res?.payload?.status) {
                 fetchTrialDetails()
                 setTrialPlanModal(!trialPlanModel);
@@ -189,11 +190,11 @@ const Myplan = () => {
                             htmlFor="toogleA"
                             className="flex items-center cursor-pointer border border-blue-500 bg-blue-lighter p-4 rounded-full">
                             <div className="text-3xl font-semibold mr-5">
-                                Start with a {trialDetails?.trialDays} 14-days FREE trial!
+                                Start with a {trialDetails?.trialDays}-days FREE trial!
                             </div>
 
                             <div className="relative">
-       {/*                         <input id="toogleA" type="checkbox" className="sr-only" checked={trialData?.isActive} />
+                                {/*                         <input id="toogleA" type="checkbox" className="sr-only" checked={trialData?.isActive} />
 
                                 <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
 
