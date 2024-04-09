@@ -296,7 +296,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                           </span>
                         </button>
                       </li>
-                      <li>
+                   {/*   <li>
                         <button
                           className={
                             STabs === 8 ? "stabshow settingtabactive" : "settingtab"
@@ -334,7 +334,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             Invoice
                           </span>
                         </button>
-                      </li>
+                        </li>*/}
 
                       <li>
                         <button

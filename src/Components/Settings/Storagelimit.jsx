@@ -241,7 +241,7 @@ const Storagelimit = () => {
             </table>
           </div>
         </div>
-       {!user?.userDetails?.isRetailer && (
+      {/* {!user?.userDetails?.isRetailer && (
           <div className="flex justify-center items-center mt-10">
             <button className="flex items-center border-primary border rounded-full lg:pr-3 sm:px-5 py-3 text-sm px-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" 
             onClick={() => setOpenStorage(true)}>
@@ -249,6 +249,7 @@ const Storagelimit = () => {
             </button>
           </div>
        )}
+      */}
       </div>
       {openStorage && (
         <AddEditStorage

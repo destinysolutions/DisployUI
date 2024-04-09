@@ -7,7 +7,7 @@ import { handleAddEditDiscount } from '../../Redux/AdminSettingSlice';
 import { ADD_EDIT_DISCOUNT } from '../../Pages/Api';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-const FeatureDiscount = ({ discount, setDiscount, allSegment }) => {
+const FeatureDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData}) => {
   const { token } = useSelector((s) => s.root.auth);
   const dispatch = useDispatch()
   const authToken = `Bearer ${token}`;
@@ -87,6 +87,7 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment }) => {
     };
     dispatch(handleAddEditDiscount({ config })).then((res) => {
       if (res?.payload?.data) {
+        fetchDiscountData()
         setDiscount("")
       }
     }).catch((error) => {
