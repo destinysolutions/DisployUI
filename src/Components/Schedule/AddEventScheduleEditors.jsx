@@ -92,10 +92,10 @@ const AddEventScheduleEditors = ({
   const currentDate = moment();
   // const today = moment().format("YYYY-MM-DD");
   // console.log('today', today)
-    let currTimestamp = Date.now();
-   const todaydate = (new Date(currTimestamp)).toUTCString(); 
-   const today = CurrentDateFormat(todaydate)
-   console.log('todaydate', todaydate)
+  let currTimestamp = Date.now();
+  const todaydate = (new Date(currTimestamp)).toUTCString();
+  const today = CurrentDateFormat(todaydate)
+  console.log('todaydate', todaydate)
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
     if (!showRepeatSettings) {
@@ -301,14 +301,14 @@ const AddEventScheduleEditors = ({
       UpdateALL: updateAllValue
         ? updateAllValue
         : selectedRepeatDay.length > 0
-        ? 1
-        : 0,
+          ? 1
+          : 0,
     };
     let updateAllValueFlag = updateAllValue
       ? updateAllValue
       : repeatDayValue !== null
-      ? 1
-      : 0;
+        ? 1
+        : 0;
     if (areSpecificDaysSelected || selectAllDays) {
       eventData.repeatDay = repeatDayValue;
     }
@@ -658,11 +658,10 @@ const AddEventScheduleEditors = ({
                                 .map((item, index) => (
                                   <tr
                                     key={index}
-                                    className={`${
-                                      selectedAsset === item
+                                    className={`${selectedAsset === item
                                         ? "bg-[#f3c953]"
                                         : ""
-                                    } border-b border-[#eee] mt-5`}
+                                      } border-b border-[#eee] mt-5`}
                                     onClick={() => {
                                       handleAssetAdd(item);
                                     }}
@@ -687,15 +686,15 @@ const AddEventScheduleEditors = ({
                                       )}
                                       {(item.assetType === "Video" ||
                                         item.assetType === "OnlineVideo") && (
-                                        <div className="max-w-[10vw] min-w-[10vw] min-h-[10vh] max-h-[10vh]">
-                                          <ReactPlayer
-                                            url={item?.assetFolderPath}
-                                            className="rounded-2xl videoTab "
-                                            controls={false}
-                                            playing={false}
-                                          />
-                                        </div>
-                                      )}
+                                          <div className="max-w-[10vw] min-w-[10vw] min-h-[10vh] max-h-[10vh]">
+                                            <ReactPlayer
+                                              url={item?.assetFolderPath}
+                                              className="rounded-2xl videoTab "
+                                              controls={false}
+                                              playing={false}
+                                            />
+                                          </div>
+                                        )}
 
                                       {item.text && (
                                         <div className="w-full h-full ">
@@ -712,15 +711,15 @@ const AddEventScheduleEditors = ({
                                           </marquee>
                                         </div>
                                       )}
-                                      {/* {item.assetType === "DOC" && (
-                                    <a
-                                      href={item.assetFolderPath}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      {item.assetName}
-                                    </a>
-                                 )}*/}
+                                      {item.assetType === "DOC" && (
+                                        <a
+                                          href={item.assetFolderPath}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          {item.assetName}
+                                        </a>
+                                      )}
                                     </td>
                                     <td className="">
                                       <h5
@@ -971,10 +970,9 @@ const AddEventScheduleEditors = ({
                             <div>
                               {buttons.map((label, index) => (
                                 <button
-                                  className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
-                                    selectedDays[index] &&
+                                  className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${selectedDays[index] &&
                                     "bg-SlateBlue border-white"
-                                  } 
+                                    } 
                                 `}
                                   key={index}
                                   onClick={() =>

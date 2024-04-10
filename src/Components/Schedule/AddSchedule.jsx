@@ -630,11 +630,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         const timezone = isEditingSchedule
           ? addedTimezoneName
           : new Date()
-              .toLocaleDateString(undefined, {
-                day: "2-digit",
-                timeZoneName: "long",
-              })
-              .substring(4);
+            .toLocaleDateString(undefined, {
+              day: "2-digit",
+              timeZoneName: "long",
+            })
+            .substring(4);
         // axios
         //   .get(`${GET_TIME_ZONE}?TimeZone=${timezone}`, {
         //     headers: {
@@ -803,9 +803,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               className={`bg-white lg:col-span-9 md:col-span-7 sm:col-span-12 xs:col-span-12 lg:p-3 time-${currentHour}-${interval}`}
             >
               <DragAndDropCalendar
-                className={`${
-                  selectDate === TodayDate ? "" : `date-line timezone-${currentHour}-${interval}`
-                }`}
+                className={`${selectDate === TodayDate ? "" : `date-line timezone-${currentHour}-${interval}`
+                  }`}
                 selectable
                 onNavigate={handleNavigate}
                 localizer={localizer}
@@ -975,7 +974,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             Your browser does not support the video tag.
                           </video>
                         )}
-                        {/* {selectedAsset.assetType === "DOC" && (
+                        {selectedAsset.assetType === "DOC" && (
                           <a
                             href={selectedAsset.assetFolderPath}
                             target="_blank"
@@ -983,7 +982,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           >
                             {selectedAsset.assetName}
                           </a>
-                       )}*/}
+                        )}
                       </>
                     )}
                   </ul>
@@ -1021,7 +1020,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 //   : handleSaveNewSchedule()
                 saveEditedSchedule()
               }
-              // disabled={overallEventTimes === null}
+            // disabled={overallEventTimes === null}
             >
               Save
             </button>

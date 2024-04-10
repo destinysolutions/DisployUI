@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 
 const Carousel = ({ items, compositonData, from, isPlay }) => {
+  console.log('items', items)
   const [currentIndex, setCurrentIndex] = useState(0);
   const marqueeRef = useRef(null);
   useEffect(() => {
@@ -34,8 +35,6 @@ const Carousel = ({ items, compositonData, from, isPlay }) => {
       <div className="h-full w-full p-1 bg-black">
         {items?.map((item, index) => {
           let viewerSrc = "";
-          console.log("item", item);
-
           if (
             item?.fileExtention === ".pdf" ||
             item?.fileExtention === ".txt"
@@ -120,7 +119,7 @@ const Carousel = ({ items, compositonData, from, isPlay }) => {
                       playing={isPlay ? true : false}
                     />
                   )}
-                {/* {item.assetType === "DOC" && (
+               {item.assetType === "DOC" && (
                   <iframe
                     className='w-full h-full'
                     title="Document Viewer"
@@ -133,7 +132,7 @@ const Carousel = ({ items, compositonData, from, isPlay }) => {
                     title="Document Viewer"
                     src={viewerSrc}
                   ></iframe>
-                )}*/}
+                )}
                 {(item?.assetType === "Text" ||
                   item?.mediaType === "Text" ||
                   item?.text !== undefined) && (

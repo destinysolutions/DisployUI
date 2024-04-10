@@ -626,8 +626,7 @@ const EventEditor = ({
                         allAssets
                           .filter(
                             (item) =>
-                              item?.assetType !== "Folder" &&
-                              item?.assetType !== "DOC"
+                              item?.assetType !== "Folder"
                           )
                           .map((item, index) => (
                             <tr
@@ -684,7 +683,7 @@ const EventEditor = ({
                                     </marquee>
                                   </div>
                                 )}
-                                {/* {item.assetType === "DOC" && (
+                                {item.assetType === "DOC" && (
                                     <a
                                       href={item.assetFolderPath}
                                       target="_blank"
@@ -692,7 +691,7 @@ const EventEditor = ({
                                     >
                                       {item.assetName}
                                     </a>
-                                 )}*/}
+                                 )}
                               </td>
                               <td className="">
                                 <h5

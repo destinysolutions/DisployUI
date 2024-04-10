@@ -753,8 +753,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                         .filter((item) => {
                           if (activeTab === "asset") {
                             if (
-                              item.hasOwnProperty("assetID") &&
-                              item?.assetType !== "DOC"
+                              item.hasOwnProperty("assetID")
                             ) {
                               return item;
                             }
@@ -963,11 +962,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   />
                                 )}
 
-                                {/* {item.assetType === "DOC" && (
+                               {item.assetType === "DOC" && (
                                       <p href={item?.assetFolderPath}>
                                         {item.assetName}
                                       </p>
-                                   )}*/}
+                                   )}
                               </td>
                               <td>
                                 <div className="ml-3">

@@ -228,8 +228,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
             ? 4
             : data?.youtubeId !== null && data?.youtubeId !== undefined
-            ? 5
-            : 1,
+              ? 5
+              : 1,
         assetName: data?.assetName,
         assetFolderPath:
           data?.assetFolderPath === undefined && data?.youTubeURL !== undefined
@@ -242,8 +242,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           data?.assetType === undefined && data?.youTubeURL !== undefined
             ? "Video"
             : data?.text && data?.assetType === undefined
-            ? "Text"
-            : data?.assetType,
+              ? "Text"
+              : data?.assetType,
         type: data?.type,
         perentID: data?.perentID,
         userName: data?.userName,
@@ -267,12 +267,12 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
             data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
               ? 4
               : data?.youtubeId !== null && data?.youtubeId !== undefined
-              ? 5
-              : 1,
+                ? 5
+                : 1,
           assetName: data?.assetName,
           assetFolderPath:
             data?.assetFolderPath === undefined &&
-            data?.youTubeURL !== undefined
+              data?.youTubeURL !== undefined
               ? data?.youTubeURL
               : data?.assetFolderPath,
           resolutions: data?.resolutions,
@@ -282,8 +282,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
             data?.assetType === undefined && data?.youTubeURL !== undefined
               ? "Video"
               : data?.text && data?.assetType === undefined
-              ? "Text"
-              : data?.assetType,
+                ? "Text"
+                : data?.assetType,
           type: data?.type,
           perentID: data?.perentID,
           userName: data?.userName,
@@ -687,11 +687,10 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
-              className={`fixed border w-full left-1/2 -translate-x-1/2 ${
-                screenType === "portrait"
-                  ? "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
-                  : "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
-              }  `}
+              className={`fixed border w-full left-1/2 -translate-x-1/2 ${screenType === "portrait"
+                ? "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
+                : "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
+                }  `}
             >
               <RxCrossCircled
                 className="fixed z-50 w-[30px] h-[30px] text-white bg-black rounded-full hover:bg-white hover:text-black top-[-22px] right-[-18px] cursor-pointer "
@@ -788,17 +787,15 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="flex items-center justify-between  rounded-lg w-full text-white bg-SlateBlue">
                 <div
                   onClick={() => setActiveTab("asset")}
-                  className={`w-1/2 text-center p-2 ${
-                    activeTab === "asset" && "bg-black translate-x-0"
-                  }  rounded-lg cursor-pointer transition-all duration-100  ease-in`}
+                  className={`w-1/2 text-center p-2 ${activeTab === "asset" && "bg-black translate-x-0"
+                    }  rounded-lg cursor-pointer transition-all duration-100  ease-in`}
                 >
                   Assets
                 </div>
                 <div
                   onClick={() => setActiveTab("apps")}
-                  className={`w-1/2 text-center rounded-lg transition-all duration-100 ease-in-out p-2 ${
-                    activeTab === "apps" && "bg-black"
-                  } cursor-pointer`}
+                  className={`w-1/2 text-center rounded-lg transition-all duration-100 ease-in-out p-2 ${activeTab === "apps" && "bg-black"
+                    } cursor-pointer`}
                 >
                   Apps
                 </div>
@@ -849,8 +846,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                         .filter((item) => {
                           if (activeTab === "asset") {
                             if (
-                              item.hasOwnProperty("assetID") &&
-                              item?.assetType !== "DOC"
+                              item.hasOwnProperty("assetID")
                             ) {
                               return item;
                             }
@@ -900,22 +896,22 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                 data.assetType === "OnlineVideo" ||
                                 data.assetType === "Youtube" ||
                                 data?.youTubeURL) && (
-                                <ReactPlayer
-                                  url={
-                                    data?.assetFolderPath || data?.youTubeURL
-                                  }
-                                  className="h-80px w-160px  relative z-10"
-                                  controls={true}
-                                  playing={false}
-                                  loop={false}
-                                />
-                              )}
+                                  <ReactPlayer
+                                    url={
+                                      data?.assetFolderPath || data?.youTubeURL
+                                    }
+                                    className="h-80px w-160px  relative z-10"
+                                    controls={true}
+                                    playing={false}
+                                    loop={false}
+                                  />
+                                )}
 
-                              {/* {data.assetType === "DOC" && (
+                              {data.assetType === "DOC" && (
                                 <p href={data?.assetFolderPath}>
                                   {data.assetName}
                                 </p>
-                             )}*/}
+                              )}
                             </td>
                             <td className="p-2 w-full text-center hyphens-auto break-words">
                               {data.assetName || data?.instanceName}
@@ -939,11 +935,10 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
               {/* section tabs && layout  */}
               <div className="flex flex-wrap border-b border-b-[#E4E6FF] pb-5 w-full">
                 <div
-                  className={`layout-img me-5 ${
-                    compositonData?.screenType === "portrait"
-                      ? "w-24 h-36"
-                      : "w-36 h-24"
-                  } bg-[#D5E3FF] relative`}
+                  className={`layout-img me-5 ${compositonData?.screenType === "portrait"
+                    ? "w-24 h-36"
+                    : "w-36 h-24"
+                    } bg-[#D5E3FF] relative`}
                 >
                   {!loading &&
                     compositonData !== null &&
@@ -972,15 +967,13 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       .fill(2)
                       .map((item, index) => (
                         <button
-                          className={`px-5 ${
-                            currentSection == index + 1
-                              ? "bg-primary"
-                              : "bg-white"
-                          } ${
-                            currentSection == index + 1
+                          className={`px-5 ${currentSection == index + 1
+                            ? "bg-primary"
+                            : "bg-white"
+                            } ${currentSection == index + 1
                               ? "text-white"
                               : "text-primary"
-                          }  rounded-full py-2 border border-primary `}
+                            }  rounded-full py-2 border border-primary `}
                           key={index}
                           onClick={() => setcurrentSection(index + 1)}
                         >
@@ -1051,20 +1044,20 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                 {(item.assetType === "Video" ||
                                   item.assetType === "OnlineVideo" ||
                                   item.assetType === "Youtube") && (
-                                  <ReactPlayer
-                                    url={item?.assetFolderPath}
-                                    className="relative z-20 videoinner img_w max-h-10"
-                                    controls={false}
-                                    playing={false}
-                                    loop={true}
-                                  />
-                                )}
+                                    <ReactPlayer
+                                      url={item?.assetFolderPath}
+                                      className="relative z-20 videoinner img_w max-h-10"
+                                      controls={false}
+                                      playing={false}
+                                      loop={true}
+                                    />
+                                  )}
 
-                                {/*  {item.assetType === "DOC" && (
-                                      <p href={item?.assetFolderPath}>
-                                        {item.assetName}
-                                      </p>
-                                  )}*/}
+                                {item.assetType === "DOC" && (
+                                  <p href={item?.assetFolderPath}>
+                                    {item.assetName}
+                                  </p>
+                                )}
                               </td>
                               <td>
                                 <div className="ml-3">

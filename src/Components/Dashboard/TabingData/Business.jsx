@@ -114,7 +114,7 @@ const ScreenOption = {
   },
   series: [80, 25, 37, 18],
   colors: ["#404f8b", "#59709a", "#8ca0b9", "#b2c7d0"],
-  labels: ["Android", "Tizen", "Webos", "Raspberry","Fire Stick"],
+  labels: ["Android", "Tizen", "Webos", "Raspberry", "Fire Stick"],
   legend: {
     show: true,
     position: "bottom",
@@ -215,7 +215,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
       type: "donut",
     },
     series: allApp?.AppPercentages,
-    colors: ["#404f8b", "#59709a", "#8ca0b9", "#b2c7d0","#141e4a"],
+    colors: ["#404f8b", "#59709a", "#8ca0b9", "#b2c7d0", "#141e4a"],
     labels: allApp?.AppLists,
     legend: {
       show: true,
@@ -798,7 +798,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
                       fill="#1C64F2"
                     />
                   </svg>
-                 
+
                 </div>
               </>
             </div>
@@ -810,15 +810,14 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
           )}
           {!allApps?.loading &&
             allApps?.data.length > 0 &&
-            allApps?.data?.slice(0, 3)?.map(
+            allApps?.data?.slice(0, 4)?.map(
               (app) =>
-                app.appType == "Apps" &&
-                app.appName !== "Weather" && (
+                app.appType == "Apps" && (
                   <div
                     className="lg:col-span-3 md:col-span-6 sm:col-span-12 "
                     key={app.app_Id}
                   >
-                    <Link to={`/${app.appName}`}>
+                    <Link to={`/${app.appURL}`}>
                       <div className="shadow-md  bg-white rounded-lg text-center py-10">
                         <img
                           src={app.appPath}

@@ -710,7 +710,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       screenName: screenName,
       operation: "Update",
       screenOperatingHours: screenOperatingHours,
-      screenType:selectedScreenType
+      screenType: selectedScreenType
     });
     toast.loading("Saving...");
 
@@ -1168,7 +1168,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           fill="#1C64F2"
                         />
                       </svg>
-                     
+
                     </div>
                   </div>
                 ) : (
@@ -1616,7 +1616,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   </h4>
                 </div>
                 <div className="w-full flex items-center gap-4 justify-end">
-                  {/* {!isPlay ? (
+                  {!isPlay ? (
                     <button
                       data-tip
                       id="toggleButton"
@@ -1627,10 +1627,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         // setIsPlay(!isPlay);
                         setIsPlay(prevIsPlay => !prevIsPlay);
                         const Params = {
-                          play:isPlay,
+                          play: isPlay,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
-                        socket.emit('play_pause',Params);
+                        socket.emit('play_pause', Params);
                         // socket.emit('updateTime', time);
 
                       }}
@@ -1656,10 +1656,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         // setIsPlay(!isPlay);
                         setIsPlay(prevIsPlay => !prevIsPlay);
                         const Params = {
-                          play:isPlay,
+                          play: isPlay,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
-                        socket.emit('play_pause',Params);
+                        socket.emit('play_pause', Params);
                         // socket.emit('updateTime', time);
                       }}
                     >
@@ -1673,7 +1673,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         <span>Pause</span>
                       </ReactTooltip>
                     </button>
-                  )} */}
+                  )}
                   <IoCloudUploadOutline
                     className="cursor-pointer"
                     size={24}

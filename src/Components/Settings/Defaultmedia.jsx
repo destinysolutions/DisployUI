@@ -636,8 +636,7 @@ const Defaultmedia = ({ permissions }) => {
                           filteredData
                             .filter((asset) => {
                               return (
-                                asset.assetType !== "Folder" &&
-                                asset.assetType !== "DOC"
+                                asset.assetType !== "Folder" 
                               );
                             })
                             .map((asset) => (

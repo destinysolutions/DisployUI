@@ -123,6 +123,7 @@ const AddUserAdsForPrice = ({ toggleModal, sidebarOpen, editIdAds, setloadFirst 
             let start = value;
             return `${start}_${user?.organizationId}`;
         });
+        console.log('result', result)
         if (selectScreen?.length <= editIdAds?.screen) {
             const payload = { AssignAdvertisementid: editIdAds?.adsCustomerMasterID, AdsPrice: price, SelectedScreen: result };
             dispatch(UpdateAdsRate(payload)).then((res) => {

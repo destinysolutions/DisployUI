@@ -2,6 +2,27 @@ import React from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
 const PreviewAssets = ({ assetPreview, setAssetPreviewPopup }) => {
+
+  let viewerSrc = "";
+
+  if (
+    assetPreview?.fileExtention === ".pdf" ||
+    assetPreview?.fileExtention === ".txt"
+  ) {
+    viewerSrc = assetPreview?.assetFolderPath;
+  } else if (assetPreview?.fileExtention === ".csv") {
+    viewerSrc = `https://docs.google.com/gview?url=${assetPreview?.assetFolderPath}&embedded=true`;
+  } else if (
+    assetPreview?.fileExtention === ".pptx" ||
+    assetPreview?.fileExtention === ".ppt" ||
+    assetPreview?.fileExtention === ".docx" ||
+    assetPreview?.fileExtention === ".doc" ||
+    assetPreview?.fileExtention === ".xlsx" ||
+    assetPreview?.fileExtention === ".xls"
+  ) {
+    viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+  }
+  
   return (
     <>
       <div
@@ -69,13 +90,13 @@ const PreviewAssets = ({ assetPreview, setAssetPreviewPopup }) => {
                         Your browser does not support the video tag.
                       </video>
                     )}
-                    {/*                        {assetPreview.assetType === "DOC" && (
-                          <iframe
-                          className='w-[768px] h-[432px]'
-                          title="Document Viewer"
-                          src={viewerSrc}
+                    {assetPreview.assetType === "DOC" && (
+                      <iframe
+                        className='md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72'
+                        title="Document Viewer"
+                        src={viewerSrc}
                       ></iframe>
-)}*/}
+                    )}
                   </>
                 )}
               </div>

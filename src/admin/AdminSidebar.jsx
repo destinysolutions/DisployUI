@@ -85,12 +85,12 @@ const AdminSidebar = ({ sidebarOpen }) => {
       path: "/client",
       icon: <FaUserGroup className="text-2xl" />,
     },
-    // {
-    //   title: "Settings",
-    //   cName: "nav-text link-items",
-    //   path: "/settings",
-    //   icon: <img src={settingIcon} alt="Settings" className="w-6" />,
-    // },
+    {
+      title: "Settings",
+      cName: "nav-text link-items",
+      path: "/settings",
+      icon: <img src={settingIcon} alt="Settings" className="w-6" />,
+    },
   ];
 
   //using for mobile sidebar
