@@ -173,7 +173,9 @@ const ShowAssetModal = ({
     assetPreview?.fileExtention === ".xlsx" ||
     assetPreview?.fileExtention === ".xls"
   ) {
-    viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+    // viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+    viewerSrc = `https://docs.google.com/viewer?url=${assetPreview?.assetFolderPath}&embedded=true`
+
   }
   useEffect(() => {
     const handleClickOutside = (event) => {

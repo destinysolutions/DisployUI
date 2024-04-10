@@ -20,6 +20,7 @@ import {
 import { useDispatch } from "react-redux";
 import PreviewAssets from "../Common/PreviewAssets";
 import { CurrentDateFormat } from "../Common/Common";
+import { HiDocumentDuplicate } from "react-icons/hi2";
 const AddEventScheduleEditors = ({
   isOpen,
   onClose,
@@ -576,7 +577,9 @@ const AddEventScheduleEditors = ({
     assetPreview?.fileExtention === ".xlsx" ||
     assetPreview?.fileExtention === ".xls"
   ) {
-    viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+    // viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+    viewerSrc = `https://docs.google.com/viewer?url=${assetPreview?.assetFolderPath}&embedded=true`
+
   }
 
   return (
@@ -652,8 +655,7 @@ const AddEventScheduleEditors = ({
                               allAssets
                                 .filter(
                                   (item) =>
-                                    item?.assetType !== "Folder" &&
-                                    item?.assetType !== "DOC"
+                                    item?.assetType !== "Folder" 
                                 )
                                 .map((item, index) => (
                                   <tr
@@ -666,7 +668,7 @@ const AddEventScheduleEditors = ({
                                       handleAssetAdd(item);
                                     }}
                                   >
-                                    <td className="">
+                                    <td className="w-full flex justify-center items-center">
                                       {item.assetType === "OnlineImage" && (
                                         <div className="imagebox relative z-0">
                                           <img
@@ -686,10 +688,10 @@ const AddEventScheduleEditors = ({
                                       )}
                                       {(item.assetType === "Video" ||
                                         item.assetType === "OnlineVideo") && (
-                                          <div className="max-w-[10vw] min-w-[10vw] min-h-[10vh] max-h-[10vh]">
+                                          <div>
                                             <ReactPlayer
                                               url={item?.assetFolderPath}
-                                              className="rounded-2xl videoTab "
+                                              className="rounded-2xl videoTab w-full h-full"
                                               controls={false}
                                               playing={false}
                                             />
@@ -711,7 +713,7 @@ const AddEventScheduleEditors = ({
                                           </marquee>
                                         </div>
                                       )}
-                                      {item.assetType === "DOC" && (
+                                     {/* {item.assetType === "DOC" && (
                                         <a
                                           href={item.assetFolderPath}
                                           target="_blank"
@@ -719,9 +721,15 @@ const AddEventScheduleEditors = ({
                                         >
                                           {item.assetName}
                                         </a>
-                                      )}
+                                     )}*/}
+
+                                     {item.assetType === "DOC" && (
+                                      <div className="flex justify-center items-center">
+                                      <HiDocumentDuplicate className=" text-primary text-4xl"/>
+                                      </div>
+                                    )}
                                     </td>
-                                    <td className="">
+                                    <td className="text-center">
                                       <h5
                                         className="font-medium text-black cursor-pointer"
                                         onClick={() => {
@@ -733,7 +741,7 @@ const AddEventScheduleEditors = ({
                                           item?.instanceName}
                                       </h5>
                                     </td>
-                                    <td className="">
+                                    <td className="text-center">
                                       <p className="text-black font-medium">
                                         {moment(item.createdDate).format(
                                           "DD-MM-YYYY HH:mm"
@@ -745,7 +753,7 @@ const AddEventScheduleEditors = ({
                                     Schedule Name Till 28 June 2023
                                   </p>
                                 </td> */}
-                                    <td className="">
+                                    <td className="text-center">
                                       <p className="text-black font-medium">
                                         {item.resolutions}
                                       </p>

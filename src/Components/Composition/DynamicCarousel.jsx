@@ -53,8 +53,11 @@ const Carousel = ({ items, compositonData, from, isPlay }) => {
             item?.fileExtention === ".xlsx" ||
             item?.fileExtention === ".xls"
           ) {
-            viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${item?.assetFolderPath ? item?.assetFolderPath : item?.fileType
-              }`;
+            // viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${item?.assetFolderPath ? item?.assetFolderPath : item?.fileType
+            //   }`;
+
+            viewerSrc = `https://docs.google.com/viewer?url=${item?.assetFolderPath ? item?.assetFolderPath : item?.fileType}&embedded=true`
+
           }
           if (currentIndex === index) {
             return (
@@ -119,18 +122,25 @@ const Carousel = ({ items, compositonData, from, isPlay }) => {
                       playing={isPlay ? true : false}
                     />
                   )}
-               {item.assetType === "DOC" && (
+                {item.assetType === "DOC" && (
                   <iframe
                     className='w-full h-full'
                     title="Document Viewer"
                     src={viewerSrc}
                   ></iframe>
                 )}
-                {item.mediaType === "DOC" && (
+                {item.assetType === "DOC" && (
                   <iframe
                     className='w-full h-full'
                     title="Document Viewer"
                     src={viewerSrc}
+                  ></iframe>
+                )}
+                {item.mediaType === "Pdf" && (
+                  <iframe
+                    className='w-full h-full'
+                    title="Document Viewer"
+                    src={item?.fileType}
                   ></iframe>
                 )}
                 {(item?.assetType === "Text" ||
@@ -156,7 +166,7 @@ const Carousel = ({ items, compositonData, from, isPlay }) => {
                           className="text-3xl w-full h-full flex items-center text-white bg-black"
                           direction={
                             item?.scrollType === 1 ||
-                            item?.direction === "Left to Right"
+                              item?.direction === "Left to Right"
                               ? "right"
                               : "left"
                           }

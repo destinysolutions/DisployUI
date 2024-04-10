@@ -2,7 +2,7 @@ import React from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
 const PreviewAssets = ({ assetPreview, setAssetPreviewPopup }) => {
-
+console.log('assetPreview', assetPreview)
   let viewerSrc = "";
 
   if (
@@ -20,7 +20,9 @@ const PreviewAssets = ({ assetPreview, setAssetPreviewPopup }) => {
     assetPreview?.fileExtention === ".xlsx" ||
     assetPreview?.fileExtention === ".xls"
   ) {
-    viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+    // viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+    viewerSrc = `https://docs.google.com/viewer?url=${assetPreview?.assetFolderPath}&embedded=true`
+
   }
   
   return (

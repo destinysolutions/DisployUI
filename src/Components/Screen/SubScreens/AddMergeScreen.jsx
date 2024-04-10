@@ -484,6 +484,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           selectedYoutube={selectedYoutube}
           selectedAsset={selectedAsset}
           handleSave={handleSave}
+          type="Weather"
         />
       )}
     </>

@@ -31,6 +31,7 @@ import ReactPlayer from "react-player";
 import { connection } from "../../SignalR";
 import ShowAppsModal from "../ShowAppsModal";
 import { socket } from "../../App";
+import { HiDocumentDuplicate } from "react-icons/hi2";
 
 const DEFAULT_IMAGE = "";
 const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -47,6 +48,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [Testasset, setTestasset] = useState({});
   const [compositionName, setCompositionName] = useState("");
   const [assetData, setAssetData] = useState([]);
+  console.log('assetData', assetData)
   const [addAsset, setAddAsset] = useState([]);
   const [edited, setEdited] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -866,7 +868,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               handleDragStartForDivToDiv(event, data)
                             }
                           >
-                            <td className="break-words w-full text-left ">
+                            <td className="w-full flex justify-center items-center">
                               {data.assetType === "OnlineImage" && (
                                 <img
                                   className="imagebox relative h-80px w-160px"
@@ -907,10 +909,15 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   />
                                 )}
 
-                              {data.assetType === "DOC" && (
+                              {/*{data.assetType === "DOC" && (
                                 <p href={data?.assetFolderPath}>
                                   {data.assetName}
                                 </p>
+                              )}*/}
+                              {data.assetType === "DOC" && (
+                                <div className="flex justify-center items-center">
+                                <HiDocumentDuplicate className=" text-primary text-4xl"/>
+                                </div>
                               )}
                             </td>
                             <td className="p-2 w-full text-center hyphens-auto break-words">
@@ -1053,10 +1060,16 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                     />
                                   )}
 
-                                {item.assetType === "DOC" && (
+                              {/*  {item.assetType === "DOC" && (
                                   <p href={item?.assetFolderPath}>
                                     {item.assetName}
                                   </p>
+                              )}*/}
+
+                                {item.assetType === "DOC" && (
+                                  <div className="flex justify-center items-center">
+                                  <HiDocumentDuplicate className=" text-primary text-4xl"/>
+                                  </div>
                                 )}
                               </td>
                               <td>

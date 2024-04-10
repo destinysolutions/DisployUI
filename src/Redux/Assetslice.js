@@ -277,7 +277,7 @@ const Assetslice = createSlice({
       // handelDeletedataAssets
       state.status = "succeeded";
       state.data = action.payload;
-      state.message = action.payload?.message || "Delete successFully";
+      state.message = action.payload?.message || "Delete Successfully";
     });
     builder.addCase(handelDeletedataAssets.rejected, (state, action) => {
       // handelDeletedataAssets
@@ -310,7 +310,7 @@ const Assetslice = createSlice({
     builder.addCase(handelAllDelete.fulfilled, (state, action) => {
       // handelAllDelete
       state.status = "succeeded";
-      state.message = action.payload?.message || "Delete successFully";
+      state.message = action.payload?.message || "Delete Successfully";
     });
     builder.addCase(handelAllDelete.rejected, (state, action) => {
       // handelAllDelete

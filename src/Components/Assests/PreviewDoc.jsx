@@ -2,6 +2,8 @@ import React from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
 const PreviewDoc = ({ HandleClose, fileType, assetFolderPath }) => {
+  console.log('fileType', fileType)
+  console.log('assetFolderPath', assetFolderPath)
   let viewerSrc = "";
 
   if (fileType === ".pdf" || fileType === ".txt") {
@@ -16,7 +18,8 @@ const PreviewDoc = ({ HandleClose, fileType, assetFolderPath }) => {
     fileType === ".xlsx" ||
     fileType === ".xls"
   ) {
-    viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetFolderPath}`;
+    // viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetFolderPath}`;
+    viewerSrc = `https://docs.google.com/viewer?url=${assetFolderPath}&embedded=true`
   }
   return (
     <>
