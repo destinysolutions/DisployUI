@@ -46,7 +46,6 @@ const PlanIntegration = () => {
             },
         }
         dispatch(handleGetAllPlans({ config })).then((res) => {
-            console.log('res', res)
             setSelectedPlan(res?.payload?.data)
         })
     }, [planId])

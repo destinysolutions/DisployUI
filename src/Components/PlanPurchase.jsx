@@ -128,7 +128,6 @@ const PlanPurchase = ({ selectedPlan, customerData }) => {
                 if (response) {
                     response
                         .then((res) => {
-                            console.log('res', res)
                             if (res?.payload?.status === 200) {
                                 PaymentDetails({ paymentIntent, organizationID: res?.payload?.data?.organizationID })
                             }
