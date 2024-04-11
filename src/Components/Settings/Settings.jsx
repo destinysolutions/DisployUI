@@ -296,7 +296,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                           </span>
                         </button>
                       </li>
-                   {/*   <li>
+                      <li>
                         <button
                           className={
                             STabs === 8 ? "stabshow settingtabactive" : "settingtab"
@@ -334,7 +334,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             Invoice
                           </span>
                         </button>
-                        </li>*/}
+                        </li>
 
                       <li>
                         <button
@@ -408,17 +408,15 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     )}
 
-                    {STabs === 6 && (
-                      <div>
-                        <Invoice
-                          permissions={permissions}
-                          showInvoice={showInvoice}
-                          setShowInvoice={setShowInvoice}
-                          InvoiceRef={InvoiceRef}
-                          DownloadInvoice={DownloadInvoice}
-                        />
-                      </div>
-                    )}
+                    <div className={`${STabs === 6 ? "block" : "hidden"}`}>
+                      <Invoice
+                        permissions={permissions}
+                        showInvoice={showInvoice}
+                        setShowInvoice={setShowInvoice}
+                        InvoiceRef={InvoiceRef}
+                        DownloadInvoice={DownloadInvoice}
+                      />
+                    </div>
 
                     {STabs === 8 && (
                       <div className="h-full w-full">

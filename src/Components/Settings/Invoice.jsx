@@ -7,6 +7,7 @@ import { GET_ALL_INVOICE, GET_INVOICE_BY_ID } from "../../Pages/Api";
 import { handleAllInvoice, handleInvoiceById } from "../../Redux/PaymentSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import moment from "moment";
 
 const Invoice = ({
   permissions,
@@ -25,7 +26,8 @@ const Invoice = ({
   const [itemsPerPage] = useState(5);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // const currentItems = invoiceData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = invoiceData.slice(indexOfFirstItem, indexOfLastItem);
+  console.log('currentItems', currentItems)
 
   const fetchAllInvoice = () => {
     const config = {
@@ -38,7 +40,8 @@ const Invoice = ({
       },
     }
     dispatch(handleAllInvoice({ config })).then((res) => {
-      // setInvoiceData(res?.payload?.data)
+      console.log('res', res)
+      setInvoiceData(res?.payload?.data)
     })
   }
 
@@ -88,7 +91,7 @@ const Invoice = ({
                   <thead className="items-center table-head-bg">
                     <tr>
                       <th className="px-5 py-3 text-left text-lg font-semibold text-gray-900 ">
-                        ID
+                        Profile Pic
                       </th>
                       <th className="px-5 py-3 text-left text-lg font-semibold text-gray-900 ">
                         Client Name
@@ -108,65 +111,80 @@ const Invoice = ({
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b border-gray-200 bg-white">
-                      <td className="px-5 py-3 text-lg">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 w-10 h-10">
-                            <img
-                              className="w-full h-full rounded-full"
-                              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=2.2&amp;w=160&amp;h=160&amp;q=80"
-                              alt=""
-                            />
-                          </div>
-                          <div className="ml-3">
-                            <p className="text-blue-900 whitespace-no-wrap">
-                              #5036
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-5 py-3 text-lg">
-                        <p className="text-gray-900 whitespace-no-wrap">
-                          Lavern Laboy
-                        </p>
-                      </td>
-                      <td className="px-5 py-3 text-lg">
-                        <p className="text-gray-900 whitespace-no-wrap">$5875</p>
-                      </td>
-                      <td className="px-5 py-3 text-lg">
-                        <p className="text-gray-900 whitespace-no-wrap">
-                          04/07/2023
-                        </p>
-                      </td>
-                      <td className="px-5 py-3 text-lg">
-                        <span className="relative inline-block px-3 py-1 font-semibold bg-orange-200 text-orange-400 leading-tight rounded-full">
-                          Pending
-                        </span>
-                      </td>
-                      <td className="px-5 py-3 text-lg">
-                        <div className="flex gap-4">
-                          <>
-                            <div
-                              data-tip
-                              data-for="View"
-                              className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                              onClick={() => { setShowInvoice(true); setInvoiceId(0) }}
-                            >
-                              <BsEyeFill />
-                            </div>
+                    {currentItems?.map((item, index) => {
+                      return (
 
-                            <div
-                              data-tip
-                              data-for="Edit"
-                              className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                              onClick={() => { DownloadInvoice(); setInvoiceId(0) }}
-                            >
-                              <FaDownload />
+                        <tr className="border-b border-gray-200 bg-white" key={index} >
+                          <td className="px-5 py-3 text-lg">
+                            <div className="flex items-center">
+                              <div className="flex-shrink-0 w-10 h-10">
+                                <img
+                                  className="w-full h-full rounded-full"
+                                  src={item?.profilePic}
+                                  alt={item?.name}
+                                />
+                              </div>
+                              {/*                              <div className="ml-3">
+                                <p className="text-blue-900 whitespace-no-wrap">
+                                  #5036
+                                </p>
+                      </div>*/}
                             </div>
-                          </>
-                        </div>
-                      </td>
-                    </tr>
+                          </td>
+                          <td className="px-5 py-3 text-lg">
+                            <p className="text-gray-900 whitespace-no-wrap">
+                              {item?.name}
+                            </p>
+                          </td>
+                          <td className="px-5 py-3 text-lg">
+                            <p className="text-gray-900 whitespace-no-wrap">${(item?.totalAmount) / 100}</p>
+                          </td>
+                          <td className="px-5 py-3 text-lg">
+                            <p className="text-gray-900 whitespace-no-wrap">
+                              {moment(
+                                item?.issuedDate
+                              ).format("LLL")}
+
+                            </p>
+                          </td>
+                          <td className="px-5 py-3 text-lg">
+                            {item?.status === "Completed" && (
+                              <span className="relative inline-block px-3 py-1 font-semibold bg-lime-300 text-green leading-tight rounded-full">
+                                {item?.status}
+                              </span>
+                            )}
+                            {item?.status !== "Completed" && (
+                              <span className="relative inline-block px-3 py-1 font-semibold bg-orange-200 text-orange-400 leading-tight rounded-full">
+                                {item?.status}
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-5 py-3 text-lg">
+                            <div className="flex gap-4">
+                              <>
+                                <div
+                                  data-tip
+                                  data-for="View"
+                                  className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                  onClick={() => { setShowInvoice(true); setInvoiceId(item?.id) }}
+                                >
+                                  <BsEyeFill />
+                                </div>
+
+                                <div
+                                  data-tip
+                                  data-for="Edit"
+                                  className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                  onClick={() => { DownloadInvoice(); setInvoiceId(item?.id) }}
+                                >
+                                  <FaDownload />
+                                </div>
+                              </>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -227,20 +245,22 @@ const Invoice = ({
               )}
             </div>
           </div>
-        </div>
+        </div >
       )}
-      {showInvoice && (
-        <div className="p-4 flex justify-start items-center gap-2">
-          <IoIosArrowRoundBack
-            size={36}
-            className="cursor-pointer"
-            onClick={() => setShowInvoice(false)}
-          />
-          <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
-            Invoice
-          </h1>
-        </div>
-      )}
+      {
+        showInvoice && (
+          <div className="p-4 flex justify-start items-center gap-2">
+            <IoIosArrowRoundBack
+              size={36}
+              className="cursor-pointer"
+              onClick={() => setShowInvoice(false)}
+            />
+            <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
+              Invoice
+            </h1>
+          </div>
+        )
+      }
       <div className={`${showInvoice ? "" : "hidden"}`}>
         <InvoiceBilling
           InvoiceRef={InvoiceRef}

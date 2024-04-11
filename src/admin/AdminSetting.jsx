@@ -14,7 +14,7 @@ import Myplan from "../Components/Settings/Myplan";
 import { BsFillPrinterFill, BsFillSendFill } from "react-icons/bs";
 import ReactToPrint from "react-to-print";
 import { AiOutlineSearch } from "react-icons/ai";
-import { html2pdf } from "html2pdf.js";
+import html2pdf from "html2pdf.js";
 import CreateAPI from "./CreateAPI";
 import Discount from "./Discount";
 import { MdDiscount } from "react-icons/md";
@@ -42,6 +42,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
     setSTabs(id);
   }
   const DownloadInvoice = () => {
+    console.log('InvoiceRef', InvoiceRef)
     const InvoiceNode = InvoiceRef.current;
     if (InvoiceNode) {
       html2pdf(InvoiceNode, {
@@ -50,7 +51,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      });
+      });     
     }
   };
   return (
@@ -211,7 +212,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
 
               {STabs === 9 && (
                 <div>
-                  <Discount sidebarOpen={sidebarOpen}/>
+                  <Discount sidebarOpen={sidebarOpen} />
                 </div>
               )}
               {STabs === 10 && (

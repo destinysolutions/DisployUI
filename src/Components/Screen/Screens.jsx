@@ -959,14 +959,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             */}
                     <div className="flex items-center justify-end">
-                      {/*{!user?.userDetails?.isRetailer && (
+                    {!user?.userDetails?.isRetailer && (
                         <button
                           onClick={() => setOpenScreen(true)}
                           className="sm:mx-2 xs:mx-1 flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
                           Purchase Screen
                         </button>
-                      )}*/}
+                      )}
                       {permissions.isSave && (
                         <button
                           data-tip

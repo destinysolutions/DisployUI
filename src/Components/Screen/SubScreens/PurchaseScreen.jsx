@@ -32,7 +32,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                             </span>
 
                             <div className='flex items-center justify-evenly'>
-                                <p>Add Storage</p>
+                                <p>Add Screen</p>
                                 <div className='flex items-center gap-1 ml-6'>
                                     <input type='number'
                                         className="relative border border-black rounded-md p-2 w-24"
