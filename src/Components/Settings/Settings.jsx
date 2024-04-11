@@ -415,6 +415,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         setShowInvoice={setShowInvoice}
                         InvoiceRef={InvoiceRef}
                         DownloadInvoice={DownloadInvoice}
+                        sidebarOpen={sidebarOpen}
                       />
                     </div>
 

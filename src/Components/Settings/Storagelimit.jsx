@@ -24,7 +24,7 @@ const Storagelimit = () => {
   const [openStorage, setOpenStorage] = useState(false)
   const [openPayment, setOpenPayment] = useState(false)
   const [addStorage, setAddStorage] = useState(20)
-  const [discountCoupon,setDiscountCoupon] = useState("")
+  const [discountCoupon, setDiscountCoupon] = useState("")
   const [clientSecret, setClientSecret] = useState("");
   const appearance = {
     theme: 'stripe',
@@ -193,7 +193,7 @@ const Storagelimit = () => {
                   <td className="text-center">
                     {storageDegtails?.usedInPercentage} %
                   </td>
-                  {user?.userDetails?.isRetailer &&(
+                  {user?.userDetails?.isRetailer && (
                     <td className="text-center">
                       {increaseStorage ? (
                         <div className="flex justify-center items-center">
@@ -241,15 +241,15 @@ const Storagelimit = () => {
             </table>
           </div>
         </div>
-      {/* {!user?.userDetails?.isRetailer && (
+        {!user?.userDetails?.isRetailer && (
           <div className="flex justify-center items-center mt-10">
-            <button className="flex items-center border-primary border rounded-full lg:pr-3 sm:px-5 py-3 text-sm px-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" 
-            onClick={() => setOpenStorage(true)}>
+            <button className="flex items-center border-primary border rounded-full lg:pr-3 sm:px-5 py-3 text-sm px-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+              onClick={() => setOpenStorage(true)}>
               Buy More Space
             </button>
           </div>
-       )}
-      */}
+        )}
+
       </div>
       {openStorage && (
         <AddEditStorage
