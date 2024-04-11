@@ -34,7 +34,7 @@ const Invoice = ({
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${GET_ALL_INVOICE}?Role=${user?.role === "1" ? "S" : ""}`,
+      url: `${GET_ALL_INVOICE}?Role=${user?.role === "1" ? "S" : "User"}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken
@@ -50,7 +50,7 @@ const Invoice = ({
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${GET_INVOICE_BY_ID}?ID=${selectInvoiceId}&Role=${user?.role === "1" ? "S" : ""}`,
+      url: `${GET_INVOICE_BY_ID}?ID=${selectInvoiceId}&Role=${user?.role === "1" ? "S" : "User"}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken
