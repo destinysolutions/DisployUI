@@ -589,7 +589,7 @@ const AddEventScheduleEditors = ({
         aria-hidden="true"
         className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
       >
-        <div className="relative p-4 w-full max-w-8xl max-h-full">
+        <div className="relative p-4 w-full max-w-8xl">
           {/* Modal content */}
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div className="relative">
@@ -605,7 +605,7 @@ const AddEventScheduleEditors = ({
                 />
               </div>
 
-              <div className="grid grid-cols-12 relative lg:max-h-[600px] md:max-h-[600px] sm:md:max-h-[500px] max-h-[400px] overflow-y-auto p-5">
+              <div className="grid grid-cols-12 relative max-h-[400px] vertical-scroll-inner p-5">
                 <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 rounded-lg">
                   <div className="my-4 relative ">
                     <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
@@ -620,9 +620,9 @@ const AddEventScheduleEditors = ({
                       }
                     />
                   </div>
-                  <div className="overflow-auto">
+                  
                     <div className="overflow-x-scroll sc-scrollbar rounded-lg bg-white shadow-2xl md:pb-1">
-                      <div className="max-w-full overflow-auto lg:max-h-[1340px] md:max-h-[1340px] sm:max-h-[1340px] max-h-[960px]">
+                      <div className="max-w-full custom-scrollbar max-h-[400px]">
                         <table
                           className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words "
                           cellPadding={15}
@@ -807,13 +807,11 @@ const AddEventScheduleEditors = ({
                         </table>
                       </div>
                     </div>
-                  </div>
                 </div>
 
                 <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-4 md:mt-4">
-                  <div className="bg-white shadow-2xl rounded-md max-h-[1340px]">
+                  <div className="bg-white shadow-2xl rounded-md max-h-[450px] vertical-scroll-inner">
                     <div className="p-3">
-                      <div>
                         <ul className="border-2 border-lightgray rounded">
                           <li className="border-b-2 border-lightgray p-3">
                             <h3>Title :</h3>
@@ -853,10 +851,11 @@ const AddEventScheduleEditors = ({
                             </div>
                           </li>
                         </ul>
-                      </div>
                     </div>
                     {repeatDayWarning && (
-                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
+                      <div className="bg-black bg-opacity-50 justify-center ite
+                      
+                      ms-center flex vertical-scroll-inner fixed inset-0 z-9990 outline-none focus:outline-none">
                         <div className="relative w-full max-w-xl max-h-full">
                           <div className="relative bg-white rounded-lg shadow">
                             <div className="py-6 text-center">

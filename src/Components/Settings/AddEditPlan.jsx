@@ -83,8 +83,7 @@ console.log('heading', heading)
                     </div>
 
                     <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 ">
-                        <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl">
-
+                        <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl max-h-80 vertical-scroll-inner">
                             <div className="grid grid-cols-12 gap-6">
                                 <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
                                     <div className="relative">
@@ -188,7 +187,7 @@ console.log('heading', heading)
                             </div>
                         </div>
 
-                        <div className='border-t dark:border-gray-600'>
+                        <div className='border-t border-gray-600'>
                             <div className='col-span-12 text-center mt-3'>
                                 <button className='bg-white text-primary text-base px-8 py-3 border border-primary shadow-md rounded-full hover:bg-primary hover:text-white'
                                     onClick={() => handleCreatePlan()}

@@ -569,6 +569,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
               {/* Place your video player here */}
               {showPreviewPopup && (
                 <>
+                <div className="max-h-96 custom-scrollbar">
                   <div
                     ref={modalRef}
                     className="video-preview md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
@@ -587,6 +588,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         className="text-3xl cursor-pointer text-white bg-black rounded-full"
                       />
                     </span>
+                  </div>
                   </div>
                   {/* // <div className="fixed z-30 bg-black/40 inset-0"></div> */}
                 </>
