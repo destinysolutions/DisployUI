@@ -2,7 +2,6 @@ import React from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 
 const ViewPlan = ({ toggleModal, selectPlan }) => {
-    console.log('selectPlan', selectPlan)
     return (
         <>
             <div

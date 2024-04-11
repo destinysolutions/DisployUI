@@ -4,6 +4,7 @@ import Registration from "../Pages/Registration";
 import ForgotPassword from "../Pages/ForgotPassword";
 import EmailVerified from "../Pages/EmailVerified";
 import TermsConditions from "../Pages/TermsConditions";
+import PlanIntegration from "../Components/PlanIntegration";
 
 const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
@@ -69,6 +70,15 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               }
             />
+            <Route
+            path="/PaymentIntegration/:planId"
+            element={
+              <PlanIntegration
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
             <Route
             path="/email-verified"
             element={

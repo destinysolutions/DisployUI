@@ -52,7 +52,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                     <span>$</span>
                                 </div>
                             </div>
-                            <div className='flex items-center justify-evenly'>
+                           <div className='flex items-center justify-evenly'>
                                 <div className='flex items-center gap-1'>
                                     <input
                                         type='text'
@@ -82,7 +82,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                         value={round((addScreen * 10), 2)}
                                     />
                                 </div>
-                            </div>
+                        </div>
                         </div>
 
                         <div className="flex items-center justify-center p-2 md:p-2 border-t border-gray-200 rounded-b dark:border-gray-600 gap-2">

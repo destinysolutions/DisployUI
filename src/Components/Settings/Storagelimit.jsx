@@ -23,7 +23,7 @@ const Storagelimit = () => {
   const dispatch = useDispatch();
   const [openStorage, setOpenStorage] = useState(false)
   const [openPayment, setOpenPayment] = useState(false)
-  const [addStorage, setAddStorage] = useState(20)
+  const [addStorage, setAddStorage] = useState(1)
   const [discountCoupon, setDiscountCoupon] = useState("")
   const [clientSecret, setClientSecret] = useState("");
   const appearance = {
@@ -84,7 +84,7 @@ const Storagelimit = () => {
   }
 
   const handlePay = () => {
-    const price = round((addStorage * 0.05), 2);
+    const price = round((addStorage * 3), 2);
     const params = {
       "items": {
         "id": "0",

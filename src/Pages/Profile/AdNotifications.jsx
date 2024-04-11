@@ -42,7 +42,6 @@ const AdNotifications = ({ sidebarOpen }) => {
   const [loadFirst, setloadFirst] = useState(true);
   const [label, setLabel] = useState("");
   const [editIdAds, setEditAdsId] = useState("");
-  console.log('editIdAds', editIdAds)
 
   useEffect(() => {
     if (loadFirst) {

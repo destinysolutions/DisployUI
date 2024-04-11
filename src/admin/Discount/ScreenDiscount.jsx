@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai';
 import { IoIosArrowBack } from 'react-icons/io'
 import { getTimeFromDate } from '../../Components/Common/Common';
@@ -8,7 +8,7 @@ import { handleAddEditDiscount } from '../../Redux/AdminSettingSlice';
 import { ADD_EDIT_DISCOUNT } from '../../Pages/Api';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-const ScreenDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData}) => {
+const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, selectData, getTimezone, selectedTimezoneName, setSelectedTimezoneName }) => {
     const { token } = useSelector((s) => s.root.auth);
     const dispatch = useDispatch()
     const authToken = `Bearer ${token}`;
@@ -22,11 +22,11 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData})
     const [selectEnd, setSelectEnd] = useState(false)
     const [discountCode, setDiscountCode] = useState("")
     const [segment, setSegment] = useState("")
-    console.log('segment', segment)
     const [purchaseAmount, setPurchaseAmount] = useState("")
     const [purchaseItems, setPurchaseItems] = useState("")
-
     const [amount, setAmount] = useState("")
+    const [timeZone, setTimeZone] = useState("")
+
     const [openBrowser, setOpenBrowser] = useState(false)
     const [date, setDate] = useState({
         startDate: new Date().toISOString().split('T')[0],
@@ -34,6 +34,8 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData})
         startTime: getTimeFromDate(new Date()),
         endTime: getTimeFromDate(new Date()),
     })
+
+
 
     const handleTabClick = (index) => {
         setActiveTab(index);
@@ -57,6 +59,30 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData})
         setDiscountCode(code);
     };
 
+    useEffect(() => {
+        if (selectData) {
+            setMethod(selectData?.method)
+            setDiscountCode(selectData?.discountCode)
+            setActiveTab(selectData?.percentageValue === 0 ? 0 : 0);
+            setAmount(selectData?.percentageValue === 0 ? 0 : selectData?.percentageValue)
+            setPurchase(selectData?.minimumPurchase);
+            setPurchaseAmount(selectData?.purchaseAmount)
+            setPurchaseItems(selectData?.purchaseItems);
+            setCustomer(selectData?.customer)
+            setSegment(selectData?.customerSegmentID)
+            setMaximumDiscount(selectData?.maximumDiscountUses)
+            setMaximumValue(selectData?.MaximumDiscount)
+            setShipping(selectData?.combinations)
+            setSelectedTimezoneName(selectData?.TimezoneName)
+            setDate({
+                startDate: selectData?.startDate.substring(0, 10),
+                endDate: selectData?.ActiveEndDate ? selectData?.endDate.substring(0, 10) : new Date().toISOString().split('T')[0],
+                startTime: selectData?.startTime.split('T')[1].split(':').slice(0, 2).join(':'),
+                endTime: selectData?.ActiveEndDate ? selectData?.endTime.split('T')[1].split(':').slice(0, 2).join(':') : getTimeFromDate(new Date()),
+            })
+        }
+    }, [selectData])
+
     const handleSave = () => {
         const Params = {
             DiscountType: discount,
@@ -70,13 +96,14 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData})
             Customer: customer,
             CustomerSegmentID: segment,
             MaximumDiscountUses: maximumDiscount,
-            MaximumDiscount: maximumDiscount === "Limit Number Of Times This Discount Can Be Used in Total"? maximumValue : "",
+            MaximumDiscount: maximumDiscount === "Limit Number Of Times This Discount Can Be Used in Total" ? maximumValue : "",
             Combinations: shipping,
             StartDate: date?.startDate,
             StartTime: date?.startTime,
             ActiveEndDate: selectEnd,
             EndDate: selectEnd ? date?.endDate : "",
             EndTime: selectEnd ? date?.endTime : "",
+            TimezoneName:selectedTimezoneName,
             FeatureList: ""
         }
         let config = {
@@ -93,11 +120,36 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData})
             if (res?.payload?.data) {
                 fetchDiscountData()
                 setDiscount("")
+                toggleDiscount();
             }
         }).catch((error) => {
             console.log('error', error)
         })
     }
+
+    const toggleDiscount = () => {
+        setMethod("Discount Code")
+        setDiscountCode("")
+        setActiveTab(0);
+        setAmount("")
+        setPurchase("Minimum Purchase Amount ($)");
+        setPurchaseAmount("")
+        setPurchaseItems("");
+        setCustomer("Specific customer segments")
+        setSegment("")
+        setSelectedTimezoneName()
+        setMaximumDiscount("Limit Number Of Times This Discount Can Be Used in Total")
+        setMaximumValue("")
+        setShipping(false)
+        setDate({
+            startDate: new Date().toISOString().split('T')[0],
+            endDate: new Date().toISOString().split('T')[0],
+            startTime: getTimeFromDate(new Date()),
+            endTime: getTimeFromDate(new Date()),
+        })
+    }
+
+
 
     return (
         <>
@@ -106,7 +158,10 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData})
                     <div className="title">
                         <h2
                             className="text-xl flex gap-2 cursor-pointer"
-                            onClick={() => setDiscount("")}
+                            onClick={() => {
+                                setDiscount("");
+                                toggleDiscount();
+                            }}
                         >
                             <IoIosArrowBack size={30} className='ml-2' />
                             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
@@ -119,6 +174,27 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData})
             <div className='border-b dark:border-gray-600'>
                 <div className="flex flex-wrap mx-3 mb-3">
                     <div className="w-full md:w-2/3 px-5">
+                        <div className="border border-light-blue rounded-xl mb-4 p-4">
+                            <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> TimeZone </h1>
+
+                            <div className="flex items-center">
+                                <div className="w-full md:w-full inputDiv relative mb-3">
+                                    <select
+                                        className="w-full border border-[#D5E3FF] rounded-lg p-2"
+                                        onChange={(e) => setSelectedTimezoneName(e.target.value)}
+                                        value={selectedTimezoneName}>
+                                        {getTimezone.map((timezone) => (
+                                            <option
+                                                value={timezone.timeZoneName}
+                                                key={timezone.timeZoneID}
+                                            >
+                                                {timezone.timeZoneName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <div className="border border-light-blue rounded-xl mb-4">
                             {/* <div className="flex items-center justify-between px-5 pb-5 border-b border-light-blue">
                                 <div className="title">
@@ -352,18 +428,20 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData})
                                 <h3 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">Summary</h3>
                             </div>
                             <div className="p-4">
-                                <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> Welcome20 </h1>
-                                <p className="mb-2"><strong>Type and Method</strong></p>
-                                <ul className="leading-8 mb-3">
-                                    <li>Amount off Screen</li>
-                                    <li>Code</li>
-                                </ul>
+                            <p className="mb-2"><strong>TimeZone</strong></p>
+                            <h1 className="font-medium lg:text-lg md:text-lg sm:text-xl mb-3"> {selectedTimezoneName} </h1>
+                            <p className="mb-2"><strong>{method}</strong></p>
+                            <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> {discountCode} </h1>
+                                {/*  <ul className="leading-8 mb-3">
+                            <li>Amount off Screen</li>
+                            <li>Code</li>
+                        </ul>*/}
                                 <p className="mb-2"><strong>Details</strong></p>
                                 <ul className="leading-8">
-                                    <li>No Minimum Purchase Requirement</li>
-                                    <li>For customer  who haven’t purchased</li>
-                                    <li>One use per customer</li>
-                                    <li>can’t combine with other discount</li>
+                                    <li>{purchase}</li>
+                                    <li>{allSegment?.filter((item) => item?.customerSegmentsID === segment)?.[0]?.segments}</li>
+                                    <li>{maximumDiscount}</li>
+                                    <li>{shipping ? "combine with other discount" : "can’t combine with other discount"}</li>
                                     <li>Active from today</li>
                                 </ul>
                             </div>

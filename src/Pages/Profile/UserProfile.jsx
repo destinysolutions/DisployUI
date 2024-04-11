@@ -95,7 +95,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
                     className={`${activeTab === value
                       ? "text-white items-center rounded-full bg-primary"
                       : ""
-                      } account-settings-tab-li lg:py-3 lg:px-4 py-2 px-2 w-auto border sm:text-sm border-primary rounded-full lg:mx-2 mx-1`}
+                      } account-settings-tab-li lg:py-3 lg:px-4 py-2 px-2 w-auto border sm:text-sm border-primary rounded-full lg:mx-2 mx-1 z-0`}
                   >
                     <div className="flex items-center sm:text-sm">
                       <span className="lg:mr-2 mr-1 lg:text-xl text-lg">

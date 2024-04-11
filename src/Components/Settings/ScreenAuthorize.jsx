@@ -43,7 +43,6 @@ const ScreenAuthorize = () => {
   const completeOtp = otpValues.join("");
   const onSubmit = (data) => {
     // Handle form submission here
-    console.log(data);
     const { phone } = data;
     if (!isPossiblePhoneNumber(phone) || !isValidPhoneNumber(phone)) {
       toast.remove();
@@ -70,7 +69,6 @@ const ScreenAuthorize = () => {
     toast.loading("Verifying....");
     dispatch(handlePhoneNumberverify({ config }))
       .then((res) => {
-        console.log("res", res);
         if (res?.payload?.status === true) {
           toast.remove();
           setOpenModel(true);
@@ -108,7 +106,6 @@ const ScreenAuthorize = () => {
       toast.loading("Validating....");
       dispatch(handleOTPverify({ config }))
         .then((response) => {
-          console.log("response", response);
           if (response?.payload?.status === true) {
             toast.remove();
             toast.success(response?.payload?.message);

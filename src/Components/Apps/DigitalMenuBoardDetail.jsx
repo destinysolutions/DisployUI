@@ -85,11 +85,9 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
 
   useEffect(() => {
-    console.log('customizeData', customizeData)
     let allData = []
     addCategory?.map((item) => {
       let arr = [];
-      console.log('item', item)
       if (customizeData?.EachPage === "auto") {
         let obj ={
           categoryname: item?.categoryname,
@@ -121,7 +119,6 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
       allData?.push(obj)
     })
     setPreviewData(allData)
-    console.log('allData', allData)
 
   }, [addCategory, customizeData])
 
@@ -178,7 +175,6 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log('response', response)
         toast.remove()
         if (window.history.length === 1) {
           localStorage.setItem("isWindowClosed", "true");

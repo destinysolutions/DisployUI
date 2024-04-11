@@ -5,17 +5,18 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { MdOutlineEdit, MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from 'react-icons/md'
 import '../../Styles/Settings.css'
 import { useSelector } from 'react-redux';
-import { ADD_EDIT_TRIAL_PLAN, GET_ALL_PLANS, GET_TRIAL_PERIOD_DETAILS } from '../../Pages/Api';
+import { ADD_EDIT_TRIAL_PLAN, GET_ALL_FEATURE_LIST, GET_ALL_PLANS, GET_TRIAL_PERIOD_DETAILS } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { handleEditTrialPlan, handleGetAllPlans, handleGetTrialPlan } from '../../Redux/CommonSlice';
+import { handleAllFeatureList, handleEditTrialPlan, handleGetAllPlans, handleGetTrialPlan } from '../../Redux/CommonSlice';
 import { BsEyeFill } from 'react-icons/bs';
 import ViewPlan from './ViewPlan';
 import { GrPlan } from "react-icons/gr";
 import TrialPlan from './TrialPlan';
+import AddEditPlan from './AddEditPlan';
+
 const Myplan = () => {
     const { token, user } = useSelector((state) => state.root.auth);
-    console.log('user', user)
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [myplan, setmyPlan] = useState([]);
@@ -26,6 +27,9 @@ const Myplan = () => {
     const [discouponcodes, setshowcouponcodes] = useState(false)
     const [openView, setOpenView] = useState("")
     const [selectPlan, setSelectPlan] = useState("")
+    const [featureList, setFeatureList] = useState([]);
+    const [heading,setHeading] = useState("Add")
+    const [loading, setLoading] = useState(true)
     const [trialData, setTrialData] = useState({
         trialDays: 14,
         isActive: true
@@ -35,6 +39,23 @@ const Myplan = () => {
         isActive: true
     })
 
+    const GetFeatureList = () => {
+        let config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: GET_ALL_FEATURE_LIST,
+            headers: {
+                Authorization: authToken,
+            },
+        };
+        dispatch(handleAllFeatureList({ config })).then((res) => {
+            if (res?.payload?.status === 200) {
+                setFeatureList(res?.payload?.data)
+            }
+        }).catch((error) => {
+            console.log('error', error)
+        })
+    }
 
     const handleStatusToggle = (index) => {
         const updatedPlans = [...myplan];
@@ -54,7 +75,12 @@ const Myplan = () => {
             },
         }
         dispatch(handleGetAllPlans({ config })).then((res) => {
-            setmyPlan(res?.payload?.data)
+            if (res?.payload?.status === 200) {
+                setmyPlan(res?.payload?.data)
+                setLoading(false)
+            }
+        }).catch((err) => {
+            console.log('err', err)
         })
     }
 
@@ -68,18 +94,24 @@ const Myplan = () => {
             },
         }
         dispatch(handleGetTrialPlan({ config })).then((res) => {
-            setTrialDetails(res?.payload?.data)
-            setTrialData(res?.payload?.data)
+            if (res?.payload?.status === 200) {
+                setTrialDetails(res?.payload?.data)
+                setTrialData(res?.payload?.data)
+            }
+        }).catch((err) => {
+            console.log('err', err)
         })
     }
 
     useEffect(() => {
         fetchAllPlan()
         fetchTrialDetails()
+        GetFeatureList()
     }, [])
 
     const toggleModal = () => {
         setOpenView(!openView)
+        setSelectPlan("")
     }
 
     const handleSaveTrialPlan = () => {
@@ -102,9 +134,13 @@ const Myplan = () => {
         })
     }
 
+    const handleAddPlan = () => {
+        showPlanModal(true)
+    }
+
     return (
         <>
-            <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
+            <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full h-full'>
                 <div className="flex items-center justify-between mx-2 mb-5">
                     <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
                         Pricing Plans
@@ -121,7 +157,10 @@ const Myplan = () => {
 
                             <button
                                 className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
-                                onClick={() => showPlanModal(true)}
+                                onClick={() => {
+                                    setHeading("Add")
+                                    handleAddPlan()
+                                }}
                             >
                                 <SlCalender className="text-2xl mr-1" />
                                 Add New Custom Plan
@@ -129,270 +168,124 @@ const Myplan = () => {
                         </div>
                     )}
                 </div>
-                <div className="flex flex-wrap -mx-3 mb-8">
-                    {myplan?.map((item) => {
-                        return (
-                            <div className="w-full md:w-1/3 px-3 mb-4">
-                                <div className="bg-[#ECF0F1] p-4 rounded-lg h-full">
-                                    <div className="flex justify-between">
-                                        <div className="role-name">
-                                            <p>Total 5 Users</p>
-                                            <h3 className="text-2xl font-semibold my-2">
-                                                {item?.planName}
-                                            </h3>
-                                            <p>A simple start for Everyone</p>
-                                        </div>
-                                        <div className="role-user ">
-                                            {user?.role === "1" && (
-                                                <div className="role-user flex justify-center">
-                                                    <span>
-                                                        <img src="./dist/images/1user-img.png" />
-                                                    </span>
-                                                    <span>
-                                                        <img src="./dist/images/2user-img.png" />
-                                                    </span>
-                                                    <span className="pulus-user text-xl text-white">
-                                                        +3
-                                                    </span>
+                {loading && (
+                    <div className="flex text-center m-5 justify-center items-center">
+                        <svg
+                            aria-hidden="true"
+                            role="status"
+                            className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                fill="currentColor"
+                            />
+                            <path
+                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                fill="#1C64F2"
+                            />
+                        </svg>
+
+                    </div>
+                )}
+                {!loading && (
+                    <>
+                        <div className="flex flex-wrap -mx-3 mb-8">
+                            {myplan?.map((item) => {
+                                return (
+                                    <div className="w-full md:w-1/3 px-3 mb-4">
+                                        <div className="bg-[#ECF0F1] p-4 rounded-lg h-full">
+                                            <div className="flex justify-between">
+                                                <div className="role-name">
+                                                    <p>Total 5 Users</p>
+                                                    <h3 className="text-2xl font-semibold my-2">
+                                                        {item?.planName}
+                                                    </h3>
+                                                    <p>A simple start for Everyone</p>
                                                 </div>
-                                            )}
-                                            <div className="role-user flex justify-center mt-6 gap-2">
-                                                {user?.role === "1" && (
-                                                    <div
-                                                        data-tip
-                                                        data-for="Edit"
-                                                        className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                    >
-                                                        <MdOutlineEdit />
+                                                <div className="role-user ">
+                                                    {user?.role === "1" && (
+                                                        <div className="role-user flex justify-center">
+                                                            <span>
+                                                                <img src="./dist/images/1user-img.png" />
+                                                            </span>
+                                                            <span>
+                                                                <img src="./dist/images/2user-img.png" />
+                                                            </span>
+                                                            <span className="pulus-user text-2xl text-white">
+                                                                +3
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                    <div className="role-user flex justify-center mt-6 gap-2">
+                                                        {user?.role === "1" && (
+                                                            <div
+                                                                data-tip
+                                                                data-for="Edit"
+                                                                className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                                onClick={() => {
+                                                                    setSelectPlan(item)
+                                                                    setHeading("Update")
+                                                                    handleAddPlan()
+                                                                }}
+                                                            >
+                                                                <MdOutlineEdit />
+                                                            </div>
+                                                        )}
+                                                        <div
+                                                            data-tip
+                                                            data-for="View"
+                                                            className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                            onClick={() => { setOpenView(true); setSelectPlan(item) }}
+                                                        >
+                                                            <BsEyeFill />
+                                                        </div>
                                                     </div>
-                                                )}
-                                                <div
-                                                    data-tip
-                                                    data-for="View"
-                                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                    onClick={() => { setOpenView(true); setSelectPlan(item) }}
-                                                >
-                                                    <BsEyeFill />
+
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
-                                </div>
+                                )
+                            })}
+
+                        </div>
+                        {user?.role === "1" && (
+                            <div className="flex items-center justify-center w-full mt-12">
+                                <label
+                                    htmlFor="toogleA"
+                                    className="flex items-center cursor-pointer border border-blue-500 bg-blue-lighter p-4 rounded-full">
+                                    <div className="text-3xl font-semibold mr-5">
+                                        Start with a {trialDetails?.trialDays}-days FREE trial!
+                                    </div>
+
+                                    <div className="relative">
+                                        {/*                         <input id="toogleA" type="checkbox" className="sr-only" checked={trialData?.isActive} />
+    
+                                    <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+    
+                    <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>*/}
+                                        <label className="relative inline-flex items-center me-5 cursor-not-allowed mt-1">
+                                            <input
+                                                type="checkbox"
+                                                checked={trialDetails?.isActive}
+                                                className="sr-only peer"
+                                                disabled
+
+                                            />
+                                            <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                        </label>
+                                    </div>
+                                </label>
                             </div>
-                        )
-                    })}
-
-                </div>
-                {user?.role === "1" && (
-                    <div className="flex items-center justify-center w-full mt-12">
-                        <label
-                            htmlFor="toogleA"
-                            className="flex items-center justify-between cursor-pointer border border-blue-500 bg-blue-lighter py-3 px-8 rounded-full">
-                            <div className="text-2xl font-semibold mr-4">
-                                Start with a {trialDetails?.trialDays}-days FREE trial!
-                            </div>
-
-                            
-                                <div className="relative flex items-center justify-center cursor-not-allowed ">
-                                    <input
-                                        type="checkbox"
-                                        checked={trialDetails?.isActive}
-                                        className="sr-only peer"
-                                        disabled
-
-                                    />
-                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
-                                </div>
-                            
-                        </label>
-                    </div>
+                        )}
+                    </>
                 )}
             </div>
             {planModel && (
-                <>
-                    <div className="backdrop">
-                        <div className="user-model">
-
-                            <div className="hours-heading flex justify-between items-center p-5 border-b border-gray sticky top-0 shadow-md z-[99] bg-white">
-                                <h1 className='text-lg font-medium text-primary'>Add New Custom Plan</h1>
-                                <AiOutlineCloseCircle className='text-4xl text-primary cursor-pointer' onClick={() => showPlanModal(false)} />
-
-                            </div>
-
-                            <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 ">
-                                <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl">
-
-                                    <div className="grid grid-cols-12 gap-6">
-                                        <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
-                                            <div className="relative">
-                                                <label className="formLabel">Plan Name</label>
-                                                <input type='text' placeholder='Enter Plan Name' name="plan_name" className="formInput" />
-                                            </div>
-                                        </div>
-                                        <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
-                                            <div className="relative">
-                                                <label className="formLabel">Total Screens</label>
-                                                <input type='text' placeholder='1' name="totalscreen" className="formInput" />
-                                            </div>
-                                        </div>
-                                        <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
-                                            <div className="relative">
-                                                <label className="formLabel">Type</label>
-                                                <select className="formInput">
-                                                    <option selected>Select Type</option>
-                                                    <option>Basic</option>
-                                                </select>
-
-                                            </div>
-                                        </div>
-                                        <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
-                                            <div className="relative">
-                                                <label className="formLabel">Storage</label>
-                                                <input type='text' placeholder='Enter Storage' name="storage" className="formInput" />
-                                            </div>
-                                        </div>
-
-                                        <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
-                                            <div className="relative">
-                                                <label className="formLabel">Cost</label>
-                                                <input type='text' placeholder='Enter Plan Cost' name="cost" className="formInput" />
-                                            </div>
-                                        </div>
-
-
-                                        <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
-                                            <div className="relative">
-                                                <label className="formLabel">Status</label>
-                                                <select className="formInput">
-                                                    <option>Active</option>
-                                                    <option>Deactive</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className='col-span-12'>
-                                            <div className="relative">
-                                                <label className="formLabel">Discount</label>
-                                                <span
-                                                    className="flex justify-between formInput"
-                                                    onClick={() =>
-                                                        setshowdiscoupon(!discoupon)
-                                                    }
-                                                >
-                                                    <label> Select Discount coupon Codes </label>
-                                                    {discoupon ? (
-                                                        <MdOutlineKeyboardArrowUp className="text-2xl font-black cursor-pointer" />
-                                                    ) : (
-                                                        <MdOutlineKeyboardArrowDown className="text-2xl font-black cursor-pointer" />
-                                                    )}
-
-                                                </span>
-                                            </div>
-                                            {
-                                                discoupon && (
-                                                    <div className=" relative">
-                                                        <ul className=" absolute top-0 left-0 bg-white rounded-br-lg rounded-bl-lg w-full drop-shadow-xl z-10 border-[#41479b78] border p-3">
-                                                            <li className="border border-[#D5E3FF] rounded-md p-3">
-                                                                <div className="relative">
-                                                                    <div className="relative">
-                                                                        <span className="flex justify-between" onClick={() => setshowcouponcodes(!discouponcodes)}>
-                                                                            <label> With coupon Codes </label>
-                                                                            {discouponcodes ? (
-                                                                                <MdOutlineKeyboardArrowUp className="text-2xl font-black cursor-pointer" />
-                                                                            ) : (
-                                                                                <MdOutlineKeyboardArrowDown className="text-2xl font-black cursor-pointer" />
-                                                                            )}
-                                                                        </span>
-                                                                        {/* discoupon code */}
-                                                                        {
-                                                                            discouponcodes && (
-                                                                                <>
-                                                                                    <div className='border-[#41479b78] border-t py-3 mt-2'>
-                                                                                        <button className=" bg-primary text-white border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50">
-                                                                                            Add new Discount
-                                                                                        </button>
-                                                                                        <div className='clear-both overflow-x-auto'>
-                                                                                            <table cellPadding={5} className='couponcode-table'>
-                                                                                                <thead>
-                                                                                                    <tr>
-                                                                                                        <th className='text-SlateBlue text-sm'>Discounted Value</th>
-                                                                                                        <th className='text-SlateBlue text-sm'>Information</th>
-                                                                                                        <th className='text-SlateBlue text-sm'>Status</th>
-                                                                                                    </tr>
-                                                                                                </thead>
-                                                                                                <tbody>
-                                                                                                    <tr>
-                                                                                                        <td className='text-sm text-[#5E5E5E]'>50% Off</td>
-                                                                                                        <td className='text-sm text-[#5E5E5E]'>Get 50% Off on your first 5 screens</td>
-                                                                                                        <td>
-                                                                                                            <label className="inline-flex relative items-center  cursor-pointer">
-                                                                                                                <input
-                                                                                                                    type="checkbox"
-                                                                                                                    className="sr-only peer"
-                                                                                                                    checked
-                                                                                                                    readOnly
-                                                                                                                />
-                                                                                                                <div
-                                                                                                                    onClick={() => {
-                                                                                                                        setStatusEnabled(!Statusenabled);
-                                                                                                                    }}
-                                                                                                                    className="w-10 h-5 bg-[#009618] rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all "
-                                                                                                                ></div>
-                                                                                                            </label>
-                                                                                                        </td>
-                                                                                                    </tr>
-                                                                                                    <tr>
-                                                                                                        <td className='text-sm text-[#5E5E5E]'>50% Off</td>
-                                                                                                        <td className='text-sm text-[#5E5E5E]'>Get 50% Off on your first 5 screens</td>
-                                                                                                        <td>
-                                                                                                            <label className="inline-flex relative items-center  cursor-pointer">
-                                                                                                                <input
-                                                                                                                    type="checkbox"
-                                                                                                                    className="sr-only peer"
-                                                                                                                    checked
-                                                                                                                    readOnly
-                                                                                                                />
-                                                                                                                <div
-                                                                                                                    onClick={() => {
-                                                                                                                        setStatusEnabled(!Statusenabled);
-                                                                                                                    }}
-                                                                                                                    className="w-10 h-5 bg-[#009618] rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all "
-                                                                                                                ></div>
-                                                                                                            </label>
-                                                                                                        </td>
-                                                                                                    </tr>
-                                                                                                </tbody>
-                                                                                            </table>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </>
-                                                                            )
-                                                                        }
-                                                                    </div>
-                                                                </div>
-                                                            </li>
-                                                            <li className="border border-[#D5E3FF] rounded-md p-3 mt-2">
-                                                                <div className="relative">
-                                                                    <span className="flex justify-between">
-                                                                        <label> Without coupon Codes </label>
-                                                                        <MdOutlineKeyboardArrowDown className=" text-xl font-black cursor-pointer" />
-                                                                    </span>
-                                                                </div>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                )
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='col-span-12 text-center'>
-                                    <button className='bg-white text-primary text-base px-8 py-3 border border-primary shadow-md rounded-full hover:bg-primary hover:text-white'>Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </>
+                <AddEditPlan showPlanModal={showPlanModal} featureList={featureList} selectPlan={selectPlan} setSelectPlan={setSelectPlan} heading={heading}/>
             )}
             {openView && (
                 <ViewPlan toggleModal={toggleModal} selectPlan={selectPlan} />

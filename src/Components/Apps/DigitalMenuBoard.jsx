@@ -84,7 +84,6 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
         },
       })
       .then((response) => {
-        console.log('response', response)
         setInstanceData(response?.data?.data);
         setLoading(false);
       });
@@ -233,7 +232,6 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log('response', response)
         if (response?.data?.status === true) {
           const data = response?.data?.data;
           if (showpopup) {

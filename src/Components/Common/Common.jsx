@@ -435,7 +435,6 @@ export function generateAllCategory(addCategory) {
 }
 
 export function generateCategorybyID(data) {
-  console.log('data', data)
   const allcategory = data?.category?.map(cate => {
     const allitem = cate?.items?.map(item => ({
       name: item.itemName,
@@ -494,4 +493,11 @@ export function chunkArray(array, size) {
     chunkedArray.push(array.slice(i, i + size));
   }
   return chunkedArray;
+}
+
+export function multiOptionsFeature(arr) {
+  return arr.map(feature => ({
+    label: feature.name,
+    value: feature.name,
+  }));
 }

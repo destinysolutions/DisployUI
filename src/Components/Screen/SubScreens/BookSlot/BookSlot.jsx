@@ -60,7 +60,6 @@ const BookSlot = ({ sidebarOpen, setSidebarOpen }) => {
     FetchScreen();
   }, []);
 
-  const [selectedOptions, setSelectedOptions] = useState(null);
 
   const handleSelectChange = (selected) => {
     setSelectedScreens(selected);

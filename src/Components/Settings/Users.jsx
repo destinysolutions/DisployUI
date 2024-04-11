@@ -569,7 +569,6 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
         toast.error("Error updating password. Please try again.");
       } finally {
         setSubmitting(false);
-        console.log("------------- YES --------------- Password Update ");
       }
     },
   });

@@ -224,6 +224,7 @@ export const ASSIGN_SCREEN_DIGITAL_MENU = `${baseUrl}DigitalMenu/AssignDigitalMe
 // Billing
 
 export const GET_ALL_PLANS = `${baseUrl}Common/GetAllPlans`
+export const ADD_EDTT_PLAN = `${baseUrl}Common/AddEditPlan`
 export const GET_TRIAL_PERIOD_DETAILS = `${baseUrl}Common/GetTrialPeriodDetails`
 export const ADD_EDIT_TRIAL_PLAN = `${baseUrl}Common/EditTrialPeriod`
 export const PAYMENT_INTENT_CREATE_REQUEST = `${baseUrl}Common/PaymentIntentCreateRequest`
@@ -239,13 +240,13 @@ export const GET_ALL_REMOVE_NOTIFICATIONS = `${baseUrl}Common/GetRemoveAllNotifi
 
 export const GET_ALL_INVOICE = `${baseUrl}Invoice/GetAllInvoiceMaster`
 export const GET_INVOICE_BY_ID = `${baseUrl}Invoice/GetInvoiceById`
+export const SEND_INVOICE = `${baseUrl}Invoice/GetInvoiceById`
 
 // Discount
 
 export const GET_ALL_DISCOUNT = `${baseUrl}DiscountMaster/GetAllDiscountMaster`
 export const GET_DISCOUNT_BY_ID = `${baseUrl}DiscountMaster/GetDiscountMaster`
 export const ADD_EDIT_DISCOUNT = `${baseUrl}DiscountMaster/AddorUpdateDiscountMaster`
+export const GET_ALL_FEATURE_LIST = `${baseUrl}Common/GetAllPlansFeatures`
 export const DELETE_DISCOUNT = `${baseUrl}DiscountMaster/DeleteDiscount`
 export const GET_ALL_SEGMENT = `${baseUrl}common/GetAllSegment`
-
-

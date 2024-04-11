@@ -48,7 +48,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [Testasset, setTestasset] = useState({});
   const [compositionName, setCompositionName] = useState("");
   const [assetData, setAssetData] = useState([]);
-  console.log('assetData', assetData)
   const [addAsset, setAddAsset] = useState([]);
   const [edited, setEdited] = useState(false);
   const [loading, setLoading] = useState(false);

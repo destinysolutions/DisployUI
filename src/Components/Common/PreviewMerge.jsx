@@ -3,7 +3,6 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import ReactPlayer from "react-player";
 
 const PreviewMerge = ({ assetPreview, setAssetPreviewPopup }) => {
-  console.log("assetPreview", assetPreview);
 
   for (let i = 0; i < assetPreview?.rows; i++) {
     for (let j = 0; j < assetPreview?.columns; j++) {
@@ -19,8 +18,7 @@ const PreviewMerge = ({ assetPreview, setAssetPreviewPopup }) => {
     { length: assetPreview?.columns },
     (_, index) => index + 1
   );
-  console.log("Rows", Rows);
-  console.log("Cols", Cols);
+
   return (
     <>
       <div

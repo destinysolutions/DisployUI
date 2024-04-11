@@ -201,7 +201,6 @@ const Defaultmedia = ({ permissions }) => {
           assetFolderPath: response?.data?.data?.assetFolderPath,
           assetType: response?.data?.data?.assetType,
         };
-        console.log('Params', Params)
         socket.emit("EmergencyAsset", Params);
         handleGetEmergencyAsset();
       })

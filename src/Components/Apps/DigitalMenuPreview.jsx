@@ -16,7 +16,6 @@ const DigitalMenuPreview = ({ customizeData, PreviewData }) => {
         progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
     };
 
-    console.log('PreviewData', PreviewData)
     return (
         <>
             <div className="mt-6">

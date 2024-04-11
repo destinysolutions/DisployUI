@@ -97,7 +97,6 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue })
                     PaymentValue: PaymentValue,
                     organizationId:user?.organizationId
                 }
-                console.log('params', params)
 
                 const config = {
                     method: "post",

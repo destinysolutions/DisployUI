@@ -5,7 +5,7 @@ import ScreenDiscount from './Discount/ScreenDiscount';
 import FeatureDiscount from './Discount/FeatureDiscount';
 import TrialPeriodDiscount from './Discount/TrialPeriodDiscount';
 import CustomDiscount from './Discount/CustomDiscount';
-import { ADD_EDIT_DISCOUNT, DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID } from '../Pages/Api';
+import { ADD_EDIT_DISCOUNT, DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID, GET_SCEDULE_TIMEZONE } from '../Pages/Api';
 import { handleAddEditDiscount, handleDeleteDiscount, handleGetAllDiscount, handleGetAllSegment } from '../Redux/AdminSettingSlice';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -15,6 +15,8 @@ import { RiDeleteBin5Line } from 'react-icons/ri';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import moment from 'moment';
+import axios from 'axios';
+import { MdOutlineEdit } from 'react-icons/md';
 const Discount = ({ sidebarOpen }) => {
     const { token } = useSelector((s) => s.root.auth);
     const dispatch = useDispatch()
@@ -22,15 +24,17 @@ const Discount = ({ sidebarOpen }) => {
     const [openModal, setOpenModal] = useState(false)
     const [discount, setDiscount] = useState("")
     const [allDiscount, setAllDiscount] = useState([]);
-    const [selectData, setSelectData] = useState()
+    const [selectData, setSelectData] = useState("")
     const [allSegment, setAllSegment] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); // Adjust items per page as needed
     const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
     const [sortedField, setSortedField] = useState(null);
     const [loading, setLoading] = useState(true)
-    const totalPages = Math.ceil(allDiscount?.length / itemsPerPage);
+    const [getTimezone, setTimezone] = useState([]);
+  const [selectedTimezoneName, setSelectedTimezoneName] = useState();
 
+    const totalPages = Math.ceil(allDiscount?.length / itemsPerPage);
     // Function to sort the data based on a field and order
     const sortData = (data, field, order) => {
         const sortedData = [...data];
@@ -64,6 +68,24 @@ const Discount = ({ sidebarOpen }) => {
         }
     };
 
+    useEffect(() => {
+        axios
+            .get(GET_SCEDULE_TIMEZONE, {
+                headers: {
+                    Authorization: authToken,
+                },
+            })
+            .then((response) => {
+                setTimezone(response.data.data);
+                const timezone = new Date()
+                    .toLocaleDateString(undefined, {
+                        day: "2-digit",
+                        timeZoneName: "long",
+                    })
+                    .substring(4);
+                setSelectedTimezoneName(timezone);
+            })
+    }, [])
 
     const fetchDiscountData = () => {
         let config = {
@@ -126,7 +148,6 @@ const Discount = ({ sidebarOpen }) => {
             },
         }
         dispatch(handleDeleteDiscount({ config })).then((res) => {
-            console.log('res', res)
             if (res?.payload?.status) {
                 setDiscount(res?.payload?.data?.discountType)
                 setSelectData(res?.payload?.data);
@@ -160,7 +181,6 @@ const Discount = ({ sidebarOpen }) => {
                 if (result.isConfirmed) {
                     dispatch(handleDeleteDiscount({ config }))
                         .then((res) => {
-                            console.log('res', res)
                             if (res?.payload?.status) {
                                 toast.success("Delete data successFully");
                                 fetchDiscountData()
@@ -280,14 +300,14 @@ const Discount = ({ sidebarOpen }) => {
                                                                 )}
                                                             </p>
                                                         </td>
-                                                        <td className="px-5 py-3 text-lg ">
-                                                        <p className="text-gray-900 whitespace-no-wrap">
-                                                            {moment(item?.endDate).format(
-                                                                "YYYY-MM-DD hh:mm"
-                                                            )}
-                                                        </p>
-                                                    </td>
-                                                        <td className="px-5 py-3 text-lg ">
+                                                        <td className="px-5 py-3 text-lg text-center">
+                                                            <p className="text-gray-900 whitespace-no-wrap">
+                                                                {item?.endDate !== null && moment(item?.endDate).format(
+                                                                    "YYYY-MM-DD hh:mm"
+                                                                )}
+                                                            </p>
+                                                        </td>
+                                                        <td className="px-5 py-3 text-lg text-center">
                                                             <div className="flex gap-4 justify-center items-center">
                                                                 <>
                                                                     <div
@@ -298,10 +318,10 @@ const Discount = ({ sidebarOpen }) => {
                                                                             handleEditDiscount(item?.discountID)
                                                                         }}
                                                                     >
-                                                                        <BsEyeFill />
+                                                                        <MdOutlineEdit />
                                                                     </div>
 
-                                                                    <div
+                                                                    {/* <div
                                                                         data-tip
                                                                         data-for="Delete"
                                                                         className="cursor-pointer text-white bg-rose-500 hover:bg-rode-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -310,7 +330,7 @@ const Discount = ({ sidebarOpen }) => {
                                                                         }
                                                                     >
                                                                         <RiDeleteBin5Line />
-                                                                    </div>
+                                                                    </div>*/}
                                                                 </>
                                                             </div>
                                                         </td>
@@ -395,10 +415,10 @@ const Discount = ({ sidebarOpen }) => {
                 </div>
             )}
             {discount === "Screen" && (
-                <ScreenDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData}/>
+                <ScreenDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} getTimezone={getTimezone} setSelectedTimezoneName={setSelectedTimezoneName} selectedTimezoneName={selectedTimezoneName}/>
             )}
             {discount === "Features" && (
-                <FeatureDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData}/>
+                <FeatureDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} getTimezone={getTimezone} setSelectedTimezoneName={setSelectedTimezoneName} selectedTimezoneName={selectedTimezoneName}/>
             )}
             {discount === "Trial Period" && (
                 <TrialPeriodDiscount discount={discount} setDiscount={setDiscount} />

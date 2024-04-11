@@ -71,7 +71,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const modalRef = useRef(null);
 
   const { id } = useParams();
-  console.log('assetData', assetData)
 
   const totalDurationSeconds = addAsset
     .map((e, index) => e[index + 1])

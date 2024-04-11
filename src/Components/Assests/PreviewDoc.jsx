@@ -2,8 +2,7 @@ import React from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
 const PreviewDoc = ({ HandleClose, fileType, assetFolderPath }) => {
-  console.log('fileType', fileType)
-  console.log('assetFolderPath', assetFolderPath)
+
   let viewerSrc = "";
 
   if (fileType === ".pdf" || fileType === ".txt") {
