@@ -79,7 +79,7 @@ const PlanIntegration = () => {
         const params = {
             "items": {
                 "id": "0",
-                "amount": selectedPlan?.planPrice
+                "amount": (selectedPlan?.planPrice * 100)
             }
         }
         const config = {

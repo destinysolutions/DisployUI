@@ -22,15 +22,24 @@ import { FiCodesandbox } from "react-icons/fi";
 import SupplierPlan from "./SupplierPlan";
 import Footer from "../Components/Footer";
 import Billing from "../Components/Settings/Billing/Billing";
+import { useDispatch } from "react-redux";
+import { handleSendInvoice } from "../Redux/PaymentSlice";
+import { SEND_INVOICE } from "../Pages/Api";
+import { useSelector } from "react-redux";
 
 const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
   AdminSetting.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const dispatch = useDispatch()
+  const { token } = useSelector((s) => s.root.auth);
+  const authToken = `Bearer ${token}`;
   const [STabs, setSTabs] = useState(5);
   const [searchValue, setSearchValue] = useState("");
   const [showInvoice, setShowInvoice] = useState(false);
+  const [InvoiceID, setInvoiceID] = useState("");
+
   const InvoiceRef = useRef(null);
   const [permissions, setPermissions] = useState({
     isDelete: false,
@@ -42,7 +51,6 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
     setSTabs(id);
   }
   const DownloadInvoice = () => {
-    console.log('InvoiceRef', InvoiceRef)
     const InvoiceNode = InvoiceRef.current;
     if (InvoiceNode) {
       html2pdf(InvoiceNode, {
@@ -51,9 +59,27 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      });     
+      });
     }
   };
+
+  const SendInvoice = () => {
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${SEND_INVOICE}}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken
+      },
+    }
+    dispatch(handleSendInvoice({ config })).then((res) => {
+      if (res?.payload?.status) {
+
+      }
+    }).catch((error) => console.log('error', error))
+  }
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -73,13 +99,14 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             {showInvoice && STabs === 6 && (
               <div className="flex">
-                {/*<button
+                <button
                   type="button"
                   className="px-5 bg-primary flex items-center gap-2 text-white rounded-full py-2 border border-primary me-3 "
+                  onClick={() => SendInvoice()}
                 >
                   <BsFillSendFill />
                   Send Invoice
-            </button>*/}
+                </button>
                 <button
                   className="bg-white text-primary text-base px-5 flex items-center gap-2 py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                   type="button"
@@ -196,6 +223,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                     setShowInvoice={setShowInvoice}
                     InvoiceRef={InvoiceRef}
                     DownloadInvoice={DownloadInvoice}
+                    setInvoiceID={setInvoiceID}
                   />
                 </div>
               )}
