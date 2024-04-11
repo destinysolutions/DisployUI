@@ -18,7 +18,7 @@ const Invoice = ({
   sidebarOpen
 }) => {
   const dispatch = useDispatch()
-  const { token } = useSelector((s) => s.root.auth);
+  const {user, token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   const [invoiceData, setInvoiceData] = useState([])
   const [selectData, setSelectData] = useState(null)
@@ -30,12 +30,11 @@ const Invoice = ({
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = invoiceData.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(invoiceData?.length / itemsPerPage);
-
   const fetchAllInvoice = () => {
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: GET_ALL_INVOICE,
+      url: `${GET_ALL_INVOICE}?Role=${user?.role === "1" ? "S" : ""}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken
@@ -51,7 +50,7 @@ const Invoice = ({
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${GET_INVOICE_BY_ID}?ID=${selectInvoiceId}`,
+      url: `${GET_INVOICE_BY_ID}?ID=${selectInvoiceId}&Role=${user?.role === "1" ? "S" : ""}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken
