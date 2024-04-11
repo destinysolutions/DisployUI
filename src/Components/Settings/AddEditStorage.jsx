@@ -53,7 +53,7 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
                                             disabled
                                             type='number'
                                             className="relative border border-black rounded-md p-2 w-24"
-                                            value={round((addStorage * 0.05), 2)}
+                                            value={round((addStorage * 3), 2)}
                                         />
                                         <span>$</span>
                                     </div>
