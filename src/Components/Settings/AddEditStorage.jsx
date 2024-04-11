@@ -58,7 +58,7 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
                                         <span>$</span>
                                     </div>
                                 </div>
-                                <div className='flex items-center justify-evenly'>
+                              {/*  <div className='flex items-center justify-evenly'>
                                     <div className='flex items-center gap-1'>
                                         <input
                                             type='text'
@@ -88,7 +88,7 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
                                             value={round((addStorage * 0.05), 2)}
                                         />
                                     </div>
-                                </div>
+                            </div>*/}
                             </div>
 
                             <div className="flex items-center justify-center p-2 md:p-2 border-t border-gray-200 rounded-b dark:border-gray-600 gap-2">
