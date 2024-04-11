@@ -284,7 +284,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="flex items-center justify-end">
                 <button
                   onClick={() => setAddUserModal(true)}
-                  className="border border-primary rounded-full px-3 py-2 not-italic font-medium"
+                  className="flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-3 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 >
                   Add User
                 </button>
@@ -299,9 +299,9 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                   cellPadding={15}
                 >
                   <thead>
-                    <tr className="items-center table-head-bg">
-                      <th className="text-[#5A5881] text-base font-semibold text-center flex items-center">
-                        <div className="flex w-full items-center justify-center">
+                    <tr className="text-left table-head-bg">
+                      <th className="text-[#5A5881] text-base font-semibold ">
+                        <div className="flex w-full items-center">
                           User Name
                           <svg
                             className="w-3 h-3 ms-1.5 cursor-pointer"
@@ -315,25 +315,25 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                           </svg>
                         </div>
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                      <th className="text-[#5A5881] text-base font-semibold ">
                         First Name
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                      <th className="text-[#5A5881] text-base font-semibold ">
                         Last Name
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                      <th className="text-[#5A5881] text-base font-semibold ">
                         Phone Number
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                      <th className="text-[#5A5881] text-base font-semibold ">
                         User Type
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                      <th className="text-[#5A5881] text-base font-semibold ">
                         Email
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                      <th className="text-[#5A5881] text-base font-semibold ">
                         Active
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold text-center">
+                      <th className="text-[#5A5881] text-base font-semibold ">
                         Action
                       </th>
                     </tr>
@@ -372,35 +372,35 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                       sortedAndPaginatedData.map((item, index) => {
                         return (
                           <tr className="border-b border-b-[#E4E6FF]" key={index}>
-                            <td className="text-[#5E5E5E] text-center">
+                            <td className="mw-200 text-[#5E5E5E] ">
                               {item?.userName}
                             </td>
                             <td
-                              className="text-[#5E5E5E] text-center cursor-pointer"
+                              className="mw-200 text-[#5E5E5E] "
                             >
                               {item?.firstName}
                             </td>
                             <td
-                              className="text-[#5E5E5E] text-center cursor-pointer"
+                              className="mw-200 text-[#5E5E5E] "
                             >
                               {item?.lastName}
                             </td>
                             <td
-                              className="text-[#5E5E5E] text-center cursor-pointer"
+                              className="mw-200 text-[#5E5E5E] "
                             >
                               {item?.phone}
                             </td>
                             <td
-                              className="text-[#5E5E5E] text-center cursor-pointer"
+                              className="mw-200 text-[#5E5E5E] "
                             >
                               {item?.userTypeName}
                             </td>
                             <td
-                              className="text-[#5E5E5E] text-center cursor-pointer"
+                              className="mw-200 text-[#5E5E5E] "
                             >
                               {item?.email}
                             </td>
-                            <td className="px-6 py-4 capitalize">
+                            <td className="mw-200 px-6 py-4 capitalize">
                               <span>
                                 {item?.isActive ? (
                                   <span
@@ -420,7 +420,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                               </span>
                             </td>
 
-                            <td className="px-6 py-4">
+                            <td className="mw-200 px-6 py-4">
                               <div className="flex gap-2">
                                 <div className="cursor-pointer text-xl flex gap-4">
                                   <button

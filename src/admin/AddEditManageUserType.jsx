@@ -26,7 +26,7 @@ const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive ,Ha
                             />
                         </div>
                         {/* Modal body */}
-                        <div className="p-6">
+                        <div className="p-6 max-h-96 vertical-scroll-inner">
                             <div className="space-y-3 md:space-y-5">
                                 <div className="flex flex-col">
                                     <div className="relative w-full">

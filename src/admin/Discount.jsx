@@ -199,10 +199,9 @@ const Discount = ({ sidebarOpen }) => {
                             <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
                                 <table
                                     className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
-                                    cellPadding={15}
-                                >
-                                    <thead className="items-center table-head-bg">
-                                        <tr>
+                                    cellPadding={15}                                >
+                                    <thead className="table-head-bg">
+                                        <tr className='text-left'>
                                             <th className="text-[#5A5881] text-base font-semibold text-left flex items-center">
                                                 <div className="flex w-full items-center justify-center">
                                                     Discount Type
@@ -218,16 +217,16 @@ const Discount = ({ sidebarOpen }) => {
                                                     </svg>
                                                 </div>
                                             </th>
-                                            <th className="px-5 py-3 text-center text-lg font-semibold text-gray-900 items-center">
+                                            <th className="px-5 py-3 text-lg font-semibold text-gray-900 text-left">
                                                 Discount Code
                                             </th>
-                                            <th className="px-5 py-3 text-center text-lg font-semibold text-gray-900 items-center">
+                                            <th className="px-5 py-3 text-lg font-semibold text-gray-900 text-left">
                                                 Start Date
                                             </th>
-                                            <th className="px-5 py-3 text-center text-lg font-semibold text-gray-900 items-center">
+                                            <th className="px-5 py-3 text-lg font-semibold text-gray-900 text-left">
                                                 End Date
                                             </th>
-                                            <th className="px-5 py-3 text-center text-lg font-semibold text-gray-900 ">
+                                            <th className="px-5 py-3 text-lg font-semibold text-gray-900 text-left">
                                                 Action
                                             </th>
                                         </tr>
@@ -265,30 +264,30 @@ const Discount = ({ sidebarOpen }) => {
                                             sortedAndPaginatedData?.length > 0 &&
                                             sortedAndPaginatedData.map((item, index) => {
                                                 return (
-                                                    <tr className="border-b border-gray-200 bg-white" key={index}>
-                                                        <td className="px-5 py-3 text-lg text-center">
+                                                    <tr className="border-b border-gray-200 bg-white text-left" key={index}>
+                                                        <td className="px-5 py-3 text-lg ">
                                                             <p className="text-gray-900 whitespace-no-wrap">
                                                                 {item?.discountType}
                                                             </p>
                                                         </td>
-                                                        <td className="px-5 py-3 text-lg text-center">
+                                                        <td className="px-5 py-3 text-lg ">
                                                             <p className="text-gray-900 whitespace-no-wrap">{item?.discountCode}</p>
                                                         </td>
-                                                        <td className="px-5 py-3 text-lg text-center">
+                                                        <td className="px-5 py-3 text-lg ">
                                                             <p className="text-gray-900 whitespace-no-wrap">
                                                                 {moment(item?.startDate).format(
                                                                     "YYYY-MM-DD hh:mm"
                                                                 )}
                                                             </p>
                                                         </td>
-                                                        <td className="px-5 py-3 text-lg text-center">
+                                                        <td className="px-5 py-3 text-lg ">
                                                         <p className="text-gray-900 whitespace-no-wrap">
                                                             {moment(item?.endDate).format(
                                                                 "YYYY-MM-DD hh:mm"
                                                             )}
                                                         </p>
                                                     </td>
-                                                        <td className="px-5 py-3 text-lg text-center">
+                                                        <td className="px-5 py-3 text-lg ">
                                                             <div className="flex gap-4 justify-center items-center">
                                                                 <>
                                                                     <div

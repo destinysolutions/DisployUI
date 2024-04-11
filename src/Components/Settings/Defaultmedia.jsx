@@ -314,28 +314,28 @@ const Defaultmedia = ({ permissions }) => {
       <div className="Tabbutton">
         <ul className="flex items-center w-full">
           <li
-            className="lg:text-lg md:text-lg sm:text-sm xs:text-sm font-medium  w-1/2 text-center"
+            className="lg:text-lg md:text-lg sm:text-sm xs:text-sm font-medium w-1/2 text-center"
             onClick={() => updateMediaTab(1)}
           >
             <button
               className={
                 mediaTabs === 1
-                  ? "Mediatabshow mediatabactive rounded-tl-xl "
-                  : "Mediatab"
+                  ? "Mediatabshow mediatabactive rounded-tl-md "
+                  : "Mediatab rounded-tl-md"
               }
             >
               Default Media
             </button>
           </li>
           <li
-            className="lg:text-lg md:text-lg sm:text-sm xs:text-sm font-medium   w-1/2 text-center"
+            className="lg:text-lg md:text-lg sm:text-sm xs:text-sm font-medium w-1/2 text-center"
             onClick={() => updateMediaTab(2)}
           >
             <button
               className={
                 mediaTabs === 2
-                  ? "Mediatabshow mediatabactive rounded-tr-xl"
-                  : "Mediatab"
+                  ? "Mediatabshow mediatabactive rounded-tr-md "
+                  : "Mediatab rounded-tr-md"
               }
             >
               Emergency Media

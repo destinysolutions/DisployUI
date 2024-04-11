@@ -333,7 +333,7 @@ const Sidebar = ({ sidebarOpen }) => {
       {sidebarOpen ? (
         <>
           <div className="flex">
-            <div className="w-60 fixed top-0 md:left-0 lg:left-0 z-50 px-4 h-screen lg:rounded-tr-[50px] md:rounded-tr-[50px] sm:rounded-tr-[30px] bg-primary">
+            <div className="w-60 fixed top-0 md:left-0 lg:left-0 z-50 px-4 h-screen lg:rounded-tr-[50px] md:rounded-tr-[50px] sm:rounded-tr-[30px] bg-primary" >
               <div className="flex items-center lg:py-6 md:py-6 sm:pt-6 sm:pb-3 pt">
                 <img
                   alt="Logo"

@@ -151,7 +151,7 @@ const Myplan = () => {
                                                     <span>
                                                         <img src="./dist/images/2user-img.png" />
                                                     </span>
-                                                    <span className="pulus-user text-2xl text-white">
+                                                    <span className="pulus-user text-xl text-white">
                                                         +3
                                                     </span>
                                                 </div>
@@ -188,18 +188,13 @@ const Myplan = () => {
                     <div className="flex items-center justify-center w-full mt-12">
                         <label
                             htmlFor="toogleA"
-                            className="flex items-center cursor-pointer border border-blue-500 bg-blue-lighter p-4 rounded-full">
-                            <div className="text-3xl font-semibold mr-5">
+                            className="flex items-center justify-between cursor-pointer border border-blue-500 bg-blue-lighter py-3 px-8 rounded-full">
+                            <div className="text-2xl font-semibold mr-4">
                                 Start with a {trialDetails?.trialDays}-days FREE trial!
                             </div>
 
-                            <div className="relative">
-                                {/*                         <input id="toogleA" type="checkbox" className="sr-only" checked={trialData?.isActive} />
-
-                                <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
-
-                <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>*/}
-                                <label className="relative inline-flex items-center me-5 cursor-not-allowed mt-1">
+                            
+                                <div className="relative flex items-center justify-center cursor-not-allowed ">
                                     <input
                                         type="checkbox"
                                         checked={trialDetails?.isActive}
@@ -208,8 +203,8 @@ const Myplan = () => {
 
                                     />
                                     <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
-                                </label>
-                            </div>
+                                </div>
+                            
                         </label>
                     </div>
                 )}

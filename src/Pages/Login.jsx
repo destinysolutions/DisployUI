@@ -73,7 +73,7 @@ const Login = () => {
     // terms: Yup.boolean()
     //   .oneOf([true], "You must accept the terms and conditions")
     //   .required("You must accept the terms and conditions"),
-    captcha: Yup.string().required("captcha is required."),
+    // captcha: Yup.string().required("captcha is required."),
   });
 
   const formik = useFormik({
@@ -436,7 +436,7 @@ const Login = () => {
                     </div>
                   </div> */}
 
-                  <div className="relative">
+                  {/*<div className="relative">
                     <div className="relative">
                       <ReCAPTCHA
                         sitekey={process.env.REACT_APP_CAPTCHA}
@@ -448,7 +448,7 @@ const Login = () => {
                     {formik.errors.captcha && formik.touched.captcha && (
                       <div className="error">{formik.errors.captcha}</div>
                     )}
-                  </div>
+                  </div>*/}
 
                   <p
                     className="ml-1 mt-2 not-italic text-white font-medium  text-right hover:text-SlateBlue"

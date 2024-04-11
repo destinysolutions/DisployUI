@@ -367,8 +367,8 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                   cellPadding={15}
                 >
                   <thead className="table-head-bg screen-table-th">
-                    <tr className="items-center table-head-bg ">
-                      <th className="text-[#5A5881] text-base text-center font-semibold w-200">
+                    <tr className="text-left table-head-bg ">
+                      <th className="text-[#5A5881] text-base font-semibold w-200">
                         <div className="flex">
                           Name
                           <svg
@@ -383,34 +383,34 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                           </svg>
                         </div>
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
+                      <th className="text-[#5A5881] text-base font-semibold mw-200">
                         Email
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
+                      <th className="text-[#5A5881] text-base font-semibold  mw-200">
                         Google Location
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
+                      <th className="text-[#5A5881] text-base font-semibold mw-200">
                         Phone Number
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
+                      <th className="text-[#5A5881] text-base font-semibold mw-200">
                         Screen
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
+                      <th className="text-[#5A5881] text-base font-semibold mw-200">
                         Start Date
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
+                      <th className="text-[#5A5881] text-base font-semibold mw-200">
                         End Date
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
+                      <th className="text-[#5A5881] text-base font-semibold mw-200">
                         Action
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {loading && (
-                      <tr>
+                      <tr className="text-left">
                         <td colSpan={8}>
-                          <div className="flex text-center m-5 justify-center">
+                          <div className="flex text-center m-5">
                             <svg
                               aria-hidden="true"
                               role="status"
@@ -436,7 +436,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                     {!loading &&
                       allAdvertisement?.SearchData &&
                       sortedAndPaginatedAdsData?.length === 0 && (
-                        <tr>
+                        <tr className="text-left">
                           <td colSpan={8}>
                             <div className="flex text-center m-5 justify-center">
                               <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
@@ -454,30 +454,30 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                             sortedAndPaginatedAdsData?.length > 0 &&
                             sortedAndPaginatedAdsData.map((screen, index) => {
                               return (
-                                <tr key={index}>
-                                  <td className="text-[#5E5E5E]">
+                                <tr key={index} className="text-left">
+                                  <td className="text-[#5E5E5E] mw-200">
                                     {screen.name}
                                   </td>
-                                  <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                  <td className="p-2 break-words text-[#5E5E5E] mw-200">
                                     {screen?.email}
                                   </td>
-                                  <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                  <td className="p-2 mw-200 break-words text-[#5E5E5E]">
                                     {screen?.googleLocation}
                                   </td>
-                                  <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                  <td className="p-2 mw-200 break-words text-[#5E5E5E]">
                                     {screen?.phoneNumber}
                                   </td>
-                                  <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                  <td className="p-2 mw-200 break-words text-[#5E5E5E]">
                                     {screen?.screen}
                                   </td>
-                                  <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                  <td className="p-2 mw-200 break-words text-[#5E5E5E]">
                                     {moment(screen?.startDate).format("LLL")}
                                   </td>
-                                  <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                  <td className="p-2 mw-200 break-words text-[#5E5E5E]">
                                     {moment(screen?.endDate).format("LLL")}
                                   </td>
 
-                                  <td className="p-2 text-center">
+                                  <td className="p-2 mw-200">
                                     <div className="relative">
                                       {screen?.isRemove && (
                                         <button

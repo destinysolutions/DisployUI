@@ -204,7 +204,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         return data?.youtubeId;
       }
     }
-
     let newdatas = { ...Testasset };
     if (Object.keys(newdatas).length === 0) {
       for (const [key, value] of Object.entries(
@@ -823,7 +822,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 )}
               </div>
-              <div className="overflow-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
+              <div className="vertical-scroll-inner min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
                 <table
                   className="w-full bg-white overflow-x-auto lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
                   cellPadding={15}
@@ -995,10 +994,10 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
               <div
                 onDrop={(event) => handleDropForDivToDiv(event, "main_div")}
                 onDragOver={(event) => handleDragOverForDivToDiv(event)}
-                className="overflow-x-auto overflow-y-auto mt-3 mb-6"
+                className="custom-scrollbar h-96 mt-3 mb-6"
               >
                 <table
-                  className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                  className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto selected-img-table"
                   cellPadding={15}
                 >
                   <tbody>
@@ -1072,7 +1071,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                 )}
                               </td>
-                              <td>
+                              <td className="">
                                 <div className="ml-3">
                                   <p className="text-gray-900 min-w-full hyphens-auto line-clamp-2">
                                     {item?.assetName && item?.assetName}
@@ -1081,7 +1080,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                               </td>
 
-                              <td className={`text-center`}>
+                              <td className="text-center">
                                 {!item?.isEdited ? (
                                   <p className="border min-w-full whitespace-nowrap border-[#E4E6FF] rounded-full p-2">
                                     {item.duration} Sec

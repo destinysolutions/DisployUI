@@ -10,7 +10,7 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                 aria-hidden="true"
                 className="fixed h-full top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 max-h-full bg-black bg-opacity-50"
             >
-                <div className="relative p-4 w-full max-w-6xl max-h-full">
+                <div className="relative p-4 w-full max-w-6xl">
                     {/* Modal content */}
                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         {/* Modal header */}
@@ -33,8 +33,8 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                         </div>
                         {/* Modal body */}
                         <div className="p-6">
-                            <div className=" bg-white rounded-xl mt-8 shadow screen-section">
-                                <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                            <div className=" bg-white rounded-xl shadow screen-section">
+                                <div className="max-h-80 vertical-scroll-inner rounded-lg mb-4">
                                     <table
                                         className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
                                         cellPadding={15}
@@ -181,63 +181,63 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                     </table>
                                 </div>
 
-                                <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
-                                <div className="flex items-center">
-                                  <span className="text-gray-500">{`Total ${customerList?.allCustomer?.length} Customers`}</span>
-                                </div>
-                                <div className="flex justify-end">
-                                  <button
-                                    onClick={() => handlePageChange(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
-                                  >
-                                    <svg
-                                      className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                                      aria-hidden="true"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 14 10"
+                                <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end gap-3">
+                                    <div className="flex items-center">
+                                    <span className="text-gray-500">{`Total ${customerList?.allCustomer?.length} Customers`}</span>
+                                    </div>
+                                    <div className="flex justify-end">
+                                    <button
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                                     >
-                                      <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M13 5H1m0 0 4 4M1 5l4-4"
-                                      />
-                                    </svg>
-                                    {sidebarOpen ? "Previous" : ""}
-                                  </button>
-                                  <div className="flex items-center me-3">
-                                    <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
-                                  </div>
-                                  {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
-                                  <button
-                                    onClick={() => handlePageChange(currentPage + 1)}
-                                    disabled={(currentPage === totalPages) || (customerList?.allCustomer?.length === 0)}
-                                    className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
-                                  >
-                                    {sidebarOpen ? "Next" : ""}
-                                    <svg
-                                      className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                                      aria-hidden="true"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 14 10"
+                                        <svg
+                                        className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 14 10"
+                                        >
+                                        <path
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M13 5H1m0 0 4 4M1 5l4-4"
+                                        />
+                                        </svg>
+                                        {sidebarOpen ? "Previous" : ""}
+                                    </button>
+                                    <div className="flex items-center me-3">
+                                        <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                                    </div>
+                                    {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                                    <button
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={(currentPage === totalPages) || (customerList?.allCustomer?.length === 0)}
+                                        className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                                     >
-                                      <path
-                                        stroke="currentColor"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M1 5h12m0 0L9 1m4 4L9 9"
-                                      />
-                                    </svg>
-                                  </button>
+                                        {sidebarOpen ? "Next" : ""}
+                                        <svg
+                                        className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 14 10"
+                                        >
+                                        <path
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                                        />
+                                        </svg>
+                                    </button>
+                                    </div>
                                 </div>
-                              </div>
                             </div>
-                            <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
+                            <div className="py-0 flex justify-center sticky bottom-0 z-10 bg-white">
                                 <button
                                     className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
                                     onClick={() => HandleSave()}

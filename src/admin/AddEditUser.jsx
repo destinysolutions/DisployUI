@@ -34,7 +34,7 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                 <AiOutlineCloseCircle className="text-2xl" />
                             </button>
                         </div>
-                        <div className="p-4">
+                        <div className="p-4 max-h-80 vertical-scroll-inner">
                             <input
                                 type="text"
                                 placeholder="User Name"

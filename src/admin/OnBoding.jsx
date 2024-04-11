@@ -186,7 +186,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                   >
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                       <tr className="items-center table-head-bg capitalize">
-                        <th className=" sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
+                        <th className="sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
                           Name
                           <svg
                             className="w-3 h-3 ms-1.5 cursor-pointer"
@@ -239,31 +239,31 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                         sortedAndPaginatedData.map((item) => {
                           return (
                             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                              <th
-                                scope="row"
-                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize"
+                              <td
+                                scope="col"
+                                className="px-3.5 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize"
                               >
                                 {item.firstName + " " + item.lastName}
-                              </th>
-                              <td className="px-6 py-4">{item.email}</td>
-                              <td className="px-6 py-4">
+                              </td>
+                              <td scope="col" className="px-6 py-4">{item.email}</td>
+                              <td scope="col" className="px-6 py-4">
                                 {item.googleLocation}
                               </td>
-                              <td className="px-6 py-4">{item.phone}</td>
+                              <td scope="col" className="px-6 py-4">{item.phone}</td>
 
-                              <td className="px-6 py-4 capitalize">
+                              <td scope="col" className="px-6 py-4 capitalize">
                                 {item.organizationName}
                               </td>
 
-                              <td className="px-6 py-4 capitalize">
+                              <td scope="col" className="px-6 py-4 capitalize">
                                 {item.trialDays}
                               </td>
 
-                              <td className="px-6 py-4 capitalize">
+                              <td scope="col" className="px-6 py-4 capitalize">
                                 {item.screen}
                               </td>
 
-                              <td className="px-6 py-4 capitalize">
+                              <td scope="col" className="px-6 py-4 capitalize">
                                 {item.isIncreaseRequest === true && (
                                   <span
                                     onClick={() =>

@@ -41,7 +41,7 @@ const Invoice = ({
       },
     }
     dispatch(handleAllInvoice({ config })).then((res) => {
-      setInvoiceData(res?.payload?.data)
+      // setInvoiceData(res?.payload?.data)
       setLoading(false)
     })
   }

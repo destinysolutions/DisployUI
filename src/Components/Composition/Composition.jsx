@@ -722,8 +722,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                       cellPadding={15}
                     >
                       <thead>
-                        <tr className="items-center table-head-bg">
-                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
+                        <tr className="text-lext table-head-bg">
+                          <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit flex items-center text-left">
                             Composition Name
                             <svg
                               className="w-3 h-3 ms-1.5 cursor-pointer"
@@ -736,22 +736,22 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                             </svg>
                           </th>
-                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                             Date Added
                           </th>
-                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                             Resolution
                           </th>
-                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                             Duration
                           </th>
-                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                             Screen Assign
                           </th>
-                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                             Tags
                           </th>
-                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                             Action
                           </th>
                         </tr>
@@ -802,7 +802,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     className="border-b border-b-[#E4E6FF] "
                                     key={composition?.compositionID}
                                   >
-                                    <td className="text-[#5E5E5E] text-center">
+                                    <td className="text-[#5E5E5E] mw-200">
                                       <div className="flex gap-1">
                                         {permissions.isDelete && (
                                           <div>
@@ -822,27 +822,27 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                         {composition?.compositionName}
                                       </div>
                                     </td>
-                                    <td className="text-center text-[#5E5E5E]">
+                                    <td className="mw-200 text-[#5E5E5E]">
                                       {moment(composition?.dateAdded).format(
                                         "LLL"
                                       )}
                                     </td>
-                                    <td className="text-center text-[#5E5E5E]">
+                                    <td className="mw-200 text-[#5E5E5E]">
                                       {composition?.resolution}
                                     </td>
-                                    <td className="text-center text-[#5E5E5E]">
+                                    <td className="mw-200 text-[#5E5E5E]">
                                       {moment
                                         .utc(composition?.duration * 1000)
                                         .format("HH:mm:ss")}
                                     </td>
-                                    <td className="text-center text-[#5E5E5E]">
+                                    <td className="mw-200 text-[#5E5E5E]">
                                       {composition?.screenNames}
                                     </td>
                                     <td
                                       title={
                                         composition?.tags && composition?.tags
                                       }
-                                      className="text-center text-[#5E5E5E]"
+                                      className="mw-200 text-[#5E5E5E]"
                                     >
                                       <div className="flex items-center justify-center w-full flex-wrap gap-2 text-[#5E5E5E]">
                                         {(composition?.tags === "" ||
@@ -934,9 +934,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                       </div>
                                     </td>
 
-                                    <td className="text-center">
-                                      <div className="flex justify-center gap-2 items-center">
-                                        <div className="relative">
+                                    <td className="mw-200">
+                                      <div className="flex gap-2 items-center">
+                                        <div className="relative mr-2">
                                           {permissions.isSave && (
                                             <button
                                               data-tip
@@ -961,7 +961,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                             </button>
                                           )}
                                         </div>
-                                        <div className="relative">
+                                        <div className="relative mr-2">
                                           {permissions.isView && (
                                             <button
                                               data-tip

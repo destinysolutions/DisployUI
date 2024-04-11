@@ -59,7 +59,7 @@ const AddEditAdvertisement = ({
               />
             </div>
             {/* Modal body */}
-            <div className="p-6">
+            <div className="p-6  max-h-96 vertical-scroll-inner">
               <form
                 onSubmit={formik.handleSubmit}
                 className="space-y-3 md:space-y-5"
@@ -82,8 +82,8 @@ const AddEditAdvertisement = ({
                     )}
                 </div>
 
-                <div className="relative">
-                  <div className='flex flex-col gap-2'>
+               
+                  <div className='flex flex-col gap-2 relative'>
                   {inputs.map((input, index) => (
                       <div className="relative" key={index}>
                         <input
@@ -105,12 +105,13 @@ const AddEditAdvertisement = ({
                         )}
                       </div>
                     ))}
+                    <span className='absolute right-5 top-5'><FaPlusCircle className='cursor-pointer' onClick={addInput} /></span>
                   </div>
-                  <FaPlusCircle className='cursor-pointer' onClick={addInput} />
-                </div>
+                  
+                
 
                 <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
-                  <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
+                  <div className="relative full">
                     <input
                       type="text"
                       name="Email"
@@ -126,7 +127,7 @@ const AddEditAdvertisement = ({
                         <div className="error">{formik.errors.Email}</div>
                       )}
                   </div>
-                  <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
+                  <div className="relative full">
                     <input
                       type="text"
                       name="PhoneNumber"
@@ -144,7 +145,7 @@ const AddEditAdvertisement = ({
                         </div>
                       )}
                   </div>
-                  <div className='relative lg:w-64 md:w-64 sm:max-w-[376px]'>
+                  <div className='relative full'>
                     <span>TimeSlot</span>
                     <input
                       type="time"
@@ -161,7 +162,7 @@ const AddEditAdvertisement = ({
                     )}
 
                   </div>
-                  <div className='relative lg:w-64 md:w-64 sm:max-w-[376px] pt-6'>
+                  <div className='relative full pt-6'>
                     <input
                       type="time"
                       name="endTime"
@@ -176,7 +177,7 @@ const AddEditAdvertisement = ({
                       <div className="error">{formik.errors.endTime}</div>
                     )}
                   </div>
-                  <div className='relative lg:w-64 md:w-64 sm:max-w-[376px]'>
+                  <div className='relative full'>
                     <span>Duration</span>
                     <input
                       type="date"
@@ -193,7 +194,7 @@ const AddEditAdvertisement = ({
                     )}
 
                   </div>
-                  <div className='relative lg:w-64 md:w-64 sm:max-w-[376px] pt-6'>
+                  <div className='relative full pt-6'>
                     <input
                       type="date"
                       name="endDate"
@@ -209,7 +210,7 @@ const AddEditAdvertisement = ({
                     )}
                   </div>
 
-                  <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
+                  <div className="relative full">
                     <input
                       type="Number"
                       name="Screen"
@@ -224,7 +225,7 @@ const AddEditAdvertisement = ({
                       <div className="error">{formik.errors.Screen}</div>
                     )}
                   </div>
-                  <div className="relative lg:w-64 md:w-64 sm:max-w-[376px] flex items-center justify-center">
+                  <div className="relative w-full flex items-center justify-center">
                     <div className="flex">
                       <button
                         type='button'
@@ -245,16 +246,16 @@ const AddEditAdvertisement = ({
                   </div>
                 </div>
                 <div className="flex items-center justify-center gap-2">
-                  <button
+                <button
                     type="button"
-                    className="w-40 text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-full py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
+                    className="w-40 bg-[#FF0000] font-medium rounded-full py-3 text-white hover:bg-primary text-center  text-base mt-4"
                     onClick={() => toggleModal()}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="w-40 text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-full py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
+                    className="w-40 text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-full py-3 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
                     // disabled={loading}
                   >
                     {/* {loading ? "Saving" : "Save"} */}
