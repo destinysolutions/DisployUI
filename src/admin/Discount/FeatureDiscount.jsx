@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoIosArrowBack } from 'react-icons/io'
 import { getTimeFromDate } from '../../Components/Common/Common';
 import AddSegments from './AddSegments';
@@ -7,7 +7,7 @@ import { handleAddEditDiscount } from '../../Redux/AdminSettingSlice';
 import { ADD_EDIT_DISCOUNT } from '../../Pages/Api';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-const FeatureDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData}) => {
+const FeatureDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData ,selectData}) => {
   const { token } = useSelector((s) => s.root.auth);
   const dispatch = useDispatch()
   const authToken = `Bearer ${token}`;
@@ -52,28 +52,49 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData}
     setDiscountCode(code);
   };
 
+  useEffect(() => {
+    if (selectData) {
+      setMethod(selectData?.method)
+      setDiscountCode(selectData?.discountCode)
+      setActiveTab(selectData?.percentageValue === 0 ? 0 : 0);
+      setAmount(selectData?.percentageValue === 0 ? 0 : selectData?.percentageValue)
+      setPurchase(selectData?.minimumPurchase);
+      setPurchaseAmount(selectData?.purchaseAmount)
+      setPurchaseItems(selectData?.purchaseItems);
+      setSegment(selectData?.customerSegmentID)
+      setMaximumDiscount(selectData?.maximumDiscountUses)
+      setMaximumValue(selectData?.MaximumDiscount)
+      setShipping(selectData?.combinations)
+      setDate({
+        startDate: selectData?.startDate.substring(0, 10),
+        endDate: selectData?.ActiveEndDate ? selectData?.endDate.substring(0, 10) : new Date().toISOString().split('T')[0],
+        startTime: selectData?.startTime.split('T')[1].split(':').slice(0, 2).join(':'),
+        endTime: selectData?.ActiveEndDate ? selectData?.endTime.split('T')[1].split(':').slice(0, 2).join(':') : getTimeFromDate(new Date()),
+      })
+    }
+  }, [selectData])
 
   const handleSave = () => {
     const Params = {
       DiscountType: discount,
       method: method,
       discountCode: discountCode,
-      PercentageValue: activeTab === 0 ? amount : "",
-      FixedValue: activeTab === 1 ? amount : "",
+      PercentageValue: activeTab === 0 ? amount : 0,
+      FixedValue: activeTab === 1 ? amount : 0,
       MinimumPurchase: purchase,
-      PurchaseAmount: purchaseAmount,
-      PurchaseItems: purchaseItems,
-      // Customer: customer,
+      PurchaseAmount: purchase === "Minimum Purchase Amount ($)" ? purchaseAmount : 0,
+      PurchaseItems: purchase === "Minimum Quantity Of Items" ? purchaseItems : "",
+      Customer: "",
       CustomerSegmentID: segment,
       MaximumDiscountUses: maximumDiscount,
-      MaximumDiscount: maximumValue,
+      MaximumDiscount: maximumDiscount === "Limit Number Of Times This Discount Can Be Used in Total" ? maximumValue : "",
       Combinations: shipping,
       StartDate: date?.startDate,
       StartTime: date?.startTime,
       ActiveEndDate: selectEnd,
-      EndDate: date?.endDate,
-      EndTime: date?.endTime,
-      FeatureList :""
+      EndDate: selectEnd ? date?.endDate : "",
+      EndTime: selectEnd ? date?.endTime : "",
+      FeatureList: ""
     }
     let config = {
       method: "post",
@@ -89,9 +110,30 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData}
       if (res?.payload?.data) {
         fetchDiscountData()
         setDiscount("")
+        toggleDiscount();
       }
     }).catch((error) => {
       console.log('error', error)
+    })
+  }
+
+  const toggleDiscount = () => {
+    setMethod("Discount Code")
+    setDiscountCode("")
+    setActiveTab(0);
+    setAmount("")
+    setPurchase("Minimum Purchase Amount ($)");
+    setPurchaseAmount("")
+    setPurchaseItems("");
+    setSegment("")
+    setMaximumDiscount("Limit Number Of Times This Discount Can Be Used in Total")
+    setMaximumValue("")
+    setShipping(false)
+    setDate({
+      startDate: new Date().toISOString().split('T')[0],
+      endDate: new Date().toISOString().split('T')[0],
+      startTime: getTimeFromDate(new Date()),
+      endTime: getTimeFromDate(new Date()),
     })
   }
 
@@ -130,19 +172,19 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData}
               <div className="p-4">
                 <h1 className="font-medium text-xl mb-3"> Method </h1>
                 <div className="flex items-center mb-3">
-                <input id="radio1" type="radio" name="radio" className="hidden" defaultChecked="" />
-                <label htmlFor="radio1" className="flex items-center cursor-pointer text-xl">
+                  <input id="radio1" type="radio" name="radio" className="hidden" defaultChecked="" />
+                  <label htmlFor="radio1" className="flex items-center cursor-pointer text-xl">
                     <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={(e) => setMethod("Discount Code")} checked={method === "Discount Code"} />
                     Discount Code
-                </label>
-            </div>
-            <div className="flex items-center mb-3">
-                <input id="radio2" type="radio" name="radio" className="hidden" />
-                <label htmlFor="radio2" className="flex items-center cursor-pointer text-xl">
+                  </label>
+                </div>
+                <div className="flex items-center mb-3">
+                  <input id="radio2" type="radio" name="radio" className="hidden" />
+                  <label htmlFor="radio2" className="flex items-center cursor-pointer text-xl">
                     <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={(e) => setMethod('Automatic Discount')} checked={method === "Automatic Discount"} />
                     Automatic Discount
-                </label>
-            </div>
+                  </label>
+                </div>
                 <div className="flex items-center mb-3">
                   <div className="w-full md:w-1/2 inputDiv relative">
                     <label className="label_top text-xs">Discount Code</label>
@@ -208,58 +250,58 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData}
 
 
             <div className="border border-light-blue rounded-xl mb-4 p-4">
-            <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3">Minimum Purchase Requirement </h1>
-            <div className="flex items-center mb-3">
+              <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3">Minimum Purchase Requirement </h1>
+              <div className="flex items-center mb-3">
                 <label htmlFor="radio3" className="flex items-center cursor-pointer text-xl">
-                    <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase('No Minimum Requirement')} checked={purchase === "No Minimum Requirement"} />No Minimum Requirement
+                  <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase('No Minimum Requirement')} checked={purchase === "No Minimum Requirement"} />No Minimum Requirement
                 </label>
-            </div>
-            <div className="flex items-center mb-3">
+              </div>
+              <div className="flex items-center mb-3">
                 <input id="radio4" type="radio" name="radio" className="hidden" />
                 <label htmlFor="radio4" className="flex items-center cursor-pointer text-xl">
-                    <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase("Minimum Purchase Amount ($)")} checked={purchase === "Minimum Purchase Amount ($)"} />Minimum Purchase Amount ($)
+                  <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase("Minimum Purchase Amount ($)")} checked={purchase === "Minimum Purchase Amount ($)"} />Minimum Purchase Amount ($)
                 </label>
-            </div>
-            {purchase === "Minimum Purchase Amount ($)" && (
+              </div>
+              {purchase === "Minimum Purchase Amount ($)" && (
                 <div className="flex items-center mb-3">
-                    <input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="$ 0.00" onChange={(e) => setPurchaseAmount(e.target.value)} value={purchaseAmount} />
+                  <input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="$ 0.00" onChange={(e) => setPurchaseAmount(e.target.value)} value={purchaseAmount} />
                 </div>
-            )}
-            <div className={`flex items-center ${purchase === "Minimum Quantity Of Items" ? "mb-3" : ""}`}>
+              )}
+              <div className={`flex items-center ${purchase === "Minimum Quantity Of Items" ? "mb-3" : ""}`}>
                 <input id="radio5" type="radio" name="radio" className="hidden" />
                 <label htmlFor="radio5" className="flex items-center cursor-pointer text-xl">
-                    <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase("Minimum Quantity Of Items")} checked={purchase === "Minimum Quantity Of Items"} />
-                    Minimum Quantity Of Items
+                  <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setPurchase("Minimum Quantity Of Items")} checked={purchase === "Minimum Quantity Of Items"} />
+                  Minimum Quantity Of Items
                 </label>
-            </div>
-            {purchase === "Minimum Quantity Of Items" && (
+              </div>
+              {purchase === "Minimum Quantity Of Items" && (
                 <div className="flex items-center mb-3">
-                    <input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="Enter Items" onChange={(e) => setPurchaseItems(e.target.value)} value={purchaseItems} />
+                  <input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="Enter Items" onChange={(e) => setPurchaseItems(e.target.value)} value={purchaseItems} />
                 </div>
-            )}
-        </div>
+              )}
+            </div>
 
 
-        <div className="border border-light-blue rounded-xl mb-4 p-4">
-        <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3">Maximum Discount Uses </h1>
-        <div className="flex items-center mb-3">
-            <label className="checkbox flex items-center gap-1" htmlFor="screen1">
-                <input type="checkbox" className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" id="screen1" onChange={() => setMaximumDiscount("Limit Number Of Times This Discount Can Be Used in Total")} checked={maximumDiscount === "Limit Number Of Times This Discount Can Be Used in Total"} />
-                <div className="checkbox__indicator"></div>
-                <span className="checkbox__label">Limit Number Of Times This Discount Can Be Used in Total</span>
-            </label>
-        </div>
-        {maximumDiscount === "Limit Number Of Times This Discount Can Be Used in Total" && (
-            <div className="flex items-center mb-3"><input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="Maximum Discount" onChange={(e)=> setMaximumValue(e.target.value) } value={maximumValue} /></div>
-        )}
-        <div className="flex items-center">
-            <label className="checkbox flex items-center gap-1 cursor-pointer" htmlFor="screen2">
-                <input type="checkbox" className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" id="screen2" onChange={() => setMaximumDiscount("Limit To One Use Per Customer")} checked={maximumDiscount === "Limit To One Use Per Customer"} />
-                <div className="checkbox__indicator"></div>
-                <span className="checkbox__label">Limit To One Use Per Customer</span>
-            </label>
-        </div>
-    </div>
+            <div className="border border-light-blue rounded-xl mb-4 p-4">
+              <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3">Maximum Discount Uses </h1>
+              <div className="flex items-center mb-3">
+                <label className="checkbox flex items-center gap-1" htmlFor="screen1">
+                  <input type="checkbox" className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" id="screen1" onChange={() => setMaximumDiscount("Limit Number Of Times This Discount Can Be Used in Total")} checked={maximumDiscount === "Limit Number Of Times This Discount Can Be Used in Total"} />
+                  <div className="checkbox__indicator"></div>
+                  <span className="checkbox__label">Limit Number Of Times This Discount Can Be Used in Total</span>
+                </label>
+              </div>
+              {maximumDiscount === "Limit Number Of Times This Discount Can Be Used in Total" && (
+                <div className="flex items-center mb-3"><input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="Maximum Discount" onChange={(e) => setMaximumValue(e.target.value)} value={maximumValue} /></div>
+              )}
+              <div className="flex items-center">
+                <label className="checkbox flex items-center gap-1 cursor-pointer" htmlFor="screen2">
+                  <input type="checkbox" className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" id="screen2" onChange={() => setMaximumDiscount("Limit To One Use Per Customer")} checked={maximumDiscount === "Limit To One Use Per Customer"} />
+                  <div className="checkbox__indicator"></div>
+                  <span className="checkbox__label">Limit To One Use Per Customer</span>
+                </label>
+              </div>
+            </div>
             <div className="border border-light-blue rounded-xl mb-4 p-4">
               <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-2"> Combinations </h1>
               <p className="mb-2"><strong>Welcome20 Can Be Combined With:</strong></p>
@@ -310,18 +352,18 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment ,fetchDiscountData}
                 <h3 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">Summary</h3>
               </div>
               <div className="p-4">
-                <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> Welcome20 </h1>
-                <p className="mb-2"><strong>Type and Method</strong></p>
-                <ul className="leading-8 mb-3">
-                  <li>Amount off Screen</li>
-                  <li>Code</li>
-                </ul>
+                <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> {discountCode} </h1>
+                <p className="mb-2"><strong>{method}</strong></p>
+                {/*  <ul className="leading-8 mb-3">
+          <li>Amount off Screen</li>
+          <li>Code</li>
+      </ul>*/}
                 <p className="mb-2"><strong>Details</strong></p>
                 <ul className="leading-8">
-                  <li>No Minimum Purchase Requirement</li>
-                  <li>For customer  who haven’t purchased</li>
-                  <li>One use per customer</li>
-                  <li>can’t combine with other discount</li>
+                  <li>{purchase}</li>
+                  <li>{allSegment?.filter((item) => item?.customerSegmentsID === segment)?.[0]?.segments}</li>
+                  <li>{maximumDiscount}</li>
+                  <li>{shipping ? "combine with other discount" : "can’t combine with other discount"}</li>
                   <li>Active from today</li>
                 </ul>
               </div>

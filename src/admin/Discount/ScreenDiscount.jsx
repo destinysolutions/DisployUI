@@ -121,7 +121,7 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
         })
     }
 
-    const toggleDiscount = () =>{
+    const toggleDiscount = () => {
         setMethod("Discount Code")
         setDiscountCode("")
         setActiveTab(0);
@@ -142,7 +142,7 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
         })
     }
 
-  
+
 
     return (
         <>
@@ -400,18 +400,18 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
                                 <h3 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">Summary</h3>
                             </div>
                             <div className="p-4">
-                                <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> Welcome20 </h1>
-                                <p className="mb-2"><strong>Type and Method</strong></p>
-                                <ul className="leading-8 mb-3">
-                                    <li>Amount off Screen</li>
-                                    <li>Code</li>
-                                </ul>
+                                <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> {discountCode} </h1>
+                                <p className="mb-2"><strong>{method}</strong></p>
+                                {/*  <ul className="leading-8 mb-3">
+                            <li>Amount off Screen</li>
+                            <li>Code</li>
+                        </ul>*/}
                                 <p className="mb-2"><strong>Details</strong></p>
                                 <ul className="leading-8">
-                                    <li>No Minimum Purchase Requirement</li>
-                                    <li>For customer  who haven’t purchased</li>
-                                    <li>One use per customer</li>
-                                    <li>can’t combine with other discount</li>
+                                    <li>{purchase}</li>
+                                    <li>{allSegment?.filter((item) => item?.customerSegmentsID === segment)?.[0]?.segments}</li>
+                                    <li>{maximumDiscount}</li>
+                                    <li>{shipping ? "combine with other discount" : "can’t combine with other discount"}</li>
                                     <li>Active from today</li>
                                 </ul>
                             </div>

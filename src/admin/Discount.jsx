@@ -30,7 +30,6 @@ const Discount = ({ sidebarOpen }) => {
     const [sortedField, setSortedField] = useState(null);
     const [loading, setLoading] = useState(true)
     const totalPages = Math.ceil(allDiscount?.length / itemsPerPage);
-
     // Function to sort the data based on a field and order
     const sortData = (data, field, order) => {
         const sortedData = [...data];
@@ -282,12 +281,12 @@ const Discount = ({ sidebarOpen }) => {
                                                             </p>
                                                         </td>
                                                         <td className="px-5 py-3 text-lg text-center">
-                                                        <p className="text-gray-900 whitespace-no-wrap">
-                                                            {moment(item?.endDate).format(
-                                                                "YYYY-MM-DD hh:mm"
-                                                            )}
-                                                        </p>
-                                                    </td>
+                                                            <p className="text-gray-900 whitespace-no-wrap">
+                                                                {item?.endDate !== null && moment(item?.endDate).format(
+                                                                    "YYYY-MM-DD hh:mm"
+                                                                )}
+                                                            </p>
+                                                        </td>
                                                         <td className="px-5 py-3 text-lg text-center">
                                                             <div className="flex gap-4 justify-center items-center">
                                                                 <>
@@ -302,7 +301,7 @@ const Discount = ({ sidebarOpen }) => {
                                                                         <BsEyeFill />
                                                                     </div>
 
-                                                                   {/* <div
+                                                                    {/* <div
                                                                         data-tip
                                                                         data-for="Delete"
                                                                         className="cursor-pointer text-white bg-rose-500 hover:bg-rode-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -396,10 +395,10 @@ const Discount = ({ sidebarOpen }) => {
                 </div>
             )}
             {discount === "Screen" && (
-                <ScreenDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData}/>
+                <ScreenDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} />
             )}
             {discount === "Features" && (
-                <FeatureDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData}/>
+                <FeatureDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} />
             )}
             {discount === "Trial Period" && (
                 <TrialPeriodDiscount discount={discount} setDiscount={setDiscount} />
