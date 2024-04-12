@@ -45,11 +45,26 @@ export const handleEditTrialPlan = createAsyncThunk(
   }
 );
 
+export const handleAllFeatureList = createAsyncThunk(
+  "Common/handleAllFeatureList",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      return response.data;
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
 
 const initialState = {
   loading: false,
   allPlans: [],
   trial: [],
+  allFeature:[],
   error: null,
   data: null,
   message: "",
@@ -104,6 +119,20 @@ const CommonSlice = createSlice({
       state.message = action.payload?.message;
     });
     builder.addCase(handleEditTrialPlan.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.payload.message;
+      state.message = action.payload?.message;
+    });
+
+    builder.addCase(handleAllFeatureList.pending, (state) => {
+      state.status = "loading";
+    });
+    builder.addCase(handleAllFeatureList.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.allFeature = action.payload;
+      state.message = action.payload?.message;
+    });
+    builder.addCase(handleAllFeatureList.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload.message;
       state.message = action.payload?.message;

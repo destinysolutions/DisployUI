@@ -5,7 +5,7 @@ import ScreenDiscount from './Discount/ScreenDiscount';
 import FeatureDiscount from './Discount/FeatureDiscount';
 import TrialPeriodDiscount from './Discount/TrialPeriodDiscount';
 import CustomDiscount from './Discount/CustomDiscount';
-import { ADD_EDIT_DISCOUNT, DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID } from '../Pages/Api';
+import { ADD_EDIT_DISCOUNT, DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID, GET_SCEDULE_TIMEZONE } from '../Pages/Api';
 import { handleAddEditDiscount, handleDeleteDiscount, handleGetAllDiscount, handleGetAllSegment } from '../Redux/AdminSettingSlice';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -15,6 +15,7 @@ import { RiDeleteBin5Line } from 'react-icons/ri';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import moment from 'moment';
+import axios from 'axios';
 const Discount = ({ sidebarOpen }) => {
     const { token } = useSelector((s) => s.root.auth);
     const dispatch = useDispatch()
@@ -29,6 +30,9 @@ const Discount = ({ sidebarOpen }) => {
     const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
     const [sortedField, setSortedField] = useState(null);
     const [loading, setLoading] = useState(true)
+    const [getTimezone, setTimezone] = useState([]);
+  const [selectedTimezoneName, setSelectedTimezoneName] = useState();
+
     const totalPages = Math.ceil(allDiscount?.length / itemsPerPage);
     // Function to sort the data based on a field and order
     const sortData = (data, field, order) => {
@@ -63,6 +67,24 @@ const Discount = ({ sidebarOpen }) => {
         }
     };
 
+    useEffect(() => {
+        axios
+            .get(GET_SCEDULE_TIMEZONE, {
+                headers: {
+                    Authorization: authToken,
+                },
+            })
+            .then((response) => {
+                setTimezone(response.data.data);
+                const timezone = new Date()
+                    .toLocaleDateString(undefined, {
+                        day: "2-digit",
+                        timeZoneName: "long",
+                    })
+                    .substring(4);
+                setSelectedTimezoneName(timezone);
+            })
+    }, [])
 
     const fetchDiscountData = () => {
         let config = {
@@ -395,10 +417,10 @@ const Discount = ({ sidebarOpen }) => {
                 </div>
             )}
             {discount === "Screen" && (
-                <ScreenDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} />
+                <ScreenDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} getTimezone={getTimezone} setSelectedTimezoneName={setSelectedTimezoneName} selectedTimezoneName={selectedTimezoneName}/>
             )}
             {discount === "Features" && (
-                <FeatureDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} />
+                <FeatureDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} getTimezone={getTimezone} setSelectedTimezoneName={setSelectedTimezoneName} selectedTimezoneName={selectedTimezoneName}/>
             )}
             {discount === "Trial Period" && (
                 <TrialPeriodDiscount discount={discount} setDiscount={setDiscount} />

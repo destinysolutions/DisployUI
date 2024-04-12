@@ -8,7 +8,7 @@ import { handleAddEditDiscount } from '../../Redux/AdminSettingSlice';
 import { ADD_EDIT_DISCOUNT } from '../../Pages/Api';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, selectData }) => {
+const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, selectData, getTimezone, selectedTimezoneName, setSelectedTimezoneName }) => {
     const { token } = useSelector((s) => s.root.auth);
     const dispatch = useDispatch()
     const authToken = `Bearer ${token}`;
@@ -25,6 +25,8 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
     const [purchaseAmount, setPurchaseAmount] = useState("")
     const [purchaseItems, setPurchaseItems] = useState("")
     const [amount, setAmount] = useState("")
+    const [timeZone, setTimeZone] = useState("")
+
     const [openBrowser, setOpenBrowser] = useState(false)
     const [date, setDate] = useState({
         startDate: new Date().toISOString().split('T')[0],
@@ -32,6 +34,8 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
         startTime: getTimeFromDate(new Date()),
         endTime: getTimeFromDate(new Date()),
     })
+
+
 
     const handleTabClick = (index) => {
         setActiveTab(index);
@@ -69,6 +73,7 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
             setMaximumDiscount(selectData?.maximumDiscountUses)
             setMaximumValue(selectData?.MaximumDiscount)
             setShipping(selectData?.combinations)
+            setSelectedTimezoneName(selectData?.TimezoneName)
             setDate({
                 startDate: selectData?.startDate.substring(0, 10),
                 endDate: selectData?.ActiveEndDate ? selectData?.endDate.substring(0, 10) : new Date().toISOString().split('T')[0],
@@ -98,6 +103,7 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
             ActiveEndDate: selectEnd,
             EndDate: selectEnd ? date?.endDate : "",
             EndTime: selectEnd ? date?.endTime : "",
+            TimezoneName:selectedTimezoneName,
             FeatureList: ""
         }
         let config = {
@@ -131,6 +137,7 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
         setPurchaseItems("");
         setCustomer("Specific customer segments")
         setSegment("")
+        setSelectedTimezoneName()
         setMaximumDiscount("Limit Number Of Times This Discount Can Be Used in Total")
         setMaximumValue("")
         setShipping(false)
@@ -167,6 +174,27 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
             <div className='border-b dark:border-gray-600'>
                 <div className="flex flex-wrap mx-3 mb-3">
                     <div className="w-full md:w-2/3 px-5">
+                        <div className="border border-light-blue rounded-xl mb-4 p-4">
+                            <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> TimeZone </h1>
+
+                            <div className="flex items-center">
+                                <div className="w-full md:w-full inputDiv relative mb-3">
+                                    <select
+                                        className="w-full border border-[#D5E3FF] rounded-lg p-2"
+                                        onChange={(e) => setSelectedTimezoneName(e.target.value)}
+                                        value={selectedTimezoneName}>
+                                        {getTimezone.map((timezone) => (
+                                            <option
+                                                value={timezone.timeZoneName}
+                                                key={timezone.timeZoneID}
+                                            >
+                                                {timezone.timeZoneName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <div className="border border-light-blue rounded-xl mb-4">
                             {/* <div className="flex items-center justify-between px-5 pb-5 border-b border-light-blue">
                                 <div className="title">
@@ -400,8 +428,10 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
                                 <h3 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">Summary</h3>
                             </div>
                             <div className="p-4">
-                                <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> {discountCode} </h1>
-                                <p className="mb-2"><strong>{method}</strong></p>
+                            <p className="mb-2"><strong>TimeZone</strong></p>
+                            <h1 className="font-medium lg:text-lg md:text-lg sm:text-xl mb-3"> {selectedTimezoneName} </h1>
+                            <p className="mb-2"><strong>{method}</strong></p>
+                            <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> {discountCode} </h1>
                                 {/*  <ul className="leading-8 mb-3">
                             <li>Amount off Screen</li>
                             <li>Code</li>

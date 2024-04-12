@@ -246,7 +246,6 @@ export const SEND_INVOICE = `${baseUrl}Invoice/GetInvoiceById`
 export const GET_ALL_DISCOUNT = `${baseUrl}DiscountMaster/GetAllDiscountMaster`
 export const GET_DISCOUNT_BY_ID = `${baseUrl}DiscountMaster/GetDiscountMaster`
 export const ADD_EDIT_DISCOUNT = `${baseUrl}DiscountMaster/AddorUpdateDiscountMaster`
+export const GET_ALL_FEATURE_LIST = `${baseUrl}Common/GetAllPlansFeatures`
 export const DELETE_DISCOUNT = `${baseUrl}DiscountMaster/DeleteDiscount`
 export const GET_ALL_SEGMENT = `${baseUrl}common/GetAllSegment`
-
-

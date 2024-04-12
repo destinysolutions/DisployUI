@@ -495,3 +495,10 @@ export function chunkArray(array, size) {
   }
   return chunkedArray;
 }
+
+export function multiOptionsFeature(arr) {
+  return arr.map(feature => ({
+    label: feature.name,
+    value: feature.name,
+  }));
+}
