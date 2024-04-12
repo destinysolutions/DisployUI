@@ -167,7 +167,7 @@ const Account = () => {
     <>
       {/* {loading ? toast.loading("Fetching details....") : toast.remove()} */}
       <div className="rounded-xl mt-5 shadow-lg bg-white">
-        <h4 className="text-xl font-bold px-5">Profile Details</h4>
+        <h4 className="text-xl font-bold p-5">Profile Details</h4>
         <div className="flex items-center border-b border-b-[#E4E6FF] p-5">
           <div className="layout-img me-5">
             {file !== undefined && file !== null ? (

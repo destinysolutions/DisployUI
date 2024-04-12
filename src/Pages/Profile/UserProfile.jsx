@@ -85,17 +85,13 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
             </h1>
           </div>
           <div className="mt-5 page-contain">
-            <Tabs value={activeTab}>
-              <TabsHeader className="p-0 text-primary">
-                {data.map(({ icon, label, value }) => (
-                  <Tab
-                    key={value}
-                    value={value}
+            <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+              {data.map(({ icon, label, value }) => (
+                <li class="me-4">
+                  <a
+                    className={`inline-block px-4 py-3 ${activeTab === value ? "text-white bg-primary active" : "border border-primary text-black"} cursor-pointer rounded-full `}
+                    aria-current="page"
                     onClick={() => setActiveTab(value)}
-                    className={`${activeTab === value
-                      ? "text-white items-center rounded-full bg-primary"
-                      : ""
-                      } account-settings-tab-li lg:py-3 lg:px-4 py-2 px-2 w-auto border sm:text-sm border-primary rounded-full lg:mx-2 mx-1 z-0`}
                   >
                     <div className="flex items-center sm:text-sm">
                       <span className="lg:mr-2 mr-1 lg:text-xl text-lg">
@@ -103,17 +99,18 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
                       </span>
                       {label}
                     </div>
-                  </Tab>
-                ))}
-              </TabsHeader>
-              <TabsBody className="p-0">
-                {data.map(({ value, desc }) => (
-                  <TabPanel key={value} value={value}>
-                    {desc}
-                  </TabPanel>
-                ))}
-              </TabsBody>
-            </Tabs>
+                  </a>
+                </li>
+
+              ))}
+            </ul>
+
+            {data.map(({ value, desc }) => (
+              <div key={value} value={value} className={`${activeTab === value ? "" : "hidden"}`}>
+                {desc}
+              </div>
+            ))}
+
           </div>
         </div>
       </div>

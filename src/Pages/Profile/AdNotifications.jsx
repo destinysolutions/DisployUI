@@ -81,7 +81,7 @@ const AdNotifications = ({ sidebarOpen }) => {
         </div>
 
         <div className="clear-both">
-          <div className="screen-section">
+          <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section">
             <div className="mt-5 overflow-x-scroll sc-scrollbar">
               <table
                 className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
@@ -147,13 +147,12 @@ const AdNotifications = ({ sidebarOpen }) => {
                             data-tip
                             data-for="View"
                             className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            onClick={() => {
+                              setOpenPreview(item);
+                              setOpen(true);
+                            }}
                           >
-                            <BsEyeFill
-                              onClick={() => {
-                                setOpenPreview(item);
-                                setOpen(true);
-                              }}
-                            />
+                            <BsEyeFill />
                             <ReactTooltip
                               id="View"
                               place="bottom"
@@ -201,61 +200,61 @@ const AdNotifications = ({ sidebarOpen }) => {
               </table>
             </div>
 
-            {/* Pagination start */}
-            {filteredData.length > 0 && (
-              <div className="flex justify-end p-5">
-                <div className="flex justify-end mar-btm-15">
-                  <button
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  >
-                    <svg
-                      className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 14 10"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 5H1m0 0 4 4M1 5l4-4"
-                      />
-                    </svg>
-                    Previous
-                  </button>
-
-                  <button
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={
-                      currentPage ===
-                      Math.ceil(filteredData.length / itemsPerPage)
-                    }
-                    className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                  >
-                    Next
-                    <svg
-                      className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 14 10"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M1 5h12m0 0L9 1m4 4L9 9"
-                      />
-                    </svg>
-                  </button>
-                </div>
+            <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+              <div className="flex items-center">
+                <span className="text-gray-500">{`Total ${store?.getNotification?.length} Advertisement`}</span>
               </div>
-            )}
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  <svg
+                    className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 10"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 5H1m0 0 4 4M1 5l4-4"
+                    />
+                  </svg>
+                  {sidebarOpen ? "Previous" : ""}
+                </button>
+                <div className="flex items-center me-3">
+                  <span className="text-gray-500">{`Page ${currentPage} of ${Math.ceil(filteredData.length / itemsPerPage)}`}</span>
+                </div>
+                {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                <button
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  disabled={(currentPage === Math.ceil(filteredData.length / itemsPerPage)) || (store?.getNotification?.length === 0)}
+                  className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  {sidebarOpen ? "Next" : ""}
+                  <svg
+                    className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 10"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M1 5h12m0 0L9 1m4 4L9 9"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
             {/* Pagination End */}
           </div>
         </div>
