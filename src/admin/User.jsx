@@ -341,7 +341,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                   <tbody>
                     {loading && sortedAndPaginatedData.length === 0 && (
                       <tr>
-                        <td colSpan={5}>
+                        <td colSpan={8}>
                           <div className="flex text-center m-5 justify-center">
                             <svg
                               aria-hidden="true"
