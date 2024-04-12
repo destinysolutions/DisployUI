@@ -62,7 +62,7 @@ const AdNotifications = ({ sidebarOpen }) => {
 
   return (
     <>
-      <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
+      <div className="lg:py-5 md:py-5 sm:py-2 xs:py-2">
         <div className="flex md:justify-end sm:justify-center lg:mb-5 mb-2">
           <div className="flex justify-end">
             <div className="relative w-full">

@@ -129,13 +129,13 @@ const Carousel = ({ items, compositonData, from, isPlay }) => {
                     src={viewerSrc}
                   ></iframe>
                 )}
-                {item.assetType === "DOC" && (
+                {/*{item.assetType === "DOC" && (
                   <iframe
                     className='w-full h-full'
                     title="Document Viewer"
                     src={viewerSrc}
                   ></iframe>
-                )}
+                )}*/}
                 {item.mediaType === "Pdf" && (
                   <iframe
                     className='w-full h-full'

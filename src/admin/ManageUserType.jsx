@@ -195,7 +195,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                     setEditMode(false);
                     setSelectData("");
                   }}
-                  className="border border-primary rounded-full px-3 py-2 not-italic font-medium"
+                  className="flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-3 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 >
                   Add User Type
                 </button>
@@ -230,10 +230,10 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                         </svg>
                       </th>
 
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="px-6 py-4">
                         Active
                       </th>
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="px-6 py-4">
                         Action
                       </th>
                     </tr>
@@ -275,32 +275,31 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                           >
                             <td
                               scope="row"
-                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize"
+                              className="px-3.5 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize"
                             >
                               {item.userType}
                             </td>
-                            <td className="px-6 py-4 capitalize">
-                              <span>
-                                {item?.isActive ? (
-                                  <span
-                                    style={{ backgroundColor: "#cee9d6" }}
-                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                  >
-                                    Active
-                                  </span>
-                                ) : (
-                                  <span
-                                    style={{ backgroundColor: "#f1b2b2" }}
-                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                  >
-                                    Inactive
-                                  </span>
-                                )}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="flex gap-2">
-                                <div className="cursor-pointer text-xl flex gap-4">
+                            <td className="px-3.5 py-2 capitalize">
+                                <span>
+                                  {item?.isActive ? (
+                                    <span
+                                      style={{ backgroundColor: "#cee9d6" }}
+                                      className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                    >
+                                      Active
+                                    </span>
+                                  ) : (
+                                    <span
+                                      style={{ backgroundColor: "#f1b2b2" }}
+                                      className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                    >
+                                      Inactive
+                                    </span>
+                                  )}
+                                </span>
+                              </td>
+                            <td className="px-3.5 py-2">
+                              <div className="flex items-center gap-4">
                                   <button
                                     type="button"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -315,18 +314,16 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                                   >
                                     <MdModeEditOutline />
                                   </button>
-                                </div>
-                                <div className="cursor-pointer text-xl flex gap-4 ">
+                                
                                   <button
                                     type="button"
-                                    className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
+                                    className="rounded-full text-lg p-2.5 text-white text-center bg-[#FF0000] "
                                     onClick={() =>
                                       handleDelete(item?.userTypeID)
                                     }
                                   >
                                     <MdDeleteForever />
                                   </button>
-                                </div>
                               </div>
                             </td>
                           </tr>

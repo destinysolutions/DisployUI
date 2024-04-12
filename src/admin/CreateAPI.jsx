@@ -9,13 +9,13 @@ const CreateAPI = () => {
                         Create New API
                     </h1>
                 </div>
-                <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 border border-light-blue rounded-xl py-5">
+                <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 border border-gray rounded-xl py-5">
                     <h2 className="font-medium text-lg mb-5">Create an API key</h2>
-                    <div className="full flex flex-wrap -mx-3 mb-6">
-                        <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <div className="full flex flex-wrap -mx-3 mb-3">
+                        <div className="w-full md:w-1/2 px-3 mb-4 md:mb-0">
                             <div className="relative w-full border-none">
                                 <label className="input-box-label" htmlFor="grid-first-name"> Choose the API key type you want to create </label>
-                                <select className="input-box-border w-full py-1 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                                <select className="border border-gray rounded w-full py-5 px-4 h-6  focus:outline-none focus:bg-white focus:border-gray-500">
                                     <option>Select API Key</option>
                                     <option >Screen </option>
                                     <option>Assets</option>
@@ -31,7 +31,7 @@ const CreateAPI = () => {
                                 <label className="input-box-label" htmlFor="grid-last-name" >
                                     Name the API key
                                 </label>
-                                <input className="input-box-border w-full py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Enter API key" />
+                                <input className="border border-gray w-full py-5 px-4 h-6 rounded focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Enter API key" />
                             </div>
                         </div>
                     </div>
@@ -72,7 +72,7 @@ const CreateAPI = () => {
                         </div>
                     </div>
                     <div className='col-span-12 my-4'>
-                        <button className='hover:bg-blue-dark text-base px-8 py-3 shadow-md rounded-full bg-blue text-white'>Create Key</button>
+                        <button className='text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-8 py-2 text-center'>Create Key</button>
                     </div>
                 </div>
 

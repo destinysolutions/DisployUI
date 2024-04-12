@@ -266,7 +266,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                   cellPadding={15}
                 >
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr className="items-center table-head-bg capitalize">
+                    <tr className="text-left table-head-bg capitalize">
                       <th className=" sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
                         UserName
                         <svg
@@ -308,8 +308,8 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                         return (
                           <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                              scope="col"
+                              className="px-3.5 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                             >
                               {item.firstName + " " + item.lastName}
                             </th>

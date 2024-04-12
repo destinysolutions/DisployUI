@@ -224,6 +224,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                     InvoiceRef={InvoiceRef}
                     DownloadInvoice={DownloadInvoice}
                     setInvoiceID={setInvoiceID}
+                    sidebarOpen={sidebarOpen}
                   />
                 </div>
               )}

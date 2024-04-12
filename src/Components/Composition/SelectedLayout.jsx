@@ -726,9 +726,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 )}
               </div>
-              <div className="overflow-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
+              <div className="vertical-scroll-inner min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
                 <table
-                  className="w-full bg-white overflow-x-auto lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
+                  className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
                   cellPadding={15}
                 >
                   <thead className="sticky -top-1 z-20">
@@ -900,10 +900,10 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               <div
                 onDrop={(event) => handleDropForDivToDiv(event, "main_div")}
                 onDragOver={(event) => handleDragOverForDivToDiv(event)}
-                className="overflow-x-auto overflow-y-auto mt-3 mb-6"
+                className="custom-scrollbar min-h-[50vh] max-h-[50vh] mt-3 mb-6"
               >
                 <table
-                  className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                  className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto selected-img-table"
                   cellPadding={15}
                 >
                   <tbody>
@@ -988,7 +988,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="text-center min-w-[20%]">
                                 {item?.assetType ?? "-"}
                               </td>
-                              <td className={`text-center min-w-[20%] `}>
+                              <td className={`text-center min-w-[30%] `}>
                                 {!item?.isEdited ? (
                                   <p className="border min-w-full whitespace-nowrap border-[#E4E6FF] rounded-full p-2">
                                     {item.duration} Sec
@@ -1013,7 +1013,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                     <span
                                       // size="sm"
                                       // color={item.duration? "gray":"blue-gray" }
-                                      className="!absolute right-5 text-black font-normal shadow-none"
+                                      className="absolute right-3 text-black font-normal shadow-none"
                                     >
                                       Sec
                                     </span>

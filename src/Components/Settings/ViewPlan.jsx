@@ -23,13 +23,12 @@ const ViewPlan = ({ toggleModal, selectPlan }) => {
                                 onClick={() => toggleModal()}
                             />
                         </div>
-                        <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
-                            <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
-                                <table
+                        <div className='p-4 xs:p-2'>
+                        <table
                                     className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                                     cellPadding={15}
                                 >
-                                    <thead className="items-center table-head-bg">
+                                    <thead className="sticky z-10 top-0 items-center table-head-bg">
                                         <tr>
                                             <th className="px-5 py-3 text-left text-lg font-semibold text-gray-900 ">
                                                 Feature Name
@@ -39,6 +38,13 @@ const ViewPlan = ({ toggleModal, selectPlan }) => {
                                             </th>
                                         </tr>
                                     </thead>
+                                    </table>
+                            <div className="rounded-xl max-h-96 vertical-scroll-inner sm:rounded-lg">
+                                <table
+                                    className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
+                                    cellPadding={15}
+                                >
+                                    
                                     <tbody>
                                         {selectPlan?.planDetails?.map((item) => {
                                             return (item?.lstOfFeatures?.map((detail) => {

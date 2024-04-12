@@ -131,7 +131,7 @@ const AddEditUserRole = ({
                   </div>
 
                   {!nextbutton && (
-                    <div className="relative overflow-x-auto shadow-md sm:rounded-lg col-span-2 sm:col-span-2 max-h-325">
+                    <div className="relative max-h-96 vertical-scroll-inner sm:rounded-lg col-span-2 sm:col-span-2 max-h-325">
                       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 table-head-bg">
                           <tr>

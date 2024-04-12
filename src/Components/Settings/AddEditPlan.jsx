@@ -70,7 +70,6 @@ console.log('heading', heading)
         <>
             <div className="backdrop">
                 <div className="user-model">
-
                     <div className="hours-heading flex justify-between items-center p-5 border-b border-gray sticky top-0 shadow-md z-[99] bg-white">
                         <h1 className='text-lg font-medium text-primary'>{heading === "Add" ? "Add New" : heading} Custom Plan</h1>
                         <AiOutlineCloseCircle className='text-4xl text-primary cursor-pointer'
@@ -79,7 +78,6 @@ console.log('heading', heading)
                                 showPlanModal(false);
                             }} 
                             />
-
                     </div>
 
                     <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 ">

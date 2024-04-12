@@ -496,7 +496,7 @@ const Login = () => {
                   onError={(err) => console.log(err)}
                 ></GoogleLogin>
               </GoogleOAuthProvider>
-            </div> */}
+            </div>
             {/* <div className="flex items-center justify-center mt-4">
               <div className="socialIcon socialIcon1">
                 <button onClick={SignInWithGoogle}>
