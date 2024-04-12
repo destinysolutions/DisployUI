@@ -224,6 +224,7 @@ export const ASSIGN_SCREEN_DIGITAL_MENU = `${baseUrl}DigitalMenu/AssignDigitalMe
 // Billing
 
 export const GET_ALL_PLANS = `${baseUrl}Common/GetAllPlans`
+export const ADD_EDTT_PLAN = `${baseUrl}Common/AddEditPlan`
 export const GET_TRIAL_PERIOD_DETAILS = `${baseUrl}Common/GetTrialPeriodDetails`
 export const ADD_EDIT_TRIAL_PLAN = `${baseUrl}Common/EditTrialPeriod`
 export const PAYMENT_INTENT_CREATE_REQUEST = `${baseUrl}Common/PaymentIntentCreateRequest`

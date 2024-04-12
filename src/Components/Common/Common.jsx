@@ -435,7 +435,6 @@ export function generateAllCategory(addCategory) {
 }
 
 export function generateCategorybyID(data) {
-  console.log('data', data)
   const allcategory = data?.category?.map(cate => {
     const allitem = cate?.items?.map(item => ({
       name: item.itemName,

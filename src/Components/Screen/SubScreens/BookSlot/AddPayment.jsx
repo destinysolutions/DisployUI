@@ -104,7 +104,6 @@ const AddPayment = ({
         }
       } else {
         // Payment was successful, you can access paymentIntent for confirmation data
-        console.log(paymentIntent, "paymentIntent");
         handlebook(paymentIntent)
         setPage(page + 1)
         setMessage("Payment successful!");

@@ -228,7 +228,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               )}
               {STabs === 7 && (
-                <div>
+                <div className="w-full h-full">
                   <Myplan />
                 </div>
               )}

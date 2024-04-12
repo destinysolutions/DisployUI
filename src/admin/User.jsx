@@ -29,7 +29,6 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [isActive, setIsActive] = useState(false);
   const [userTypeData, setUserTypeData] = useState([]);
   const [userData, setUserData] = useState([]);
-  console.log('userData', userData)
   const [showActionBox, setShowActionBox] = useState(false);
   const [deletePopup, setdeletePopup] = useState(false);
   const [editMode, setEditMode] = useState(false);

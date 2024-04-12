@@ -29,7 +29,6 @@ const ShowAssetModal = ({
   type,
   handleSave,
 }) => {
-  console.log('type', type)
   const dispatch = useDispatch();
 
   const { user, token } = useSelector((state) => state.root.auth);
@@ -39,7 +38,6 @@ const ShowAssetModal = ({
   const store = useSelector((s) => s.root.asset);
   const [searchAssest, setSearchAssest] = useState("");
   const [filteredAssets, setFilteredAssets] = useState([]);
-console.log('filteredAssets', filteredAssets)
   const modalRef = useRef(null);
 
   const handleOnConfirm = async () => {

@@ -11,7 +11,8 @@ const initialState = {
     DiscountById: null,
     data: [],
     deleteData: null,
-    allSegment: []
+    allSegment: [],
+    plan: null
 };
 
 export const handleGetAllDiscount = createAsyncThunk(
@@ -72,6 +73,20 @@ export const handleAddEditDiscount = createAsyncThunk(
 
 export const handleDeleteDiscount = createAsyncThunk(
     "AdminSetting/handleDeleteDiscount",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            return response.data;
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
+
+export const handleAddPlan = createAsyncThunk(
+    "AdminSetting/handleAddPlan",
     async ({ config }, { rejectWithValue }) => {
         try {
             const response = await axios.request(config);
@@ -158,6 +173,19 @@ const AdminSettingSlice = createSlice({
                 state.allSegment = action.payload?.data;
             })
             .addCase(handleGetAllSegment.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message;
+            })
+
+        builder
+            .addCase(handleAddPlan.pending, (state) => {
+                state.status = null;
+            })
+            .addCase(handleAddPlan.fulfilled, (state, action) => {
+                state.status = null;
+                state.plan = action.payload?.data;
+            })
+            .addCase(handleAddPlan.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message;
             })

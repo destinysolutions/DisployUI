@@ -468,7 +468,7 @@ div#tooltip-bottom:before {
 
 /* ---------------------------screens css-------------------------------- */
 /* comman css */
-input:focus,
+/* input:focus,
 input:focus-visible,
 select:focus,
 select:focus-visible,
@@ -482,7 +482,7 @@ input:visited {
   border: 1px solid #e4aa0736 !important;
   outline: none !important;
   background-color: #fff !important;
-}
+} */
 
 .screenIcon {
   border: 1px solid #00072e;
@@ -1928,4 +1928,8 @@ table.screen-table {
 
 .sketch-picker-digital-menu{
   width: 40% !important;
+}
+
+.featureDiscount .css-b62m3t-container{
+  width: 100% !important;
 }

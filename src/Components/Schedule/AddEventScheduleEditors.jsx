@@ -92,11 +92,10 @@ const AddEventScheduleEditors = ({
 
   const currentDate = moment();
   // const today = moment().format("YYYY-MM-DD");
-  // console.log('today', today)
+
   let currTimestamp = Date.now();
   const todaydate = (new Date(currTimestamp)).toUTCString();
   const today = CurrentDateFormat(todaydate)
-  console.log('todaydate', todaydate)
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
     if (!showRepeatSettings) {

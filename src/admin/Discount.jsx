@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import moment from 'moment';
 import axios from 'axios';
+import { MdOutlineEdit } from 'react-icons/md';
 const Discount = ({ sidebarOpen }) => {
     const { token } = useSelector((s) => s.root.auth);
     const dispatch = useDispatch()
@@ -147,7 +148,6 @@ const Discount = ({ sidebarOpen }) => {
             },
         }
         dispatch(handleDeleteDiscount({ config })).then((res) => {
-            console.log('res', res)
             if (res?.payload?.status) {
                 setDiscount(res?.payload?.data?.discountType)
                 setSelectData(res?.payload?.data);
@@ -181,7 +181,6 @@ const Discount = ({ sidebarOpen }) => {
                 if (result.isConfirmed) {
                     dispatch(handleDeleteDiscount({ config }))
                         .then((res) => {
-                            console.log('res', res)
                             if (res?.payload?.status) {
                                 toast.success("Delete data successFully");
                                 fetchDiscountData()
@@ -320,7 +319,7 @@ const Discount = ({ sidebarOpen }) => {
                                                                             handleEditDiscount(item?.discountID)
                                                                         }}
                                                                     >
-                                                                        <BsEyeFill />
+                                                                        <MdOutlineEdit />
                                                                     </div>
 
                                                                     {/* <div

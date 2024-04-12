@@ -72,7 +72,6 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [label, setLabel] = useState("Save");
   const [urlParth, setUrlParth] = useState({});
   const [selectedTimezoneName, setSelectedTimezoneName] = useState();
-  console.log('selectedTimezoneName', selectedTimezoneName)
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetPreview, setAssetPreview] = useState("");
@@ -156,7 +155,6 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleSubmit = () => {
     const timeZone = getTimezone?.filter((item) => item?.timeZoneName === selectedTimezoneName)
-    console.log('timeZone', timeZone)
     let data = {
       weatherSchedulingID: Number(weatherScheduleId) || 0,
       name: weatherScheduleName,

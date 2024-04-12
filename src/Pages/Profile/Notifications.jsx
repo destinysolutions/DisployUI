@@ -27,9 +27,6 @@ const Notifications = ({ sidebarOpen }) => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = notification.slice(indexOfFirstItem, indexOfLastItem);
-  console.log('currentItems', currentItems)
-
-  console.log('notification', notification)
   const fetchNotifications = () => {
     const config = {
       method: "get",

@@ -181,7 +181,6 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds, fetchAds 
       user?.screens?.map((screen) => {
         keys?.map((key) => {
           if (Number(key) === screen?.screenID) {
-            console.log('key', key)
             arr?.push(screen?.screenID)
           }
         })

@@ -53,7 +53,6 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData,
       },
     };
     dispatch(handleAllFeatureList({ config })).then((res) => {
-      console.log('res', res)
       if (res?.payload?.status === 200) {
         setFeatureList(res?.payload?.data)
       }
@@ -292,7 +291,7 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData,
             <div className="border border-light-blue rounded-xl mb-4 p-4">
               <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3">Feature List </h1>
               <div className="flex items-center mb-3">
-                <label htmlFor="radio3" className="flex items-center cursor-pointer text-xl w-full">
+                <label htmlFor="radio3" className="flex items-center cursor-pointer text-xl w-full featureDiscount">
                   <Select
                     className='w-80'
                     value={selectedFeature}
