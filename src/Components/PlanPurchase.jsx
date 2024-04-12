@@ -58,6 +58,13 @@ const PlanPurchase = ({ selectedPlan, customerData }) => {
             PaymentType: `${selectedPlan?.planName} Plan`,
             PaymentValue: 1,
             organizationId: organizationID,
+            UserID: organizationID,
+            SystemTimeZone: new Date()
+                .toLocaleDateString(undefined, {
+                    day: "2-digit",
+                    timeZoneName: "long",
+                })
+                .substring(4),
         }
 
         let config = {

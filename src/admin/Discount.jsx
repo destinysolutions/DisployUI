@@ -22,7 +22,7 @@ const Discount = ({ sidebarOpen }) => {
     const [openModal, setOpenModal] = useState(false)
     const [discount, setDiscount] = useState("")
     const [allDiscount, setAllDiscount] = useState([]);
-    const [selectData, setSelectData] = useState()
+    const [selectData, setSelectData] = useState("")
     const [allSegment, setAllSegment] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); // Adjust items per page as needed
@@ -302,7 +302,7 @@ const Discount = ({ sidebarOpen }) => {
                                                                         <BsEyeFill />
                                                                     </div>
 
-                                                                    <div
+                                                                   {/* <div
                                                                         data-tip
                                                                         data-for="Delete"
                                                                         className="cursor-pointer text-white bg-rose-500 hover:bg-rode-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -311,7 +311,7 @@ const Discount = ({ sidebarOpen }) => {
                                                                         }
                                                                     >
                                                                         <RiDeleteBin5Line />
-                                                                    </div>
+                                                                    </div>*/}
                                                                 </>
                                                             </div>
                                                         </td>
