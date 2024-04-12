@@ -58,6 +58,7 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
             <Route path="/eventedit" element={<Navigate to="/" />} />
             <Route path="/NewFolderDialog/:folderId" element={<Navigate to="/" />}/>
             <Route path="/trash" element={<Navigate to="/" />} />
+            <Route path="*" element={<Navigate to="/" />} />
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Registration />} />
 

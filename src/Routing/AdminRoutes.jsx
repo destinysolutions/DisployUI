@@ -15,6 +15,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/admin-dashboard" />} />
+          <Route path="*" element={<Navigate to="/admin-dashboard" />} />
           <Route
             path="/admin-dashboard"
             element={

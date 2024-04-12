@@ -110,6 +110,7 @@ const Routing = () => {
         >
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
             <Route path="/register" element={<Navigate to="/dashboard" />} />
             <Route
               path="/dashboard"
