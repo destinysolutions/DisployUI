@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
-// import AddCreditCard from '../Common/AddCreditCard'
-import { Modal } from "react-responsive-modal";
-
+import { FaPlus } from "react-icons/fa6";
+import AddCreditCard from "../../../admin/AddCreditCard";
 const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
   const [newCardShow, setNewCardShow] = useState(false);
 
@@ -186,114 +185,6 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
               </div>
             </label>
           </div>
-          <div className="mb-5">
-            <input
-              className="sr-only peer"
-              defaultChecked
-              type="radio"
-              name="options"
-              id="option_2"
-            />
-            <label
-              className="flex items-center justify-between h-16 px-5 bg-white border border-gray-300 rounded-lg cursor-pointer group"
-              htmlFor="option_2"
-            >
-              <div className="flex flex-col mr-6">
-                <div className="lg:flex md:flex sm:flex xs:block items-center">
-                  <img src="dist/images/logos_visa.png" className="mr-2" />
-                  <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                    HDFC Bank
-                  </h4>
-                  <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                    **** **** **** 6246
-                  </h4>
-                </div>
-              </div>
-              <div className="flex items-center justify-center">
-                <span className="bg-gray-500 text-white px-6 py-2 mr-5 rounded-full">
-                  Secondary
-                </span>
-                <div className="flex items-center justify-center w-6 h-6 border border-gray-600 rounded-full peer-checked:group:bg-indigo-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="hidden w-4 h-4 text-indigo-200 fill-current peer-checked:group:visible"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
-                  </svg>
-                </div>
-              </div>
-            </label>
-          </div>
-          <div className="mb-5">
-            <input
-              className="sr-only peer"
-              type="radio"
-              name="options"
-              id="option_3"
-            />
-            <label
-              className="flex items-center justify-between h-16 px-5 bg-white border border-gray-300 rounded-lg cursor-pointer group"
-              htmlFor="option_3"
-            >
-              <div className="flex flex-col mr-6">
-                <div className="lg:flex md:flex sm:flex xs:block items-center">
-                  <img src="dist/images/logos_visa.png" className="mr-2" />
-                  <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                    HDFC Bank
-                  </h4>
-                  <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                    **** **** **** 6246
-                  </h4>
-                </div>
-              </div>
-              <div className="flex items-center justify-center w-6 h-6 border border-gray-600 rounded-full peer-checked:group:bg-indigo-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="hidden w-4 h-4 text-indigo-200 fill-current peer-checked:group:visible"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
-                </svg>
-              </div>
-            </label>
-          </div>
-          <div className="mb-5">
-            <input
-              className="sr-only peer"
-              type="radio"
-              name="options"
-              id="option_4"
-            />
-            <label
-              className="flex items-center justify-between h-16 px-5 bg-white border border-gray-300 rounded-lg cursor-pointer group"
-              htmlFor="option_4"
-            >
-              <div className="flex flex-col mr-6">
-                <div className="lg:flex md:flex sm:flex xs:block items-center">
-                  <img src="dist/images/logos_visa.png" className="mr-2" />
-                  <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                    HDFC Bank
-                  </h4>
-                  <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                    **** **** **** 6246
-                  </h4>
-                </div>
-              </div>
-              <div className="flex items-center justify-center w-6 h-6 border border-gray-600 rounded-full peer-checked:group:bg-indigo-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="hidden w-4 h-4 text-indigo-200 fill-current peer-checked:group:visible"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
-                </svg>
-              </div>
-            </label>
-          </div>
           <div className="mb-5" onClick={() => setNewCardShow(true)}>
             <input
               className="sr-only peer"
@@ -307,24 +198,11 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
             >
               <div className="flex flex-col mr-6">
                 <div className="lg:flex md:flex sm:flex xs:block items-center">
-                  <i
-                    className="fa fa-plus bg-blue-lighter text-gray p-2 mr-3 rounded-lg"
-                    aria-hidden="true"
-                  ></i>
+                  <FaPlus className="bg-blue-600 text-gray p-2 mr-3 rounded-lg" size={30}/> 
                   <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
                     Add New Card
                   </h4>
                 </div>
-              </div>
-              <div className="flex items-center justify-center w-6 h-6 border border-gray-600 rounded-full peer-checked:group:bg-indigo-600">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="hidden w-4 h-4 text-indigo-200 fill-current peer-checked:group:visible"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
-                </svg>
               </div>
             </label>
           </div>
@@ -341,7 +219,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
                           <td class="text-left px-5 py-2">
                               <label class="text-base font-medium sm:font-base xs:font-base">Company Name:</label>
                           </td>
-                          <td class="text-left text-base">Pixinvent</td>
+                          <td class="text-left text-base px-5 py-2">Pixinvent</td>
                       </tr>
                       <tr class="border-b border-[#D5E3FF]">
                           <td class="text-left px-5 py-2">
@@ -456,6 +334,10 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
           </div> */}
         </div>
       </div>
+
+      {newCardShow && (
+        <AddCreditCard  onSubmit ={onSubmit} toggleModal={toggleModal}/>
+      )}
     </>
   );
 };

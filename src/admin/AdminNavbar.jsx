@@ -16,7 +16,13 @@ const AdminNavbar = () => {
             <div className=" justify-end items-center mx-auto px-4 flex relative">
               <button
                 className="text-[#001737] font-bold text-base "
-                onClick={() => dispatch(handleLogout())}
+                onClick={() => {
+                  toast.loading("Logout...");
+                  setTimeout(() => {
+                    dispatch(handleLogout());
+                    toast.remove();
+                  }, 1000);
+                }}
               >
                 Sign out
               </button>

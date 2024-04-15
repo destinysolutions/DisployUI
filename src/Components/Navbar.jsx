@@ -11,6 +11,7 @@ import { handleLogout } from "../Redux/Authslice";
 import { useDispatch } from "react-redux";
 import notificationIcon from "../images/NavbarIcons/notification.svg"
 import NavbarNotification from "./NavbarNotification";
+import toast from "react-hot-toast";
 const getInitials = (name) => {
   let initials;
   const nameSplit = name.split(" ");
@@ -128,7 +129,7 @@ const Navbar = () => {
                   onClick={handleNotificationClick}
                 />
                 {showNotificationBox && (
-                  <NavbarNotification setShowNotificationBox={setShowNotificationBox}/>
+                  <NavbarNotification setShowNotificationBox={setShowNotificationBox} />
                 )}
               </div>
               {/* Notification box end */}
@@ -200,7 +201,13 @@ const Navbar = () => {
                           </div>
                           <button
                             className="text-[#001737] font-bold text-base "
-                            onClick={() => dispatch(handleLogout())}
+                            onClick={() => {
+                              toast.loading("Logout...");
+                              setTimeout(() => {
+                                dispatch(handleLogout());
+                                toast.remove();
+                              }, 1000);
+                            }}
                           >
                             Sign out
                           </button>

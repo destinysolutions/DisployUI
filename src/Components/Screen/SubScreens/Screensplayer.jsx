@@ -547,6 +547,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       data,
     };
     setLoading(true);
+    toast.loading("Fetching data...")
     await axios
       .request(config)
       .then((response) => {
@@ -560,11 +561,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           }
           handleChangePreviewScreen();
           setLoading(false);
+          toast.remove()
         }
       })
       .catch((error) => {
         console.log(error);
         setLoading(false);
+        toast.remove()
       });
   };
 

@@ -449,23 +449,27 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          const data = response.data?.data[0]?.sections;
-          setCompositionName(response.data?.data[0]?.compositionName);
-          setCompositoinDetails(response?.data?.data[0]);
-          setTags(response?.data?.data[0]?.tags);
-          let obj = {};
-          for (const [key, value] of data.entries()) {
-            if (obj[value?.sectionID]) {
-              obj[value?.sectionID].push(value);
-            } else {
-              obj[value?.sectionID] = [value];
+          setTimeout(() => {
+            const data = response.data?.data[0]?.sections;
+            setCompositionName(response.data?.data[0]?.compositionName);
+            setCompositoinDetails(response?.data?.data[0]);
+            setTags(response?.data?.data[0]?.tags);
+            let obj = {};
+            for (const [key, value] of data.entries()) {
+              if (obj[value?.sectionID]) {
+                obj[value?.sectionID].push(value);
+              } else {
+                obj[value?.sectionID] = [value];
+              }
             }
-          }
-          const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
-          setTestasset(obj);
-          setAddAsset(newdd);
+            const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
+            setTestasset(obj);
+            setAddAsset(newdd);
+            toast.remove();
+          }, 1000);
+        } else {
+          toast.remove();
         }
-        toast.remove();
       })
       .catch((error) => {
         toast.remove();
@@ -914,7 +918,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               )}*/}
                               {data.assetType === "DOC" && (
                                 <div className="flex justify-center items-center">
-                                <HiDocumentDuplicate className=" text-primary text-4xl"/>
+                                  <HiDocumentDuplicate className=" text-primary text-4xl" />
                                 </div>
                               )}
                             </td>
@@ -1058,7 +1062,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                     />
                                   )}
 
-                              {/*  {item.assetType === "DOC" && (
+                                {/*  {item.assetType === "DOC" && (
                                   <p href={item?.assetFolderPath}>
                                     {item.assetName}
                                   </p>
@@ -1066,7 +1070,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
                                 {item.assetType === "DOC" && (
                                   <div className="flex justify-center items-center">
-                                  <HiDocumentDuplicate className=" text-primary text-4xl"/>
+                                    <HiDocumentDuplicate className=" text-primary text-4xl" />
                                   </div>
                                 )}
                               </td>
