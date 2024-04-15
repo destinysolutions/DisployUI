@@ -74,23 +74,25 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        placeholder="Password"
-                                        className="formInput mt-4"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                    <div className="eyeIcon">
-                                        {showPassword ? (
-                                            <BsFillEyeFill
-                                                onClick={() => setShowPassword(!showPassword)}
-                                            />
-                                        ) : (
-                                            <BsFillEyeSlashFill
-                                                onClick={() => setShowPassword(!showPassword)}
-                                            />
-                                        )}
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Password"
+                                            className="formInput mt-4"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                        />
+                                        <div className="absolute right-5 bottom-5">
+                                            {showPassword ? (
+                                                <BsFillEyeFill
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                />
+                                            ) : (
+                                                <BsFillEyeSlashFill
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                />
+                                            )}
+                                        </div>
                                     </div>
                                 </>
                             )}

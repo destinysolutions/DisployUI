@@ -244,15 +244,12 @@ const Discount = () => {
                         <div className="user-model">
 
                             <div className="hours-heading flex justify-between items-center p-5 border-b border-gray sticky top-0 shadow-md z-[99] bg-white">
-                                <h1 className='text-lg font-medium text-primary'>Add New Custom Plan</h1>
+                                <h1 className='text-lg font-medium text-primary'>Add New Custom Plan 11</h1>
                                 <AiOutlineCloseCircle className='text-4xl text-primary cursor-pointer' onClick={() => setShowcoponModel(false)} />
-
                             </div>
                             <hr className='border-gray' />
-
                             <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 ">
                                 <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl">
-
                                     <div className='formgroup relative'>
                                         <input type='text' placeholder='Enter New Discount Name' className='formInput relative w-full' />
                                         <AiFillCheckCircle className='text-green text-2xl absolute right-2 top-4' />
@@ -274,8 +271,6 @@ const Discount = () => {
                                         </div>
                                         )}
                                     </div>
-
-
 
                                     <div className='formgroup relative mt-3'>
                                         <div className='lg:flex md:flex sm:block xs:block items-center justify-between'>
@@ -307,8 +302,6 @@ const Discount = () => {
                                         <button className='bg-white text-primary text-base lg:px-6 md:px-6 sm:px-3  xs:px-4 lg:py-3 md:py-3 sm:py-2 xs:py-1 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2' onClick={() => setshowuserModal(false)}>Cancel</button>
                                         <button className='bg-primary text-white text-base lg:px-8 md:px-8 sm:px-4  xs:px-6 lg:py-3 md:py-3 sm:py-2 xs:py-1 border border-primary  shadow-md rounded-full hover:bg-white hover:text-primary'>Save</button>
                                     </div>
-
-
                                 </div>
                             </div>
                         </div>

@@ -193,7 +193,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
             </div>
           </div>
 
-          <div className="unsplash-section lg:max-h-80 max-h-70 bg-white rounded-lg">
+          <div className="vertical-scroll-inner max-h-72 bg-white rounded-lg">
             <div className="grid grid-cols-12 px-3 gap-4 ">
               {images.map((image) => (
                 <div

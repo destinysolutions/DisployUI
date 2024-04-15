@@ -920,118 +920,121 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       )}
       {showSetScreenModal && (
-        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
+        <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-9990 outline-none focus:outline-none">
           <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                <div className="flex items-center">
-                  <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                    Select Screens to Playlist Name
-                  </h3>
-                </div>
-                <button
-                  className="p-1 text-xl ml-8"
-                  onClick={() => setShowSetScreenModal(false)}
-                >
-                  <AiOutlineCloseCircle className="text-2xl" />
-                </button>
-              </div>
-              <div className="flex justify-between items-center p-4">
-                <div className="text-right mr-5 flex items-end justify-end relative sm:mr-0">
-                  <AiOutlineSearch className="absolute top-[13px] right-[233px] z-10 text-gray searchicon" />
-                  <input
-                    type="text"
-                    placeholder=" Search Playlist"
-                    className="border border-primary rounded-full px-7 py-2 search-user"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <button className="bg-lightgray rounded-full px-4 py-2 text-SlateBlue">
-                    Tags
-                  </button>
-                  <button className="flex items-center bg-lightgray rounded-full px-4 py-2 text-SlateBlue ml-3">
-                    <input type="checkbox" className="w-5 h-5 mr-2" />
-                    All Clear
+              <div className="max-h-80 vertical-scroll-inner">
+                <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                  <div className="flex items-center">
+                    <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                      Select Screens to Playlist Name
+                    </h3>
+                  </div>
+                  <button
+                    className="p-1 text-xl ml-8"
+                    onClick={() => setShowSetScreenModal(false)}
+                  >
+                    <AiOutlineCloseCircle className="text-2xl" />
                   </button>
                 </div>
-              </div>
-              <div className="px-9">
-                <div className="overflow-x-auto p-4 shadow-xl bg-white rounded-lg ">
-                  <table className=" w-full ">
-                    <thead>
-                      <tr className="flex justify-between items-center">
-                        <th className="font-medium text-[14px]">
-                          <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                            Name
-                          </button>
-                        </th>
-                        <th className="p-3 font-medium text-[14px]">
-                          <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                            Group
-                          </button>
-                        </th>
-                        <th className="p-3 font-medium text-[14px]">
-                          <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                            Playing
-                          </button>
-                        </th>
-                        <th className="p-3 font-medium text-[14px]">
-                          <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
-                            Status
-                          </button>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="mt-3 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                        <td className="flex items-center ">
-                          <input type="checkbox" className="mr-3" />
-                          <div>
-                            <div>Tv 1</div>
-                          </div>
-                        </td>
-                        <td className="p-2">Marketing</td>
-                        <td className="p-2">25 May 2023</td>
-                        <td className="p-2">
-                          <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
-                            Live
-                          </button>
-                        </td>
-                      </tr>
-                      <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                        <td className="flex items-center ">
-                          <input type="checkbox" className="mr-3" />
-                          <div>
-                            <div>Tv 1</div>
-                          </div>
-                        </td>
-                        <td className="p-2">Marketing</td>
-                        <td className="p-2">25 May 2023</td>
-                        <td className="p-2">
-                          <button className="rounded-full px-6 py-1 text-white bg-[#D40000]">
-                            Offline
-                          </button>
-                        </td>
-                      </tr>
-                      <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                        <td className="flex items-center ">
-                          <input type="checkbox" className="mr-3" />
-                          <div>
-                            <div>Tv 1</div>
-                          </div>
-                        </td>
-                        <td className="p-2">Marketing</td>
-                        <td className="p-2">25 May 2023</td>
-                        <td className="p-2">
-                          <button className="rounded-full px-6 py-1 text-white bg-[#D40000]">
-                            Offline
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="flex justify-between items-center p-4">
+                  <div className="text-right mr-5 flex items-end justify-end relative sm:mr-0">
+                    <AiOutlineSearch className="absolute top-[13px] right-[233px] z-10 text-gray searchicon" />
+                    <input
+                      type="text"
+                      placeholder=" Search Playlist"
+                      className="border border-primary rounded-full px-7 py-2 search-user"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <button className="bg-lightgray rounded-full px-4 py-2 text-SlateBlue">
+                      Tags
+                    </button>
+                    <button className="flex items-center bg-lightgray rounded-full px-4 py-2 text-SlateBlue ml-3">
+                      <input type="checkbox" className="w-5 h-5 mr-2" />
+                      All Clear
+                    </button>
+                  </div>
+                </div>
+                <div className="px-9">
+                  <div className="overflow-x-auto p-4 shadow-xl bg-white rounded-lg ">
+                    <table className=" w-full ">
+                      <thead>
+                        <tr className="flex justify-between items-center">
+                          <th className="font-medium text-[14px]">
+                            <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
+                              Name
+                            </button>
+                          </th>
+                          <th className="p-3 font-medium text-[14px]">
+                            <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
+                              Group
+                            </button>
+                          </th>
+                          <th className="p-3 font-medium text-[14px]">
+                            <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
+                              Playing
+                            </button>
+                          </th>
+                          <th className="p-3 font-medium text-[14px]">
+                            <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
+                              Status
+                            </button>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="mt-3 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                          <td className="flex items-center ">
+                            <input type="checkbox" className="mr-3" />
+                            <div>
+                              <div>Tv 1</div>
+                            </div>
+                          </td>
+                          <td className="p-2">Marketing</td>
+                          <td className="p-2">25 May 2023</td>
+                          <td className="p-2">
+                            <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
+                              Live
+                            </button>
+                          </td>
+                        </tr>
+                        <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                          <td className="flex items-center ">
+                            <input type="checkbox" className="mr-3" />
+                            <div>
+                              <div>Tv 1</div>
+                            </div>
+                          </td>
+                          <td className="p-2">Marketing</td>
+                          <td className="p-2">25 May 2023</td>
+                          <td className="p-2">
+                            <button className="rounded-full px-6 py-1 text-white bg-[#D40000]">
+                              Offline
+                            </button>
+                          </td>
+                        </tr>
+                        <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                          <td className="flex items-center ">
+                            <input type="checkbox" className="mr-3" />
+                            <div>
+                              <div>Tv 1</div>
+                            </div>
+                          </td>
+                          <td className="p-2">Marketing</td>
+                          <td className="p-2">25 May 2023</td>
+                          <td className="p-2">
+                            <button className="rounded-full px-6 py-1 text-white bg-[#D40000]">
+                              Offline
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
+
               <div className="flex justify-between p-6">
                 <button className="border-2 border-primary px-4 py-2 rounded-full">
                   Add new Playlist
@@ -1047,10 +1050,12 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       )}
       {playlistDeleteModal && (
-        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
+        <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-9990 outline-none focus:outline-none">
           <div className="w-auto my-6 mx-auto lg:max-w-xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+              
+            <div className="max-h-80 vertical-scroll-inner">
+              <div className="flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black">
                 <div className="flex items-center">
                   <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
                     Delete Playlist Name?
@@ -1073,6 +1078,9 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   <p className="ml-2">Ram Siya Ram</p>
                 </div>
               </div>
+              </div>
+
+
               <div className="flex justify-center items-center pb-5">
                 <button
                   className="border-2 border-primary px-4 py-1.5 rounded-full"

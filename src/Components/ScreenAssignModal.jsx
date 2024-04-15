@@ -304,12 +304,12 @@ const ScreenAssignModal = ({
   };
 
   return (
-    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
+    <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-9990 outline-none focus:outline-none">
       <div
         ref={selectScreenRef}
         className="w-auto my-6 mx-auto lg:max-w-[50vw] lg:min-w-[50vw] max-w-[85vw] min-w-[85vw]"
       >
-        <div className="border-0 rounded-lg overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none min-h-[350px] max-h-[550px]">
+        <div className="border-0 px-4 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none ">
           <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
             <div className="flex items-center">
               <div className=" mt-1.5">
@@ -330,6 +330,7 @@ const ScreenAssignModal = ({
                 All Select
               </h3>
             </div>
+            
             <button
               className="p-1 text-xl"
               onClick={() => {
@@ -341,27 +342,24 @@ const ScreenAssignModal = ({
               <AiOutlineCloseCircle className="text-3xl" />
             </button>
           </div>
-          <div className="flex lg:justify-end justify-center mt-4 px-5">
-            <div className="flex justify-end items-center mb-2">
-            <div className="relative w-full">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <AiOutlineSearch className="w-5 h-5 text-gray " />
-              </span>
-              <input
-                type="text"
-                placeholder="Search Screen" //location ,screen, tag
-                className="border border-primary rounded-full px-7 pl-10 py-2 search-user w-full"
-                value={searchScreen}
-                onChange={(e) => {
-                  handleScreenSearch(e);
-                }}
-              />
+           <div className="w-full flex justify-end mt-4 mb-4"> 
+          <div className="relative ">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <AiOutlineSearch className="w-5 h-5 text-gray " />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search Screen" //location ,screen, tag
+                  className="border border-primary rounded-full px-7 pl-10 py-2 search-user w-full"
+                  value={searchScreen}
+                  onChange={(e) => {
+                    handleScreenSearch(e);
+                  }}
+                />
             </div>
-
-            </div>
-          </div>
-          <div className="schedual-table bg-white mt-2 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
-            <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+            </div>  
+          
+            <div className="max-h-72 custom-scrollbar rounded-lg ">
               <table className="screen-table w-full" cellPadding={15}>
                 <thead>
                   <tr className="items-center table-head-bg">
@@ -400,17 +398,16 @@ const ScreenAssignModal = ({
                       >
                         <td className="items-center">
                           <div className="flex">
-                          <input
-                            type="checkbox"
-                            className="mr-3"
-                            onChange={() =>
-                              handleScreenCheckboxChange(screen.screenID)
-                            }
-                            checked={screenCheckboxes[screen.screenID]}
-                          />
+                            <input
+                              type="checkbox"
+                              className="mr-3"
+                              onChange={() =>
+                                handleScreenCheckboxChange(screen.screenID)
+                              }
+                              checked={screenCheckboxes[screen.screenID]}
+                            />
 
-                          {screen.screenName}
-
+                            {screen.screenName}
                           </div>
                         </td>
 
@@ -474,6 +471,8 @@ const ScreenAssignModal = ({
                 </tbody>
               </table>
             </div>
+
+
             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
               <div className="flex items-center">
                 <span className="text-gray-500">{`Total ${screenData?.length} Screen`}</span>
@@ -507,7 +506,9 @@ const ScreenAssignModal = ({
                 {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={(currentPage === totalPages) || (screenData?.length === 0)}
+                  disabled={
+                    currentPage === totalPages || screenData?.length === 0
+                  }
                   className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
                   {sidebarOpen ? "Next" : ""}
@@ -529,7 +530,8 @@ const ScreenAssignModal = ({
                 </button>
               </div>
             </div>
-          </div>
+          
+
           <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
             <button
               className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}

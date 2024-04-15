@@ -53,7 +53,7 @@ const ShowAppsModal = ({ setShowAppModal }) => {
           className="flex items-start justify-between p-4 px-6 border-b-2 border-slate-200 rounded-t text-black"
         >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-            Apps
+            Apps 
           </h3>
           <button
             className="p-1 text-xl"

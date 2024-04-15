@@ -29,7 +29,7 @@ const SaveAssignScreenModal = ({ setSelectScreenModal }) => {
                 <input type="checkbox" className="w-5 h-5" />
               </div>
               <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
-                All Select
+                All Select 
               </h3>
             </div>
             <button

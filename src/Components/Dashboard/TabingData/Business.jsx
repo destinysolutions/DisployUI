@@ -451,7 +451,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
             <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
 
             <MarkerClusterGroup>
-              {dashboardData?.screen.map((screen, index) => (
+              {dashboardData?.screen?.map((screen, index) => (
                 <Marker
                   key={index}
                   position={[screen.lattitude, screen.longituted]}

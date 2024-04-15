@@ -14,9 +14,11 @@ import ViewPlan from './ViewPlan';
 import { GrPlan } from "react-icons/gr";
 import TrialPlan from './TrialPlan';
 import AddEditPlan from './AddEditPlan';
+import { Switch } from "@material-tailwind/react";
 
 const Myplan = () => {
     const { token, user } = useSelector((state) => state.root.auth);
+    console.log('user', user)
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [myplan, setmyPlan] = useState([]);
@@ -142,11 +144,14 @@ const Myplan = () => {
         <>
             <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full h-full'>
                 <div className="flex items-center justify-between mx-2 mb-5">
-                    <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
-                        Pricing Plans
-                    </h1>
+                    <div className='w-full lg:w-1/3 '>
+                        <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
+                            Pricing Plans
+                        </h1>
+                    </div>
+                    
                     {user?.role === "1" && (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-end gap-2 w-full lg:w-2/3 ">
                             <button
                                 className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
                                 onClick={() => setTrialPlanModal(!trialPlanModel)}
@@ -195,7 +200,7 @@ const Myplan = () => {
                         <div className="flex flex-wrap -mx-3 mb-8">
                             {myplan?.map((item) => {
                                 return (
-                                    <div className="w-full md:w-1/3 px-3 mb-4">
+                                    <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/3 px-3 mb-4">
                                         <div className="bg-[#ECF0F1] p-4 rounded-lg h-full">
                                             <div className="flex justify-between">
                                                 <div className="role-name">
@@ -254,31 +259,28 @@ const Myplan = () => {
                         </div>
                         {user?.role === "1" && (
                             <div className="flex items-center justify-center w-full mt-12">
-                                <label
+                                <div
                                     htmlFor="toogleA"
                                     className="flex items-center cursor-pointer border border-blue-500 bg-blue-lighter p-4 rounded-full">
-                                    <div className="text-3xl font-semibold mr-5">
+                                    <div className="text-2xl font-semibold mr-5">
                                         Start with a {trialDetails?.trialDays}-days FREE trial!
                                     </div>
 
-                                    <div className="relative">
-                                        {/*                         <input id="toogleA" type="checkbox" className="sr-only" checked={trialData?.isActive} />
-    
-                                    <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
-    
-                    <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>*/}
-                                        <label className="relative inline-flex items-center me-5 cursor-not-allowed mt-1">
+                                    <div className="relative flex">
+                                        <label className="relative inline-flex items-center cursor-not-allowed">
                                             <input
                                                 type="checkbox"
-                                                checked={trialDetails?.isActive}
+                                                // checked={trialDetails?.isActive}
                                                 className="sr-only peer"
-                                                disabled
+                                                // disabled
+                                                // id="toggle"
 
                                             />
-                                            <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                            
+                                            <div className="flex items-center relative bg-[#ECF0F1] border border-blue-700 w-12 h-7 rounded-full before:absolute before:bg-green before:w-5 before:h-5 before:p-1 before:rounded-full before:transition-all before:duration-500 before:left-1 peer-checked:before:left-6 peer-checked:before:bg-blue-700"></div>
                                         </label>
                                     </div>
-                                </label>
+                                </div>
                             </div>
                         )}
                     </>

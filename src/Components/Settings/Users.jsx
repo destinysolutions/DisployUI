@@ -668,7 +668,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
             </div>
             <hr className="border-gray " />
             <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2">
-              <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 max-h-96 overflow-auto text-left rounded-2xl">
+              <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 max-h-96 vertical-scroll-inner text-left rounded-2xl">
                 <div className="grid grid-cols-12 gap-6">
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                     <div className="relative">
@@ -956,7 +956,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                 />
                               </div>
                               <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
-                                All Select
+                                All Select 
                               </h3>
                             </div>
                             <button
@@ -968,7 +968,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                               <AiOutlineCloseCircle className="text-3xl" />
                             </button>
                           </div>
-                          <div className="schedual-table bg-white rounded-xl mt-2 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
+                          <div className="schedual-table bg-white rounded-xl mt-2 shadow p-3 w-full max-h-96 vertical-scroll-inner">
                             <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                               <table
                                 className="screen-table w-full"

@@ -473,7 +473,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                 className="relative w-auto my-6 mx-auto"
                               >
                                 <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                                  <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
+                                  <div className="flex items-center justify-between p-5 border-b border-slate-200 rounded-t">
                                     <div className="flex items-center">
                                       <div>
                                         <img src={youtube} className="w-10" />
@@ -494,7 +494,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                       <AiOutlineCloseCircle />
                                     </button>
                                   </div>
-                                  <div className="p-2 lg:h-[500px] md:h-[500px] sm:h-[400px] h-[400px] overflow-y-scroll">
+                                  <div className="p-2 max-h-96 vertical-scroll-inner">
                                     <div className="py-2">
                                       <ReactPlayer
                                         url="https://www.youtube.com/watch?v=WKOYp_7P71Y"
@@ -766,7 +766,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                             />
                           )}
                           {instanceView && (
-                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
+                            <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-9990 outline-none focus:outline-none">
                               <div ref={modalRef}>
                                 <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
                                   <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
@@ -776,7 +776,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                       </div>
                                       <div className="ml-3">
                                         <h4 className="text-lg font-medium">
-                                          {instanceName}
+                                          {instanceName} 
                                         </h4>
                                       </div>
                                     </div>
@@ -787,14 +787,16 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                       <AiOutlineCloseCircle />
                                     </button>
                                   </div>
-                                  <div className="p-2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72">
-                                    <ReactPlayer
-                                      url={YoutubeVideo}
-                                      className="youtube-preview"
-                                      muted={isMuted}
-                                      controls={true}
-                                      loop={true}
-                                    />
+                                  <div className="max-h-96 custom-scrollbar">
+                                    <div className="p-2 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72">
+                                      <ReactPlayer
+                                        url={YoutubeVideo}
+                                        className="youtube-preview"
+                                        muted={isMuted}
+                                        controls={true}
+                                        loop={true}
+                                      />
+                                    </div>
                                   </div>
                                   <div className="py-2 px-6">
                                     <div className="flex items-center gap-2 w-full">

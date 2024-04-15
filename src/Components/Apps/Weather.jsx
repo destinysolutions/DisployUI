@@ -949,46 +949,51 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
       )}
       {appDetailModal && (
         <>
-          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none ">
+          <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-9990 outline-none focus:outline-none ">
             <div ref={modalRef} className="relative w-auto my-6 mx-auto">
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
-                  <div className="flex items-center">
-                    <div>
-                      <img src={Weather_Img} className="w-10" />
+                
+                <div className="max-h-80 vertical-scroll-inner">
+                  <div className="flex items-center justify-between p-5 border-b border-slate-200 rounded-t">
+                    <div className="flex items-center">
+                      <div>
+                        <img src={Weather_Img} className="w-10" />
+                      </div>
+                      <div className="ml-3">
+                        <h4 className="text-lg font-medium">Weather</h4>
+                        <h4 className="text-sm font-normal ">
+                          Internal Communications
+                        </h4>
+                      </div>
                     </div>
-                    <div className="ml-3">
-                      <h4 className="text-lg font-medium">Weather</h4>
-                      <h4 className="text-sm font-normal ">
-                        Internal Communications
-                      </h4>
-                    </div>
+                    <button
+                      className="p-1 text-3xl"
+                      onClick={() => setAppDetailModal(false)}
+                    >
+                      <AiOutlineCloseCircle />
+                    </button>
                   </div>
-                  <button
-                    className="p-1 text-3xl"
-                    onClick={() => setAppDetailModal(false)}
-                  >
-                    <AiOutlineCloseCircle />
-                  </button>
+                  <div className="p-2">
+                    {/* <ReactPlayer
+                      url="https://www.youtube.com/watch?v=WKOYp_7P71Y"
+                      className="app-instance-preview"
+                    />*/}
+                  </div>
+                  <p className="max-w-xl px-6">
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the industry&apos;s
+                    standard dummy text ever since the 1500s, when an unknown
+                    printer took a galley of type and scrambled it to make a type
+                    specimen book.
+                  </p>
+                  <div className="py-2 px-6">
+                    <p>- Add videos by Weather URL</p>
+                    <p>- Mute videos</p>
+                    <p>- Choose to play with or without subtitles 1111</p>
+                  </div>
                 </div>
-                <div className="p-2">
-                  {/* <ReactPlayer
-                    url="https://www.youtube.com/watch?v=WKOYp_7P71Y"
-                    className="app-instance-preview"
-                  />*/}
-                </div>
-                <p className="max-w-xl px-6">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry&apos;s
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book.
-                </p>
-                <div className="py-2 px-6">
-                  <p>- Add videos by Weather URL</p>
-                  <p>- Mute videos</p>
-                  <p>- Choose to play with or without subtitles</p>
-                </div>
+
+
                 <div className="flex items-center justify-center p-5">
                   <button className="border-primary border-2 text-primary py-1.5 px-5 rounded-full hover:bg-primary hover:text-white">
                     App Guide
@@ -1032,7 +1037,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 ) : (
                   <div
-                    className="overflow-x-auto bg-blue border-white rounded-lg relative p-5"
+                    className="max-h-96 custom-scrollbar bg-blue border-white rounded-lg relative p-5"
                     style={{ backgroundColor: BackGround, height: "400px" }}
                   >
                     <div className="lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full mx-auto bg-teal border-width-10px border-black">
