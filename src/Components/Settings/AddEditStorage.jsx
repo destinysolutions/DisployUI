@@ -1,11 +1,13 @@
 import { loadStripe } from '@stripe/stripe-js';
 import { round } from 'lodash';
-import React from 'react'
+import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
 
 const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, setDiscountCoupon, discountCoupon }) => {
 
+
+    const [showDiscount, setShowDiscount] = useState(false);
 
     return (
         <>
@@ -35,60 +37,63 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
                                 <span className='flex justify-center items-center font-semibold text-xl'>
                                     Enter the Storage capacity required
                                 </span>
-                                <div className='flex items-center justify-evenly'>
+                                <div className='flex items-center justify-between'>
                                     <p>Add Storage</p>
-                                    <div className='flex items-center gap-1 mr-5'>
+                                    <div className='flex items-center gap-1'>
                                         <input type='number'
                                             className="relative border border-black rounded-md p-2 w-24"
-                                            onChange={(e) => setAddStorage(e.target.value)}
+                                            onChange={(e) => {
+                                                if (e.target.value <= 0) {
+                                                    setAddStorage(addStorage)
+                                                } else {
+                                                    setAddStorage(e.target.value)
+                                                }
+                                            }
+                                            }
                                             value={addStorage}
                                         />
-                                        <span>GB</span>
+                                        {/*<span>GB</span>*/}
                                     </div>
                                 </div>
-                                <div className='flex items-center justify-evenly'>
+
+
+                                <div className='flex items-center justify-between'>
                                     <p>Cost</p>
                                     <div className='flex items-center gap-1'>
-                                        <input
-                                            disabled
-                                            type='number'
-                                            className="relative border border-black rounded-md p-2 w-24"
-                                            value={round((addStorage * 3), 2)}
-                                        />
-                                        <span>$</span>
+                                        <label>${round((addStorage * 3), 2)}</label>
                                     </div>
                                 </div>
-                                <div className='flex items-center justify-evenly'>
-                                    <div className='flex items-center gap-1'>
-                                        <input
-                                            type='text'
-                                            placeholder='Discount Coupon'
-                                            className="relative border border-black rounded-md p-2 w-48"
-                                            onChange={(e) => setDiscountCoupon(e.target.value)}
-                                            value={discountCoupon}
-                                        />
-                                        <button
-                                            className="bg-primary text-white text-base px-5 py-2 border border-primary shadow-md rounded-full "
-                                            type="button"
-                                        >
-                                            Verify
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className='flex justify-end items-center gap-4'>
+                                <div className='flex justify-between items-center gap-4 border-t border-black dark:border-gray-600'>
                                     <div className='mt-3'>
                                         <label>Total Price:</label>
                                     </div>
-                                    <div className='border-t border-black dark:border-gray-600'>
-                                        <input
-                                            type='text'
-                                            placeholder='Total Price'
-                                            className="relative border border-black rounded-md p-2 w-36 mt-3"
-                                            disabled
-                                            value={round((addStorage * 0.05), 2)}
-                                        />
+                                    <div>
+                                        <label>${round((addStorage * 3), 2)}</label>
                                     </div>
                                 </div>
+                                <div className='flex items-center justify-start'>
+                                    <h1 className='cursor-pointer hover:underline' onClick={() => setShowDiscount(!showDiscount)}>Have a coupon code?</h1>
+                                </div>
+                                {showDiscount && (
+                                    <div className='flex items-center justify-between'>
+                                        <div className='flex items-center gap-5'>
+                                            <input
+                                                type='text'
+                                                placeholder='Discount Coupon'
+                                                className="relative border border-black rounded-md p-2 w-48"
+                                                onChange={(e) => setDiscountCoupon(e.target.value)}
+                                                value={discountCoupon}
+                                            />
+                                            <button
+                                                className="bg-primary text-white text-base px-5 py-2 border border-primary shadow-md rounded-full "
+                                                type="button"
+                                                disabled={discountCoupon?.length === 0}
+                                            >
+                                                Verify
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex items-center justify-center p-2 md:p-2 border-t border-gray-200 rounded-b dark:border-gray-600 gap-2">

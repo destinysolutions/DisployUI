@@ -80,6 +80,7 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData,
 
   useEffect(() => {
     if (selectData) {
+      console.log('selectData', selectData)
       setMethod(selectData?.method)
       setDiscountCode(selectData?.discountCode)
       setActiveTab(selectData?.percentageValue === 0 ? 0 : 0);
@@ -93,11 +94,12 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData,
       setShipping(selectData?.combinations)
       setSelectedTimezoneName(selectData?.TimezoneName)
       setselectedFeature(selectData?.featureList?.split(',').map(label => ({ label, value: label })))
+      setSelectEnd(selectData?.activeEndDate)
       setDate({
         startDate: selectData?.startDate.substring(0, 10),
-        endDate: selectData?.ActiveEndDate ? selectData?.endDate.substring(0, 10) : new Date().toISOString().split('T')[0],
-        startTime: selectData?.startTime.split('T')[1].split(':').slice(0, 2).join(':'),
-        endTime: selectData?.ActiveEndDate ? selectData?.endTime.split('T')[1].split(':').slice(0, 2).join(':') : getTimeFromDate(new Date()),
+        endDate: selectData?.activeEndDate ? selectData?.endDate.substring(0, 10) : new Date().toISOString().split('T')[0],
+        startTime: selectData?.startTime.split(":").slice(0, 2).join(":"),
+        endTime: selectData?.activeEndDate ? selectData?.endTime.split(":").slice(0, 2).join(":") : getTimeFromDate(new Date()),
       })
     }
   }, [selectData])

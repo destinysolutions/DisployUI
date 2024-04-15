@@ -1227,22 +1227,22 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                       </div>
                       <div className="col-span-2 capitalize">
                         <span>
-                          {userDetailData?.isActive == 1 ? (
-                            <span
-                              style={{ backgroundColor: "#cee9d6" }}
-                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                            >
-                              Active
-                            </span>
-                          ) : (
-                            <span
-                              style={{ backgroundColor: "#cee9d6" }}
-                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                            >
-                              Inactive
-                            </span>
-                          )}
-                        </span>
+                        {userDetailData?.isActive === 1 ? (
+                          <span
+                            style={{ backgroundColor: "#cee9d6" }}
+                            className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                          >
+                            Active
+                          </span>
+                        ) : (
+                          <span
+                            style={{ backgroundColor: "#f1b2b2" }}
+                            className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                          >
+                            Inactive
+                          </span>
+                        )}
+                      </span>
                       </div>
                       <div className="font-semibold">
                         <span>Role : </span>
@@ -2242,15 +2242,23 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                 </button>
                               </td>
                               <td className="text-[#5E5E5E] text-center">
-                                {item.isActive == 1 ? (
-                                  <span className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
+                                <span>
+                                {item?.isActive === 1 ? (
+                                  <span
+                                    style={{ backgroundColor: "#cee9d6" }}
+                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  >
                                     Active
                                   </span>
                                 ) : (
-                                  <span className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
+                                  <span
+                                    style={{ backgroundColor: "#f1b2b2" }}
+                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  >
                                     Inactive
                                   </span>
                                 )}
+                              </span>
                               </td>
                               <td className="text-center">
                                 <div className="flex justify-center gap-4">

@@ -74,11 +74,12 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
             setMaximumValue(selectData?.MaximumDiscount)
             setShipping(selectData?.combinations)
             setSelectedTimezoneName(selectData?.TimezoneName)
+            setSelectEnd(selectData?.activeEndDate)
             setDate({
-                startDate: selectData?.startDate.substring(0, 10),
-                endDate: selectData?.ActiveEndDate ? selectData?.endDate.substring(0, 10) : new Date().toISOString().split('T')[0],
-                startTime: selectData?.startTime.split('T')[1].split(':').slice(0, 2).join(':'),
-                endTime: selectData?.ActiveEndDate ? selectData?.endTime.split('T')[1].split(':').slice(0, 2).join(':') : getTimeFromDate(new Date()),
+              startDate: selectData?.startDate.substring(0, 10),
+              endDate: selectData?.activeEndDate ? selectData?.endDate.substring(0, 10) : new Date().toISOString().split('T')[0],
+              startTime: selectData?.startTime.split(":").slice(0, 2).join(":"),
+              endTime: selectData?.activeEndDate ? selectData?.endTime.split(":").slice(0, 2).join(":") : getTimeFromDate(new Date()),
             })
         }
     }, [selectData])
