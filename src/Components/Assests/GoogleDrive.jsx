@@ -3,8 +3,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import useDrivePicker from "react-google-drive-picker";
 import Googledrive from "../../images/Assets/google-drive.png";
-import { ALL_FILES_UPLOAD, GOOGLE_DRIVE } from "../../Pages/Api";
-import { useNavigate } from "react-router-dom";
+import { GOOGLE_DRIVE } from "../../Pages/Api";
 import { useSelector } from "react-redux";
 import ReactTooltip from "react-tooltip";
 

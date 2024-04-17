@@ -229,6 +229,8 @@ export const GET_TRIAL_PERIOD_DETAILS = `${baseUrl}Common/GetTrialPeriodDetails`
 export const ADD_EDIT_TRIAL_PLAN = `${baseUrl}Common/EditTrialPeriod`
 export const PAYMENT_INTENT_CREATE_REQUEST = `${baseUrl}Common/PaymentIntentCreateRequest`
 export const PAYMENT_DETAILS = `${baseUrl}PaymentDetails/AddorUpdatePaymentDetails`
+export const GET_ALL_BILLING = `${baseUrl}BillingMaster/GetAllBilling`
+
 
 // Notifications
 
@@ -250,3 +252,5 @@ export const ADD_EDIT_DISCOUNT = `${baseUrl}DiscountMaster/AddorUpdateDiscountMa
 export const GET_ALL_FEATURE_LIST = `${baseUrl}Common/GetAllPlansFeatures`
 export const DELETE_DISCOUNT = `${baseUrl}DiscountMaster/DeleteDiscount`
 export const GET_ALL_SEGMENT = `${baseUrl}common/GetAllSegment`
+export const VERIFY_COUPON = `${baseUrl}common/VerfiyDiscountCoupon`
+

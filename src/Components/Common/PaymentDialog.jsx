@@ -8,7 +8,7 @@ import { PAYMENT_DETAILS } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
 import { handlePaymentDetails } from '../../Redux/PaymentSlice';
 
-const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue }) => {
+const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
 
     const { user, userDetails } = useSelector((state) => state.root.auth);
     const { token } = useSelector((s) => s.root.auth);
@@ -95,7 +95,8 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue })
                     ...paymentIntent,
                     PaymentType: type,
                     PaymentValue: PaymentValue,
-                    organizationId:user?.organizationId
+                    organizationId: user?.organizationId,
+                    discountCoupon: discountCoupon
                 }
 
                 const config = {
@@ -109,7 +110,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue })
                     data: JSON.stringify(params),
                 }
                 dispatch(handlePaymentDetails({ config })).then((res) => {
-                    if(res?.payload?.status){
+                    if (res?.payload?.status) {
                         navigation("/dashboard"); // Navigate to dashboard after processing payment
                     }
                 })

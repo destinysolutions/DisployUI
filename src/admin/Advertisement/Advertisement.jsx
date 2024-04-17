@@ -2,17 +2,15 @@ import React, { useRef, useState } from "react";
 import AdminSidebar from "../AdminSidebar";
 import AdminNavbar from "../AdminNavbar";
 import { BiUserPlus } from "react-icons/bi";
-import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
-import { debounce } from "lodash";
+import { AiOutlineSearch } from "react-icons/ai";
 import * as Yup from "yup";
 import axios from "axios";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import AddEditAdvertisement from "./AddEditAdvertisement";
 import CustomerScreen from "./CustomerScreen";
-import { GET_ALL_ORGANIZATION_MASTER } from "../AdminAPI";
 import { useEffect } from "react";
-import { ADDEDITADVERTISEMENT, GETALLADS } from "../../Pages/Api";
+import { ADDEDITADVERTISEMENT } from "../../Pages/Api";
 import { MdOutlineResetTv, MdPreview } from "react-icons/md";
 import moment from "moment";
 import {
@@ -24,6 +22,7 @@ import { getOnBodingData } from "../../Redux/admin/OnBodingSlice";
 import AssetsPreview from "../../Components/Common/AssetsPreview";
 import { BsEyeFill } from "react-icons/bs";
 import AdminMarginmodel from "./AdminMarginmodel";
+import { getTimeFromDate } from "../../Components/Common/Common";
 
 const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const hiddenFileInput = useRef(null);
@@ -91,8 +90,6 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     )
     : [];
 
-  const totalAdsPages = Math.ceil(fiterAds?.length / itemsPerPage);
-
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
@@ -132,13 +129,6 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
   // Pagination End
-
-  function getTimeFromDate(date) {
-    const hours = String(date.getHours()).padStart(2, "0"); // Ensure two digits
-    const minutes = String(date.getMinutes()).padStart(2, "0"); // Ensure two digits
-    const time = `${hours}:${minutes}`;
-    return time;
-  }
 
   function formatDate(date) {
     const year = date.getFullYear();

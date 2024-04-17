@@ -2,13 +2,49 @@ import { loadStripe } from '@stripe/stripe-js';
 import { round } from 'lodash';
 import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { VERIFY_COUPON } from '../../Pages/Api';
+import { verifyDiscountCoupon } from '../../Redux/AdminSettingSlice';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 
-const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, setDiscountCoupon, discountCoupon }) => {
-
-
+const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, setDiscountCoupon, discountCoupon, showError, setShowError, setDiscount, discount }) => {
+    const { token } = useSelector((s) => s.root.auth);
+    const authToken = `Bearer ${token}`;
+    const dispatch = useDispatch()
     const [showDiscount, setShowDiscount] = useState(false);
+    const handleVerify = () => {
 
+        const Params = {
+            "discountCode": discountCoupon,
+            "featureKey": "Storage",
+            "currentDate": new Date().toISOString().split('T')[0],
+            "amount": round((addStorage * 3), 2),
+            "items": addStorage
+        }
+        console.log('Params', Params)
+        let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: VERIFY_COUPON,
+            headers: {
+                Authorization: authToken,
+                "Content-Type": "application/json",
+            },
+            data: JSON.stringify(Params),
+        };
+        dispatch(verifyDiscountCoupon({ config })).then((res) => {
+            if (res?.payload?.status) {
+                setDiscount(res?.payload?.data)
+                setShowError(false)
+            } else {
+                setShowError(true)
+            }
+        }).catch((error) => {
+            console.log('error', error)
+            setShowError(false)
+        })
+    }
     return (
         <>
             <div
@@ -75,24 +111,30 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
                                     <h1 className='cursor-pointer hover:underline' onClick={() => setShowDiscount(!showDiscount)}>Have a coupon code?</h1>
                                 </div>
                                 {showDiscount && (
-                                    <div className='flex items-center justify-between'>
-                                        <div className='flex items-center gap-5'>
-                                            <input
-                                                type='text'
-                                                placeholder='Discount Coupon'
-                                                className="relative border border-black rounded-md p-2 w-48"
-                                                onChange={(e) => setDiscountCoupon(e.target.value)}
-                                                value={discountCoupon}
-                                            />
-                                            <button
-                                                className="bg-primary text-white text-base px-5 py-2 border border-primary shadow-md rounded-full "
-                                                type="button"
-                                                disabled={discountCoupon?.length === 0}
-                                            >
-                                                Verify
-                                            </button>
+                                    <>
+                                        <div className='flex items-center justify-between'>
+                                            <div className='flex items-center gap-5'>
+                                                <input
+                                                    type='text'
+                                                    placeholder='Discount Coupon'
+                                                    className="relative border border-black rounded-md p-2 w-48"
+                                                    onChange={(e) => setDiscountCoupon(e.target.value.toUpperCase())}
+                                                    value={discountCoupon}
+                                                />
+                                                <button
+                                                    className={`bg-primary text-white text-base px-5 py-2 border border-primary shadow-md rounded-full ${discountCoupon?.length === 0 ? "cursor-not-allowed" : "cursor-pointer"}`}
+                                                    type="button"
+                                                    disabled={discountCoupon?.length === 0}
+                                                    onClick={() => handleVerify()}
+                                                >
+                                                    Verify
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
+                                        {showError && (
+                                            <span className='error mt-[-10px]'>Coupon is invalid.</span>
+                                        )}
+                                    </>
                                 )}
                             </div>
 

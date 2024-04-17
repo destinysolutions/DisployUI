@@ -2,16 +2,9 @@ import React, { useEffect } from "react";
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { useState } from "react";
-import {
-  AiOutlineClose,
-  AiOutlineCloseCircle,
-  AiOutlineSearch,
-} from "react-icons/ai";
+import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
-import DataTable from "react-data-table-component";
-import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import "../Styles/admin.css";
 import {
   ADD_USER_MASTER,
@@ -19,8 +12,6 @@ import {
   GET_ALL_USER_TYPE_MASTER,
 } from "./AdminAPI";
 import AddEditUser from "./AddEditUser";
-import ReactTooltip from "react-tooltip";
-import { BiEdit } from "react-icons/bi";
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
 
 const User = ({ sidebarOpen, setSidebarOpen }) => {

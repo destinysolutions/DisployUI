@@ -40,7 +40,6 @@ const Myplan = () => {
         trialDays: 14,
         isActive: true
     })
-
     const GetFeatureList = () => {
         let config = {
             method: "get",
@@ -96,7 +95,7 @@ const Myplan = () => {
             },
         }
         dispatch(handleGetTrialPlan({ config })).then((res) => {
-            if (res?.payload?.status === 200) {
+            if (res?.payload?.status) {
                 setTrialDetails(res?.payload?.data)
                 setTrialData(res?.payload?.data)
             }
@@ -270,14 +269,12 @@ const Myplan = () => {
                                         <label className="relative inline-flex items-center cursor-not-allowed">
                                             <input
                                                 type="checkbox"
-                                                // checked={trialDetails?.isActive}
+                                                checked={trialDetails?.isActive}
                                                 className="sr-only peer"
-                                                // disabled
-                                                // id="toggle"
-
+                                                disabled
+                                                id="toggle"
                                             />
-                                            
-                                            <div className="flex items-center relative bg-[#ECF0F1] border border-blue-700 w-12 h-7 rounded-full before:absolute before:bg-green before:w-5 before:h-5 before:p-1 before:rounded-full before:transition-all before:duration-500 before:left-1 peer-checked:before:left-6 peer-checked:before:bg-blue-700"></div>
+                                            <div className="flex items-center relative bg-[#e8eced] border border-blue-700 w-12 h-7 rounded-full before:absolute before:bg-rose-700 before:w-5 before:h-5 before:p-1 before:rounded-full before:transition-all before:duration-500 before:left-1 peer-checked:before:left-6 peer-checked:before:bg-green"></div>
                                         </label>
                                     </div>
                                 </div>

@@ -6,7 +6,7 @@ import { ADD_REGISTER_URL, PAYMENT_DETAILS } from '../Pages/Api';
 import { useDispatch } from 'react-redux';
 import { handleRegisterUser } from "../Redux/Authslice"
 
-const PlanPurchase = ({ selectedPlan, customerData }) => {
+const PlanPurchase = ({ selectedPlan, customerData, discountCoupon }) => {
     const stripe = useStripe();
     const elements = useElements();
     const navigation = useNavigate()
@@ -118,7 +118,9 @@ const PlanPurchase = ({ selectedPlan, customerData }) => {
                 formData.append("FirstName", customerData.firstName);
                 formData.append("LastName", customerData.lastName);
                 formData.append("Email", customerData.email);
-                // formData.append("UserTokan", usertoken);   // used Firebase token
+                formData.append("Phone", customerData.phone);
+                formData.append("GoogleLocation", customerData.googleLocation);
+                formData.append("OrganizationName", customerData.company);
                 formData.append("Operation", "Insert");
 
                 let config = {

@@ -56,7 +56,7 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
         for (let i = 0; i < 8; i++) {
             code += characters.charAt(Math.floor(Math.random() * characters.length));
         }
-        setDiscountCode(code);
+        setDiscountCode(code.toUpperCase());
     };
 
     useEffect(() => {
@@ -76,10 +76,10 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
             setSelectedTimezoneName(selectData?.TimezoneName)
             setSelectEnd(selectData?.activeEndDate)
             setDate({
-              startDate: selectData?.startDate.substring(0, 10),
-              endDate: selectData?.activeEndDate ? selectData?.endDate.substring(0, 10) : new Date().toISOString().split('T')[0],
-              startTime: selectData?.startTime.split(":").slice(0, 2).join(":"),
-              endTime: selectData?.activeEndDate ? selectData?.endTime.split(":").slice(0, 2).join(":") : getTimeFromDate(new Date()),
+                startDate: selectData?.startDate.substring(0, 10),
+                endDate: selectData?.activeEndDate ? selectData?.endDate.substring(0, 10) : new Date().toISOString().split('T')[0],
+                startTime: selectData?.startTime.split(":").slice(0, 2).join(":"),
+                endTime: selectData?.activeEndDate ? selectData?.endTime.split(":").slice(0, 2).join(":") : getTimeFromDate(new Date()),
             })
         }
     }, [selectData])
@@ -104,7 +104,7 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
             ActiveEndDate: selectEnd,
             EndDate: selectEnd ? date?.endDate : "",
             EndTime: selectEnd ? date?.endTime : "",
-            TimezoneName:selectedTimezoneName,
+            TimezoneName: selectedTimezoneName,
             FeatureList: ""
         }
         let config = {
@@ -297,7 +297,7 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
                                 </label>
                             </div>
                             {purchase === "Minimum Quantity Of Items" && (
-                                <div className="flex items-center mb-3">
+                                <div className="flex items-center my-2">
                                     <input type="text" className="border border-[#D5E3FF] rounded-lg p-2" placeholder="Enter Items" onChange={(e) => setPurchaseItems(e.target.value)} value={purchaseItems} />
                                 </div>
                             )}
@@ -317,47 +317,51 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
                                     <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setCustomer("Specific customer segments")} checked={customer === "Specific customer segments"} />Specific customer segments
                                 </label>
                             </div>
-                            <div className="flex items-center mb-3">
+                            {/*<div className="flex items-center mb-3">
                                 <input id="radio8" type="radio" name="radio" className="hidden" />
                                 <label className="flex items-center cursor-pointer text-xl">
                                     <input type='radio' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" onChange={() => setCustomer("minimum quantity of items")} checked={customer === "minimum quantity of items"} />minimum quantity of items
                                 </label>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="relative w-full">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                        <AiOutlineSearch className="w-5 h-5 text-gray " />
-                                    </span>
-                                    <input
-                                        type="text"
-                                        placeholder="Search customer segments"
-                                        className="border border-primary rounded-lg px-7 pl-10 py-2 w-full"
+                            </div>*/}
+                            {customer === "Specific customer segments" && (
+                                <>
+                                    <div className="flex items-center">
+                                        <div className="relative w-full">
+                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <AiOutlineSearch className="w-5 h-5 text-gray " />
+                                            </span>
+                                            <input
+                                                type="text"
+                                                placeholder="Search customer segments"
+                                                className="border border-primary rounded-lg px-7 pl-10 py-2 w-full"
 
-                                    />
-                                </div>
-                                <div className="w-full md:w-1/2 px-3 mb-3">
-                                    <div className="flex">
-                                        <button
-                                            className="lg:px-5 px-3 lg:text-lg md:text-md sm:text-sm bg-primary text-white rounded-full py-2 border border-primary me-3"
-                                            onClick={() => setOpenBrowser(!openBrowser)}
-                                        >
-                                            Browse
-                                        </button>
+                                            />
+                                        </div>
+                                        <div className="w-full md:w-1/2 px-3 mb-3">
+                                            <div className="flex">
+                                                <button
+                                                    className="lg:px-5 px-3 lg:text-lg md:text-md sm:text-sm bg-primary text-white rounded-full py-2 border border-primary me-3"
+                                                    onClick={() => setOpenBrowser(!openBrowser)}
+                                                >
+                                                    Browse
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            {segment === "" && (
-                                <p>Select Customer Segments That Can Use This Discount.</p>
+                                    {segment === "" && (
+                                        <p>Select Customer Segments That Can Use This Discount.</p>
+                                    )}
+                                    {allSegment?.filter((item) => item?.customerSegmentsID === segment)?.map((seg, index) => {
+                                        return (
+                                            <div className='flex flex-row justify-between' key={index}>
+                                                <p>{seg?.segments}</p>
+                                                <IoClose size={24} className='text-red cursor-pointer' onClick={() => setSegment("")} />
+                                            </div>
+
+                                        )
+                                    })}
+                                </>
                             )}
-                            {allSegment?.filter((item) => item?.customerSegmentsID === segment)?.map((seg, index) => {
-                                return (
-                                    <div className='flex flex-row justify-between' key={index}>
-                                        <p>{seg?.segments}</p>
-                                        <IoClose size={24} className='text-red cursor-pointer' onClick={() => setSegment("")} />
-                                    </div>
-
-                                )
-                            })}
                         </div>
                         <div className="border border-light-blue rounded-xl mb-4 p-4">
                             <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3">Maximum Discount Uses </h1>
@@ -429,10 +433,10 @@ const ScreenDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, 
                                 <h3 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">Summary</h3>
                             </div>
                             <div className="p-4">
-                            <p className="mb-2"><strong>TimeZone</strong></p>
-                            <h1 className="font-medium lg:text-lg md:text-lg sm:text-xl mb-3"> {selectedTimezoneName} </h1>
-                            <p className="mb-2"><strong>{method}</strong></p>
-                            <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> {discountCode} </h1>
+                                <p className="mb-2"><strong>TimeZone</strong></p>
+                                <h1 className="font-medium lg:text-lg md:text-lg sm:text-xl mb-3"> {selectedTimezoneName} </h1>
+                                <p className="mb-2"><strong>{method}</strong></p>
+                                <h1 className="font-medium lg:text-1xl md:text-1xl sm:text-xl mb-3"> {discountCode} </h1>
                                 {/*  <ul className="leading-8 mb-3">
                             <li>Amount off Screen</li>
                             <li>Code</li>

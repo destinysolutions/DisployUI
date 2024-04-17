@@ -1,5 +1,4 @@
-import { useNavigate } from "react-router-dom";
-import { auth } from "../FireBase/firebase";
+
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { handleLogout } from "../Redux/Authslice";

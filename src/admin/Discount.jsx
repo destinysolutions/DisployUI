@@ -5,18 +5,18 @@ import ScreenDiscount from './Discount/ScreenDiscount';
 import FeatureDiscount from './Discount/FeatureDiscount';
 import TrialPeriodDiscount from './Discount/TrialPeriodDiscount';
 import CustomDiscount from './Discount/CustomDiscount';
-import { ADD_EDIT_DISCOUNT, DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID, GET_SCEDULE_TIMEZONE } from '../Pages/Api';
-import { handleAddEditDiscount, handleDeleteDiscount, handleGetAllDiscount, handleGetAllSegment } from '../Redux/AdminSettingSlice';
+import { DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID, GET_SCEDULE_TIMEZONE } from '../Pages/Api';
+import { handleDeleteDiscount, handleGetAllDiscount, handleGetAllSegment } from '../Redux/AdminSettingSlice';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { BsEyeFill } from 'react-icons/bs';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import moment from 'moment';
 import axios from 'axios';
 import { MdOutlineEdit } from 'react-icons/md';
+
 const Discount = ({ sidebarOpen }) => {
     const { token } = useSelector((s) => s.root.auth);
     const dispatch = useDispatch()
@@ -32,7 +32,7 @@ const Discount = ({ sidebarOpen }) => {
     const [sortedField, setSortedField] = useState(null);
     const [loading, setLoading] = useState(true)
     const [getTimezone, setTimezone] = useState([]);
-  const [selectedTimezoneName, setSelectedTimezoneName] = useState();
+    const [selectedTimezoneName, setSelectedTimezoneName] = useState();
 
     const totalPages = Math.ceil(allDiscount?.length / itemsPerPage);
     // Function to sort the data based on a field and order
@@ -415,10 +415,10 @@ const Discount = ({ sidebarOpen }) => {
                 </div>
             )}
             {discount === "Screen" && (
-                <ScreenDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} getTimezone={getTimezone} setSelectedTimezoneName={setSelectedTimezoneName} selectedTimezoneName={selectedTimezoneName}/>
+                <ScreenDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} getTimezone={getTimezone} setSelectedTimezoneName={setSelectedTimezoneName} selectedTimezoneName={selectedTimezoneName} />
             )}
             {discount === "Features" && (
-                <FeatureDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} getTimezone={getTimezone} setSelectedTimezoneName={setSelectedTimezoneName} selectedTimezoneName={selectedTimezoneName}/>
+                <FeatureDiscount discount={discount} setDiscount={setDiscount} fetchDiscountData={fetchDiscountData} allSegment={allSegment} selectData={selectData} getTimezone={getTimezone} setSelectedTimezoneName={setSelectedTimezoneName} selectedTimezoneName={selectedTimezoneName} />
             )}
             {discount === "Trial Period" && (
                 <TrialPeriodDiscount discount={discount} setDiscount={setDiscount} />

@@ -25,7 +25,9 @@ const Storagelimit = () => {
   const [openPayment, setOpenPayment] = useState(false)
   const [addStorage, setAddStorage] = useState(1)
   const [discountCoupon, setDiscountCoupon] = useState("")
+  const [discount, setDiscount] = useState("")
   const [clientSecret, setClientSecret] = useState("");
+  const [showError, setShowError] = useState(false)
   const appearance = {
     theme: 'stripe',
   };
@@ -259,12 +261,16 @@ const Storagelimit = () => {
           handlePay={handlePay}
           setDiscountCoupon={setDiscountCoupon}
           discountCoupon={discountCoupon}
+          showError={showError}
+          setShowError={setShowError}
+          setDiscount={setDiscount}
+          discount={discount}
         />
       )}
 
       {openPayment && clientSecret && (
         <Elements options={options} stripe={stripePromise}>
-          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Storage" PaymentValue={addStorage} />
+          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Storage" PaymentValue={addStorage} discountCoupon={discountCoupon}/>
         </Elements>
       )}
     </>

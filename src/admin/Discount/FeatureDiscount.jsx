@@ -75,7 +75,7 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData,
     for (let i = 0; i < 8; i++) {
       code += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    setDiscountCode(code);
+    setDiscountCode(code.toUpperCase());
   };
 
   useEffect(() => {
