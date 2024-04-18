@@ -19,7 +19,8 @@ const PlanIntegration = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [clientSecret, setClientSecret] = useState("");
     const [selectedPlan, setSelectedPlan] = useState(null)
-    console.log('selectedPlan', selectedPlan)
+    const [Screen, setScreen] = useState(1)
+    console.log('Screen', Screen)
     const [page, setPage] = useState(0)
     const [showDiscount, setShowDiscount] = useState(false);
     const [showError, setShowError] = useState(false)
@@ -42,6 +43,7 @@ const PlanIntegration = () => {
         company: "",
         googleLocation: ""
     })
+    const TotalPrice = Screen <= 1 ? selectedPlan?.planPrice : ((Screen * selectedPlan?.planPrice))
 
     const appearance = {
         theme: 'stripe',
@@ -125,7 +127,7 @@ const PlanIntegration = () => {
             const params = {
                 "items": {
                     "id": "0",
-                    "amount": (selectedPlan?.planPrice * 100)
+                    "amount": (TotalPrice * 100)
                 }
             }
             const config = {
@@ -201,53 +203,7 @@ const PlanIntegration = () => {
                                     <div
                                         className="flex flex-col gap-2 h-full"
                                     >
-                                        <div className='flex flex-col border-b border-gray'>
-                                            <div className='flex flex-row items-center justify-between mb-2'>
-                                                <h2 className='font-medium text-xl'>
-                                                    {selectedPlan?.planName} - 1 Month Plan
-                                                </h2>
-                                                <span className='font-medium text-xl'>
-                                                    ${selectedPlan?.planPrice}
-                                                </span>
-                                            </div>
-                                            <div className='flex flex-row items-center justify-between'>
-                                                <h2 className='flex flex-row items-center gap-2'>
-                                                    <FaCheck className='text-green' />
-                                                    <p>Screen Management</p>
-                                                </h2>
-                                                <span className='font-medium text-xl'>
-                                                    $00
-                                                </span>
-                                            </div>
-                                            <div className='flex flex-row items-center justify-between'>
-                                                <h2 className='flex flex-row items-center gap-2'>
-                                                    <FaCheck className='text-green' />
-                                                    <p>Advance Scheduling</p>
-                                                </h2>
-                                                <span className='font-medium text-xl'>
-                                                    $00
-                                                </span>
-                                            </div>
-                                            <div className='flex flex-row items-center justify-between'>
-                                                <h2 className='flex flex-row items-center gap-2'>
-                                                    <FaCheck className='text-green' />
-                                                    <p>Screen Grouping</p>
-                                                </h2>
-                                                <span className='font-medium text-xl'>
-                                                    $00
-                                                </span>
-                                            </div>
-                                            <div className='flex flex-row items-center justify-between mb-2'>
-                                                <h2 className='flex flex-row items-center gap-2'>
-                                                    <FaCheck className='text-green' />
-                                                    <p>Support 24 x 7</p>
-                                                </h2>
-                                                <span className='font-medium text-xl'>
-                                                    $00
-                                                </span>
-                                            </div>
 
-                                        </div>
                                         <div class="grid grid-cols-2 gap-2 my-2 border-b border-gray">
                                             <div className='flex flex-col'>
                                                 <label
@@ -404,13 +360,91 @@ const PlanIntegration = () => {
                                             </div>
                                         </div>
 
-                                        <div className='border-b border-gray'>
+                                        <div className='flex flex-col border-b border-gray'>
                                             <div className='flex flex-row items-center justify-between mb-4'>
+                                                <h2 className='font-medium text-xl'>
+                                                    {selectedPlan?.planName} - 1 Month Plan
+                                                </h2>
+                                                <span className='font-medium text-xl'>
+                                                    ${selectedPlan?.planPrice}
+                                                </span>
+                                            </div>
+                                            <div className='flex flex-row items-center justify-between mb-4'>
+                                                <h2 className='flex flex-row items-center gap-2'>
+                                                    <p>Screen</p>
+                                                </h2>
+                                                <span className='font-medium text-xl'>
+                                                    <input type='number'
+                                                        className="relative border border-black rounded-md p-2 w-20"
+                                                        placeholder='1'
+                                                        value={Screen}
+                                                        onChange={(e) => {
+                                                            if (e.target.value <= 0) {
+                                                                setScreen(Screen)
+                                                            } else {
+                                                                setScreen(e.target.value)
+                                                            }
+                                                        }
+                                                        }
+                                                    />
+                                                </span>
+                                            </div>
+                                            {Screen > 1 && (
+                                                <div className='flex flex-row items-center justify-between mb-4'>
+                                                    <h2 className='flex flex-row items-center gap-2'>
+                                                        <p>Purchase Screen Price</p>
+                                                    </h2>
+                                                    <span className='font-medium text-xl'>
+                                                        ${(Screen * selectedPlan?.planPrice) - selectedPlan?.planPrice}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {/* <div className='flex flex-row items-center justify-between'>
+                                                <h2 className='flex flex-row items-center gap-2'>
+                                                    <FaCheck className='text-green' />
+                                                    <p>Screen Management</p>
+                                                </h2>
+                                                <span className='font-medium text-xl'>
+                                                    $00
+                                                </span>
+                                            </div>
+                                            <div className='flex flex-row items-center justify-between'>
+                                                <h2 className='flex flex-row items-center gap-2'>
+                                                    <FaCheck className='text-green' />
+                                                    <p>Advance Scheduling</p>
+                                                </h2>
+                                                <span className='font-medium text-xl'>
+                                                    $00
+                                                </span>
+                                            </div>
+                                            <div className='flex flex-row items-center justify-between'>
+                                                <h2 className='flex flex-row items-center gap-2'>
+                                                    <FaCheck className='text-green' />
+                                                    <p>Screen Grouping</p>
+                                                </h2>
+                                                <span className='font-medium text-xl'>
+                                                    $00
+                                                </span>
+                                            </div>
+                                            <div className='flex flex-row items-center justify-between mb-2'>
+                                                <h2 className='flex flex-row items-center gap-2'>
+                                                    <FaCheck className='text-green' />
+                                                    <p>Support 24 x 7</p>
+                                                </h2>
+                                                <span className='font-medium text-xl'>
+                                                    $00
+                                                </span>
+                    </div>*/}
+
+                                        </div>
+
+                                        <div className='border-b border-gray'>
+                                            <div className='flex flex-row items-center justify-between mb-4 mt-2'>
                                                 <h2 className='font-semibold text-xl'>
                                                     Total
                                                 </h2>
                                                 <p className='font-semibold text-xl'>
-                                                    ${selectedPlan?.planPrice}
+                                                    ${TotalPrice}
                                                 </p>
                                             </div>
                                         </div>
