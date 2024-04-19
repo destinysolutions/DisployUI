@@ -18,3 +18,6 @@ export const GET_ALL_STORAGE =
   "https://disployapi.thedestinysolutions.com/api/Storage/GetAllStorage";
 export const INCREASE_STORAGE =
   "https://disployapi.thedestinysolutions.com/api/Storage/IncreaseStorage";
+
+  export const CUSTOMER_DETAILS_ALL =
+  "https://disployapi.thedestinysolutions.com/api/Common/GetAllOrganizationDetails";

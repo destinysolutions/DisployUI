@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { ADD_REGISTER_URL, GETALLRETAILER, UPDATE_USER } from "../../Pages/Api";
-import { ADD_ORGANIZATION_MASTER, GET_ALL_ORGANIZATION_MASTER, GET_ALL_STORAGE, INCREASE_STORAGE } from "../../admin/AdminAPI";
+import { ADD_ORGANIZATION_MASTER, CUSTOMER_DETAILS_ALL, GET_ALL_ORGANIZATION_MASTER, GET_ALL_STORAGE, INCREASE_STORAGE } from "../../admin/AdminAPI";
 
 const initialState = {
   data: [],
+  getCustomerItems:[],
   status: "idle",
   error: null,
   success: null,
@@ -47,6 +48,20 @@ export const handlAcceptedRequest = createAsyncThunk("data/handlAcceptedRequest"
     const token = thunkAPI.getState().root.auth.token;
     const queryParams = new URLSearchParams(payload).toString();
     const response = await axios.post(`${INCREASE_STORAGE}?${queryParams}`,null,{headers: { Authorization: `Bearer ${token}` }});
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    throw error;
+  }
+}
+);
+
+// accepted request 
+export const getAllCustomerDetails = createAsyncThunk("data/getAllCustomerDetails", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const queryParams = new URLSearchParams(payload).toString();
+    const response = await axios.get(`${CUSTOMER_DETAILS_ALL}?${queryParams}`,null,{headers: { Authorization: `Bearer ${token}` }});
     return response.data;
   } catch (error) {
     console.log("error", error);
@@ -105,6 +120,19 @@ const OnBodingSlice = createSlice({
         state.message = action.payload.message || 'This operation successFully';
       })
       .addCase(handlAcceptedRequest.rejected, (state, action) => {    // handlAcceptedRequest
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
+      .addCase(getAllCustomerDetails.pending, (state) => {    // getAllCustomerDetails
+        state.status = null;
+      })
+      .addCase(getAllCustomerDetails.fulfilled, (state, action) => {    // getAllCustomerDetails
+        state.status = "";
+        state.getCustomerItems = action.payload;
+        state.message = action.payload.message || 'This operation successFully';
+      })
+      .addCase(getAllCustomerDetails.rejected, (state, action) => {    // getAllCustomerDetails
         state.status = "failed";
         state.error = action.error.message;
       })

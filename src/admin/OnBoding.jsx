@@ -12,6 +12,8 @@ import {
 import toast from "react-hot-toast";
 import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
+import { BsEyeFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.onBoding);
@@ -144,6 +146,8 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     setCurrentPage(1)
   }, [search])
+
+
 
   return (
     <>
@@ -296,8 +300,15 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
                               </span>
                             </td>
+
                               <td className="px-6 py-4">
                                 <div className="cursor-pointer text-xl flex gap-4 ">
+                                 <Link
+                                    to={`/onborded/customer-details/${item.orgID}`}
+                                    type="button"
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    <BsEyeFill />
+                                  </Link>
                                   <button
                                     type="button"
                                     className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-3"

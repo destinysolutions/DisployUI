@@ -8,6 +8,7 @@ import Retailer from "../admin/Retailer/Retailer";
 import Advertisement from "../admin/Advertisement/Advertisement";
 import UserList from "../admin/UserList/UserList";
 import AdminSetting from "../admin/AdminSetting";
+import CustomerOnboding from "../admin/CustomerOnboding";
 
 const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
@@ -97,6 +98,14 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
               <User sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
             }
           />
+
+          <Route
+            path="onborded/customer-details/:id"
+            element={
+              <CustomerOnboding sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+            }
+          />
+
         </Routes>
       </BrowserRouter>
     </div>
