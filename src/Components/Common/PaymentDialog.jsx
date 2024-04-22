@@ -72,15 +72,6 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                 redirect: 'if_required'
             });
 
-            // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-            //     payment_method: {
-            //         card: elements.getElement(CardElement),
-            //         billing_details: {
-            //             name: userDetails?.firstName ? userDetails?.firstName : "Admin" ,
-            //         },
-            //     },
-            // });
-
             if (error) {
                 if (error.type === "card_error" || error.type === "validation_error") {
                     setMessage(error.message);
@@ -147,7 +138,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                         </div>
                         <div className="p-4 md:p-5">
                             <div id="payment-form" className='Payment'>
-                                {/*<CardElement id="payment-element" options={paymentElementOptions} />*/}
+                               {/* <CardElement id="payment-element" options={paymentElementOptions} />*/}
                                 <PaymentElement id="payment-element" options={paymentElementOptions} />
 
                                 <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type='button'>

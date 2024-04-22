@@ -179,8 +179,8 @@ const AddUserAdsForPrice = ({ toggleModal, sidebarOpen, editIdAds, setloadFirst 
 
                             </div>
                         </div>
-                        <div className="schedual-table bg-white mt-2 p-3 w-full vertical-scroll-inner h-72">
-                            <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                        <div className="schedual-table bg-white mt-2 p-3 w-full">
+                            <div className="overflow-x-scroll sc-scrollbar rounded-lg vertical-scroll-inner h-52">
                                 <table className="screen-table w-full" cellPadding={15}>
                                     <thead>
                                         <tr className="items-center table-head-bg">

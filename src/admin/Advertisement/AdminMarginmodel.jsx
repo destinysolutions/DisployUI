@@ -199,6 +199,7 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds, fetchAds 
 
 
     if (keys?.length <= selectAds?.screen) {
+      toast.loading("Saving...")
       let payload = {
         adsCustomerMasterID: selectAds?.adsCustomerMasterID,
         margin: margin,
@@ -208,6 +209,7 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds, fetchAds 
         if (res?.payload?.status === true) {
           fetchAds()
           toggleMarginModal()
+          toast.remove()
         }
       });
     } else {

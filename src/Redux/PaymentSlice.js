@@ -71,6 +71,20 @@ export const handleSendInvoice = createAsyncThunk(
     }
 );
 
+export const handleCreateSubscription = createAsyncThunk(
+    "Common/handleCreateSubscription",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            return response.data;
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
+
 
 
 const initialState = {
@@ -160,6 +174,19 @@ const PaymentSlice = createSlice({
             state.message = action.payload?.message;
         });
         builder.addCase(handleSendInvoice.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload.message;
+            state.message = action.payload?.message;
+        });
+
+        builder.addCase(handleCreateSubscription.pending, (state) => {
+            state.status = "loading";
+        });
+        builder.addCase(handleCreateSubscription.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.message = action.payload?.message;
+        });
+        builder.addCase(handleCreateSubscription.rejected, (state, action) => {
             state.status = "failed";
             state.error = action.payload.message;
             state.message = action.payload?.message;

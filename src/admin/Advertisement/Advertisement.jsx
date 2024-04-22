@@ -285,6 +285,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     dispatch(assignAdvertisement(Params))
       .then((res) => {
         if (res?.payload?.status === 200) {
+          fetchAds()
           toast?.remove();
           toast.success("saved data Successfully");
         }

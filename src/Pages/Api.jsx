@@ -229,6 +229,7 @@ export const GET_TRIAL_PERIOD_DETAILS = `${baseUrl}Common/GetTrialPeriodDetails`
 export const ADD_EDIT_TRIAL_PLAN = `${baseUrl}Common/EditTrialPeriod`
 export const PAYMENT_INTENT_CREATE_REQUEST = `${baseUrl}Common/PaymentIntentCreateRequest`
 export const PAYMENT_DETAILS = `${baseUrl}PaymentDetails/AddorUpdatePaymentDetails`
+export const CREATE_SUBSCRIPTION = `${baseUrl}Common/CreateAutopay`
 export const GET_ALL_BILLING = `${baseUrl}BillingMaster/GetAllBilling`
 
 

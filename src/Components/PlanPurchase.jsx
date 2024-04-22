@@ -1,19 +1,19 @@
-import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { CardElement, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { handlePaymentDetails } from '../Redux/PaymentSlice';
-import { ADD_REGISTER_URL, PAYMENT_DETAILS } from '../Pages/Api';
+import { handleCreateSubscription, handlePaymentDetails } from '../Redux/PaymentSlice';
+import { ADD_REGISTER_URL, CREATE_SUBSCRIPTION, PAYMENT_DETAILS } from '../Pages/Api';
 import { useDispatch } from 'react-redux';
 import { handleRegisterUser } from "../Redux/Authslice"
 
-const PlanPurchase = ({ selectedPlan, customerData, discountCoupon }) => {
+const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret, planId, Screen }) => {
     const stripe = useStripe();
     const elements = useElements();
     const navigation = useNavigate()
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
-
+    const [autoPay, setAutoPay] = useState(false)
     const paymentElementOptions = {
         layout: "tabs"
     }
@@ -57,7 +57,12 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon }) => {
             ...paymentIntent,
             PaymentType: `${selectedPlan?.planName} Plan`,
             PaymentValue: 1,
+            AutoPay: autoPay,
+            ExtraScreen: (Screen - 1),
+            type: "Screen",
+            items: Screen,
             organizationId: organizationID,
+
             UserID: organizationID,
             SystemTimeZone: new Date()
                 .toLocaleDateString(undefined, {
@@ -78,7 +83,43 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon }) => {
         }
         dispatch(handlePaymentDetails({ config })).then((res) => {
             if (res?.payload?.status) {
+                setIsLoading(false);
                 navigation("/"); // Navigate to dashboard after processing payment
+            }
+        })
+    }
+
+    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
+        let product;
+        if (planId === 1 || planId === "1") {
+            product = "prod_PwkVKbLSFWLFbG"
+        } else if (planId === 2 || planId === "2") {
+            product = "prod_PwkV7yFNwyNMzl"
+        } else if (planId === 3 || planId === "3") {
+            product = "prod_PwkWdO5AkzWyRX"
+        } else {
+            product = "prod_PwkWSDVFcbz4Ui"
+        }
+
+        let params = {
+            Email: email,
+            PaymentMethodId: PaymentMethodId,
+            ProductID: product,
+        }
+
+        let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: CREATE_SUBSCRIPTION,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            data: JSON.stringify(params),
+        }
+
+        dispatch(handleCreateSubscription({ config })).then((res) => {
+            if (res?.payload?.status) {
+                PaymentDetails({ paymentIntent, organizationID: organizationID })
             }
         })
     }
@@ -92,19 +133,28 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon }) => {
         setIsLoading(true);
 
         try {
-            const { paymentIntent, error } = await stripe.confirmPayment({
-                elements,
-                redirect: 'if_required'
+            // const { paymentIntent, error } = await stripe.confirmPayment({
+            //     elements,
+            //     redirect: 'if_required'
+            // });
+
+            const cardElement = elements.getElement(CardElement);
+            const { paymentMethod, error } = await stripe.createPaymentMethod({
+                type: 'card',
+                card: cardElement,
             });
+            console.log('paymentMethod', paymentMethod)
 
             // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
             //     payment_method: {
             //         card: elements.getElement(CardElement),
             //         billing_details: {
-            //             name: userDetails?.firstName ? userDetails?.firstName : "Admin" ,
+            //             name: customerData?.email,
+            //             email: customerData?.email
             //         },
             //     },
             // });
+
 
             if (error) {
                 if (error.type === "card_error" || error.type === "validation_error") {
@@ -138,7 +188,11 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon }) => {
                     response
                         .then((res) => {
                             if (res?.payload?.status === 200) {
-                                PaymentDetails({ paymentIntent, organizationID: res?.payload?.data?.organizationID })
+                                if (autoPay) {
+                                    CreateSubscription({ email: res?.payload?.data?.email, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
+                                } else {
+                                    PaymentDetails({ paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
+                                }
                             }
                         })
                 }
@@ -146,7 +200,6 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon }) => {
                 setMessage("Payment successful!");
             }
 
-            setIsLoading(false);
         } catch (error) {
             console.error("Error confirming payment:", error);
             setIsLoading(false);
@@ -156,9 +209,13 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon }) => {
 
     return (
         <>
-            <div id="payment-form" className='Payment'>
-                {/*<CardElement id="payment-element" options={paymentElementOptions} />*/}
-                <PaymentElement id="payment-element" options={paymentElementOptions} />
+            {/*        <div id="payment-form" className='Payment'>
+                <CardElement id="payment-element" className="CardElement" options={paymentElementOptions} />
+              <PaymentElement id="payment-element" options={paymentElementOptions} />
+                <div className='mb-4 flex items-center gap-2'>
+                    <input type='checkbox' className='w-4 h-4 inline-block rounded-full border border-grey flex-no-shrink' onChange={() => setAutoPay(!autoPay)} value={autoPay} />
+                    <label className='text-gray-600'>Auto Payment</label>
+                </div>
 
                 <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type='button'>
                     <span id="button-text">
@@ -166,6 +223,29 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon }) => {
                     </span>
                 </button>
             </div>
+    */}
+            <div id="payment-form" className='Payment'>
+                <div className="payment-form-container">
+                    <h2 className='mb-3'>Secure Payment</h2>
+                    <div className="card-element-container">
+                        <CardElement
+                            className="CardElement"
+                            options={paymentElementOptions}
+                        />
+                        <div className="error-message" role="alert"></div>
+                    </div>
+                    <div className='mb-4 flex items-center gap-2'>
+                        <input type='checkbox' className='w-4 h-4 inline-block rounded-full border border-grey flex-no-shrink' onChange={() => setAutoPay(!autoPay)} value={autoPay} />
+                        <label className='text-gray-600'>Auto Payment</label>
+                    </div>
+                    <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type='button'>
+                        <span id="button-text">
+                            {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
+                        </span>
+                    </button>
+                </div>
+            </div>
+
         </>
     )
 }
