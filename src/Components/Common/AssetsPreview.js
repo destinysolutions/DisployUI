@@ -9,7 +9,7 @@ const AssetsPreview = ({ setOpen, openPreview }) => {
                 id="default-modal"
                 tabIndex="-1"
                 aria-hidden="true"
-                className="fixed top-0 right-0 left-0 z-9999 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
+                className="fixed top-0 right-0 left-0 z-9999 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-60"
             >
                 <div className="relative p-4 w-full max-w-8xl max-h-full">
                     {/* Modal content */}

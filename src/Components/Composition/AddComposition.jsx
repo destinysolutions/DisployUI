@@ -8,6 +8,7 @@ import { SELECT_BY_LIST } from "../../Pages/Api";
 import { useDispatch, useSelector } from "react-redux";
 import { HiArrowLongLeft } from "react-icons/hi2";
 import { handleGetCompositionLayouts } from "../../Redux/CompositionSlice";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
   AddComposition.propTypes = {
@@ -15,7 +16,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const { compositionLayouts, loading } = useSelector(
     (state) => state.root.composition
   );
@@ -124,6 +125,11 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
       <Footer />
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

@@ -41,6 +41,7 @@ import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
 import { Pagination } from "../Common/Common";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user } = useSelector((state) => state.root.auth);
@@ -1169,6 +1170,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           previewModalData={previewModalData}
           modalVisible={modalVisible}
         />
+      )}
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

@@ -57,12 +57,13 @@ import {
   Screen_Type
 } from "../../Common/Common";
 import OperatingHourModal from "./OperatingHourModal";
+import PurchasePlanWarning from "../../Common/PurchasePlanWarning";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { token, userDetails } = useSelector((state) => state.root.auth);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [searchParams] = useSearchParams();
@@ -2241,6 +2242,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
       {/* <Footer /> */}
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

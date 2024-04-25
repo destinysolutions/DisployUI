@@ -162,7 +162,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
         <div className="pt-5 px-5 page-contain">
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="grid lg:grid-cols-3 gap-2">
-              <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3 sm:text-xl">
+              <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3 sm:text-xl flex items-center">
                 Customers
               </h1>
               <div className="lg:col-span-2 lg:flex items-center justify-end flex-wrap">
@@ -181,7 +181,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
             </div>
-            <div className="lg:mt-7 mt-5">
+            <div className="mt-5">
               <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
                 <div className="overflow-x-scroll sc-scrollbar rounded-lg">
                   <table
@@ -309,7 +309,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     <BsEyeFill />
                                   </Link>
-                                  <button
+                                  {/*<button
                                     type="button"
                                     className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-3"
                                     onClick={() =>
@@ -317,7 +317,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                     }
                                   >
                                     <MdDeleteForever />
-                                  </button>
+                                  </button>*/}
                                 </div>
                               </td>
                             </tr>

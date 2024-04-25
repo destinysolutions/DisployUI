@@ -19,9 +19,10 @@ import {
   handleNavigateFromCompositionChannel,
 } from "../../Redux/globalStates";
 import { useDispatch } from "react-redux";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const dispatch = useDispatch();
   const authToken = `Bearer ${token}`;
 
@@ -223,6 +224,10 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

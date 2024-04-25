@@ -10,7 +10,9 @@ const AddEditDiscount = ({ togglemodal, discount, setDiscount }) => {
                 aria-hidden="true"
                 className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
             >
-                <div className="relative p-4 w-full max-w-xl max-h-full">
+            <div className="modal-overlay">
+            <div className="modal">
+                <div className="relative p-4 lg:w-[500px] md:w-[500px] sm:w-full max-h-full">
                     {/* Modal content */}
                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         {/* Modal header */}
@@ -107,6 +109,8 @@ const AddEditDiscount = ({ togglemodal, discount, setDiscount }) => {
                             </button>
                         </div>
                     </div>
+                </div>
+                </div>
                 </div>
             </div>
 

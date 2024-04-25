@@ -105,6 +105,11 @@ const Navbar = () => {
       <div>
         <div className="flex-col flex">
           <div className="w-full">
+         {/* {user?.isTrial && (
+            <div className="flex items-center justify-center bg-red">
+                <h1 className="font-semibold text-xl">You have {user?.trialDays} Trial Days Remaining</h1>
+                </div>
+         )}*/  }
             <div className=" justify-end items-center mx-auto gap-3 px-4 flex relative">
               {/* <div className="mr-3 dayremaining-box">
                 {daysRemaining > 0 ? (
@@ -218,7 +223,6 @@ const Navbar = () => {
                 </div>
                 {Array.isArray(userDetails) &&
                   userDetails.map((data) => {
-                    // console.log(data);
                     const imgSrc = "";
                     if (data?.email) return null;
                     // <div key={data?.orgSingupID}>

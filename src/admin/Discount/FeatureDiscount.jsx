@@ -80,7 +80,6 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData,
 
   useEffect(() => {
     if (selectData) {
-      console.log('selectData', selectData)
       setMethod(selectData?.method)
       setDiscountCode(selectData?.discountCode)
       setActiveTab(selectData?.percentageValue === 0 ? 0 : 0);

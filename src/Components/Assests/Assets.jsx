@@ -56,6 +56,7 @@ import PreviewDoc from "./PreviewDoc";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -1312,6 +1313,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           fileType={selectDoc?.fileExtention}
           assetFolderPath={selectDoc?.assetFolderPath}
         />
+      )}
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

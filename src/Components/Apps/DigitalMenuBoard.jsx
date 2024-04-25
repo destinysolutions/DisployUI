@@ -21,6 +21,7 @@ import toast from 'react-hot-toast';
 import { socket } from '../../App';
 import ScreenAssignModal from '../ScreenAssignModal';
 import { BsInfoLg } from 'react-icons/bs';
+import PurchasePlanWarning from '../Common/PurchasePlanWarning';
 
 const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user } = useSelector((state) => state.root.auth);
@@ -665,6 +666,10 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
           screenSelected={screenSelected}
           sidebarOpen={sidebarOpen}
         />
+      )}
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   )

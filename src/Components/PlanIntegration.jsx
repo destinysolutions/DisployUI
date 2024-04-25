@@ -20,7 +20,6 @@ const PlanIntegration = () => {
     const [clientSecret, setClientSecret] = useState("");
     const [selectedPlan, setSelectedPlan] = useState(null)
     const [Screen, setScreen] = useState(1)
-    console.log('Screen', Screen)
     const [page, setPage] = useState(0)
     const [showDiscount, setShowDiscount] = useState(false);
     const [showError, setShowError] = useState(false)
@@ -499,7 +498,7 @@ const PlanIntegration = () => {
                         <div className="lg:w-[600px] md:w-[600px] w-full h-[30vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg flex items-center justify-center">
                             <>
                                 <Elements options={options} stripe={stripePromise}>
-                                    <PlanPurchase selectedPlan={selectedPlan} customerData={customerData} discountCoupon={discountCoupon} clientSecret={clientSecret} planId={planId} Screen={Screen}/>
+                                    <PlanPurchase selectedPlan={selectedPlan} customerData={customerData} discountCoupon={discountCoupon} clientSecret={clientSecret} planId={planId} Screen={Screen} TotalPrice={TotalPrice}/>
                                 </Elements>
                             </>
                         </div>

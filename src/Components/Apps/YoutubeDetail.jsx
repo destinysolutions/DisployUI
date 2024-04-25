@@ -30,6 +30,7 @@ import {
   handleNavigateFromCompositionChannel,
 } from "../../Redux/globalStates";
 import { useDispatch } from "react-redux";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetail.propTypes = {
@@ -47,7 +48,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showPreviewPopup, setShowPreviewPopup] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
 
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const { navigateFromComposition } = useSelector(
     (state) => state.root.globalstates
   );
@@ -599,6 +600,10 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       <Footer />
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

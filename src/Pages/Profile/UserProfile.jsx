@@ -6,14 +6,6 @@ import AdNotifications from "./AdNotifications"
 import BillingsPlans from "./Billings_&_Plans";
 import Notifications from "./Notifications";
 import Connection from "./Connection";
-
-import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
-  Tab,
-  TabPanel,
-} from "@material-tailwind/react";
 import Sidebar from "../../Components/Sidebar";
 import Navbar from "../../Components/Navbar";
 import Footer from "../../Components/Footer";
@@ -23,6 +15,10 @@ import { BsSdCard } from "react-icons/bs";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import PurchasePlanWarning from "../../Components/Common/PurchasePlanWarning";
+import { useSelector } from "react-redux";
+import { FaRegMoneyBill1 } from "react-icons/fa6";
+import { RiAdvertisementLine } from "react-icons/ri";
 
 const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
   UserProfile.propTypes = {
@@ -30,6 +26,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
   const notification = useLocation().state;
+  const { user } = useSelector((state) => state.root.auth);
   const [activeTab, setActiveTab] = useState(notification !== null ? notification?.notificationData : "account");
   const data = [
     {
@@ -55,13 +52,20 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
       label: "Advertisement",
       value: "ad-notifications",
       desc: <AdNotifications sidebarOpen={sidebarOpen} />,
-      icon: <IoIosNotificationsOutline />,
+      icon: <RiAdvertisementLine  />,
     },
     {
       label: "Notifications",
       value: "notifications",
       desc: <Notifications sidebarOpen={sidebarOpen} />,
       icon: <IoIosNotificationsOutline />,
+    },
+
+    {
+      label: "Billing",
+      value: "billing",
+      desc: <BillingsPlans sidebarOpen={sidebarOpen} />,
+      icon: <FaRegMoneyBill1 />,
     },
     // {
     //   label: "Connections",
@@ -115,6 +119,10 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
       <Footer />
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

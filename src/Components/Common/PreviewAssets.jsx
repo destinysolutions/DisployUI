@@ -2,7 +2,6 @@ import React from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
 const PreviewAssets = ({ assetPreview, setAssetPreviewPopup }) => {
-console.log('assetPreview', assetPreview)
   let viewerSrc = "";
 
   if (

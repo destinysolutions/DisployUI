@@ -36,6 +36,7 @@ import { jwtDecode } from "jwt-decode";
 import { handelPostImageFromDrive } from "../../Redux/Assetslice";
 import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 import ReactTooltip from "react-tooltip";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 {
   /* end of video*/
 }
@@ -752,6 +753,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         </div>
       </div>
       <Footer />
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

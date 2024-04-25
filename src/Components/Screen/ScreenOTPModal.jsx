@@ -148,12 +148,12 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
             setOpenVerifyModel(true);
             setOTPData(response?.data);
           } else {
-          history("/newscreendetail", {
-            state: {
-              otpData: response?.data?.data,
-              message: response?.data?.message,
-            },
-          });
+            history("/newscreendetail", {
+              state: {
+                otpData: response?.data?.data,
+                message: response?.data?.message,
+              },
+            });
           }
           toast.remove();
         } else {
@@ -280,95 +280,100 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
 
   return (
     <>
+
       <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
         <div
           className={`relative w-auto my-6 lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full sm:mx-3 xs:mx-3`}
         >
-          <div
-            ref={modalRef}
-            className="border-0 rounded-xl shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
-          >
-            <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] rounded-t">
-              <h3 className="text-xl font-medium">New Screen</h3>
-              <button
-                className="p-1 text-xl"
-                onClick={() => setShowOTPModal(false)}
+          <div className="modal-overlay">
+            <div className="modal">
+              <div
+                ref={modalRef}
+                className="border-0 rounded-xl shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
               >
-                <AiOutlineCloseCircle className="text-3xl text-primary" />
-              </button>
-            </div>
-            <div className="relative lg:p-5 md:p-5 sm:p-3 xs:p-2 flex-auto">
-              <div className="flex items-center justify-center mb-4">
-                <img src={BlackLogo} className="w-52" />
-              </div>
-
-              <div className="flex w-7/12 mx-auto items-center justify-center relative mb-4">
-                <img src={disploy_tv_img} alt="" />
-              </div>
-
-              <div className="mx-auto">
-                <div className="w-full">
-                  <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000] text-center">
-                    Enter the 6-character pairing code?
-                  </div>
-
-                  <div
-                    id="otp"
-                    className="flex flex-row justify-center text-center px-2"
+                <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] rounded-t">
+                  <h3 className="text-xl font-medium">New Screen</h3>
+                  <button
+                    className="p-1 text-xl modal-close"
+                    onClick={() => setShowOTPModal(false)}
                   >
-                    {otpValues.map((value, index) => (
-                      <div key={index}>
-                        <input
-                          ref={otpRefs[index]}
-                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded border-gray"
-                          type="text"
-                          value={value}
-                          maxLength="1"
-                          onChange={(e) =>
-                            handleOtpChange(
-                              index,
-                              e.target.value.toLocaleUpperCase()
-                            )
-                          }
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-center text-center text-red text-xl my-2 font-semibold">
-                    {errorMessge}
+                    <AiOutlineCloseCircle className="text-3xl text-primary" />
+                  </button>
+                </div>
+                <div className="relative lg:p-5 md:p-5 sm:p-3 xs:p-2 flex-auto">
+                  <div className="flex items-center justify-center mb-4">
+                    <img src={BlackLogo} className="w-52" />
                   </div>
 
-                  <div className="flex justify-center text-center">
-                    <p className="text-[#515151] text-sm max-w-lg">
-                      To get pair code, please install Disploy app on your
-                      Players (Android, LG, Samsung, FireStick, Windows, etc.)
-                    </p>
+                  <div className="flex w-7/12 mx-auto items-center justify-center relative mb-4">
+                    <img src={disploy_tv_img} alt="" />
+                  </div>
+
+                  <div className="mx-auto">
+                    <div className="w-full">
+                      <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000] text-center">
+                        Enter the 6-character pairing code?
+                      </div>
+
+                      <div
+                        id="otp"
+                        className="flex flex-row justify-center text-center px-2"
+                      >
+                        {otpValues.map((value, index) => (
+                          <div key={index}>
+                            <input
+                              ref={otpRefs[index]}
+                              className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded border-gray"
+                              type="text"
+                              value={value}
+                              maxLength="1"
+                              onChange={(e) =>
+                                handleOtpChange(
+                                  index,
+                                  e.target.value.toLocaleUpperCase()
+                                )
+                              }
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex justify-center text-center text-red text-xl my-2 font-semibold">
+                        {errorMessge}
+                      </div>
+
+                      <div className="flex justify-center text-center">
+                        <p className="text-[#515151] text-sm max-w-lg">
+                          To get pair code, please install Disploy app on your
+                          Players (Android, LG, Samsung, FireStick, Windows, etc.)
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                {(permissions.isSave || permissionsNewScreen.isSave) && (
+                  <div className="flex items-center justify-center pb-4">
+                    <button
+                      className="text-white bg-SlateBlue hover:bg-primary font-semibold lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
+                      type="button"
+                      onClick={verifyOTP}
+                    >
+                      Continue
+                    </button>
+                  </div>
+                )}
+
+                {openVerifyModel && (
+                  <VerifyOTPModal
+                    toggleModal={toggleModal}
+                    otpValues={otpModelValues}
+                    handleOtpChange={handleOtpModelChange}
+                    otpRefs={otpModalRefs}
+                    verifyOTP={verifyOTPmodal}
+                    errorMessge={errorMessge}
+                  />
+                )}
               </div>
             </div>
-            {(permissions.isSave || permissionsNewScreen.isSave) && (
-              <div className="flex items-center justify-center pb-4">
-                <button
-                  className="text-white bg-SlateBlue hover:bg-primary font-semibold lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
-                  type="button"
-                  onClick={verifyOTP}
-                >
-                  Continue
-                </button>
-              </div>
-            )}
-
-            {openVerifyModel && (
-              <VerifyOTPModal
-                toggleModal={toggleModal}
-                otpValues={otpModelValues}
-                handleOtpChange={handleOtpModelChange}
-                otpRefs={otpModalRefs}
-                verifyOTP={verifyOTPmodal}
-                errorMessge={errorMessge}
-              />
-            )}
           </div>
         </div>
       </div>

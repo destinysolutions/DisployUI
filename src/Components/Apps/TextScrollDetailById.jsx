@@ -20,6 +20,7 @@ import { MdSave } from "react-icons/md";
 import toast from "react-hot-toast";
 import { connection } from "../../SignalR";
 import { socket } from "../../App";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
   const { token ,user} = useSelector((state) => state.root.auth);
@@ -288,6 +289,10 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

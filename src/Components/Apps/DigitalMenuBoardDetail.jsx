@@ -24,10 +24,11 @@ import Swal from 'sweetalert2';
 import { HiOutlineViewList } from 'react-icons/hi';
 import { chunkArray, generateAllCategory, generateCategorybyID } from '../Common/Common';
 import Loading from '../Loading';
+import PurchasePlanWarning from '../Common/PurchasePlanWarning';
 
 const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const { id } = useParams();
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [customizeData, setCustomizeData] = useState({
     "EachPageTime": "30",
@@ -1124,6 +1125,9 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
         <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />
       )}
 
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   )
 }

@@ -16,6 +16,8 @@ const AddCreditCard = ({ onSubmit, toggleModal }) => {
                 aria-hidden="true"
                 className="fixed h-full top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 max-h-full bg-black bg-opacity-50"
             >
+            <div className="modal-overlay">
+            <div className="modal">
                 <div className="relative p-4 w-full max-w-xl max-h-full">
                     {/* Modal content */}
                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
@@ -91,7 +93,7 @@ const AddCreditCard = ({ onSubmit, toggleModal }) => {
                                         )}
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-center p-3 md:p-3 border-t border-gray-200 rounded-b dark:border-gray-600 gap-2">
+                                <div className="flex items-center justify-center px-3 pt-3 border-t border-gray-200 rounded-b dark:border-gray-600 gap-2">
                                     <button
                                         className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                                         type="submit"
@@ -102,6 +104,8 @@ const AddCreditCard = ({ onSubmit, toggleModal }) => {
                             </div>
                         </form>
                     </div>
+                </div>
+                </div>
                 </div>
             </div>
         </>

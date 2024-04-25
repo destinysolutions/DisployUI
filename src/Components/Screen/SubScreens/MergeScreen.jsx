@@ -45,6 +45,7 @@ import moment from "moment";
 import { socket } from "../../../App";
 import Loading from "../../Loading";
 import PreviewMerge from "../../Common/PreviewMerge";
+import PurchasePlanWarning from "../../Common/PurchasePlanWarning";
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
 
@@ -1011,6 +1012,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           assetPreview={previewData}
           setAssetPreviewPopup={setIsPreviewOpen}
         />
+      )}
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

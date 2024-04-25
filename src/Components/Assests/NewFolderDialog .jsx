@@ -34,6 +34,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { connection } from "../../SignalR";
 import PreviewDoc from "./PreviewDoc";
 import { socket } from "../../App";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -63,7 +64,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectdata, setSelectData] = useState({});
   const [previewDoc, setPreviewDoc] = useState(false);
   const [selectDoc, setSelectDoc] = useState(null);
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const location = useLocation();
@@ -955,6 +956,11 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
           fileType={selectDoc?.fileExtention}
           assetFolderPath={selectDoc?.assetFolderPath}
         />
+      )}
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

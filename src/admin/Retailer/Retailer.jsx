@@ -226,7 +226,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
               <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
                 Retailer
               </h1>
-              <div className="m-5 flex gap-4 items-center">
+              <div className="flex gap-4 items-center">
                 <div className="flex gap-3">
                   <div className="text-right mb-5 mr-5 relative sm:mr-0">
                     <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
@@ -323,7 +323,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="cursor-pointer text-xl flex gap-4 ">
                                 <button
                                   type="button"
-                                  className="rounded-full px-2 py-2 text-white text-center bg-[#414efa] mr-3"
+                                  className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                   onClick={() => handleEdit(item)}
                                 >
                                   <MdOutlineModeEdit />

@@ -256,7 +256,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="grid lg:grid-cols-3 gap-2">
-            <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3 sm:text-xl">
+            <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3 sm:text-xl flex items-center">
               Users
             </h1>
             <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">

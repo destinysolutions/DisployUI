@@ -2132,3 +2132,88 @@ table.screen-table {
 .CardField-input-wrapper:hover .InputContainer {
   transform: translateY(-5px); /* Lift effect for individual input fields on hover */
 }
+
+.modal-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease;
+  z-index: 999 !important;
+}
+
+.modal {
+  animation: slideIn 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+}
+
+.modal-close {
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+  }
+  to {
+      opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+      transform: translateY(-50%);
+  }
+  to {
+      transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+      opacity: 1;
+  }
+  to {
+      opacity: 0;
+  }
+}
+
+@keyframes slideOut {
+  from {
+      transform: translateY(0);
+  }
+  to {
+      transform: translateY(-50%);
+  }
+}
+
+.modal-overlay.fadeOut {
+  animation: fadeOut 0.3s ease;
+}
+
+.modal.fadeOut {
+  animation: slideOut 0.3s ease;
+}

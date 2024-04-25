@@ -26,7 +26,9 @@ import ReactToPrint from "react-to-print";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import Loading from "../Loading";
 import ScreenAuthorize from "./ScreenAuthorize";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
+
   Settings.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
@@ -439,6 +441,11 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             <Footer />
           </>
         </Suspense>
+      )}
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

@@ -35,6 +35,7 @@ import { connection } from "../../SignalR";
 import { socket } from "../../App";
 import AddEventScheduleEditors from "./AddEventScheduleEditors";
 import { formatDate } from "../Common/Common";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
@@ -1044,6 +1045,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

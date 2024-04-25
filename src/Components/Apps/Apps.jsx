@@ -14,6 +14,7 @@ import Footer from "../Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { handleGetAllApps } from "../../Redux/AppsSlice";
 import Loading from "../Loading";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const Apps = ({ sidebarOpen, setSidebarOpen }) => {
   Apps.propTypes = {
@@ -23,7 +24,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [appDropDown, setAppDropDown] = useState(null);
   const [sidebarload, setSidebarLoad] = useState(true)
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const [allApps, setAllApps] = useState([])
   const dispatch = useDispatch();
   useEffect(() => {
@@ -233,6 +234,10 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
             <Footer />
           </>
         </Suspense>
+      )}
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

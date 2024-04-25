@@ -27,6 +27,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import ReactTooltip from "react-tooltip";
 import { getMenuAll, getMenuPermission } from "../Redux/SidebarSlice";
 import Loading from "./Loading";
+import PurchasePlanWarning from "./Common/PurchasePlanWarning";
 
 const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   Trash.propTypes = {
@@ -340,7 +341,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       </button>
                     )}
 
-                    {permissions.isDelete && (
+                    {permissions.isDelete && sortedAndPaginatedData.length > 0 && (
                       <input
                         data-tip
                         data-for="Select All"
@@ -631,6 +632,11 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
         </Suspense>
+      )}
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

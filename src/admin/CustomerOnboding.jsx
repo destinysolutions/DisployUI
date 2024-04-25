@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getAllCustomerDetails } from "../Redux/admin/OnBodingSlice";
@@ -10,13 +10,14 @@ import { useSelector } from "react-redux";
 import { RiUser3Fill } from "react-icons/ri";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import ReactPlayer from "react-player";
+import Swal from "sweetalert2";
 
 
 const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.onBoding.getCustomerItems);
   const [activeTab, setActiveTab] = useState("users");
   const [loadFist, setLoadFist] = useState(true);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = useParams();
 
@@ -30,6 +31,30 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
     setLoadFist(false)
+  };
+
+  const handleDelete = (organizationID) => {
+    const payload = {
+      organizationID: organizationID,
+      operation: "Delete",
+    };
+    try {
+      Swal.fire({
+        title: "Delete Permanently",
+        text: "Are you sure you want to delete this user",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/onborded")
+        }
+      });
+    } catch (error) {
+      console.log("error handleDeletePermanently Singal --- ", error);
+    }
   };
 
 
@@ -56,9 +81,8 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="lg:mt-7 mt-5 mb-10">
+          <div className="mt-5 mb-10">
             <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
-{console.log(store.data)}
               <div className="flex flex-wrap mt-2">
                 <div className="w-full lg:w-1/2 pl-5 pr-3 mb-4">
                   <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 min-h-full m-1">
@@ -66,8 +90,8 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                       <span className="user-img">
                         <img src={store.data?.profilePhoto} alt="Profile Not Found" />
                       </span>
-                      <span className="user-name my-2">{store.data?.firstName  + " " +  store.data?.lastName}</span>
-                      <span className="user-designation">Super Admin</span>
+                      <span className="user-name my-2">{store.data?.firstName + " " + store.data?.lastName}</span>
+                      {/*<span className="user-designation">Super Admin</span>*/}
                       <div className="total-screens-count mt-2 mb-4">
                         <span className="screen-icon mr-3">
                           <i className="fa fa-tv text-blue text-2xl"></i>
@@ -86,7 +110,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                       <div className="flex mb-2">
                         <label>User Name:</label>
-                        <span>{store.data?.firstName  + " " +  store.data?.lastName}</span>
+                        <span>{store.data?.firstName + " " + store.data?.lastName}{" "} {store.data?.userRoleName}</span>
                       </div>
                       <div className="flex mb-2">
                         <label>Company Name:</label>
@@ -124,6 +148,15 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                         <label>State :</label>
                         <span>{store.data?.countryName}</span>
                       </div>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <button className="hover:text-#ffbebe px-8 py-3 border border-red shadow-md rounded-full text-red-600 text-1xl font-semibold bg-[#ffbebe] "
+                        onClick={() =>
+                          handleDelete(params?.id)
+                        }
+                      >
+                        Delete Customer
+                      </button>
                     </div>
                   </div>
                 </div>

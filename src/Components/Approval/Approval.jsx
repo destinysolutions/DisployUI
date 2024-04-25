@@ -8,9 +8,10 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { APPROVEDETAILBYID } from "../../Pages/Api";
 import { socket } from "../../App";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 const Approval = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [ApprovalList, setApprovalList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -295,6 +296,11 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

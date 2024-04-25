@@ -52,6 +52,7 @@ import { connection } from "../../../SignalR";
 import { socket } from "../../../App";
 import { FaPercentage } from "react-icons/fa";
 import { BiSolidDollarCircle } from "react-icons/bi";
+import PurchasePlanWarning from "../../Common/PurchasePlanWarning";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -1991,6 +1992,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           action="create"
           setTagUpdateScreeen={setTagUpdateScreeen}
         />
+      )}
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

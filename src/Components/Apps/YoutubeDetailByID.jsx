@@ -31,6 +31,7 @@ import Img from "../../images/Assets/img.png";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { connection } from "../../SignalR";
 import { socket } from "../../App";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetailByID.propTypes = {
@@ -693,6 +694,10 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <Footer />
         </>
+      )}
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

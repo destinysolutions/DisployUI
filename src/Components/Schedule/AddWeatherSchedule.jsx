@@ -24,9 +24,10 @@ import { socket } from "../../App";
 import { addData, getByIdData, resetStatus } from "../../Redux/WeatherSlice";
 import { GET_SCEDULE_TIMEZONE, SET_TO_SCREEN_WEATHER } from "../../Pages/Api";
 import axios from "axios";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const store = useSelector((state) => state.root.weather);
 
@@ -605,6 +606,11 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
       <Footer />
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

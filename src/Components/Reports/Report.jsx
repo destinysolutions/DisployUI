@@ -10,12 +10,15 @@ import { useDateSelect } from "react-ymd-date-select";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Footer";
 import ReportDialog from "./ReportDialog";
+import { useSelector } from "react-redux";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const Report = ({ sidebarOpen, setSidebarOpen }) => {
   Report.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const { user } = useSelector((state) => state.root.auth);
   const [selectedReport, setSelectedReport] = useState(null);
   const [modelVisible, setModelVisible] = useState(false);
   const handleReportClick = (report) => {
@@ -177,6 +180,11 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
       <Footer />
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

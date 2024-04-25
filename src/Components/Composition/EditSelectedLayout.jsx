@@ -32,6 +32,9 @@ import { connection } from "../../SignalR";
 import ShowAppsModal from "../ShowAppsModal";
 import { socket } from "../../App";
 import { HiDocumentDuplicate } from "react-icons/hi2";
+import { IoArrowBackSharp } from "react-icons/io5";
+import { FcOpenedFolder } from "react-icons/fc";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const DEFAULT_IMAGE = "";
 const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -59,9 +62,12 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [Tags, setTags] = useState("");
   const [compositoinDetails, setCompositoinDetails] = useState(null);
   const [showAppModal, setShowAppModal] = useState(false);
-
+  const [openFolder, setOpenFolder] = useState(false)
+  const [folderData, setFolderData] = useState([]);
+  const [NestedNewFolder, setNestedNewFolder] = useState([]);
+  const [selectFolder, setSelectFolder] = useState()
   const { state } = useLocation();
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const { editor, onReady } = useFabricJSEditor();
@@ -515,6 +521,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.doc ? fetchedData.doc : []),
           ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+          ...(fetchedData.folder ? fetchedData.folder : [])
         ];
         setAssetData(allAssets);
         return allAssets;
@@ -608,12 +615,14 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleDropForDivToDiv = (event) => {
-    const item = event.dataTransfer.getData("text/plain");
-    if (dragStartForDivToDiv) {
-      addSeletedAsset(JSON.parse(item));
-      setDragStartForDivToDiv(false);
-      toast.remove();
-      toast.success(`item added to the ${currentSection} section.`);
+    if(event.dataTransfer.getData("text/plain")){
+      const item = event.dataTransfer.getData("text/plain");
+      if (dragStartForDivToDiv) {
+        addSeletedAsset(JSON.parse(item));
+        setDragStartForDivToDiv(false);
+        toast.remove();
+        toast.success(`item added to the ${currentSection} section.`);
+      }
     }
   };
 
@@ -628,34 +637,36 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleDropForWithinlist = (event, index) => {
-    const item = JSON.parse(event.dataTransfer.getData("text/plain"));
-    if (!dragStartForDivToDiv) {
-      setIsDataChanges(true);
-      const reOrderData = reorder(
-        addAsset[currentSection - 1][currentSection],
-        item?.startIndex,
-        index
-      );
-      let newdatas = {};
+    if (event.dataTransfer.getData("text/plain")) {
+      const item = JSON.parse(event.dataTransfer.getData("text/plain"));
+      if (!dragStartForDivToDiv) {
+        setIsDataChanges(true);
+        const reOrderData = reorder(
+          addAsset[currentSection - 1][currentSection],
+          item?.startIndex,
+          index
+        );
+        let newdatas = {};
 
-      if (Object.keys(newdatas).length === 0) {
-        for (const [key, value] of Object.entries(
-          compositonData.lstLayloutModelList
-        )) {
-          if (currentSection === +key + 1) {
-            newdatas[+key + 1] = reOrderData;
-          } else if (
-            currentSection != +key + 1 &&
-            Object.values(addAsset[key])[0].length > 0
-          ) {
-            newdatas[+key + 1] = Object.values(addAsset[key])[0];
-          } else {
-            newdatas[+key + 1] = [];
+        if (Object.keys(newdatas).length === 0) {
+          for (const [key, value] of Object.entries(
+            compositonData.lstLayloutModelList
+          )) {
+            if (currentSection === +key + 1) {
+              newdatas[+key + 1] = reOrderData;
+            } else if (
+              currentSection != +key + 1 &&
+              Object.values(addAsset[key])[0].length > 0
+            ) {
+              newdatas[+key + 1] = Object.values(addAsset[key])[0];
+            } else {
+              newdatas[+key + 1] = [];
+            }
           }
         }
+        const newdd = Object.entries(newdatas).map(([k, i]) => ({ [k]: i }));
+        setAddAsset(newdd);
       }
-      const newdd = Object.entries(newdatas).map(([k, i]) => ({ [k]: i }));
-      setAddAsset(newdd);
     }
   };
 
@@ -678,6 +689,35 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
+  const navigateToFolder = (data) => {
+    axios
+      .get(`${GET_ALL_FILES}?FolderID=${data?.assetID}`, {
+        headers: { Authorization: authToken },
+      })
+      .then((response) => {
+        const fetchedData = response.data;
+        setNestedNewFolder(fetchedData);
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+          ...(fetchedData.folder ? fetchedData.folder : []),
+        ];
+        setFolderData(allAssets);
+        setSelectFolder(data)
+        setLoading(false);
+        setOpenFolder(true)
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+
+  }
+
 
   return (
     <>
@@ -825,6 +865,11 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 )}
               </div>
+              {openFolder && activeTab === "asset" && (
+                <div className="px-3">
+                  <IoArrowBackSharp size={26} className="cursor-pointer" onClick={() => setOpenFolder(false)} />
+                </div>
+              )}
               <div className="vertical-scroll-inner min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
                 <table
                   className="w-full bg-white overflow-x-auto lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
@@ -848,13 +893,13 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     {!loading &&
                       assetData
                         .filter((item) => {
-                          if (activeTab === "asset") {
+                          if (activeTab === "asset" && !openFolder) {
                             if (
                               item.hasOwnProperty("assetID")
                             ) {
                               return item;
                             }
-                          } else {
+                          } else if (activeTab === "apps") {
                             if (!item.hasOwnProperty("assetID")) {
                               return item;
                             }
@@ -864,11 +909,19 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                           <tr
                             key={index}
                             className="border-b border-b-[#E4E6FF] cursor-pointer"
-                            onClick={() => addSeletedAsset(data, index + 1)}
+                            onClick={() => {
+                              if (data?.assetType === "Folder") {
+                                navigateToFolder(data)
+                              } else {
+                                addSeletedAsset(data, index + 1)
+                              }
+                            }}
                             draggable
-                            onDragStart={(event) =>
-                              handleDragStartForDivToDiv(event, data)
-                            }
+                            onDragStart={(event) => {
+                              if (data?.assetType !== "Folder") {
+                                handleDragStartForDivToDiv(event, data)
+                              }
+                            }}
                           >
                             <td className="w-full flex justify-center items-center">
                               {data.assetType === "OnlineImage" && (
@@ -920,6 +973,107 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="flex justify-center items-center">
                                   <HiDocumentDuplicate className=" text-primary text-4xl" />
                                 </div>
+                              )}
+
+                              {data.assetType === "Folder" && (
+                                <FcOpenedFolder
+                                  className="text-8xl text-center mx-auto"
+                                />
+                              )}
+
+                            </td>
+                            <td className="p-2 w-full text-center hyphens-auto break-words">
+                              {data.assetName || data?.instanceName}
+                            </td>
+                            <td className="p-2 w-full text-center">
+                              {data?.fileExtention
+                                ? data?.fileExtention
+                                : data?.assetType}
+                              {data?.youtubeId && "Youtube video"}
+                              {data?.textScroll_Id && "TextScroll"}
+                            </td>
+                          </tr>
+                        ))}
+
+                    {!loading &&
+                      openFolder &&
+                      folderData
+                        .map((data, index) => (
+                          <tr
+                            key={index}
+                            className="border-b border-b-[#E4E6FF] cursor-pointer"
+                            onClick={() => {
+                              if (data?.assetType === "Folder") {
+                                navigateToFolder(data)
+                              } else {
+                                addSeletedAsset(data, index + 1)
+                              }
+                            }}
+                            draggable
+                            onDragStart={(event) => {
+                              if (data?.assetType !== "Folder") {
+                                handleDragStartForDivToDiv(event, data)
+                              }
+                            }
+                            }
+                          >
+                            <td className="w-full flex justify-center items-center">
+                              {data.assetType === "OnlineImage" && (
+                                <img
+                                  className="imagebox relative h-80px w-160px"
+                                  src={data?.assetFolderPath}
+                                  alt={data?.assetName}
+                                />
+                              )}
+                              {data.assetType === "Image" && (
+                                <img
+                                  src={data?.assetFolderPath}
+                                  alt={data?.assetName}
+                                  className="imagebox relative h-80px w-160px"
+                                />
+                              )}
+                              {data.instanceName && data?.scrollType && (
+                                <marquee
+                                  className="text-lg w-full h-full flex items-center text-black"
+                                  direction={
+                                    data?.scrollType == 1 ? "right" : "left"
+                                  }
+                                  scrollamount="10"
+                                >
+                                  {data?.text}
+                                </marquee>
+                              )}
+                              {(data.assetType === "Video" ||
+                                data.assetType === "OnlineVideo" ||
+                                data.assetType === "Youtube" ||
+                                data?.youTubeURL) && (
+                                  <ReactPlayer
+                                    url={
+                                      data?.assetFolderPath || data?.youTubeURL
+                                    }
+                                    className="h-80px w-160px  relative z-10"
+                                    controls={true}
+                                    playing={false}
+                                    loop={false}
+                                  />
+                                )}
+
+
+                              {/*{data.assetType === "DOC" && (
+                                        <p href={data?.assetFolderPath}>
+                                          {data.assetName}
+                                        </p>
+                                      )}*/}
+
+                              {data.assetType === "DOC" && (
+                                <div className="flex justify-center items-center">
+                                  <HiDocumentDuplicate className=" text-primary text-4xl" />
+                                </div>
+                              )}
+                              {data.assetType === "Folder" && (
+                                <FcOpenedFolder
+                                  className="text-8xl text-center mx-auto"
+                                />
                               )}
                             </td>
                             <td className="p-2 w-full text-center hyphens-auto break-words">
@@ -1008,7 +1162,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       addAsset[currentSection - 1] !== undefined &&
                       addAsset[currentSection - 1][currentSection]?.map(
                         (item, index) => {
-                          console.log("item", item);
                           return (
                             <tr
                               onDrop={(event) =>
@@ -1139,6 +1292,11 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
       <Footer />
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

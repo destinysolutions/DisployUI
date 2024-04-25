@@ -121,8 +121,7 @@ const GoogleDrive = () => {
       console.log("Authorization code not found in the URL.");
     }
   });
-  // console.log(googleAuthURL);
-  // console.log(selectedFiles, "dfsdf");
+
   return (
     <>
       <button

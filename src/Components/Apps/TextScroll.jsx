@@ -34,6 +34,7 @@ import { connection } from "../../SignalR";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user } = useSelector((state) => state.root.auth);
@@ -813,6 +814,10 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
           screenSelected={screenSelected}
           sidebarOpen={sidebarOpen}
         />
+      )}
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

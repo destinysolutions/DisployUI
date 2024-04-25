@@ -39,6 +39,7 @@ import { connection } from "../../SignalR";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {
@@ -897,6 +898,10 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
           screenSelected={screenSelected}
           sidebarOpen={sidebarOpen}
         />
+      )}
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

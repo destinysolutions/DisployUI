@@ -36,6 +36,7 @@ import Swal from "sweetalert2";
 import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { deletedData, getData } from "../../Redux/WeatherSlice";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectdata, setSelectData] = useState({});
   const store = useSelector((state) => state.root.weather);
 
-  const { token } = useSelector((state) => state.root.auth);
+  const {user, token } = useSelector((state) => state.root.auth);
   const { loading, successMessage, type } = useSelector((s) => s.root.schedule);
   const authToken = `Bearer ${token}`;
 
@@ -948,6 +949,11 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           screenSelected={screenSelected}
           sidebarOpen={sidebarOpen}
         />
+      )}
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

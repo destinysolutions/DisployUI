@@ -56,6 +56,7 @@ import moment from "moment";
 import { socket } from "../../../App";
 import { getMenuAll, getMenuPermission } from "../../../Redux/SidebarSlice";
 import Loading from "../../Loading";
+import PurchasePlanWarning from "../../Common/PurchasePlanWarning";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -1319,6 +1320,10 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           modalVisible={isPreviewOpen}
           from="screen"
         />
+      )}
+
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

@@ -1,10 +1,7 @@
 import { Suspense, useState } from "react";
 import Business from "./TabingData/Business";
-import { BsLightningCharge } from "react-icons/bs";
-import { MdOutlineSlowMotionVideo } from "react-icons/md";
+
 import { Alert } from "@material-tailwind/react";
-import Users from "./TabingData/Users";
-import Screens from "./TabingData/Screens";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import PropTypes from "prop-types";
@@ -16,13 +13,14 @@ import Loading from "../Loading";
 import { USERDASHBOARD } from "../../Pages/Api";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   UserDashboard.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { token } = useSelector((s) => s.root.auth);
+  const { user, token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   //using for registration success messge
   const location = useLocation();
@@ -30,6 +28,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   const [messageVisible, setMessageVisible] = useState(false);
   const [sidebarload, setSidebarLoad] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
+  const [warning, setWarning] = useState(false)
   useEffect(() => {
     const hasSeenMessage = localStorage.getItem("hasSeenMessage");
 
@@ -38,6 +37,14 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
       localStorage.setItem("hasSeenMessage", "true");
     }
   }, [message]);
+
+  useEffect(() => {
+    if (!user?.isisTrial && !user?.isActivePlan) {
+      setWarning(true)
+    } else {
+      setWarning(false)
+    }
+  }, [user])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -133,6 +140,10 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
             <Footer />
           </>
         </Suspense>
+      )}
+
+      {warning && (
+        <PurchasePlanWarning />
       )}
     </>
   );

@@ -14,15 +14,18 @@ import AddEditUserRole from "./AddEditUserRole";
 import { ADD_UPDATE_ORGANIZATION_USER_ROLE } from "../../Pages/Api";
 import { useSelector } from "react-redux";
 import { combineUserroleObjects } from "../Common/Common";
+import WarningDialog from "../Common/WarningDialog";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const Userrole = ({ searchValue, sidebarOpen }) => {
-  const { token } = useSelector((state) => state.root.auth);
+  const { user, token } = useSelector((state) => state.root.auth);
   const [userRoleData, setUserRoleData] = useState();
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
   const showUsersRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
   const [heading, setHeading] = useState("Add");
+  const [warning, setWarning] = useState(false);
 
   const [nextbutton, setNextButton] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -180,13 +183,18 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
             Roles List
           </h2>
           <button
-            className="flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+            className={`flex ${user?.isisTrial ? "cursor-pointer" : "cursor-not-allowed"} align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+            disabled={!user?.isisTrial}
             onClick={() => {
-              setUserDisable();
-              setShowModal(true);
-              setHeading("Add");
-              setUserRoleData();
-              setNextButton(false);
+              if (user?.isisTrial) {
+                setUserDisable();
+                setShowModal(true);
+                setHeading("Add");
+                setUserRoleData();
+                setNextButton(false);
+              } else {
+                setWarning(true)
+              }
             }}
           >
             Add New Role
@@ -248,7 +256,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
                               fill="#1C64F2"
                             />
                           </svg>
-                          
+
                         </div>
                       </td>
                     </tr>
@@ -276,10 +284,15 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
                                 <div
                                   data-tip
                                   data-for="Edit"
-                                  className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                  className={`${user?.isisTrial ? "cursor-pointer" : "cursor-not-allowed"} text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+                                  disabled={!user?.isisTrial}
                                   onClick={() => {
-                                    setHeading("Update")
-                                    handleSelectByID(item.orgUserRoleID);
+                                    if (user?.isisTrial) {
+                                      setHeading("Update")
+                                      handleSelectByID(item.orgUserRoleID);
+                                    } else {
+                                      setWarning(true)
+                                    }
                                   }}
                                 >
                                   <BiEdit />
@@ -400,6 +413,14 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
           setUserRoleData={setUserRoleData}
           dispatch={dispatch}
         />
+      )}
+
+      {warning && (
+        <WarningDialog warning={warning} setWarning={setWarning} />
+      )}
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

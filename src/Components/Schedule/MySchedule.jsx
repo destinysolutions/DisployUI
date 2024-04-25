@@ -43,6 +43,7 @@ import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -1141,6 +1142,11 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
           screenSelected={screenSelected}
           sidebarOpen={sidebarOpen}
         />
+      )}
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
       )}
     </>
   );

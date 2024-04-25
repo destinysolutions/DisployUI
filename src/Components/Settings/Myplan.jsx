@@ -15,10 +15,10 @@ import { GrPlan } from "react-icons/gr";
 import TrialPlan from './TrialPlan';
 import AddEditPlan from './AddEditPlan';
 import { Switch } from "@material-tailwind/react";
+import PurchaseUserPlan from '../Common/PurchaseUserPlan';
 
 const Myplan = () => {
     const { token, user } = useSelector((state) => state.root.auth);
-    console.log('user', user)
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [myplan, setmyPlan] = useState([]);
@@ -30,12 +30,13 @@ const Myplan = () => {
     const [openView, setOpenView] = useState("")
     const [selectPlan, setSelectPlan] = useState("")
     const [featureList, setFeatureList] = useState([]);
-    const [heading,setHeading] = useState("Add")
+    const [heading, setHeading] = useState("Add")
     const [loading, setLoading] = useState(true)
     const [trialData, setTrialData] = useState({
         trialDays: 14,
         isActive: true
     })
+    const [purchasePlan, setPurchasePlan] = useState(false)
     const [trialDetails, setTrialDetails] = useState({
         trialDays: 14,
         isActive: true
@@ -148,7 +149,7 @@ const Myplan = () => {
                             Pricing Plans
                         </h1>
                     </div>
-                    
+
                     {user?.role === "1" && (
                         <div className="flex items-center justify-end gap-2 w-full lg:w-2/3 ">
                             <button
@@ -201,16 +202,22 @@ const Myplan = () => {
                                 return (
                                     <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/3 px-3 mb-4">
                                         <div className="bg-[#ECF0F1] p-4 rounded-lg h-full">
-                                            <div className="flex justify-between">
+                                            <div className="flex justify-between mb-4">
                                                 <div className="role-name">
-                                                    <p>Total 5 Users</p>
+                                                    {user?.role === "1" && (
+                                                        <p>Total 5 Users</p>
+                                                    )}
                                                     <h3 className="text-2xl font-semibold my-2">
                                                         {item?.planName}
                                                     </h3>
                                                     <p>A simple start for Everyone</p>
+
                                                 </div>
-                                                <div className="role-user ">
-                                                    {user?.role === "1" && (
+                                                <div className="role-user">
+                                                    <div className="role-user flex justify-center mb-3 font-semibold text-3xl">
+                                                        ${item?.planPrice}
+                                                    </div>
+                                                    {/*{user?.role === "1" && (
                                                         <div className="role-user flex justify-center">
                                                             <span>
                                                                 <img src="./dist/images/1user-img.png" />
@@ -222,8 +229,9 @@ const Myplan = () => {
                                                                 +3
                                                             </span>
                                                         </div>
-                                                    )}
-                                                    <div className="role-user flex justify-center mt-6 gap-2">
+                                                    )}*/}
+
+                                                    <div className="role-user flex justify-center mt-3 gap-2">
                                                         {user?.role === "1" && (
                                                             <div
                                                                 data-tip
@@ -247,9 +255,22 @@ const Myplan = () => {
                                                             <BsEyeFill />
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
+                                            {user?.role !== "1" && (
+                                            <div className='flex items-center justify-center'>
+                                                <button
+                                                    type="button"
+                                                    className="hover:bg-white cursor-pointer hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
+                                                    onClick={() => {
+                                                        setSelectPlan(item)
+                                                        setPurchasePlan(true)
+                                                    }}
+                                                >
+                                                    Subscribe
+                                                </button>
+                                            </div>
+                                            )}
                                         </div>
                                     </div>
                                 )
@@ -284,13 +305,16 @@ const Myplan = () => {
                 )}
             </div>
             {planModel && (
-                <AddEditPlan showPlanModal={showPlanModal} featureList={featureList} selectPlan={selectPlan} setSelectPlan={setSelectPlan} heading={heading}/>
+                <AddEditPlan showPlanModal={showPlanModal} featureList={featureList} selectPlan={selectPlan} setSelectPlan={setSelectPlan} heading={heading} />
             )}
             {openView && (
                 <ViewPlan toggleModal={toggleModal} selectPlan={selectPlan} />
             )}
             {trialPlanModel && (
                 <TrialPlan setTrialPlanModal={setTrialPlanModal} trialPlanModel={trialPlanModel} handleSaveTrialPlan={handleSaveTrialPlan} setTrialData={setTrialData} trialData={trialData} />
+            )}
+            {purchasePlan && (
+                <PurchaseUserPlan setPurchasePlan={setPurchasePlan} purchasePlan={purchasePlan} selectPlan={selectPlan} />
             )}
         </>
     )

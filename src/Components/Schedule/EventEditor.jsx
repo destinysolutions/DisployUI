@@ -20,6 +20,7 @@ import {
 } from "../../Redux/AppsSlice";
 import { useDispatch } from "react-redux";
 import PreviewAssets from "../Common/PreviewAssets";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 const EventEditor = ({
   isOpen,
   onClose,
@@ -60,7 +61,7 @@ const EventEditor = ({
   const [searchAsset, setSearchAsset] = useState("");
   const [repeatDays, setRepeatDays] = useState([]);
 
-  const { token } = useSelector((s) => s.root.auth);
+  const { user,token } = useSelector((s) => s.root.auth);
   const { assets, loading } = useSelector((s) => s.root.asset);
   const { allAppsData, youtube, textScroll } = useSelector((s) => s.root.apps);
   const authToken = `Bearer ${token}`;
@@ -1100,6 +1101,11 @@ const EventEditor = ({
         />
       )}
       {/* </ReactModal> */}
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };

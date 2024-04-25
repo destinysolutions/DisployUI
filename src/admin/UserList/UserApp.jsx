@@ -12,7 +12,6 @@ const UserApp = ({ selectUser, allAppsData, userloading,sidebarOpen }) => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
   // Handle sorting when a table header is clicked
   const handleSort = (field) => {
     if (sortedField === field) {
@@ -95,8 +94,8 @@ const UserApp = ({ selectUser, allAppsData, userloading,sidebarOpen }) => {
                 </div>
               </div>
             </div>
-            <div className=" bg-white rounded-xl mt-5 shadow screen-section">
-              <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
+            <div className="bg-white rounded-xl mt-5 shadow screen-section">
+            <div className="schedual-tabl mt-5 overflow-x-scroll sc-scrollbar rounded-lg">
                 <table
                   className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
                   cellPadding={15}
@@ -169,15 +168,16 @@ const UserApp = ({ selectUser, allAppsData, userloading,sidebarOpen }) => {
                           </td>
                         </tr>
                       )}
-                    {searchApps && allAppsData?.length === 0 && (
+                    {sortedAndPaginatedData?.length === 0 && (
                       <tr>
-                        <td
-                          className="font-semibold text-center bg-white text-lg"
-                          colSpan={2}
-                        >
-                          No search result found.
-                        </td>
-                      </tr>
+                      <td colSpan={2}>
+                        <div className="flex text-center m-5 justify-center">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                            No Data Available
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
                     )}
                   </tbody>
                 </table>

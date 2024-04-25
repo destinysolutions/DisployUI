@@ -6,7 +6,7 @@ import { ADD_REGISTER_URL, CREATE_SUBSCRIPTION, PAYMENT_DETAILS } from '../Pages
 import { useDispatch } from 'react-redux';
 import { handleRegisterUser } from "../Redux/Authslice"
 
-const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret, planId, Screen }) => {
+const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret, planId, Screen, TotalPrice }) => {
     const stripe = useStripe();
     const elements = useElements();
     const navigation = useNavigate()
@@ -61,6 +61,7 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
             ExtraScreen: (Screen - 1),
             type: "Screen",
             items: Screen,
+            amount: TotalPrice,
             organizationId: organizationID,
 
             UserID: organizationID,

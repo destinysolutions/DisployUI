@@ -7,12 +7,16 @@ import PropTypes from "prop-types";
 import { GrServicePlay } from "react-icons/gr";
 import "../../Styles/Studio.css";
 import Footer from "../Footer";
+import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import { useSelector } from "react-redux";
 
 const DisployStudio = ({ sidebarOpen, setSidebarOpen }) => {
   DisployStudio.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+
+  const { user } = useSelector((state) => state.root.auth);
   const [Tabs, setTabs] = useState(1);
   function updateTab(id) {
     setTabs(id);
@@ -74,6 +78,11 @@ const DisployStudio = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
       <Footer />
+
+      
+      {!user?.isisTrial && !user?.isActivePlan && (
+        <PurchasePlanWarning />
+      )}
     </>
   );
 };
