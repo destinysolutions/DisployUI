@@ -22,6 +22,7 @@ const Myplan = () => {
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [myplan, setmyPlan] = useState([]);
+    console.log('myplan', myplan)
     const [Statusenabled, setStatusEnabled] = useState(false)
     const [planModel, showPlanModal] = useState(false);
     const [trialPlanModel, setTrialPlanModal] = useState(false);
@@ -257,8 +258,24 @@ const Myplan = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {user?.role !== "1" && (
-                                            <div className='flex items-center justify-center'>
+                                            {user?.role !== "1" && user?.planID === item?.listOfPlansID && (
+                                                <div className='flex items-center justify-center'>
+                                                    <button
+                                                        type="button"
+                                                        className="bg-primary cursor-not-allowed text-white rounded-full px-8 py-3"
+                                                        disabled
+                                                        // onClick={() => {
+                                                        //     setSelectPlan(item)
+                                                        //     setPurchasePlan(true)
+                                                        // }}
+                                                    >
+                                                        Subscribed
+                                                    </button>
+                                                </div>
+                                            )}
+
+                                            {user?.role !== "1" && user?.planID !== item?.listOfPlansID && (
+                                                <div className='flex items-center justify-center'>
                                                 <button
                                                     type="button"
                                                     className="hover:bg-white cursor-pointer hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
@@ -267,7 +284,7 @@ const Myplan = () => {
                                                         setPurchasePlan(true)
                                                     }}
                                                 >
-                                                    Subscribe
+                                                    Upgrade Plan
                                                 </button>
                                             </div>
                                             )}

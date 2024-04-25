@@ -120,7 +120,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <Footer />
 
-      {!user?.isisTrial && !user?.isActivePlan && (
+      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
         <PurchasePlanWarning />
       )}
     </>

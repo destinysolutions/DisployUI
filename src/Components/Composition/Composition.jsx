@@ -1172,7 +1172,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {!user?.isisTrial && !user?.isActivePlan && (
+      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
         <PurchasePlanWarning />
       )}
     </>

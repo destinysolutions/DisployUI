@@ -36,7 +36,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
             }
           />
           <Route
-            path="/onborded"
+            path="/onboarded"
             element={
               <OnBoding
                 sidebarOpen={sidebarOpen}
@@ -100,7 +100,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
           />
 
           <Route
-            path="onborded/customer-details/:id"
+            path="onboarded/customer-details/:id"
             element={
               <CustomerOnboding sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
             }

@@ -495,13 +495,11 @@ const PlanIntegration = () => {
                         </div>
                     )}
                     {page === 1 && clientSecret && (
-                        <div className="lg:w-[600px] md:w-[600px] w-full h-[30vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg flex items-center justify-center">
                             <>
                                 <Elements options={options} stripe={stripePromise}>
                                     <PlanPurchase selectedPlan={selectedPlan} customerData={customerData} discountCoupon={discountCoupon} clientSecret={clientSecret} planId={planId} Screen={Screen} TotalPrice={TotalPrice}/>
                                 </Elements>
                             </>
-                        </div>
                     )}
                 </div>
             </div>

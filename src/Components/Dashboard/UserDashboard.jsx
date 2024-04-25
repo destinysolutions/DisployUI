@@ -39,7 +39,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   }, [message]);
 
   useEffect(() => {
-    if (!user?.isisTrial && !user?.isActivePlan) {
+    if ((user?.isTrial=== false) && (user?.isActivePlan=== false)) {
       setWarning(true)
     } else {
       setWarning(false)

@@ -49,7 +49,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-          navigate("/onborded")
+          navigate("/onboarded")
         }
       });
     } catch (error) {
@@ -72,7 +72,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="flex items-center justify-between mx-2 mb-5 mt-3">
             <div className="title">
               <Link
-                to="/onborded"
+                to="/onboarded"
                 className="font-bold text-xl flex gap-2 cursor-pointer"
               >
                 <IoChevronBack size={30} />

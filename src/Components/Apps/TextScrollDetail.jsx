@@ -225,7 +225,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
-      {!user?.isisTrial && !user?.isActivePlan && (
+      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
         <PurchasePlanWarning />
       )}
     </>

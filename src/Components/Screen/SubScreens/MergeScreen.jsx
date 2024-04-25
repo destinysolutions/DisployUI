@@ -1013,7 +1013,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           setAssetPreviewPopup={setIsPreviewOpen}
         />
       )}
-      {!user?.isisTrial && !user?.isActivePlan && (
+      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
         <PurchasePlanWarning />
       )}
     </>

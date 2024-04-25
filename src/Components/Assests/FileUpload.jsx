@@ -754,7 +754,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       </div>
       <Footer />
 
-      {!user?.isisTrial && !user?.isActivePlan && (
+      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
         <PurchasePlanWarning />
       )}
     </>

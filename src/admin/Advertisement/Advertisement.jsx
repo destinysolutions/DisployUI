@@ -78,8 +78,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     )
     : [];
 
-  const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
-
+ 
   const fiterAds = Array.isArray(allAdvertisement?.advertisementData)
     ? allAdvertisement?.advertisementData?.filter((item) =>
       Object.values(item).some(
@@ -89,6 +88,8 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
       )
     )
     : [];
+
+    const totalPages = Math.ceil(fiterAds?.length / itemsPerPage);
 
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
@@ -591,7 +592,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
           loading={loading}
           sortedAndPaginatedData={sortedAndPaginatedData}
           currentPage={currentPage}
-          totalPages={totalPages}
+          totalPages={Math.ceil(filteredData?.length / itemsPerPage)}
           handleSort={handleSort}
           handleSelectAllCheckboxChange={handleSelectAllCheckboxChange}
           selectAllChecked={selectAllChecked}

@@ -1125,7 +1125,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
         <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />
       )}
 
-      {!user?.isisTrial && !user?.isActivePlan && (
+      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
         <PurchasePlanWarning />
       )}
     </>

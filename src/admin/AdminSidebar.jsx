@@ -54,7 +54,7 @@ const AdminSidebar = ({ sidebarOpen }) => {
       title: "Organization",
       cName: "nav-text link-items",
       //path: "/organization",
-      path: "/onborded",
+      path: "/onboarded",
       icon: <SlOrganization className="text-2xl" />,
       subMenus: [
         // {
@@ -63,8 +63,8 @@ const AdminSidebar = ({ sidebarOpen }) => {
         //   icon: <FaUserTimes className="  text-xl  " />,
         // },
         {
-          title: "OnBorded",
-          path: "/onborded",
+          title: "OnBoarded",
+          path: "/onboarded",
           icon: <FaUserCheck className="  text-xl  " />,
         },
         {

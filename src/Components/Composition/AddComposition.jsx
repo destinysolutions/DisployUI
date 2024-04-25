@@ -127,7 +127,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
       <Footer />
 
       
-      {!user?.isisTrial && !user?.isActivePlan && (
+      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
         <PurchasePlanWarning />
       )}
     </>
