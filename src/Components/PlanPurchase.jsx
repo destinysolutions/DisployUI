@@ -12,6 +12,7 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
     const navigation = useNavigate()
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(false);
     const dispatch = useDispatch();
     const [autoPay, setAutoPay] = useState(false)
     const paymentElementOptions = {
@@ -131,80 +132,86 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
             return;
         }
 
-        setIsLoading(true);
+        if (!autoPay) {
+            setErrorMessage(true)
+        }
 
-        try {
-            // const { paymentIntent, error } = await stripe.confirmPayment({
-            //     elements,
-            //     redirect: 'if_required'
-            // });
+        if (autoPay) {
+            setErrorMessage(false)
+            setIsLoading(true);
+            try {
+                // const { paymentIntent, error } = await stripe.confirmPayment({
+                //     elements,
+                //     redirect: 'if_required'
+                // });
 
-            const cardElement = elements.getElement(CardElement);
-            const { paymentMethod, error } = await stripe.createPaymentMethod({
-                type: 'card',
-                card: cardElement,
-            });
-            console.log('paymentMethod', paymentMethod)
+                const cardElement = elements.getElement(CardElement);
+                const { paymentMethod, error } = await stripe.createPaymentMethod({
+                    type: 'card',
+                    card: cardElement,
+                });
+                console.log('paymentMethod', paymentMethod)
 
-            // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-            //     payment_method: {
-            //         card: elements.getElement(CardElement),
-            //         billing_details: {
-            //             name: customerData?.email,
-            //             email: customerData?.email
-            //         },
-            //     },
-            // });
+                // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+                //     payment_method: {
+                //         card: elements.getElement(CardElement),
+                //         billing_details: {
+                //             name: customerData?.email,
+                //             email: customerData?.email
+                //         },
+                //     },
+                // });
 
 
-            if (error) {
-                if (error.type === "card_error" || error.type === "validation_error") {
-                    setMessage(error.message);
+                if (error) {
+                    if (error.type === "card_error" || error.type === "validation_error") {
+                        setMessage(error.message);
+                    } else {
+                        setMessage("An unexpected error occurred.");
+                    }
                 } else {
-                    setMessage("An unexpected error occurred.");
-                }
-            } else {
-                const formData = new FormData();
-                formData.append("Password", customerData.password);
-                formData.append("FirstName", customerData.firstName);
-                formData.append("LastName", customerData.lastName);
-                formData.append("Email", customerData.email);
-                formData.append("Phone", customerData.phone);
-                formData.append("GoogleLocation", customerData.googleLocation);
-                formData.append("OrganizationName", customerData.company);
-                formData.append("Operation", "Insert");
+                    const formData = new FormData();
+                    formData.append("Password", customerData.password);
+                    formData.append("FirstName", customerData.firstName);
+                    formData.append("LastName", customerData.lastName);
+                    formData.append("Email", customerData.email);
+                    formData.append("Phone", customerData.phone);
+                    formData.append("GoogleLocation", customerData.googleLocation);
+                    formData.append("OrganizationName", customerData.company);
+                    formData.append("Operation", "Insert");
 
-                let config = {
-                    method: "post",
-                    maxBodyLength: Infinity,
-                    url: ADD_REGISTER_URL,
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                    data: formData,
-                };
+                    let config = {
+                        method: "post",
+                        maxBodyLength: Infinity,
+                        url: ADD_REGISTER_URL,
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                        data: formData,
+                    };
 
-                const response = dispatch(handleRegisterUser({ config }));
-                if (response) {
-                    response
-                        .then((res) => {
-                            if (res?.payload?.status === 200) {
-                                if (autoPay) {
-                                    CreateSubscription({ email: res?.payload?.data?.email, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
-                                } else {
-                                    PaymentDetails({ paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
+                    const response = dispatch(handleRegisterUser({ config }));
+                    if (response) {
+                        response
+                            .then((res) => {
+                                if (res?.payload?.status === 200) {
+                                    if (autoPay) {
+                                        CreateSubscription({ email: res?.payload?.data?.email, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
+                                    } else {
+                                        PaymentDetails({ paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
+                                    }
                                 }
-                            }
-                        })
+                            })
+                    }
+                    // Payment was successful, you can access paymentIntent for confirmation data
+                    setMessage("Payment successful!");
                 }
-                // Payment was successful, you can access paymentIntent for confirmation data
-                setMessage("Payment successful!");
-            }
 
-        } catch (error) {
-            console.error("Error confirming payment:", error);
-            setIsLoading(false);
-            // Handle error, display error message to user, etc.
+            } catch (error) {
+                console.error("Error confirming payment:", error);
+                setIsLoading(false);
+                // Handle error, display error message to user, etc.
+            }
         }
     };
 
@@ -235,11 +242,16 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
                         />
                         <div className="error-message" role="alert"></div>
                     </div>
-                    <div className='mb-4 flex items-center gap-2'>
+                    <div className='mb-2 flex items-center gap-2'>
                         <input type='checkbox' className='w-4 h-4 inline-block rounded-full border border-grey flex-no-shrink' onChange={() => setAutoPay(!autoPay)} value={autoPay} />
                         <label className='text-gray-600'>Auto Payment</label>
                     </div>
-                    <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type='button'>
+                    {errorMessage && (
+                        <div>
+                        <label className='text-rose-600'>You need to Check Auto Pay for Further Process.</label>
+                        </div>
+                    )}
+                    <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type='button' className='mt-4'>
                         <span id="button-text">
                             {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
                         </span>

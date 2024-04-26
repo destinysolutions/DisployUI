@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import PlanPurchaseModel from './PlanPurchaseModel';
 import { Elements } from '@stripe/react-stripe-js';
 
-const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan }) => {
+const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan ,userPlanType}) => {
     const dispatch = useDispatch();
     const [Screen, setScreen] = useState(1);
     const [showDiscount, setShowDiscount] = useState(false);
@@ -208,7 +208,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan }) => {
             <div className="lg:w-[600px] md:w-[600px] w-full h-[30vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg flex items-center justify-center">
                 <>
                     <Elements options={options} stripe={stripePromise}>
-                        <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment}/>
+                        <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment} userPlanType={userPlanType}/>
                     </Elements>
                 </>
             </div>

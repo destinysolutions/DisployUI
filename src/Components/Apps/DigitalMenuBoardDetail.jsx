@@ -28,7 +28,7 @@ import PurchasePlanWarning from '../Common/PurchasePlanWarning';
 
 const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const { id } = useParams();
-  const {user, token } = useSelector((state) => state.root.auth);
+  const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [customizeData, setCustomizeData] = useState({
     "EachPageTime": "30",
@@ -69,7 +69,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [firstCategory, setFirstCategory] = useState(0);
   const [showCustomizemodal, setShowCustomizemodal] = useState(false);
   const [dragStartForDivToDiv, setDragStartForDivToDiv] = useState(false);
-  const [PreviewData,setPreviewData] = useState([])
+  const [PreviewData, setPreviewData] = useState([])
   const [addCategory, setAddCategory] = useState([{
     categoryname: "UNNAMED CATEGORY",
     allItem: [{
@@ -84,30 +84,29 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     show: false
   }])
 
-
   useEffect(() => {
     let allData = []
     addCategory?.map((item) => {
       let arr = [];
       if (customizeData?.EachPage === "auto") {
-        let obj ={
+        let obj = {
           categoryname: item?.categoryname,
           show: item?.show,
           categoryID: item?.categoryID,
           digitalMenuAppId: item?.digitalMenuAppId,
-          list:item?.allItem
+          list: item?.allItem
         }
         arr?.push(obj)
       } else {
-      const  filterarr = chunkArray(item?.allItem, parseInt(customizeData?.EachPage));
-        let allArray =[]
-        filterarr?.map((data)=>{
-          let obj ={
+        const filterarr = chunkArray(item?.allItem, parseInt(customizeData?.EachPage));
+        let allArray = []
+        filterarr?.map((data) => {
+          let obj = {
             categoryname: item?.categoryname,
             show: item?.show,
             categoryID: item?.categoryID,
             digitalMenuAppId: item?.digitalMenuAppId,
-            list:data
+            list: data
           }
           allArray?.push(obj)
         })
@@ -1043,18 +1042,19 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                         </td>
 
                                         <td className="text-[#5E5E5E] text-center">
-                                          <input type='checkbox' value={item?.features}
+                                          <input type='checkbox'
+                                            checked={item?.features}
                                             onChange={(e) =>
-                                              handleFeatureChange(index, indexs, e.target.value)
+                                              handleFeatureChange(index, indexs, e.target.checked)
                                             } />
                                         </td>
 
                                         <td
                                           className="text-[#5E5E5E] text-center"
                                         >
-                                          <input type='checkbox' value={item?.soldOut}
+                                          <input type='checkbox' checked={item?.soldOut}
                                             onChange={(e) =>
-                                              handleSoldOutChange(index, indexs, e.target.value)
+                                              handleSoldOutChange(index, indexs, e.target.checked)
                                             } />
 
                                         </td>
@@ -1112,7 +1112,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           )}
           {showPreviewPopup && (
-            <DigitalMenuPreview customizeData={customizeData} PreviewData={PreviewData} />
+            <DigitalMenuPreview customizeData={customizeData} PreviewData={PreviewData} selectedColor={selectedColor} />
           )}
         </div>
       </div>
@@ -1125,7 +1125,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
         <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
+      {(user?.isTrial === false) && (user?.isActivePlan === false) && (
         <PurchasePlanWarning />
       )}
     </>

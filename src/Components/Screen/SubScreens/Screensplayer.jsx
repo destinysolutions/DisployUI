@@ -80,13 +80,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
   const [selectedOperatingHour, setSelectedOperatingHour] = useState("");
   const [selectedScreenType, setSelectedScreenType] = useState("");
-
-
   const [selectedHours, setSelectedHours] = useState("");
-
-  const [selectedOperatingHourModel, setSelectedOperatingHourModel] =
-    useState(false);
-
+  const [selectedOperatingHourModel, setSelectedOperatingHourModel] = useState(false);
   const [googleLoc, setGoogleLoc] = useState("");
   const [toggle, setToggle] = useState(1);
   const [sync, setsyncToggle] = useState(1);
@@ -109,8 +104,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedSchedule, setSelectedSchedule] = useState("");
   const [confirmForComposition, setConfirmForComposition] = useState(false);
   const [saveForSchedule, setSaveForSchedule] = useState(false);
-  const [getSelectedScreenTypeOption, setGetSelectedScreenTypeOption] =
-    useState([]);
+  const [getSelectedScreenTypeOption, setGetSelectedScreenTypeOption] = useState([]);
   const [showCompositionModal, setShowCompositionModal] = useState(false);
   const [scheduleData, setScheduleData] = useState([]);
   const [showUploadAssestModal, setShowUploadAssestModal] = useState(false);
@@ -1678,15 +1672,33 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       </ReactTooltip>
                     </button>
                   )}
-                  <IoCloudUploadOutline
-                    className="cursor-pointer"
-                    size={24}
+
+                  <button
+                    data-tip
+                    id="toggleButton"
+                    data-for="Play"
+                    type="button"
                     onClick={() => {
                       setShowAssetModal(true);
                       setSelectedDefaultAsset("");
                       setSetscreenMacID(screenData[0]?.macid);
                     }}
-                  />
+                  >
+                    <IoCloudUploadOutline
+                      className="cursor-pointer"
+                      size={24}
+
+                    />
+                    <ReactTooltip
+                      id="Play"
+                      place="bottom"
+                      type="warning"
+                      effect="solid"
+                    >
+                      <span>Select Asset</span>
+                    </ReactTooltip>
+                  </button>
+
                 </div>
               </div>
             </div>
@@ -2141,7 +2153,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
 
-                      <tr className="border-b border-[#D5E3FF]">
+                     {/* <tr className="border-b border-[#D5E3FF]">
                         <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                             Type
@@ -2194,8 +2206,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </label>
                           </div>
                         </td>
-                      </tr>
-                      <tr>
+                            </tr>*/}
+                      {/*<tr>
                         <td className="lg:py-3 md:py-2 pb-0"></td>
                         <td className="lg:py-3 md:py-2 pt-0">
                           <input
@@ -2209,7 +2221,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             }
                           />
                         </td>
-                      </tr>
+                          </tr>*/}
                     </tbody>
                   </table>
                   <div className="flex justify-center my-3">
@@ -2243,7 +2255,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       )}
       {/* <Footer /> */}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
+      {(user?.isTrial === false) && (user?.isActivePlan === false) && (
         <PurchasePlanWarning />
       )}
     </>

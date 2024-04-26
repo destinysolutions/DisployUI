@@ -1046,7 +1046,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
-                          Type:
+                          Choose Asset:
                         </label>
                       </td>
                       <td
@@ -1062,7 +1062,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           className="flex items-center gap-1"
                         >
                           <input type="radio" name="type" id="select_asset" />
-                          Select type
+                          Select Assest
                         </label>
                         <label
                           htmlFor="default_asset"

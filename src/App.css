@@ -2217,3 +2217,7 @@ table.screen-table {
 .modal.fadeOut {
   animation: slideOut 0.3s ease;
 }
+
+.autoplay-progress{
+  /* bottom: 0 !important; */
+}

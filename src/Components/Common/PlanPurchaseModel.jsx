@@ -6,14 +6,18 @@ import { useNavigate } from 'react-router-dom';
 import { handlePaymentDetails } from '../../Redux/PaymentSlice';
 import { PAYMENT_DETAILS } from '../../Pages/Api';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { handleLogout } from '../../Redux/Authslice';
 
-const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, setOpenPayment, openPayment }) => {
+const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, setOpenPayment, openPayment, userPlanType }) => {
     const { token, user } = useSelector((state) => state.root.auth);
     const stripe = useStripe();
     const elements = useElements();
     const navigation = useNavigate()
     const dispatch = useDispatch();
     const [message, setMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(false);
+
+    const [autoPay, setAutoPay] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
     const paymentElementOptions = {
         layout: "tabs"
@@ -59,7 +63,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             ...paymentIntent,
             PaymentType: `${selectPlan?.planName} Plan`,
             PaymentValue: 1,
-            AutoPay: false,
+            AutoPay: autoPay,
             ExtraScreen: (Screen - 1),
             type: "Screen",
             items: Screen,
@@ -86,7 +90,11 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         dispatch(handlePaymentDetails({ config })).then((res) => {
             if (res?.payload?.status) {
                 setIsLoading(false);
-                navigation("/"); // Navigate to dashboard after processing payment
+                if(userPlanType === "LoginUser"){
+                    dispatch(handleLogout());
+                }else{
+                    navigation("/"); // Navigate to dashboard after processing payment
+                }
             }
         })
     }
@@ -98,32 +106,39 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             return;
         }
 
-        setIsLoading(true);
+        if (!autoPay) {
+            setErrorMessage(true)
+        }
 
-        try {
-            const cardElement = elements.getElement(CardElement);
-            const { paymentMethod, error } = await stripe.createPaymentMethod({
-                type: 'card',
-                card: cardElement,
-            });
-            console.log('paymentMethod', paymentMethod)
+        if (autoPay) {
+            setErrorMessage(false)
+            setIsLoading(true);
 
-            if (error) {
-                if (error.type === "card_error" || error.type === "validation_error") {
-                    setMessage(error.message);
+            try {
+                const cardElement = elements.getElement(CardElement);
+                const { paymentMethod, error } = await stripe.createPaymentMethod({
+                    type: 'card',
+                    card: cardElement,
+                });
+                console.log('paymentMethod', paymentMethod)
+
+                if (error) {
+                    if (error.type === "card_error" || error.type === "validation_error") {
+                        setMessage(error.message);
+                    } else {
+                        setMessage("An unexpected error occurred.");
+                    }
                 } else {
-                    setMessage("An unexpected error occurred.");
+                    setMessage("Payment successful!");
+                    PaymentDetails({ paymentIntent: paymentMethod, organizationID: user?.organizationId })
                 }
-            } else {
-                setMessage("Payment successful!");
-                PaymentDetails({ paymentIntent: paymentMethod, organizationID: user?.organizationId })
-            }
-            // Payment was successful, you can access paymentIntent for confirmation data
+                // Payment was successful, you can access paymentIntent for confirmation data
 
-        } catch (error) {
-            console.error("Error confirming payment:", error);
-            setIsLoading(false);
-            // Handle error, display error message to user, etc.
+            } catch (error) {
+                console.error("Error confirming payment:", error);
+                setIsLoading(false);
+                // Handle error, display error message to user, etc.
+            }
         }
     };
 
@@ -167,11 +182,17 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                                                 />
                                                 <div className="error-message" role="alert"></div>
                                             </div>
-                                            {/*<div className='mb-4 flex items-center gap-2'>
-                                    <input type='checkbox' className='w-4 h-4 inline-block rounded-full border border-grey flex-no-shrink' onChange={() => setAutoPay(!autoPay)} value={autoPay} />
-                                    <label className='text-gray-600'>Auto Payment</label>
-    </div>*/}
-                                            <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type='button'>
+                                            <div className=' mb-2 flex items-center gap-2'>
+                                                <input type='checkbox' className='w-4 h-4 inline-block rounded-full border border-grey flex-no-shrink' onChange={() => setAutoPay(!autoPay)} value={autoPay} />
+                                                <label className='text-gray-600'>Auto Payment</label>
+                                            </div>
+
+                                            {errorMessage && (
+                                                <div>
+                                                    <label className='text-rose-600'>You need to Check Auto Pay for Further Process.</label>
+                                                </div>
+                                            )}
+                                            <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type='button' className='mt-4'>
                                                 <span id="button-text">
                                                     {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
                                                 </span>

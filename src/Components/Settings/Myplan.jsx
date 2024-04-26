@@ -331,7 +331,7 @@ const Myplan = () => {
                 <TrialPlan setTrialPlanModal={setTrialPlanModal} trialPlanModel={trialPlanModel} handleSaveTrialPlan={handleSaveTrialPlan} setTrialData={setTrialData} trialData={trialData} />
             )}
             {purchasePlan && (
-                <PurchaseUserPlan setPurchasePlan={setPurchasePlan} purchasePlan={purchasePlan} selectPlan={selectPlan} />
+                <PurchaseUserPlan setPurchasePlan={setPurchasePlan} purchasePlan={purchasePlan} selectPlan={selectPlan} userPlanType=""/>
             )}
         </>
     )

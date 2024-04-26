@@ -110,7 +110,7 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                             </label>
                                         </div>
                                     </div>
-                                    <div className='flex justify-between m-3 items-center'>
+                                    {/*<div className='flex justify-between m-3 items-center'>
                                         <span>
                                             Move 'featured' items to the top of category
                                         </span>
@@ -125,8 +125,8 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                                 <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
                                             </label>
                                         </div>
-                                    </div>
-                                    <div className='flex justify-between m-3 items-center'>
+                                        </div>*/}
+                                  {/*  <div className='flex justify-between m-3 items-center'>
                                         <span>
                                             Font Size
                                         </span>
@@ -139,7 +139,7 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                                 )
                                             })}
                                         </select>
-                                    </div>
+                                        </div>*/}
 
                                     <div className='m-3'>
                                         <span className='text-3xl font-medium'>
