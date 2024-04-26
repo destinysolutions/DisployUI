@@ -817,19 +817,35 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
                     className="lg:col-span-3 md:col-span-6 sm:col-span-12 "
                     key={app.app_Id}
                   >
-                    <Link to={`/${app.appURL}`}>
-                      <div className="shadow-md  bg-white rounded-lg text-center py-10">
-                        <img
-                          src={app.appPath}
-                          alt="Logo"
-                          className="cursor-pointer mx-auto h-16 w-16 pb-2"
-                        />
-                        <h4 className="text-size-md font-semibold py-2">
-                          {app.appName}
-                        </h4>
-                        <h4 className="text-sm font-normal ">{app.appUse}</h4>
-                      </div>
-                    </Link>
+                    {(user?.isTrial === false) && (user?.isActivePlan === false) ? (
+                      <Link>
+                        <div className="shadow-md  bg-white rounded-lg text-center py-10">
+                          <img
+                            src={app.appPath}
+                            alt="Logo"
+                            className="cursor-pointer mx-auto h-16 w-16 pb-2"
+                          />
+                          <h4 className="text-size-md font-semibold py-2">
+                            {app.appName}
+                          </h4>
+                          <h4 className="text-sm font-normal">{app.appUse}</h4>
+                        </div>
+                      </Link>
+                    ) : (
+                      <Link to={`/${app.appURL}`}>
+                        <div className="shadow-md  bg-white rounded-lg text-center py-10">
+                          <img
+                            src={app.appPath}
+                            alt="Logo"
+                            className="cursor-pointer mx-auto h-16 w-16 pb-2"
+                          />
+                          <h4 className="text-size-md font-semibold py-2">
+                            {app.appName}
+                          </h4>
+                          <h4 className="text-sm font-normal ">{app.appUse}</h4>
+                        </div>
+                      </Link>
+                    )}
                   </div>
                 )
             )}

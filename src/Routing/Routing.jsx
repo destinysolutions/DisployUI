@@ -55,9 +55,11 @@ import BookingSlot from "../Components/Screen/SubScreens/BookSlot/BookingSlot";
 import AddSlot from "../Components/Screen/SubScreens/BookSlot/AddSlot";
 import DigitalMenuBoard from "../Components/Apps/DigitalMenuBoard";
 import DigitalMenuBoardDetail from "../Components/Apps/DigitalMenuBoardDetail";
+import DummyDashboard from "../Components/Common/DummyDashboard";
 
 const Routing = () => {
   const { user, token } = useSelector((state) => state.root.auth);
+  console.log('user', user)
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const accessDetails = localStorage.getItem("role_access");
   const handleResize = useCallback(() => {
@@ -99,7 +101,7 @@ const Routing = () => {
         setSidebarOpen={setSidebarOpen}
       />
     );
-  if (accessDetails === "USER" && user) {
+  if (accessDetails === "USER" && (user?.isTrial || user?.isActivePlan)) {
     return (
       <BrowserRouter>
         <ErrorBoundary
@@ -585,6 +587,34 @@ const Routing = () => {
         </ErrorBoundary>
       </BrowserRouter>
     );
+  }
+
+  if (accessDetails === "USER" && (user?.isTrial === false) && (user?.isActivePlan === false)) {
+    return (
+      <BrowserRouter>
+        <ErrorBoundary
+          fallback={ErrorFallback}
+          onReset={() => {
+            window.location.reload();
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
+            <Route path="/register" element={<Navigate to="/dashboard" />} />
+            <Route
+              path="/dashboard"
+              element={
+                <DummyDashboard
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+          </Routes>
+        </ErrorBoundary>
+      </BrowserRouter>
+    )
   }
 
   return (

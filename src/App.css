@@ -319,6 +319,13 @@ select:-webkit-autofill:focus {
   position: relative;
 }
 
+.nav-user-text {
+  cursor: not-allowed;
+  padding: 6px 0;
+  position: relative;
+}
+
+
 .link-items:before {
   background: #0000;
   border-radius: 50px;
@@ -347,6 +354,15 @@ li.p-2.relative.submenu:hover {
   display: flex;
   align-items: center;
   border-radius: 8px;
+}
+
+.nav-user-text a {
+  color: #8e94a9;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  cursor: not-allowed;
 }
 
 img.cursor-pointer.profilePopup {

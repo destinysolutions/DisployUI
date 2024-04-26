@@ -32,7 +32,7 @@ const Sidebar = ({ sidebarOpen }) => {
   };
   const navigation = useNavigate();
   const dispatch = useDispatch();
-
+  const { user, token } = useSelector((state) => state.root.auth);
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(false);
   const [mobileSidebar, setMobileSidebar] = useState(false);
@@ -53,20 +53,20 @@ const Sidebar = ({ sidebarOpen }) => {
       const formattedMenuData = store.data.menu
         .map((item) => ({
           title: item.pageName,
-          cName: "nav-text link-items",
+          cName: (user?.isTrial === false) && (user?.isActivePlan === false) ? "nav-user-text link-items" : "nav-text link-items",
           path: item.path,
           isView: item.isView,
           icon: <img src={item.icon} alt={item.alt} className="w-6" />,
           subMenus:
             item.submenu && item.submenu.length > 0
               ? item.submenu.map((submenu) => ({
-                  title: submenu.pageName,
-                  path: submenu.path,
-                  isView: submenu.isView,
-                  icon: (
-                    <img src={submenu.icon} alt={submenu.alt} className="w-6" />
-                  ),
-                }))
+                title: submenu.pageName,
+                path: submenu.path,
+                isView: submenu.isView,
+                icon: (
+                  <img src={submenu.icon} alt={submenu.alt} className="w-6" />
+                ),
+              }))
               : null,
           sortBy: item.sortBy || 0, // Assuming sortBy is a numeric property
           isActive: false, // You may want to set this property as well
@@ -107,20 +107,20 @@ const Sidebar = ({ sidebarOpen }) => {
       const bottummenuMenuData = store.data.bottummenu
         .map((item) => ({
           title: item.pageName,
-          cName: "nav-text link-items",
+          cName: (user?.isTrial === false) && (user?.isActivePlan === false) ? "nav-user-text link-items" : "nav-text link-items",
           path: item.path,
           icon: <img src={item.icon} alt={item.alt} className="w-6" />,
           isView: item.isView,
           subMenus:
             item.submenu && item.submenu.length > 0
               ? item.submenu.map((submenu) => ({
-                  title: submenu.pageName,
-                  path: submenu.path,
-                  isView: submenu.isView,
-                  icon: (
-                    <img src={submenu.icon} alt={submenu.alt} className="w-6" />
-                  ),
-                }))
+                title: submenu.pageName,
+                path: submenu.path,
+                isView: submenu.isView,
+                icon: (
+                  <img src={submenu.icon} alt={submenu.alt} className="w-6" />
+                ),
+              }))
               : null,
           sortBy: item.sortBy || 0, // Assuming sortBy is a numeric property
           isActive: false, // You may want to set this property as well
@@ -313,7 +313,7 @@ const Sidebar = ({ sidebarOpen }) => {
     }
   }, []);
 
-  
+
 
 
   return (
@@ -353,17 +353,25 @@ const Sidebar = ({ sidebarOpen }) => {
                         className={`${item.cName} ${isActive ? "active" : ""}`}
                       >
                         <div className="flex items-center">
-                          <Link to={item.path}>
-                            <div>{item.icon}</div>
-                            <span className="ml-5">{item.title}</span>
-                          </Link>
+                          {(user?.isTrial === false) && (user?.isActivePlan === false) ? (
+                            <>
+                              <Link>
+                                <div>{item.icon}</div>
+                                <span className="ml-5">{item.title}</span>
+                              </Link>
+                            </>
+                          ) : (
+                            <Link to={item.path}>
+                              <div>{item.icon}</div>
+                              <span className="ml-5">{item.title}</span>
+                            </Link>
+                          )}
 
                           {item.subMenus && (
                             <div className="ml-5 absolute right-0">
                               <FiIcons.FiChevronDown
-                                className={`${
-                                  submenuIsOpen ? "transform rotate-180" : ""
-                                } transition-transform duration-300 text-white `}
+                                className={`${submenuIsOpen ? "transform rotate-180" : ""
+                                  } transition-transform duration-300 text-white `}
                                 onClick={(e) => {
                                   e.preventDefault();
                                   updateSubmenuState(
@@ -385,21 +393,38 @@ const Sidebar = ({ sidebarOpen }) => {
                                   key={subIndex}
                                   className="p-2 relative submenu"
                                 >
-                                  <Link to={submenu.path}>
-                                    <div>{submenu.icon}</div>
-                                    {submenu.title === "New Screen" ? (
-                                      <span
-                                        className="ml-5"
-                                        onClick={() => setShowOTPModal(true)}
-                                      >
-                                        {submenu.title}
-                                      </span>
-                                    ) : (
-                                      <span className="ml-5">
-                                        {submenu.title}
-                                      </span>
-                                    )}
-                                  </Link>
+                                  {(user?.isTrial === false) && (user?.isActivePlan === false) ? (
+                                    <Link>
+                                      <div>{submenu.icon}</div>
+                                      {submenu.title === "New Screen" ? (
+                                        <span
+                                          className="ml-5"
+                                        >
+                                          {submenu.title}
+                                        </span>
+                                      ) : (
+                                        <span className="ml-5">
+                                          {submenu.title}
+                                        </span>
+                                      )}
+                                    </Link>
+                                  ) : (
+                                    <Link to={submenu.path}>
+                                      <div>{submenu.icon}</div>
+                                      {submenu.title === "New Screen" ? (
+                                        <span
+                                          className="ml-5"
+                                          onClick={() => setShowOTPModal(true)}
+                                        >
+                                          {submenu.title}
+                                        </span>
+                                      ) : (
+                                        <span className="ml-5">
+                                          {submenu.title}
+                                        </span>
+                                      )}
+                                    </Link>
+                                  )}
                                 </li>
                               ))}
                           </ul>
@@ -424,14 +449,17 @@ const Sidebar = ({ sidebarOpen }) => {
                         <div
                           className="flex"
                           onClick={() => {
-                            handleChangeRoute(item.title, item.path);
+                            if ((user?.isTrial === false) && (user?.isActivePlan === false)) {
+                              setShowOTPModal(false)
+                            } else {
+                              handleChangeRoute(item.title, item.path);
+                            }
                           }}
                         >
                           <div>{item.icon}</div>
                           <span className="ml-5 text-[#8E94A9]">
                             {item.title}
                           </span>
-
                           {Menus.title}
                         </div>
                       </li>
@@ -445,9 +473,8 @@ const Sidebar = ({ sidebarOpen }) => {
         <div className="menu-bars self-center z-[99] min-h-[60px] max-h-[60px] flex items-center">
           <HiOutlineMenuAlt2
             onClick={handleSidebarToggle}
-            className={` text-SlateBlue text-3xl fixed cursor-pointer ${
-              mobileSidebar && "hidden"
-            } ${mobileSidebar ? "ml-0" : "ml-5"}`}
+            className={` text-SlateBlue text-3xl fixed cursor-pointer ${mobileSidebar && "hidden"
+              } ${mobileSidebar ? "ml-0" : "ml-5"}`}
           />
         </div>
       )}
@@ -476,16 +503,22 @@ const Sidebar = ({ sidebarOpen }) => {
                   return (
                     <li key={index} className={item.cName}>
                       <div className="flex items-center">
-                        <Link to={item.path}>
-                          <div>{item.icon}</div>
-                          <span className="ml-5">{item.title}</span>
-                        </Link>
+                        {(user?.isTrial === false) && (user?.isActivePlan === false) ? (
+                          <Link>
+                            <div>{item.icon}</div>
+                            <span className="ml-5">{item.title}</span>
+                          </Link>
+                        ) : (
+                          <Link to={item.path}>
+                            <div>{item.icon}</div>
+                            <span className="ml-5">{item.title}</span>
+                          </Link>
+                        )}
                         {item.subMenus && (
                           <div className="ml-5 absolute right-0">
                             <FiIcons.FiChevronDown
-                              className={`${
-                                activeSubmenu ? "transform rotate-180" : ""
-                              } transition-transform duration-300 text-white 
+                              className={`${activeSubmenu ? "transform rotate-180" : ""
+                                } transition-transform duration-300 text-white 
                           `}
                               onClick={() => setActiveSubmenu(!activeSubmenu)}
                             />
@@ -496,22 +529,37 @@ const Sidebar = ({ sidebarOpen }) => {
                         <ul className="ml-4 mt-3">
                           {item.subMenus.map((submenu, subIndex) => (
                             <li key={subIndex} className="p-2 relative submenu">
-                              <Link to={submenu.path}>
-                                <div>{submenu.icon}</div>
-                                {submenu.title === "New Screen" ? (
-                                  <span
-                                    className="ml-5"
-                                    onClick={() => {
-                                      setShowOTPModal(true);
-                                      setMobileSidebar(false);
-                                    }}
-                                  >
-                                    {submenu.title}
-                                  </span>
-                                ) : (
-                                  <span className="ml-5">{submenu.title}</span>
-                                )}
-                              </Link>
+                              {(user?.isTrial === false) && (user?.isActivePlan === false) ? (
+                                <Link>
+                                  <div>{submenu.icon}</div>
+                                  {submenu.title === "New Screen" ? (
+                                    <span
+                                      className="ml-5"
+                                    >
+                                      {submenu.title}
+                                    </span>
+                                  ) : (
+                                    <span className="ml-5">{submenu.title}</span>
+                                  )}
+                                </Link>
+                              ) : (
+                                <Link to={submenu.path}>
+                                  <div>{submenu.icon}</div>
+                                  {submenu.title === "New Screen" ? (
+                                    <span
+                                      className="ml-5"
+                                      onClick={() => {
+                                        setShowOTPModal(true);
+                                        setMobileSidebar(false);
+                                      }}
+                                    >
+                                      {submenu.title}
+                                    </span>
+                                  ) : (
+                                    <span className="ml-5">{submenu.title}</span>
+                                  )}
+                                </Link>
+                              )}
                             </li>
                           ))}
                         </ul>
@@ -528,7 +576,11 @@ const Sidebar = ({ sidebarOpen }) => {
                       <div
                         className="flex"
                         onClick={() => {
-                          handleChangeRoute(item.title, item.path);
+                          if ((user?.isTrial === false) && (user?.isActivePlan === false)) {
+                            setShowOTPModal(false)
+                          } else {
+                            handleChangeRoute(item.title, item.path);
+                          }
                         }}
                       >
                         <div>{item.icon}</div>

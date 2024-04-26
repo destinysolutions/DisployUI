@@ -58,15 +58,23 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const handleProfileClick = (e) => {
-    e.stopPropagation();
-    setShowProfileBox(!showProfileBox);
-    setShowNotificationBox(false);
+    if ((user?.isTrial === false) && (user?.isActivePlan === false)) {
+      setShowProfileBox(false);
+    } else {
+      e.stopPropagation();
+      setShowProfileBox(!showProfileBox);
+      setShowNotificationBox(false);
+    }
   };
 
   const handleNotificationClick = (e) => {
-    e.stopPropagation();
-    setShowNotificationBox(!showNotificationBox);
-    setShowProfileBox(false);
+    if ((user?.isTrial === false) && (user?.isActivePlan === false)) {
+      setShowProfileBox(false);
+    } else {
+      e.stopPropagation();
+      setShowNotificationBox(!showNotificationBox);
+      setShowProfileBox(false);
+    }
   };
 
   // useEffect(() => {
@@ -105,7 +113,7 @@ const Navbar = () => {
       <div>
         <div className="flex-col flex">
           <div className="w-full">
-         {/* {user?.isTrial && (
+            {/* {user?.isTrial && (
             <div className="flex items-center justify-center bg-red">
                 <h1 className="font-semibold text-xl">You have {user?.trialDays} Trial Days Remaining</h1>
                 </div>
