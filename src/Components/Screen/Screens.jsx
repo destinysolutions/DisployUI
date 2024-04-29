@@ -18,7 +18,7 @@ import ScreenOTPModal from "./ScreenOTPModal";
 import { RiArrowDownSLine, RiDeleteBin5Line } from "react-icons/ri";
 import Footer from "../Footer";
 
-import { PAYMENT_INTENT_CREATE_REQUEST, SCREEN_DELETE_ALL, SCREEN_GROUP, stripePromise } from "../../Pages/Api";
+import { PAYMENT_INTENT_CREATE_REQUEST, SCREEN_DELETE_ALL, SCREEN_GROUP, SCREEN_STORAGE, stripePromise } from "../../Pages/Api";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -58,6 +58,8 @@ import { round } from "lodash";
 import { loadStripe } from "@stripe/stripe-js";
 import { handlePaymentIntegration } from "../../Redux/PaymentSlice";
 import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import { handleScreenLimit } from "../../Redux/CommonSlice";
+import ScreenStorage from "../Common/ScreenStorage";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -78,7 +80,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     useState(true);
   const [tagsCheckboxClick, setTagsCheckboxClick] = useState(true);
   const [groupCheckboxClick, setGroupCheckboxClick] = useState(true);
-
+  const [screenLimit, setScreenLimit] = useState(false);
   const [locContentVisible, setLocContentVisible] = useState(true);
   const [screenContentVisible, setScreenContentVisible] = useState(true);
   const [statusContentVisible, setStatusContentVisible] = useState(true);
@@ -912,6 +914,30 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setOpenPayment(!openPayment)
   }
 
+  const verifyScreenStorage = () => {
+    let config = {
+      method: "get",
+      url: `${SCREEN_STORAGE}?organizationID=${user?.organizationId}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+    }
+
+    dispatch(handleScreenLimit({ config }))
+      .then((res) => {
+        if (res?.payload?.data === true) {
+          setScreenLimit(true)
+        }else{
+          setShowOTPModal(true)
+        }
+      })
+      .catch((error) => {
+        setScreenLimit(false)
+        console.log('error', error)
+      })
+  }
+
   return (
     <>
       {sidebarload && <Loading />}
@@ -973,7 +999,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           data-for="New Screen"
                           type="button"
                           className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                          onClick={() => setShowOTPModal(true)}
+                          onClick={() => {
+                            verifyScreenStorage()
+                            // setShowOTPModal(true)
+                          }}
                         >
                           <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
                           <ReactTooltip
@@ -1952,8 +1981,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         </Elements>
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
+      {(user?.isTrial === false) && (user?.isActivePlan === false) && (
         <PurchasePlanWarning />
+      )}
+
+      {screenLimit && (
+        <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit}/>
       )}
     </>
   );

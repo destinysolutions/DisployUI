@@ -236,7 +236,7 @@ console.log('user', user)
     const handleKeyPress = (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        verifyScreenStorage();
+        verifyOTP();
       }
     };
     document.addEventListener("keydown", handleKeyPress);
@@ -384,7 +384,7 @@ console.log('user', user)
                     <button
                       className="text-white bg-SlateBlue hover:bg-primary font-semibold lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
                       type="button"
-                      onClick={verifyScreenStorage}
+                      onClick={verifyOTP}
                     >
                       Continue
                     </button>
@@ -402,9 +402,6 @@ console.log('user', user)
                   />
                 )}
 
-                {screenLimit && (
-                  <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit}/>
-                )}
               </div>
             </div>
           </div>
