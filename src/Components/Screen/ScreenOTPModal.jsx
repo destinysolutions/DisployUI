@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { OTP_SCREEN_VERIFY, OTP_VERIFY } from "../../Pages/Api";
+import { OTP_SCREEN_VERIFY, OTP_VERIFY, SCREEN_STORAGE } from "../../Pages/Api";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -14,10 +14,14 @@ import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import disploy_tv_img from "../../images/ScreenImg/disploy-tv-img.png";
 import { useDispatch } from "react-redux";
 import VerifyOTPModal from "./VerifyOTPModal";
+import ScreenStorage from "../Common/ScreenStorage";
+import { handleScreenLimit } from "../../Redux/CommonSlice";
 
 const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const history = useNavigate();
   const [errorMessge, setErrorMessge] = useState(false);
+  const [screenLimit, setScreenLimit] = useState(false);
+
 
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
   const [otpModelValues, setOtpModelValues] = useState([
@@ -54,6 +58,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
 
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
+console.log('user', user)
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
@@ -125,6 +130,31 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const completeOtp = otpValues.join("");
   const completeModelOtp = otpModelValues.join("");
 
+  const verifyScreenStorage = () =>{
+    let config = {
+      method: "get",
+      url: `${SCREEN_STORAGE}?organizationID=${user?.organizationId}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+    }
+
+    dispatch(handleScreenLimit({config}))
+    .then((res)=>{
+      if(res?.payload?.data === true){
+        setScreenLimit(true)
+      }else{
+        verifyOTP()
+      }
+    })
+    .catch((error)=>{
+      setScreenLimit(false)
+      console.log('error', error)
+    })
+  }
+
+
   const verifyOTP = () => {
     let data = JSON.stringify({ otp: completeOtp });
 
@@ -137,7 +167,6 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
       },
       data,
     };
-
     toast.loading("Validating....");
     axios
       .request(config)
@@ -207,7 +236,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
     const handleKeyPress = (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        verifyOTP();
+        verifyScreenStorage();
       }
     };
     document.addEventListener("keydown", handleKeyPress);
@@ -355,7 +384,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
                     <button
                       className="text-white bg-SlateBlue hover:bg-primary font-semibold lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
                       type="button"
-                      onClick={verifyOTP}
+                      onClick={verifyScreenStorage}
                     >
                       Continue
                     </button>
@@ -372,12 +401,18 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
                     errorMessge={errorMessge}
                   />
                 )}
+
+                {screenLimit && (
+                  <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit}/>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
       <div className="opacity-25 fixed inset-0 z-10 bg-black"></div>
+
+     
 
     </>
   );

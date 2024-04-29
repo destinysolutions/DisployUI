@@ -59,6 +59,20 @@ export const handleAllFeatureList = createAsyncThunk(
   }
 );
 
+export const handleScreenLimit = createAsyncThunk(
+  "Common/handleScreenLimit",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      return response.data;
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
 
 const initialState = {
   loading: false,
@@ -69,6 +83,7 @@ const initialState = {
   data: null,
   message: "",
   status: null,
+  screenLimit:false
 };
 
 const CommonSlice = createSlice({
@@ -133,6 +148,20 @@ const CommonSlice = createSlice({
       state.message = action.payload?.message;
     });
     builder.addCase(handleAllFeatureList.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.payload.message;
+      state.message = action.payload?.message;
+    });
+
+    builder.addCase(handleScreenLimit.pending, (state) => {
+      state.status = "loading";
+    });
+    builder.addCase(handleScreenLimit.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.screenLimit = action.payload;
+      state.message = action.payload?.message;
+    });
+    builder.addCase(handleScreenLimit.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload.message;
       state.message = action.payload?.message;

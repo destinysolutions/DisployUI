@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { handleGetAllApps } from "../../../Redux/AppsSlice";
 import axios from "axios";
+import { handleGetScreen } from "../../../Redux/Screenslice";
 
 //for sales revenue chart options
 const SalesOptions = {
@@ -174,7 +175,8 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedScreen, setSelectedScreen] = useState("");
-
+  const [screenList, setScreenList] = useState([]);
+  const [screenDialogOpen,setScreenDialogOpen] = useState(false)
   const [cities, setCities] = useState([]);
   const [showCityStores, setshowCityStores] = useState(false);
   const [selectedStateName, setSelectedStateName] = useState("");
@@ -297,6 +299,11 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
   };
   useEffect(() => {
     dispatch(handleGetAllApps({ token }));
+    dispatch(handleGetScreen({ token })).then((res)=>{
+      if(res?.payload?.status === 200){
+        setScreenList(res?.payload?.data)
+      }
+    });
   }, []);
 
   // Fetch country data from the API
@@ -364,7 +371,11 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
   });
 
   const handleScreenClick = (screen) => {
+    console.log('screen', screen)
     setSelectedScreen(screen);
+
+ const arr =  screenList?.filter((item)=> item?.googleLocation === screen?.location);
+ console.log('arr', arr)
   };
 
   return (
@@ -461,15 +472,21 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
                   }}
                 >
                   <Popup>
-                    <h3 className="flex flex-row gap-1">
-                      <span>Location :</span>
-                      <span>{selectedScreen?.location}</span>
-                    </h3>
-                    <div className="flex flex-col">
-                      <h5 className="flex flex-row gap-2">
-                        <span>Total Screen :</span>
-                        <span>{selectedScreen?.screen}</span>
-                      </h5>
+                    <div className="cursor-pointer"
+                      onClick={() => {
+                        console.log("hello")
+                        setScreenDialogOpen(true)
+                      }}>
+                      <h3 className="flex flex-row gap-1">
+                        <span>Location :</span>
+                        <span>{selectedScreen?.location}</span>
+                      </h3>
+                      <div className="flex flex-col">
+                        <h5 className="flex flex-row gap-2">
+                          <span>Total Screen :</span>
+                          <span>{selectedScreen?.screen}</span>
+                        </h5>
+                      </div>
                     </div>
                   </Popup>
                 </Marker>
