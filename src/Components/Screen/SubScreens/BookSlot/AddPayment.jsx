@@ -5,7 +5,7 @@ import { IoEarthSharp } from "react-icons/io5";
 import { getTimeZoneName, secondsToHMS } from "../../../Common/Common";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { useForm } from "react-hook-form";
-import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { PaymentElement,CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -34,6 +34,8 @@ const AddPayment = ({
   const navigation = useNavigate()
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+  const [autoPay, setAutoPay] = useState(false)
 
   useEffect(() => {
     if (!stripe) {
@@ -79,41 +81,53 @@ const AddPayment = ({
       return;
     }
 
-    setIsLoading(true);
+    if (!autoPay) {
+      setErrorMessage(true)
+    }
 
-    try {
-      const { paymentIntent, error } = await stripe.confirmPayment({
-        elements,
-        redirect: 'if_required'
-      });
+    if (autoPay) {
+      setErrorMessage(false)
+      setIsLoading(true);
+      try {
+        // const { paymentIntent, error } = await stripe.confirmPayment({
+        //   elements,
+        //   redirect: 'if_required'
+        // });
 
-      // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-      //     payment_method: {
-      //         card: elements.getElement(CardElement),
-      //         billing_details: {
-      //             name: userDetails?.firstName ? userDetails?.firstName : "Admin" ,
-      //         },
-      //     },
-      // });
+        // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+        //     payment_method: {
+        //         card: elements.getElement(CardElement),
+        //         billing_details: {
+        //             name: userDetails?.firstName ? userDetails?.firstName : "Admin" ,
+        //         },
+        //     },
+        // });
 
-      if (error) {
-        if (error.type === "card_error" || error.type === "validation_error") {
-          setMessage(error.message);
+        const cardElement = elements.getElement(CardElement);
+        const { paymentMethod, error } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+        });
+
+        if (error) {
+          if (error.type === "card_error" || error.type === "validation_error") {
+            setMessage(error.message);
+          } else {
+            setMessage("An unexpected error occurred.");
+          }
         } else {
-          setMessage("An unexpected error occurred.");
+          // Payment was successful, you can access paymentIntent for confirmation data
+          handlebook(paymentMethod)
+          setPage(page + 1)
+          setMessage("Payment successful!");
         }
-      } else {
-        // Payment was successful, you can access paymentIntent for confirmation data
-        handlebook(paymentIntent)
-        setPage(page + 1)
-        setMessage("Payment successful!");
-      }
 
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error confirming payment:", error);
-      setIsLoading(false);
-      // Handle error, display error message to user, etc.
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error confirming payment:", error);
+        setIsLoading(false);
+        // Handle error, display error message to user, etc.
+      }
     }
   };
 
@@ -271,8 +285,8 @@ const AddPayment = ({
             </div>
                   </div>*/}
 
-          <div id="payment-form" className='Payment'>
-            {/*<CardElement id="payment-element" options={paymentElementOptions} />*/}
+          {/* <div id="payment-form" className='Payment'>
+         <CardElement id="payment-element" options={paymentElementOptions} />
             <PaymentElement id="payment-element" options={paymentElementOptions} />
 
             <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type='button'>
@@ -280,6 +294,34 @@ const AddPayment = ({
                 {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
               </span>
             </button>
+          </div>
+                */}
+
+          <div id="payment-form" className='Payment'>
+            <div className="payment-form-container">
+              <h2 className='mb-3'>Secure Payment</h2>
+              <div className="card-element-container">
+                <CardElement
+                  className="CardElement"
+                  options={paymentElementOptions}
+                />
+                <div className="error-message" role="alert"></div>
+              </div>
+              <div className='mb-2 flex items-center gap-2'>
+                <input type='checkbox' className='w-4 h-4 inline-block rounded-full border border-grey flex-no-shrink' onChange={() => setAutoPay(!autoPay)} value={autoPay} />
+                <label className='text-gray-600'>Auto Payment</label>
+              </div>
+              {errorMessage && (
+                <div>
+                  <label className='text-rose-600'>You need to Check Auto Pay for Further Process.</label>
+                </div>
+              )}
+              <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type='button' className='mt-4'>
+                <span id="button-text">
+                  {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* <div className="flex justify-end">

@@ -526,10 +526,11 @@ const AddSlot = () => {
     setSelectedScreen(screen);
   };
 
-  const handlebook = (paymentIntent) => {
+  const handlebook = (paymentMethod) => {
     let Params = JSON.stringify({
       PaymentDetails : {
-        ...paymentIntent,
+        ...paymentMethod,
+        AutoPay:true,
         type:"Book Slot",
       },
       bookingSlotCustomerID: 0,

@@ -96,6 +96,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetPreview, setAssetPreview] = useState("");
   const [selectedYoutube, setSelectedYoutube] = useState();
+  const [selectedSchedule, setSelectedSchedule] = useState();
+
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const [allGroupScreen, setAllGroupScreen] = useState([]);
   const [editSelectedScreen, setEditSelectedScreen] = useState("");
@@ -201,46 +203,46 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     };
     socket.emit("ScreenConnected", Params);
 
-    if (connection.state === "Disconnected") {
-      connection
-        .start()
-        .then((res) => {
-          console.log("signal connected");
-        })
-        .then(() => {
-          connection
-            .invoke(
-              "ScreenConnected",
-              // store?.data
-              //   ?.map((item) => item?.maciDs)
-              //   .join(",")
-              //   .replace(/^\s+/g, "")
-              macIds
-            )
-            .then(() => {
-              console.log("SignalR method invoked");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
-        });
-    } else {
-      connection
-        .invoke(
-          "ScreenConnected",
-          // store?.data
-          //   ?.map((item) => item?.maciDs)
-          //   .join(",")
-          //   .replace(/^\s+/g, "")
-          macIds
-        )
-        .then(() => {
-          console.log("SignalR method invoked");
-        })
-        .catch((error) => {
-          console.error("Error invoking SignalR method:", error);
-        });
-    }
+    // if (connection.state === "Disconnected") {
+    //   connection
+    //     .start()
+    //     .then((res) => {
+    //       console.log("signal connected");
+    //     })
+    //     .then(() => {
+    //       connection
+    //         .invoke(
+    //           "ScreenConnected",
+    //           // store?.data
+    //           //   ?.map((item) => item?.maciDs)
+    //           //   .join(",")
+    //           //   .replace(/^\s+/g, "")
+    //           macIds
+    //         )
+    //         .then(() => {
+    //           console.log("SignalR method invoked");
+    //         })
+    //         .catch((error) => {
+    //           console.error("Error invoking SignalR method:", error);
+    //         });
+    //     });
+    // } else {
+    //   connection
+    //     .invoke(
+    //       "ScreenConnected",
+    //       // store?.data
+    //       //   ?.map((item) => item?.maciDs)
+    //       //   .join(",")
+    //       //   .replace(/^\s+/g, "")
+    //       macIds
+    //     )
+    //     .then(() => {
+    //       console.log("SignalR method invoked");
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error invoking SignalR method:", error);
+    //     });
+    // }
   };
 
   const closeModal = () => {
@@ -409,32 +411,32 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         macId: screen.macID,
       };
       socket.emit("ScreenConnected", Params);
-      if (connection.state == "Disconnected") {
-        connection
-          .start()
-          .then((res) => {
-            console.log("signal connected");
-          })
-          .then(() => {
-            connection
-              .invoke("ScreenConnected", screen.macID)
-              .then(() => {
-                console.log("SignalR method invoked after Asset update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          });
-      } else {
-        connection
-          .invoke("ScreenConnected", screen.macID)
-          .then(() => {
-            console.log("SignalR method invoked after Asset update");
-          })
-          .catch((error) => {
-            console.error("Error invoking SignalR method:", error);
-          });
-      }
+      // if (connection.state == "Disconnected") {
+      //   connection
+      //     .start()
+      //     .then((res) => {
+      //       console.log("signal connected");
+      //     })
+      //     .then(() => {
+      //       connection
+      //         .invoke("ScreenConnected", screen.macID)
+      //         .then(() => {
+      //           console.log("SignalR method invoked after Asset update");
+      //         })
+      //         .catch((error) => {
+      //           console.error("Error invoking SignalR method:", error);
+      //         });
+      //     });
+      // } else {
+      //   connection
+      //     .invoke("ScreenConnected", screen.macID)
+      //     .then(() => {
+      //       console.log("SignalR method invoked after Asset update");
+      //     })
+      //     .catch((error) => {
+      //       console.error("Error invoking SignalR method:", error);
+      //     });
+      // }
     } else {
       toast.error("Can't Delete This Screen. You Need To Delete Group.");
     }
@@ -494,26 +496,28 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       AssetType: "",
       FilePath: "",
     };
-    if (selectedAsset.assetID) {
+    debugger;
+
+    if (selectedAsset?.assetID) {
       payload.MediaID = selectedAsset.assetID;
       payload.AssetName = selectedAsset.assetName;
       payload.AssetType = selectedAsset.assetType;
       payload.FilePath = selectedAsset.assetFolderPath;
       payload.MediaDetailID = 1;
     }
-    if (selectedComposition.compositionID) {
+    if (selectedComposition?.compositionID) {
       payload.AssetName = selectedComposition.compositionName;
       payload.MediaID = selectedComposition.compositionID;
       payload.AssetType = "composition";
       payload.FilePath = "composition";
       payload.MediaDetailID = 3;
     }
-    if (selectedTextScroll.textScroll_Id) {
+    if (selectedTextScroll?.textScroll_Id) {
       payload.AssetName = selectedTextScroll.instanceName;
       payload.MediaID = selectedTextScroll.textScroll_Id;
       payload.MediaDetailID = 4;
     }
-    if (selectedYoutube.compositionID || selectedYoutube.youtubeId) {
+    if (selectedYoutube?.compositionID || selectedYoutube?.youtubeId) {
       payload.AssetName = selectedYoutube.instanceName;
       payload.MediaID =
         selectedYoutube.compositionID || selectedYoutube.youtubeId;
@@ -523,6 +527,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       payload.MediaDetailID = selectedYoutube.compositionID ? 3 : 5;
     }
 
+    if(selectedSchedule?.scheduleId){
+      payload.AssetName = selectedSchedule?.scheduleName;
+      payload.MediaID = selectedSchedule?.scheduleId;
+      payload.AssetType = "Schedule";
+      payload.FilePath = "Schedule";
+      payload.MediaDetailID = 2;
+    }
     const response = dispatch(groupAssetsInUpdateScreen(payload));
     if (!response) return;
 
@@ -1305,6 +1316,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           selectedComposition={selectedComposition}
           selectedTextScroll={selectedTextScroll}
           selectedYoutube={selectedYoutube}
+          setSelectedSchedule={setSelectedSchedule}
+          selectedSchedule={selectedSchedule}
           selectedAsset={selectedAsset}
           handleSave={handleSave} // save end of the call function confim
         />

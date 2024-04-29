@@ -226,34 +226,34 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               setSelectScreenModal(false);
               setAddScreenModal(false);
             }, 2000);
-            if (connection.state == "Disconnected") {
-              connection
-                .start()
-                .then((res) => {
-                  console.log("signal connected");
-                })
-                .then(() => {
-                  connection
-                    .invoke("ScreenConnected", macids)
-                    .then(() => {
-                      console.log("func. invoked");
-                    })
-                    .catch((err) => {
-                      toast.remove();
-                      toast.error("Something went wrong, try again");
-                    });
-                });
-            } else {
-              connection
-                .invoke("ScreenConnected", macids)
-                .then(() => {
-                  console.log("func. invoked");
-                })
-                .catch((err) => {
-                  toast.remove();
-                  toast.error("Something went wrong, try again");
-                });
-            }
+            // if (connection.state == "Disconnected") {
+            //   connection
+            //     .start()
+            //     .then((res) => {
+            //       console.log("signal connected");
+            //     })
+            //     .then(() => {
+            //       connection
+            //         .invoke("ScreenConnected", macids)
+            //         .then(() => {
+            //           console.log("func. invoked");
+            //         })
+            //         .catch((err) => {
+            //           toast.remove();
+            //           toast.error("Something went wrong, try again");
+            //         });
+            //     });
+            // } else {
+            //   connection
+            //     .invoke("ScreenConnected", macids)
+            //     .then(() => {
+            //       console.log("func. invoked");
+            //     })
+            //     .catch((err) => {
+            //       toast.remove();
+            //       toast.error("Something went wrong, try again");
+            //     });
+            // }
           } catch (error) {
             toast.error("Something went wrong, try again");
             toast.remove();

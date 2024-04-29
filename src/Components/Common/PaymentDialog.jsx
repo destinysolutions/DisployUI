@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { PAYMENT_DETAILS } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
 import { handlePaymentDetails } from '../../Redux/PaymentSlice';
-
+import { IoClose } from "react-icons/io5";
 const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
 
     const { user, userDetails } = useSelector((state) => state.root.auth);
@@ -19,7 +19,8 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
     const navigation = useNavigate()
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-
+    const [errorMessage, setErrorMessage] = useState(false);
+    const [autoPay, setAutoPay] = useState(false)
     useEffect(() => {
         if (!stripe) {
             return;
@@ -64,54 +65,67 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             return;
         }
 
-        setIsLoading(true);
+        if (!autoPay) {
+            setErrorMessage(true)
+        }
 
-        try {
-            const { paymentIntent, error } = await stripe.confirmPayment({
-                elements,
-                redirect: 'if_required'
-            });
+        if (autoPay) {
+            setErrorMessage(false)
+            setIsLoading(true);
+            try {
+                // const { paymentIntent, error } = await stripe.confirmPayment({
+                //     elements,
+                //     redirect: 'if_required'
+                // });
 
-            if (error) {
-                if (error.type === "card_error" || error.type === "validation_error") {
-                    setMessage(error.message);
-                } else {
-                    setMessage("An unexpected error occurred.");
-                }
-            } else {
-                // Payment was successful, you can access paymentIntent for confirmation data
-                setMessage("Payment successful!");
+                const cardElement = elements.getElement(CardElement);
+                const { paymentMethod, error } = await stripe.createPaymentMethod({
+                    type: 'card',
+                    card: cardElement,
+                });
 
-                let params = {
-                    ...paymentIntent,
-                    PaymentType: type,
-                    PaymentValue: PaymentValue,
-                    organizationId: user?.organizationId,
-                    discountCoupon: discountCoupon
-                }
-
-                const config = {
-                    method: "post",
-                    maxBodyLength: Infinity,
-                    url: PAYMENT_DETAILS,
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: authToken,
-                    },
-                    data: JSON.stringify(params),
-                }
-                dispatch(handlePaymentDetails({ config })).then((res) => {
-                    if (res?.payload?.status) {
-                        navigation("/dashboard"); // Navigate to dashboard after processing payment
+                if (error) {
+                    if (error.type === "card_error" || error.type === "validation_error") {
+                        setMessage(error.message);
+                    } else {
+                        setMessage("An unexpected error occurred.");
                     }
-                })
-            }
+                } else {
+                    // Payment was successful, you can access paymentIntent for confirmation data
+                    setMessage("Payment successful!");
 
-            setIsLoading(false);
-        } catch (error) {
-            console.error("Error confirming payment:", error);
-            setIsLoading(false);
-            // Handle error, display error message to user, etc.
+                    let params = {
+                        ...paymentMethod,
+                        PaymentType: type,
+                        PaymentValue: PaymentValue,
+                        organizationId: user?.organizationId,
+                        discountCoupon: discountCoupon,
+                        AutoPay: autoPay,
+                    }
+
+                    const config = {
+                        method: "post",
+                        maxBodyLength: Infinity,
+                        url: PAYMENT_DETAILS,
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: authToken,
+                        },
+                        data: JSON.stringify(params),
+                    }
+                    dispatch(handlePaymentDetails({ config })).then((res) => {
+                        if (res?.payload?.status) {
+                            navigation("/dashboard"); // Navigate to dashboard after processing payment
+                        }
+                    })
+                }
+
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error confirming payment:", error);
+                setIsLoading(false);
+                // Handle error, display error message to user, etc.
+            }
         }
     };
 
@@ -127,7 +141,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                     {/* Modal content */}
                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         {/* Modal header */}
-                        <div className="flex items-center justify-between p-3 md:p-4 border-b rounded-t dark:border-gray-600">
+                        {/*<div className="flex items-center justify-between p-3 md:p-4 border-b rounded-t dark:border-gray-600">
                             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                                 Stripe Payment
                             </h3>
@@ -135,10 +149,10 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                                 className="text-4xl text-primary cursor-pointer"
                                 onClick={() => togglePaymentModal()}
                             />
-                        </div>
+    </div>*/}
                         <div className="p-4 md:p-5">
-                            <div id="payment-form" className='Payment'>
-                               {/* <CardElement id="payment-element" options={paymentElementOptions} />*/}
+                            {/* <div id="payment-form" className='Payment'>
+                              <CardElement id="payment-element" options={paymentElementOptions} />
                                 <PaymentElement id="payment-element" options={paymentElementOptions} />
 
                                 <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type='button'>
@@ -146,6 +160,36 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                                         {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
                                     </span>
                                 </button>
+    </div>*/}
+
+                            <div id="payment-form" className='Payment'>
+                                <div className="text-gray-500 hover:text-gray-700 duration-200 flex justify-end items-center mb-3 cursor-pointer" onClick={() => togglePaymentModal()}>
+                                    <IoClose size={26} />
+                                </div>
+                                <div className="payment-form-container">
+                                    <h2 className='mb-3'>Secure Payment</h2>
+                                    <div className="card-element-container">
+                                        <CardElement
+                                            className="CardElement"
+                                            options={paymentElementOptions}
+                                        />
+                                        <div className="error-message" role="alert"></div>
+                                    </div>
+                                    <div className='mb-2 flex items-center gap-2'>
+                                        <input type='checkbox' className='w-4 h-4 inline-block rounded-full border border-grey flex-no-shrink' onChange={() => setAutoPay(!autoPay)} value={autoPay} />
+                                        <label className='text-gray-600'>Auto Payment</label>
+                                    </div>
+                                    {errorMessage && (
+                                        <div>
+                                            <label className='text-rose-600'>You need to Check Auto Pay for Further Process.</label>
+                                        </div>
+                                    )}
+                                    <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type='button' className='mt-4'>
+                                        <span id="button-text">
+                                            {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 

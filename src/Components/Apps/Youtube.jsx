@@ -133,32 +133,32 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
             macId: macids,
           };
           socket.emit("ScreenConnected", Params);
-          if (connection.state == "Disconnected") {
-            connection
-              .start()
-              .then((res) => {
-                console.log("signal connected");
-              })
-              .then(() => {
-                connection
-                  .invoke("ScreenConnected", macids)
-                  .then(() => {
-                    console.log(" method invoked");
-                  })
-                  .catch((error) => {
-                    console.error("Error invoking SignalR method:", error);
-                  });
-              });
-          } else {
-            connection
-              .invoke("ScreenConnected", macids)
-              .then(() => {
-                console.log(" method invoked");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
+          // if (connection.state == "Disconnected") {
+          //   connection
+          //     .start()
+          //     .then((res) => {
+          //       console.log("signal connected");
+          //     })
+          //     .then(() => {
+          //       connection
+          //         .invoke("ScreenConnected", macids)
+          //         .then(() => {
+          //           console.log(" method invoked");
+          //         })
+          //         .catch((error) => {
+          //           console.error("Error invoking SignalR method:", error);
+          //         });
+          //     });
+          // } else {
+          //   connection
+          //     .invoke("ScreenConnected", macids)
+          //     .then(() => {
+          //       console.log(" method invoked");
+          //     })
+          //     .catch((error) => {
+          //       console.error("Error invoking SignalR method:", error);
+          //     });
+          // }
         }
         setSelectScreenModal(false);
         setAddScreenModal(false);
@@ -195,32 +195,32 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
           macId: maciDs,
         };
         socket.emit("ScreenConnected", Params);
-        if (connection.state == "Disconnected") {
-          connection
-            .start()
-            .then((res) => {
-              console.log("signal connected");
-            })
-            .then(() => {
-              connection
-                .invoke("ScreenConnected", maciDs)
-                .then(() => {
-                  console.log("SignalR method invoked after youtube update");
-                })
-                .catch((error) => {
-                  console.error("Error invoking SignalR method:", error);
-                });
-            });
-        } else {
-          connection
-            .invoke("ScreenConnected", maciDs)
-            .then(() => {
-              console.log("SignalR method invoked after youtube update");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
-        }
+        // if (connection.state == "Disconnected") {
+        //   connection
+        //     .start()
+        //     .then((res) => {
+        //       console.log("signal connected");
+        //     })
+        //     .then(() => {
+        //       connection
+        //         .invoke("ScreenConnected", maciDs)
+        //         .then(() => {
+        //           console.log("SignalR method invoked after youtube update");
+        //         })
+        //         .catch((error) => {
+        //           console.error("Error invoking SignalR method:", error);
+        //         });
+        //     });
+        // } else {
+        //   connection
+        //     .invoke("ScreenConnected", maciDs)
+        //     .then(() => {
+        //       console.log("SignalR method invoked after youtube update");
+        //     })
+        //     .catch((error) => {
+        //       console.error("Error invoking SignalR method:", error);
+        //     });
+        // }
         const updatedInstanceData = youtubeData.filter(
           (instanceData) => instanceData.youtubeId !== youtubeId
         );

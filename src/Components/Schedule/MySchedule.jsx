@@ -227,32 +227,32 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       macId: maciDs.replace(/^\s+/g, ""),
     };
     socket.emit("ScreenConnected", Params);
-    if (connection.state == "Disconnected") {
-      connection
-        .start()
-        .then((res) => {
-          console.log("signal connected");
-        })
-        .then(() => {
-          connection
-            .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ""))
-            .then(() => {
-              console.log("SignalR method invoked after screen update");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
-        });
-    } else {
-      connection
-        .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ""))
-        .then(() => {
-          console.log("SignalR method invoked after screen update");
-        })
-        .catch((error) => {
-          console.error("Error invoking SignalR method:", error);
-        });
-    }
+    // if (connection.state == "Disconnected") {
+    //   connection
+    //     .start()
+    //     .then((res) => {
+    //       console.log("signal connected");
+    //     })
+    //     .then(() => {
+    //       connection
+    //         .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ""))
+    //         .then(() => {
+    //           console.log("SignalR method invoked after screen update");
+    //         })
+    //         .catch((error) => {
+    //           console.error("Error invoking SignalR method:", error);
+    //         });
+    //     });
+    // } else {
+    //   connection
+    //     .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ""))
+    //     .then(() => {
+    //       console.log("SignalR method invoked after screen update");
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error invoking SignalR method:", error);
+    //     });
+    // }
   };
 
   const handelDeleteAllSchedule = () => {
@@ -293,44 +293,44 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         })
       })
 
-      if (connection.state == "Disconnected") {
-        connection
-          .start()
-          .then((res) => {
-            console.log("signal connected");
-          })
-          .then(() => {
-            connection
-              .invoke(
-                "ScreenConnected",
-                schedules
-                  ?.map((item) => item?.maciDs)
-                  .join(",")
-                  .replace(/^\s+/g, "")
-              )
-              .then(() => {
-                console.log("SignalR method invoked after screen update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          });
-      } else {
-        connection
-          .invoke(
-            "ScreenConnected",
-            schedules
-              ?.map((item) => item?.maciDs)
-              .join(",")
-              .replace(/^\s+/g, "")
-          )
-          .then(() => {
-            console.log("SignalR method invoked after screen update");
-          })
-          .catch((error) => {
-            console.error("Error invoking SignalR method:", error);
-          });
-      }
+      // if (connection.state == "Disconnected") {
+      //   connection
+      //     .start()
+      //     .then((res) => {
+      //       console.log("signal connected");
+      //     })
+      //     .then(() => {
+      //       connection
+      //         .invoke(
+      //           "ScreenConnected",
+      //           schedules
+      //             ?.map((item) => item?.maciDs)
+      //             .join(",")
+      //             .replace(/^\s+/g, "")
+      //         )
+      //         .then(() => {
+      //           console.log("SignalR method invoked after screen update");
+      //         })
+      //         .catch((error) => {
+      //           console.error("Error invoking SignalR method:", error);
+      //         });
+      //     });
+      // } else {
+      //   connection
+      //     .invoke(
+      //       "ScreenConnected",
+      //       schedules
+      //         ?.map((item) => item?.maciDs)
+      //         .join(",")
+      //         .replace(/^\s+/g, "")
+      //     )
+      //     .then(() => {
+      //       console.log("SignalR method invoked after screen update");
+      //     })
+      //     .catch((error) => {
+      //       console.error("Error invoking SignalR method:", error);
+      //     });
+      // }
     });
   };
 
@@ -373,40 +373,40 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             setShowActionBox(false);
             dispatch(handleGetAllSchedule({ token }));
           }, 1000);
-          if (connection.state == "Disconnected") {
-            connection
-              .start()
-              .then((res) => {
-                console.log("signal connected");
-              })
-              .then(() => {
-                connection
-                  .invoke("ScreenConnected", macids)
-                  .then(() => {
-                    console.log("func. invoked");
-                    // toast.remove();
-                    // dispatch(handleGetAllSchedule({ token }));
-                  })
-                  .catch((err) => {
-                    toast.remove();
-                    console.log("error from invoke", err);
-                    toast.error("Something went wrong, try again");
-                  });
-              });
-          } else {
-            connection
-              .invoke("ScreenConnected", macids)
-              .then(() => {
-                console.log("func. invoked");
-                // toast.remove();
-                // dispatch(handleGetAllSchedule({ token }));
-              })
-              .catch((err) => {
-                toast.remove();
-                console.log("error from invoke", err);
-                toast.error("Something went wrong, try again");
-              });
-          }
+          // if (connection.state == "Disconnected") {
+          //   connection
+          //     .start()
+          //     .then((res) => {
+          //       console.log("signal connected");
+          //     })
+          //     .then(() => {
+          //       connection
+          //         .invoke("ScreenConnected", macids)
+          //         .then(() => {
+          //           console.log("func. invoked");
+          //           // toast.remove();
+          //           // dispatch(handleGetAllSchedule({ token }));
+          //         })
+          //         .catch((err) => {
+          //           toast.remove();
+          //           console.log("error from invoke", err);
+          //           toast.error("Something went wrong, try again");
+          //         });
+          //     });
+          // } else {
+          //   connection
+          //     .invoke("ScreenConnected", macids)
+          //     .then(() => {
+          //       console.log("func. invoked");
+          //       // toast.remove();
+          //       // dispatch(handleGetAllSchedule({ token }));
+          //     })
+          //     .catch((err) => {
+          //       toast.remove();
+          //       console.log("error from invoke", err);
+          //       toast.error("Something went wrong, try again");
+          //     });
+          // }
           // setSelectScreenModal(false);
           // setAddScreenModal(false);
           // setShowActionBox(false);

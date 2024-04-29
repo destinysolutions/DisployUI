@@ -151,40 +151,40 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           toast.remove();
           navigate("/composition");
         }, 1000);
-        if (connection.state == "Disconnected") {
-          connection
-            .start()
-            .then((res) => {
-              console.log("signal connected");
-            })
-            .then(() => {
-              connection
-                .invoke(
-                  "ScreenConnected",
-                  compositoinDetails?.maciDs.replace(/^\s+/g, "")
-                )
-                .then(() => {
-                  console.log("invoked");
-                  // navigate("/composition");
-                })
-                .catch((error) => {
-                  console.error("Error invoking SignalR method:", error);
-                });
-            });
-        } else {
-          connection
-            .invoke(
-              "ScreenConnected",
-              compositoinDetails?.maciDs.replace(/^\s+/g, "")
-            )
-            .then(() => {
-              console.log("invoked");
-              // navigate("/composition");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
-        }
+        // if (connection.state == "Disconnected") {
+        //   connection
+        //     .start()
+        //     .then((res) => {
+        //       console.log("signal connected");
+        //     })
+        //     .then(() => {
+        //       connection
+        //         .invoke(
+        //           "ScreenConnected",
+        //           compositoinDetails?.maciDs.replace(/^\s+/g, "")
+        //         )
+        //         .then(() => {
+        //           console.log("invoked");
+        //           // navigate("/composition");
+        //         })
+        //         .catch((error) => {
+        //           console.error("Error invoking SignalR method:", error);
+        //         });
+        //     });
+        // } else {
+        //   connection
+        //     .invoke(
+        //       "ScreenConnected",
+        //       compositoinDetails?.maciDs.replace(/^\s+/g, "")
+        //     )
+        //     .then(() => {
+        //       console.log("invoked");
+        //       // navigate("/composition");
+        //     })
+        //     .catch((error) => {
+        //       console.error("Error invoking SignalR method:", error);
+        //     });
+        // }
 
         setSavingLoader(false);
       }

@@ -12,8 +12,6 @@ import {
   handleGetAllScheduleTimezone,
   handleNavigateFromCompositionChannel,
 } from "./Redux/globalStates";
-import { connection } from "./SignalR";
-import { useLocation } from "react-router-dom";
 import io from "socket.io-client";
 
 // export const socket = io.connect("http://108.166.190.137:3002");
@@ -154,30 +152,6 @@ const App = () => {
       socket.emit("SendTvStatus", socket.id)
     };
   }, [socket]);
-
-
-
-  useEffect(() => {
-    if (connection.state == "Disconnected") {
-      connection.start().then((res) => {
-        console.log("signal connected");
-      });
-    }
-    console.log(connection.state);
-
-    // return () => {
-    //   if (connection.state === "Connected") {
-    //     connection
-    //       .stop()
-    //       .then(() => {
-    //         console.log("Connection stopped");
-    //       })
-    //       .catch((error) => {
-    //         console.error("Error stopping connection:", error);
-    //       });
-    //   }
-    // };
-  }, [connection]);
 
   return (
     <>
