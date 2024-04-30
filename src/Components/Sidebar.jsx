@@ -26,6 +26,9 @@ import { useSelector } from "react-redux";
 import { getMenuAll } from "../Redux/SidebarSlice";
 import dashboardIcon from "../images/MenuIcons/dashboard_icon.svg";
 import { BsCalendar2PlusFill } from "react-icons/bs";
+import { handleScreenLimit } from "../Redux/CommonSlice";
+import { SCREEN_STORAGE } from "../Pages/Api";
+import ScreenStorage from "./Common/ScreenStorage";
 const Sidebar = ({ sidebarOpen }) => {
   Sidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -33,11 +36,12 @@ const Sidebar = ({ sidebarOpen }) => {
   const navigation = useNavigate();
   const dispatch = useDispatch();
   const { user, token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(false);
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const [submenuStates, setSubmenuStates] = useState({});
-
+  const [screenLimit, setScreenLimit] = useState(false);
   const [menuData, setMenuData] = useState([]);
   const [menuDataBottummenu, setMenuDataBottummenu] = useState([]);
 
@@ -313,6 +317,30 @@ const Sidebar = ({ sidebarOpen }) => {
     }
   }, []);
 
+  const verifyScreenStorage = () => {
+    let config = {
+      method: "get",
+      url: `${SCREEN_STORAGE}?organizationID=${user?.organizationId}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+    }
+
+    dispatch(handleScreenLimit({ config }))
+      .then((res) => {
+        if (res?.payload?.data === true) {
+          setScreenLimit(true)
+        } else {
+          setShowOTPModal(true);
+          setMobileSidebar(false);
+        }
+      })
+      .catch((error) => {
+        setScreenLimit(false)
+        console.log('error', error)
+      })
+  }
 
 
 
@@ -414,7 +442,9 @@ const Sidebar = ({ sidebarOpen }) => {
                                       {submenu.title === "New Screen" ? (
                                         <span
                                           className="ml-5"
-                                          onClick={() => setShowOTPModal(true)}
+                                          onClick={() => {
+                                            verifyScreenStorage()
+                                          }}
                                         >
                                           {submenu.title}
                                         </span>
@@ -549,8 +579,7 @@ const Sidebar = ({ sidebarOpen }) => {
                                     <span
                                       className="ml-5"
                                       onClick={() => {
-                                        setShowOTPModal(true);
-                                        setMobileSidebar(false);
+                                        verifyScreenStorage()
                                       }}
                                     >
                                       {submenu.title}
@@ -597,6 +626,10 @@ const Sidebar = ({ sidebarOpen }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {screenLimit && (
+        <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit} />
       )}
       {/* mobile screen sidebar end */}
     </>
