@@ -329,7 +329,7 @@ const Sidebar = ({ sidebarOpen }) => {
 
     dispatch(handleScreenLimit({ config }))
       .then((res) => {
-        if (res?.payload?.data === true) {
+        if (res?.payload?.data === false) {
           setScreenLimit(true)
         } else {
           setShowOTPModal(true);

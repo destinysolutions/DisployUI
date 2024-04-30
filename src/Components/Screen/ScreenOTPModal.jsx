@@ -130,31 +130,6 @@ console.log('user', user)
   const completeOtp = otpValues.join("");
   const completeModelOtp = otpModelValues.join("");
 
-  const verifyScreenStorage = () =>{
-    let config = {
-      method: "get",
-      url: `${SCREEN_STORAGE}?organizationID=${user?.organizationId}`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authToken,
-      },
-    }
-
-    dispatch(handleScreenLimit({config}))
-    .then((res)=>{
-      if(res?.payload?.data === true){
-        setScreenLimit(true)
-      }else{
-        verifyOTP()
-      }
-    })
-    .catch((error)=>{
-      setScreenLimit(false)
-      console.log('error', error)
-    })
-  }
-
-
   const verifyOTP = () => {
     let data = JSON.stringify({ otp: completeOtp });
 
