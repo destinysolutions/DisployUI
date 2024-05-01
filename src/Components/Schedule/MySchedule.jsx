@@ -645,7 +645,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       )}
 
-                      {permissions.isDelete && (
+                      {permissions.isDelete && sortedAndPaginatedData?.length > 0 && (
                         <button
                           data-tip
                           data-for="Select All"

@@ -5,7 +5,6 @@ import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 const AddEditRetailer = ({
   heading,
   toggleModal,
-  loading,
   formik,
   showPassword,
   setShowPassword,

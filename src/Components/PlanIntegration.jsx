@@ -203,7 +203,7 @@ const PlanIntegration = () => {
                                         className="flex flex-col gap-2 h-full"
                                     >
 
-                                        <div class="grid grid-cols-2 gap-2 my-2 border-b border-gray">
+                                        <div className="grid grid-cols-2 gap-2 my-2 border-b border-gray">
                                             <div className='flex flex-col'>
                                                 <label
                                                     htmlFor="name"

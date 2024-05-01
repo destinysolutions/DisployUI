@@ -6,15 +6,19 @@ import { verifyDiscountCoupon } from '../../Redux/AdminSettingSlice';
 import { useDispatch } from 'react-redux';
 import PlanPurchaseModel from './PlanPurchaseModel';
 import { Elements } from '@stripe/react-stripe-js';
+import { useSelector } from 'react-redux';
+import TalkToSaleDialog from './TalkToSaleDialog';
 
-const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan ,userPlanType}) => {
+const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanType, myplan, setSelectPlan }) => {
     const dispatch = useDispatch();
+    const { token, user } = useSelector((state) => state.root.auth);
     const [Screen, setScreen] = useState(1);
     const [showDiscount, setShowDiscount] = useState(false);
     const [showError, setShowError] = useState(false)
     const [discountCoupon, setDiscountCoupon] = useState("")
     const [clientSecret, setClientSecret] = useState("");
-    const [openPayment,setOpenPayment] = useState(false)
+    const [openPayment, setOpenPayment] = useState(false)
+    const [TalkToSale,setTalkToSale] = useState(false)
     const TotalPrice = Screen <= 1 ? selectPlan?.planPrice : ((Screen * selectPlan?.planPrice))
 
     const appearance = {
@@ -26,7 +30,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan ,userPlanT
     };
 
     const handleCreate = () => {
-
+        
 
         const params = {
             "items": {
@@ -81,18 +85,18 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan ,userPlanT
 
     return (
         <>
-        <div
-            id="default-modal"
-            tabIndex="-1"
-            aria-hidden="true"
-            className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
-        >
-            <div className="modal-overlay">
-                <div className="modal">
-                    <div className="relative p-4 lg:w-[500px] md:w-[500px] sm:w-full max-h-full">
-                        {/* Modal content */}
+            <div
+                id="default-modal"
+                tabIndex="-1"
+                aria-hidden="true"
+                className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
+            >
+                <div className="modal-overlay">
+                    {/* <div className="modal">
+                   <div className="relative p-4 lg:w-[500px] md:w-[500px] sm:w-full max-h-full">
+                        
                         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                            {/* Modal header */}
+                            
                             <div className="flex items-center justify-between p-3 md:p-4 border-b rounded-t dark:border-gray-600">
                                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                                     Purchase Plan
@@ -200,19 +204,129 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan ,userPlanT
                                 </div>
                             </div>
                         </div>
+                                            </div>
+                </div>*/}
+
+                    <div className="modal p-4 lg:w-[1200px] md:w-[900px] sm:w-full max-h-full">
+                        <div className="relative w-full">
+                            {/* Modal content */}
+                            <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                {/* Modal header */}
+                                <div className="flex items-center justify-between p-3 md:p-4 border-b rounded-t border-gray-300">
+                                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                        Purchase Plan
+                                    </h3>
+                                    <AiOutlineCloseCircle
+                                        className="text-4xl text-primary cursor-pointer"
+                                        onClick={() => setPurchasePlan(!purchasePlan)}
+                                    />
+                                </div>
+                                <div className="flex flex-wrap my-4">
+                                    {myplan?.map((item) => {
+                                        return (
+                                            <div className='w-full md:w-1/2 lg:w-1/4 xl:w-1/4 px-3 mb-4'>
+                                                <div className="pricing-plan border-t-4 border-solid border-white bg-white text-center max-w-sm mx-auto hover:border-blue-700 transition-colors duration-300">
+                                                    <div className="p-6">
+                                                        <h4 className="font-medium leading-tight text-2xl">{item?.planName}</h4>
+                                                        {/* <p className="text-gray-600">For small projects</p> */}
+                                                    </div>
+                                                {item?.listOfPlansID !== 4 && (
+                                                    <div className="pricing-amount bg-indigo-100 p-6 transition-colors duration-300">
+                                                        <div className=""><span className="text-4xl font-semibold">${item?.planPrice}</span> /Month</div>
+                                                    </div>
+                                                )}
+                                                {item?.listOfPlansID === 4 && (
+                                                    <div className="pricing-amount bg-indigo-100 p-6 transition-colors duration-300">
+                                                    <div className=""><span className="text-4xl font-semibold"></span> +44 (0)20 3808 5585</div>
+                                                </div>
+                                                )}
+                                                    <div className="p-6">
+                                                        {item?.listOfPlansID === 1 && (
+                                                            <ul className="leading-loose">
+                                                                <li>Total Storage :- 500 MB</li>
+                                                                <li>Advance Scheduling</li>
+                                                                <li>Screen Grouping</li>
+                                                                <li>Screen Management</li>
+                                                                <li>Support</li>
+                                                            </ul>
+                                                        )}
+                                                        {item?.listOfPlansID === 2 && (
+                                                            <ul className="leading-loose">
+                                                                <li>Total Storage :- 1 GB</li>
+                                                                <li>Apps (100+ app access)</li>
+                                                                <li>User Audit logs</li>
+                                                                <li>Merge Screen</li>
+                                                                <li>Multilevel Approval</li>
+                                                            </ul>
+                                                        )}
+                                                        {item?.listOfPlansID === 3 && (
+                                                            <ul className="leading-loose">
+                                                                <li>Total Storage :- 2 GB</li>
+                                                                <li>Weather Scheduling</li>
+                                                                <li>Ad Service</li>
+                                                                <li>CRM</li>
+                                                                <li>Report</li>
+                                                            </ul>
+                                                        )}
+                                                        {item?.listOfPlansID === 4 && (
+                                                            <ul className="leading-loose">
+                                                                <li>Total Storage :- 5 GB</li>
+                                                                <li>Unlimited Users</li>
+                                                                <li>User ROLE Permissions</li>
+                                                                <li>Composition</li>
+                                                                <li>Multilevel Approval</li>
+                                                            </ul>
+                                                        )}
+                                                        <div className="pt-4">
+                                                            {user?.planID === item?.listOfPlansID && (
+                                                                <button className="bg-blue-700 cursor-not-allowed hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300">Subscribed</button>
+                                                            )}
+                                                            {user?.planID !== item?.listOfPlansID && item?.listOfPlansID !== 4 &&  (
+                                                                <button
+                                                                    className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
+                                                                    onClick={() => {
+                                                                        setSelectPlan(item)
+                                                                        handleCreate()
+                                                                    }}
+                                                                >
+                                                                    Upgrade
+                                                                </button>
+                                                            )}
+                                                            {user?.planID !== item?.listOfPlansID && item?.listOfPlansID === 4 &&  (
+                                                                <button
+                                                                    className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
+                                                                    onClick={() => {
+                                                                        setSelectPlan(item)
+                                                                        setTalkToSale(true)
+                                                                    }}
+                                                                >
+                                                                    Talk to Sale
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        {openPayment && clientSecret && (
-            <div className="lg:w-[600px] md:w-[600px] w-full h-[30vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg flex items-center justify-center">
-                <>
-                    <Elements options={options} stripe={stripePromise}>
-                        <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment} userPlanType={userPlanType}/>
-                    </Elements>
-                </>
-            </div>
-        )}
+            {openPayment && clientSecret && (
+                <div className="lg:w-[600px] md:w-[600px] w-full h-[30vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg flex items-center justify-center">
+                    <>
+                        <Elements options={options} stripe={stripePromise}>
+                            <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment} userPlanType={userPlanType} />
+                        </Elements>
+                    </>
+                </div>
+            )}
+            {TalkToSale && (
+                <TalkToSaleDialog setTalkToSale={setTalkToSale} TalkToSale={TalkToSale}/>
+            )}
         </>
     )
 }

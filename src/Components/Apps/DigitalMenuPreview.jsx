@@ -51,19 +51,26 @@ const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor }) => {
                                                                     <>
                                                                         <div className='lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-6'>
                                                                             <div className="p-4 border border-gray-300 rounded-md h-full shadow-md">
-                                                                                {item?.features && (
-                                                                                    <div className="text-center text-sm text-gray-600 uppercase font-semibold mb-2">
-                                                                                        <span className="bg-yellow-400 py-1 px-2 rounded-md">Top Feature</span>
-                                                                                    </div>
-                                                                                )}
+                                                                                
 
-                                                                                <div className='flex justify-center'>
+                                                                                <div className='flex justify-center relative w-36 h-36 mx-auto overflow-hidden border border-white rounded-full'>
                                                                                     <img
                                                                                         src={item?.image ? item?.image?.assetFolderPath : digitalMenuLogo}
                                                                                         alt={item?.name}
-                                                                                        className='w-36 h-36 object-cover rounded-md'
+                                                                                        className='w-full object-cover rounded-md'
                                                                                     />
+                                                                                    {item?.soldOut && (
+                                                                                        <div className='sold-out text-center text-2xl bg-rose-600 text-white mt-2 absolute top-0 left-0'>
+                                                                                            Sold Out
+                                                                                        </div>
+                                                                                    )}
                                                                                 </div>
+
+                                                                                <div className='w-full pt-5'>{item?.features && (
+                                                                                    <div className="text-center text-sm text-gray-600 uppercase font-semibold mb-2">
+                                                                                        <span className="bg-yellow-400 py-1 px-2 rounded-md">Top Feature</span>
+                                                                                    </div>
+                                                                                )}</div>
 
                                                                                 <div className='flex justify-between items-center mt-3'>
                                                                                     <span className="text-lg font-semibold">{item?.name}</span>
@@ -71,11 +78,7 @@ const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor }) => {
                                                                                         <span className="text-base font-normal text-gray-600">{customizeData?.CurrencyShow ? "$" : ""}{item?.price ? item?.price : "0.00"}</span>
                                                                                     )}
                                                                                 </div>
-                                                                                {item?.soldOut && (
-                                                                                    <div className='text-center text-2xl text-rose-600 mt-2'>
-                                                                                        Sold Out
-                                                                                    </div>
-                                                                                )}
+                                                                                
                                                                             </div>
                                                                         </div>
 

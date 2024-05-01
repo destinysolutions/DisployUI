@@ -83,7 +83,7 @@ const BillingsPlans = () => {
                 <div className="w-full">
                   <label className="label_top text-sm">Card Number </label>
                   <input
-                    className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                    className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                     type="text"
                     placeholder="Enter Card Number"
                   />
@@ -92,7 +92,7 @@ const BillingsPlans = () => {
                   <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                     <label className="label_top text-sm">Name</label>
                     <input
-                      className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                       type="text"
                       placeholder="Enter Holder Name"
                     />
@@ -100,7 +100,7 @@ const BillingsPlans = () => {
                   <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                     <label className="label_top text-sm">Expiry Date</label>
                     <input
-                      className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                       type="text"
                       placeholder="mm / yyyyExpiry Date"
                     />
@@ -108,7 +108,7 @@ const BillingsPlans = () => {
                   <div className="md:w-1/2 px-3">
                     <label className="label_top text-sm">CVV</label>
                     <input
-                      className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                       type="text"
                       placeholder="Enter CVV"
                     />
@@ -204,7 +204,7 @@ const BillingsPlans = () => {
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                 <label className="label_top text-sm">Company Name</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="Enter Company Name"
                 />
@@ -213,7 +213,7 @@ const BillingsPlans = () => {
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                 <label className="label_top text-sm">Billing Email</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="Enter Billing Email"
                 />
@@ -222,7 +222,7 @@ const BillingsPlans = () => {
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-sm">Tax ID </label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                   type="email"
                   placeholder="Enter Tax ID"
                 />
@@ -232,7 +232,7 @@ const BillingsPlans = () => {
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                 <label className="label_top text-sm">VAT Number</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="Enter VAT Number"
                 />
@@ -240,7 +240,7 @@ const BillingsPlans = () => {
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-sm">Phone Number</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="Enter Phone Number"
                 />
@@ -248,7 +248,7 @@ const BillingsPlans = () => {
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-sm">Billing Address</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="Enter Billing Address"
                 />
@@ -258,7 +258,7 @@ const BillingsPlans = () => {
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-sm">Country</label>
                 <div>
-                  <select className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded">
+                  <select className="w-full bg-gray-200 bg-white border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded">
                     <option>USA</option>
                     <option>India</option>
                     <option>UK</option>
@@ -268,7 +268,7 @@ const BillingsPlans = () => {
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-sm">State</label>
                 <div>
-                  <select className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded">
+                  <select className="w-full bg-gray-200 bg-white border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded">
                     <option>Abuja</option>
                     <option>Enugu</option>
                     <option>Lagos</option>
@@ -278,7 +278,7 @@ const BillingsPlans = () => {
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-sm">Zip Code</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="Enter Billing Address"
                 />

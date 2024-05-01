@@ -33,7 +33,7 @@ import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import moment from "moment";
 import ReactApexChart from "react-apexcharts";
 import { HiBackward } from "react-icons/hi2";
-import { connection } from "../../SignalR";
+// import { connection } from "../../SignalR";
 import { socket } from "../../App";
 import PurchasePlanWarning from "../Common/PurchasePlanWarning";
 

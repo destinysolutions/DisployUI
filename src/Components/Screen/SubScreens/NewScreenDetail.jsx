@@ -48,7 +48,7 @@ import { handleUpdateScreenAsset } from "../../../Redux/Screenslice";
 import { handleGetCompositions } from "../../../Redux/CompositionSlice";
 import { handleGetAllAssets } from "../../../Redux/Assetslice";
 import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
-import { connection } from "../../../SignalR";
+// import { connection } from "../../../SignalR";
 import { socket } from "../../../App";
 import { FaPercentage } from "react-icons/fa";
 import { BiSolidDollarCircle } from "react-icons/bi";
@@ -1062,7 +1062,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           className="flex items-center gap-1"
                         >
                           <input type="radio" name="type" id="select_asset" />
-                          Select Assest
+                          Select Asset
                         </label>
                         <label
                           htmlFor="default_asset"

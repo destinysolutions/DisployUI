@@ -25,7 +25,7 @@ import toast, { CheckmarkIcon } from "react-hot-toast";
 import { MdOutlineModeEdit, MdOutlineResetTv, MdPreview } from "react-icons/md";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import ScreenAssignModal from "../ScreenAssignModal";
-import { connection } from "../../SignalR";
+// import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import {

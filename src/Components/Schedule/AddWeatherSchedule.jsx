@@ -19,7 +19,7 @@ import ReactTooltip from "react-tooltip";
 import ReactPlayer from "react-player";
 import AssetModal from "../Screen/SubScreens/model/ShowMergeAssetModal";
 import { useDispatch } from "react-redux";
-import { connection } from "../../SignalR";
+// import { connection } from "../../SignalR";
 import { socket } from "../../App";
 import { addData, getByIdData, resetStatus } from "../../Redux/WeatherSlice";
 import { GET_SCEDULE_TIMEZONE, SET_TO_SCREEN_WEATHER } from "../../Pages/Api";
@@ -382,7 +382,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   <label className="text-base font-medium">
                     Duration Date:
                   </label>
-                  <div class="grid gap-4 grid-cols-2">
+                  <div className="grid gap-4 grid-cols-2">
                     <div>
                       <label className="text-base font-medium">
                         Start Date:
@@ -414,7 +414,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   <label className="text-base font-medium">
                     Duration Time:
                   </label>
-                  <div class="grid gap-4 grid-cols-2">
+                  <div className="grid gap-4 grid-cols-2">
                     <div>
                       <label className="text-base font-medium">
                         Start Time :
@@ -446,7 +446,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   <label className="text-base font-medium">
                     Temperature Unit :
                   </label>
-                  <div class="grid grid-cols-4 gap-4">
+                  <div className="grid grid-cols-4 gap-4">
                     <div>
                       <input
                         className="block w-full p-2 text-gray-900 border border-gray-300  bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"

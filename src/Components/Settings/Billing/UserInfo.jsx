@@ -213,61 +213,61 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
         <div className="full flex flex-wrap -mx-3 mb-3">
           <div className="w-full px-3 mb-6 md:mb-0">
             <div className="user-pro-details text-base">
-              <table cellpadding="0" class="w-full border-[#D5E3FF] border-t rounded screen-status">
+              <table cellpadding="0" className="w-full border-[#D5E3FF] border-t rounded screen-status">
                   <tbody>
-                      <tr class="border-b border-[#D5E3FF]">
-                          <td class="text-left px-5 py-2">
-                              <label class="text-base font-medium sm:font-base xs:font-base">Company Name:</label>
+                      <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-left px-5 py-2">
+                              <label className="text-base font-medium sm:font-base xs:font-base">Company Name:</label>
                           </td>
-                          <td class="text-left text-base px-5 py-2">Pixinvent</td>
+                          <td className="text-left text-base px-5 py-2">Pixinvent</td>
                       </tr>
-                      <tr class="border-b border-[#D5E3FF]">
-                          <td class="text-left px-5 py-2">
-                              <label class="text-base font-medium sm:font-base xs:font-base">Contact:</label>
+                      <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-left px-5 py-2">
+                              <label className="text-base font-medium sm:font-base xs:font-base">Contact:</label>
                           </td>
-                          <td class="text-left text-base px-5 py-2">+1(609) 933-44-22</td>
+                          <td className="text-left text-base px-5 py-2">+1(609) 933-44-22</td>
                       </tr>
-                      <tr class="border-b border-[#D5E3FF]">
-                          <td class="text-left px-5 py-2">
-                              <label class="text-base font-medium sm:font-base xs:font-base">Billing Email:</label>
+                      <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-left px-5 py-2">
+                              <label className="text-base font-medium sm:font-base xs:font-base">Billing Email:</label>
                           </td>
-                          <td class="text-left text-base px-5 py-2">gertrude@gmail.com</td>
+                          <td className="text-left text-base px-5 py-2">gertrude@gmail.com</td>
                       </tr>
-                      <tr class="border-b border-[#D5E3FF]">
-                          <td class="text-left px-5 py-2">
-                              <label class="text-base font-medium sm:font-base xs:font-base">Country:</label>
+                      <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-left px-5 py-2">
+                              <label className="text-base font-medium sm:font-base xs:font-base">Country:</label>
                           </td>
-                          <td class="text-left text-base px-5 py-2">USA</td>
+                          <td className="text-left text-base px-5 py-2">USA</td>
                       </tr>
-                      <tr class="border-b border-[#D5E3FF]">
-                          <td class="text-left px-5 py-2">
-                              <label class="text-base font-medium sm:font-base xs:font-base">State:</label>
+                      <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-left px-5 py-2">
+                              <label className="text-base font-medium sm:font-base xs:font-base">State:</label>
                           </td>
-                          <td class="text-left text-base px-5 py-2">Queensland</td>
+                          <td className="text-left text-base px-5 py-2">Queensland</td>
                       </tr>
-                      <tr class="border-b border-[#D5E3FF]">
-                          <td class="text-left px-5 py-2">
-                              <label class="text-base font-medium sm:font-base xs:font-base">Tax ID:</label>
+                      <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-left px-5 py-2">
+                              <label className="text-base font-medium sm:font-base xs:font-base">Tax ID:</label>
                           </td>
-                          <td class="text-left text-base px-5 py-2">TAX-875623</td>
+                          <td className="text-left text-base px-5 py-2">TAX-875623</td>
                       </tr>
-                      <tr class="border-b border-[#D5E3FF]">
-                          <td class="text-left px-5 py-2">
-                              <label class="text-base font-medium sm:font-base xs:font-base">VAT Number:</label>
+                      <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-left px-5 py-2">
+                              <label className="text-base font-medium sm:font-base xs:font-base">VAT Number:</label>
                           </td>
-                          <td class="text-left text-base px-5 py-2">SDF754K77</td>
+                          <td className="text-left text-base px-5 py-2">SDF754K77</td>
                       </tr>
-                      <tr class="border-b border-[#D5E3FF]">
-                          <td class="text-left px-5 py-2">
-                              <label class="text-base font-medium sm:font-base xs:font-base">Billing Address:</label>
+                      <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-left px-5 py-2">
+                              <label className="text-base font-medium sm:font-base xs:font-base">Billing Address:</label>
                           </td>
-                          <td class="text-left text-base px-5 py-2">100 Water Plant Avenue, Building 303 Wake Island</td>
+                          <td className="text-left text-base px-5 py-2">100 Water Plant Avenue, Building 303 Wake Island</td>
                       </tr>
-                      <tr class="border-b border-[#D5E3FF]">
-                          <td class="text-left px-5 py-2">
-                              <label class="text-base font-medium sm:font-base xs:font-base">Zip Code:</label>
+                      <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-left px-5 py-2">
+                              <label className="text-base font-medium sm:font-base xs:font-base">Zip Code:</label>
                           </td>
-                          <td class="text-left text-base px-5 py-2">403114</td>
+                          <td className="text-left text-base px-5 py-2">403114</td>
                       </tr>
                   </tbody>
               </table>

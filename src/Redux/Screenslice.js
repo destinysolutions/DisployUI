@@ -145,7 +145,7 @@ export const screenDeactivateActivate = createAsyncThunk("data/AddTagsAndUpdate"
 });
 
 const initialState = {
-  loading: false,
+  loading: true,
   screens: [],
   error: null,
   userScreenLoading: false,

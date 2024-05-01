@@ -28,7 +28,7 @@ import moment from "moment";
 import { GoPencil } from "react-icons/go";
 import toast from "react-hot-toast";
 import ReactPlayer from "react-player";
-import { connection } from "../../SignalR";
+// import { connection } from "../../SignalR";
 import ShowAppsModal from "../ShowAppsModal";
 import { socket } from "../../App";
 import { HiDocumentDuplicate } from "react-icons/hi2";

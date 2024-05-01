@@ -35,7 +35,7 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import ScreenAssignModal from "../ScreenAssignModal";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import { HiBackward } from "react-icons/hi2";
-import { connection } from "../../SignalR";
+// import { connection } from "../../SignalR";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";

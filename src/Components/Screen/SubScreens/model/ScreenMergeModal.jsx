@@ -98,13 +98,13 @@ const ScreenGroupModal = ({
         center
         // styles={{ modal: modalStyle }}
       >
-        <div class="flex items-center justify-between w-full bg-white sticky p-2">
+        <div className="flex items-center justify-between w-full bg-white sticky p-2">
           <h3 className="text-left font-semibold text-2xl sticky top-0 bg-white w-full">
             Select Screens{" "}
           </h3>
         </div>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg screen-section">
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg screen-section">
           <div className="schedual-table bg-white rounded-xl mt-5 px-3">
             <div className="relative overflow-x-auto sc-scrollbar rounded-lg">
               <table

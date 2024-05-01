@@ -11,7 +11,7 @@ import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import { IoMdRefresh } from "react-icons/io";
 import PropTypes from "prop-types";
 import Footer from "../../Footer";
-import { connection } from "../../../SignalR";
+// import { connection } from "../../../SignalR";
 import { AiOutlineCloudUpload, AiOutlinePlusCircle } from "react-icons/ai";
 import ScreenGroupModal from "./ScreenGroupModal";
 import ShowAssetModal from "./model/ShowMergeAssetModal";

@@ -31,7 +31,7 @@ import {
   handleGetTextScrollData,
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
-import { connection } from "../../SignalR";
+// import { connection } from "../../SignalR";
 import { socket } from "../../App";
 import AddEventScheduleEditors from "./AddEventScheduleEditors";
 import { formatDate } from "../Common/Common";

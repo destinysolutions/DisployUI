@@ -42,7 +42,7 @@ import {
   handleGetTextScrollData,
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
-import { connection } from "../../SignalR";
+// import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import { addTagsAndUpdate, resetStatus } from "../../Redux/ScreenGroupSlice";
 import { BiEdit, BiSolidPurchaseTag } from "react-icons/bi";
@@ -1221,7 +1221,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         )}
                       </div>
 
-                      {permissions.isDelete && (
+                      {permissions.isDelete && sortedAndPaginatedData?.length > 0 &&  (
                         <button
                           data-tip
                           data-for="Select All"

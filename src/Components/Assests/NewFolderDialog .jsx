@@ -31,7 +31,7 @@ import ShowAssetImageModal from "./ShowAssetImageModal";
 import moment from "moment";
 import ScreenAssignModal from "../ScreenAssignModal";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { connection } from "../../SignalR";
+// import { connection } from "../../SignalR";
 import PreviewDoc from "./PreviewDoc";
 import { socket } from "../../App";
 import PurchasePlanWarning from "../Common/PurchasePlanWarning";

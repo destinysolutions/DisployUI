@@ -16,6 +16,7 @@ import TrialPlan from './TrialPlan';
 import AddEditPlan from './AddEditPlan';
 import { Switch } from "@material-tailwind/react";
 import PurchaseUserPlan from '../Common/PurchaseUserPlan';
+import ReactTooltip from 'react-tooltip';
 
 const Myplan = () => {
     const { token, user } = useSelector((state) => state.root.auth);
@@ -214,8 +215,8 @@ const Myplan = () => {
                                                     <p>A simple start for Everyone</p>
 
                                                 </div>
-                                                <div className="role-user">
-                                                    <div className="role-user flex justify-center mb-3 font-semibold text-3xl">
+                                                <div>
+                                                    <div className="role-user flex justify-center items-end my-2">
                                                         ${item?.planPrice}
                                                     </div>
                                                     {/*{user?.role === "1" && (
@@ -232,7 +233,7 @@ const Myplan = () => {
                                                         </div>
                                                     )}*/}
 
-                                                    <div className="role-user flex justify-center mt-3 gap-2">
+                                                    <div className="flex justify-center mt-3 gap-2">
                                                         {user?.role === "1" && (
                                                             <div
                                                                 data-tip
@@ -245,6 +246,14 @@ const Myplan = () => {
                                                                 }}
                                                             >
                                                                 <MdOutlineEdit />
+                                                                <ReactTooltip
+                                                                    id="Edit"
+                                                                    place="bottom"
+                                                                    type="warning"
+                                                                    effect="solid"
+                                                                >
+                                                                    <span>Edit</span>
+                                                                </ReactTooltip>
                                                             </div>
                                                         )}
                                                         <div
@@ -254,39 +263,69 @@ const Myplan = () => {
                                                             onClick={() => { setOpenView(true); setSelectPlan(item) }}
                                                         >
                                                             <BsEyeFill />
+                                                            <ReactTooltip
+                                                                id="View"
+                                                                place="bottom"
+                                                                type="warning"
+                                                                effect="solid"
+                                                            >
+                                                                <span>View</span>
+                                                            </ReactTooltip>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             {user?.role !== "1" && user?.planID === item?.listOfPlansID && (
-                                                <div className='flex items-center justify-center'>
+                                                // <div className='flex items-center justify-center'>
+                                                //     <button
+                                                //         type="button"
+                                                //         className="bg-primary cursor-not-allowed text-white rounded-full px-8 py-3"
+                                                //         disabled
+                                                //         // onClick={() => {
+                                                //         //     setSelectPlan(item)
+                                                //         //     setPurchasePlan(true)
+                                                //         // }}
+                                                //     >
+                                                //         Subscribed
+                                                //     </button>
+                                                // </div>
+                                                <div className='flex items-center justify-start mb-3'>
                                                     <button
                                                         type="button"
-                                                        className="bg-primary cursor-not-allowed text-white rounded-full px-8 py-3"
-                                                        disabled
-                                                        // onClick={() => {
-                                                        //     setSelectPlan(item)
-                                                        //     setPurchasePlan(true)
-                                                        // }}
+                                                        className="flex items-center cursor-not-allowed text-primary text-base hover:text-SlateBlue underline"
+                                                    // onClick={() => {
+                                                    //     setSelectPlan(item)
+                                                    //     setPurchasePlan(true)
+                                                    // }}
                                                     >
-                                                        Subscribed
+                                                        <span>Subscribed Plan</span>
+                                                        <i className='ml-2'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                                        </svg></i>
+
+
                                                     </button>
                                                 </div>
                                             )}
 
                                             {user?.role !== "1" && user?.planID !== item?.listOfPlansID && (
-                                                <div className='flex items-center justify-center'>
-                                                <button
-                                                    type="button"
-                                                    className="hover:bg-white cursor-pointer hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
-                                                    onClick={() => {
-                                                        setSelectPlan(item)
-                                                        setPurchasePlan(true)
-                                                    }}
-                                                >
-                                                    Upgrade Plan
-                                                </button>
-                                            </div>
+                                                <div className='w-full'>
+                                                    <button
+                                                        type="button"
+                                                        className="flex items-center cursor-pointer text-primary text-base hover:text-SlateBlue underline"
+                                                        onClick={() => {
+                                                            setSelectPlan(item)
+                                                            setPurchasePlan(true)
+                                                        }}
+                                                    >
+                                                        <span>Upgrade Plan</span>
+                                                        <i className='ml-2'>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                                            </svg>
+                                                        </i>
+                                                    </button>
+                                                </div>
                                             )}
                                         </div>
                                     </div>
@@ -331,7 +370,7 @@ const Myplan = () => {
                 <TrialPlan setTrialPlanModal={setTrialPlanModal} trialPlanModel={trialPlanModel} handleSaveTrialPlan={handleSaveTrialPlan} setTrialData={setTrialData} trialData={trialData} />
             )}
             {purchasePlan && (
-                <PurchaseUserPlan setPurchasePlan={setPurchasePlan} purchasePlan={purchasePlan} selectPlan={selectPlan} userPlanType=""/>
+                <PurchaseUserPlan setPurchasePlan={setPurchasePlan} purchasePlan={purchasePlan} selectPlan={selectPlan} setSelectPlan={setSelectPlan} userPlanType="" myplan={myplan} />
             )}
         </>
     )

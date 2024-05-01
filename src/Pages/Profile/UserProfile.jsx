@@ -89,9 +89,9 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
             </h1>
           </div>
           <div className="mt-5 page-contain">
-            <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+            <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400">
               {data.map(({ icon, label, value }) => (
-                <li class="me-4">
+                <li className="me-4">
                   <a
                     className={`inline-block px-4 py-3 ${activeTab === value ? "text-white bg-primary active" : "border border-primary text-black"} cursor-pointer rounded-full `}
                     aria-current="page"

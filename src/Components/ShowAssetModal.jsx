@@ -19,7 +19,7 @@ import {
   GET_ALL_FILES,
   GET_ALL_SCHEDULE,
 } from "../Pages/Api";
-import { connection } from "../SignalR";
+// import { connection } from "../SignalR";
 import ShowAppsModal from "./ShowAppsModal";
 import {
   handleGetTextScrollData,

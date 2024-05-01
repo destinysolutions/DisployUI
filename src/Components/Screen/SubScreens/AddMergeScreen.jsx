@@ -315,8 +315,8 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         )}
                       </div>
 
-                      <div class="grid grid-cols-2 gap-4 mt-5">
-                        <div class="">
+                      <div className="grid grid-cols-2 gap-4 mt-5">
+                        <div className="">
                           <div>
                             <label className="text-[#5E5E5E] m-2">
                               Select Row
@@ -333,7 +333,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                             />
                           </div>
                         </div>
-                        <div class="">
+                        <div className="">
                           <div>
                             <label className="text-[#5E5E5E] m-2">
                               Select Column

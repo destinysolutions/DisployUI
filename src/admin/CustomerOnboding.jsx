@@ -274,14 +274,14 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
 
               <div className="w-full pl-3 p-2">
                 <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 ">
-                  <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+                  <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
                     <ul
-                      class="flex flex-wrap -mb-px text-sm font-medium text-center"
+                      className="flex flex-wrap -mb-px text-sm font-medium text-center"
                       id="default-tab"
                       data-tabs-toggle="#default-tab-content"
                       role="tablist"
                     >
-                      <li class="me-2" role="presentation">
+                      <li className="me-2" role="presentation">
                         <button
                           className={`inline-block p-4 rounded-t-lg ${activeTab === "users" ? "bg-[##e4e6ff] font-bold border-b-2" : "bg-white"}`}
                           id="users-tab"
@@ -295,7 +295,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </li>
 
-                      <li class="me-2" role="presentation">
+                      <li className="me-2" role="presentation">
                         <button
                           className={`inline-block p-4  rounded-t-lg ${activeTab === "usersRole" ? "bg-[##e4e6ff] font-bold border-b-2" : "bg-white"}`}
                           id="usersRole-tab"
@@ -309,7 +309,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </li>
 
-                      <li class="me-2" role="presentation">
+                      <li className="me-2" role="presentation">
                         <button
                           className={`inline-block p-4  rounded-t-lg ${activeTab === "defaultMedia" ? "bg-[##e4e6ff] font-bold border-b-2" : "bg-white"}`}
                           id="defaultMedia-tab"
@@ -494,7 +494,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                       aria-labelledby="usersRole-tab"
                     >
                       <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
-                        <div class="grid gap-4 grid-cols-2">
+                        <div className="grid gap-4 grid-cols-2">
 
                           <div>
                             <button className="Mediatabshow mediatabactive rounded-tl-md">

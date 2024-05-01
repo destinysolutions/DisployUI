@@ -39,6 +39,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   });
   const [heading, setHeading] = useState("Add");
   const [loading, setLoading] = useState(false);
+  const [load, setLoad] = useState(true)
   const [file, setFile] = useState();
   const [allAdvertisement, setAllAdvertisement] = useState({
     advertisementData: [],
@@ -78,7 +79,6 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     )
     : [];
 
- 
   const fiterAds = Array.isArray(allAdvertisement?.advertisementData)
     ? allAdvertisement?.advertisementData?.filter((item) =>
       Object.values(item).some(
@@ -89,7 +89,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
     )
     : [];
 
-    const totalPages = Math.ceil(fiterAds?.length / itemsPerPage);
+  const totalPages = Math.ceil(fiterAds?.length / itemsPerPage);
 
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
@@ -226,6 +226,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
           advertisementData: response?.payload?.data,
           SearchData: response?.payload?.data,
         });
+        setLoad(false);
       })
       .catch((error) => console.log("error", error));
   };
@@ -398,14 +399,14 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {loading && (
+                  {load && (
                     <tr className="text-left">
                       <td colSpan={8}>
-                        <div className="flex text-center m-5">
+                        <div className="flex text-center justify-center m-5">
                           <svg
                             aria-hidden="true"
                             role="status"
-                            className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                            className="inline w-10 h-10 me-3 text-black animate-spin dark:text-gray-600"
                             viewBox="0 0 100 101"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -424,7 +425,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                     </tr>
                   )}
-                  {!loading &&
+                  {!load &&
                     allAdvertisement?.SearchData &&
                     sortedAndPaginatedAdsData?.length === 0 && (
                       <tr className="text-left">
@@ -437,7 +438,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
                     )}
-                  {!loading &&
+                  {!load &&
                     allAdvertisement?.SearchData &&
                     sortedAndPaginatedAdsData?.length !== 0 && (
                       <>

@@ -474,10 +474,10 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const handleClickOnCancel = () => {
     if (!addAsset.map((e, index) => e[index + 1].length).every((i) => i == 0)) {
       if (window.confirm("Changes are unsaved, Are you sure?")) {
-        navigate("/addcomposition");
+        navigate("/composition");
       }
     } else {
-      navigate("/addcomposition");
+      navigate("/composition");
     }
   };
 

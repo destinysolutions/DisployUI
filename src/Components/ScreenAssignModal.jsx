@@ -4,7 +4,7 @@ import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { SELECT_BY_USER_SCREENDETAIL, SIGNAL_R } from "../Pages/Api";
 import { handleGetScreen } from "../Redux/Screenslice";
-import { connection } from "../SignalR";
+// import { connection } from "../SignalR";
 import toast from "react-hot-toast";
 import moment from "moment";
 import { socket } from "../App";
