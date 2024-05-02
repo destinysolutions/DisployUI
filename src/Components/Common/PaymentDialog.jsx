@@ -73,10 +73,10 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         let params = {
             ...paymentIntent,
             // PaymentType: `${selectPlan?.planName} Plan`,
-            PaymentValue: 1,
+            PaymentValue: PaymentValue,
             AutoPay: true,
             PaymentType: type,
-            ExtraScreen: PaymentValue,
+            ExtraScreen: 0,
             type: type,
             items: PaymentValue,
             amount: totalPrice,
