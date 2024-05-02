@@ -57,7 +57,7 @@ import PaymentDialog from "../Common/PaymentDialog";
 import { round } from "lodash";
 import { loadStripe } from "@stripe/stripe-js";
 import { handlePaymentIntegration } from "../../Redux/PaymentSlice";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import { handleScreenLimit } from "../../Redux/CommonSlice";
 import ScreenStorage from "../Common/ScreenStorage";
 
@@ -891,7 +891,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     const params = {
       "items": {
         "id": "0",
-        "amount": String(round(price * 100))
+        "amount": String(round(price * 100)),
       }
     }
     const config = {
@@ -906,8 +906,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
     dispatch(handlePaymentIntegration({ config })).then((res) => {
       setClientSecret(res?.payload?.clientSecret)
+      setOpenPayment(true)
     })
-    setOpenPayment(true)
   }
 
   const togglePaymentModal = () => {
@@ -1280,7 +1280,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           )}
                           {statusContentVisible && (
                             <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                              status
+                              Status
                             </th>
                           )}
                           {lastSeenContentVisible && (
@@ -1321,7 +1321,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 <svg
                                   aria-hidden="true"
                                   role="status"
-                                  className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                                  className="inline w-10 h-10 me-3 text-black animate-spin dark:text-gray-600"
                                   viewBox="0 0 100 101"
                                   fill="none"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -1852,7 +1852,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             <svg
                               aria-hidden="true"
                               role="status"
-                              className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                              className="inline w-10 h-10 me-3 text-black animate-spin dark:text-gray-600"
                               viewBox="0 0 100 101"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"

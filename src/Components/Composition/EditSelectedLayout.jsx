@@ -34,7 +34,7 @@ import { socket } from "../../App";
 import { HiDocumentDuplicate } from "react-icons/hi2";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { FcOpenedFolder } from "react-icons/fc";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const DEFAULT_IMAGE = "";
 const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {

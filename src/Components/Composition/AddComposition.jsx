@@ -8,7 +8,7 @@ import { SELECT_BY_LIST } from "../../Pages/Api";
 import { useDispatch, useSelector } from "react-redux";
 import { HiArrowLongLeft } from "react-icons/hi2";
 import { handleGetCompositionLayouts } from "../../Redux/CompositionSlice";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
   AddComposition.propTypes = {

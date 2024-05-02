@@ -41,7 +41,7 @@ import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
 import { Pagination } from "../Common/Common";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user } = useSelector((state) => state.root.auth);
@@ -823,27 +823,27 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                         {composition?.compositionName}
                                       </div>
                                     </td>
-                                    <td className="mw-200 text-[#5E5E5E]">
+                                    <td className="mw-200 text-[#5E5E5E] text-center">
                                       {moment(composition?.dateAdded).format(
                                         "LLL"
                                       )}
                                     </td>
-                                    <td className="mw-200 text-[#5E5E5E]">
+                                    <td className="mw-200 text-[#5E5E5E] text-center">
                                       {composition?.resolution}
                                     </td>
-                                    <td className="mw-200 text-[#5E5E5E]">
+                                    <td className="mw-200 text-[#5E5E5E] text-center">
                                       {moment
                                         .utc(composition?.duration * 1000)
                                         .format("HH:mm:ss")}
                                     </td>
-                                    <td className="mw-200 text-[#5E5E5E]">
+                                    <td className="mw-200 text-[#5E5E5E] text-center">
                                       {composition?.screenNames}
                                     </td>
                                     <td
                                       title={
                                         composition?.tags && composition?.tags
                                       }
-                                      className="mw-200 text-[#5E5E5E]"
+                                      className="mw-200 text-[#5E5E5E] text-center"
                                     >
                                       <div className="flex items-center justify-center w-full flex-wrap gap-2 text-[#5E5E5E]">
                                         {(composition?.tags === "" ||

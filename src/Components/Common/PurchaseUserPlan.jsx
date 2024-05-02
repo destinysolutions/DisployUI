@@ -30,8 +30,6 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
     };
 
     const handleCreate = () => {
-        
-
         const params = {
             "items": {
                 "id": "0",
@@ -289,7 +287,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                         handleCreate()
                                                                     }}
                                                                 >
-                                                                    Upgrade
+                                                                    Upgrade Plan
                                                                 </button>
                                                             )}
                                                             {user?.planID !== item?.listOfPlansID && item?.listOfPlansID === 4 &&  (

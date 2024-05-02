@@ -52,7 +52,7 @@ import PreviewDoc from "./PreviewDoc";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -801,7 +801,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         cellPadding={15}
                         className="screen-table w-full text-sm lg:table-auto text-left rtl:text-right text-gray-500 dark:text-gray-400"
                       >
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                           <tr className="items-center border-b border-b-[#E4E6FF] bg-gray-50 table-head-bg">
                             <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                               Preview

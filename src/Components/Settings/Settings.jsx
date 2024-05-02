@@ -26,7 +26,7 @@ import ReactToPrint from "react-to-print";
 import { HiClipboardDocumentList } from "react-icons/hi2";
 import Loading from "../Loading";
 import ScreenAuthorize from "./ScreenAuthorize";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   Settings.propTypes = {

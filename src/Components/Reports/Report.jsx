@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../Footer";
 import ReportDialog from "./ReportDialog";
 import { useSelector } from "react-redux";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const Report = ({ sidebarOpen, setSidebarOpen }) => {
   Report.propTypes = {

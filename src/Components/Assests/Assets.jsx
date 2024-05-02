@@ -56,7 +56,7 @@ import PreviewDoc from "./PreviewDoc";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {

@@ -23,7 +23,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { GET_WEATHER_BY_ID, WEATHER_APP } from "../../Pages/Api";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   let api_key = "41b5176532e682fd8b4cb6a44e3bd1a4";
   const { id } = useParams();

@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { APPROVEDETAILBYID } from "../../Pages/Api";
 import { socket } from "../../App";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 const Approval = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   const {user, token } = useSelector((state) => state.root.auth);

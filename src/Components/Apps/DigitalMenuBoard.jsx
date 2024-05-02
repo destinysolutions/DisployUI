@@ -21,7 +21,7 @@ import toast from 'react-hot-toast';
 import { socket } from '../../App';
 import ScreenAssignModal from '../ScreenAssignModal';
 import { BsInfoLg } from 'react-icons/bs';
-import PurchasePlanWarning from '../Common/PurchasePlanWarning';
+import PurchasePlanWarning from '../Common/PurchasePlan/PurchasePlanWarning';
 
 const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user } = useSelector((state) => state.root.auth);

@@ -1,16 +1,16 @@
-import { CardElement, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import React, { useEffect, useState } from 'react'
-import { AiOutlineCloseCircle } from 'react-icons/ai'
-import { useNavigate } from 'react-router-dom';
-import "../../Styles/PaymentModal.css"
-import { useSelector } from 'react-redux';
-import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
-import { handleCreateSubscription, handlePaymentDetails } from '../../Redux/PaymentSlice';
-import { IoClose } from "react-icons/io5";
-const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
+import { useSelector } from 'react-redux';
+import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS } from '../../../Pages/Api';
+import { handleCreateSubscription, handlePaymentDetails } from '../../../Redux/PaymentSlice';
+import { useNavigate } from 'react-router-dom';
+import { IoClose } from 'react-icons/io5';
+import { handleLogout } from '../../../Redux/Authslice';
 
-    const { user } = useSelector((state) => state.root.auth);
+const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon, selectPlan, TotalPrice, totalScreen }) => {
+    const { user, userDetails } = useSelector((state) => state.root.auth);
+    console.log('user', user)
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
@@ -60,26 +60,15 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
     }
 
     const PaymentDetails = ({ paymentIntent, organizationID }) => {
-        let totalPrice;
-        if (user?.planID === 1) {
-            totalPrice = PaymentValue * 10
-        } else if (user?.planID === 2) {
-            totalPrice = PaymentValue * 17
-        } else if (user?.planID === 2) {
-            totalPrice = PaymentValue * 17
-        } else {
-            totalPrice = PaymentValue * 47
-        }
         let params = {
             ...paymentIntent,
-            // PaymentType: `${selectPlan?.planName} Plan`,
+            PaymentType: `${selectPlan?.planName} Plan`,
             PaymentValue: 1,
             AutoPay: true,
-            PaymentType: type,
-            ExtraScreen: PaymentValue,
-            type: type,
-            items: PaymentValue,
-            amount: totalPrice,
+            ExtraScreen: (totalScreen - 1),
+            type: "Screen",
+            items: totalScreen,
+            amount: TotalPrice,
             organizationId: organizationID,
 
             UserID: organizationID,
@@ -97,37 +86,34 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             url: PAYMENT_DETAILS,
             headers: {
                 "Content-Type": "application/json",
-                Authorization: authToken,
             },
             data: JSON.stringify(params),
         }
         dispatch(handlePaymentDetails({ config })).then((res) => {
             if (res?.payload?.status) {
                 setIsLoading(false);
-                navigation("/dashboard"); // Navigate to dashboard after processing payment
+                dispatch(handleLogout());
+                navigation("/"); // Navigate to dashboard after processing payment
             }
         })
     }
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
         let product;
-        if (type === "Screen" && (user?.planID === 1 || user?.planID === "1")) {
-            product = "prod_Q1wI9ksVDBdRW3"
-        } else if (type === "Screen" && (user?.planID === 2 || user?.planID === "2")) {
-            product = "prod_Q1wITfBepgK1H7"
-        } else if (type === "Screen" && (user?.planID === 3 || user?.planID === "3")) {
-            product = "prod_Q1wJSPx0LoW70n"
-        } else if (type === "Screen" && (user?.planID === 4 || user?.planID === "4")) {
-            product = "prod_Q1wJHaR4iDXNRP"
-        } else if (type === "Storage") {
-            product = "prod_Q1wJcEtb58TKI5"
+        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+            product = "prod_PwkVKbLSFWLFbG"
+        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+            product = "prod_PwkV7yFNwyNMzl"
+        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+            product = "prod_PwkWdO5AkzWyRX"
+        } else {
+            product = "prod_PwkWSDVFcbz4Ui"
         }
 
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
-            quantity: PaymentValue,
         }
 
         let config = {
@@ -136,7 +122,6 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             url: CREATE_SUBSCRIPTION,
             headers: {
                 "Content-Type": "application/json",
-                Authorization: authToken,
             },
             data: JSON.stringify(params),
         }
@@ -148,13 +133,11 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         })
     }
 
-
     const handleSubmit = async (e) => {
 
         if (!stripe || !elements) {
             return;
         }
-
         if (!autoPay) {
             setErrorMessage(true)
         }
@@ -191,7 +174,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                     //     PaymentValue: PaymentValue,
                     //     organizationId: user?.organizationId,
                     //     discountCoupon: discountCoupon,
-                    //     AutoPay: autoPay,
+                    //     AutoPay: true,
                     // }
 
                     // const config = {
@@ -218,7 +201,10 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                 // Handle error, display error message to user, etc.
             }
         }
+
+
     };
+
 
     return (
         <>
@@ -229,29 +215,9 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                 className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
             >
                 <div className="relative p-4 w-full max-w-xl max-h-full">
-                    {/* Modal content */}
                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                        {/* Modal header */}
-                        {/*<div className="flex items-center justify-between p-3 md:p-4 border-b rounded-t dark:border-gray-600">
-                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                Stripe Payment
-                            </h3>
-                            <AiOutlineCloseCircle
-                                className="text-4xl text-primary cursor-pointer"
-                                onClick={() => togglePaymentModal()}
-                            />
-    </div>*/}
-                        <div className="p-4 md:p-5">
-                            {/* <div id="payment-form" className='Payment'>
-                              <CardElement id="payment-element" options={paymentElementOptions} />
-                                <PaymentElement id="payment-element" options={paymentElementOptions} />
 
-                                <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type='button'>
-                                    <span id="button-text">
-                                        {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
-                                    </span>
-                                </button>
-    </div>*/}
+                        <div className="p-4 md:p-5">
 
                             <div id="payment-form" className='Payment'>
                                 <div className="text-gray-500 hover:text-gray-700 duration-200 flex justify-end items-center mb-3 cursor-pointer" onClick={() => togglePaymentModal()}>
@@ -291,4 +257,4 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
     )
 }
 
-export default PaymentDialog
+export default PurchasePayment

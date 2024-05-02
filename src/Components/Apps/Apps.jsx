@@ -14,7 +14,7 @@ import Footer from "../Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { handleGetAllApps } from "../../Redux/AppsSlice";
 import Loading from "../Loading";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const Apps = ({ sidebarOpen, setSidebarOpen }) => {
   Apps.propTypes = {

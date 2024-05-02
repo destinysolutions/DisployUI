@@ -20,7 +20,7 @@ import {
 } from "../../Redux/AppsSlice";
 import { useDispatch } from "react-redux";
 import PreviewAssets from "../Common/PreviewAssets";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 const EventEditor = ({
   isOpen,
   onClose,

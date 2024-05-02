@@ -34,7 +34,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 // import { connection } from "../../SignalR";
 import PreviewDoc from "./PreviewDoc";
 import { socket } from "../../App";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,

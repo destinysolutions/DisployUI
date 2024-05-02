@@ -15,7 +15,7 @@ import Mediareport from './Mediareport';
 import PropTypes from "prop-types";
 import { AUDITREPORT, BILLINGREPORT, CANCELREPORT, MEDIAREPORT, SALESREPORT, UPTIMEREPORT } from '../../Pages/Api';
 import BillingReport from './BillingReport';
-import PurchasePlanWarning from '../Common/PurchasePlanWarning';
+import PurchasePlanWarning from '../Common/PurchasePlan/PurchasePlanWarning';
 const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
     FinalReport.propTypes = {
         sidebarOpen: PropTypes.bool.isRequired,

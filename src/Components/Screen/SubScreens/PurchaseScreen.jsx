@@ -7,17 +7,27 @@ import { verifyDiscountCoupon } from '../../../Redux/AdminSettingSlice';
 import { useDispatch } from 'react-redux';
 
 const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, handlePay, discountCoupon, setDiscountCoupon, showError, setShowError, setDiscount, discount }) => {
-    const { token } = useSelector((s) => s.root.auth);
+    const {user, token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [showDiscount, setShowDiscount] = useState(false);
-    const handleVerify = () => {
+    let planPrice;
 
+    if (user?.planID === 1) {
+        planPrice = 10
+    } else if (user?.planID === 2) {
+        planPrice = 17
+    } else if (user?.planID === 2) {
+        planPrice = 17
+    } else {
+        planPrice = 47
+    }
+    const handleVerify = () => {
         const Params = {
             "discountCode": discountCoupon,
             "featureKey": "Screen",
             "currentDate": new Date().toISOString().split('T')[0],
-            "amount": round((addScreen * 10), 2),
+            "amount": round((addScreen * planPrice), 2),
             "items": addScreen
         }
 
@@ -96,7 +106,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                     <div className='flex items-center justify-between'>
                                         <p>Cost</p>
                                         <div className='flex items-center gap-1'>
-                                            <label>${round((addScreen * 10), 2)}</label>
+                                            <label>${round((addScreen * planPrice), 2)}</label>
                                         </div>
                                     </div>
                                     {discount && (

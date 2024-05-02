@@ -56,7 +56,7 @@ import moment from "moment";
 import { socket } from "../../../App";
 import { getMenuAll, getMenuPermission } from "../../../Redux/SidebarSlice";
 import Loading from "../../Loading";
-import PurchasePlanWarning from "../../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -247,7 +247,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setLoadFirst(true);
+    // setLoadFirst(true);
   };
 
   const handleAccordionClick = (index) => {

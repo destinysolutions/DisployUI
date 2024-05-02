@@ -36,7 +36,7 @@ import Swal from "sweetalert2";
 import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { deletedData, getData } from "../../Redux/WeatherSlice";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();

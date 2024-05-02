@@ -57,7 +57,7 @@ import {
   Screen_Type
 } from "../../Common/Common";
 import OperatingHourModal from "./OperatingHourModal";
-import PurchasePlanWarning from "../../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -79,6 +79,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [tagsData, setTagsData] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
   const [selectedOperatingHour, setSelectedOperatingHour] = useState("");
+  const [OperatingHour, setOperatingHour] = useState("");
+
   const [selectedScreenType, setSelectedScreenType] = useState("");
   const [selectedHours, setSelectedHours] = useState("");
   const [selectedOperatingHourModel, setSelectedOperatingHourModel] = useState(false);
@@ -154,11 +156,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   const toggleModal = () => {
     setSelectedOperatingHourModel(false);
-    setSelectedOperatingHour("");
-    setStartTime(getCurrentTime());
-    setEndTime(getCurrentTime());
-    setSelectedHours("");
-    setSelectedDays(new Array(TotalDay.length).fill(false));
+    // setSelectedOperatingHour("");
+    if(selectedOperatingHour === "Always on"){
+      setStartTime(getCurrentTime());
+      setEndTime(getCurrentTime());
+      setSelectedHours("");
+      setSelectedDays(new Array(TotalDay.length).fill(false));
+    }
   };
 
   const getScreenByid = () => {
@@ -181,8 +185,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
             "Friday",
             "Saturday",
           ];
-          console.log('fetchedData[0]?.screenOperatingHours', fetchedData[0]?.screenOperatingHours)
           const boolArr = daysOfWeek.map((day) => arr.includes(day));
+          setOperatingHour(fetchedData[0]?.screenOperatingHours)
           setSelectedOperatingHour(
             fetchedData[0]?.screenOperatingHours?.operatingType
           );
@@ -1078,12 +1082,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     // });
   };
 
-  // console.log("selected asset",selectedAsset);
-  // console.log("selected comp",selectedComposition);
-  // console.log("selected schedule",selectedSchedule);
-  // console.log("selected apps",selectedApps);
-  // console.log("selected default",selectedDefaultAsset);
-
   const handleDayButtonClick = (index, item) => {
     const newSelectedDays = [...selectedDays];
     newSelectedDays[index] = !selectedDays[index];
@@ -1093,6 +1091,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSaveOperatingHour = () => {
+    setSelectedOperatingHour("Custom");
+    setStartTime(startTime);
+    setEndTime(endTime);
+    setSelectedHours("");
+    setSelectedDays(selectedDays);
     setSelectedOperatingHourModel(false);
   };
 
@@ -1236,21 +1239,27 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   playerData !== undefined &&
                   (Object.values(playerData).includes("Video") ||
                     Object.values(playerData).includes("OnlineVideo")) && (
-                    <ReactPlayer
-                      url={playerData?.fileType}
-                      className={` ${(orientation === 1 &&
-                        "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
-                        (orientation === 2 &&
-                          "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72") ||
-                        (orientation === 3 &&
-                          "rotate180 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
-                        (orientation === 4 &&
-                          "rotate270 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72")
-                        } relative z-20 screenvideoinner`}
-                      controls={true}
-                      playing={true}
-                      loop={true}
-                    />
+                    <div className="flex items-center justify-center">
+                      <div
+                        className={` ${(orientation === 1 &&
+                          "md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
+                          (orientation === 2 &&
+                            "rotate90 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72") ||
+                          (orientation === 3 &&
+                            "rotate180 md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72") ||
+                          (orientation === 4 &&
+                            "rotate270 md:h-[576px] md:w-[576px] sm:h-[384px] sm:w-[384px] w-72 h-72")
+                          } relative z-20`}>
+
+                        <ReactPlayer
+                          url={playerData?.fileType}
+                          className="relative z-20 videoinner object-fill screenvideoinner"
+                          controls={true}
+                          playing={true}
+                          loop={true}
+                        />
+                      </div>
+                    </div>
                   )}
 
                 {!loading &&
@@ -2107,26 +2116,37 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             Operating Hours
                           </p>
                         </td>
-                        <td className="text-left lg:py-3 md:py-2 pt-0">
+                        <td className="text-left lg:py-3 flex items-center gap-3 md:py-2 pt-0">
                           <select
                             className="px-2 py-2 border border-[#D5E3FF] w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-full"
                             value={selectedOperatingHour}
                             onChange={(e) => {
                               if (e.target.value === "Custom") {
-                                setSelectedOperatingHour(e.target.value);
                                 setSelectedOperatingHourModel(true);
                               } else {
                                 setSelectedOperatingHour(e.target.value);
                               }
                             }}
+
                           >
                             {Operating_hours &&
                               Operating_hours?.map((hour) => (
-                                <option value={hour.value} key={hour.value}>
+                                <option
+                                  value={hour.value}
+                                  key={hour.value}
+                                >
                                   {hour.value}
                                 </option>
                               ))}
                           </select>
+                          {selectedOperatingHour === "Custom" && (
+                            <AiOutlinePlusCircle
+                              size={30}
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setSelectedOperatingHourModel(true);
+                              }} />
+                          )}
                         </td>
                       </tr>
                       <tr className="border-b border-[#D5E3FF]">
@@ -2153,7 +2173,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
 
-                     {/* <tr className="border-b border-[#D5E3FF]">
+                      {/* <tr className="border-b border-[#D5E3FF]">
                         <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                             Type

@@ -31,7 +31,8 @@ import Img from "../../images/Assets/img.png";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 // import { connection } from "../../SignalR";
 import { socket } from "../../App";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import YoutubePreview from "./YoutubePreview";
 
 const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetailByID.propTypes = {
@@ -660,40 +661,18 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   </div>
 
-                  {/* Add this container within your JSX */}
-                  {/* Place your video player here */}
-                  {showPreviewPopup && (
-                    <>
-                      <div className="max-h-96 custom-scrollbar">
-                        <div
-                          ref={modalRef}
-                          className="video-preview md:w-[576px] md:h-[324px] sm:w-[384px] sm:h-[216px] lg:w-[960px] lg:h-[540px] w-72 h-72"
-                        >
-                          <ReactPlayer
-                            url={YoutubeVideo}
-                            className="youtube-preview"
-                            // className="w-full relative z-20 previewinner"
-                            muted={isMuted}
-                            // controls={areSubtitlesOn}
-                            controls={true}
-                          />
-                          <span className="absolute -top-4 -right-3 z-40 text-black">
-                            <AiOutlineCloseCircle
-                              onClick={() => setShowPreviewPopup(false)}
-                              className="text-3xl cursor-pointer text-white bg-black rounded-full"
-                            />
-                          </span>
-                        </div>
-                      </div>
-                      <div className="fixed z-30 bg-black/40 inset-0"></div>
-                    </>
-                  )}
+                
+                 
                 </div>
               </div>
             </div>
           </div>
           <Footer />
         </>
+      )}
+
+      {showPreviewPopup && (
+        <YoutubePreview setShowPreviewPopup={setShowPreviewPopup} showPreviewPopup={showPreviewPopup} isMuted={isMuted} YoutubeVideo={YoutubeVideo} />
       )}
 
       {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (

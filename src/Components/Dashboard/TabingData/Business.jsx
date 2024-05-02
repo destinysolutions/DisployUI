@@ -24,6 +24,7 @@ import { useDispatch } from "react-redux";
 import { handleGetAllApps } from "../../../Redux/AppsSlice";
 import axios from "axios";
 import { handleGetScreen } from "../../../Redux/Screenslice";
+import DashboardScreen from "../../Common/DashboardScreen";
 
 //for sales revenue chart options
 const SalesOptions = {
@@ -162,7 +163,7 @@ var StoreOptions = {
   labels: ["Stores"],
 };
 
-const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
+const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen}) => {
   const dispatch = useDispatch();
   const { user, token } = useSelector((s) => s.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);
@@ -176,7 +177,9 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedScreen, setSelectedScreen] = useState("");
   const [screenList, setScreenList] = useState([]);
-  const [screenDialogOpen,setScreenDialogOpen] = useState(false)
+  console.log('screenList', screenList)
+  const [screen, setScreen] = useState([])
+  const [screenDialogOpen, setScreenDialogOpen] = useState(false)
   const [cities, setCities] = useState([]);
   const [showCityStores, setshowCityStores] = useState(false);
   const [selectedStateName, setSelectedStateName] = useState("");
@@ -299,8 +302,8 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
   };
   useEffect(() => {
     dispatch(handleGetAllApps({ token }));
-    dispatch(handleGetScreen({ token })).then((res)=>{
-      if(res?.payload?.status === 200){
+    dispatch(handleGetScreen({ token })).then((res) => {
+      if (res?.payload?.status === 200) {
         setScreenList(res?.payload?.data)
       }
     });
@@ -371,11 +374,9 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
   });
 
   const handleScreenClick = (screen) => {
-    console.log('screen', screen)
     setSelectedScreen(screen);
-
- const arr =  screenList?.filter((item)=> item?.googleLocation === screen?.location);
- console.log('arr', arr)
+    const arr = screenList?.filter((item) => item?.longitude === screen?.longitude && item?.latitude === screen?.latitude);
+    setScreen(arr);
   };
 
   return (
@@ -474,7 +475,6 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
                   <Popup>
                     <div className="cursor-pointer"
                       onClick={() => {
-                        console.log("hello")
                         setScreenDialogOpen(true)
                       }}>
                       <h3 className="flex flex-row gap-1">
@@ -881,6 +881,9 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData }) => {
         </div>
       </div>
       {/* app store end*/}
+      {screenDialogOpen && (
+        <DashboardScreen screenDialogOpen={screenDialogOpen} setScreenDialogOpen={setScreenDialogOpen} screen={screen} sidebarOpen={sidebarOpen} />
+      )}
     </>
   );
 };

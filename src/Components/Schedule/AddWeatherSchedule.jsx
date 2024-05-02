@@ -24,7 +24,7 @@ import { socket } from "../../App";
 import { addData, getByIdData, resetStatus } from "../../Redux/WeatherSlice";
 import { GET_SCEDULE_TIMEZONE, SET_TO_SCREEN_WEATHER } from "../../Pages/Api";
 import axios from "axios";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const {user, token } = useSelector((state) => state.root.auth);

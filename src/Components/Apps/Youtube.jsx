@@ -39,7 +39,7 @@ import { HiBackward } from "react-icons/hi2";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {

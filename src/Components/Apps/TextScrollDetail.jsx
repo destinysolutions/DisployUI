@@ -19,7 +19,7 @@ import {
   handleNavigateFromCompositionChannel,
 } from "../../Redux/globalStates";
 import { useDispatch } from "react-redux";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const {user, token } = useSelector((state) => state.root.auth);

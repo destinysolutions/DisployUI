@@ -11,7 +11,7 @@ import Sidebar from "../Sidebar";
 import Loading from "../Loading";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
-import PurchasePlanWarning from "./PurchasePlanWarning";
+import PurchasePlanWarning from "./PurchasePlan/PurchasePlanWarning";
 import Business from "../Dashboard/TabingData/Business";
 
 
@@ -21,7 +21,6 @@ const DummyDashboard = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
   const { user, token } = useSelector((s) => s.root.auth);
-  console.log('user', user)
   const authToken = `Bearer ${token}`;
   const location = useLocation();
   const message = location?.state?.message || null;

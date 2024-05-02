@@ -13,7 +13,7 @@ import Loading from "../Loading";
 import { USERDASHBOARD } from "../../Pages/Api";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   UserDashboard.propTypes = {
@@ -133,6 +133,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
                   setSidebarLoad={setSidebarLoad}
                   setDashboardData={setDashboardData}
                   dashboardData={dashboardData}
+                  sidebarOpen={sidebarOpen}
                 />
               </div>
             </div>

@@ -24,7 +24,7 @@ import Swal from 'sweetalert2';
 import { HiOutlineViewList } from 'react-icons/hi';
 import { chunkArray, generateAllCategory, generateCategorybyID } from '../Common/Common';
 import Loading from '../Loading';
-import PurchasePlanWarning from '../Common/PurchasePlanWarning';
+import PurchasePlanWarning from '../Common/PurchasePlan/PurchasePlanWarning';
 
 const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const { id } = useParams();
@@ -53,6 +53,9 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     moment(currentDate).format("YYYY-MM-DD hh:mm A")
   );
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
+  const [textColor, setTextColor] = useState("#455670");
+  const [priceColor, setPriceColor] = useState("#1B1B1E");
+
   const [menuName, setMenuName] = useState("");
   const [subtitle, setSubTitle] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
@@ -157,6 +160,8 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
         "isMovetop": customizeData?.Topfeature,
         "fontSize": customizeData?.FontSize,
         "color": selectedColor,
+        "textColor": textColor,
+        "priceColor": priceColor,
         "logo": "string"
       }
     });
@@ -1112,14 +1117,14 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           )}
           {showPreviewPopup && (
-            <DigitalMenuPreview customizeData={customizeData} PreviewData={PreviewData} selectedColor={selectedColor} />
+            <DigitalMenuPreview customizeData={customizeData} PreviewData={PreviewData} selectedColor={selectedColor} textColor={textColor} priceColor={priceColor} />
           )}
         </div>
       </div>
       <Footer />
 
       {showCustomizemodal && (
-        <DigitalMenuCustomize toggleModal={toggleModal} register={register} errors={errors} handleSubmit={handleSubmit} onSubmit={onSubmit} selectedColor={selectedColor} setSelectedColor={setSelectedColor} />
+        <DigitalMenuCustomize toggleModal={toggleModal} register={register} errors={errors} handleSubmit={handleSubmit} onSubmit={onSubmit} selectedColor={selectedColor} setSelectedColor={setSelectedColor} setTextColor={setTextColor} textColor={textColor} setPriceColor={setPriceColor} priceColor={priceColor} />
       )}
       {openModal && (
         <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />

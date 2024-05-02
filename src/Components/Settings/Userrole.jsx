@@ -15,7 +15,7 @@ import { ADD_UPDATE_ORGANIZATION_USER_ROLE } from "../../Pages/Api";
 import { useSelector } from "react-redux";
 import { combineUserroleObjects } from "../Common/Common";
 import WarningDialog from "../Common/WarningDialog";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const Userrole = ({ searchValue, sidebarOpen }) => {
   const { user, token } = useSelector((state) => state.root.auth);

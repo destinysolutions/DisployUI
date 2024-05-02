@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { GrServicePlay } from "react-icons/gr";
 import "../../Styles/Studio.css";
 import Footer from "../Footer";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import { useSelector } from "react-redux";
 
 const DisployStudio = ({ sidebarOpen, setSidebarOpen }) => {

@@ -34,7 +34,7 @@ import { Button, Input } from "@material-tailwind/react";
 import { HiDocumentDuplicate } from "react-icons/hi2";
 import { FcOpenedFolder } from "react-icons/fc";
 import { IoArrowBackSharp } from "react-icons/io5";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const DEFAULT_IMAGE = "";
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {

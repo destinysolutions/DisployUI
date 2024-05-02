@@ -16,6 +16,7 @@ import ShowAppsModal from "../../../ShowAppsModal";
 import { handleGetAllAssets } from "../../../../Redux/Assetslice";
 import {
   handleGetTextScrollData,
+  handleGetWeatherData,
   handleGetYoutubeData,
 } from "../../../../Redux/AppsSlice";
 import { useDispatch } from "react-redux";
@@ -44,7 +45,6 @@ const ShowAssetModal = ({
   selectedSchedule,
   handleSave,
 }) => {
-  console.log('selectedSchedule', selectedSchedule)
   const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
@@ -57,11 +57,11 @@ const ShowAssetModal = ({
   const [searchSchedule, setSearchSchedule] = useState("");
 
   const [appsData, setAppsData] = useState([]);
+  console.log('appsData', appsData)
   const [scheduleList, setScheduleList] = useState({
     SearchData: [],
     list: []
   });
-  console.log('scheduleList', scheduleList)
   const { assets } = useSelector((s) => s.root.asset);
   const { compositions } = useSelector((s) => s.root.composition);
 
@@ -87,13 +87,14 @@ const ShowAssetModal = ({
     // get youtube data and textscroll data
     Promise.all([
       dispatch(handleGetYoutubeData({ token })),
-      dispatch(handleGetTextScrollData({ token }))
+      dispatch(handleGetTextScrollData({ token })),
+      dispatch(handleGetWeatherData({ token }))
     ])
-      .then(([youtubeResponse, textScrollResponse]) => {
+      .then(([youtubeResponse, textScrollResponse, weatherResponse]) => {
         const youtubeData = youtubeResponse?.payload?.data || [];
         const textScrollData = textScrollResponse?.payload?.data || [];
-
-        const combinedData = [...youtubeData, ...textScrollData];
+        const weatherData = weatherResponse?.payload?.data || [];
+        const combinedData = [...youtubeData, ...textScrollData, ...weatherData];
         setAppsData(combinedData);
       })
       .catch(error => {
@@ -396,7 +397,7 @@ const ShowAssetModal = ({
                       Apps
                     </button>
 
-                  {/*  <button
+                    {/*  <button
                       type="button"
                       className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 4 ? "active" : ""
                         }`}
@@ -680,12 +681,12 @@ const ShowAssetModal = ({
                             }}
                           >
                             <td className="p-3 text-left">
-                              {instance.instanceName}
+                              {instance.instanceName ? instance.instanceName : instance.name }
                             </td>
                             <td className="p-3 text-center">
-                              {instance.youTubePlaylist
-                                ? "Youtube Video"
-                                : "Text scroll"}
+                              {instance.youTubePlaylist && "Youtube Video"}
+                              {!instance.youTubePlaylist && !instance.weatherAppId  && "TextScroll"}
+                              {!instance.youTubePlaylist && instance.weatherAppId  && "Weather"}
                             </td>
                           </tr>
                         </tbody>
@@ -745,23 +746,22 @@ const ShowAssetModal = ({
                       scheduleList?.SearchData.map((instance, index) => (
                         <tbody key={index}>
                           <tr
-                          className={`${
-                            Number(selectedSchedule?.scheduleId) === Number(instance?.scheduleId)
-                            ? "bg-[#f3c953]"
-                            : ""
-                            } border-b border-[#eee]`}
-                          onClick={() => {
-                            setSelectedSchedule(instance)
-                          }}
+                            className={`${Number(selectedSchedule?.scheduleId) === Number(instance?.scheduleId)
+                              ? "bg-[#f3c953]"
+                              : ""
+                              } border-b border-[#eee]`}
+                            onClick={() => {
+                              setSelectedSchedule(instance)
+                            }}
                           >
                             <td className="p-3 text-left">
                               {instance.scheduleName}
                             </td>
                             <td className="p-3 text-center">
-                                {moment(instance?.startDate).format('YYYY-MM-DD HH:mm')}
+                              {moment(instance?.startDate).format('YYYY-MM-DD HH:mm')}
                             </td>
                             <td className="p-3 text-center">
-                                {moment(instance?.endDate).format('YYYY-MM-DD HH:mm')}
+                              {moment(instance?.endDate).format('YYYY-MM-DD HH:mm')}
                             </td>
                           </tr>
                         </tbody>

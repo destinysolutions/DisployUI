@@ -36,7 +36,7 @@ import { jwtDecode } from "jwt-decode";
 import { handelPostImageFromDrive } from "../../Redux/Assetslice";
 import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 import ReactTooltip from "react-tooltip";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 {
   /* end of video*/
 }

@@ -35,7 +35,7 @@ import {
 import { socket } from "../../App";
 import AddEventScheduleEditors from "./AddEventScheduleEditors";
 import { formatDate } from "../Common/Common";
-import PurchasePlanWarning from "../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);

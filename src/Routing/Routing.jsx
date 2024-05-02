@@ -59,7 +59,6 @@ import DummyDashboard from "../Components/Common/DummyDashboard";
 
 const Routing = () => {
   const { user, token } = useSelector((state) => state.root.auth);
-  console.log('user', user)
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const accessDetails = localStorage.getItem("role_access");
   const handleResize = useCallback(() => {

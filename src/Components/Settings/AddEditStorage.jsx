@@ -22,7 +22,6 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
             "amount": round((addStorage * 3), 2),
             "items": addStorage
         }
-        console.log('Params', Params)
         let config = {
             method: "post",
             maxBodyLength: Infinity,

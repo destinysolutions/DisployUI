@@ -15,7 +15,7 @@ import { BsSdCard } from "react-icons/bs";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import PurchasePlanWarning from "../../Components/Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../../Components/Common/PurchasePlan/PurchasePlanWarning";
 import { useSelector } from "react-redux";
 import { FaRegMoneyBill1 } from "react-icons/fa6";
 import { RiAdvertisementLine } from "react-icons/ri";

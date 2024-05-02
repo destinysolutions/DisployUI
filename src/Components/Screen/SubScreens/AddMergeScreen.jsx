@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import { saveMergeData } from "../../../Redux/ScreenMergeSlice";
 import { socket } from "../../../App";
 import Loading from "../../Loading";
-import PurchasePlanWarning from "../../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
 
 const selectRow = [
   { value: 1, label: "1 Row" },

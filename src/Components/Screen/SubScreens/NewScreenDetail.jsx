@@ -52,7 +52,7 @@ import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
 import { socket } from "../../../App";
 import { FaPercentage } from "react-icons/fa";
 import { BiSolidDollarCircle } from "react-icons/bi";
-import PurchasePlanWarning from "../../Common/PurchasePlanWarning";
+import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {

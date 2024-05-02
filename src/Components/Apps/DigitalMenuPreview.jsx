@@ -8,7 +8,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
-const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor }) => {
+const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor, priceColor, textColor }) => {
     const progressCircle = useRef(null);
     const progressContent = useRef(null);
     const onAutoplayTimeLeft = (s, time, progress) => {
@@ -51,7 +51,7 @@ const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor }) => {
                                                                     <>
                                                                         <div className='lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-6'>
                                                                             <div className="p-4 border border-gray-300 rounded-md h-full shadow-md">
-                                                                                
+
 
                                                                                 <div className='flex justify-center relative w-36 h-36 mx-auto overflow-hidden border border-white rounded-full'>
                                                                                     <img
@@ -73,12 +73,25 @@ const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor }) => {
                                                                                 )}</div>
 
                                                                                 <div className='flex justify-between items-center mt-3'>
-                                                                                    <span className="text-lg font-semibold">{item?.name}</span>
+                                                                                    <span
+                                                                                        className="text-lg font-semibold"
+                                                                                        style={{
+                                                                                            color: textColor
+                                                                                        }}
+                                                                                    >
+                                                                                        {item?.name}
+                                                                                    </span>
                                                                                     {customizeData?.ShowPrice && (
-                                                                                        <span className="text-base font-normal text-gray-600">{customizeData?.CurrencyShow ? "$" : ""}{item?.price ? item?.price : "0.00"}</span>
+                                                                                        <span
+                                                                                            className="text-base font-normal text-gray-600"
+                                                                                            style={{
+                                                                                                color: priceColor
+                                                                                            }}
+                                                                                        >{customizeData?.CurrencyShow ? "$" : ""}{item?.price ? item?.price : "0.00"}
+                                                                                        </span>
                                                                                     )}
                                                                                 </div>
-                                                                                
+
                                                                             </div>
                                                                         </div>
 

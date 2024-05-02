@@ -44,6 +44,27 @@ export const handleGetTextScrollData = createAsyncThunk(
   }
 );
 
+export const handleGetWeatherData = createAsyncThunk(
+  "apps/handleGetWeatherData",
+  async ({ token }, { rejectWithValue, signal }) => {
+    try {
+      const { data } = await getUrl(`WeatherApp/GetWeatherApp`, {
+        headers: {
+          Authorization: token,
+        },
+        signal,
+      });
+      if (data?.status == 200) return data;
+      else {
+        toast.error(data?.message);
+        return rejectWithValue(data?.message);
+      }
+    } catch (error) {
+      rejectWithValue(error?.response?.data?.message);
+    }
+  }
+);
+
 export const handleGetAllApps = createAsyncThunk(
   "apps/handleGetAllApps",
   async ({ token }, { rejectWithValue, signal }) => {
@@ -100,6 +121,11 @@ const initialState = {
   textScroll: {
     loading: false,
     textScrollData: [],
+    error: null,
+  },
+  weather: {
+    loading: false,
+    weatherData: [],
     error: null,
   },
   DigitalMenu: {
@@ -166,6 +192,32 @@ const AppsSlice = createSlice({
       state.textScroll.loading = false;
       state.textScroll.error = payload ?? null;
       state.textScroll.textScrollData = [];
+    });
+
+    //get weather data
+    builder.addCase(
+      handleGetWeatherData.pending,
+      (state, { payload, meta, type }) => {
+        state.weather.loading = true;
+        state.weather.error = null;
+      }
+    );
+    builder.addCase(
+      handleGetWeatherData.fulfilled,
+      (state, { payload, meta }) => {
+        state.weather.loading = false;
+        state.weather.weatherData = payload?.data ? payload?.data : [];
+        state.allAppsData =
+          payload?.data.length > 0
+            ? [...state.allAppsData, ...payload?.data]
+            : [];
+        state.error = null;
+      }
+    );
+    builder.addCase(handleGetWeatherData.rejected, (state, { payload }) => {
+      state.weather.loading = false;
+      state.weather.error = payload ?? null;
+      state.weather.weatherData = [];
     });
 
     //get all apps

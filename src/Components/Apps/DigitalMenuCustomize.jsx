@@ -3,7 +3,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { Currency, FontSize, ImageLayout, PageArray, Theme } from '../Common/Common';
 import { SketchPicker } from 'react-color';
 
-const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, errors, selectedColor, setSelectedColor }) => {
+const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, errors, selectedColor, setSelectedColor,setTextColor,textColor, setPriceColor, priceColor }) => {
 
     return (
         <>
@@ -141,6 +141,9 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                         </select>
                                         </div>*/}
 
+                                        <div className='border-t border-gray m-3'>
+                                        </div>
+
                                     <div className='m-3'>
                                         <span className='text-3xl font-medium'>
                                             Appearance
@@ -168,6 +171,30 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                             name="Color"
                                             color={selectedColor}
                                             onChange={(color) => setSelectedColor(color.hex)}
+                                            className="sketch-picker-digital-menu"
+                                        />
+                                    </div>
+                                    <div className='flex justify-between m-3 items-center'>
+                                        <span>
+                                            Text Color
+                                        </span>
+                                        <SketchPicker
+                                            id="Color"
+                                            name="Color"
+                                            color={textColor}
+                                            onChange={(color) => setTextColor(color.hex)}
+                                            className="sketch-picker-digital-menu"
+                                        />
+                                    </div>
+                                    <div className='flex justify-between m-3 items-center'>
+                                        <span>
+                                            Price Color
+                                        </span>
+                                        <SketchPicker
+                                            id="Color"
+                                            name="Color"
+                                            color={priceColor}
+                                            onChange={(color) => setPriceColor(color.hex)}
                                             className="sketch-picker-digital-menu"
                                         />
                                     </div>
