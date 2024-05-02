@@ -127,7 +127,6 @@ const Login = () => {
             );
             if (response.status == 200) {
               window.localStorage.setItem("timer", JSON.stringify(18_00));
-
               const userRole = response.role;
               if (userRole == 1) {
                 localStorage.setItem("role_access", "ADMIN");
@@ -137,7 +136,11 @@ const Login = () => {
                 // User login logic
                 const user_ID = response.userID;
                 // localStorage.setItem("userID", JSON.stringify(response));
-                localStorage.setItem("role_access", "USER");
+                // if (response?.userDetails?.isRetailer === false) {
+                  localStorage.setItem("role_access", "USER");
+                // } else {
+                //   localStorage.setItem("role_access", "RETAILER");
+                // }
                 toast.success("Login successfully.");
                 // console.log(response);
                 // navigate("/screens");
@@ -190,6 +193,7 @@ const Login = () => {
           if (res.status == 200) {
             window.localStorage.setItem("timer", JSON.stringify(18_00));
             const userRole = res.role;
+
             if (userRole == 1) {
               localStorage.setItem("role_access", "ADMIN");
               toast.success("Login successfully.");

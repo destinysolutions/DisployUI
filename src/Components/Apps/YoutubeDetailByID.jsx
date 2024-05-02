@@ -675,7 +675,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         <YoutubePreview setShowPreviewPopup={setShowPreviewPopup} showPreviewPopup={showPreviewPopup} isMuted={isMuted} YoutubeVideo={YoutubeVideo} />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
+      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

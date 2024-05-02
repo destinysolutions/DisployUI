@@ -29,7 +29,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   const [messageVisible, setMessageVisible] = useState(false);
   const [sidebarload, setSidebarLoad] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
-  const [warning, setWarning] = useState(false)
+  
   useEffect(() => {
     const hasSeenMessage = localStorage.getItem("hasSeenMessage");
 
@@ -39,13 +39,6 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [message]);
 
-  useEffect(() => {
-    if ((user?.isTrial=== false) && (user?.isActivePlan=== false)) {
-      setWarning(true)
-    } else {
-      setWarning(false)
-    }
-  }, [user])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -144,9 +137,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
         </Suspense>
       )}
 
-      {warning && (
-        <PurchasePlanWarning />
-      )}
+    
     </>
   );
 };

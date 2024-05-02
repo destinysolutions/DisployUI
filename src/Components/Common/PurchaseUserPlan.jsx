@@ -235,7 +235,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                 )}
                                                 {item?.listOfPlansID === 4 && (
                                                     <div className="pricing-amount bg-indigo-100 p-6 transition-colors duration-300">
-                                                    <div className=""><span className="text-4xl font-semibold"></span> +44 (0)20 3808 5585</div>
+                                                    <div className=""><span className="text-3xl font-semibold"> Talk to Sales</span></div>
                                                 </div>
                                                 )}
                                                     <div className="p-6">
@@ -276,10 +276,10 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                             </ul>
                                                         )}
                                                         <div className="pt-4">
-                                                            {user?.planID === item?.listOfPlansID && (
+                                                            {user?.planID === item?.listOfPlansID && user?.planID !== 0 && (
                                                                 <button className="bg-blue-700 cursor-not-allowed hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300">Subscribed</button>
                                                             )}
-                                                            {user?.planID !== item?.listOfPlansID && item?.listOfPlansID !== 4 &&  (
+                                                            {user?.planID !== item?.listOfPlansID && item?.listOfPlansID !== 4 && user?.planID !== 0 && (
                                                                 <button
                                                                     className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
                                                                     onClick={() => {
@@ -290,7 +290,18 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                     Upgrade Plan
                                                                 </button>
                                                             )}
-                                                            {user?.planID !== item?.listOfPlansID && item?.listOfPlansID === 4 &&  (
+                                                            {item?.listOfPlansID !== 4 && user?.planID === 0 && (
+                                                                <button
+                                                                    className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
+                                                                    onClick={() => {
+                                                                        setSelectPlan(item)
+                                                                        handleCreate()
+                                                                    }}
+                                                                >
+                                                                    Buy Plan
+                                                                </button>
+                                                            )}
+                                                            {user?.planID !== item?.listOfPlansID && item?.listOfPlansID === 4 && (
                                                                 <button
                                                                     className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
                                                                     onClick={() => {

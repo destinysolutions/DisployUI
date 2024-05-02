@@ -211,7 +211,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                     // })
                 }
 
-                setIsLoading(false);
+                // setIsLoading(false);
             } catch (error) {
                 console.error("Error confirming payment:", error);
                 setIsLoading(false);

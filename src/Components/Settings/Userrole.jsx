@@ -183,10 +183,10 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
             Roles List
           </h2>
           <button
-            className={`flex ${user?.isisTrial ? "cursor-pointer" : "cursor-not-allowed"} align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
-            disabled={!user?.isisTrial}
+            className={`flex ${((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+            disabled={user?.isTrial && !user?.isActivePlan}
             onClick={() => {
-              if (user?.isisTrial) {
+              if (((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
                 setUserDisable();
                 setShowModal(true);
                 setHeading("Add");
@@ -281,13 +281,13 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
                           <td className="text-center">
                             <div className="flex justify-center gap-4">
                               <>
-                                <div
+                                <button
                                   data-tip
                                   data-for="Edit"
-                                  className={`${user?.isisTrial ? "cursor-pointer" : "cursor-not-allowed"} text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-                                  disabled={!user?.isisTrial}
+                                  className={`${((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+                                  disabled={user?.isTrial && !user?.isActivePlan}
                                   onClick={() => {
-                                    if (user?.isisTrial) {
+                                    if (((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
                                       setHeading("Update")
                                       handleSelectByID(item.orgUserRoleID);
                                     } else {
@@ -304,7 +304,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
                                   >
                                     <span>Edit</span>
                                   </ReactTooltip>
-                                </div>
+                                </button>
                               </>
                             </div>
                           </td>
@@ -419,7 +419,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
         <WarningDialog warning={warning} setWarning={setWarning} />
       )}
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (
+      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

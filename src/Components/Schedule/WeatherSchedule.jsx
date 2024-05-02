@@ -961,7 +961,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (
+      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

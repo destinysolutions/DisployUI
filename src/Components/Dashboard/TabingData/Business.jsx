@@ -179,6 +179,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
   const [screenList, setScreenList] = useState([]);
   console.log('screenList', screenList)
   const [screen, setScreen] = useState([])
+  console.log('screen', screen)
   const [screenDialogOpen, setScreenDialogOpen] = useState(false)
   const [cities, setCities] = useState([]);
   const [showCityStores, setshowCityStores] = useState(false);
@@ -375,7 +376,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
 
   const handleScreenClick = (screen) => {
     setSelectedScreen(screen);
-    const arr = screenList?.filter((item) => item?.longitude === screen?.longitude && item?.latitude === screen?.latitude);
+    const arr = screenList?.filter((item) => item?.longitude === screen?.longituted && item?.latitude === screen?.lattitude);
     setScreen(arr);
   };
 

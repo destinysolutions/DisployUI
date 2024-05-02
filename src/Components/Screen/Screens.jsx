@@ -1981,7 +1981,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         </Elements>
       )}
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (
+      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) &&  (
         <PurchasePlanWarning />
       )}
 

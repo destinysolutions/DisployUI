@@ -1,117 +1,59 @@
-import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
-import Screens from "../Components/Screen/Screens";
-import NewScreenGroup from "../Components/Screen/SubScreens/NewScreenGroup";
-import Screensplayer from "../Components/Screen/SubScreens/Screensplayer";
-import { useState, useEffect, useCallback } from "react";
-import MergeScreen from "../Components/Screen/SubScreens/MergeScreen";
-import AddMergeScreen from "../Components/Screen/SubScreens/AddMergeScreen";
-import NewScreenDetail from "../Components/Screen/SubScreens/NewScreenDetail";
-import Assets from "../Components/Assests/Assets";
-import Apps from "../Components/Apps/Apps";
-import DisployStudio from "../Components/DisployStudio/DisployStudio";
-import Report from "../Components/Reports/Report";
-import EditUser from "../Pages/EditUser";
-import Mediareport from "../Components/Reports/Mediareport";
-import Uptimereport from "../Components/Reports/Uptimereport";
-import Settings from "../Components/Settings/Settings";
-import MySchedule from "../Components/Schedule/MySchedule";
-import AddSchedule from "../Components/Schedule/AddSchedule";
-import WeatherSchedule from "../Components/Schedule/WeatherSchedule";
-import SaveAssignScreenModal from "../Components/Schedule/SaveAssignScreenModal";
-import Approval from "../Components/Approval/Approval";
-import FileUpload from "../Components/Assests/FileUpload";
-import Auditlogreport from "../Components/Reports/Auditlogreport";
-import SalesReport from "../Components/Reports/SalesReport";
-import CancelReport from "../Components/Reports/CancelReport";
-import EventEditor from "../Components/Schedule/EventEditor";
-import Userrole from "../Components/Settings/Userrole";
-import Trash from "../Components/Trash";
-import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
-import LoginContainer from "./AuthRoutes";
-import UserProfile from "../Pages/Profile/UserProfile";
-import AdminContainer from "./AdminRoutes";
-import { useSelector } from "react-redux";
-import Youtube from "../Components/Apps/Youtube";
-import YoutubeDetail from "../Components/Apps/YoutubeDetail";
-import Weather from "../Components/Apps/Weather";
-import TextScroll from "../Components/Apps/TextScroll";
-import TextScrollDetail from "../Components/Apps/TextScrollDetail";
-import WeatherDetail from "../Components/Apps/WeatherDetail";
-import Loading from "../Components/Loading";
-import AddComposition from "../Components/Composition/AddComposition";
-import Composition from "../Components/Composition/Composition";
-import SelectedLayout from "../Components/Composition/SelectedLayout";
-import EditSelectedLayout from "../Components/Composition/EditSelectedLayout";
-import YoutubeDetailByID from "../Components/Apps/YoutubeDetailByID";
-import TextScrollDetailById from "../Components/Apps/TextScrollDetailById";
-import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "../Components/ErrorFallback";
+import React from 'react'
+import { ErrorBoundary } from 'react-error-boundary';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import UserDashboard from '../Components/Dashboard/UserDashboard';
+import Screens from '../Components/Screen/Screens';
+import EditUser from '../Pages/EditUser';
+import UserProfile from '../Pages/Profile/UserProfile';
+import MergeScreen from '../Components/Screen/SubScreens/MergeScreen';
+import AddMergeScreen from '../Components/Screen/SubScreens/AddMergeScreen';
+import NewScreenGroup from '../Components/Screen/SubScreens/NewScreenGroup';
+import AddSlot from '../Components/Screen/SubScreens/BookSlot/AddSlot';
+import BookingSlot from '../Components/Screen/SubScreens/BookSlot/BookingSlot';
+import Screensplayer from '../Components/Screen/SubScreens/Screensplayer';
+import NewScreenDetail from '../Components/Screen/SubScreens/NewScreenDetail';
+import FileUpload from '../Components/Assests/FileUpload';
+import Assets from '../Components/Assests/Assets';
+import Apps from '../Components/Apps/Apps';
+import Youtube from '../Components/Apps/Youtube';
+import YoutubeDetailByID from '../Components/Apps/YoutubeDetailByID';
+import YoutubeDetail from '../Components/Apps/YoutubeDetail';
+import TextScrollDetailById from '../Components/Apps/TextScrollDetailById';
+import TextScrollDetail from '../Components/Apps/TextScrollDetail';
+import Weather from '../Components/Apps/Weather';
+import WeatherDetail from '../Components/Apps/WeatherDetail';
+import TextScroll from '../Components/Apps/TextScroll';
+import DigitalMenuBoard from '../Components/Apps/DigitalMenuBoard';
+import DigitalMenuBoardDetail from '../Components/Apps/DigitalMenuBoardDetail';
+import Composition from '../Components/Composition/Composition';
+import AddComposition from '../Components/Composition/AddComposition';
+import EditSelectedLayout from '../Components/Composition/EditSelectedLayout';
+import DisployStudio from '../Components/DisployStudio/DisployStudio';
+import FinalReport from '../Components/Reports/FinalReport';
+import Uptimereport from '../Components/Reports/Uptimereport';
+import Auditlogreport from '../Components/Reports/Auditlogreport';
+import SalesReport from '../Components/Reports/SalesReport';
+import CancelReport from '../Components/Reports/CancelReport';
+import Mediareport from '../Components/Reports/Mediareport';
+import MySchedule from '../Components/Schedule/MySchedule';
+import WeatherSchedule from '../Components/Schedule/WeatherSchedule';
+import AddSchedule from '../Components/Schedule/AddSchedule';
+import AddWeatherSchedule from '../Components/Schedule/AddWeatherSchedule';
+import SaveAssignScreenModal from '../Components/Schedule/SaveAssignScreenModal';
+import Approval from '../Components/Approval/Approval';
+import Settings from '../Components/Settings/Settings';
+import Userrole from '../Components/Settings/Userrole';
+import EventEditor from '../Components/Schedule/EventEditor';
+import NewFolderDialog from '../Components/Assests/NewFolderDialog ';
+import Trash from '../Redux/Trash';
+import ErrorFallback from '../Components/ErrorFallback';
 import GridAssets from "../Components/Assests/GridAssets";
-import FinalReport from "../Components/Reports/FinalReport";
-import UserDashboard from "../Components/Dashboard/UserDashboard";
-import AddWeatherSchedule from "../Components/Schedule/AddWeatherSchedule";
-import BookSlot from "../Components/Screen/SubScreens/BookSlot/BookSlot";
-import BookingSlot from "../Components/Screen/SubScreens/BookSlot/BookingSlot";
-import AddSlot from "../Components/Screen/SubScreens/BookSlot/AddSlot";
-import DigitalMenuBoard from "../Components/Apps/DigitalMenuBoard";
-import DigitalMenuBoardDetail from "../Components/Apps/DigitalMenuBoardDetail";
-import DummyDashboard from "../Components/Common/DummyDashboard";
-import RetailerRoutes from "./RetailerRoutes";
+import SelectedLayout from "../Components/Composition/SelectedLayout";
+import Report from "../Components/Reports/Report";
 
-const Routing = () => {
-  const { user, token } = useSelector((state) => state.root.auth);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const accessDetails = localStorage.getItem("role_access");
-  const handleResize = useCallback(() => {
-    if (window.innerWidth < 780) {
-      setSidebarOpen(false);
-    } else if (!sidebarOpen) {
-      setSidebarOpen(true);
-    }
-  }, [sidebarOpen]);
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [handleResize, sidebarOpen]);
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener("load", handleResize);
-
-    return () => {
-      window.removeEventListener("load", handleResize);
-    };
-  }, [handleResize]);
-
-  if (!accessDetails)
-    return (
-      <LoginContainer
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-      />
-    );
-  if (accessDetails === "ADMIN")
-    return (
-      <AdminContainer
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-      />
-    );
-  if (accessDetails === "RETAILER")
-    return (
-      <RetailerRoutes
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-      />
-    );
-
-  if (accessDetails === "USER" && ((user?.isTrial || user?.isActivePlan) || (user?.userDetails?.isRetailer === true))) {
-    return (
-      <BrowserRouter>
+const RetailerRoutes = ({ sidebarOpen, setSidebarOpen }) => {
+  return (
+    <BrowserRouter>
         <ErrorBoundary
           fallback={ErrorFallback}
           onReset={() => {
@@ -594,43 +536,7 @@ const Routing = () => {
           </Routes>
         </ErrorBoundary>
       </BrowserRouter>
-    );
-  }
+  )
+}
 
-  if (accessDetails === "USER" && (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ) {
-    return (
-      <BrowserRouter>
-        <ErrorBoundary
-          fallback={ErrorFallback}
-          onReset={() => {
-            window.location.reload();
-          }}
-        >
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-            <Route path="*" element={<Navigate to="/dashboard" />} />
-            <Route path="/register" element={<Navigate to="/dashboard" />} />
-            <Route
-              path="/dashboard"
-              element={
-                <DummyDashboard
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
-          </Routes>
-        </ErrorBoundary>
-      </BrowserRouter>
-    )
-  }
-
-  return (
-    <Loading />
-    // <div className="flex justify-center items-center h-screen">
-    //   <TailSpin color="red" radius={"8px"} />
-    // </div>
-  );
-};
-
-export default Routing;
+export default RetailerRoutes
