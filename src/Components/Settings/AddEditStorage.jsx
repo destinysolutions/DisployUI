@@ -79,10 +79,10 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
                                     <div className="w-full rounded-lg bg-gray-100 border border-slate-200 p-4">
                                         <div className='flex flex-col mb-5'>
                                             <div className='flex items-center justify-between pb-3'>
-                                                <p>Total number of storage required:</p>
+                                                <p>Total storage required:</p>
                                                 <div className='flex items-center gap-1 ml-6'>
                                                     <input type='number'
-                                                        className="relative border border-black rounded-md p-2 w-24"
+                                                        className="relative border border-black rounded-md p-2 w-20"
                                                         onChange={(e) => {
                                                             if (e.target.value <= 0) {
                                                                 setAddStorage(addStorage)
@@ -93,6 +93,7 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
                                                         }
                                                         value={addStorage}
                                                     />
+                                                    <label>GB</label>
                                                 </div>
                                             </div>
                                             <div className='flex items-center justify-between border-t border-gray-200 py-3'>

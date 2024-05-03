@@ -3,10 +3,10 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import PlanDetails from './PlanDetails';
 import TalkToSaleDialog from '../TalkToSaleDialog';
 
-const PlanList = ({ choose, setChoose,myplan }) => {
+const PlanList = ({ choose, setChoose, myplan }) => {
     const [selectPlan, setSelectPlan] = useState("")
     const [planDetails, setPlanDetails] = useState(false)
-    const [TalkToSale,setTalkToSale] = useState(false)
+    const [TalkToSale, setTalkToSale] = useState(false)
     return (
         <>
             <div
@@ -37,7 +37,7 @@ const PlanList = ({ choose, setChoose,myplan }) => {
                                                 <div className="pricing-plan border-t-4 border-solid border-white bg-white text-center max-w-sm mx-auto hover:border-blue-700 transition-colors duration-300">
                                                     <div className="p-6">
                                                         <h4 className="font-medium leading-tight text-2xl">{item?.planName}</h4>
-
+                                                        <p className="text-gray-600">{item?.planDetailss}</p>
                                                     </div>
                                                     {item?.listOfPlansID !== 4 && (
                                                         <div className="pricing-amount bg-indigo-100 p-6 transition-colors duration-300">
@@ -127,7 +127,7 @@ const PlanList = ({ choose, setChoose,myplan }) => {
             )}
 
             {TalkToSale && (
-                <TalkToSaleDialog setTalkToSale={setTalkToSale} TalkToSale={TalkToSale}/>
+                <TalkToSaleDialog setTalkToSale={setTalkToSale} TalkToSale={TalkToSale} />
             )}
 
         </>

@@ -10,7 +10,7 @@ const SubscriptionTerm = ({ isRead, setIsRead }) => {
             className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full "
         >
             <div className="modal-overlay">
-                <div className="modal p-4 lg:w-[1000px] md:w-[900px] sm:w-full max-h-full">
+                <div className="modal p-0 lg:w-[1000px] md:w-[900px] sm:w-full max-h-full overflow-y-auto">
                     <div className="relative w-full">
                         {/* Modal content */}
                         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">

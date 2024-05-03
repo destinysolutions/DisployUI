@@ -375,9 +375,11 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
   });
 
   const handleScreenClick = (screen) => {
+    console.log('screen', screen)
     setSelectedScreen(screen);
     const arr = screenList?.filter((item) => item?.longitude === screen?.longituted && item?.latitude === screen?.lattitude);
     setScreen(arr);
+    setScreenDialogOpen(true);
   };
 
   return (
@@ -473,7 +475,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
                     click: () => handleScreenClick && handleScreenClick(screen),
                   }}
                 >
-                  <Popup>
+                 {/* <Popup>
                     <div className="cursor-pointer"
                       onClick={() => {
                         setScreenDialogOpen(true)
@@ -489,7 +491,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
                         </h5>
                       </div>
                     </div>
-                  </Popup>
+                    </Popup>*/}
                 </Marker>
               ))}
             </MarkerClusterGroup>
