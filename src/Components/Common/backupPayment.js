@@ -2,11 +2,11 @@ import { CardElement, PaymentElement, useElements, useStripe } from '@stripe/rea
 import React, { useEffect, useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom';
-import "../../Styles/PaymentModal.css"
+// import "../../Styles/PaymentModal.css"
 import { useSelector } from 'react-redux';
-import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS } from '../../Pages/Api';
+// import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
-import { handleCreateSubscription, handlePaymentDetails } from '../../Redux/PaymentSlice';
+// import { handleCreateSubscription, handlePaymentDetails } from '../../Redux/PaymentSlice';
 import { IoClose } from "react-icons/io5";
 const backupPayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
 

@@ -25,6 +25,7 @@ const App = () => {
   const [timer, setTimer] = useState(0);
 
   const { user, token, loading } = useSelector((state) => state.root.auth);
+  console.log('user', user)
   const dispatch = useDispatch();
 
   useEffect(() => {
