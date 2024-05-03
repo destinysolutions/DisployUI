@@ -37,7 +37,7 @@ const AdminDashboard = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
           </div>
-          <Dashboard />
+          <Dashboard sidebarOpen={sidebarOpen} />
         </div>
       </div>
     </>

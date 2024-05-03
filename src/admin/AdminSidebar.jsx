@@ -35,7 +35,7 @@ const AdminSidebar = ({ sidebarOpen }) => {
     {
       title: "Dashboard",
       cName: "nav-text link-items",
-      path: "/admin-dashboard",
+      path: "/dashboard",
       icon: <ImStack className="text-2xl" />,
     },
     {
@@ -45,9 +45,9 @@ const AdminSidebar = ({ sidebarOpen }) => {
       icon: <FaUsers className="text-2xl" />,
     },
     {
-      title: "User",
+      title: "Users",
       cName: "nav-text link-items",
-      path: "/user",
+      path: "/users",
       icon: <FaUserAlt className="text-2xl" />,
     },
     {

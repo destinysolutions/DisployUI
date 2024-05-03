@@ -13,6 +13,7 @@ import {
 } from "react-icons/ai";
 import Footer from "../Footer";
 import {
+  ADD_OR_UPDATE_WEATHER,
   ADD_SCHEDULE,
   DELETE_SCHEDULE,
   SET_TO_SCREEN_WEATHER,
@@ -54,7 +55,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenSelected, setScreenSelected] = useState([]);
   const [selectdata, setSelectData] = useState({});
   const store = useSelector((state) => state.root.weather);
-
+  const [weatherList, setWeatherList] = useState([])
   const { user, token } = useSelector((state) => state.root.auth);
   const { loading, successMessage, type } = useSelector((s) => s.root.schedule);
   const authToken = `Bearer ${token}`;
@@ -69,7 +70,6 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [itemsPerPage] = useState(10);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
-  const [weatherScheduleData, setWeatherScheduleData] = useState([]);
   const [loadFist, setLoadFist] = useState(true);
 
   const dispatch = useDispatch();
@@ -83,8 +83,8 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   }, [successMessage]);
 
   // Filter data based on search term
-  const filteredData = Array.isArray(store?.data?.model)
-    ? store.data.model.filter((item) =>
+  const filteredData = Array.isArray(weatherList)
+    ? weatherList.filter((item) =>
       Object.values(item).some(
         (value) =>
           value &&
@@ -133,33 +133,14 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     if (loadFist) {
-      dispatch(getData());
+      dispatch(getData()).then((res) => {
+        setWeatherList(res?.payload?.data?.model)
+      });
       setLoadFist(false);
     }
-  }, [loadFist, store]);
-
-  const handleGetAll = () => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/WeatherScheduling/GetWeatherScheduling",
-      headers: {
-        Authorization: authToken,
-      },
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        setWeatherScheduleData(response?.data?.data?.model);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  }, [loadFist]);
 
   useEffect(() => {
-    handleGetAll();
-
     if (store && store.status === "deleted") {
       toast.success(store.message);
       setLoadFist(true);
@@ -168,10 +149,10 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
-    if (selectedItems.length === store?.data?.model?.length) {
+    if (selectedItems.length === weatherList?.length) {
       setSelectedItems([]);
     } else {
-      const allIds = store?.data?.model.map(
+      const allIds = weatherList.map(
         (schedule) => schedule.weatherSchedulingID
       );
       setSelectedItems(allIds);
@@ -191,8 +172,8 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
-    if (selectcheck && weatherScheduleData?.length > 0) {
-      if (selectedItems?.length === weatherScheduleData?.length) {
+    if (selectcheck && weatherList?.length > 0) {
+      if (selectedItems?.length === weatherList?.length) {
         setSelectAllChecked(true);
       }
     }
@@ -216,7 +197,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       const Params = {
         id: socket.id,
         connection: socket.connected,
-        macId: weatherScheduleData
+        macId: weatherList
           ?.map((item) => item?.maciDs)
           .join(",")
           .replace(/^\s+/g, ""),
@@ -232,7 +213,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       //       connection
       //         .invoke(
       //           "ScreenConnected",
-      //           weatherScheduleData
+      //           weatherList
       //             ?.map((item) => item?.maciDs)
       //             .join(",")
       //             .replace(/^\s+/g, "")
@@ -248,7 +229,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       //   connection
       //     .invoke(
       //       "ScreenConnected",
-      //       weatherScheduleData
+      //       weatherList
       //         ?.map((item) => item?.maciDs)
       //         .join(",")
       //         .replace(/^\s+/g, "")
@@ -361,18 +342,18 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleUpadteScheduleTags = (tags) => {
     let data = JSON.stringify({
-      scheduleId: updateTagSchedule?.scheduleId,
-      scheduleName: updateTagSchedule?.scheduleName,
-      screenAssigned: updateTagSchedule?.screenAssigned,
-      startDate: updateTagSchedule?.startDate,
-      endDate: updateTagSchedule?.endDate,
+      weatherSchedulingID: updateTagSchedule?.scheduleId,
+      name: updateTagSchedule?.scheduleName,
+      // screenAssigned: updateTagSchedule?.screenAssigned,
+      // startDate: updateTagSchedule?.startDate,
+      // endDate: updateTagSchedule?.endDate,
       operation: "Insert",
       tags: tags,
     });
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: ADD_SCHEDULE,
+      url: ADD_OR_UPDATE_WEATHER,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
@@ -383,7 +364,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
-          const updatedSchedule = weatherScheduleData.map((i) => {
+          const updatedSchedule = weatherList.map((i) => {
             if (i?.scheduleId === response?.data?.data?.model?.scheduleId) {
               return { ...i, tags: response?.data?.data?.model?.tags };
             } else {
@@ -626,7 +607,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                     </tr>
-                  ) : weatherScheduleData &&
+                  ) : weatherList &&
                     sortedAndPaginatedData?.length === 0 ? (
                     <tr>
                       <td colSpan={7}>
@@ -639,7 +620,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
                   ) : (
                     <>
-                      {weatherScheduleData &&
+                      {weatherList &&
                         sortedAndPaginatedData.length > 0 &&
                         sortedAndPaginatedData.map((schedule, index) => {
                           return (
@@ -753,10 +734,10 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       setShowTagModal={setShowTagModal}
                                       tags={tags}
                                       setTags={setTags}
-                                      handleUpadteScheduleTags={
+                                      handleUpadteWeatherScheduleTags={
                                         handleUpadteScheduleTags
                                       }
-                                      from="schedule"
+                                      from="weather-schedule"
                                       setUpdateTagSchedule={
                                         setUpdateTagSchedule
                                       }
@@ -831,7 +812,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
               <div className="flex items-center">
-                <span className="text-gray-500">{`Total ${weatherScheduleData?.length} Weather Schedules`}</span>
+                <span className="text-gray-500">{`Total ${weatherList?.length} Weather Schedules`}</span>
               </div>
               <div className="flex justify-end">
                 <button
@@ -862,7 +843,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={(currentPage === totalPages) || (weatherScheduleData?.length === 0)}
+                  disabled={(currentPage === totalPages) || (weatherList?.length === 0)}
                   className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
                   {sidebarOpen ? "Next" : ""}

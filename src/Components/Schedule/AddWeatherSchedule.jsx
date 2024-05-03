@@ -57,7 +57,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [weatherScheduleName, setWeatherScheduleName] = useState(
-    moment(currentDate).format("YYYY-MM-DD hh:mm")
+    moment(TodayDate).format("YYYY-MM-DD hh:mm")
   );
   const [edited, setEdited] = useState(false);
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
@@ -371,7 +371,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       <p className="line-clamp-1">
                         {selectedAsset.assetName
                           ? selectedAsset.assetName
-                          : "Select Asset Name"}
+                          : "Select Asset"}
                       </p>
                       <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
                     </div>

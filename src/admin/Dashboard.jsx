@@ -9,6 +9,9 @@ import RevenueTable from "../Components/Dashboard/RevenueTable";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { ADMINDASHBOARD } from "../Pages/Api";
+import DashboardScreen from "../Components/Common/DashboardScreen";
+import { handleGetAllScreenAdmin } from "../Redux/Screenslice";
+import { useDispatch } from "react-redux";
 
 const SalesOptions = {
   colors: ["#404f8b"],
@@ -47,18 +50,22 @@ const stateVlaue = {
   ],
 };
 
-const Dashboard = () => {
+const Dashboard = ({ sidebarOpen }) => {
   const customIcon = new L.Icon({
     iconUrl: mapImg,
     iconSize: [32, 32],
     iconAnchor: [16, 16],
     popupAnchor: [0, -16],
   });
+  const dispatch = useDispatch();
   const center = [20.5937, 78.9629];
   const { token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   const [dashboardData, setDashboardData] = useState(null);
   const [selectedScreen, setSelectedScreen] = useState("");
+  const [screenList, setScreenList] = useState([]);
+  const [screenDialogOpen, setScreenDialogOpen] = useState(false)
+  const [screen, setScreen] = useState([])
   const [allApp, setAllApp] = useState({
     AppLists: [],
     AppPercentages: [],
@@ -83,6 +90,14 @@ const Dashboard = () => {
       .catch((error) => {
         console.log("Error fetching states data:", error);
       });
+  }, []);
+
+  useEffect(() => {
+    dispatch(handleGetAllScreenAdmin({ token })).then((res) => {
+      if (res?.payload?.status === 200) {
+        setScreenList(res?.payload?.data)
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -112,7 +127,7 @@ const Dashboard = () => {
       type: "donut",
     },
     series: allApp?.AppPercentages,
-    colors: ["#404f8b", "#59709a", "#8ca0b9", "#b2c7d0","#141e4a"],
+    colors: ["#404f8b", "#59709a", "#8ca0b9", "#b2c7d0", "#141e4a"],
     labels: allApp?.AppLists,
     legend: {
       show: true,
@@ -195,155 +210,159 @@ const Dashboard = () => {
 
   const handleScreenClick = (screen) => {
     setSelectedScreen(screen);
+    const arr = screenList?.filter((item) => item?.longitude === screen?.longituted && item?.latitude === screen?.lattitude);
+    setScreen(arr);
+    setScreenDialogOpen(true);
   };
   return (
-    <div>
-      {/* google map start */}
-      <div className="bg-white shadow-md rounded-lg mt-5">
-        <div className="lg:p-5 md:p-4 sm:p-3 xs:p-2">
-          <MapContainer
-            center={center}
-            zoom={4}
-            maxZoom={18}
-            style={{ width: "100%", height: "460px", zIndex: 0 }}
-          >
-            <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
+    <>
+      <div>
+        {/* google map start */}
+        <div className="bg-white shadow-md rounded-lg mt-5">
+          <div className="lg:p-5 md:p-4 sm:p-3 xs:p-2">
+            <MapContainer
+              center={center}
+              zoom={4}
+              maxZoom={18}
+              style={{ width: "100%", height: "460px", zIndex: 0 }}
+            >
+              <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
 
-            <MarkerClusterGroup>
-              {dashboardData?.screen.map((screen, index) => (
-                <Marker
-                  key={index}
-                  position={[screen.lattitude, screen.longituted]}
-                  icon={customIcon}
-                  eventHandlers={{
-                    click: () => handleScreenClick && handleScreenClick(screen),
-                  }}
-                >
-                  <Popup>
-                    <h3 className="flex flex-row gap-1">
-                      <span>Location :</span>
-                      <span>{selectedScreen?.location}</span>
-                    </h3>
-                    <div className="flex flex-col">
-                      <h5 className="flex flex-row gap-2">
-                        <span>Total Screen :</span>
-                        <span>{selectedScreen?.screen}</span>
-                      </h5>
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-            </MarkerClusterGroup>
-          </MapContainer>
+              <MarkerClusterGroup>
+                {dashboardData?.screen.map((screen, index) => (
+                  <Marker
+                    key={index}
+                    position={[screen.lattitude, screen.longituted]}
+                    icon={customIcon}
+                    eventHandlers={{
+                      click: () => handleScreenClick && handleScreenClick(screen),
+                    }}
+                  >
+                    {/*<Popup>
+                      <h3 className="flex flex-row gap-1">
+                        <span>Location :</span>
+                        <span>{selectedScreen?.location}</span>
+                      </h3>
+                      <div className="flex flex-col">
+                        <h5 className="flex flex-row gap-2">
+                          <span>Total Screen :</span>
+                          <span>{selectedScreen?.screen}</span>
+                        </h5>
+                      </div>
+                  </Popup>*/}
+                  </Marker>
+                ))}
+              </MarkerClusterGroup>
+            </MapContainer>
+          </div>
         </div>
-      </div>
-      {/* google map end */}
+        {/* google map end */}
 
-      {allApp?.AppLists?.length > 0 && (
-        <div className="my-6">
-          <div className="grid grid-cols-12 gap-4">
-            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white dark:bg-black p-7.5 shadow-2xl rounded-md p-4">
-              <h5 className="text-xl font-semibold text-black dark:text-white">
-                Total Stores
-              </h5>
+        {allApp?.AppLists?.length > 0 && (
+          <div className="my-6">
+            <div className="grid grid-cols-12 gap-4">
+              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white dark:bg-black p-7.5 shadow-2xl rounded-md p-4">
+                <h5 className="text-xl font-semibold text-black dark:text-white">
+                  Total Stores
+                </h5>
 
-              <div className="flex items-center justify-center flex-wrap">
-                <div className="mb-2 mt-9">
-                  <div className="mx-auto flex justify-center">
-                    <ReactApexChart
-                      options={ScreenAppOnlineOfflineOption}
-                      series={ScreenAppOnlineOfflineOption.series}
-                      type="donut"
-                    />
+                <div className="flex items-center justify-center flex-wrap">
+                  <div className="mb-2 mt-9">
+                    <div className="mx-auto flex justify-center">
+                      <ReactApexChart
+                        options={ScreenAppOnlineOfflineOption}
+                        series={ScreenAppOnlineOfflineOption.series}
+                        type="donut"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <table cellPadding={15}>
-                    <tbody>
-                      <tr>
-                        <td className="flex items-center">
-                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#3AB700]"></span>
-                          {dashboardData?.totalStore?.[1]?.name}
-                        </td>
-                        <td>{dashboardData?.totalStore?.[1]?.percentage}%</td>
-                      </tr>
-                      <tr>
-                        <td className="flex items-center">
-                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#FF0000]"></span>
-                          {dashboardData?.totalStore?.[0]?.name}
-                        </td>
-                        <td>{dashboardData?.totalStore?.[0]?.percentage}%</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div>
+                    <table cellPadding={15}>
+                      <tbody>
+                        <tr>
+                          <td className="flex items-center">
+                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#3AB700]"></span>
+                            {dashboardData?.totalStore?.[1]?.name}
+                          </td>
+                          <td>{dashboardData?.totalStore?.[1]?.percentage}%</td>
+                        </tr>
+                        <tr>
+                          <td className="flex items-center">
+                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#FF0000]"></span>
+                            {dashboardData?.totalStore?.[0]?.name}
+                          </td>
+                          <td>{dashboardData?.totalStore?.[0]?.percentage}%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white dark:bg-black p-7.5 shadow-2xl rounded-md p-4 ">
-              <h5 className="text-xl font-semibold text-black dark:text-white">
-                Total Screens
-              </h5>
-              <div className="flex items-center justify-center flex-wrap">
-                <div className="mb-2 mt-9">
-                  <div className="mx-auto flex justify-center">
-                    <ReactApexChart
-                      options={ScreenAppOption}
-                      series={ScreenAppOption.series}
-                      type="donut"
-                    />
+              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white dark:bg-black p-7.5 shadow-2xl rounded-md p-4 ">
+                <h5 className="text-xl font-semibold text-black dark:text-white">
+                  Total Screens
+                </h5>
+                <div className="flex items-center justify-center flex-wrap">
+                  <div className="mb-2 mt-9">
+                    <div className="mx-auto flex justify-center">
+                      <ReactApexChart
+                        options={ScreenAppOption}
+                        series={ScreenAppOption.series}
+                        type="donut"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <table cellPadding={15}>
-                    <tbody>
-                      <tr>
-                        <td className="flex items-center">
-                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#404f8b]"></span>
-                          {dashboardData?.totalScreen?.[0]?.name}
-                        </td>
-                        <td>{dashboardData?.totalScreen?.[0]?.percentage}%</td>
-                      </tr>
-                      <tr>
-                        <td className="flex items-center">
-                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#59709a]"></span>
-                          {dashboardData?.totalScreen?.[1]?.name}
-                        </td>
-                        <td>{dashboardData?.totalScreen?.[1]?.percentage}%</td>
-                      </tr>
-                      <tr>
-                        <td className="flex items-center">
-                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#8ca0b9]"></span>
-                          {dashboardData?.totalScreen?.[2]?.name}
-                        </td>
-                        <td>{dashboardData?.totalScreen?.[2]?.percentage}%</td>
-                      </tr>
-                      <tr>
-                        <td className="flex items-center">
-                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#b2c7d0]"></span>
-                          {dashboardData?.totalScreen?.[3]?.name}
-                        </td>
-                        <td>{dashboardData?.totalScreen?.[3]?.percentage}%</td>
-                      </tr>
-                      <tr>
-                      <td className="flex items-center">
-                        <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#141e4a]"></span>
-                        {dashboardData?.totalScreen?.[4]?.name}
-                      </td>
-                      <td>{dashboardData?.totalScreen?.[4]?.percentage}%</td>
-                    </tr>
-                    </tbody>
-                  </table>
+                  <div>
+                    <table cellPadding={15}>
+                      <tbody>
+                        <tr>
+                          <td className="flex items-center">
+                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#404f8b]"></span>
+                            {dashboardData?.totalScreen?.[0]?.name}
+                          </td>
+                          <td>{dashboardData?.totalScreen?.[0]?.percentage}%</td>
+                        </tr>
+                        <tr>
+                          <td className="flex items-center">
+                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#59709a]"></span>
+                            {dashboardData?.totalScreen?.[1]?.name}
+                          </td>
+                          <td>{dashboardData?.totalScreen?.[1]?.percentage}%</td>
+                        </tr>
+                        <tr>
+                          <td className="flex items-center">
+                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#8ca0b9]"></span>
+                            {dashboardData?.totalScreen?.[2]?.name}
+                          </td>
+                          <td>{dashboardData?.totalScreen?.[2]?.percentage}%</td>
+                        </tr>
+                        <tr>
+                          <td className="flex items-center">
+                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#b2c7d0]"></span>
+                            {dashboardData?.totalScreen?.[3]?.name}
+                          </td>
+                          <td>{dashboardData?.totalScreen?.[3]?.percentage}%</td>
+                        </tr>
+                        <tr>
+                          <td className="flex items-center">
+                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#141e4a]"></span>
+                            {dashboardData?.totalScreen?.[4]?.name}
+                          </td>
+                          <td>{dashboardData?.totalScreen?.[4]?.percentage}%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* <div className=" mt-5 ">
+        {/* <div className=" mt-5 ">
         <div className="grid grid-cols-12 gap-4">
           <div className="lg:col-span-6  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
             <div className="mb-4 justify-between items-center gap-4 sm:flex mt-3">
@@ -379,7 +398,12 @@ const Dashboard = () => {
           </div>
         </div>
       </div>*/}
-    </div>
+      </div>
+
+      {screenDialogOpen && (
+        <DashboardScreen screenDialogOpen={screenDialogOpen} setScreenDialogOpen={setScreenDialogOpen} screen={screen} sidebarOpen={sidebarOpen} from ="admin"/>
+      )}
+    </>
   );
 };
 

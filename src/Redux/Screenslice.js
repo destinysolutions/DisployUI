@@ -3,23 +3,23 @@ import toast from "react-hot-toast";
 import { SCREEN_DEACTIVATE_ACTIVATE, deleteUrl, getUrl, postUrl } from "../Pages/Api";
 import axios from "axios";
 
-export const handleGetScreen = createAsyncThunk("screen/handleGetScreen",async ({ id, token }, { rejectWithValue, signal }) => {
-    try {
-      const { data } = await getUrl(`NewScreen/SelectByUserScreen`, {
-        headers: {
-          Authorization: token,
-        },
-        signal,
-      });
-      if (data?.status === 200 ) return data;
-      else {
-        toast.error(data?.message);
-        return rejectWithValue(data?.message);
-      }
-    } catch (error) {
-      rejectWithValue(error?.response?.data?.message);
+export const handleGetScreen = createAsyncThunk("screen/handleGetScreen", async ({ id, token }, { rejectWithValue, signal }) => {
+  try {
+    const { data } = await getUrl(`NewScreen/SelectByUserScreen`, {
+      headers: {
+        Authorization: token,
+      },
+      signal,
+    });
+    if (data?.status === 200) return data;
+    else {
+      toast.error(data?.message);
+      return rejectWithValue(data?.message);
     }
+  } catch (error) {
+    rejectWithValue(error?.response?.data?.message);
   }
+}
 );
 
 export const handleDeleteAllScreen = createAsyncThunk("screen/handleDeleteAllScreen", async ({ config }, { rejectWithValue }) => {
@@ -144,6 +144,25 @@ export const screenDeactivateActivate = createAsyncThunk("data/AddTagsAndUpdate"
   }
 });
 
+export const handleGetAllScreenAdmin = createAsyncThunk("screen/handleGetAllScreenAdmin", async ({ id, token }, { rejectWithValue, signal }) => {
+  try {
+    const { data } = await getUrl(`Common/SelectByAllUserScreen`, {
+      headers: {
+        Authorization: token,
+      },
+      signal,
+    });
+    if (data?.status === 200) return data;
+    else {
+      toast.error(data?.message);
+      return rejectWithValue(data?.message);
+    }
+  } catch (error) {
+    rejectWithValue(error?.response?.data?.message);
+  }
+}
+);
+
 const initialState = {
   loading: true,
   screens: [],
@@ -210,7 +229,7 @@ const Screenslice = createSlice({
             return {
               ...screen,
               assetName: meta?.arg?.mediaName,
-              mediaDetailID:meta?.arg?.dataToUpdate?.mediaDetailID
+              mediaDetailID: meta?.arg?.dataToUpdate?.mediaDetailID
             };
           }
           return screen;
@@ -224,18 +243,18 @@ const Screenslice = createSlice({
     });
 
     //update screen schedule
-    builder.addCase(handleUpdateScreenSchedule.fulfilled,(state, { payload, meta }) => {
-        state.screens = state.screens?.map((screen) => {
-          if (screen.screenID === meta?.arg?.dataToUpdate?.screenID) {
-            return {
-              ...screen,
-              scheduleName: meta?.arg?.schedule?.scheduleName,
-            };
-          }
-          return screen;
-        });
-        state.error = null;
-      }
+    builder.addCase(handleUpdateScreenSchedule.fulfilled, (state, { payload, meta }) => {
+      state.screens = state.screens?.map((screen) => {
+        if (screen.screenID === meta?.arg?.dataToUpdate?.screenID) {
+          return {
+            ...screen,
+            scheduleName: meta?.arg?.schedule?.scheduleName,
+          };
+        }
+        return screen;
+      });
+      state.error = null;
+    }
     );
     builder.addCase(
       handleUpdateScreenSchedule.rejected,
@@ -253,11 +272,11 @@ const Screenslice = createSlice({
         state.error = null;
       }
     );
-    builder.addCase(handleDeleteScreenById.fulfilled,(state, { payload, meta }) => {
-        state.deleteLoading = false;
-        state.screens = state.screens.filter((data) => data.screenID !== meta.arg?.screenID);
-        state.error = null;
-      }
+    builder.addCase(handleDeleteScreenById.fulfilled, (state, { payload, meta }) => {
+      state.deleteLoading = false;
+      state.screens = state.screens.filter((data) => data.screenID !== meta.arg?.screenID);
+      state.error = null;
+    }
     );
     builder.addCase(handleDeleteScreenById.rejected, (state, { payload }) => {
       state.deleteLoading = false;
@@ -287,18 +306,33 @@ const Screenslice = createSlice({
       state.screens = state.screens;
     })
 
-    .addCase(screenDeactivateActivate.pending, (state) => {      // screenDeactivateActivate
-      state.status = "loading";
-    })
-    .addCase(screenDeactivateActivate.fulfilled, (state, action) => {    // screenDeactivateActivate
-      state.status = "succeeded";
-      state.message = action.payload.message || "This operation successFully" ; 
-    })
-    .addCase(screenDeactivateActivate.rejected, (state, action) => {     // screenDeactivateActivate
-      state.status = "failed";
-      state.error = action.error.message || "Failed to delete data";
-    });
+      .addCase(screenDeactivateActivate.pending, (state) => {      // screenDeactivateActivate
+        state.status = "loading";
+      })
+      .addCase(screenDeactivateActivate.fulfilled, (state, action) => {    // screenDeactivateActivate
+        state.status = "succeeded";
+        state.message = action.payload.message || "This operation successFully";
+      })
+      .addCase(screenDeactivateActivate.rejected, (state, action) => {     // screenDeactivateActivate
+        state.status = "failed";
+        state.error = action.error.message || "Failed to delete data";
+      });
 
+    builder.addCase(
+      handleGetAllScreenAdmin.pending,
+      (state) => {
+        state.status = "loading";
+      }
+    );
+    builder.addCase(
+      handleGetAllScreenAdmin.fulfilled,
+      (state, action) => {
+        state.status = "succeeded";
+      }
+    );
+    builder.addCase(handleGetAllScreenAdmin.rejected, (state, action) => {
+      state.status = "failed";
+    })
   },
 });
 

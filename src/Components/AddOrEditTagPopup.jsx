@@ -21,6 +21,7 @@ const AddOrEditTagPopup = ({
   handleUpdateTagsWeather,
   setUpdateTagWeather,
   setUpdateDigitalMenuTag,
+  handleUpadteWeatherScheduleTags,
   action,
 }) => {
   const [tagValue, setTagValue] = useState("");
@@ -71,6 +72,9 @@ const AddOrEditTagPopup = ({
     if (from === "schedule") {
       return handleUpadteScheduleTags([...tags, tagValue].join(","));
     }
+    if(from === "weather-schedule"){
+      return handleUpadteWeatherScheduleTags([...tags, tagValue].join(","));
+    }
     if (from === "youtube") {
       return handleUpdateTagsYoutube([...tags, tagValue].join(","));
     }
@@ -96,6 +100,9 @@ const AddOrEditTagPopup = ({
     }
     if (from === "schedule") {
       return handleUpadteScheduleTags(newTags.join(","));
+    }
+    if(from === "weather-schedule"){
+      return handleUpadteWeatherScheduleTags(newTags.join(","));
     }
     if (from === "youtube") {
       return handleUpdateTagsYoutube(newTags.join(","));

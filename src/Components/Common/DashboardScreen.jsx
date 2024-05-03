@@ -4,7 +4,7 @@ import { AiOutlineCloseCircle, AiOutlineCloudUpload } from 'react-icons/ai'
 import { HiUserGroup } from 'react-icons/hi2';
 import ReactTooltip from 'react-tooltip';
 
-const DashboardScreen = ({ screenDialogOpen, setScreenDialogOpen, screen, sidebarOpen }) => {
+const DashboardScreen = ({ screenDialogOpen, setScreenDialogOpen, screen, sidebarOpen, from }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5); // Adjust items per page as needed
     const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
@@ -58,7 +58,7 @@ const DashboardScreen = ({ screenDialogOpen, setScreenDialogOpen, screen, sideba
             className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
         >
             <div className="modal-overlay">
-                <div className="modal p-4 lg:w-[700px] md:w-[700px] sm:w-full max-h-full">
+                <div className="modal p-4 lg:w-[900px] md:w-[900px] sm:w-full max-h-full">
                     <div className="relative w-full">
                         {/* Modal content */}
                         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-full">
@@ -95,6 +95,11 @@ const DashboardScreen = ({ screenDialogOpen, setScreenDialogOpen, screen, sideba
                                                         </svg>
                                                     </div>
                                                 </th>
+                                                {from && (
+                                                    <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
+                                                        User Name
+                                                    </th>
+                                                )}
                                                 <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
                                                     Google Location
                                                 </th>
@@ -147,6 +152,11 @@ const DashboardScreen = ({ screenDialogOpen, setScreenDialogOpen, screen, sideba
                                                                                 {screen.screenName}
                                                                             </div>
                                                                         </td>
+                                                                        {from && (
+                                                                            <td className="break-words text-center text-[#5E5E5E]">
+                                                                                {screen.userName}
+                                                                            </td>
+                                                                        )}
                                                                         <td className="break-words text-center text-[#5E5E5E]">
                                                                             {screen.googleLocation}
                                                                         </td>
@@ -191,7 +201,7 @@ const DashboardScreen = ({ screenDialogOpen, setScreenDialogOpen, screen, sideba
 
                                                                         <td className="break-words text-center text-[#5E5E5E]">
 
-                                                                            {`${screen.scheduleName
+                                                                            {`${screen.scheduleName !== null ? screen.scheduleName : ""
                                                                                 } Till ${moment(
                                                                                     screen.endDate
                                                                                 ).format("YYYY-MM-DD hh:mm")}`}
