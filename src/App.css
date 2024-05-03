@@ -2098,6 +2098,7 @@ table.screen-table {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  width: 100%;
   transition: transform 0.3s, background-color 0.3s;
 }
 
@@ -2190,14 +2191,14 @@ table.screen-table {
   padding: 20px;
 }
 
-@keyframes fadeIn {
+/* @keyframes fadeIn {
   from {
       opacity: 0;
   }
   to {
       opacity: 1;
   }
-}
+} */
 
 @keyframes slideIn {
   from {
@@ -2261,4 +2262,44 @@ table.screen-table {
 input#toggleFive:checked ~ .dot > span {
   --tw-bg-opacity: 1;
   background-color: rgb(55 88 249 / var(--tw-bg-opacity));
+}
+
+.payment-form {
+  max-width: 500px;
+  margin: auto;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.card-label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.card-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.auto-pay {
+  margin-bottom: 8px;
+}
+
+.auto-pay-label {
+  margin-left: 10px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

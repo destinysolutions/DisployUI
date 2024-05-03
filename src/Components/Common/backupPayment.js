@@ -1,4 +1,4 @@
-import { CardCvcElement, CardElement, CardExpiryElement, CardNumberElement, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { CardElement, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import React, { useEffect, useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
 import { handleCreateSubscription, handlePaymentDetails } from '../../Redux/PaymentSlice';
 import { IoClose } from "react-icons/io5";
-const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
+const backupPayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
 
     const { user } = useSelector((state) => state.root.auth);
     const { token } = useSelector((s) => s.root.auth);
@@ -149,8 +149,8 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
     }
 
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (e) => {
+
         if (!stripe || !elements) {
             return;
         }
@@ -168,15 +168,10 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                 //     redirect: 'if_required'
                 // });
 
-                // const cardElement = elements.getElement(CardElement);
-                // const { paymentMethod, error } = await stripe.createPaymentMethod({
-                //     type: 'card',
-                //     card: cardElement,
-                // });
-
-                const { error, paymentMethod } = await stripe.createPaymentMethod({
+                const cardElement = elements.getElement(CardElement);
+                const { paymentMethod, error } = await stripe.createPaymentMethod({
                     type: 'card',
-                    card: elements.getElement(CardNumberElement),
+                    card: cardElement,
                 });
 
                 if (error) {
@@ -231,102 +226,64 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                 id="default-modal"
                 tabIndex="-1"
                 aria-hidden="true"
-                className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full"
+                className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
             >
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <div className="relative p-4 w-[500px] max-h-full">
-                            <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                <div className="p-4 md:p-5">
-                                    <div id="payment-form" className='Payment'>
-                                        <div className="text-gray-500 hover:text-gray-700 duration-200 flex justify-between items-center mb-3 cursor-pointer" onClick={() => togglePaymentModal()}>
-                                            <label className='text-black text-xl font-semibold'>
-                                                Card Details
-                                            </label>
-                                            <IoClose size={26} />
-                                        </div>
-                                        <div className="payment-form">
-                                            <label className="card-label">
-                                                Card Number
-                                                <CardNumberElement
-                                                    className="card-input"
-                                                    options={{
-                                                        style: {
-                                                            base: {
-                                                                fontSize: '16px',
-                                                                color: '#424770',
-                                                                '::placeholder': {
-                                                                    color: '#aab7c4',
-                                                                },
-                                                            },
-                                                            invalid: {
-                                                                color: '#9e2146',
-                                                            },
-                                                        },
-                                                    }}
-                                                />
-                                            </label>
-                                            <label className="card-label">
-                                                Expiration Date
-                                                <CardExpiryElement
-                                                    className="card-input"
-                                                    options={{
-                                                        style: {
-                                                            base: {
-                                                                fontSize: '16px',
-                                                                color: '#424770',
-                                                                '::placeholder': {
-                                                                    color: '#aab7c4',
-                                                                },
-                                                            },
-                                                            invalid: {
-                                                                color: '#9e2146',
-                                                            },
-                                                        },
-                                                    }}
-                                                />
-                                            </label>
-                                            <label className="card-label">
-                                                CVC
-                                                <CardCvcElement
-                                                    className="card-input"
-                                                    options={{
-                                                        style: {
-                                                            base: {
-                                                                fontSize: '16px',
-                                                                color: '#424770',
-                                                                '::placeholder': {
-                                                                    color: '#aab7c4',
-                                                                },
-                                                            },
-                                                            invalid: {
-                                                                color: '#9e2146',
-                                                            },
-                                                        },
-                                                    }}
-                                                />
-                                            </label>
-                                            <div className="auto-pay">
-                                                <input type="checkbox" className="auto-pay-checkbox" onChange={() => setAutoPay(!autoPay)} value={autoPay} />
-                                                <label className="auto-pay-label">Auto Payment</label>
-                                            </div>
-                                            {errorMessage && (
-                                                <div className='mb-2'>
-                                                    <label className="error-message">You need to Check Auto Pay for Further Process.</label>
-                                                </div>
-                                            )}
-                                            <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type="button" className="pay-button">
-                                                <span id="button-text">
-                                                    {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
-                                                </span>
-                                            </button>
-                                        </div>
+                <div className="relative p-4 w-full max-w-xl max-h-full">
+                    {/* Modal content */}
+                    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        {/* Modal header */}
+                        {/*<div className="flex items-center justify-between p-3 md:p-4 border-b rounded-t dark:border-gray-600">
+                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                Stripe Payment
+                            </h3>
+                            <AiOutlineCloseCircle
+                                className="text-4xl text-primary cursor-pointer"
+                                onClick={() => togglePaymentModal()}
+                            />
+    </div>*/}
+                        <div className="p-4 md:p-5">
+                            {/* <div id="payment-form" className='Payment'>
+                              <CardElement id="payment-element" options={paymentElementOptions} />
+                                <PaymentElement id="payment-element" options={paymentElementOptions} />
 
-                                    </div>
+                                <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type='button'>
+                                    <span id="button-text">
+                                        {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
+                                    </span>
+                                </button>
+    </div>*/}
+
+                            <div id="payment-form" className='Payment'>
+                                <div className="text-gray-500 hover:text-gray-700 duration-200 flex justify-end items-center mb-3 cursor-pointer" onClick={() => togglePaymentModal()}>
+                                    <IoClose size={26} />
                                 </div>
-
+                                <div className="payment-form-container">
+                                    <h2 className='mb-3'>Secure Payment</h2>
+                                    <div className="card-element-container">
+                                        <CardElement
+                                            className="CardElement"
+                                            options={paymentElementOptions}
+                                        />
+                                        <div className="error-message" role="alert"></div>
+                                    </div>
+                                    <div className='mb-2 flex items-center gap-2'>
+                                        <input type='checkbox' className='w-4 h-4 inline-block rounded-full border border-grey flex-no-shrink' onChange={() => setAutoPay(!autoPay)} value={autoPay} />
+                                        <label className='text-gray-600'>Auto Payment</label>
+                                    </div>
+                                    {errorMessage && (
+                                        <div>
+                                            <label className='text-rose-600'>You need to Check Auto Pay for Further Process.</label>
+                                        </div>
+                                    )}
+                                    <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type='button' className='mt-4'>
+                                        <span id="button-text">
+                                            {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -334,4 +291,4 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
     )
 }
 
-export default PaymentDialog
+export default backupPayment
