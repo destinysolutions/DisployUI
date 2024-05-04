@@ -168,6 +168,7 @@ export const GETALLRETAILER = `${baseUrl}UserMaster/GetAllRetailer?IsRetailer=tr
 // weatherschedule
 
 export const ADD_OR_UPDATE_WEATHER = `${baseUrl}WeatherScheduling/AddorUpdateWeatherScheduling`;
+export const ADD_WEATHERSCHEDULE_TAG = `${baseUrl}WeatherScheduling/AddWeatherSchedulingTags`;
 export const GET_BY_ID_WEATHER = `${baseUrl}WeatherScheduling/GetWeatherScheduling`;
 export const GET_WEATHER = `${baseUrl}WeatherScheduling/GetWeatherScheduling`;
 export const DELETE_WEATHER = `${baseUrl}WeatherScheduling/DeleteWeatherScheduling`;

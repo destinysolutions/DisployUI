@@ -15,6 +15,7 @@ import Footer from "../Footer";
 import {
   ADD_OR_UPDATE_WEATHER,
   ADD_SCHEDULE,
+  ADD_WEATHERSCHEDULE_TAG,
   DELETE_SCHEDULE,
   SET_TO_SCREEN_WEATHER,
   UPDATE_SCREEN_ASSIGN,
@@ -75,7 +76,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(handleGetAllSchedule({ token }));
+    // dispatch(handleGetAllSchedule({ token }));
 
     if (successMessage && type === "DELETE") {
       toast.success(successMessage);
@@ -131,11 +132,16 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  
+  const fetchAllData =() =>{
+    dispatch(getData()).then((res) => {
+      setWeatherList(res?.payload?.data?.model)
+    });
+  }
+
   useEffect(() => {
     if (loadFist) {
-      dispatch(getData()).then((res) => {
-        setWeatherList(res?.payload?.data?.model)
-      });
+      fetchAllData()
       setLoadFist(false);
     }
   }, [loadFist]);
@@ -272,6 +278,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status == 200) {
           try {
+            
             if (macids?.includes(",")) {
               let allMacIDs = macids?.split(",");
               allMacIDs?.map((item) => {
@@ -292,6 +299,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             }
             setTimeout(() => {
               toast.remove();
+              fetchAllData()
               setSelectScreenModal(false);
               setAddScreenModal(false);
             }, 2000);
@@ -341,49 +349,20 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleUpadteScheduleTags = (tags) => {
-    let data = JSON.stringify({
-      weatherSchedulingID: updateTagSchedule?.scheduleId,
-      name: updateTagSchedule?.scheduleName,
-      // screenAssigned: updateTagSchedule?.screenAssigned,
-      // startDate: updateTagSchedule?.startDate,
-      // endDate: updateTagSchedule?.endDate,
-      operation: "Insert",
-      tags: tags,
-    });
     let config = {
-      method: "post",
+      method: "get",
       maxBodyLength: Infinity,
-      url: ADD_OR_UPDATE_WEATHER,
+      url: `${ADD_WEATHERSCHEDULE_TAG}?WeatherSchedulingId=${updateTagSchedule?.weatherSchedulingID}&Tags=${tags}`,
       headers: {
         Authorization: authToken,
-        "Content-Type": "application/json",
+
       },
-      data: data,
     };
     axios
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
-          const updatedSchedule = weatherList.map((i) => {
-            if (i?.scheduleId === response?.data?.data?.model?.scheduleId) {
-              return { ...i, tags: response?.data?.data?.model?.tags };
-            } else {
-              return i;
-            }
-          });
-          const updateFilteredSchedule = filteredScheduleData.map((i) => {
-            if (i?.scheduleId === response?.data?.data?.model?.scheduleId) {
-              return { ...i, tags: response?.data?.data?.model?.tags };
-            } else {
-              return i;
-            }
-          });
-          if (updatedSchedule.length > 0) {
-            dispatch(handleChangeSchedule(updatedSchedule));
-          }
-          if (updateFilteredSchedule.length > 0) {
-            setFilteredScheduleData(updateFilteredSchedule);
-          }
+          fetchAllData()
         }
       })
       .catch((error) => {
@@ -665,7 +644,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
                               </td>
                               <td className="text-center text-[#5E5E5E]">
-                                {schedule.screenAssigned}
+                                {schedule.screens}
                               </td>
 
                               <td
@@ -680,7 +659,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                           size={30}
                                           className="mx-auto cursor-pointer"
                                           onClick={() => {
-                                            setShowTagModal(true);
+
                                             schedule.tags === "" ||
                                               schedule?.tags === null
                                               ? setTags([])
@@ -688,6 +667,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                                 schedule?.tags?.split(",")
                                               );
                                             setUpdateTagSchedule(schedule);
+                                            setShowTagModal(true);
                                           }}
                                         />
                                       </span>
@@ -717,7 +697,6 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     schedule?.tags !== null && (
                                       <AiOutlinePlusCircle
                                         onClick={() => {
-                                          setShowTagModal(true);
                                           schedule.tags === "" ||
                                             schedule?.tags === null
                                             ? setTags([])
@@ -725,6 +704,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                               schedule?.tags?.split(",")
                                             );
                                           setUpdateTagSchedule(schedule);
+                                          setShowTagModal(true);
                                         }}
                                         className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                                       />
@@ -783,7 +763,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         );
                                         setAddScreenModal(true);
                                         setScreenSelected(
-                                          schedule?.screenAssigned?.split(",")
+                                          schedule?.screens?.split(",")
                                         );
                                         setSelectData(schedule);
                                       }}

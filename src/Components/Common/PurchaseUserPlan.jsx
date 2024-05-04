@@ -18,7 +18,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
     const [discountCoupon, setDiscountCoupon] = useState("")
     const [clientSecret, setClientSecret] = useState("");
     const [openPayment, setOpenPayment] = useState(false)
-    const [TalkToSale,setTalkToSale] = useState(false)
+    const [TalkToSale, setTalkToSale] = useState(false)
     const TotalPrice = Screen <= 1 ? selectPlan?.planPrice : ((Screen * selectPlan?.planPrice))
 
     const appearance = {
@@ -226,18 +226,18 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                 <div className="pricing-plan border-t-4 border-solid border-white bg-white text-center max-w-sm mx-auto hover:border-blue-700 transition-colors duration-300">
                                                     <div className="p-6">
                                                         <h4 className="font-medium leading-tight text-2xl">{item?.planName}</h4>
-                                                         <p className="text-gray-600">{item?.planDetailss}</p> 
+                                                        <p className="text-gray-600">{item?.planDetailss}</p>
                                                     </div>
-                                                {item?.listOfPlansID !== 4 && (
-                                                    <div className="pricing-amount bg-indigo-100 p-6 transition-colors duration-300">
-                                                        <div className=""><span className="text-4xl font-semibold">${item?.planPrice}</span> /Month</div>
-                                                    </div>
-                                                )}
-                                                {item?.listOfPlansID === 4 && (
-                                                    <div className="pricing-amount bg-indigo-100 p-6 transition-colors duration-300">
-                                                    <div className=""><span className="text-3xl font-semibold"> Talk to Sales</span></div>
-                                                </div>
-                                                )}
+                                                    {item?.listOfPlansID !== 4 && (
+                                                        <div className="pricing-amount bg-indigo-100 p-6 transition-colors duration-300">
+                                                            <div className=""><span className="text-4xl font-semibold">${item?.planPrice}</span> /Month</div>
+                                                        </div>
+                                                    )}
+                                                    {item?.listOfPlansID === 4 && (
+                                                        <div className="pricing-amount bg-indigo-100 p-6 transition-colors duration-300">
+                                                            <div className=""><span className="text-3xl font-semibold"> Talk to Sales</span></div>
+                                                        </div>
+                                                    )}
                                                     <div className="p-6">
                                                         {item?.listOfPlansID === 1 && (
                                                             <ul className="leading-loose">
@@ -325,16 +325,12 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                 </div>
             </div>
             {openPayment && clientSecret && (
-                <div className="lg:w-[600px] md:w-[600px] w-full h-[30vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg flex items-center justify-center">
-                    <>
-                        <Elements options={options} stripe={stripePromise}>
-                            <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment} userPlanType={userPlanType} />
-                        </Elements>
-                    </>
-                </div>
+                <Elements options={options} stripe={stripePromise}>
+                    <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment} userPlanType={userPlanType} />
+                </Elements>
             )}
             {TalkToSale && (
-                <TalkToSaleDialog setTalkToSale={setTalkToSale} TalkToSale={TalkToSale}/>
+                <TalkToSaleDialog setTalkToSale={setTalkToSale} TalkToSale={TalkToSale} />
             )}
         </>
     )
