@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { handlePaymentDetails } from '../../Redux/PaymentSlice';
-import { PAYMENT_DETAILS } from '../../Pages/Api';
+import { handleCreateSubscription, handlePaymentDetails } from '../../Redux/PaymentSlice';
+import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS } from '../../Pages/Api';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { handleLogout } from '../../Redux/Authslice';
 import { IoClose } from 'react-icons/io5';
 const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, setOpenPayment, openPayment, userPlanType }) => {
     const { token, user } = useSelector((state) => state.root.auth);
+    const authToken = `Bearer ${token}`;
     const stripe = useStripe();
     const elements = useElements();
     const navigation = useNavigate()
@@ -58,7 +59,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         });
     }, [stripe, elements]);
 
-    const PaymentDetails = ({ paymentIntent, organizationID }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID ,Subscription}) => {
         let params = {
             ...paymentIntent,
             PaymentType: `${selectPlan?.planName} Plan`,
@@ -68,7 +69,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             type: "Screen",
             items: Screen,
             organizationId: organizationID,
-
+            SubscriptionID: Subscription,
             UserID: organizationID,
             SystemTimeZone: new Date()
                 .toLocaleDateString(undefined, {
@@ -84,17 +85,54 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             url: PAYMENT_DETAILS,
             headers: {
                 "Content-Type": "application/json",
+                Authorization: authToken
             },
             data: JSON.stringify(params),
         }
         dispatch(handlePaymentDetails({ config })).then((res) => {
             if (res?.payload?.status) {
                 setIsLoading(false);
-                if (userPlanType === "LoginUser") {
+                // if (userPlanType === "LoginUser") {
                     dispatch(handleLogout());
-                } else {
-                    navigation("/"); // Navigate to dashboard after processing payment
-                }
+                // } else {
+                //     navigation("/"); // Navigate to dashboard after processing payment
+                // }
+            }
+        })
+    }
+
+    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
+        let product;
+        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+            product = "prod_PwkVKbLSFWLFbG"
+        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+            product = "prod_PwkV7yFNwyNMzl"
+        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+            product = "prod_PwkWdO5AkzWyRX"
+        } else {
+            product = "prod_PwkWSDVFcbz4Ui"
+        }
+
+        let params = {
+            Email: email,
+            PaymentMethodId: PaymentMethodId,
+            ProductID: product,
+        }
+
+        let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: CREATE_SUBSCRIPTION,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            data: JSON.stringify(params),
+        }
+
+        dispatch(handleCreateSubscription({ config })).then((res) => {
+            if (res?.payload?.status) {
+                let Subscription = res?.payload?.subscriptionId
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription })
             }
         })
     }
@@ -136,7 +174,8 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                     }
                 } else {
                     setMessage("Payment successful!");
-                    PaymentDetails({ paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    // PaymentDetails({ paymentIntent: paymentMethod, organizationID: user?.organizationId })
                 }
                 // Payment was successful, you can access paymentIntent for confirmation data
 
