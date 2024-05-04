@@ -756,16 +756,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               </div>
                             </div>
                           ))}
-                          {showTagModal && (
-                            <AddOrEditTagPopup
-                              setShowTagModal={setShowTagModal}
-                              tags={tags}
-                              setTags={setTags}
-                              handleUpdateTagsYoutube={handleUpdateTagsYoutube}
-                              from="youtube"
-                              setUpdateTagYoutube={setUpdateTagYoutube}
-                            />
-                          )}
+                      
                           {instanceView && (
                             <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-9990 outline-none focus:outline-none">
                               <div ref={modalRef}>
@@ -886,6 +877,17 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {showTagModal && (
+        <AddOrEditTagPopup
+          setShowTagModal={setShowTagModal}
+          tags={tags}
+          setTags={setTags}
+          handleUpdateTagsYoutube={handleUpdateTagsYoutube}
+          from="youtube"
+          setUpdateTagYoutube={setUpdateTagYoutube}
+        />
       )}
       {/* add screen modal end */}
       {selectScreenModal && (

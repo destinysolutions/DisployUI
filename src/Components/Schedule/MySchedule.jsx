@@ -872,20 +872,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                               className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                                             />
                                           )}
-                                        {showTagModal && (
-                                          <AddOrEditTagPopup
-                                            setShowTagModal={setShowTagModal}
-                                            tags={tags}
-                                            setTags={setTags}
-                                            handleUpadteScheduleTags={
-                                              handleUpadteScheduleTags
-                                            }
-                                            from="schedule"
-                                            setUpdateTagSchedule={
-                                              setUpdateTagSchedule
-                                            }
-                                          />
-                                        )}
+                                        
                                       </div>
                                     </td>
 
@@ -1129,6 +1116,21 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {showTagModal && (
+        <AddOrEditTagPopup
+          setShowTagModal={setShowTagModal}
+          tags={tags}
+          setTags={setTags}
+          handleUpadteScheduleTags={
+            handleUpadteScheduleTags
+          }
+          from="schedule"
+          setUpdateTagSchedule={
+            setUpdateTagSchedule
+          }
+        />
       )}
 
       {/* add screen modal end */}

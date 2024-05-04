@@ -928,7 +928,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       .then((res) => {
         if (res?.payload?.data === false) {
           setScreenLimit(true)
-        }else{
+        } else {
           setShowOTPModal(true)
         }
       })
@@ -1221,7 +1221,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         )}
                       </div>
 
-                      {permissions.isDelete && sortedAndPaginatedData?.length > 0 &&  (
+                      {permissions.isDelete && sortedAndPaginatedData?.length > 0 && (
                         <button
                           data-tip
                           data-for="Select All"
@@ -1608,22 +1608,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                               )}
 
                                             {/* add or edit tag modal */}
-                                            {showTagModal && (
-                                              <AddOrEditTagPopup
-                                                setShowTagModal={
-                                                  setShowTagModal
-                                                }
-                                                tags={tags}
-                                                setTags={setTags}
-                                                handleTagsUpdate={
-                                                  handleTagsUpdate
-                                                }
-                                                from="screen"
-                                                setTagUpdateScreeen={
-                                                  setTagUpdateScreeen
-                                                }
-                                              />
-                                            )}
+
                                           </div>
                                         </td>
                                       )}
@@ -1975,18 +1960,29 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
+      {showTagModal && (
+        <AddOrEditTagPopup
+          setShowTagModal={setShowTagModal}
+          tags={tags}
+          setTags={setTags}
+          handleTagsUpdate={handleTagsUpdate}
+          from="screen"
+          setTagUpdateScreeen={setTagUpdateScreeen}
+        />
+      )}
+
       {openPayment && clientSecret && (
         <Elements options={options} stripe={stripePromise}>
           <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Screen" PaymentValue={addScreen} discountCoupon={discountCoupon} />
         </Elements>
       )}
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) &&  (
+      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
 
       {screenLimit && (
-        <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit}/>
+        <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit} />
       )}
     </>
   );

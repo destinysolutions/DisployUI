@@ -126,7 +126,7 @@ const AddOrEditTagPopup = ({
     <>
       <div
         onClick={() => handleClickOutside(false)}
-        className="inset-0 fixed z-9990 bg-black/20"
+        className="inset-0 fixed z-9990 bg-black/50"
       ></div>
       <div className=" bg-white z-9999 space-y-3 overflow-y-scroll hide_scrollbar fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 min-w-80vw max-h-[50vh] max-w-[50vw] min-h-[50vh] min-w-[50vw] p-5 rounded-lg">
         <div className="flex items-center justify-between w-full bg-white sticky -top-6 p-2">

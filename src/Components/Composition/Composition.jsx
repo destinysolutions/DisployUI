@@ -918,20 +918,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                             />
                                           )}
                                         {/* add or edit tag modal */}
-                                        {showTagModal && (
-                                          <AddOrEditTagPopup
-                                            setShowTagModal={setShowTagModal}
-                                            tags={tags}
-                                            setTags={setTags}
-                                            handleUpdateTagsOfComposition={
-                                              handleUpdateTagsOfComposition
-                                            }
-                                            from="composition"
-                                            setUpdateTagComposition={
-                                              setUpdateTagComposition
-                                            }
-                                          />
-                                        )}
+                                       
                                       </div>
                                     </td>
 
@@ -1147,6 +1134,21 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {showTagModal && (
+        <AddOrEditTagPopup
+          setShowTagModal={setShowTagModal}
+          tags={tags}
+          setTags={setTags}
+          handleUpdateTagsOfComposition={
+            handleUpdateTagsOfComposition
+          }
+          from="composition"
+          setUpdateTagComposition={
+            setUpdateTagComposition
+          }
+        />
       )}
 
       {selectScreenModal && (

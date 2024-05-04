@@ -709,20 +709,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                                       />
                                     )}
-                                  {showTagModal && (
-                                    <AddOrEditTagPopup
-                                      setShowTagModal={setShowTagModal}
-                                      tags={tags}
-                                      setTags={setTags}
-                                      handleUpadteWeatherScheduleTags={
-                                        handleUpadteScheduleTags
-                                      }
-                                      from="weather-schedule"
-                                      setUpdateTagSchedule={
-                                        setUpdateTagSchedule
-                                      }
-                                    />
-                                  )}
+                                 
                                 </div>
                               </td>
 
@@ -906,6 +893,21 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {showTagModal && (
+        <AddOrEditTagPopup
+          setShowTagModal={setShowTagModal}
+          tags={tags}
+          setTags={setTags}
+          handleUpadteWeatherScheduleTags={
+            handleUpadteScheduleTags
+          }
+          from="weather-schedule"
+          setUpdateTagSchedule={
+            setUpdateTagSchedule
+          }
+        />
       )}
 
       {/* add screen modal end */}

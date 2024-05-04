@@ -1179,22 +1179,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                                     )}
 
                                                   {/* add or edit tag modal */}
-                                                  {showTagModal && (
-                                                    <AddOrEditTagPopup
-                                                      setShowTagModal={
-                                                        setShowTagModal
-                                                      }
-                                                      tags={tags}
-                                                      setTags={setTags}
-                                                      handleTagsUpdate={
-                                                        handleTagsUpdate
-                                                      }
-                                                      from="screen"
-                                                      setTagUpdateScreeen={
-                                                        setTagUpdateScreeen
-                                                      }
-                                                    />
-                                                  )}
+                                                  
                                                 </td>
                                                 <td className="p-2 justify-center flex ">
                                                   {permissions.isDelete && (
@@ -1320,6 +1305,23 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           selectedSchedule={selectedSchedule}
           selectedAsset={selectedAsset}
           handleSave={handleSave} // save end of the call function confim
+        />
+      )}
+
+      {showTagModal && (
+        <AddOrEditTagPopup
+          setShowTagModal={
+            setShowTagModal
+          }
+          tags={tags}
+          setTags={setTags}
+          handleTagsUpdate={
+            handleTagsUpdate
+          }
+          from="screen"
+          setTagUpdateScreeen={
+            setTagUpdateScreeen
+          }
         />
       )}
 

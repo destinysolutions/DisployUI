@@ -527,20 +527,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           </div>
                         ))}
-                        {showTagModal && (
-                          <AddOrEditTagPopup
-                            setShowTagModal={setShowTagModal}
-                            tags={tags}
-                            setTags={setTags}
-                            handleUpdateTagsDitigitalMenu={
-                              handleUpdateTagsDitigitalMenu
-                            }
-                            from="digitalMenu"
-                            setUpdateDigitalMenuTag={
-                              setUpdateDigitalMenuTag
-                            }
-                          />
-                        )}
+                       
                         {instanceView && (
                           <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
                             <div
@@ -654,6 +641,21 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {showTagModal && (
+        <AddOrEditTagPopup
+          setShowTagModal={setShowTagModal}
+          tags={tags}
+          setTags={setTags}
+          handleUpdateTagsDitigitalMenu={
+            handleUpdateTagsDitigitalMenu
+          }
+          from="digitalMenu"
+          setUpdateDigitalMenuTag={
+            setUpdateDigitalMenuTag
+          }
+        />
       )}
 
       {selectScreenModal && (

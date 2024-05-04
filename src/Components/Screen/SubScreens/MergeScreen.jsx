@@ -884,22 +884,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                               )}
 
                                             {/* add or edit tag modal */}
-                                            {showTagModal && (
-                                              <AddOrEditTagPopup
-                                                setShowTagModal={
-                                                  setShowTagModal
-                                                }
-                                                tags={tags}
-                                                setTags={setTags}
-                                                handleTagsUpdate={
-                                                  handleTagsUpdate
-                                                }
-                                                from="screen"
-                                                setTagUpdateScreeen={
-                                                  setTagUpdateScreeen
-                                                }
-                                              />
-                                            )}
+                                            
                                           </td>
                                         </tr>
                                       );
@@ -997,6 +982,23 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           selectedYoutube={selectedYoutube}
           selectedAsset={selectedAsset}
           handleSave={handleSave} // save end of the call function confim
+        />
+      )}
+
+      {showTagModal && (
+        <AddOrEditTagPopup
+          setShowTagModal={
+            setShowTagModal
+          }
+          tags={tags}
+          setTags={setTags}
+          handleTagsUpdate={
+            handleTagsUpdate
+          }
+          from="screen"
+          setTagUpdateScreeen={
+            setTagUpdateScreeen
+          }
         />
       )}
 

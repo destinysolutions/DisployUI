@@ -2083,16 +2083,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 className="w-5 h-5 cursor-pointer"
                               />
                             )}
-                          {showTagModal && (
-                            <AddOrEditTagPopup
-                              setShowTagModal={setShowTagModal}
-                              tags={tags}
-                              setTags={setTags}
-                              handleTagsUpdate={handleTagsUpdate}
-                              from="screen"
-                              setTagUpdateScreeen={setTagUpdateScreeen}
-                            />
-                          )}
+                     
                           {/* <select
                                       value={selectedTag}
                                       onChange={(e) =>
@@ -2258,6 +2249,17 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       }
+
+      {showTagModal && (
+        <AddOrEditTagPopup
+          setShowTagModal={setShowTagModal}
+          tags={tags}
+          setTags={setTags}
+          handleTagsUpdate={handleTagsUpdate}
+          from="screen"
+          setTagUpdateScreeen={setTagUpdateScreeen}
+        />
+      )}
 
       {selectedOperatingHourModel && (
         <OperatingHourModal
