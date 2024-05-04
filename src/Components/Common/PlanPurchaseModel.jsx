@@ -68,6 +68,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             ExtraScreen: (Screen - 1),
             type: "Screen",
             items: Screen,
+            amount:selectPlan?.planPrice,
             organizationId: organizationID,
             SubscriptionID: Subscription,
             UserID: organizationID,
