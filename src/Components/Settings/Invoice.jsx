@@ -42,7 +42,7 @@ const Invoice = ({
       },
     }
     dispatch(handleAllInvoice({ config })).then((res) => {
-      // setInvoiceData(res?.payload?.data)
+      setInvoiceData(res?.payload?.data)
       setLoading(false)
     })
   }
@@ -168,7 +168,7 @@ const Invoice = ({
                             </p>
                     </td>*/}
                             <td className="px-5 py-3 text-lg text-center">
-                              <p className="text-gray-900 whitespace-no-wrap">${(item?.totalAmount) / 100}</p>
+                              <p className="text-gray-900 whitespace-no-wrap">${(item?.totalAmount)}</p>
                             </td>
                             <td className="px-5 py-3 text-lg text-center">
                               <p className="text-gray-900 whitespace-no-wrap">

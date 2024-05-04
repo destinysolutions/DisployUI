@@ -38,14 +38,14 @@ const InvoiceBilling = ({ InvoiceRef ,selectData}) => {
                 <div className="full ">
                     <div className="bg-blue-lighter screen-count text-left border-b border-gray py-3 px-3"><strong className="text-left">Summary</strong></div>
                     <div className="flex justify-between border-b border-gray text-right py-3 px-3">
-                        <label className="text-SlateBlue">{selectData?.paymentType === "Storage" ? `${selectData?.paymentValue}GB` : selectData?.paymentValue} x {selectData?.paymentType}</label><span>${(selectData?.totalAmount)/100}.00</span></div>
+                        <label className="text-SlateBlue">{selectData?.paymentType === "Storage" ? `${selectData?.paymentValue}GB` : selectData?.paymentValue} x {selectData?.paymentType}</label><span>${(selectData?.totalAmount)}.00</span></div>
                     <div className="flex justify-between border-b border-gray text-right py-3 px-3">
                         <label>Discount</label><span>$ 0.00</span></div>
                     <div className="flex justify-between border-b border-gray text-right py-3 px-3">
                         <label>Tax</label><span>$ 0.00</span></div>
                     <div className="bg-gray-100 flex justify-between border-b border-gray text-right py-3 px-3"><b>Total Amount due on {moment(
                         selectData?.dueDate
-                      ).format("LL")}</b><b>${(selectData?.totalAmount)/100}.00</b></div>
+                      ).format("LL")}</b><b>${(selectData?.totalAmount)}.00</b></div>
                 </div>
               {/*  <div className="full ">
                     <div className="bg-blue-lighter screen-count text-left border-b border-gray py-3 px-3"><strong className="text-left">Detail</strong></div>

@@ -61,14 +61,16 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
     const PaymentDetails = ({ paymentIntent, organizationID }) => {
         let totalPrice;
-        if (user?.planID === 1) {
+        if (user?.planID === 1 && type === "Screen") {
             totalPrice = PaymentValue * 10
-        } else if (user?.planID === 2) {
+        } else if (user?.planID === 2 && type === "Screen") {
             totalPrice = PaymentValue * 17
-        } else if (user?.planID === 2) {
-            totalPrice = PaymentValue * 17
-        } else {
+        } else if (user?.planID === 3 && type === "Screen") {
+            totalPrice = PaymentValue * 24
+        } else if (user?.planID === 4 && type === "Screen") {
             totalPrice = PaymentValue * 47
+        } else {
+            totalPrice = PaymentValue * 3
         }
         let params = {
             ...paymentIntent,
@@ -81,7 +83,6 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             items: PaymentValue,
             amount: totalPrice,
             organizationId: organizationID,
-
             UserID: organizationID,
             SystemTimeZone: new Date()
                 .toLocaleDateString(undefined, {
