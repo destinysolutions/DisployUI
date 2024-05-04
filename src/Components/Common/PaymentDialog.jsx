@@ -59,7 +59,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         layout: "tabs"
     }
 
-    const PaymentDetails = ({ paymentIntent, organizationID }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID ,Subscription}) => {
         let totalPrice;
         if (user?.planID === 1 && type === "Screen") {
             totalPrice = PaymentValue * 10
@@ -83,6 +83,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             items: PaymentValue,
             amount: totalPrice,
             organizationId: organizationID,
+            SubscriptionID:Subscription,
             UserID: organizationID,
             SystemTimeZone: new Date()
                 .toLocaleDateString(undefined, {
@@ -112,7 +113,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
         let product;
-        if (type === "Screen" && (user?.planID === 1 || user?.planID === "1")) {
+        if (type === "Screen" && ((user?.planID === 1 || user?.planID === "1") || (user?.isTrial && user?.isActivePlan === false))) {
             product = "prod_Q1wI9ksVDBdRW3"
         } else if (type === "Screen" && (user?.planID === 2 || user?.planID === "2")) {
             product = "prod_Q1wITfBepgK1H7"
@@ -144,7 +145,8 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
-                PaymentDetails({ paymentIntent, organizationID: organizationID })
+                let Subscription = res?.payload?.subscriptionId
+                PaymentDetails({ paymentIntent, organizationID: organizationID ,Subscription})
             }
         })
     }

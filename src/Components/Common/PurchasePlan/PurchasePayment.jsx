@@ -59,7 +59,7 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
         layout: "tabs"
     }
 
-    const PaymentDetails = ({ paymentIntent, organizationID }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, Subscription }) => {
         let params = {
             ...paymentIntent,
             PaymentType: `${selectPlan?.planName} Plan`,
@@ -70,7 +70,7 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
             items: totalScreen,
             amount: TotalPrice,
             organizationId: organizationID,
-
+            SubscriptionID: Subscription,
             UserID: organizationID,
             SystemTimeZone: new Date()
                 .toLocaleDateString(undefined, {
@@ -128,14 +128,15 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
 
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
-                PaymentDetails({ paymentIntent, organizationID: organizationID })
+                let Subscription = res?.payload?.subscriptionId
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription })
             }
         })
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+
         if (!stripe || !elements) {
             return;
         }

@@ -27,7 +27,7 @@ import axios from "axios";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
-  const {user, token } = useSelector((state) => state.root.auth);
+  const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const store = useSelector((state) => state.root.weather);
 
@@ -122,10 +122,16 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           setEndTime(data.endTime);
           setTempratureUnit(data.tempUnit);
           setTemprature(data.temperature);
+          setSelectedScreens(data.screens)
           setIsAbove(data.isAbove);
           const timeZone = getTimezone?.filter((item) => item?.timeZoneID === data?.timeZoneID)
           setSelectedTimezoneName(timeZone?.[0]?.timeZoneName)
           setSelectedAsset({ assetName: data.assetName });
+          setScreenSelected( 
+            data?.screenIDs?.split(
+              ","
+            )
+            )
           setUrlParth({
             assetID: data.mediaID,
             assetFolderPath: data.assetFolderPath,
@@ -170,7 +176,30 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       isAbove: isAbove,
       timeZoneID: timeZone?.[0]?.timeZoneID,
     };
-    dispatch(addData(data));
+    dispatch(addData(data)).then((res) => {
+      if (res?.payload?.status) {
+        if (screenSelected !== null) {
+          if (screenSelected?.includes(",")) {
+            let allMacIDs = screenSelected?.split(",");
+            allMacIDs?.map((item) => {
+              let Params = {
+                id: socket.id,
+                connection: socket.connected,
+                macId: item,
+              };
+              socket.emit("ScreenConnected", Params);
+            });
+          } else {
+            const Params = {
+              id: socket.id,
+              connection: socket.connected,
+              macId: screenSelected,
+            };
+            socket.emit("ScreenConnected", Params);
+          }
+        }
+      }
+    });
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
@@ -225,6 +254,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               toast.remove();
               setSelectScreenModal(false);
               setAddScreenModal(false);
+              navigate("/weatherschedule");
             }, 2000);
             // if (connection.state == "Disconnected") {
             //   connection
@@ -607,8 +637,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
       <Footer />
 
-      
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

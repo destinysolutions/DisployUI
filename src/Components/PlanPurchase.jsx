@@ -53,7 +53,7 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
         });
     }, [stripe, elements]);
 
-    const PaymentDetails = ({ paymentIntent, organizationID }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID ,Subscription}) => {
         let params = {
             ...paymentIntent,
             PaymentType: `${selectedPlan?.planName} Plan`,
@@ -64,7 +64,7 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
             items: Screen,
             amount: TotalPrice,
             organizationId: organizationID,
-
+            SubscriptionID:Subscription,
             UserID: organizationID,
             SystemTimeZone: new Date()
                 .toLocaleDateString(undefined, {
@@ -121,7 +121,8 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
 
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
-                PaymentDetails({ paymentIntent, organizationID: organizationID })
+                let Subscription = res?.payload?.subscriptionId
+                PaymentDetails({ paymentIntent, organizationID: organizationID,Subscription })
             }
         })
     }
