@@ -310,8 +310,8 @@ const DashboardScreen = ({ screenDialogOpen, setScreenDialogOpen, screen, sideba
                                         </div>
                                         {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
                                         <button
-                                            //   onClick={() => handlePageChange(currentPage + 1)}
-                                            //   disabled={(currentPage === totalPages) || (screen?.length === 0)}
+                                            onClick={() => handlePageChange(currentPage + 1)}
+                                            disabled={(currentPage === totalPages) || (screen?.length === 0)}
                                             className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                                         >
                                             {sidebarOpen ? "Next" : ""}
