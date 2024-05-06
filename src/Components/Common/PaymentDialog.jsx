@@ -240,7 +240,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             >
                 <div className="modal-overlay">
                     <div className="modal">
-                        <div className="relative p-4 w-[700px] max-h-full">
+                        <div className="relative p-4 lg:w-[1000px] md:w-[900px] sm:w-full max-h-full">
                             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                                 <div className="p-4 md:p-5">
                                     <div id="payment-form" className='Payment'>
@@ -250,9 +250,9 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                                             </label>
                                             <IoClose size={26} />
                                         </div>
-                                        <div className='flex flex-row gap-3'>
-                                            <div className='flex flex-col w-60 gap-4 items-start border-r border-gray'>
-                                                <div className='flex items-center'>
+                                        <div className='flex flex-row flex-wrap'>
+                                            <div className='w-full sm:w-1/3 md:w-1/4'>
+                                                <div className='flex items-center border border-gray rounded py-2 px-3 mb-2'>
                                                     <input
                                                         id="Credit"
                                                         type="radio"
@@ -264,7 +264,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                                                     />
                                                     <label htmlFor="Credit" className="ms-2 text-lg font-medium text-gray-900 dark:text-gray-300">Credit Card</label>
                                                 </div>
-                                                <div className='flex items-center '>
+                                                <div className='flex items-center border border-gray rounded py-2 px-3 mb-2'>
                                                     <input
                                                         id="PayPal"
                                                         type="radio"
@@ -277,106 +277,108 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                                                     <label htmlFor="PayPal" className="ms-2 text-lg font-medium text-gray-900 dark:text-gray-300">PayPal</label>
                                                 </div>
                                             </div>
-                                            {paymentMethod === "Credit" && (
-                                                <div className="payment-form">
-                                                    <label className="card-label">
-                                                        Card Number
-                                                        <CardNumberElement
-                                                            className="card-input"
-                                                            options={{
-                                                                style: {
-                                                                    base: {
-                                                                        fontSize: '16px',
-                                                                        color: '#424770',
-                                                                        '::placeholder': {
-                                                                            color: '#aab7c4',
+                                            <div className='w-full sm:w-2/3 md:w-3/4 pl-5'>
+                                                {paymentMethod === "Credit" && (
+                                                    <div className="bg-white tabdetails rounded-md w-full p-4">
+                                                        <label className="card-label">
+                                                            Card Number
+                                                            <CardNumberElement
+                                                                className="card-input"
+                                                                options={{
+                                                                    style: {
+                                                                        base: {
+                                                                            fontSize: '16px',
+                                                                            color: '#424770',
+                                                                            '::placeholder': {
+                                                                                color: '#aab7c4',
+                                                                            },
+                                                                        },
+                                                                        invalid: {
+                                                                            color: '#9e2146',
                                                                         },
                                                                     },
-                                                                    invalid: {
-                                                                        color: '#9e2146',
-                                                                    },
-                                                                },
-                                                            }}
-                                                        />
-                                                    </label>
-                                                    <label className="card-label">
-                                                        Expiration Date
-                                                        <CardExpiryElement
-                                                            className="card-input"
-                                                            options={{
-                                                                style: {
-                                                                    base: {
-                                                                        fontSize: '16px',
-                                                                        color: '#424770',
-                                                                        '::placeholder': {
-                                                                            color: '#aab7c4',
+                                                                }}
+                                                            />
+                                                        </label>
+                                                        <label className="card-label">
+                                                            Expiration Date
+                                                            <CardExpiryElement
+                                                                className="card-input"
+                                                                options={{
+                                                                    style: {
+                                                                        base: {
+                                                                            fontSize: '16px',
+                                                                            color: '#424770',
+                                                                            '::placeholder': {
+                                                                                color: '#aab7c4',
+                                                                            },
+                                                                        },
+                                                                        invalid: {
+                                                                            color: '#9e2146',
                                                                         },
                                                                     },
-                                                                    invalid: {
-                                                                        color: '#9e2146',
-                                                                    },
-                                                                },
-                                                            }}
-                                                        />
-                                                    </label>
-                                                    <label className="card-label">
-                                                        CVC
-                                                        <CardCvcElement
-                                                            className="card-input"
-                                                            options={{
-                                                                style: {
-                                                                    base: {
-                                                                        fontSize: '16px',
-                                                                        color: '#424770',
-                                                                        '::placeholder': {
-                                                                            color: '#aab7c4',
+                                                                }}
+                                                            />
+                                                        </label>
+                                                        <label className="card-label">
+                                                            CVC
+                                                            <CardCvcElement
+                                                                className="card-input"
+                                                                options={{
+                                                                    style: {
+                                                                        base: {
+                                                                            fontSize: '16px',
+                                                                            color: '#424770',
+                                                                            '::placeholder': {
+                                                                                color: '#aab7c4',
+                                                                            },
+                                                                        },
+                                                                        invalid: {
+                                                                            color: '#9e2146',
                                                                         },
                                                                     },
-                                                                    invalid: {
-                                                                        color: '#9e2146',
-                                                                    },
-                                                                },
-                                                            }}
-                                                        />
-                                                    </label>
-                                                    <div className="auto-pay">
-                                                        <input type="checkbox" className="auto-pay-checkbox" onChange={() => setAutoPay(!autoPay)} value={autoPay} />
-                                                        <label className="auto-pay-label">Auto Payment</label>
-                                                    </div>
-                                                    {errorMessage && (
-                                                        <div className='mb-2'>
-                                                            <label className="error-message">You need to Check Auto Pay for Further Process.</label>
+                                                                }}
+                                                            />
+                                                        </label>
+                                                        <div className="auto-pay">
+                                                            <input type="checkbox" className="auto-pay-checkbox" onChange={() => setAutoPay(!autoPay)} value={autoPay} />
+                                                            <label className="auto-pay-label">Auto Payment</label>
                                                         </div>
-                                                    )}
-                                                    <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type="button" className="pay-button">
-                                                        <span id="button-text">
-                                                            {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            )}
-                                            {paymentMethod === "PayPal" && (
-                                                <div className='w-full'>
-                                                    <PayPalScriptProvider options={paypalOptions}>
-                                                        <PayPalButtons
-                                                            style={{ layout: "horizontal" }}
-                                                            createOrder={(data, actions) => {
-                                                                return actions.order.create({
-                                                                    purchase_units: [{
-                                                                        amount: {
-                                                                            value: '100.00', // Replace with your desired amount
-                                                                        },
-                                                                    }],
-                                                                });
-                                                            }}
-                                                            onApprove={(data, actions) => {
-                                                                return actions.order.capture().then(function (details) {
-                                                                    alert('Transaction completed by ' + details.payer.name.given_name);
-                                                                });
-                                                            }} />
-                                                    </PayPalScriptProvider>
-                                                </div>
-                                            )}
+                                                        {errorMessage && (
+                                                            <div className='mb-2'>
+                                                                <label className="error-message">You need to Check Auto Pay for Further Process.</label>
+                                                            </div>
+                                                        )}
+                                                        <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type="button" className="pay-button">
+                                                            <span id="button-text">
+                                                                {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                )}
+                                                {paymentMethod === "PayPal" && (
+                                                    <div className='w-full bg-white tabdetails rounded-md p-4'>
+                                                        <PayPalScriptProvider options={paypalOptions}>
+                                                            <PayPalButtons
+                                                                style={{ layout: "horizontal" }}
+                                                                createOrder={(data, actions) => {
+                                                                    return actions.order.create({
+                                                                        purchase_units: [{
+                                                                            amount: {
+                                                                                value: '100.00', // Replace with your desired amount
+                                                                            },
+                                                                        }],
+                                                                    });
+                                                                }}
+                                                                onApprove={(data, actions) => {
+                                                                    return actions.order.capture().then(function (details) {
+                                                                        alert('Transaction completed by ' + details.payer.name.given_name);
+                                                                    });
+                                                                }} />
+                                                        </PayPalScriptProvider>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
                                     </div>
