@@ -35,7 +35,7 @@ const PlanList = ({ choose, setChoose, myplan }) => {
                                         return (
                                             <div className='w-full md:w-1/2 lg:w-1/4 xl:w-1/4 px-3 mb-4'>
                                                 <div className="pricing-plan border-t-4 border-solid border-white bg-white text-center max-w-sm mx-auto hover:border-blue-700 transition-colors duration-300">
-                                                    <div className="p-6">
+                                                    <div className="p-6 h-48 gap-2 flex flex-col ">
                                                         <h4 className="font-medium leading-tight text-2xl">{item?.planName}</h4>
                                                         <p className="text-gray-600">{item?.planDetailss}</p>
                                                     </div>

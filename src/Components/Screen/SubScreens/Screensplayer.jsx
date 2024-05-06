@@ -157,7 +157,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const toggleModal = () => {
     setSelectedOperatingHourModel(false);
     // setSelectedOperatingHour("");
-    if(selectedOperatingHour === "Always on"){
+    if (selectedOperatingHour === "Always on") {
       setStartTime(getCurrentTime());
       setEndTime(getCurrentTime());
       setSelectedHours("");
@@ -2083,7 +2083,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 className="w-5 h-5 cursor-pointer"
                               />
                             )}
-                     
+
                           {/* <select
                                       value={selectedTag}
                                       onChange={(e) =>
@@ -2140,6 +2140,47 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           )}
                         </td>
                       </tr>
+
+                    {/*  <tr className="border-b border-[#D5E3FF]">
+                        <td className="text-left lg:py-3 md:py-2 pb-0">
+                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                            Payment Method:
+                          </p>
+                        </td>
+                        <td className="text-left lg:py-3 flex items-center gap-3 md:py-2 pt-0">
+                          <select
+                            className="px-2 py-2 border border-[#D5E3FF] w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-full"
+                            value={selectedOperatingHour}
+                            onChange={(e) => {
+                              if (e.target.value === "Custom") {
+                                setSelectedOperatingHourModel(true);
+                              } else {
+                                setSelectedOperatingHour(e.target.value);
+                              }
+                            }}
+
+                          >
+                            {Operating_hours &&
+                              Operating_hours?.map((hour) => (
+                                <option
+                                  value={hour.value}
+                                  key={hour.value}
+                                >
+                                  {hour.value}
+                                </option>
+                              ))}
+                          </select>
+                          {selectedOperatingHour === "Custom" && (
+                            <AiOutlinePlusCircle
+                              size={30}
+                              className="cursor-pointer"
+                              onClick={() => {
+                                setSelectedOperatingHourModel(true);
+                              }} />
+                          )}
+                        </td>
+                            </tr>*/}
+
                       <tr className="border-b border-[#D5E3FF]">
                         <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">

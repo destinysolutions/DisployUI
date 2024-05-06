@@ -19,6 +19,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
     const [clientSecret, setClientSecret] = useState("");
     const [openPayment, setOpenPayment] = useState(false)
     const [TalkToSale, setTalkToSale] = useState(false)
+    const [purchaseType,setPurchaseType] = useState("")
     const TotalPrice = Screen <= 1 ? selectPlan?.planPrice : ((Screen * selectPlan?.planPrice))
 
     const appearance = {
@@ -224,7 +225,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                         return (
                                             <div className='w-full md:w-1/2 lg:w-1/4 xl:w-1/4 px-3 mb-4'>
                                                 <div className="pricing-plan border-t-4 border-solid border-white bg-white text-center max-w-sm mx-auto hover:border-blue-700 transition-colors duration-300">
-                                                    <div className="p-6">
+                                                    <div className="p-6 h-48 gap-2 flex flex-col ">
                                                         <h4 className="font-medium leading-tight text-2xl">{item?.planName}</h4>
                                                         <p className="text-gray-600">{item?.planDetailss}</p>
                                                     </div>
@@ -284,6 +285,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                     className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
                                                                     onClick={() => {
                                                                         setSelectPlan(item)
+                                                                        setPurchaseType("Upgrade")
                                                                         handleCreate()
                                                                     }}
                                                                 >
@@ -326,7 +328,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
             </div>
             {openPayment && clientSecret && (
                 <Elements options={options} stripe={stripePromise}>
-                    <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment} userPlanType={userPlanType} />
+                    <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment} userPlanType={userPlanType} purchaseType={purchaseType} />
                 </Elements>
             )}
             {TalkToSale && (

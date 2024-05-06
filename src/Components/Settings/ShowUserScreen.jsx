@@ -62,7 +62,7 @@ const ShowUserScreen = ({ showUsersRef, setShowUsers, loading, userList }) => {
                                   fill="#1C64F2"
                                 />
                               </svg>
-                             
+
                             </div>
                           </td>
                         </tr>
@@ -96,21 +96,17 @@ const ShowUserScreen = ({ showUsersRef, setShowUsers, loading, userList }) => {
                               {item?.userRoleName}
                             </td>
                             <td className="text-[#5E5E5E] text-center">
-                              {item.isActive == 1 ? (
+                              {item?.isActive === 1 ? (
                                 <span
-                                  style={{
-                                    backgroundColor: "#cee9d6",
-                                  }}
-                                  className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  style={{ backgroundColor: "#cee9d6" }}
+                                  className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                                 >
                                   Active
                                 </span>
                               ) : (
                                 <span
-                                  style={{
-                                    backgroundColor: "#d1d5db",
-                                  }}
-                                  className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm"
+                                  style={{ backgroundColor: "#f1b2b2" }}
+                                  className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                                 >
                                   Inactive
                                 </span>

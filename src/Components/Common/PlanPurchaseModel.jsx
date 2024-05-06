@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { handleCreateSubscription, handlePaymentDetails } from '../../Redux/PaymentSlice';
-import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS } from '../../Pages/Api';
+import { handleCreateSubscription, handlePaymentDetails, handleUpgradeSubscription } from '../../Redux/PaymentSlice';
+import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS, UPGRADE_SUBSCRIPTION } from '../../Pages/Api';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { handleLogout } from '../../Redux/Authslice';
 import { IoClose } from 'react-icons/io5';
-const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, setOpenPayment, openPayment, userPlanType }) => {
+const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, setOpenPayment, openPayment, userPlanType, purchaseType }) => {
     const { token, user } = useSelector((state) => state.root.auth);
     const authToken = `Bearer ${token}`;
     const stripe = useStripe();
@@ -59,7 +59,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         });
     }, [stripe, elements]);
 
-    const PaymentDetails = ({ paymentIntent, organizationID ,Subscription}) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, Subscription }) => {
         let params = {
             ...paymentIntent,
             PaymentType: `${selectPlan?.planName} Plan`,
@@ -68,7 +68,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             ExtraScreen: (Screen - 1),
             type: "Screen",
             items: Screen,
-            amount:selectPlan?.planPrice,
+            amount: selectPlan?.planPrice,
             organizationId: organizationID,
             SubscriptionID: Subscription,
             UserID: organizationID,
@@ -94,7 +94,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             if (res?.payload?.status) {
                 setIsLoading(false);
                 // if (userPlanType === "LoginUser") {
-                    dispatch(handleLogout());
+                dispatch(handleLogout());
                 // } else {
                 //     navigation("/"); // Navigate to dashboard after processing payment
                 // }
@@ -138,6 +138,43 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         })
     }
 
+    const UpgradeSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
+        let product;
+        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+            product = "prod_PwkVKbLSFWLFbG"
+        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+            product = "prod_PwkV7yFNwyNMzl"
+        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+            product = "prod_PwkWdO5AkzWyRX"
+        } else {
+            product = "prod_PwkWSDVFcbz4Ui"
+        }
+
+        let params = {
+            Email: email,
+            PaymentMethodId: PaymentMethodId,
+            ProductID: product,
+        }
+
+        let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: UPGRADE_SUBSCRIPTION,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            data: JSON.stringify(params),
+        }
+
+        dispatch(handleUpgradeSubscription({ config })).then((res) => {
+            if (res?.payload?.status) {
+                let Subscription = res?.payload?.subscriptionId
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription })
+            }
+        })
+    }
+
+
 
     const handleSubmitPayment = async (event) => {
         event.preventDefault();
@@ -175,7 +212,11 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                     }
                 } else {
                     setMessage("Payment successful!");
-                    CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    if(purchaseType !== "Upgrade"){
+                        CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    }else{
+                        UpgradeSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    }
                     // PaymentDetails({ paymentIntent: paymentMethod, organizationID: user?.organizationId })
                 }
                 // Payment was successful, you can access paymentIntent for confirmation data
