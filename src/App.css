@@ -2265,7 +2265,7 @@ input#toggleFive:checked ~ .dot > span {
 }
 
 .payment-form {
-  max-width: 500px;
+  width: 500px;
   margin: auto;
   animation: fadeIn 0.5s ease forwards;
 }

@@ -85,6 +85,20 @@ export const handleCreateSubscription = createAsyncThunk(
     }
 );
 
+export const handleUpgradeSubscription = createAsyncThunk(
+    "Common/handleUpgradeSubscription",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            return response.data;
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
+
 
 
 const initialState = {
@@ -187,6 +201,19 @@ const PaymentSlice = createSlice({
             state.message = action.payload?.message;
         });
         builder.addCase(handleCreateSubscription.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload.message;
+            state.message = action.payload?.message;
+        });
+
+        builder.addCase(handleUpgradeSubscription.pending, (state) => {
+            state.status = "loading";
+        });
+        builder.addCase(handleUpgradeSubscription.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.message = action.payload?.message;
+        });
+        builder.addCase(handleUpgradeSubscription.rejected, (state, action) => {
             state.status = "failed";
             state.error = action.payload.message;
             state.message = action.payload?.message;

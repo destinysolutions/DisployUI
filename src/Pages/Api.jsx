@@ -5,6 +5,11 @@ export const baseUrl = "https://disployapi.thedestinysolutions.com/api/";
 
 export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
 
+export const paypalOptions = {
+  'client-id': 'Ac2YPb7PQ_z1TMuvWYOmWT1iafYTeVW9DubrVCxX0ub-se4zgR2D3qh4dKo8a6neF6b-vO2aDjH_CPWT', // Replace with your actual client ID
+  currency: 'USD',
+};
+
 export const postUrl = axios.create({
   baseURL: "https://disployapi.thedestinysolutions.com/api/",
   method: "post",
@@ -231,6 +236,7 @@ export const ADD_EDIT_TRIAL_PLAN = `${baseUrl}Common/EditTrialPeriod`
 export const PAYMENT_INTENT_CREATE_REQUEST = `${baseUrl}Common/PaymentIntentCreateRequest`
 export const PAYMENT_DETAILS = `${baseUrl}PaymentDetails/AddorUpdatePaymentDetails`
 export const CREATE_SUBSCRIPTION = `${baseUrl}Common/CreateAutopay`
+export const UPGRADE_SUBSCRIPTION = `${baseUrl}Common/UpgradeAutopay`
 export const GET_ALL_BILLING = `${baseUrl}BillingMaster/GetAllBilling`
 
 

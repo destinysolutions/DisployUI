@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { handleCreateSubscription, handlePaymentDetails } from '../../Redux/PaymentSlice';
-import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS } from '../../Pages/Api';
+import { handleCreateSubscription, handlePaymentDetails, handleUpgradeSubscription } from '../../Redux/PaymentSlice';
+import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS, UPGRADE_SUBSCRIPTION } from '../../Pages/Api';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { handleLogout } from '../../Redux/Authslice';
 import { IoClose } from 'react-icons/io5';
-const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, setOpenPayment, openPayment, userPlanType }) => {
+const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, setOpenPayment, openPayment, userPlanType, purchaseType }) => {
     const { token, user } = useSelector((state) => state.root.auth);
     const authToken = `Bearer ${token}`;
     const stripe = useStripe();
@@ -59,18 +59,18 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         });
     }, [stripe, elements]);
 
-    const PaymentDetails = ({ paymentIntent, organizationID ,Subscription}) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, Subscription, Subscription2 }) => {
         let params = {
             ...paymentIntent,
-            PaymentType: `${selectPlan?.planName} Plan`,
+            PaymentType: Subscription ? `${selectPlan?.planName} Plan` : "",
             PaymentValue: 1,
             AutoPay: autoPay,
             ExtraScreen: (Screen - 1),
             type: "Screen",
             items: Screen,
-            amount:selectPlan?.planPrice,
+            amount: selectPlan?.planPrice,
             organizationId: organizationID,
-            SubscriptionID: Subscription,
+            SubscriptionID: Subscription ? Subscription : Subscription2,
             UserID: organizationID,
             SystemTimeZone: new Date()
                 .toLocaleDateString(undefined, {
@@ -94,7 +94,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             if (res?.payload?.status) {
                 setIsLoading(false);
                 // if (userPlanType === "LoginUser") {
-                    dispatch(handleLogout());
+                dispatch(handleLogout());
                 // } else {
                 //     navigation("/"); // Navigate to dashboard after processing payment
                 // }
@@ -138,6 +138,52 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         })
     }
 
+    const UpgradeSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
+        let product;
+        let screenID;
+        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+            product = "prod_PwkVKbLSFWLFbG"
+            screenID = "prod_Q1wI9ksVDBdRW3"
+        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+            product = "prod_PwkV7yFNwyNMzl"
+            screenID = "prod_Q1wITfBepgK1H7"
+        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+            product = "prod_PwkWdO5AkzWyRX"
+            screenID = "prod_Q1wJSPx0LoW70n"
+        } else {
+            product = "prod_PwkWSDVFcbz4Ui"
+            screenID = "prod_Q1wJHaR4iDXNRP"
+        }
+
+        let params = {
+            Email: email,
+            PaymentMethodId: PaymentMethodId,
+            ProductID: product,
+            screenProductID: screenID
+        }
+
+        let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: UPGRADE_SUBSCRIPTION,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            data: JSON.stringify(params),
+        }
+
+        dispatch(handleUpgradeSubscription({ config })).then((res) => {
+            if (res?.payload?.status) {
+                let Subscription = res?.payload?.PlansubscriptionId
+                let Subscription2 = res?.payload?.ScreensubscriptionId
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription2 })
+
+            }
+        })
+    }
+
+
 
     const handleSubmitPayment = async (event) => {
         event.preventDefault();
@@ -175,7 +221,11 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                     }
                 } else {
                     setMessage("Payment successful!");
-                    CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    if (purchaseType !== "Upgrade") {
+                        CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    } else {
+                        UpgradeSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    }
                     // PaymentDetails({ paymentIntent: paymentMethod, organizationID: user?.organizationId })
                 }
                 // Payment was successful, you can access paymentIntent for confirmation data
