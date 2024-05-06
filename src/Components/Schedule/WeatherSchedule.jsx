@@ -190,7 +190,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       const Params = {
         id: socket.id,
         connection: socket.connected,
-        macId: weatherList.map((i) => i?.macIDs).join(",")
+        macId: weatherList?.map((i) => i?.macIDs).join(",")
       };
       socket.emit("ScreenConnected", Params);
     });
