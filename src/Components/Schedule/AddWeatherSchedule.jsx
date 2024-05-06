@@ -82,6 +82,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [screenSelected, setScreenSelected] = useState([]);
 
+
   useEffect(() => {
     if (store && store.status === "succeeded") {
       toast.success(store.message);
@@ -161,6 +162,10 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const handleAssetUpdate = () => { };
 
   const handleSubmit = () => {
+    if (!urlParth || !urlParth.assetID) {
+      toast.error("Asset is missing!");
+      return;
+  }
     const timeZone = getTimezone?.filter((item) => item?.timeZoneName === selectedTimezoneName)
     let data = {
       weatherSchedulingID: Number(weatherScheduleId) || 0,
@@ -193,7 +198,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             const Params = {
               id: socket.id,
               connection: socket.connected,
-              macId: screenSelected,
+              macId: screenSelected?.splice(0, 1)[0],
             };
             socket.emit("ScreenConnected", Params);
           }
@@ -391,11 +396,9 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   <label className="text-base font-medium">
                     Asset / Playing :
                   </label>
-                  <div className="p-2 ml-4" style={{ wordBreak: "break-all" }}>
+                  <div className="p-2 ml-4 " style={{ wordBreak: "break-all" }}>
                     <div
-                      onClick={(e) => {
-                        setShowAssetModal(true);
-                      }}
+                      onClick={(e) => {setShowAssetModal(true);}}
                       className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                     >
                       <p className="line-clamp-1">
@@ -562,13 +565,13 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="videoplayer relative bg-white w-full h-full">
                   {urlParth.assetType === 'OnlineImage' && (
                     <div className="flex items-center justify-center h-full">
-                      <img src={urlParth.assetFolderPath} className="m-auto" />
+                      <img src={urlParth.assetFolderPath} className="m-auto" alt="Not found" />
                     </div>
                   )}
 
                   {urlParth.assetType === "Image" && (
                     <div className="flex items-center justify-center h-full">
-                      <img src={urlParth.assetFolderPath} className="m-auto" />
+                      <img src={urlParth.assetFolderPath} className="m-auto" alt="Not found" />
                     </div>
                   )}
 

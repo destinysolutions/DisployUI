@@ -13,12 +13,8 @@ import {
 } from "react-icons/ai";
 import Footer from "../Footer";
 import {
-  ADD_OR_UPDATE_WEATHER,
-  ADD_SCHEDULE,
   ADD_WEATHERSCHEDULE_TAG,
-  DELETE_SCHEDULE,
   SET_TO_SCREEN_WEATHER,
-  UPDATE_SCREEN_ASSIGN,
 } from "../../Pages/Api";
 import { useEffect } from "react";
 import axios from "axios";
@@ -28,12 +24,6 @@ import { MdOutlineResetTv } from "react-icons/md";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import toast, { CheckmarkIcon } from "react-hot-toast";
 import ScreenAssignModal from "../ScreenAssignModal";
-import {
-  handleChangeSchedule,
-  handleDeleteScheduleAll,
-  handleGetAllSchedule,
-} from "../../Redux/ScheduleSlice";
-// import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
@@ -49,7 +39,6 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [weatherScheduleId, setWeatherScheduleId] = useState();
   const [searchSchedule, setSearchSchedule] = useState("");
   const [selectAll, setSelectAll] = useState(false);
-  const [filteredScheduleData, setFilteredScheduleData] = useState([]);
   const [updateTagSchedule, setUpdateTagSchedule] = useState(null);
   const [tags, setTags] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
@@ -76,8 +65,6 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // dispatch(handleGetAllSchedule({ token }));
-
     if (successMessage && type === "DELETE") {
       toast.success(successMessage);
     }
@@ -203,50 +190,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       const Params = {
         id: socket.id,
         connection: socket.connected,
-        macId: weatherList
-          ?.map((item) => item?.maciDs)
-          .join(",")
-          .replace(/^\s+/g, ""),
+        macId: weatherList.map((i) => i?.macIDs).join(",")
       };
       socket.emit("ScreenConnected", Params);
-      // if (connection.state == "Disconnected") {
-      //   connection
-      //     .start()
-      //     .then((res) => {
-      //       console.log("signal connected");
-      //     })
-      //     .then(() => {
-      //       connection
-      //         .invoke(
-      //           "ScreenConnected",
-      //           weatherList
-      //             ?.map((item) => item?.maciDs)
-      //             .join(",")
-      //             .replace(/^\s+/g, "")
-      //         )
-      //         .then(() => {
-      //           console.log("SignalR method invoked after screen update");
-      //         })
-      //         .catch((error) => {
-      //           console.error("Error invoking SignalR method:", error);
-      //         });
-      //     });
-      // } else {
-      //   connection
-      //     .invoke(
-      //       "ScreenConnected",
-      //       weatherList
-      //         ?.map((item) => item?.maciDs)
-      //         .join(",")
-      //         .replace(/^\s+/g, "")
-      //     )
-      //     .then(() => {
-      //       console.log("SignalR method invoked after screen update");
-      //     })
-      //     .catch((error) => {
-      //       console.error("Error invoking SignalR method:", error);
-      //     });
-      // }
     });
   };
 
@@ -276,7 +222,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        if (response.data.status == 200) {
+        if (response.data.status === 200) {
           try {
             
             if (macids?.includes(",")) {
