@@ -46,8 +46,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectdata, setSelectData] = useState({});
   const store = useSelector((state) => state.root.weather);
   const [weatherList, setWeatherList] = useState([])
-  const { user, token,userDetails } = useSelector((state) => state.root.auth);
-  const { loading, successMessage, type } = useSelector((s) => s.root.schedule);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
+  const { successMessage, type } = useSelector((s) => s.root.schedule);
+  const [isLoading, setIsLoading] = useState(true)
   const authToken = `Bearer ${token}`;
 
   const addScreenRef = useRef(null);
@@ -119,10 +120,11 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  
-  const fetchAllData =() =>{
+
+  const fetchAllData = () => {
     dispatch(getData()).then((res) => {
       setWeatherList(res?.payload?.data?.model)
+      setIsLoading(false)
     });
   }
 
@@ -224,7 +226,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status === 200) {
           try {
-            
+
             if (macids?.includes(",")) {
               let allMacIDs = macids?.split(",");
               allMacIDs?.map((item) => {
@@ -507,7 +509,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {loading ? (
+                  {isLoading && (
                     <tr>
                       <td colSpan={7}>
                         <div className="flex text-center m-5 justify-center">
@@ -532,20 +534,22 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                     </tr>
-                  ) : weatherList &&
-                    sortedAndPaginatedData?.length === 0 ? (
-                    <tr>
-                      <td colSpan={7}>
-                        <div className="flex text-center m-5 justify-center">
-                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                            No Data Available
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
+                  )}
+                  {!isLoading && weatherList &&
+                    sortedAndPaginatedData?.length === 0 && (
+                      <tr>
+                        <td colSpan={7}>
+                          <div className="flex text-center m-5 justify-center">
+                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                              No Data Available
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  {(
                     <>
-                      {weatherList &&
+                      {!isLoading && weatherList &&
                         sortedAndPaginatedData.length > 0 &&
                         sortedAndPaginatedData.map((schedule, index) => {
                           return (
@@ -655,7 +659,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                                       />
                                     )}
-                                 
+
                                 </div>
                               </td>
 
