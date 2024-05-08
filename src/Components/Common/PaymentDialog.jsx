@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { handleCreateSubscription, handlePaymentDetails } from '../../Redux/PaymentSlice';
 import { IoClose } from "react-icons/io5";
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
+import toast from 'react-hot-toast';
 const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
 
     const { user } = useSelector((state) => state.root.auth);
@@ -109,6 +110,9 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             if (res?.payload?.status) {
                 setIsLoading(false);
                 navigation("/dashboard"); // Navigate to dashboard after processing payment
+            }else{
+                setIsLoading(false);
+                toast.error("Error!")
             }
         })
     }
@@ -149,6 +153,9 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
                 PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription })
+            }else{
+                setIsLoading(false);
+                toast.error("Error!")
             }
         })
     }
