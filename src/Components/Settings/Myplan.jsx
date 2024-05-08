@@ -17,6 +17,7 @@ import AddEditPlan from './AddEditPlan';
 import { Switch } from "@material-tailwind/react";
 import PurchaseUserPlan from '../Common/PurchaseUserPlan';
 import ReactTooltip from 'react-tooltip';
+import { handleGetUserDetails } from '../../Redux/Authslice';
 
 const Myplan = () => {
     const { token, user,userDetails } = useSelector((state) => state.root.auth);
@@ -76,6 +77,7 @@ const Myplan = () => {
                 Authorization: authToken
             },
         }
+        dispatch(handleGetUserDetails({ id: user?.userID, token }));
         dispatch(handleGetAllPlans({ config })).then((res) => {
             if (res?.payload?.status === 200) {
                 setmyPlan(res?.payload?.data)

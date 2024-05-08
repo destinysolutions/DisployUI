@@ -10,8 +10,8 @@ import { handleLogout } from '../../Redux/Authslice';
 import { IoClose } from 'react-icons/io5';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import toast from 'react-hot-toast';
-const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, setOpenPayment, openPayment, userPlanType, purchaseType }) => {
-    const { token, user } = useSelector((state) => state.root.auth);
+const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, setOpenPayment, openPayment, userPlanType, purchaseType, setPurchaseType }) => {
+    const { token, user, userDetails } = useSelector((state) => state.root.auth);
     const authToken = `Bearer ${token}`;
     const stripe = useStripe();
     const elements = useElements();
@@ -20,8 +20,11 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
     const [message, setMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState("Credit")
+    let cardMethod;
+    console.log('cardMethod', cardMethod)
     const [autoPay, setAutoPay] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
+    let PaymentofScreen = false;
     const paymentElementOptions = {
         layout: "tabs"
     }
@@ -61,18 +64,30 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         });
     }, [stripe, elements]);
 
-    const PaymentDetails = ({ paymentIntent, organizationID, Subscription }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, Subscription, PaymentofScreenBoolen }) => {
+        let totalPrice;
+        if ((selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") && PaymentofScreenBoolen) {
+            totalPrice = userDetails?.extraScreen * 10
+        } else if ((selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") && PaymentofScreenBoolen) {
+            totalPrice = userDetails?.extraScreen * 17
+        } else if ((selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") && PaymentofScreenBoolen) {
+            totalPrice = userDetails?.extraScreen * 24
+        } else if ((selectPlan?.listOfPlansID === 4 || selectPlan?.listOfPlansID === "4") && PaymentofScreenBoolen) {
+            totalPrice = userDetails?.extraScreen * 47
+        } else {
+            totalPrice = userDetails?.extraScreen * 3
+        }
         let params = {
             ...paymentIntent,
-            PaymentType: Subscription ? `${selectPlan?.planName} Plan` : "",
-            PaymentValue: 1,
+            PaymentType: PaymentofScreenBoolen === false ? `${selectPlan?.planName} Plan` : "Screen",
+            PaymentValue: PaymentofScreenBoolen ? userDetails?.extraScreen : 1,
             AutoPay: autoPay,
             ExtraScreen: (Screen - 1),
             type: "Screen",
-            items: Screen,
-            amount: selectPlan?.planPrice,
+            items: PaymentofScreenBoolen ? userDetails?.extraScreen : Screen,
+            amount: PaymentofScreenBoolen ? totalPrice : selectPlan?.planPrice,
             organizationId: organizationID,
-            SubscriptionID: Subscription ? Subscription : "",
+            SubscriptionID: Subscription,
             UserID: organizationID,
             SystemTimeZone: new Date()
                 .toLocaleDateString(undefined, {
@@ -94,15 +109,59 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         }
         dispatch(handlePaymentDetails({ config })).then((res) => {
             if (res?.payload?.status) {
-                setIsLoading(false);
                 // if (userPlanType === "LoginUser") {
-                dispatch(handleLogout());
+                // dispatch(handleLogout());
                 // } else {
-                //     navigation("/"); // Navigate to dashboard after processing payment
+                // navigation("/"); // Navigate to dashboard after processing payment
                 // }
             } else {
                 setIsLoading(false);
                 toast.error("Error!")
+            }
+        })
+    }
+
+    const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreenBoolen }) => {
+        let product;
+        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+            product = "prod_Q1wI9ksVDBdRW3"
+        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+            product = "prod_Q1wITfBepgK1H7"
+        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+            product = "prod_Q1wJSPx0LoW70n"
+        } else {
+            product = "prod_Q1wJcEtb58TKI5"
+        }
+
+        let params = {
+            Email: email,
+            PaymentMethodId: PaymentMethodId,
+            ProductID: product,
+            quantity: userDetails?.extraScreen
+        }
+
+        let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: CREATE_SUBSCRIPTION,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            data: JSON.stringify(params),
+        }
+
+        dispatch(handleCreateSubscription({ config })).then((res) => {
+            if (res?.payload?.status) {
+                let Subscription = res?.payload?.subscriptionId
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, PaymentofScreenBoolen })
+                setTimeout(() => {
+                    setIsLoading(false);
+                    navigation("/"); // Navigate to dashboard after processing payment
+                }, 2000);
+            }
+            else {
+                setIsLoading(false);
+                toast.error(res?.payload?.data)
             }
         })
     }
@@ -138,7 +197,11 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, PaymentofScreenBoolen: false })
+                setTimeout(() => {
+                    setIsLoading(false);
+                    navigation("/"); // Navigate to dashboard after processing payment
+                }, 2000);
             }
             else {
                 setIsLoading(false);
@@ -184,11 +247,19 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         dispatch(handleUpgradeSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.plansubscriptionId
-                let Subscription2 = res?.payload?.screensubscriptionId
-                console.log('Subscription', Subscription)
-                console.log('Subscription2', Subscription2)
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription: Subscription })
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription: Subscription2 })
+                // let Subscription2 = res?.payload?.screensubscriptionId
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription: Subscription, PaymentofScreenBoolen: false })
+                if (userDetails?.extraScreen > 0) {
+                    PaymentofScreen = true;
+                    // handleSubmitPayment()
+                    ScreenCreateSubscription({ email: user?.emailID, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId, PaymentofScreenBoolen: true })
+                } else {
+                    setTimeout(() => {
+                        setIsLoading(false);
+                        navigation("/"); // Navigate to dashboard after processing payment
+                    }, 2000);
+                }
+                // PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription: Subscription2 })
             } else {
                 setIsLoading(false);
                 toast.error("Error!")
@@ -199,7 +270,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
 
 
     const handleSubmitPayment = async (event) => {
-        event.preventDefault();
+        // event.preventDefault();
         if (!stripe || !elements) {
             return;
         }
@@ -223,7 +294,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                     type: 'card',
                     card: elements.getElement(CardNumberElement),
                 });
-
+                cardMethod = paymentMethod
                 console.log('paymentMethod', paymentMethod)
 
                 if (error) {
@@ -234,9 +305,13 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                     }
                 } else {
                     setMessage("Payment successful!");
-                    if (purchaseType !== "Upgrade") {
+                    if (purchaseType !== "Upgrade" && PaymentofScreen === false) {
                         CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
-                    } else {
+                    }
+                    //  else if (PaymentofScreen === true) {
+                    //     ScreenCreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    // }
+                    else {
                         UpgradeSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
                     }
                     // PaymentDetails({ paymentIntent: paymentMethod, organizationID: user?.organizationId })
