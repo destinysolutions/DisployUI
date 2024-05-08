@@ -44,7 +44,7 @@ import { Pagination } from "../Common/Common";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user ,userDetails} = useSelector((state) => state.root.auth);
   const { successMessage, error, type } = useSelector(
     (state) => state.root.composition
   );
@@ -1174,7 +1174,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

@@ -11,7 +11,6 @@ import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon, selectPlan, TotalPrice, totalScreen }) => {
     const { user, userDetails } = useSelector((state) => state.root.auth);
-    console.log('user', user)
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()

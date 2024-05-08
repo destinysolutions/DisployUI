@@ -28,7 +28,7 @@ import PurchasePlanWarning from '../Common/PurchasePlan/PurchasePlanWarning';
 
 const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const { id } = useParams();
-  const { user, token } = useSelector((state) => state.root.auth);
+  const {userDetails, user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [customizeData, setCustomizeData] = useState({
     "EachPageTime": "30",
@@ -1130,7 +1130,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
         <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />
       )}
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

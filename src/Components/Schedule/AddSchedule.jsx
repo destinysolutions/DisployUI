@@ -79,7 +79,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const currentMinute = selectedCurrentTime.getMinutes();
   const interval =
     currentMinute < 20 ? 1 : currentMinute >= 20 && currentMinute <= 40 ? 2 : 3;
-  const { user, token } = useSelector((s) => s.root.auth);
+  const { user, token,userDetails } = useSelector((s) => s.root.auth);
   const { assets } = useSelector((s) => s.root.asset);
 
   const authToken = `Bearer ${token}`;
@@ -1047,7 +1047,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

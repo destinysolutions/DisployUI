@@ -47,7 +47,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   const navigation = useNavigate();
 
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user,userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const store = useSelector((state) => state.root.screenGroup.screenData);
   const [loadFirst, setLoadFirst] = useState(true);
@@ -489,7 +489,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

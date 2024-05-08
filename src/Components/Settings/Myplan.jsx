@@ -19,8 +19,7 @@ import PurchaseUserPlan from '../Common/PurchaseUserPlan';
 import ReactTooltip from 'react-tooltip';
 
 const Myplan = () => {
-    const { token, user } = useSelector((state) => state.root.auth);
-    console.log('user', user)
+    const { token, user,userDetails } = useSelector((state) => state.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [myplan, setmyPlan] = useState([]);
@@ -203,7 +202,7 @@ const Myplan = () => {
                             {myplan?.map((item) => {
                                 return (
                                     <>
-                                        {user?.role !== "1" && user?.planID === item?.listOfPlansID && (
+                                        {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
                                             <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/2 px-3 ml-5 mb-2">
                                                 <div className="p-4 rounded-lg h-full">
                                                     <div className="flex justify-between mb-4">
@@ -278,7 +277,7 @@ const Myplan = () => {
                                                         </div>
                                                     </div>
 
-                                                    {user?.role !== "1" && user?.planID === item?.listOfPlansID && (
+                                                    {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
                                                         <div className='w-full'>
                                                             <button
                                                                 type="button"
@@ -301,7 +300,7 @@ const Myplan = () => {
                                             </div>
                                         )}
 
-                                        {(user?.role === "1" || user?.planID === 0) && (
+                                        {(user?.role === "1" || userDetails?.planID === 0) && (
                                             <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/3 px-3 mb-4">
                                                 <div className="p-4 bg-[#ECF0F1] rounded-lg h-full">
                                                     <div className="flex justify-between mb-4">
@@ -376,7 +375,7 @@ const Myplan = () => {
                                                         </div>
                                                     </div>
 
-                                                    {user?.role !== "1" && user?.planID === item?.listOfPlansID && (
+                                                    {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
                                                         <div className='w-full'>
                                                             <button
                                                                 type="button"
@@ -396,7 +395,7 @@ const Myplan = () => {
                                                         </div>
                                                     )}
 
-                                                    {user?.role !== "1" && user?.planID !== item?.listOfPlansID && (
+                                                    {user?.role !== "1" && userDetails?.planID !== item?.listOfPlansID && (
                                                         <div className='w-full'>
                                                             <button
                                                                 type="button"

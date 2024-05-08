@@ -139,7 +139,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   const [STabs, setSTabs] = useState(initialTab);
   const [records, setRecords] = useState(data);
   const [searchValue, setSearchValue] = useState("");
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user,userDetails } = useSelector((state) => state.root.auth);
   const [showInvoice, setShowInvoice] = useState(false);
   const InvoiceRef = useRef(null);
   const dispatch = useDispatch();
@@ -444,7 +444,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

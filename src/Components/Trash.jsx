@@ -36,7 +36,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const dispatch = useDispatch();
-  const { token, user } = useSelector((state) => state.root.auth);
+  const {userDetails, token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [sidebarload, setSidebarLoad] = useState(true);
   const [loadFist, setLoadFist] = useState(true);
@@ -635,7 +635,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

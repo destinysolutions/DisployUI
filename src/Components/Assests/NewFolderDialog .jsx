@@ -64,7 +64,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectdata, setSelectData] = useState({});
   const [previewDoc, setPreviewDoc] = useState(false);
   const [selectDoc, setSelectDoc] = useState(null);
-  const {user, token } = useSelector((state) => state.root.auth);
+  const {user, token,userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const location = useLocation();
@@ -959,7 +959,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

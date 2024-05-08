@@ -2318,7 +2318,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       )}
       {/* <Footer /> */}
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

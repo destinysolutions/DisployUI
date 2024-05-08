@@ -46,7 +46,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectdata, setSelectData] = useState({});
   const store = useSelector((state) => state.root.weather);
   const [weatherList, setWeatherList] = useState([])
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token,userDetails } = useSelector((state) => state.root.auth);
   const { loading, successMessage, type } = useSelector((s) => s.root.schedule);
   const authToken = `Bearer ${token}`;
 
@@ -870,7 +870,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

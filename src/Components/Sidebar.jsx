@@ -35,7 +35,7 @@ const Sidebar = ({ sidebarOpen }) => {
   };
   const navigation = useNavigate();
   const dispatch = useDispatch();
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { userDetails,user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(false);
@@ -57,7 +57,7 @@ const Sidebar = ({ sidebarOpen }) => {
       const formattedMenuData = store.data.menu
         .map((item) => ({
           title: item.pageName,
-          cName: (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? "nav-user-text link-items" : "nav-text link-items",
+          cName: (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? "nav-user-text link-items" : "nav-text link-items",
           path: item.path,
           isView: item.isView,
           icon: <img src={item.icon} alt={item.alt} className="w-6" />,
@@ -111,7 +111,7 @@ const Sidebar = ({ sidebarOpen }) => {
       const bottummenuMenuData = store.data.bottummenu
         .map((item) => ({
           title: item.pageName,
-          cName: (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? "nav-user-text link-items" : "nav-text link-items",
+          cName: (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? "nav-user-text link-items" : "nav-text link-items",
           path: item.path,
           icon: <img src={item.icon} alt={item.alt} className="w-6" />,
           isView: item.isView,
@@ -381,7 +381,7 @@ const Sidebar = ({ sidebarOpen }) => {
                         className={`${item.cName} ${isActive ? "active" : ""}`}
                       >
                         <div className="flex items-center">
-                          {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
+                          {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
                             <>
                               <Link>
                                 <div>{item.icon}</div>
@@ -421,7 +421,7 @@ const Sidebar = ({ sidebarOpen }) => {
                                   key={subIndex}
                                   className="p-2 relative submenu"
                                 >
-                                  {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
+                                  {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
                                     <Link>
                                       <div>{submenu.icon}</div>
                                       {submenu.title === "New Screen" ? (
@@ -479,7 +479,7 @@ const Sidebar = ({ sidebarOpen }) => {
                         <div
                           className="flex"
                           onClick={() => {
-                            if ((user?.isTrial === false) && (user?.isActivePlan === false) && user?.userDetails?.isRetailer === false) {
+                            if ((userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && user?.userDetails?.isRetailer === false) {
                               setShowOTPModal(false)
                             } else {
                               handleChangeRoute(item.title, item.path);
@@ -533,7 +533,7 @@ const Sidebar = ({ sidebarOpen }) => {
                   return (
                     <li key={index} className={item.cName}>
                       <div className="flex items-center">
-                        {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
+                        {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
                           <Link>
                             <div>{item.icon}</div>
                             <span className="ml-5">{item.title}</span>
@@ -559,7 +559,7 @@ const Sidebar = ({ sidebarOpen }) => {
                         <ul className="ml-4 mt-3">
                           {item.subMenus.map((submenu, subIndex) => (
                             <li key={subIndex} className="p-2 relative submenu">
-                              {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
+                              {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
                                 <Link>
                                   <div>{submenu.icon}</div>
                                   {submenu.title === "New Screen" ? (
@@ -605,7 +605,7 @@ const Sidebar = ({ sidebarOpen }) => {
                       <div
                         className="flex"
                         onClick={() => {
-                          if ((user?.isTrial === false) && (user?.isActivePlan === false) && user?.userDetails?.isRetailer === false) {
+                          if ((userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && user?.userDetails?.isRetailer === false) {
                             setShowOTPModal(false)
                           } else {
                             handleChangeRoute(item.title, item.path);

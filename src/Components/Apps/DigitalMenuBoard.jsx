@@ -24,7 +24,7 @@ import { BsInfoLg } from 'react-icons/bs';
 import PurchasePlanWarning from '../Common/PurchasePlan/PurchasePlanWarning';
 
 const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token, user } = useSelector((state) => state.root.auth);
+  const {userDetails, token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -670,7 +670,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

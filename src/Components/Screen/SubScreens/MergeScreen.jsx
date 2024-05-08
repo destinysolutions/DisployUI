@@ -49,7 +49,7 @@ import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
 
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token ,userDetails} = useSelector((state) => state.root.auth);
   const store = useSelector((state) => state.root.screenMarge);
   const authToken = `Bearer ${token}`;
 
@@ -1015,7 +1015,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           setAssetPreviewPopup={setIsPreviewOpen}
         />
       )}
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

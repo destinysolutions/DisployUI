@@ -12,7 +12,7 @@ import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import toast from 'react-hot-toast';
 const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
 
-    const { user } = useSelector((state) => state.root.auth);
+    const { user,userDetails } = useSelector((state) => state.root.auth);
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
@@ -64,13 +64,13 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
     const PaymentDetails = ({ paymentIntent, organizationID, Subscription }) => {
         let totalPrice;
-        if (user?.planID === 1 && type === "Screen") {
+        if (userDetails?.planID === 1 && type === "Screen") {
             totalPrice = PaymentValue * 10
-        } else if (user?.planID === 2 && type === "Screen") {
+        } else if (userDetails?.planID === 2 && type === "Screen") {
             totalPrice = PaymentValue * 17
-        } else if (user?.planID === 3 && type === "Screen") {
+        } else if (userDetails?.planID === 3 && type === "Screen") {
             totalPrice = PaymentValue * 24
-        } else if (user?.planID === 4 && type === "Screen") {
+        } else if (userDetails?.planID === 4 && type === "Screen") {
             totalPrice = PaymentValue * 47
         } else {
             totalPrice = PaymentValue * 3
@@ -119,13 +119,13 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
         let product;
-        if (type === "Screen" && ((user?.planID === 1 || user?.planID === "1") || (user?.isTrial && user?.isActivePlan === false))) {
+        if (type === "Screen" && ((userDetails?.planID === 1 || userDetails?.planID === "1") || (userDetails?.isTrial && userDetails?.isActivePlan === false))) {
             product = "prod_Q1wI9ksVDBdRW3"
-        } else if (type === "Screen" && (user?.planID === 2 || user?.planID === "2")) {
+        } else if (type === "Screen" && (userDetails?.planID === 2 || userDetails?.planID === "2")) {
             product = "prod_Q1wITfBepgK1H7"
-        } else if (type === "Screen" && (user?.planID === 3 || user?.planID === "3")) {
+        } else if (type === "Screen" && (userDetails?.planID === 3 || userDetails?.planID === "3")) {
             product = "prod_Q1wJSPx0LoW70n"
-        } else if (type === "Screen" && (user?.planID === 4 || user?.planID === "4")) {
+        } else if (type === "Screen" && (userDetails?.planID === 4 || userDetails?.planID === "4")) {
             product = "prod_Q1wJHaR4iDXNRP"
         } else if (type === "Storage") {
             product = "prod_Q1wJcEtb58TKI5"

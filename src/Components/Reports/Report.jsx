@@ -18,7 +18,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { user } = useSelector((state) => state.root.auth);
+  const { user ,userDetails} = useSelector((state) => state.root.auth);
   const [selectedReport, setSelectedReport] = useState(null);
   const [modelVisible, setModelVisible] = useState(false);
   const handleReportClick = (report) => {
@@ -182,7 +182,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
       <Footer />
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

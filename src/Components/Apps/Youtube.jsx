@@ -48,7 +48,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const dispatch = useDispatch();
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user,userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [appDetailModal, setAppDetailModal] = useState(false);
@@ -902,7 +902,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

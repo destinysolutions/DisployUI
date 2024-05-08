@@ -171,8 +171,6 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             screenProductID: screenID
         }
 
-        console.log('params', params)
-
         let config = {
             method: "post",
             maxBodyLength: Infinity,

@@ -65,7 +65,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenSelected, setScreenSelected] = useState([]);
   const [selectdata, setSelectData] = useState({});
 
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user,userDetails } = useSelector((state) => state.root.auth);
   const { loading, schedules, deleteLoading, successMessage, type } =
     useSelector((s) => s.root.schedule);
   const authToken = `Bearer ${token}`;
@@ -1147,7 +1147,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

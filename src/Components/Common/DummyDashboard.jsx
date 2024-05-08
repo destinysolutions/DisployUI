@@ -20,7 +20,7 @@ const DummyDashboard = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { user, token } = useSelector((s) => s.root.auth);
+  const { userDetails, token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   const location = useLocation();
   const message = location?.state?.message || null;
@@ -38,12 +38,12 @@ const DummyDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   }, [message]);
 
   useEffect(() => {
-    if ((user?.isTrial=== false) && (user?.isActivePlan=== false)) {
+    if ((userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false)) {
       setWarning(true)
     } else {
       setWarning(false)
     }
-  }, [user])
+  }, [userDetails])
 
   useEffect(() => {
     const timeout = setTimeout(() => {

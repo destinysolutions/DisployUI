@@ -21,7 +21,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
         sidebarOpen: PropTypes.bool.isRequired,
         setSidebarOpen: PropTypes.func.isRequired,
     };
-    const {user, token } = useSelector((state) => state.root.auth);
+    const {user, token,userDetails } = useSelector((state) => state.root.auth);
     const authToken = `Bearer ${token}`;
     const { report, daily, date } = useParams();
     const [allReportData, setAllReportData] = useState({
@@ -187,7 +187,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
             <Footer />
 
             
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
         </>

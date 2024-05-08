@@ -58,7 +58,7 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   const handleProfileClick = (e) => {
-    if ((user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false)) {
+    if ((userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false)) {
       setShowProfileBox(false);
     } else {
       e.stopPropagation();
@@ -68,7 +68,7 @@ const Navbar = () => {
   };
 
   const handleNotificationClick = (e) => {
-    if ((user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false)) {
+    if ((userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false)) {
       setShowProfileBox(false);
     } else {
       e.stopPropagation();

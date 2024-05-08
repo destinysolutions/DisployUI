@@ -11,7 +11,7 @@ import TalkToSaleDialog from './TalkToSaleDialog';
 
 const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanType, myplan, setSelectPlan }) => {
     const dispatch = useDispatch();
-    const { token, user } = useSelector((state) => state.root.auth);
+    const { token, user ,userDetails} = useSelector((state) => state.root.auth);
     const [Screen, setScreen] = useState(1);
     const [showDiscount, setShowDiscount] = useState(false);
     const [showError, setShowError] = useState(false)
@@ -277,10 +277,10 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                             </ul>
                                                         )}
                                                         <div className="pt-4">
-                                                            {user?.planID === item?.listOfPlansID && user?.planID !== 0 && (
+                                                            {userDetails?.planID === item?.listOfPlansID && userDetails?.planID !== 0 && (
                                                                 <button className="bg-blue-700 cursor-not-allowed hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300">Subscribed</button>
                                                             )}
-                                                            {user?.planID !== item?.listOfPlansID && item?.listOfPlansID !== 4 && user?.planID !== 0 && (
+                                                            {userDetails?.planID !== item?.listOfPlansID && item?.listOfPlansID !== 4 && userDetails?.planID !== 0 && (
                                                                 <button
                                                                     className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
                                                                     onClick={() => {
@@ -292,7 +292,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                     Upgrade Plan
                                                                 </button>
                                                             )}
-                                                            {item?.listOfPlansID !== 4 && user?.planID === 0 && (
+                                                            {item?.listOfPlansID !== 4 && userDetails?.planID === 0 && (
                                                                 <button
                                                                     className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
                                                                     onClick={() => {
@@ -303,7 +303,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                     Buy Plan
                                                                 </button>
                                                             )}
-                                                            {user?.planID !== item?.listOfPlansID && item?.listOfPlansID === 4 && (
+                                                            {userDetails?.planID !== item?.listOfPlansID && item?.listOfPlansID === 4 && (
                                                                 <button
                                                                     className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
                                                                     onClick={() => {

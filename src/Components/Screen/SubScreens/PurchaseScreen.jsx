@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import SubscriptionTerm from '../../Common/PurchasePlan/SubscriptionTerm';
 
 const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, handlePay, discountCoupon, setDiscountCoupon, showError, setShowError, setDiscount, discount }) => {
-    const { user, token } = useSelector((s) => s.root.auth);
+    const { user, token,userDetails } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [showDiscount, setShowDiscount] = useState(false);
@@ -17,11 +17,11 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
 
     let planPrice;
 
-    if (user?.planID === 1) {
+    if (userDetails?.planID === 1) {
         planPrice = 10
-    } else if (user?.planID === 2) {
+    } else if (userDetails?.planID === 2) {
         planPrice = 17
-    } else if (user?.planID === 2) {
+    } else if (userDetails?.planID === 2) {
         planPrice = 17
     } else {
         planPrice = 47

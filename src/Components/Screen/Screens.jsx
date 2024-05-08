@@ -105,7 +105,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   });
   const [searchScreen, setSearchScreen] = useState("");
 
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token ,userDetails} = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [groupName, setGroupName] = useState("");
@@ -1977,7 +1977,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         </Elements>
       )}
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
 

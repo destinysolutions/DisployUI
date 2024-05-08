@@ -62,7 +62,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const [showVideo, setShowVideo] = useState(false);
   const [recordedVideos, setRecordedVideos] = useState([]);
 
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token,userDetails } = useSelector((state) => state.root.auth);
   const { session_token_apideck } = useSelector(
     (state) => state.root.globalstates
   );
@@ -754,7 +754,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       </div>
       <Footer />
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

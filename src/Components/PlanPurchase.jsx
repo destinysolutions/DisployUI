@@ -160,8 +160,6 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
                     card: elements.getElement(CardNumberElement),
                 });
 
-                console.log('paymentMethod', paymentMethod)
-
                 // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
                 //     payment_method: {
                 //         card: elements.getElement(CardElement),
