@@ -87,6 +87,7 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
             url: PAYMENT_DETAILS,
             headers: {
                 "Content-Type": "application/json",
+                Authorization: authToken,
             },
             data: JSON.stringify(params),
         }
