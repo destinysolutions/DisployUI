@@ -110,7 +110,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                       <div className="flex mb-2">
                         <label>User Name:</label>
-                        <span>{store.data?.firstName + " " + store.data?.lastName}{" "} {store.data?.userRoleName}</span>
+                        <span>{store.data?.firstName + " " + store.data?.lastName}</span>
                       </div>
                       <div className="flex mb-2">
                         <label>Company Name:</label>
@@ -142,11 +142,11 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                       <div className="flex mb-2">
                         <label>Country:</label>
-                        <span>{store.data?.currencyName}</span>
+                        <span>{store.data?.countryName}</span>
                       </div>
                       <div className="flex mb-2">
                         <label>State :</label>
-                        <span>{store.data?.countryName}</span>
+                        <span>{store.data?.stateName}</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-center">

@@ -13,6 +13,7 @@ import {
 } from "./AdminAPI";
 import AddEditUser from "./AddEditUser";
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
+import ReactTooltip from "react-tooltip";
 
 const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [addUserModal, setAddUserModal] = useState(false);
@@ -30,6 +31,10 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [emailError, setEmailError] = useState(false)
   const [passError, setPassError] = useState(false)
   const [usernameError, setUsernameError] = useState(false)
+  const [firstError, setFirstError] = useState(false)
+  const [lastError, setLastError] = useState(false)
+  const [phoneError, setPhoneError] = useState(false)
+
 
 
   const [password, setPassword] = useState("");
@@ -58,6 +63,20 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     let hasError = false;
     if (userName === "") {
       setUsernameError(true)
+      hasError = true;
+    }
+    if (firstName === "") {
+      setFirstError(true)
+      hasError = true;
+    }
+
+    if (lastName === "") {
+      setLastError(true)
+      hasError = true;
+    }
+
+    if (phoneNumber === "") {
+      setPhoneError(true)
       hasError = true;
     }
 
@@ -436,6 +455,8 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="flex gap-2">
                                 <div className="cursor-pointer text-xl flex gap-4">
                                   <button
+                                    data-tip
+                                    data-for="Edit"
                                     type="button"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => {
@@ -443,10 +464,21 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                                     }}
                                   >
                                     <MdModeEditOutline />
+                                    <ReactTooltip
+                                      id="Edit"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>Edit</span>
+                                    </ReactTooltip>
                                   </button>
                                 </div>
+                                
                                 <div className="cursor-pointer text-xl flex gap-4 ">
                                   <button
+                                    data-tip
+                                    data-for="Delete"
                                     type="button"
                                     className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
                                     onClick={() => {
@@ -456,6 +488,14 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                                     }
                                   >
                                     <MdDeleteForever />
+                                    <ReactTooltip
+                                      id="Delete"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>Delete</span>
+                                    </ReactTooltip>
                                   </button>
                                 </div>
                               </div>
@@ -607,6 +647,13 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
           setEmailError={setEmailError}
           setPassError={setPassError}
           setUsernameError={setUsernameError}
+          phoneError={phoneError}
+          firstError={firstError}
+          lastError={lastError}
+          setPhoneError={setPhoneError}
+          setLastError={setLastError}
+          setFirstError={setFirstError}
+
         />
       )}
     </>

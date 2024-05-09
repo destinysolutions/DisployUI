@@ -16,6 +16,7 @@ import {
   updateRetailerData,
 } from "../../Redux/admin/RetailerSlice";
 import { MdOutlineModeEdit } from "react-icons/md";
+import ReactTooltip from "react-tooltip";
 
 const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.retailerData);
@@ -325,11 +326,21 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                             <td className="px-6 py-4">
                               <div className="cursor-pointer text-xl flex gap-4 ">
                                 <button
+                                  data-tip
+                                  data-for="Edit"
                                   type="button"
                                   className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                   onClick={() => handleEdit(item)}
                                 >
                                   <MdOutlineModeEdit />
+                                  <ReactTooltip
+                                    id="Edit"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="solid"
+                                  >
+                                    <span>Edit</span>
+                                  </ReactTooltip>
                                 </button>
                               </div>
                             </td>

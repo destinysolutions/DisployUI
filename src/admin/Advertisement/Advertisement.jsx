@@ -23,6 +23,7 @@ import AssetsPreview from "../../Components/Common/AssetsPreview";
 import { BsEyeFill } from "react-icons/bs";
 import AdminMarginmodel from "./AdminMarginmodel";
 import { getTimeFromDate } from "../../Components/Common/Common";
+import ReactTooltip from "react-tooltip";
 
 const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const hiddenFileInput = useRef(null);
@@ -209,7 +210,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const fetchUserData = () => {
     dispatch(getOnBodingData())
       .then((response) => {
-        const AllCustomer = response?.payload?.data?.filter((item)=> Number(item?.screen) > 0) 
+        const AllCustomer = response?.payload?.data?.filter((item) => Number(item?.screen) > 0)
         setCustomerList({
           allCustomer: AllCustomer,
           searchCustomer: AllCustomer,
@@ -475,7 +476,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                     {screen?.isRemove && (
                                       <button
                                         data-tip
-                                        data-for="Assign"
+                                        data-for="Add Margin"
                                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-1"
                                         onClick={() => {
                                           setShowSelectMarginModal(true);
@@ -483,6 +484,14 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                         }}
                                       >
                                         <BsEyeFill />
+                                        <ReactTooltip
+                                          id="Add Margin"
+                                          place="bottom"
+                                          type="warning"
+                                          effect="solid"
+                                        >
+                                          <span>Add Margin</span>
+                                        </ReactTooltip>
                                       </button>
                                     )}
                                     <button
@@ -495,6 +504,14 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                       }}
                                     >
                                       <MdOutlineResetTv />
+                                      <ReactTooltip
+                                        id="Assign"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="solid"
+                                      >
+                                        <span>Assign</span>
+                                      </ReactTooltip>
                                     </button>
                                     <button
                                       data-tip
@@ -506,6 +523,14 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                       }}
                                     >
                                       <MdPreview />
+                                      <ReactTooltip
+                                        id="Preview"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="solid"
+                                      >
+                                        <span>Preview</span>
+                                      </ReactTooltip>
                                     </button>
                                   </div>
                                 </td>
@@ -575,7 +600,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
-      
+
       {showModal && (
         <AddEditAdvertisement
           heading={heading}

@@ -8,6 +8,7 @@ import { handleAllInvoice, handleInvoiceById } from "../../Redux/PaymentSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import moment from "moment";
+import ReactTooltip from "react-tooltip";
 
 const Invoice = ({
   permissions,
@@ -200,15 +201,31 @@ const Invoice = ({
                                     onClick={() => { setShowInvoice(true); setInvoiceId(item?.id) }}
                                   >
                                     <BsEyeFill />
+                                    <ReactTooltip
+                                      id="View"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>View</span>
+                                    </ReactTooltip>
                                   </div>
 
                                   <div
                                     data-tip
-                                    data-for="Edit"
+                                    data-for="Download"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => { DownloadInvoice(); setInvoiceId(item?.id); setInvoiceID(item?.id); }}
                                   >
                                     <FaDownload />
+                                    <ReactTooltip
+                                      id="Download"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>Download</span>
+                                    </ReactTooltip>
                                   </div>
                                 </>
                               </div>

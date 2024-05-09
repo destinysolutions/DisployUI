@@ -344,9 +344,22 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           )}
           {!isLoading && (
             <>
+              <p className="text-xl font-semibold ">Weather Schedule Name</p>
               <div className="lg:flex lg:justify-between sm:block  items-center">
                 <div className="flex items-center">
-                  {edited ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      className="w-full border border-primary rounded-md px-2 py-1 capitalize"
+                      placeholder="Enter schedule name"
+                      value={weatherScheduleName}
+                      onChange={(e) => {
+                        setWeatherScheduleName(e.target.value);
+                      }}
+                    />
+
+                  </div>
+                  {/*   {edited ? (
                     <div className="flex items-center gap-2">
                       <input
                         type="text"
@@ -393,10 +406,10 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         </ReactTooltip>
                       </button>
                     </div>
-                  )}
+                  )}*/}
                 </div>
                 <Link to="/weatherschedule">
-                  <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                     <MdArrowBackIosNew className="text-2xl mr-2 text-white rounded-full p-1" />
                     Back
                   </button>

@@ -16,6 +16,7 @@ import toast from 'react-hot-toast';
 import moment from 'moment';
 import axios from 'axios';
 import { MdOutlineEdit } from 'react-icons/md';
+import ReactTooltip from 'react-tooltip';
 
 const Discount = ({ sidebarOpen }) => {
     const { token } = useSelector((s) => s.root.auth);
@@ -312,13 +313,21 @@ const Discount = ({ sidebarOpen }) => {
                                                                 <>
                                                                     <div
                                                                         data-tip
-                                                                        data-for="View"
+                                                                        data-for="Edit"
                                                                         className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                                         onClick={() => {
                                                                             handleEditDiscount(item?.discountID)
                                                                         }}
                                                                     >
                                                                         <MdOutlineEdit />
+                                                                        <ReactTooltip
+                                                                            id="Edit"
+                                                                            place="bottom"
+                                                                            type="warning"
+                                                                            effect="solid"
+                                                                        >
+                                                                            <span>Edit</span>
+                                                                        </ReactTooltip>
                                                                     </div>
 
                                                                     {/* <div

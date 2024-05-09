@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
 import Swal from "sweetalert2";
 import AddEditManageUserType from "./AddEditManageUserType";
+import ReactTooltip from "react-tooltip";
 
 const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.ManageUser);
@@ -304,7 +305,10 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                             </td>
                             <td className="px-3.5 py-2">
                               <div className="flex items-center gap-4">
+
                                 <button
+                                  data-tip
+                                  data-for="Edit"
                                   type="button"
                                   className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                   onClick={() => {
@@ -317,9 +321,19 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                                   }}
                                 >
                                   <MdModeEditOutline />
+                                  <ReactTooltip
+                                    id="Edit"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="solid"
+                                  >
+                                    <span>Edit</span>
+                                  </ReactTooltip>
+                                  
                                 </button>
-
                                 <button
+                                  data-tip
+                                  data-for="Delete"
                                   type="button"
                                   className="rounded-full text-lg p-2.5 text-white text-center bg-[#FF0000] "
                                   onClick={() =>
@@ -327,6 +341,14 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                                   }
                                 >
                                   <MdDeleteForever />
+                                  <ReactTooltip
+                                    id="Delete"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="solid"
+                                  >
+                                    <span>Delete</span>
+                                  </ReactTooltip>
                                 </button>
                               </div>
                             </td>

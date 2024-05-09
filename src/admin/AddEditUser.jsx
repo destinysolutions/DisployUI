@@ -4,7 +4,9 @@ import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
 
 const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, setLastName, setPhoneNumber, setEmail, setSelectedUserType
     , setIsActive, setEditMode, setEditUserId, setShowPassword, showPassword, selectedUserType, userName, firstName, lastName, phoneNumber, email, password,
-    userTypeData, isActive, handleCheckboxChange, handleInsertUser, setPassword, emailError, passError, usernameError, setPassError, setUsernameError, setEmailError
+    userTypeData, isActive, handleCheckboxChange, handleInsertUser, setPassword, emailError, passError, usernameError, setPassError, setUsernameError, setEmailError,phoneError,firstError,lastError,  setPhoneError
+    ,setLastError,
+    setFirstError
 }) => {
     return (
         <>
@@ -41,6 +43,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             setPassError(false)
                                             setEmailError(false)
                                             setUsernameError(false)
+                                            setPhoneError(false)
+                                            setFirstError(false)
+                                            setLastError(false)
                                         }}
                                     />
                                 </div>
@@ -64,6 +69,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             value={firstName}
                                             onChange={(e) => setFirstName(e.target.value)}
                                         />
+                                        {firstError && (
+                                            <span className='error'>This field is required.</span>
+                                        )}
                                         <input
                                             type="text"
                                             placeholder="Last Name"
@@ -71,6 +79,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             value={lastName}
                                             onChange={(e) => setLastName(e.target.value)}
                                         />
+                                        {lastError && (
+                                            <span className='error'>This field is required.</span>
+                                        )}
 
                                         <input
                                             type="text"
@@ -79,6 +90,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             value={phoneNumber}
                                             onChange={(e) => setPhoneNumber(e.target.value)}
                                         />
+                                        {phoneError && (
+                                            <span className='error'>This field is required.</span>
+                                        )}
 
                                         {!editMode && (
                                             <>
@@ -157,6 +171,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                                 setPassError(false)
                                                 setEmailError(false)
                                                 setUsernameError(false)
+                                                setPhoneError(false)
+                                                setFirstError(false)
+                                                setLastError(false)
                                             }}
                                         >
                                             Cancel
