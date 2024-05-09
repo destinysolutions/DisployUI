@@ -65,12 +65,6 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (successMessage && type === "DELETE") {
-      toast.success(successMessage);
-    }
-  }, [successMessage]);
-
   // Filter data based on search term
   const filteredData = Array.isArray(weatherList)
     ? weatherList.filter((item) =>
@@ -135,12 +129,12 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFist]);
 
-  useEffect(() => {
-    if (store && store.status === "deleted") {
-      toast.success(store.message);
-      setLoadFist(true);
-    }
-  }, [store]);
+  // useEffect(() => {
+  //   if (store && store.status === "deleted") {
+  //     toast.success(store.message);
+  //     setLoadFist(true);
+  //   }
+  // }, [store]);
 
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
@@ -185,16 +179,24 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(deletedData(selectedItems));
-        setSelectAllChecked(false);
-        setSelectedItems([]);
+        dispatch(deletedData(selectedItems)).then((res) => {
+          if (res?.payload?.status) {
+            setSelectAllChecked(false);
+            setSelectedItems([]);
+            setLoadFist(true);
+            toast.success(res?.payload?.message)
+            const Params = {
+              id: socket.id,
+              connection: socket.connected,
+              macId: weatherList?.map((i) => i?.macIDs).join(",")
+            };
+            socket.emit("ScreenConnected", Params);
+          }
+
+        }).catch((error) => {
+          console.log('error', error)
+        });
       }
-      const Params = {
-        id: socket.id,
-        connection: socket.connected,
-        macId: weatherList?.map((i) => i?.macIDs).join(",")
-      };
-      socket.emit("ScreenConnected", Params);
     });
   };
 

@@ -434,8 +434,8 @@ const ScreenAssignModal = ({
                         <span
                           id={`changetvstatus${screen?.macid}`}
                           className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                              ? "bg-[#3AB700]"
-                              : "bg-[#FF0000]"
+                            ? "bg-[#3AB700]"
+                            : "bg-[#FF0000]"
                             }`}
                         >
                           {screen.screenStatus == 1 ? "Live" : "offline"}
@@ -550,9 +550,9 @@ const ScreenAssignModal = ({
           </div>
 
 
-          <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
+          <div className="flex items-center justify-center p-4 border-t border-gray-200 rounded-b dark:border-gray-600 gap-2">
             <button
-              className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
+              className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
               onClick={() => {
                 handleUpdateScreenAssign(
                   screenCheckboxes,

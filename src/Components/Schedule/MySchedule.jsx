@@ -65,7 +65,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenSelected, setScreenSelected] = useState([]);
   const [selectdata, setSelectData] = useState({});
 
-  const { token, user,userDetails } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const { loading, schedules, deleteLoading, successMessage, type } =
     useSelector((s) => s.root.schedule);
   const authToken = `Bearer ${token}`;
@@ -117,11 +117,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     dispatch(handleGetAllSchedule({ token }));
-
-    if (successMessage && type === "DELETE") {
-      toast.success(successMessage);
-    }
-  }, [successMessage]);
+  }, []);
 
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
@@ -273,64 +269,32 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(handleDeleteScheduleAll({ config }));
-        setSelectAllChecked(false);
-        setSelectedItems([]);
-        dispatch(handleGetAllSchedule({ token }));
-      }
-      schedules?.map((item) => {
-        selectedItems?.map((item1) => {
-          if (item1 === item?.scheduleId) {
-            if (item?.maciDs !== "") {
-              const Params = {
-                id: socket.id,
-                connection: socket.connected,
-                macId: item?.maciDs,
-              };
-              socket.emit("ScreenConnected", Params);
-            }
-          }
-        })
-      })
+        dispatch(handleDeleteScheduleAll({ config })).then((res) => {
+          if(res?.payload?.status){
+            setSelectAllChecked(false);
+            setSelectedItems([]);
+            dispatch(handleGetAllSchedule({ token }));
+            toast.success(res?.payload?.message)
+            schedules?.map((item) => {
+              selectedItems?.map((item1) => {
+                if (item1 === item?.scheduleId) {
+                  if (item?.maciDs !== "") {
+                    const Params = {
+                      id: socket.id,
+                      connection: socket.connected,
+                      macId: item?.maciDs,
+                    };
+                    socket.emit("ScreenConnected", Params);
+                  }
+                }
+              })
+            })
 
-      // if (connection.state == "Disconnected") {
-      //   connection
-      //     .start()
-      //     .then((res) => {
-      //       console.log("signal connected");
-      //     })
-      //     .then(() => {
-      //       connection
-      //         .invoke(
-      //           "ScreenConnected",
-      //           schedules
-      //             ?.map((item) => item?.maciDs)
-      //             .join(",")
-      //             .replace(/^\s+/g, "")
-      //         )
-      //         .then(() => {
-      //           console.log("SignalR method invoked after screen update");
-      //         })
-      //         .catch((error) => {
-      //           console.error("Error invoking SignalR method:", error);
-      //         });
-      //     });
-      // } else {
-      //   connection
-      //     .invoke(
-      //       "ScreenConnected",
-      //       schedules
-      //         ?.map((item) => item?.maciDs)
-      //         .join(",")
-      //         .replace(/^\s+/g, "")
-      //     )
-      //     .then(() => {
-      //       console.log("SignalR method invoked after screen update");
-      //     })
-      //     .catch((error) => {
-      //       console.error("Error invoking SignalR method:", error);
-      //     });
-      // }
+          }
+        }).catch((error) => {
+          console.log('error', error)
+        })
+      }
     });
   };
 
@@ -736,7 +700,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     fill="#1C64F2"
                                   />
                                 </svg>
-                                
+
                               </div>
                             </td>
                           </tr>
@@ -872,7 +836,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                               className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                                             />
                                           )}
-                                        
+
                                       </div>
                                     </td>
 
@@ -1146,8 +1110,8 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

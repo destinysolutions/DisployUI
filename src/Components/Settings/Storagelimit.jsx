@@ -86,6 +86,10 @@ const Storagelimit = () => {
   }
 
   const handlePay = () => {
+    if (addStorage < 0) {
+      toast.error("Please Enter Proper Required Storage ")
+      return;
+    }
     const price = round((addStorage * 3), 2);
     const params = {
       "items": {

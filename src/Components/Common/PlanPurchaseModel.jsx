@@ -295,12 +295,15 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                     card: elements.getElement(CardNumberElement),
                 });
                 cardMethod = paymentMethod
-                console.log('paymentMethod', paymentMethod)
 
                 if (error) {
                     if (error.type === "card_error" || error.type === "validation_error") {
                         setMessage(error.message);
+                        toast.error(error?.message)
+                        setIsLoading(false);
                     } else {
+                        toast.error("An unexpected error occurred.")
+                        setIsLoading(false);
                         setMessage("An unexpected error occurred.");
                     }
                 } else {
@@ -361,7 +364,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                                                     />
                                                     <label htmlFor="Credit" className="ms-2 text-lg font-medium text-gray-900 dark:text-gray-300">Credit Card</label>
                                                 </div>
-                                                <div className='flex items-center border border-gray rounded py-2 px-3 mb-2'>
+                                                {/*<div className='flex items-center border border-gray rounded py-2 px-3 mb-2'>
                                                     <input
                                                         id="PayPal"
                                                         type="radio"
@@ -372,7 +375,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                                                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                                                     />
                                                     <label htmlFor="PayPal" className="ms-2 text-lg font-medium text-gray-900 dark:text-gray-300">PayPal</label>
-                                                </div>
+    </div>*/}
                                             </div>
                                             <div className='w-full sm:w-2/3 md:w-3/4 pl-5'>
                                                 {paymentMethod === "Credit" && (

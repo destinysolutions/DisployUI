@@ -84,11 +84,11 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
                                                     <input type='number'
                                                         className="relative border border-black rounded-md p-2 w-20"
                                                         onChange={(e) => {
-                                                            if (e.target.value <= 0) {
-                                                                setAddStorage(addStorage)
-                                                            } else {
+                                                            // if (e.target.value <= 0) {
+                                                            //     setAddStorage(addStorage)
+                                                            // } else {
                                                                 setAddStorage(e.target.value)
-                                                            }
+                                                            // }
                                                         }
                                                         }
                                                         value={addStorage}
@@ -168,9 +168,9 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
                                                 Cancel
                                             </button>
                                             <button
-                                                className={`bg-primary ${disclaimer ? "cursor-pointer" : "cursor-not-allowed"} text-white text-base px-8 py-3 border border-primary shadow-md rounded-full`}
+                                                className={`bg-primary ${(disclaimer && addStorage) ? "cursor-pointer" : "cursor-not-allowed"} text-white text-base px-8 py-3 border border-primary shadow-md rounded-full`}
                                                 type="button"
-                                                disabled={!disclaimer}
+                                                disabled={!disclaimer && addStorage === ""}
                                                 onClick={() => handlePay()}
                                             >
                                                 Pay

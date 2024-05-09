@@ -84,7 +84,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [screenSelected, setScreenSelected] = useState([]);
   const [isLoading, setIsLoading] = useState(weatherScheduleId ? true : false)
-
+  const [disablebtn, setDisableBtn] = useState(false)
   useEffect(() => {
     if (store && store.status === "succeeded") {
       toast.success(store.message);
@@ -185,6 +185,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     toast.loading("Saving...");
     if (!urlParth || !urlParth.assetID) {
       toast.error("Asset is missing!");
+      setDisableBtn(false)
       return;
     }
     const timeZone = allTimezone?.filter((item) => item?.timeZoneName === selectedTimezoneName)
@@ -575,7 +576,11 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="flex justify-end mt-9">
                         <button
                           className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={() => handleSubmit()}
+                          disabled={disablebtn}
+                          onClick={() => {
+                            setDisableBtn(true)
+                            handleSubmit()
+                          }}
                         >
                           {label}
                         </button>

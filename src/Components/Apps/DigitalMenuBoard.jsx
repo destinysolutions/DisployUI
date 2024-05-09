@@ -609,7 +609,7 @@ const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="flex justify-center p-9 ">
                 <p className="break-words w-[280px] text-base text-black text-center">
-                  New Text-Scroll App Instance would be applied. Do you want to
+                  New Digital Menu Board App Instance would be applied. Do you want to
                   proceed?
                 </p>
               </div>
