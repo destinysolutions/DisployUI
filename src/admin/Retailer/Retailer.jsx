@@ -19,11 +19,8 @@ import { MdOutlineModeEdit } from "react-icons/md";
 
 const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.retailerData);
-
   const dispatch = useDispatch();
-
   const [loadFist, setLoadFist] = useState(true);
-
   const [showModal, setShowModal] = useState(false);
   const [heading, setHeading] = useState("Add");
   const [loading, setLoading] = useState(true);
@@ -40,10 +37,10 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const [retailerList, setRetailerList] = useState([])
   const [editData, setEditData] = useState({
     companyName: "",
-    Password: "",
+    password: "",
     firstName: "",
     lastName: "",
-    email: "",
+    emailID: "",
     googleLocation: "",
     phoneNumber: "",
   });
@@ -94,51 +91,8 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const toggleModal = () => {
-    setShowModal(!showModal);
-    setEditId(null);
-    setOrgUserID(null);
-    setEditData({});
-  };
 
-  //using for validation and register api calling
-  const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
-  const validationSchema = Yup.object().shape({
-    companyName: Yup.string().required("Company Name is required"),
-    password: Yup.string().when("editId", {
-      is: false,
-      then: Yup.string()
-        .required("Password is required")
-        .matches(
-          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-          "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number, and one special case Character"
-        ),
-    }),
-    firstName: Yup.string().required("First Name is required").max(50),
-    lastName: Yup.string().required("Last Name is required").max(50),
-    emailID: Yup.string()
-      .required("Email is required")
-      .email("E-mail must be a valid e-mail!"),
-    phoneNumber: Yup.string()
-      .required("Phone Number is required")
-      .matches(phoneRegExp, "Phone number is not valid"),
-    googleLocation: Yup.string().required("Google Location is required"),
-  });
-
-  const editValidationSchema = Yup.object().shape({
-    companyName: Yup.string().required("Company Name is required"),
-    firstName: Yup.string().required("First Name is required").max(50),
-    lastName: Yup.string().required("Last Name is required").max(50),
-    emailID: Yup.string()
-      .required("Email is required")
-      .email("E-mail must be a valid e-mail!"),
-    phoneNumber: Yup.string()
-      .required("Phone Number is required")
-      .matches(phoneRegExp, "Phone number is not valid"),
-    googleLocation: Yup.string().required("Google Location is required"),
-  });
 
   useEffect(() => {
     if (loadFist) {
@@ -167,34 +121,49 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFist, store]);
 
-  const formik = useFormik({
-    initialValues: editData,
-    enableReinitialize: editData,
-    validationSchema: editId ? editValidationSchema : validationSchema,
-    onSubmit: async (values) => {
-      const formData = new FormData();
-      formData.append("OrganizationName", values.companyName);
-      formData.append("Password", values.password || ""); // Set a default value if null
-      formData.append("FirstName", values.firstName);
-      formData.append("LastName", values.lastName);
-      formData.append("Email", values.emailID);
-      formData.append("GoogleLocation", values.googleLocation);
-      formData.append("Phone", values.phoneNumber);
-      formData.append("IsRetailer", true);
+  // const formik = useFormik({
+  //   initialValues: editData,
+  //   enableReinitialize: editData,
+  //   validationSchema: editId ? editValidationSchema : validationSchema,
+  //   onSubmit: async (values) => {
+  //     const formData = new FormData();
+  //     formData.append("OrganizationName", values.companyName);
+  //     formData.append("Password", values.password || ""); // Set a default value if null
+  //     formData.append("FirstName", values.firstName);
+  //     formData.append("LastName", values.lastName);
+  //     formData.append("Email", values.emailID);
+  //     formData.append("GoogleLocation", values.googleLocation);
+  //     formData.append("Phone", values.phoneNumber);
+  //     formData.append("IsRetailer", true);
 
-      if (editId) {
-        formData.append("OrgUserSpecificID", editId);
-        formData.append("orgUserID", orgUserID);
-        dispatch(updateRetailerData(formData));
-      } else {
-        formData.append("Operation", "Insert");
-        dispatch(addRetailerData(formData));
-      }
+  //     if (editId) {
+  //       formData.append("OrgUserSpecificID", editId);
+  //       formData.append("orgUserID", orgUserID);
+  //       dispatch(updateRetailerData(formData));
+  //     } else {
+  //       formData.append("Operation", "Insert");
+  //       dispatch(addRetailerData(formData));
+  //     }
 
-      formik.resetForm();
-      setShowModal(false);
-    },
-  });
+  //     formik.resetForm();
+  //     setShowModal(false);
+  //   },
+  // });
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+    setEditId(null);
+    setOrgUserID(null);
+    setEditData({
+      companyName: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      emailID: "",
+      googleLocation: "",
+      phoneNumber: "",
+    });
+  };
 
   const handleChange = (event) => {
     const searchQuery = event.target.value.toLowerCase();
@@ -445,10 +414,12 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
         <AddEditRetailer
           heading={heading}
           toggleModal={toggleModal}
-          formik={formik}
           showPassword={showPassword}
           setShowPassword={setShowPassword}
           editId={editId}
+          editData={editData}
+          setShowModal={setShowModal}
+          orgUserID={orgUserID}
         />
       )}
     </>

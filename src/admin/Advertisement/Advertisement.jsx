@@ -209,9 +209,10 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const fetchUserData = () => {
     dispatch(getOnBodingData())
       .then((response) => {
+        const AllCustomer = response?.payload?.data?.filter((item)=> Number(item?.screen) > 0) 
         setCustomerList({
-          allCustomer: response.payload.data,
-          searchCustomer: response.payload.data,
+          allCustomer: AllCustomer,
+          searchCustomer: AllCustomer,
         });
       })
       .catch((error) => {

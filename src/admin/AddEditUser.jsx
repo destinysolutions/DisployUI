@@ -4,10 +4,11 @@ import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
 
 const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, setLastName, setPhoneNumber, setEmail, setSelectedUserType
     , setIsActive, setEditMode, setEditUserId, setShowPassword, showPassword, selectedUserType, userName, firstName, lastName, phoneNumber, email, password,
-    userTypeData, isActive, handleCheckboxChange, handleInsertUser, setPassword }) => {
+    userTypeData, isActive, handleCheckboxChange, handleInsertUser, setPassword, emailError, passError, usernameError, setPassError, setUsernameError, setEmailError
+}) => {
     return (
         <>
-           
+
             <div
                 id="default-modal"
                 tabIndex="-1"
@@ -37,6 +38,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             setIsActive("");
                                             setEditMode(false);
                                             setEditUserId("");
+                                            setPassError(false)
+                                            setEmailError(false)
+                                            setUsernameError(false)
                                         }}
                                     />
                                 </div>
@@ -49,6 +53,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             value={userName}
                                             onChange={(e) => setUserName(e.target.value)}
                                         />
+                                        {usernameError && (
+                                            <span className='error'>This field is required.</span>
+                                        )}
 
                                         <input
                                             type="text"
@@ -72,6 +79,7 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             value={phoneNumber}
                                             onChange={(e) => setPhoneNumber(e.target.value)}
                                         />
+
                                         {!editMode && (
                                             <>
                                                 <input
@@ -81,6 +89,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                 />
+                                                {emailError && (
+                                                    <span className='error'>This field is required.</span>
+                                                )}
                                                 <div className="relative">
                                                     <input
                                                         type={showPassword ? "text" : "password"}
@@ -101,6 +112,10 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                                         )}
                                                     </div>
                                                 </div>
+                                                {passError && (
+                                                    <span className='error'>This field is required.</span>
+                                                )}
+
                                             </>
                                         )}
                                         <select
@@ -139,6 +154,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                                 setIsActive("");
                                                 setEditMode(false);
                                                 setEditUserId("");
+                                                setPassError(false)
+                                                setEmailError(false)
+                                                setUsernameError(false)
                                             }}
                                         >
                                             Cancel

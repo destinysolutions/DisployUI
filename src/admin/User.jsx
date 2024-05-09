@@ -27,6 +27,10 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [originalUserData, setOriginalUserData] = useState([]);
   const [selectedUserType, setSelectedUserType] = useState("");
   const [userName, setUserName] = useState("");
+  const [emailError, setEmailError] = useState(false)
+  const [passError, setPassError] = useState(false)
+  const [usernameError, setUsernameError] = useState(false)
+
 
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -51,6 +55,24 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleInsertUser = () => {
+    let hasError = false;
+    if (userName === "") {
+      setUsernameError(true)
+      hasError = true;
+    }
+
+    if (email === "") {
+      setEmailError(true);
+      hasError = true;
+    }
+    if (password === "") {
+      setPassError(true);
+      hasError = true;
+    }
+
+    if (hasError) {
+      return;
+    }
     let data = JSON.stringify({
       userName: userName,
       password: password,
@@ -107,7 +129,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     setPhoneNumber("");
     setEmail("");
     setSelectedUserType("");
-    setIsActive("");
+    setIsActive(false);
     setEditMode(false);
     setEditUserId("");
     setAddUserModal(false);
@@ -579,6 +601,12 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
           handleCheckboxChange={handleCheckboxChange}
           handleInsertUser={handleInsertUser}
           setPassword={setPassword}
+          passError={passError}
+          emailError={emailError}
+          usernameError={usernameError}
+          setEmailError={setEmailError}
+          setPassError={setPassError}
+          setUsernameError={setUsernameError}
         />
       )}
     </>
