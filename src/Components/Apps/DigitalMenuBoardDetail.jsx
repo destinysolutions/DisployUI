@@ -42,7 +42,6 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     "Theme": "",
     "Topfeature": false,
   })
-  console.log('customizeData', customizeData)
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: customizeData
   });
@@ -188,7 +187,8 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
         "color": selectedColor,
         "textColor": textColor,
         "priceColor": priceColor,
-        "logo": "string"
+        "logo": "string",
+        "theme": customizeData?.Theme
       }
     });
 
@@ -269,41 +269,45 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   }
 
   useEffect(() => {
-    setLoader(true)
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${GET_DIGITAL_MENU_BY_ID}?DigitalMenuAppId=${id}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        let data = response?.data?.data;
-        setCustomizeData({
-          "EachPageTime": data?.customizeMaster?.timespent,
-          "EachPage": data?.customizeMaster?.imagestodisplay,
-          "ImageLayout": data?.customizeMaster?.switchTo,
-          "Currency": data?.customizeMaster?.currencyName,
-          "CurrencyShow": data?.customizeMaster?.isShowcurrencysign,
-          "ShowPrice": data?.customizeMaster?.isShowprices,
-          "FontSize": data?.customizeMaster?.fontSize,
-          "Theme": data?.customizeMaster?.theme,
-          "Topfeature": data?.customizeMaster?.isMovetop,
+    if (id) {
+      setLoader(true)
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${GET_DIGITAL_MENU_BY_ID}?DigitalMenuAppId=${id}`,
+        headers: {
+          Authorization: authToken,
+        },
+      };
+      axios
+        .request(config)
+        .then((response) => {
+          let data = response?.data?.data;
+          setCustomizeData({
+            "EachPageTime": data?.customizeMaster?.timespent,
+            "EachPage": data?.customizeMaster?.imagestodisplay,
+            "ImageLayout": data?.customizeMaster?.switchTo,
+            "Currency": data?.customizeMaster?.currencyName,
+            "CurrencyShow": data?.customizeMaster?.isShowcurrencysign,
+            "ShowPrice": data?.customizeMaster?.isShowprices,
+            "FontSize": data?.customizeMaster?.fontSize,
+            "Theme": data?.customizeMaster?.theme,
+            "Topfeature": data?.customizeMaster?.isMovetop,
+          })
+          const matchedTheme = PosTheme.find(item => Number(item?.posThemeID) === Number(data?.customizeMaster?.theme));
+          setTheme(matchedTheme)
+          setSelectedColor(data?.customizeMaster?.color)
+          setInstanceName(data?.appName)
+          setSubTitle(data?.subTitle)
+          setMenuName(data?.nameOfthisMenu)
+          let allcategory = generateCategorybyID(data)
+          setAddCategory(allcategory)
+          setLoader(false)
+        }).catch((error) => {
+          setLoader(false)
+          console.log('error', error)
         })
-        setSelectedColor(data?.customizeMaster?.color)
-        setInstanceName(data?.appName)
-        setSubTitle(data?.subTitle)
-        setMenuName(data?.nameOfthisMenu)
-        let allcategory = generateCategorybyID(data)
-        setAddCategory(allcategory)
-        setLoader(false)
-      }).catch((error) => {
-        setLoader(false)
-        console.log('error', error)
-      })
+    }
   }, [id])
 
   const handleNameChange = (categoryIndex, itemIndex, value) => {

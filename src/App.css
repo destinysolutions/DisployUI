@@ -2319,3 +2319,7 @@ input.Talk-formInput {
   line-height: 20px;
   font-weight: 300;
 }
+
+.border-b-none{
+  border-bottom: none !important;
+}
