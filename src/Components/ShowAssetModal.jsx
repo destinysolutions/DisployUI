@@ -48,6 +48,7 @@ const ShowAssetModal = ({
   from,
   setSelectedAsset,
 }) => {
+  console.log('selectedAsset', selectedAsset)
   const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
@@ -601,8 +602,7 @@ const ShowAssetModal = ({
                             <tr
                               key={asset.assetID}
                               className={`${
-                                selectedAsset?.assetID === asset?.assetID ||
-                                selectedAsset === asset?.assetName
+                                (selectedAsset?.assetID === asset?.assetID && selectedAsset?.assetName === asset?.assetName) 
                                   ? "bg-[#f3c953]"
                                   : ""
                               } border-b border-[#eee] cursor-pointer `}

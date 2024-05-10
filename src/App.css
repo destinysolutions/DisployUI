@@ -993,8 +993,8 @@ button.daysbtn {
 .AddMedia-table tbody:nth-child(even),
 .set-schedule-table tr:nth-child(even),
 .composition-table tr:nth-child(even),
-.selectedlayout-table tr:nth-child(even),
-.addmedia-table tr:nth-child(even) {
+.selectedlayout-table tr:nth-child(even)
+{
   background: #ffffff;
 }
 .screen-table tr,
