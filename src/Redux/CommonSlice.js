@@ -88,17 +88,33 @@ export const handleAllTimeZone = createAsyncThunk(
 );
 
 
+export const handleAllPosTheme = createAsyncThunk(
+  "Common/handleAllPosTheme",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      return response.data;
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+
 const initialState = {
   loading: false,
   allPlans: [],
   trial: [],
-  allFeature:[],
+  allFeature: [],
   error: null,
   data: null,
   message: "",
   status: null,
-  screenLimit:false,
-  timeZoneList :[]
+  screenLimit: false,
+  timeZoneList: [],
+  PosTheme: []
 };
 
 const CommonSlice = createSlice({
@@ -191,6 +207,20 @@ const CommonSlice = createSlice({
       state.message = action.payload?.message;
     });
     builder.addCase(handleAllTimeZone.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.payload.message;
+      state.message = action.payload?.message;
+    });
+
+    builder.addCase(handleAllPosTheme.pending, (state) => {
+      state.status = "loading";
+    });
+    builder.addCase(handleAllPosTheme.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.PosTheme = action.payload;
+      state.message = action.payload?.message;
+    });
+    builder.addCase(handleAllPosTheme.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.payload.message;
       state.message = action.payload?.message;

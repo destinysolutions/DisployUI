@@ -3,8 +3,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { Currency, FontSize, ImageLayout, PageArray, Theme } from '../Common/Common';
 import { SketchPicker } from 'react-color';
 
-const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, errors, selectedColor, setSelectedColor,setTextColor,textColor, setPriceColor, priceColor }) => {
-
+const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, errors, selectedColor, setSelectedColor, setTextColor, textColor, setPriceColor, priceColor, PosTheme }) => {
     return (
         <>
             <div
@@ -126,7 +125,7 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                             </label>
                                         </div>
                                         </div>*/}
-                                  {/*  <div className='flex justify-between m-3 items-center'>
+                                    {/*  <div className='flex justify-between m-3 items-center'>
                                         <span>
                                             Font Size
                                         </span>
@@ -141,8 +140,8 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                         </select>
                                         </div>*/}
 
-                                        <div className='border-t border-gray m-3'>
-                                        </div>
+                                    <div className='border-t border-gray m-3'>
+                                    </div>
 
                                     <div className='m-3'>
                                         <span className='text-3xl font-medium'>
@@ -150,18 +149,22 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                         </span>
 
                                     </div>
-                                    {/*       <div className='m-3'>
-                                        <select id="Theme" name="Theme" className="formInput"
+                                    <div className='m-3'>
+                                        <select
+                                            id="Theme"
+                                            name="Theme"
+                                            className="formInput"
                                             {...register("Theme")}
                                         >
-                                            {Theme?.map((item, index) => {
+                                            <option value="">Select Theme</option>
+                                            {PosTheme?.map((item, index) => {
                                                 return (
-                                                    <option value={item?.theme} key={index}>{item?.theme}</option>
+                                                    <option value={item?.posThemeID} key={index}>{item?.posThemeName}</option>
                                                 )
                                             })}
                                         </select>
 
-                                        </div>*/}
+                                    </div>
                                     <div className='flex justify-between m-3 items-center'>
                                         <span>
                                             Background Color
@@ -215,7 +218,7 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                     <button
                                         type="submit"
                                         className="w-40 text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-full py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
-                                       
+
                                     >
                                         Save
                                     </button>

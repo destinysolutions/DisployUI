@@ -226,6 +226,7 @@ export const DELETE_DIGITAL_MENU = `${baseUrl}DigitalMenu/DeleteDigitalMenuApp`
 export const GET_DIGITAL_MENU_BY_ID = `${baseUrl}DigitalMenu/GetDigitalMenuAppByID`
 export const ADD_TAGS_DIGITAL_MENU = `${baseUrl}DigitalMenu/AddDigitalMenuAppTags`
 export const ASSIGN_SCREEN_DIGITAL_MENU = `${baseUrl}DigitalMenu/AssignDigitalMenuAppToScreen`
+export const POS_THEME =  `${baseUrl}Common/GetPOSTheme`
 
 // Billing
 

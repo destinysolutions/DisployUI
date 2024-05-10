@@ -19,16 +19,17 @@ import DigitalMenuCustomize from './DigitalMenuCustomize';
 import DigitalMenuPreview from './DigitalMenuPreview';
 import { useForm } from 'react-hook-form';
 import DigitalMenuAssets from './DigitalMenuAssets';
-import { ADD_EDIT_DIGITAL_MENU, GET_DIGITAL_MENU_BY_ID, POS_ITEM_LIST } from '../../Pages/Api';
+import { ADD_EDIT_DIGITAL_MENU, GET_DIGITAL_MENU_BY_ID, POS_ITEM_LIST, POS_THEME } from '../../Pages/Api';
 import Swal from 'sweetalert2';
 import { HiOutlineViewList } from 'react-icons/hi';
 import { chunkArray, generateAllCategory, generateCategorybyID } from '../Common/Common';
 import Loading from '../Loading';
 import PurchasePlanWarning from '../Common/PurchasePlan/PurchasePlanWarning';
+import { handleAllPosTheme } from '../../Redux/CommonSlice';
 
 const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const { id } = useParams();
-  const {userDetails, user, token } = useSelector((state) => state.root.auth);
+  const { userDetails, user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [customizeData, setCustomizeData] = useState({
     "EachPageTime": "30",
@@ -38,9 +39,10 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     "CurrencyShow": true,
     "ShowPrice": true,
     "FontSize": "Medium",
-    "Theme": "Light Theme",
+    "Theme": "",
     "Topfeature": false,
   })
+  console.log('customizeData', customizeData)
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: customizeData
   });
@@ -73,6 +75,9 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showCustomizemodal, setShowCustomizemodal] = useState(false);
   const [dragStartForDivToDiv, setDragStartForDivToDiv] = useState(false);
   const [PreviewData, setPreviewData] = useState([])
+  const [PosTheme, setPosTheme] = useState([])
+  const [theme, setTheme] = useState({})
+  console.log('theme', theme)
   const [addCategory, setAddCategory] = useState([{
     categoryname: "UNNAMED CATEGORY",
     allItem: [{
@@ -124,6 +129,27 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setPreviewData(allData)
 
   }, [addCategory, customizeData])
+
+  useEffect(() => {
+
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: POS_THEME,
+      headers: {
+        Authorization: authToken,
+      },
+    }
+
+    dispatch(handleAllPosTheme({ config }))
+      .then((res) => {
+        setPosTheme(res?.payload?.data)
+      })
+      .catch((error) => {
+        console.log('error', error)
+      })
+
+  }, [])
 
   const handleOnSaveInstanceName = (e) => {
     if (!instanceName.replace(/\s/g, "").length) {
@@ -264,7 +290,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
           "CurrencyShow": data?.customizeMaster?.isShowcurrencysign,
           "ShowPrice": data?.customizeMaster?.isShowprices,
           "FontSize": data?.customizeMaster?.fontSize,
-          "Theme": "Light Theme",
+          "Theme": data?.customizeMaster?.theme,
           "Topfeature": data?.customizeMaster?.isMovetop,
         })
         setSelectedColor(data?.customizeMaster?.color)
@@ -478,6 +504,10 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   }
 
   const onSubmit = (data) => {
+    if (data?.Theme !== "") {
+      const matchedTheme = PosTheme.find(item => Number(item?.posThemeID) === Number(data?.Theme));
+      setTheme(matchedTheme)
+    }
     setCustomizeData(data)
     // Handle form submission here
     toggleModal()
@@ -1117,14 +1147,14 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           )}
           {showPreviewPopup && (
-            <DigitalMenuPreview customizeData={customizeData} PreviewData={PreviewData} selectedColor={selectedColor} textColor={textColor} priceColor={priceColor} />
+            <DigitalMenuPreview customizeData={customizeData} PreviewData={PreviewData} selectedColor={selectedColor} textColor={textColor} priceColor={priceColor} theme={theme} />
           )}
         </div>
       </div>
       <Footer />
 
       {showCustomizemodal && (
-        <DigitalMenuCustomize toggleModal={toggleModal} register={register} errors={errors} handleSubmit={handleSubmit} onSubmit={onSubmit} selectedColor={selectedColor} setSelectedColor={setSelectedColor} setTextColor={setTextColor} textColor={textColor} setPriceColor={setPriceColor} priceColor={priceColor} />
+        <DigitalMenuCustomize toggleModal={toggleModal} register={register} errors={errors} handleSubmit={handleSubmit} onSubmit={onSubmit} selectedColor={selectedColor} setSelectedColor={setSelectedColor} setTextColor={setTextColor} textColor={textColor} setPriceColor={setPriceColor} priceColor={priceColor} PosTheme={PosTheme} />
       )}
       {openModal && (
         <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />

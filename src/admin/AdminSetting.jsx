@@ -99,14 +99,14 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             {showInvoice && STabs === 6 && (
               <div className="flex">
-                <button
+                {/*<button
                   type="button"
                   className="px-5 bg-primary flex items-center gap-2 text-white rounded-full py-2 border border-primary me-3 "
                   onClick={() => SendInvoice()}
                 >
                   <BsFillSendFill />
                   Send Invoice
-                </button>
+            </button>*/}
                 <button
                   className="bg-white text-primary text-base px-5 flex items-center gap-2 py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                   type="button"
