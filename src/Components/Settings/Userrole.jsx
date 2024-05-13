@@ -184,7 +184,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
           </h2>
           <button
             className={`flex ${((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
-            disabled={userDetails?.isTrial && !userDetails?.isActivePlan}
+            // disabled={userDetails?.isTrial && !userDetails?.isActivePlan}
             onClick={() => {
               if (((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
                 setUserDisable();

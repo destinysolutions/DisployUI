@@ -2153,8 +2153,9 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
               {permissions.isSave && (
                 <button
                   className={`flex align-middle ${((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 lg:mb-5 lg:mt-0 mt-3 mb-4 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
-                  disabled={userDetails?.isTrial && !userDetails?.isActivePlan}
+                  // disabled={(userDetails?.isTrial && !userDetails?.isActivePlan || user?.userDetails?.isRetailer === false)}
                   onClick={() => {
+                    console.log('userDetails', userDetails)
                     if (((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
                       setUserDetailData([]);
                       setFirstName("");
