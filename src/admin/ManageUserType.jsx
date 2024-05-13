@@ -125,6 +125,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
 
   const toggleModal = () => {
     setAddUserTypeModal(!addUsertypeModal);
+    setError(false)
   };
 
   const HandleSubmit = () => {
@@ -154,6 +155,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
         console.log("error", error);
         setAddUserTypeModal(false);
       });
+    setError(false)
   };
 
 
@@ -329,7 +331,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                                   >
                                     <span>Edit</span>
                                   </ReactTooltip>
-                                  
+
                                 </button>
                                 <button
                                   data-tip

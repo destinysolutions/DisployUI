@@ -36,7 +36,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const dispatch = useDispatch();
-  const {userDetails, token, user } = useSelector((state) => state.root.auth);
+  const { userDetails, token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [sidebarload, setSidebarLoad] = useState(true);
   const [loadFist, setLoadFist] = useState(true);
@@ -377,7 +377,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     >
                       <thead>
                         <tr className="items-center table-head-bg">
-                          <th className="sticky top-0th-bg-100 text-md font-semibold ">
+                          <th className="sticky top-0 th-bg-100 text-md font-semibold ">
                             <div className="flex justify-start items-center w-full">
                               Name
                               <svg
@@ -435,7 +435,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                     fill="#1C64F2"
                                   />
                                 </svg>
-                               
+
                               </div>
                             </td>
                           </tr>
@@ -456,32 +456,30 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                               key={i}
                               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                             >
-                              <td className=" border-b border-lightgray text-sm ">
+                              <td className="text-sm ">
                                 <div className="flex gap-2 text-[#5E5E5E] items-center justify-start">
                                   {permissions.isDelete && (
                                     <>
                                       {selectAll ? (
                                         <CheckmarkIcon />
                                       ) : (
-                                        <button>
-                                          <input
-                                            type="checkbox"
-                                            className="mx-1"
-                                            checked={selectedItems.some(
-                                              (selectedItem) =>
-                                                selectedItem.assetID ===
-                                                  item.assetID &&
-                                                selectedItem.assetType ===
-                                                  item.assetType
-                                            )}
-                                            onChange={() =>
-                                              handleCheckboxChange({
-                                                assetID: item.assetID,
-                                                assetType: item.assetType,
-                                              })
-                                            }
-                                          />
-                                        </button>
+                                        <input
+                                          type="checkbox"
+                                          className="mx-1"
+                                          checked={selectedItems.some(
+                                            (selectedItem) =>
+                                              selectedItem.assetID ===
+                                              item.assetID &&
+                                              selectedItem.assetType ===
+                                              item.assetType
+                                          )}
+                                          onChange={() =>
+                                            handleCheckboxChange({
+                                              assetID: item.assetID,
+                                              assetType: item.assetType,
+                                            })
+                                          }
+                                        />
                                       )}
                                     </>
                                   )}
@@ -491,27 +489,27 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                     </span>
                                   )}
                                   {item.assetType === "Image" && (
-                                    <span className="text-[#5E5E5E]">
+                                    <span className="text-[#5E5E5E] items-center">
                                       <FiImage />
                                     </span>
                                   )}
                                   {item.assetType === "OnlineImage" && (
-                                    <span className="text-[#5E5E5E]">
+                                    <span className="text-[#5E5E5E] items-center">
                                       <FiImage />
                                     </span>
                                   )}
                                   {item.assetType === "OnlineVideo" && (
-                                    <span className="text-[#5E5E5E]">
+                                    <span className="text-[#5E5E5E] items-center">
                                       <CgYoutube />
                                     </span>
                                   )}
                                   {item.assetType === "DOC" && (
-                                    <span className="text-[#5E5E5E]">
+                                    <span className="text-[#5E5E5E] items-center">
                                       <HiDocument />
                                     </span>
                                   )}
                                   {item.assetType === "Video" && (
-                                    <span className="text-[#5E5E5E]">
+                                    <span className="text-[#5E5E5E] items-center">
                                       <HiVideoCamera />
                                     </span>
                                   )}
@@ -519,26 +517,34 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                               </td>
                               {/* <td className=" border-b border-lightgray text-sm ">{item.assetFolderPath}</td> */}
-                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
-                                {item.folderPath}
+                              <td className=" text-[#5E5E5E] items-center text-sm ">
+                                <div className="flex justify-center items-center">
+                                  {item.folderPath}
+                                </div>
                               </td>
-                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
-                                {moment(item.deleteDate).format(
-                                  "DD/MM/YY, h:mm:ss a"
-                                )}
+                              <td className=" text-[#5E5E5E] items-center text-sm ">
+                                <div className="flex justify-center items-center">
+                                  {moment(item.deleteDate).format(
+                                    "DD/MM/YY, h:mm:ss a"
+                                  )}
+                                </div>
                               </td>
-                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
-                                {item.fileSize}
+                              <td className=" text-[#5E5E5E] items-center text-sm ">
+                                <div className="flex justify-center items-center">
+                                  {item.fileSize}
+                                </div>
                               </td>
-                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
-                                {item.assetType}
+                              <td className="text-[#5E5E5E] items-center text-sm ">
+                                <div className="flex justify-center items-center">
+                                  {item.assetType}
+                                </div>
                               </td>
-                              <td className="border-b border-lightgray text-sm">
-                                <div className="cursor-pointer text-xl flex gap-4 ">
+                              <td className="border-lightgray text-sm">
+                                <div className="cursor-pointer text-xl flex justify-center items-center gap-4 ">
                                   {permissions.isDelete && (
                                     <button
                                       type="button"
-                                      className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-3"
+                                      className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
                                       onClick={() =>
                                         handleDeletePermanently(
                                           item.assetID,
@@ -596,7 +602,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                             d="M13 5H1m0 0 4 4M1 5l4-4"
                           />
                         </svg>
-                        {sidebarOpen ? "Previous" : ""} 
+                        {sidebarOpen ? "Previous" : ""}
                       </button>
                       <div className="flex items-center me-3">
                         <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
@@ -607,7 +613,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                         disabled={(currentPage === totalPages) || (store?.deletedData?.length === 0)}
                         className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                         {sidebarOpen ? "Next" : ""}
+                        {sidebarOpen ? "Next" : ""}
                         <svg
                           className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                           aria-hidden="true"
@@ -626,7 +632,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       </button>
                     </div>
                   </div>
-                 
+
                 </div>
               </div>
             </div>
@@ -634,8 +640,8 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
         </Suspense>
       )}
 
-      
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>
