@@ -170,7 +170,7 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
                                             <button
                                                 className={`bg-primary ${(disclaimer && addStorage) ? "cursor-pointer" : "cursor-not-allowed"} text-white text-base px-8 py-3 border border-primary shadow-md rounded-full`}
                                                 type="button"
-                                                disabled={!disclaimer && addStorage === ""}
+                                                disabled={(!disclaimer || addStorage === "")}
                                                 onClick={() => handlePay()}
                                             >
                                                 Pay

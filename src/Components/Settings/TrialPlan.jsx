@@ -30,7 +30,7 @@ const TrialPlan = ({ setTrialPlanModal, trialPlanModel, handleSaveTrialPlan, tri
                                         <div className='mb-4'>
                                             <div className="relative">
                                                 <label className="formLabel">Trial Days</label>
-                                                <input type='text' placeholder='Enter Trial Days' name="plan_name" className="formInput" value={trialData?.trialDays} onChange={(e) => setTrialData({ ...trialData, trialDays: e.target.value })} />
+                                                <input type='number' placeholder='Enter Trial Days' name="plan_name" className="formInput" value={trialData?.trialDays} onChange={(e) => setTrialData({ ...trialData, trialDays: e.target.value })} />
                                             </div>
                                             <div className='flex gap-2 my-3'>
                                                 <input type='checkbox' className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink" checked={trialData?.isActive} onChange={(e) => setTrialData({ ...trialData, isActive: e.target.checked })} />

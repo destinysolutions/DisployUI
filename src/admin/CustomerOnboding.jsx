@@ -5,7 +5,7 @@ import AdminNavbar from "./AdminNavbar";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getAllCustomerDetails } from "../Redux/admin/OnBodingSlice";
+import { getAllCustomerDetails, handleRemoveUser } from "../Redux/admin/OnBodingSlice";
 import { useSelector } from "react-redux";
 import { RiUser3Fill } from "react-icons/ri";
 import { AiOutlineCloudUpload } from "react-icons/ai";
@@ -49,7 +49,13 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-          navigate("/onboarded")
+          dispatch(handleRemoveUser(payload)).then((res) => {
+            if (res?.payload?.status === 200) {
+              navigate("/onboarded")
+            }
+          }).catch((error) => {
+            console.log('error', error)
+          });
         }
       });
     } catch (error) {

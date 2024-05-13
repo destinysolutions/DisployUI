@@ -889,7 +889,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handlePay = () => {
 
-    if (addScreen < 0) {
+    if (addScreen < 1) {
       toast.error("Please Enter Proper Required Screen ")
       return;
     }

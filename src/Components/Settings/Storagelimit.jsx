@@ -86,7 +86,7 @@ const Storagelimit = () => {
   }
 
   const handlePay = () => {
-    if (addStorage < 0) {
+    if (addStorage < 1) {
       toast.error("Please Enter Proper Required Storage ")
       return;
     }

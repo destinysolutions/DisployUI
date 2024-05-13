@@ -4,9 +4,11 @@ import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
 
 const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, setLastName, setPhoneNumber, setEmail, setSelectedUserType
     , setIsActive, setEditMode, setEditUserId, setShowPassword, showPassword, selectedUserType, userName, firstName, lastName, phoneNumber, email, password,
-    userTypeData, isActive, handleCheckboxChange, handleInsertUser, setPassword, emailError, passError, usernameError, setPassError, setUsernameError, setEmailError,phoneError,firstError,lastError,  setPhoneError
-    ,setLastError,
-    setFirstError
+    userTypeData, isActive, handleCheckboxChange, handleInsertUser, setPassword, emailError, passError, usernameError, setPassError, setUsernameError, setEmailError, phoneError, firstError, lastError, setPhoneError
+    , setLastError,
+    setFirstError,
+    setUserTypeError,
+    userTypeError
 }) => {
     return (
         <>
@@ -46,6 +48,7 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             setPhoneError(false)
                                             setFirstError(false)
                                             setLastError(false)
+                                            setUserTypeError(false)
                                         }}
                                     />
                                 </div>
@@ -84,7 +87,7 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                         )}
 
                                         <input
-                                            type="text"
+                                            type="number"
                                             placeholder="Phone Number"
                                             className="formInput mt-4"
                                             value={phoneNumber}
@@ -137,12 +140,16 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             value={selectedUserType}
                                             className="formInput mt-4"
                                         >
+                                            <option value="">Select User Type</option>
                                             {userTypeData.map((user) => (
                                                 <option key={user.userTypeID} value={user.userTypeID}>
                                                     {user.userType}
                                                 </option>
                                             ))}
                                         </select>
+                                        {userTypeError && (
+                                            <span className='error'>This field is required.</span>
+                                        )}
                                         <div className="mt-5 flex items-center">
                                             <input
                                                 className="border border-primary mr-3 ml-1 rounded h-6 w-6"
@@ -174,6 +181,7 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                                 setPhoneError(false)
                                                 setFirstError(false)
                                                 setLastError(false)
+                                                setUserTypeError(false)
                                             }}
                                         >
                                             Cancel

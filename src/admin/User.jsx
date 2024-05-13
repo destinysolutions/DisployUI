@@ -14,9 +14,13 @@ import {
 import AddEditUser from "./AddEditUser";
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
 import ReactTooltip from "react-tooltip";
+import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [addUserModal, setAddUserModal] = useState(false);
+  const { token } = useSelector((s) => s.root.auth);
+  const authToken = `Bearer ${token}`;
   const [userType, setUserType] = useState("");
   const [isActive, setIsActive] = useState(false);
   const [userTypeData, setUserTypeData] = useState([]);
@@ -34,9 +38,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [firstError, setFirstError] = useState(false)
   const [lastError, setLastError] = useState(false)
   const [phoneError, setPhoneError] = useState(false)
-
-
-
+  const [userTypeError, setUserTypeError] = useState(false)
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -88,6 +90,10 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       setPassError(true);
       hasError = true;
     }
+    if (selectedUserType === "") {
+      setUserTypeError(true);
+      hasError = true
+    }
 
     if (hasError) {
       return;
@@ -111,6 +117,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       url: ADD_USER_MASTER,
       headers: {
         "Content-Type": "application/json",
+        Authorization: authToken
       },
       data: data,
     };
@@ -118,24 +125,34 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        fetchUserData();
-
-        if (!editMode) {
-          setUserData((prevData) => [
-            ...prevData,
-            {
-              userID: response.data.data.model.userID,
-              userName,
-              password,
-              isActive,
-              userType,
-              firstName,
-              lastName,
-              email,
-              phoneNumber,
-            },
-          ]);
+        if (response?.data?.status) {
+          fetchUserData();
+          if (!editMode) {
+            toast.success("User Created Successfully.")
+          } else {
+            toast.success("User Updated Successfully.")
+          }
+        } else {
+          toast.error(response?.data?.message)
         }
+        console.log('response', response)
+
+        // if (!editMode) {
+        //   setUserData((prevData) => [
+        //     ...prevData,
+        //     {
+        //       userID: response?.data?.data?.model?.userID,
+        //       userName,
+        //       password,
+        //       isActive,
+        //       userType,
+        //       firstName,
+        //       lastName,
+        //       email,
+        //       phoneNumber,
+        //     },
+        //   ]);
+        // }
       })
       .catch((error) => {
         console.log(error);
@@ -151,6 +168,13 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     setIsActive(false);
     setEditMode(false);
     setEditUserId("");
+    setPassError(false)
+    setEmailError(false)
+    setUsernameError(false)
+    setPhoneError(false)
+    setFirstError(false)
+    setLastError(false)
+    setUserTypeError(false)
     setAddUserModal(false);
   };
 
@@ -474,7 +498,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                                     </ReactTooltip>
                                   </button>
                                 </div>
-                                
+
                                 <div className="cursor-pointer text-xl flex gap-4 ">
                                   <button
                                     data-tip
@@ -647,12 +671,14 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
           setEmailError={setEmailError}
           setPassError={setPassError}
           setUsernameError={setUsernameError}
-          phoneError={phoneError}
-          firstError={firstError}
-          lastError={lastError}
           setPhoneError={setPhoneError}
           setLastError={setLastError}
           setFirstError={setFirstError}
+          setUserTypeError={setUserTypeError}
+          phoneError={phoneError}
+          firstError={firstError}
+          lastError={lastError}
+          userTypeError={userTypeError}
 
         />
       )}

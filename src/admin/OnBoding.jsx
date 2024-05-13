@@ -312,7 +312,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                     type="button"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => {
-                                      navigate(`/onboarded/customer-details/${item.orgID}`)
+                                      navigate(`/onboarded/customer-details/${item.organizationID}`)
                                     }}
                                   >
                                     <BsEyeFill />
@@ -362,6 +362,17 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                 />
                               </svg>
 
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                      {sortedAndPaginatedData?.length === 0 && (
+                        <tr>
+                          <td colSpan={10}>
+                            <div className="flex text-center justify-center">
+                              <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
+                                No Data Available
+                              </span>
                             </div>
                           </td>
                         </tr>

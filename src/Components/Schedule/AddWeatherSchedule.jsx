@@ -182,12 +182,12 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const handleAssetUpdate = () => { };
 
   const handleSubmit = () => {
-    toast.loading("Saving...");
     if (!urlParth || !urlParth.assetID) {
       toast.error("Asset is missing!");
       setDisableBtn(false)
       return;
     }
+    toast.loading("Saving...");
     const timeZone = allTimezone?.filter((item) => item?.timeZoneName === selectedTimezoneName)
     let data = {
       weatherSchedulingID: Number(weatherScheduleId) || 0,

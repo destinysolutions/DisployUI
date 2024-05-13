@@ -179,7 +179,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                 <button
                                                     className={`bg-primary ${(disclaimer && addScreen) ? "cursor-pointer" : "cursor-not-allowed"} text-white text-base px-8 py-3 border border-primary shadow-md rounded-full`}
                                                     type="button"
-                                                    disabled={!disclaimer && addScreen === ""}
+                                                    disabled={(!disclaimer || addScreen === "")}
                                                     onClick={() => handlePay()}
                                                 >
                                                     Pay

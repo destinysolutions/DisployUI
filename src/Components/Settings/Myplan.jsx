@@ -18,6 +18,7 @@ import { Switch } from "@material-tailwind/react";
 import PurchaseUserPlan from '../Common/PurchaseUserPlan';
 import ReactTooltip from 'react-tooltip';
 import { handleGetUserDetails } from '../../Redux/Authslice';
+import toast from 'react-hot-toast';
 
 const Myplan = () => {
     const { token, user,userDetails } = useSelector((state) => state.root.auth);
@@ -119,6 +120,10 @@ const Myplan = () => {
     }
 
     const handleSaveTrialPlan = () => {
+        if(trialData?.trialDays < 0){
+            toast.error("Please Enter Proper Trial Days")
+            return;
+        }
         const config = {
             method: "get",
             maxBodyLength: Infinity,
