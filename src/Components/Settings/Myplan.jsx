@@ -17,10 +17,11 @@ import AddEditPlan from './AddEditPlan';
 import { Switch } from "@material-tailwind/react";
 import PurchaseUserPlan from '../Common/PurchaseUserPlan';
 import ReactTooltip from 'react-tooltip';
+import { handleGetUserDetails } from '../../Redux/Authslice';
+import toast from 'react-hot-toast';
 
 const Myplan = () => {
-    const { token, user } = useSelector((state) => state.root.auth);
-    console.log('user', user)
+    const { token, user,userDetails } = useSelector((state) => state.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [myplan, setmyPlan] = useState([]);
@@ -77,6 +78,7 @@ const Myplan = () => {
                 Authorization: authToken
             },
         }
+        dispatch(handleGetUserDetails({ id: user?.userID, token }));
         dispatch(handleGetAllPlans({ config })).then((res) => {
             if (res?.payload?.status === 200) {
                 setmyPlan(res?.payload?.data)
@@ -118,6 +120,10 @@ const Myplan = () => {
     }
 
     const handleSaveTrialPlan = () => {
+        if(trialData?.trialDays < 0){
+            toast.error("Please Enter Proper Trial Days")
+            return;
+        }
         const config = {
             method: "get",
             maxBodyLength: Infinity,
@@ -145,13 +151,14 @@ const Myplan = () => {
         <>
             <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full h-full'>
                 <div className="flex items-center justify-between mx-2 mb-5">
-                    <div className='w-full lg:w-1/3 '>
+                    <div className='w-full border-b border-b-[#E4E6FF] pb-3'>
                         <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
                             Pricing Plans
                         </h1>
                     </div>
 
                     {user?.role === "1" && (
+
                         <div className="flex items-center justify-end gap-2 w-full lg:w-2/3 ">
                             <button
                                 className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
@@ -198,12 +205,12 @@ const Myplan = () => {
                 )}
                 {!loading && (
                     <>
-                        <div className="flex flex-wrap -mx-3 mb-8">
+                        <div className="flex flex-wrap mb-8 pl-10">
                             {myplan?.map((item) => {
-                                return(
+                                return (
                                     <>
-                                        {user?.role !== "1" && user?.planID === item?.listOfPlansID && (
-                                            <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/3 px-3 mb-4">
+                                        {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
+                                            <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/2 px-3 ml-5 mb-2">
                                                 <div className="p-4 rounded-lg h-full">
                                                     <div className="flex justify-between mb-4">
                                                         <div className="role-name">
@@ -214,26 +221,26 @@ const Myplan = () => {
                                                                 {item?.planName}
                                                             </h3>
                                                             <p>A simple start for Everyone</p>
-    
+
                                                         </div>
                                                         <div>
                                                             <div className="role-user flex justify-center items-end my-2">
                                                                 ${item?.planPrice}
                                                             </div>
                                                             {/*{user?.role === "1" && (
-                                                                <div className="role-user flex justify-center">
-                                                                    <span>
-                                                                        <img src="./dist/images/1user-img.png" />
-                                                                    </span>
-                                                                    <span>
-                                                                        <img src="./dist/images/2user-img.png" />
-                                                                    </span>
-                                                                    <span className="pulus-user text-2xl text-white">
-                                                                        +3
-                                                                    </span>
-                                                                </div>
-                                                            )}*/}
-    
+                                                        <div className="role-user flex justify-center">
+                                                            <span>
+                                                                <img src="./dist/images/1user-img.png" />
+                                                            </span>
+                                                            <span>
+                                                                <img src="./dist/images/2user-img.png" />
+                                                            </span>
+                                                            <span className="pulus-user text-2xl text-white">
+                                                                +3
+                                                            </span>
+                                                        </div>
+                                                    )}*/}
+
                                                             <div className="flex justify-center mt-3 gap-2">
                                                                 {user?.role === "1" && (
                                                                     <div
@@ -276,8 +283,8 @@ const Myplan = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                            
-                                                    {user?.role !== "1" && user?.planID === item?.listOfPlansID && (
+
+                                                    {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
                                                         <div className='w-full'>
                                                             <button
                                                                 type="button"
@@ -300,7 +307,7 @@ const Myplan = () => {
                                             </div>
                                         )}
 
-                                        {(user?.role === "1" || user?.planID === 0) &&  (
+                                        {(user?.role === "1" || userDetails?.planID === 0) && (
                                             <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/3 px-3 mb-4">
                                                 <div className="p-4 bg-[#ECF0F1] rounded-lg h-full">
                                                     <div className="flex justify-between mb-4">
@@ -312,26 +319,26 @@ const Myplan = () => {
                                                                 {item?.planName}
                                                             </h3>
                                                             <p>A simple start for Everyone</p>
-    
+
                                                         </div>
                                                         <div>
                                                             <div className="role-user flex justify-center items-end my-2">
                                                                 ${item?.planPrice}
                                                             </div>
                                                             {/*{user?.role === "1" && (
-                                                                <div className="role-user flex justify-center">
-                                                                    <span>
-                                                                        <img src="./dist/images/1user-img.png" />
-                                                                    </span>
-                                                                    <span>
-                                                                        <img src="./dist/images/2user-img.png" />
-                                                                    </span>
-                                                                    <span className="pulus-user text-2xl text-white">
-                                                                        +3
-                                                                    </span>
-                                                                </div>
-                                                            )}*/}
-    
+                                                        <div className="role-user flex justify-center">
+                                                            <span>
+                                                                <img src="./dist/images/1user-img.png" />
+                                                            </span>
+                                                            <span>
+                                                                <img src="./dist/images/2user-img.png" />
+                                                            </span>
+                                                            <span className="pulus-user text-2xl text-white">
+                                                                +3
+                                                            </span>
+                                                        </div>
+                                                    )}*/}
+
                                                             <div className="flex justify-center mt-3 gap-2">
                                                                 {user?.role === "1" && (
                                                                     <div
@@ -374,8 +381,8 @@ const Myplan = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                            
-                                                    {user?.role !== "1" && user?.planID === item?.listOfPlansID && (
+
+                                                    {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
                                                         <div className='w-full'>
                                                             <button
                                                                 type="button"
@@ -395,7 +402,7 @@ const Myplan = () => {
                                                         </div>
                                                     )}
 
-                                                    {user?.role !== "1" && user?.planID !== item?.listOfPlansID && (
+                                                    {user?.role !== "1" && userDetails?.planID !== item?.listOfPlansID && (
                                                         <div className='w-full'>
                                                             <button
                                                                 type="button"

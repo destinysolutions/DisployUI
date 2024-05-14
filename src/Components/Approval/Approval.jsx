@@ -11,7 +11,7 @@ import { socket } from "../../App";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 const Approval = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
-  const {user, token } = useSelector((state) => state.root.auth);
+  const {userDetails,user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [ApprovalList, setApprovalList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -298,7 +298,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

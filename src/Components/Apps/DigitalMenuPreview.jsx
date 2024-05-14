@@ -8,7 +8,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
-const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor, priceColor, textColor }) => {
+const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor, priceColor, textColor, theme }) => {
     const progressCircle = useRef(null);
     const progressContent = useRef(null);
     const onAutoplayTimeLeft = (s, time, progress) => {
@@ -19,7 +19,7 @@ const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor, priceCo
         <>
             <div className="mt-6">
                 <div className="grid grid-cols-12 gap-4 h-full">
-                    <div className={`lg:col-span-12 md:col-span-12 sm:col-span-12 xs:col-span-12 shadow-md rounded-lg p-5  items-center`} style={{ backgroundColor: selectedColor }}>
+                    <div className={`lg:col-span-12 md:col-span-12 sm:col-span-12 xs:col-span-12 shadow-md rounded-lg items-center`} style={{ backgroundColor: selectedColor, backgroundImage: theme?.posThemePath ? `url(${theme.posThemePath})` : "none", backgroundSize: "cover"}}>
                         <Swiper
                             spaceBetween={30}
                             centeredSlides={true}
@@ -38,8 +38,8 @@ const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor, priceCo
                                         {category?.allItem?.map((cate) => {
                                             return (
                                                 <>
-                                                    <SwiperSlide style={{ backgroundColor: selectedColor }}>
-                                                        <div className='flex justify-between h-36 items-center border-b border-black'>
+                                                    <SwiperSlide className='p-5 rounded-lg' style={{ backgroundColor: selectedColor, backgroundImage: theme?.posThemePath ? `url(${theme.posThemePath})` : "none",backgroundSize: "cover" }}>
+                                                        <div className={`flex justify-between h-36 items-center border-b-2 ${(theme?.posThemeID === 1 || theme?.posThemeID === 3 || theme?.posThemeID === 5) ? "border-black" : "border-gray-300"}`}>
                                                             <span>
                                                                 {category?.show ? category?.categoryname : ""}
                                                             </span>
@@ -50,9 +50,7 @@ const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor, priceCo
                                                                 return (
                                                                     <>
                                                                         <div className='lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-6'>
-                                                                            <div className="p-4 border border-gray-300 rounded-md h-full shadow-md">
-
-
+                                                                            <div className={`p-4 border-2 ${(theme?.posThemeID === 1 || theme?.posThemeID === 3 || theme?.posThemeID === 5) ? "border-black" : "border-gray-300"} rounded-md h-full shadow-md`}>
                                                                                 <div className='flex justify-center relative w-36 h-36 mx-auto overflow-hidden border border-white rounded-full'>
                                                                                     <img
                                                                                         src={item?.image ? item?.image?.assetFolderPath : digitalMenuLogo}

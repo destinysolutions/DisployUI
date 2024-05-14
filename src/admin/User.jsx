@@ -13,9 +13,14 @@ import {
 } from "./AdminAPI";
 import AddEditUser from "./AddEditUser";
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
+import ReactTooltip from "react-tooltip";
+import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [addUserModal, setAddUserModal] = useState(false);
+  const { token } = useSelector((s) => s.root.auth);
+  const authToken = `Bearer ${token}`;
   const [userType, setUserType] = useState("");
   const [isActive, setIsActive] = useState(false);
   const [userTypeData, setUserTypeData] = useState([]);
@@ -27,7 +32,13 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [originalUserData, setOriginalUserData] = useState([]);
   const [selectedUserType, setSelectedUserType] = useState("");
   const [userName, setUserName] = useState("");
-
+  const [emailError, setEmailError] = useState(false)
+  const [passError, setPassError] = useState(false)
+  const [usernameError, setUsernameError] = useState(false)
+  const [firstError, setFirstError] = useState(false)
+  const [lastError, setLastError] = useState(false)
+  const [phoneError, setPhoneError] = useState(false)
+  const [userTypeError, setUserTypeError] = useState(false)
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -51,6 +62,42 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleInsertUser = () => {
+    let hasError = false;
+    if (userName === "") {
+      setUsernameError(true)
+      hasError = true;
+    }
+    if (firstName === "") {
+      setFirstError(true)
+      hasError = true;
+    }
+
+    if (lastName === "") {
+      setLastError(true)
+      hasError = true;
+    }
+
+    if (phoneNumber === "") {
+      setPhoneError(true)
+      hasError = true;
+    }
+
+    if (email === "") {
+      setEmailError(true);
+      hasError = true;
+    }
+    if (password === "") {
+      setPassError(true);
+      hasError = true;
+    }
+    if (selectedUserType === "") {
+      setUserTypeError(true);
+      hasError = true
+    }
+
+    if (hasError) {
+      return;
+    }
     let data = JSON.stringify({
       userName: userName,
       password: password,
@@ -70,6 +117,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       url: ADD_USER_MASTER,
       headers: {
         "Content-Type": "application/json",
+        Authorization: authToken
       },
       data: data,
     };
@@ -77,24 +125,34 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        fetchUserData();
-
-        if (!editMode) {
-          setUserData((prevData) => [
-            ...prevData,
-            {
-              userID: response.data.data.model.userID,
-              userName,
-              password,
-              isActive,
-              userType,
-              firstName,
-              lastName,
-              email,
-              phoneNumber,
-            },
-          ]);
+        if (response?.data?.status) {
+          fetchUserData();
+          if (!editMode) {
+            toast.success("User Created Successfully.")
+          } else {
+            toast.success("User Updated Successfully.")
+          }
+        } else {
+          toast.error(response?.data?.message)
         }
+        console.log('response', response)
+
+        // if (!editMode) {
+        //   setUserData((prevData) => [
+        //     ...prevData,
+        //     {
+        //       userID: response?.data?.data?.model?.userID,
+        //       userName,
+        //       password,
+        //       isActive,
+        //       userType,
+        //       firstName,
+        //       lastName,
+        //       email,
+        //       phoneNumber,
+        //     },
+        //   ]);
+        // }
       })
       .catch((error) => {
         console.log(error);
@@ -107,9 +165,16 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     setPhoneNumber("");
     setEmail("");
     setSelectedUserType("");
-    setIsActive("");
+    setIsActive(false);
     setEditMode(false);
     setEditUserId("");
+    setPassError(false)
+    setEmailError(false)
+    setUsernameError(false)
+    setPhoneError(false)
+    setFirstError(false)
+    setLastError(false)
+    setUserTypeError(false)
     setAddUserModal(false);
   };
 
@@ -414,6 +479,8 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="flex gap-2">
                                 <div className="cursor-pointer text-xl flex gap-4">
                                   <button
+                                    data-tip
+                                    data-for="Edit"
                                     type="button"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => {
@@ -421,10 +488,21 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                                     }}
                                   >
                                     <MdModeEditOutline />
+                                    <ReactTooltip
+                                      id="Edit"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>Edit</span>
+                                    </ReactTooltip>
                                   </button>
                                 </div>
+
                                 <div className="cursor-pointer text-xl flex gap-4 ">
                                   <button
+                                    data-tip
+                                    data-for="Delete"
                                     type="button"
                                     className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
                                     onClick={() => {
@@ -434,6 +512,14 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                                     }
                                   >
                                     <MdDeleteForever />
+                                    <ReactTooltip
+                                      id="Delete"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>Delete</span>
+                                    </ReactTooltip>
                                   </button>
                                 </div>
                               </div>
@@ -579,6 +665,21 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
           handleCheckboxChange={handleCheckboxChange}
           handleInsertUser={handleInsertUser}
           setPassword={setPassword}
+          passError={passError}
+          emailError={emailError}
+          usernameError={usernameError}
+          setEmailError={setEmailError}
+          setPassError={setPassError}
+          setUsernameError={setUsernameError}
+          setPhoneError={setPhoneError}
+          setLastError={setLastError}
+          setFirstError={setFirstError}
+          setUserTypeError={setUserTypeError}
+          phoneError={phoneError}
+          firstError={firstError}
+          lastError={lastError}
+          userTypeError={userTypeError}
+
         />
       )}
     </>

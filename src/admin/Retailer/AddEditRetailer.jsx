@@ -1,15 +1,87 @@
+import { useFormik } from "formik";
 import React from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
-
+import * as Yup from "yup";
+import { addRetailerData, updateRetailerData } from "../../Redux/admin/RetailerSlice";
+import { useDispatch } from "react-redux";
 const AddEditRetailer = ({
   heading,
   toggleModal,
-  formik,
   showPassword,
   setShowPassword,
-  editId
+  editId,
+  editData,
+  setShowModal,
+  orgUserID
 }) => {
+  const dispatch = useDispatch()
+  //using for validation and register api calling
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+  const validationSchema = Yup.object().shape({
+    companyName: Yup.string().required("Company Name is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+      ),
+    firstName: Yup.string().required("First Name is required").max(50),
+    lastName: Yup.string().required("Last Name is required").max(50),
+    emailID: Yup.string()
+      .required("Email is required")
+      .email("E-mail must be a valid e-mail!"),
+    phoneNumber: Yup.string()
+      .required("Phone Number is required")
+      .matches(phoneRegExp, "Phone number is not valid"),
+    googleLocation: Yup.string().required("Google Location is required"),
+  });
+
+  const editValidationSchema = Yup.object().shape({
+    companyName: Yup.string().required("Company Name is required"),
+    firstName: Yup.string().required("First Name is required").max(50),
+    lastName: Yup.string().required("Last Name is required").max(50),
+    emailID: Yup.string()
+      .required("Email is required")
+      .email("E-mail must be a valid e-mail!"),
+    phoneNumber: Yup.string()
+      .required("Phone Number is required")
+      .matches(phoneRegExp, "Phone number is not valid"),
+    googleLocation: Yup.string().required("Google Location is required"),
+  });
+
+  const formik = useFormik({
+    initialValues: editData,
+    enableReinitialize: editData,
+    validationSchema: editId ? editValidationSchema : validationSchema,
+    onSubmit: async (values) => {
+      const formData = new FormData();
+      formData.append("OrganizationName", values.companyName);
+      formData.append("Password", values.password || ""); // Set a default value if null
+      formData.append("FirstName", values.firstName);
+      formData.append("LastName", values.lastName);
+      formData.append("Email", values.emailID);
+      formData.append("GoogleLocation", values.googleLocation);
+      formData.append("Phone", values.phoneNumber);
+      formData.append("IsRetailer", true);
+
+      if (editId) {
+        formData.append("OrgUserSpecificID", editId);
+        formData.append("orgUserID", orgUserID);
+        dispatch(updateRetailerData(formData));
+      } else {
+        formData.append("Operation", "Insert");
+        dispatch(addRetailerData(formData));
+      }
+
+      formik.resetForm();
+      setShowModal(false);
+    },
+  });
+
+  console.log('formik', formik)
   return (
     <>
       <div
@@ -31,6 +103,7 @@ const AddEditRetailer = ({
                   <AiOutlineCloseCircle
                     className="text-4xl text-primary cursor-pointer"
                     onClick={() => {
+                      formik.resetForm();
                       toggleModal();
                     }}
                   />
@@ -177,7 +250,10 @@ const AddEditRetailer = ({
                       <button
                         type="button"
                         className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
-                        onClick={() => toggleModal()}
+                        onClick={() => {
+                          formik.resetForm();
+                          toggleModal()
+                        }}
                       >
                         Cancel
                       </button>
@@ -185,7 +261,7 @@ const AddEditRetailer = ({
                         type="submit"
                         className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                       >
-                        {heading === "Add" ? "Save" : heading }
+                        {heading === "Add" ? "Save" : heading}
                       </button>
                     </div>
                   </form>

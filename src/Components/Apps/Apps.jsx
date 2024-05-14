@@ -24,7 +24,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [appDropDown, setAppDropDown] = useState(null);
   const [sidebarload, setSidebarLoad] = useState(true)
-  const {user, token } = useSelector((state) => state.root.auth);
+  const {user,userDetails, token } = useSelector((state) => state.root.auth);
   const [allApps, setAllApps] = useState([])
   const dispatch = useDispatch();
   useEffect(() => {
@@ -236,7 +236,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
         </Suspense>
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

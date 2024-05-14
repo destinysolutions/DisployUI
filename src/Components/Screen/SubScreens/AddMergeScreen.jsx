@@ -47,7 +47,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   const navigation = useNavigate();
 
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const store = useSelector((state) => state.root.screenGroup.screenData);
   const [loadFirst, setLoadFirst] = useState(true);
@@ -80,7 +80,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const [label, setLabel] = useState("");
   const allScreen = selectedRow?.value * selectedColumn?.value;
   const objectLength = Object.keys(DataRowAndCol).length;
-  
+
   useEffect(() => {
     let config = {
       method: "get",
@@ -112,7 +112,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => {};
+  const handleAssetUpdate = () => { };
 
   const handleSave = () => {
     setAssetError(false);
@@ -204,7 +204,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     if (allScreen !== objectLength) {
       setScreenError(true);
       hasError = true;
-    }else{
+    } else {
       setScreenError(false);
     }
     if (hasError) {
@@ -351,19 +351,17 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center md:p-5 rounded-b dark:border-gray-600 ">
+                      <div className="flex gap-5 items-center md:p-5 rounded-b dark:border-gray-600 justify-start">
                         <button
-                          data-modal-hide="static-modal"
-                          type="button"
-                          className="border-2 border-primary rounded-lg ml-3 text-white bg-primary focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                          className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
+                          type="submit"
                           onClick={saveMergeScreen}
                         >
                           Save
                         </button>
                         <button
-                          data-modal-hide="static-modal"
+                          className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                           type="button"
-                          className="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
                           onClick={onMergeClose}
                         >
                           Cancel
@@ -395,12 +393,11 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                   ).map((col) => (
                                     <div
                                       key={col}
-                                      className={`shadow btn-display rounded-lg text-black ${
-                                        selectedButton.row === row &&
+                                      className={`shadow btn-display rounded-lg text-black ${selectedButton.row === row &&
                                         selectedButton.col === col
-                                          ? "selected"
-                                          : ""
-                                      }`}
+                                        ? "selected"
+                                        : ""
+                                        }`}
                                       onClick={() =>
                                         handleDisplayButtonClick(row, col)
                                       }
@@ -415,7 +412,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                         textAlign: "center",
                                         backgroundColor:
                                           selectedButton.row === row &&
-                                          selectedButton.col === col
+                                            selectedButton.col === col
                                             ? "#FFD700"
                                             : "#f0f8ff",
                                       }}
@@ -458,14 +455,16 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
       {/* {isModalOpen && ( */}
-      <ScreenGroupModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        handleSaveNew={handleSaveNew}
-        label={label}
-        type="MergeScreen"
-        sidebarOpen={sidebarOpen}
-      />
+      {isModalOpen && (
+        <ScreenGroupModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          handleSaveNew={handleSaveNew}
+          label={label}
+          type="MergeScreen"
+          sidebarOpen={sidebarOpen}
+        />
+      )}
       {/* )} */}
 
       {showAssetModal && (
@@ -489,7 +488,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

@@ -2,6 +2,7 @@ import moment from 'moment'
 import React from 'react'
 
 const InvoiceBilling = ({ InvoiceRef ,selectData}) => {
+    console.log('selectData', selectData)
     return (
         <>
             <div ref={InvoiceRef} className='p-6'>
@@ -26,7 +27,7 @@ const InvoiceBilling = ({ InvoiceRef ,selectData}) => {
                         <div className="flex justify-between border-b border-gray text-right py-3">
                             <label>Invoice Number:</label><span>{selectData?.invoiceNumber}</span></div>
                         <div className="flex justify-between border-b border-gray text-right py-3">
-                            <label>Invoice Date:</label><span>DD / MM / YYYY</span></div>
+                            <label>Invoice Date:</label><span>{moment(selectData?.issuedDate).format("LL")}</span></div>
                         <div className="flex justify-between border-b border-gray text-right py-3"><b>Total Amount due on {moment(
                             selectData?.dueDate
                           ).format("LL")}</b></div>

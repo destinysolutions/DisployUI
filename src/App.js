@@ -21,11 +21,13 @@ export const socket = io.connect("https://disploysocket.thedestinysolutions.com"
 // export const socket = io.connect("http://localhost:3002");
 
 const App = () => {
-  console.log('socket', socket)
   const [timer, setTimer] = useState(0);
-
-  const { user, token, loading } = useSelector((state) => state.root.auth);
+  const { user, token, loading, userDetails } = useSelector((state) => state.root.auth);
   const dispatch = useDispatch();
+
+  console.log('socket', socket)
+  console.log('userDetails', userDetails)
+  console.log('user', user)
 
   useEffect(() => {
     dispatch(handleNavigateFromCompositionChannel());

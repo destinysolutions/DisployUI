@@ -16,7 +16,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const {user, token } = useSelector((state) => state.root.auth);
+  const {user, token,userDetails } = useSelector((state) => state.root.auth);
   const { compositionLayouts, loading } = useSelector(
     (state) => state.root.composition
   );
@@ -127,7 +127,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
       <Footer />
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false)  && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false)  && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

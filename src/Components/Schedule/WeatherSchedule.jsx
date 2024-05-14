@@ -46,8 +46,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectdata, setSelectData] = useState({});
   const store = useSelector((state) => state.root.weather);
   const [weatherList, setWeatherList] = useState([])
-  const { user, token } = useSelector((state) => state.root.auth);
-  const { loading, successMessage, type } = useSelector((s) => s.root.schedule);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
+  const { successMessage, type } = useSelector((s) => s.root.schedule);
+  const [isLoading, setIsLoading] = useState(true)
   const authToken = `Bearer ${token}`;
 
   const addScreenRef = useRef(null);
@@ -63,12 +64,6 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [loadFist, setLoadFist] = useState(true);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (successMessage && type === "DELETE") {
-      toast.success(successMessage);
-    }
-  }, [successMessage]);
 
   // Filter data based on search term
   const filteredData = Array.isArray(weatherList)
@@ -119,10 +114,11 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  
-  const fetchAllData =() =>{
+
+  const fetchAllData = () => {
     dispatch(getData()).then((res) => {
       setWeatherList(res?.payload?.data?.model)
+      setIsLoading(false)
     });
   }
 
@@ -133,12 +129,12 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFist]);
 
-  useEffect(() => {
-    if (store && store.status === "deleted") {
-      toast.success(store.message);
-      setLoadFist(true);
-    }
-  }, [store]);
+  // useEffect(() => {
+  //   if (store && store.status === "deleted") {
+  //     toast.success(store.message);
+  //     setLoadFist(true);
+  //   }
+  // }, [store]);
 
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
@@ -183,16 +179,24 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(deletedData(selectedItems));
-        setSelectAllChecked(false);
-        setSelectedItems([]);
+        dispatch(deletedData(selectedItems)).then((res) => {
+          if (res?.payload?.status) {
+            setSelectAllChecked(false);
+            setSelectedItems([]);
+            setLoadFist(true);
+            toast.success(res?.payload?.message)
+            const Params = {
+              id: socket.id,
+              connection: socket.connected,
+              macId: weatherList?.map((i) => i?.macIDs).join(",")
+            };
+            socket.emit("ScreenConnected", Params);
+          }
+
+        }).catch((error) => {
+          console.log('error', error)
+        });
       }
-      const Params = {
-        id: socket.id,
-        connection: socket.connected,
-        macId: weatherList?.map((i) => i?.macIDs).join(",")
-      };
-      socket.emit("ScreenConnected", Params);
     });
   };
 
@@ -224,7 +228,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status === 200) {
           try {
-            
+
             if (macids?.includes(",")) {
               let allMacIDs = macids?.split(",");
               allMacIDs?.map((item) => {
@@ -507,7 +511,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {loading ? (
+                  {isLoading && (
                     <tr>
                       <td colSpan={7}>
                         <div className="flex text-center m-5 justify-center">
@@ -532,20 +536,22 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                     </tr>
-                  ) : weatherList &&
-                    sortedAndPaginatedData?.length === 0 ? (
-                    <tr>
-                      <td colSpan={7}>
-                        <div className="flex text-center m-5 justify-center">
-                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                            No Data Available
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
+                  )}
+                  {!isLoading && weatherList &&
+                    sortedAndPaginatedData?.length === 0 && (
+                      <tr>
+                        <td colSpan={7}>
+                          <div className="flex text-center m-5 justify-center">
+                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                              No Data Available
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  {(
                     <>
-                      {weatherList &&
+                      {!isLoading && weatherList &&
                         sortedAndPaginatedData.length > 0 &&
                         sortedAndPaginatedData.map((schedule, index) => {
                           return (
@@ -655,7 +661,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                                       />
                                     )}
-                                 
+
                                 </div>
                               </td>
 
@@ -870,7 +876,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

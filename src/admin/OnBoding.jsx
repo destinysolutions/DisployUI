@@ -13,10 +13,12 @@ import toast from "react-hot-toast";
 import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
 import { BsEyeFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import ReactTooltip from "react-tooltip";
 
 const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.onBoding);
+  const navigate = useNavigate()
   const dispatch = useDispatch();
   const [loadFist, setLoadFist] = useState(true);
 
@@ -282,33 +284,48 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
                               </td>
                               <td className="px-6 py-4 capitalize">
-                              <span>
-                                {item?.isActive ? (
-                                  <span
-                                    style={{ backgroundColor: "#cee9d6" }}
-                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                  >
-                                    Active
-                                  </span>
-                                ) : (
-                                  <span
-                                    style={{ backgroundColor: "#f1b2b2" }}
-                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                  >
-                                    Inactive
-                                  </span>
-                                )}
-                              </span>
-                            </td>
+                                <span>
+                                  {item?.isActive ? (
+                                    <span
+                                      style={{ backgroundColor: "#cee9d6" }}
+                                      className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                    >
+                                      Active
+                                    </span>
+                                  ) : (
+                                    <span
+                                      style={{ backgroundColor: "#f1b2b2" }}
+                                      className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                    >
+                                      Inactive
+                                    </span>
+                                  )}
+                                </span>
+                              </td>
 
                               <td className="px-6 py-4">
                                 <div className="cursor-pointer text-xl flex gap-4 ">
-                                 <Link
-                                    to={`/onboarded/customer-details/${item.orgID}`}
+
+                                  <button
+                                    data-tip
+                                    data-for="View"
                                     type="button"
-                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    onClick={() => {
+                                      navigate(`/onboarded/customer-details/${item.organizationID}`)
+                                    }}
+                                  >
                                     <BsEyeFill />
-                                  </Link>
+                                    <ReactTooltip
+                                      id="View"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>View</span>
+                                    </ReactTooltip>
+                                  </button>
+
                                   {/*<button
                                     type="button"
                                     className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-3"
@@ -344,7 +361,18 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                   fill="#1C64F2"
                                 />
                               </svg>
-                            
+
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                      {sortedAndPaginatedData?.length === 0 && (
+                        <tr>
+                          <td colSpan={10}>
+                            <div className="flex text-center justify-center">
+                              <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
+                                No Data Available
+                              </span>
                             </div>
                           </td>
                         </tr>

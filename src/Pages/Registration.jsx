@@ -217,11 +217,12 @@ const Registration = () => {
         response
           .then((res) => {
             if (res?.error?.message !== "Rejected") {
-              window.localStorage.setItem("timer", JSON.stringify(18_00));
+              // window.localStorage.setItem("timer", JSON.stringify(18_00));
               toast.success("Registration successfully.");
               navigate("/");
               setLoading(false);
             } else {
+              toast.error(res?.payload)
               setLoading(false);
             }
           })

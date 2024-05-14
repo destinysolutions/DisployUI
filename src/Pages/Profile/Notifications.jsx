@@ -55,7 +55,7 @@ const Notifications = ({ sidebarOpen }) => {
     <>
       <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
 
-   
+
         <div className="clear-both">
           <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
             <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
@@ -101,11 +101,12 @@ const Notifications = ({ sidebarOpen }) => {
                   )}
                   {!loading && currentItems.length === 0 && (
                     <tr>
-                      <td
-                        className="text-[#5E5E5E] font-semibold text-center text-2xl"
-                        colSpan={3}
-                      >
-                        Data Not found !
+                      <td colSpan={3}>
+                        <div className="flex text-center m-5 justify-center">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                            No Data Available
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   )}

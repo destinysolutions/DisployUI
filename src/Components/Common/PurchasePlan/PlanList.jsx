@@ -30,26 +30,62 @@ const PlanList = ({ choose, setChoose, myplan }) => {
                                         onClick={() => setChoose(!choose)}
                                     />
                                 </div>
-                                <div className="flex flex-wrap my-4">
+                                <div className="flex flex-wrap my-4 max-h-[550px] overflow-y-auto">
                                     {myplan?.map((item) => {
                                         return (
                                             <div className='w-full md:w-1/2 lg:w-1/4 xl:w-1/4 px-3 mb-4'>
-                                                <div className="pricing-plan border-t-4 border-solid border-white bg-white text-center max-w-sm mx-auto hover:border-blue-700 transition-colors duration-300">
+                                                <div className="h-full pricing-plan border-t-4 border-solid border-white bg-white text-center max-w-sm mx-auto hover:border-blue-700 transition-colors duration-300">
                                                     <div className="p-6">
                                                         <h4 className="font-medium leading-tight text-2xl">{item?.planName}</h4>
-                                                        <p className="text-gray-600">{item?.planDetailss}</p>
+                                                        <p className="text-gray-600 text-sm">{item?.planDetailss}</p>
+
                                                     </div>
                                                     {item?.listOfPlansID !== 4 && (
-                                                        <div className="pricing-amount bg-indigo-100 p-6 transition-colors duration-300">
-                                                            <div className=""><span className="text-4xl font-semibold">${item?.planPrice}</span> /Month</div>
+                                                        <div className="pricing-amount bg-indigo-100 px-4 pt-3 pb-5 h-24">
+                                                            <p className="text-left">From</p>
+                                                            <div className="flex items-center justify-start">
+                                                                <span className="text-5xl font-semibold mr-2">${item?.planPrice}</span>
+                                                                <span className="text-left leading-5">per screen /mo <br />+ VAT</span>
+                                                            </div>
                                                         </div>
                                                     )}
                                                     {item?.listOfPlansID === 4 && (
 
-                                                        <div className="pricing-amount bg-indigo-100 p-6 transition-colors duration-300">
+                                                        <div className="pricing-amount bg-indigo-100 px-4 pt-3 pb-5 h-24 flex items-center justify-center">
                                                             <div className=""><span className="text-3xl font-semibold">Talk to Sales</span></div>
                                                         </div>
                                                     )}
+
+                                                    {/*  <div className='w-full border-b border-gray-300 py-3'>
+                                                    <div className="flex items-center justify-center">
+                                                        <span>Annual</span>
+                                                        <label
+                                                            for="toggleFive"
+                                                            class="mx-2 flex items-center cursor-pointer select-none text-dark dark:text-white"
+                                                            >
+                                                            <div class="relative">
+                                                                <input
+                                                                    id="toggleFive"
+                                                                    type="checkbox"
+                                                                    class="peer sr-only"
+                                                                    />
+                                                                <div
+                                                                    class="h-3 rounded-full shadow-inner w-10 bg-gray-300"
+                                                                    ></div>
+                                                                <div
+                                                                    class="absolute left-0 flex items-center justify-center transition bg-white rounded-full dot shadow-switch-1 -top-1 h-5 w-5 peer-checked:translate-x-full"
+                                                                    >
+                                                                    <span
+                                                                        class="w-3 h-3 rounded-full active bg-gray-300"
+                                                                        ></span>
+                                                                </div>
+                                                            </div>
+                                                            </label>
+                                                        <span>Monthly</span>
+                                                    </div>
+                                                    <p>No minimum screens</p>
+                                                    </div>*/}
+
                                                     <div className="p-6">
                                                         {item?.listOfPlansID === 1 && (
                                                             <ul className="leading-loose">

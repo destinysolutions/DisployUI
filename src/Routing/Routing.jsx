@@ -59,7 +59,7 @@ import DummyDashboard from "../Components/Common/DummyDashboard";
 import RetailerRoutes from "./RetailerRoutes";
 
 const Routing = () => {
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token,userDetails } = useSelector((state) => state.root.auth);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const accessDetails = localStorage.getItem("role_access");
   const handleResize = useCallback(() => {
@@ -109,7 +109,7 @@ const Routing = () => {
       />
     );
 
-  if (accessDetails === "USER" && ((user?.isTrial || user?.isActivePlan) || (user?.userDetails?.isRetailer === true))) {
+  if (accessDetails === "USER" && ((userDetails?.isTrial || userDetails?.isActivePlan) || (user?.userDetails?.isRetailer === true))) {
     return (
       <BrowserRouter>
         <ErrorBoundary
@@ -597,7 +597,7 @@ const Routing = () => {
     );
   }
 
-  if (accessDetails === "USER" && (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ) {
+  if (accessDetails === "USER" && (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ) {
     return (
       <BrowserRouter>
         <ErrorBoundary

@@ -309,7 +309,7 @@ const ScreenAssignModal = ({
         ref={selectScreenRef}
         className="w-auto my-6 mx-auto lg:max-w-[50vw] lg:min-w-[50vw] max-w-[85vw] min-w-[85vw]"
       >
-        <div className="border-0 px-4 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none ">
+        <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none ">
           <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
             <div className="flex items-center">
               <div className=" mt-1.5">
@@ -342,7 +342,7 @@ const ScreenAssignModal = ({
               <AiOutlineCloseCircle className="text-3xl" />
             </button>
           </div>
-          <div className="w-full flex justify-end mt-4 mb-4">
+          <div className="w-full flex justify-end mt-4 mb-4 px-6">
             <div className="relative ">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <AiOutlineSearch className="w-5 h-5 text-gray " />
@@ -359,7 +359,7 @@ const ScreenAssignModal = ({
             </div>
           </div>
 
-          <div className="max-h-72 custom-scrollbar rounded-lg ">
+          <div className="max-h-72 px-6 custom-scrollbar rounded-lg ">
             <table className="screen-table w-full" cellPadding={15}>
               <thead>
                 <tr className="items-center table-head-bg">
@@ -434,8 +434,8 @@ const ScreenAssignModal = ({
                         <span
                           id={`changetvstatus${screen?.macid}`}
                           className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                              ? "bg-[#3AB700]"
-                              : "bg-[#FF0000]"
+                            ? "bg-[#3AB700]"
+                            : "bg-[#FF0000]"
                             }`}
                         >
                           {screen.screenStatus == 1 ? "Live" : "offline"}
@@ -550,9 +550,9 @@ const ScreenAssignModal = ({
           </div>
 
 
-          <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
+          <div className="flex items-center justify-center p-4 border-t border-gray-200 rounded-b dark:border-gray-600 gap-2">
             <button
-              className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
+              className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
               onClick={() => {
                 handleUpdateScreenAssign(
                   screenCheckboxes,

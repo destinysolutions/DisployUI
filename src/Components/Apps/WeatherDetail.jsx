@@ -27,7 +27,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   let api_key = "41b5176532e682fd8b4cb6a44e3bd1a4";
   const { id } = useParams();
   const history = useNavigate();
-  const { user } = useSelector((state) => state.root.auth);
+  const { user,userDetails } = useSelector((state) => state.root.auth);
   const moreModalRef = useRef(null);
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -1169,7 +1169,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       )}*/}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

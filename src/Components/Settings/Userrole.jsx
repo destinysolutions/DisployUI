@@ -18,7 +18,7 @@ import WarningDialog from "../Common/WarningDialog";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const Userrole = ({ searchValue, sidebarOpen }) => {
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token ,userDetails} = useSelector((state) => state.root.auth);
   const [userRoleData, setUserRoleData] = useState();
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
@@ -34,7 +34,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
   const [showUsers, setShowUsers] = useState(false);
   const [userList, setUserList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6); // Adjust items per page as needed
+  const [itemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [roleuserList, setRoleUserList] = useState([]);
@@ -183,10 +183,10 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
             Roles List
           </h2>
           <button
-            className={`flex ${((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
-            disabled={user?.isTrial && !user?.isActivePlan}
+            className={`flex ${((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+            // disabled={userDetails?.isTrial && !userDetails?.isActivePlan}
             onClick={() => {
-              if (((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
+              if (((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
                 setUserDisable();
                 setShowModal(true);
                 setHeading("Add");
@@ -284,10 +284,10 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
                                 <button
                                   data-tip
                                   data-for="Edit"
-                                  className={`${((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-                                  disabled={user?.isTrial && !user?.isActivePlan}
+                                  className={`${((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+                                  disabled={userDetails?.isTrial && !userDetails?.isActivePlan}
                                   onClick={() => {
-                                    if (((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
+                                    if (((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
                                       setHeading("Update")
                                       handleSelectByID(item.orgUserRoleID);
                                     } else {
@@ -419,7 +419,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
         <WarningDialog warning={warning} setWarning={setWarning} />
       )}
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

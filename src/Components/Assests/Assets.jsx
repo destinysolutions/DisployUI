@@ -88,7 +88,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const actionBoxRef = useRef(null);
   const addScreenRef = useRef(null);
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user,userDetails } = useSelector((state) => state.root.auth);
 
   const [screenAssetID, setScreenAssetID] = useState();
   const authToken = `Bearer ${token}`;
@@ -1315,7 +1315,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

@@ -226,12 +226,14 @@ const Billing = () => {
                       </tr>
                     ))
                   ) : (
+
                     <tr>
-                      <td
-                        className="text-[#5E5E5E] font-semibold text-center text-2xl"
-                        colSpan={5}
-                      >
-                        Data Not found !
+                      <td colSpan={5}>
+                        <div className="flex text-center m-5 justify-center">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                            No Data Available
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   )}

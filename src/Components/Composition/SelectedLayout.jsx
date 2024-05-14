@@ -64,7 +64,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [NestedNewFolder, setNestedNewFolder] = useState([]);
   const [selectFolder, setSelectFolder] = useState()
   const { state } = useLocation();
-  const {user, token } = useSelector((state) => state.root.auth);
+  const {user, token,userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const { editor, onReady } = useFabricJSEditor();
@@ -1215,7 +1215,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       <Footer />
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

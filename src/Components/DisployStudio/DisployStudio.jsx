@@ -16,7 +16,7 @@ const DisployStudio = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const { user } = useSelector((state) => state.root.auth);
+  const { user ,userDetails} = useSelector((state) => state.root.auth);
   const [Tabs, setTabs] = useState(1);
   function updateTab(id) {
     setTabs(id);
@@ -80,7 +80,7 @@ const DisployStudio = ({ sidebarOpen, setSidebarOpen }) => {
       <Footer />
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

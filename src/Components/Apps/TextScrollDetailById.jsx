@@ -23,7 +23,7 @@ import { socket } from "../../App";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token ,user} = useSelector((state) => state.root.auth);
+  const { token,userDetails ,user} = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [scrollType, setScrollType] = useState([]);
@@ -290,7 +290,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

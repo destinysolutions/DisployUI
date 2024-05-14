@@ -16,9 +16,11 @@ export const DynamicDesignComponent = ({
     setValue(`${name}_${index}`, selectedValue);
     const data = userDisable?.[`${name}`];
     if (data) {
+      data.splice((index - 1), 0, Number(selectedValue));
+      data.splice(index, 1);
       setUserDisable({
         ...userDisable,
-        [`${name}`]: [...data, Number(selectedValue)],
+        [`${name}`]: [...data],
       });
     } else {
       setUserDisable({
@@ -79,9 +81,9 @@ export function mapModuleTitlesToUserAccess(moduleTitle, watch) {
   const UserAccess = [];
 
   moduleTitle?.map((item) => {
-    let View = watch(`${item?.alt}_View`);
-    let Save = watch(`${item?.alt}_Edit`);
-    let Delete = watch(`${item?.alt}_Delete`);
+    let View = watch(`${item?.alt}_View`) ? watch(`${item?.alt}_View`) : false;
+    let Save = watch(`${item?.alt}_Edit`) ? watch(`${item?.alt}_Edit`) : false;
+    let Delete = watch(`${item?.alt}_Delete`) ? watch(`${item?.alt}_Delete`) : false;
     let Approve = watch(`${item?.alt}_Approve`);
     let LevelApprove = watch(`${item?.alt}_LevelApprove`);
     let Total_Approve = LevelApprove ? Number(LevelApprove) : 0;

@@ -367,86 +367,90 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds, fetchAds 
                                 </td>
                               </tr>
                               {isAccordionOpen && (
-                                <div className="overflow-x-scroll sc-scrollbar  pt-4">
-                                  <table
-                                    className="screen-table w-full"
-                                    cellPadding={15}
-                                  >
-                                    <thead>
-                                      <tr className="items-center table-head-bg">
-                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
-                                          Screen Name
-                                        </th>
-                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                          Status
-                                        </th>
-                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                          Google Location
-                                        </th>
-                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                          Last Seen
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {isAccordionOpen &&
-                                        user &&
-                                        user.screens?.length > 0 &&
-                                        user.screens?.map((screen, index) => {
-                                          return (
-                                            <tr
-                                              key={index}
-                                              className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
-                                            >
-                                              <td className="p-2 text-center">
-                                                <div className="flex">
-                                                  <input
-                                                    type="checkbox"
-                                                    className="mr-3"
-                                                    onChange={() =>
-                                                      handleScreenCheckboxChange(
-                                                        screen.screenID
-                                                      )
-                                                    }
-                                                    checked={
-                                                      accordionCheckboxState[
-                                                      screen.screenID
-                                                      ]
-                                                    }
-                                                  />
-                                                  {screen.screenName}
-                                                </div>
-                                              </td>
-
-                                              <td className="p-2 text-center">
-                                                <span
-                                                  id={`changetvstatus${screen.macid}`}
-                                                  className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus === 1
-                                                    ? "bg-[#3AB700]"
-                                                    : "bg-[#FF0000]"
-                                                    }`}
+                                <tr className="border-b-0 border-b-none border-transparent">
+                                  <td colSpan={6} className="p-0">
+                                    <div className="overflow-x-scroll sc-scrollbar pt-4 pb-0">
+                                      <table
+                                        className="screen-table w-full"
+                                        cellPadding={15}
+                                      >
+                                        <thead>
+                                          <tr className="items-center table-head-bg">
+                                            <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
+                                              Screen Name
+                                            </th>
+                                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                              Status
+                                            </th>
+                                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                              Google Location
+                                            </th>
+                                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                              Last Seen
+                                            </th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {isAccordionOpen &&
+                                            user &&
+                                            user.screens?.length > 0 &&
+                                            user.screens?.map((screen, index) => {
+                                              return (
+                                                <tr
+                                                  key={index}
+                                                  className="bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
                                                 >
-                                                  {screen.screenStatus === 1
-                                                    ? "Live"
-                                                    : "offline"}
-                                                </span>
-                                              </td>
-                                              <td className="p-2 text-center">
-                                                {screen?.googleLocation}
-                                              </td>
-                                              <td className="p-2 text-center">
-                                                {screen?.lastSeen
-                                                  ? moment(
-                                                    screen?.lastSeen
-                                                  ).format("LLL")
-                                                  : null}
-                                              </td>
-                                            </tr>
-                                          );
-                                        })}
-                                    </tbody>
-                                  </table>
-                                </div>
+                                                  <td className="px-2 py-4 text-center">
+                                                    <div className="flex">
+                                                      <input
+                                                        type="checkbox"
+                                                        className="mr-3"
+                                                        onChange={() =>
+                                                          handleScreenCheckboxChange(
+                                                            screen.screenID
+                                                          )
+                                                        }
+                                                        checked={
+                                                          accordionCheckboxState[
+                                                          screen.screenID
+                                                          ]
+                                                        }
+                                                      />
+                                                      {screen.screenName}
+                                                    </div>
+                                                  </td>
+
+                                                  <td className="px-2 py-4 text-center">
+                                                    <span
+                                                      id={`changetvstatus${screen.macid}`}
+                                                      className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus === 1
+                                                        ? "bg-[#3AB700]"
+                                                        : "bg-[#FF0000]"
+                                                        }`}
+                                                    >
+                                                      {screen.screenStatus === 1
+                                                        ? "Live"
+                                                        : "offline"}
+                                                    </span>
+                                                  </td>
+                                                  <td className="px-2 py-4 text-center">
+                                                    {screen?.googleLocation}
+                                                  </td>
+                                                  <td className="px-2 py-4 text-center">
+                                                    {screen?.lastSeen
+                                                      ? moment(
+                                                        screen?.lastSeen
+                                                      ).format("LLL")
+                                                      : null}
+                                                  </td>
+                                                </tr>
+                                              );
+                                            })}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </td>
+                                </tr>
                               )}
                             </>
                           );

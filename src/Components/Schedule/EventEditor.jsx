@@ -61,7 +61,7 @@ const EventEditor = ({
   const [searchAsset, setSearchAsset] = useState("");
   const [repeatDays, setRepeatDays] = useState([]);
 
-  const { user,token } = useSelector((s) => s.root.auth);
+  const { user,token ,userDetails} = useSelector((s) => s.root.auth);
   const { assets, loading } = useSelector((s) => s.root.asset);
   const { allAppsData, youtube, textScroll } = useSelector((s) => s.root.apps);
   const authToken = `Bearer ${token}`;
@@ -1103,7 +1103,7 @@ const EventEditor = ({
       {/* </ReactModal> */}
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

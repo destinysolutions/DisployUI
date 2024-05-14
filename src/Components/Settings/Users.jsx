@@ -83,7 +83,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [editProfile, setEditProfile] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6); // Adjust items per page as needed
+  const [itemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [screenAccessModal, setScreenAccessModal] = useState(false);
@@ -95,7 +95,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
     lastName: "",
     role: "",
   });
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user,userDetails } = useSelector((state) => state.root.auth);
   const { Countries } = useSelector((s) => s.root.settingUser);
   const store = useSelector((state) => state.root.settingUser);
   const authToken = `Bearer ${token}`;
@@ -2152,10 +2152,11 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
             <div>
               {permissions.isSave && (
                 <button
-                  className={`flex align-middle ${((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 lg:mb-5 lg:mt-0 mt-3 mb-4 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
-                  disabled={user?.isTrial && !user?.isActivePlan}
+                  className={`flex align-middle ${((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 lg:mb-5 lg:mt-0 mt-3 mb-4 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+                  // disabled={(userDetails?.isTrial && !userDetails?.isActivePlan || user?.userDetails?.isRetailer === false)}
                   onClick={() => {
-                    if (((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
+                    console.log('userDetails', userDetails)
+                    if (((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
                       setUserDetailData([]);
                       setFirstName("");
                       setLastName("");
@@ -2366,7 +2367,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                     <div
                                       data-tip
                                       data-for="Delete"
-                                      className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
+                                      className="cursor-pointer text-white bg-rose-500 hover:bg-rose-700 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                       onClick={() =>
                                         handleDeleteUser(item.orgUserSpecificID)
                                       }
@@ -2381,6 +2382,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                         <span>Delete</span>
                                       </ReactTooltip>
                                     </div>
+                                    
                                   )}
                                 </div>
                               </td>

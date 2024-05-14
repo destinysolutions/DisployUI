@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
 import Swal from "sweetalert2";
 import AddEditManageUserType from "./AddEditManageUserType";
+import ReactTooltip from "react-tooltip";
 
 const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.ManageUser);
@@ -23,7 +24,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
   const [userType, setUserType] = useState("");
   const [isActive, setIsActive] = useState(false);
   const [editMode, setEditMode] = useState(false);
-
+  const [error, setError] = useState(false)
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Adjust items per page as needed
@@ -124,9 +125,14 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
 
   const toggleModal = () => {
     setAddUserTypeModal(!addUsertypeModal);
+    setError(false)
   };
 
   const HandleSubmit = () => {
+    if (userType === "") {
+      setError(true);
+      return;
+    }
     let data = JSON.stringify({
       isActive: isActive,
       userType: userType,
@@ -149,6 +155,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
         console.log("error", error);
         setAddUserTypeModal(false);
       });
+    setError(false)
   };
 
 
@@ -231,7 +238,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                       </th>
 
                       <th scope="col" className="px-6 py-4">
-                        Active
+                        Status
                       </th>
                       <th scope="col" className="px-6 py-4">
                         Action
@@ -266,7 +273,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                       </tr>
                     )}
                     {!store?.loading &&
-                      store?.data?.length > 0 &&
+                      store?.data?.length > 0 && sortedAndPaginatedData?.length > 0 &&
                       sortedAndPaginatedData.map((item, index) => {
                         return (
                           <tr
@@ -280,55 +287,88 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                               {item.userType}
                             </td>
                             <td className="px-3.5 py-2 capitalize">
-                                <span>
-                                  {item?.isActive ? (
-                                    <span
-                                      style={{ backgroundColor: "#cee9d6" }}
-                                      className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                    >
-                                      Active
-                                    </span>
-                                  ) : (
-                                    <span
-                                      style={{ backgroundColor: "#f1b2b2" }}
-                                      className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                    >
-                                      Inactive
-                                    </span>
-                                  )}
-                                </span>
-                              </td>
+                              <span>
+                                {item?.isActive ? (
+                                  <span
+                                    style={{ backgroundColor: "#cee9d6" }}
+                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  >
+                                    Active
+                                  </span>
+                                ) : (
+                                  <span
+                                    style={{ backgroundColor: "#f1b2b2" }}
+                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  >
+                                    Inactive
+                                  </span>
+                                )}
+                              </span>
+                            </td>
                             <td className="px-3.5 py-2">
                               <div className="flex items-center gap-4">
-                                  <button
-                                    type="button"
-                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    onClick={() => {
-                                      setAddUserTypeModal(true);
-                                      setEditMode(true);
-                                      setSelectData(item);
-                                      setHeading("Update");
-                                      setIsActive(item?.isActive);
-                                      setUserType(item?.userType);
-                                    }}
+
+                                <button
+                                  data-tip
+                                  data-for="Edit"
+                                  type="button"
+                                  className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                  onClick={() => {
+                                    setAddUserTypeModal(true);
+                                    setEditMode(true);
+                                    setSelectData(item);
+                                    setHeading("Update");
+                                    setIsActive(item?.isActive);
+                                    setUserType(item?.userType);
+                                  }}
+                                >
+                                  <MdModeEditOutline />
+                                  <ReactTooltip
+                                    id="Edit"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="solid"
                                   >
-                                    <MdModeEditOutline />
-                                  </button>
-                                
-                                  <button
-                                    type="button"
-                                    className="rounded-full text-lg p-2.5 text-white text-center bg-[#FF0000] "
-                                    onClick={() =>
-                                      handleDelete(item?.userTypeID)
-                                    }
+                                    <span>Edit</span>
+                                  </ReactTooltip>
+
+                                </button>
+                                <button
+                                  data-tip
+                                  data-for="Delete"
+                                  type="button"
+                                  className="rounded-full text-lg p-2.5 text-white text-center bg-[#FF0000] "
+                                  onClick={() =>
+                                    handleDelete(item?.userTypeID)
+                                  }
+                                >
+                                  <MdDeleteForever />
+                                  <ReactTooltip
+                                    id="Delete"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="solid"
                                   >
-                                    <MdDeleteForever />
-                                  </button>
+                                    <span>Delete</span>
+                                  </ReactTooltip>
+                                </button>
                               </div>
                             </td>
                           </tr>
                         );
                       })}
+
+                    {!store?.loading && sortedAndPaginatedData?.length === 0 && (
+                      <tr>
+                        <td colSpan={3}>
+                          <div className="flex text-center m-5 justify-center">
+                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                              No Data Available
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
 
                   </tbody>
                 </table>
@@ -401,6 +441,8 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
           isActive={isActive}
           setIsActive={setIsActive}
           HandleSubmit={HandleSubmit}
+          error={error}
+          setError={setError}
         />
       )}
     </>

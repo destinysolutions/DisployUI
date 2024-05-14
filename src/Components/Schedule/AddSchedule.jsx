@@ -79,7 +79,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const currentMinute = selectedCurrentTime.getMinutes();
   const interval =
     currentMinute < 20 ? 1 : currentMinute >= 20 && currentMinute <= 40 ? 2 : 3;
-  const { user, token } = useSelector((s) => s.root.auth);
+  const { user, token,userDetails } = useSelector((s) => s.root.auth);
   const { assets } = useSelector((s) => s.root.asset);
 
   const authToken = `Bearer ${token}`;
@@ -124,6 +124,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
+        console.log('fetchedData', fetchedData)
         // console.log(fetchedData);
         setScheduleAsset(response.data.data);
         const fetchedEvents = fetchedData.map((item) => ({
@@ -1047,7 +1048,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

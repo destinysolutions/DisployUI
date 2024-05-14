@@ -26,7 +26,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
   const notification = useLocation().state;
-  const { user } = useSelector((state) => state.root.auth);
+  const { user,userDetails } = useSelector((state) => state.root.auth);
   const [activeTab, setActiveTab] = useState(notification !== null ? notification?.notificationData : "account");
   const data = [
     {
@@ -120,7 +120,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <Footer />
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

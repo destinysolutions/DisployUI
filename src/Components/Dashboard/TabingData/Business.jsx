@@ -165,7 +165,7 @@ var StoreOptions = {
 
 const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen}) => {
   const dispatch = useDispatch();
-  const { user, token } = useSelector((s) => s.root.auth);
+  const { user, token,userDetails } = useSelector((s) => s.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);
   const authToken = `Bearer ${token}`;
   //for map store icon
@@ -177,9 +177,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedScreen, setSelectedScreen] = useState("");
   const [screenList, setScreenList] = useState([]);
-  console.log('screenList', screenList)
   const [screen, setScreen] = useState([])
-  console.log('screen', screen)
   const [screenDialogOpen, setScreenDialogOpen] = useState(false)
   const [cities, setCities] = useState([]);
   const [showCityStores, setshowCityStores] = useState(false);
@@ -837,7 +835,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
                     className="lg:col-span-3 md:col-span-6 sm:col-span-12 "
                     key={app.app_Id}
                   >
-                    {(user?.isTrial === false) && (user?.isActivePlan === false) ? (
+                    {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) ? (
                       <Link>
                         <div className="shadow-md  bg-white rounded-lg text-center py-10">
                           <img

@@ -5,7 +5,7 @@ import AdminNavbar from "./AdminNavbar";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getAllCustomerDetails } from "../Redux/admin/OnBodingSlice";
+import { getAllCustomerDetails, handleRemoveUser } from "../Redux/admin/OnBodingSlice";
 import { useSelector } from "react-redux";
 import { RiUser3Fill } from "react-icons/ri";
 import { AiOutlineCloudUpload } from "react-icons/ai";
@@ -49,7 +49,13 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-          navigate("/onboarded")
+          dispatch(handleRemoveUser(payload)).then((res) => {
+            if (res?.payload?.status === 200) {
+              navigate("/onboarded")
+            }
+          }).catch((error) => {
+            console.log('error', error)
+          });
         }
       });
     } catch (error) {
@@ -110,7 +116,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                       <div className="flex mb-2">
                         <label>User Name:</label>
-                        <span>{store.data?.firstName + " " + store.data?.lastName}{" "} {store.data?.userRoleName}</span>
+                        <span>{store.data?.firstName + " " + store.data?.lastName}</span>
                       </div>
                       <div className="flex mb-2">
                         <label>Company Name:</label>
@@ -142,11 +148,11 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                       <div className="flex mb-2">
                         <label>Country:</label>
-                        <span>{store.data?.currencyName}</span>
+                        <span>{store.data?.countryName}</span>
                       </div>
                       <div className="flex mb-2">
                         <label>State :</label>
-                        <span>{store.data?.countryName}</span>
+                        <span>{store.data?.stateName}</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-center">

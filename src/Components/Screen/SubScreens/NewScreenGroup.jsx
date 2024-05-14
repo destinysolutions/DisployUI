@@ -59,7 +59,7 @@ import Loading from "../../Loading";
 import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token,userDetails } = useSelector((state) => state.root.auth);
   const store = useSelector((state) => state.root.screenGroup);
   const authToken = `Bearer ${token}`;
 
@@ -1337,7 +1337,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

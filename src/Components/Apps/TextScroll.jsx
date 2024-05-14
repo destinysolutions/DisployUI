@@ -37,7 +37,7 @@ import Loading from "../Loading";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token, user } = useSelector((state) => state.root.auth);
+  const {userDetails, token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
 
@@ -414,7 +414,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
               />
               <Navbar />
             </div>
-            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+            <div className="lg:pt-24 md:pt-24 pt-10 px-5">
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] ">
@@ -818,7 +818,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

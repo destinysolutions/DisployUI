@@ -8,7 +8,8 @@ import { useDispatch } from 'react-redux';
 import SubscriptionTerm from '../../Common/PurchasePlan/SubscriptionTerm';
 
 const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, handlePay, discountCoupon, setDiscountCoupon, showError, setShowError, setDiscount, discount }) => {
-    const { user, token } = useSelector((s) => s.root.auth);
+    const { user, token, userDetails } = useSelector((s) => s.root.auth);
+    console.log('addScreen', addScreen)
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [showDiscount, setShowDiscount] = useState(false);
@@ -17,11 +18,11 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
 
     let planPrice;
 
-    if (user?.planID === 1) {
+    if (userDetails?.planID === 1) {
         planPrice = 10
-    } else if (user?.planID === 2) {
+    } else if (userDetails?.planID === 2) {
         planPrice = 17
-    } else if (user?.planID === 2) {
+    } else if (userDetails?.planID === 2) {
         planPrice = 17
     } else {
         planPrice = 47
@@ -95,11 +96,11 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                         <input type='number'
                                                             className="relative border border-black rounded-md p-2 w-24"
                                                             onChange={(e) => {
-                                                                if (e.target.value <= 0) {
-                                                                    setAddScreen(addScreen)
-                                                                } else {
-                                                                    setAddScreen(e.target.value)
-                                                                }
+                                                                // if (e.target.value <= 0) {
+                                                                //     setAddScreen(addScreen)
+                                                                // } else {
+                                                                setAddScreen(e.target.value)
+                                                                // }
                                                             }
                                                             }
                                                             value={addScreen}
@@ -176,9 +177,9 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                     Cancel
                                                 </button>
                                                 <button
-                                                    className={`bg-primary ${disclaimer ? "cursor-pointer" : "cursor-not-allowed"} text-white text-base px-8 py-3 border border-primary shadow-md rounded-full`}
+                                                    className={`bg-primary ${(disclaimer && addScreen) ? "cursor-pointer" : "cursor-not-allowed"} text-white text-base px-8 py-3 border border-primary shadow-md rounded-full`}
                                                     type="button"
-                                                    disabled={!disclaimer}
+                                                    disabled={(!disclaimer || addScreen === "")}
                                                     onClick={() => handlePay()}
                                                 >
                                                     Pay

@@ -22,7 +22,7 @@ import { useDispatch } from "react-redux";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
-  const {user, token } = useSelector((state) => state.root.auth);
+  const {user,userDetails, token } = useSelector((state) => state.root.auth);
   const dispatch = useDispatch();
   const authToken = `Bearer ${token}`;
 
@@ -225,7 +225,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>
