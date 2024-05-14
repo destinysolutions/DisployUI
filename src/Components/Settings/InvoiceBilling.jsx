@@ -2,7 +2,6 @@ import moment from 'moment'
 import React from 'react'
 
 const InvoiceBilling = ({ InvoiceRef ,selectData}) => {
-    console.log('selectData', selectData)
     return (
         <>
             <div ref={InvoiceRef} className='p-6'>

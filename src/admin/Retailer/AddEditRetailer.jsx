@@ -81,7 +81,6 @@ const AddEditRetailer = ({
     },
   });
 
-  console.log('formik', formik)
   return (
     <>
       <div

@@ -85,6 +85,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenSelected, setScreenSelected] = useState([]);
   const [isLoading, setIsLoading] = useState(weatherScheduleId ? true : false)
   const [disablebtn, setDisableBtn] = useState(false)
+  const [assetError, setAssetError] = useState(false)
   useEffect(() => {
     if (store && store.status === "succeeded") {
       toast.success(store.message);
@@ -106,7 +107,6 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
     dispatch(handleAllTimeZone({ config }))
       .then((response) => {
-        console.log('response', response)
         setAllTimezone(response?.payload?.data);
         const timezone = new Date()
           .toLocaleDateString(undefined, {
@@ -183,7 +183,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleSubmit = () => {
     if (!urlParth || !urlParth.assetID) {
-      toast.error("Asset is missing!");
+      // toast.error("Asset is missing!");
+      setAssetError(true)
       setDisableBtn(false)
       return;
     }
@@ -215,7 +216,6 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   connection: socket.connected,
                   macId: item,
                 };
-                console.log('Params', Params)
                 socket.emit("ScreenConnected", Params);
               });
             } else {
@@ -436,23 +436,28 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         ))}
                       </select>
                     </div>
-                    <div className="flex items-center p-2">
-                      <label className="text-base font-medium">
-                        Asset / Playing :
-                      </label>
-                      <div className="p-2 ml-4 " style={{ wordBreak: "break-all" }}>
-                        <div
-                          onClick={(e) => { setShowAssetModal(true); }}
-                          className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        >
-                          <p className="line-clamp-1">
-                            {selectedAsset.assetName
-                              ? selectedAsset.assetName
-                              : "Select Asset"}
-                          </p>
-                          <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
+                    <div className="flex flex-col items-start p-2">
+                      <div className="flex items-center">
+                        <label className="text-base font-medium">
+                          Asset / Playing :
+                        </label>
+                        <div className="p-2 ml-4 " style={{ wordBreak: "break-all" }}>
+                          <div
+                            onClick={(e) => { setShowAssetModal(true); }}
+                            className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          >
+                            <p className="line-clamp-1">
+                              {selectedAsset.assetName
+                                ? selectedAsset.assetName
+                                : "Select Asset"}
+                            </p>
+                            <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
+                          </div>
                         </div>
                       </div>
+                      {assetError && (
+                        <span className="error">Please Select Asset</span>
+                      )}
                     </div>
 
                     <div>

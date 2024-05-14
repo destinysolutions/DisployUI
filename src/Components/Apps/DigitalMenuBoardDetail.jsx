@@ -76,7 +76,6 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [PreviewData, setPreviewData] = useState([])
   const [PosTheme, setPosTheme] = useState([])
   const [theme, setTheme] = useState({})
-  console.log('theme', theme)
   const [addCategory, setAddCategory] = useState([{
     categoryname: "UNNAMED CATEGORY",
     allItem: [{

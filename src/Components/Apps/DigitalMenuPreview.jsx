@@ -19,7 +19,7 @@ const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor, priceCo
         <>
             <div className="mt-6">
                 <div className="grid grid-cols-12 gap-4 h-full">
-                    <div className={`lg:col-span-12 md:col-span-12 sm:col-span-12 xs:col-span-12 shadow-md rounded-lg items-center`} style={{ backgroundColor: selectedColor, backgroundImage: theme?.posThemePath ? `url(${theme.posThemePath})` : "none", backgroundSize: "cover"}}>
+                    <div className={`lg:col-span-12 md:col-span-12 sm:col-span-12 xs:col-span-12 shadow-md rounded-lg items-center`} style={{ backgroundColor: theme?.posThemePath ? "none" : selectedColor, backgroundImage: theme?.posThemePath ? `url(${theme.posThemePath})` : "none", backgroundSize: "cover" }}>
                         <Swiper
                             spaceBetween={30}
                             centeredSlides={true}
@@ -38,7 +38,7 @@ const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor, priceCo
                                         {category?.allItem?.map((cate) => {
                                             return (
                                                 <>
-                                                    <SwiperSlide className='p-5 rounded-lg' style={{ backgroundColor: selectedColor, backgroundImage: theme?.posThemePath ? `url(${theme.posThemePath})` : "none",backgroundSize: "cover" }}>
+                                                    <SwiperSlide className='p-5 rounded-lg' style={{ backgroundColor: theme?.posThemePath ? "none" : selectedColor, backgroundImage: theme?.posThemePath ? `url(${theme.posThemePath})` : "none", backgroundSize: "cover" }}>
                                                         <div className={`flex justify-between h-36 items-center border-b-2 ${(theme?.posThemeID === 1 || theme?.posThemeID === 3 || theme?.posThemeID === 5) ? "border-black" : "border-gray-300"}`}>
                                                             <span>
                                                                 {category?.show ? category?.categoryname : ""}
@@ -71,23 +71,50 @@ const DigitalMenuPreview = ({ customizeData, PreviewData, selectedColor, priceCo
                                                                                 )}</div>
 
                                                                                 <div className='flex justify-between items-center mt-3'>
-                                                                                    <span
-                                                                                        className="text-lg font-semibold"
-                                                                                        style={{
-                                                                                            color: textColor
-                                                                                        }}
-                                                                                    >
-                                                                                        {item?.name}
-                                                                                    </span>
-                                                                                    {customizeData?.ShowPrice && (
+                                                                                    <div className='flex flex-col'>
                                                                                         <span
-                                                                                            className="text-base font-normal text-gray-600"
+                                                                                            className="text-xl font-semibold"
                                                                                             style={{
-                                                                                                color: priceColor
+                                                                                                color: textColor
                                                                                             }}
-                                                                                        >{customizeData?.CurrencyShow ? "$" : ""}{item?.price ? item?.price : "0.00"}
+                                                                                        >
+                                                                                            {item?.name}
                                                                                         </span>
-                                                                                    )}
+                                                                                        <span
+                                                                                            className="text-base"
+                                                                                            style={{
+                                                                                                color: textColor
+                                                                                            }}
+                                                                                        >
+                                                                                            {item?.description}
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <div className='flex flex-col'>
+                                                                                        {customizeData?.ShowPrice && (
+                                                                                            <span
+                                                                                                className="text-lg font-normal text-gray-600"
+                                                                                                style={{
+                                                                                                    color: priceColor
+                                                                                                }}
+                                                                                            >
+                                                                                                {customizeData?.CurrencyShow ?
+                                                                                                    customizeData?.Currency === "GBP"
+                                                                                                        ? "£"
+                                                                                                        : customizeData?.Currency === "USD"
+                                                                                                            ? "$"
+                                                                                                            : ""
+                                                                                                    : ""}
+                                                                                                {item?.price ? `${item?.price}.00` : "0.00"}
+                                                                                                {customizeData?.CurrencyShow ?
+                                                                                                    customizeData?.Currency === "EUR" ? "€" : ""
+                                                                                                    : ""
+                                                                                                }
+                                                                                            </span>
+                                                                                        )}
+                                                                                        <span className='text-base text-slate-400'>
+                                                                                            {item?.calories ? `${item?.calories}cal` : ""}
+                                                                                        </span>
+                                                                                    </div>
                                                                                 </div>
 
                                                                             </div>

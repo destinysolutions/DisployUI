@@ -9,7 +9,6 @@ import SubscriptionTerm from '../../Common/PurchasePlan/SubscriptionTerm';
 
 const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, handlePay, discountCoupon, setDiscountCoupon, showError, setShowError, setDiscount, discount }) => {
     const { user, token, userDetails } = useSelector((s) => s.root.auth);
-    console.log('addScreen', addScreen)
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [showDiscount, setShowDiscount] = useState(false);
@@ -47,7 +46,6 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
             data: JSON.stringify(Params),
         };
         dispatch(verifyDiscountCoupon({ config })).then((res) => {
-            console.log('res', res)
             if (res?.payload?.status) {
                 setDiscount(res?.payload?.data)
                 setShowError(false)

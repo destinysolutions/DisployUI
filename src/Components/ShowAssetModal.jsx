@@ -48,7 +48,6 @@ const ShowAssetModal = ({
   from,
   setSelectedAsset,
 }) => {
-  console.log('selectedAsset', selectedAsset)
   const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();

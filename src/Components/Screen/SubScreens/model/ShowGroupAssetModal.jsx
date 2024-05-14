@@ -57,7 +57,6 @@ const ShowAssetModal = ({
   const [searchSchedule, setSearchSchedule] = useState("");
 
   const [appsData, setAppsData] = useState([]);
-  console.log('appsData', appsData)
   const [scheduleList, setScheduleList] = useState({
     SearchData: [],
     list: []

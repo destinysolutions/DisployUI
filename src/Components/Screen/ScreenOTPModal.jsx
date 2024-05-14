@@ -58,7 +58,6 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
 
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-console.log('user', user)
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {

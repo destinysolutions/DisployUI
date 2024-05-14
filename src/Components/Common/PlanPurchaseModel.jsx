@@ -21,7 +21,6 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
     const [errorMessage, setErrorMessage] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState("Credit")
     let cardMethod;
-    console.log('cardMethod', cardMethod)
     const [autoPay, setAutoPay] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
     let PaymentofScreen = false;

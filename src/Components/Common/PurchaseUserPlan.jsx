@@ -20,6 +20,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
     const [openPayment, setOpenPayment] = useState(false)
     const [TalkToSale, setTalkToSale] = useState(false)
     const [purchaseType, setPurchaseType] = useState("")
+    
     const TotalPrice = Screen <= 1 ? selectPlan?.planPrice : ((Screen * selectPlan?.planPrice))
 
     const appearance = {
@@ -49,6 +50,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
 
         dispatch(handlePaymentIntegration({ config })).then((res) => {
             setClientSecret(res?.payload?.clientSecret)
+            setPurchaseType("Upgrade")
             setOpenPayment(true)
         }).catch((error) => {
             console.log('error', error)
@@ -355,7 +357,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                 <div className="lg:w-[600px] md:w-[600px] w-full h-[30vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg flex items-center justify-center">
                     <>
                         <Elements options={options} stripe={stripePromise}>
-                            <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment} userPlanType={userPlanType} />
+                            <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment} userPlanType={userPlanType} purchaseType={purchaseType} />
                         </Elements>
                     </>
                 </div>

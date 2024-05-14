@@ -124,7 +124,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
-        console.log('fetchedData', fetchedData)
         // console.log(fetchedData);
         setScheduleAsset(response.data.data);
         const fetchedEvents = fetchedData.map((item) => ({
