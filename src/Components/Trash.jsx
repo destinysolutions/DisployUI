@@ -342,23 +342,28 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     )}
 
                     {permissions.isDelete && sortedAndPaginatedData.length > 0 && (
-                      <input
+                      <button
                         data-tip
                         data-for="Select All"
-                        type="checkbox"
-                        className="lg:w-7 lg:h-6 w-5 h-5"
-                        checked={selectAllChecked}
-                        onChange={handleSelectAllChange}
-                      />
+                        type="button"
+                        className="flex align-middle text-white items-center rounded-full p-2 text-base  "
+                      >
+                        <input
+                          type="checkbox"
+                          className="lg:w-7 lg:h-6 w-5 h-5"
+                          checked={selectAllChecked}
+                          onChange={handleSelectAllChange}
+                        />
+                        <ReactTooltip
+                          id="Select All"
+                          place="bottom"
+                          type="warning"
+                          effect="solid"
+                        >
+                          <span>Select All</span>
+                        </ReactTooltip>
+                      </button>
                     )}
-                    <ReactTooltip
-                      id="Select All"
-                      place="bottom"
-                      type="warning"
-                      effect="solid"
-                    >
-                      <span>Select All</span>
-                    </ReactTooltip>
                   </div>
                 </div>
 
@@ -542,9 +547,10 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="border-lightgray text-sm">
                                 <div className="cursor-pointer text-xl flex justify-center items-center gap-4 ">
                                   {permissions.isDelete && (
-                                    <button
-                                      type="button"
-                                      className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
+                                    <div
+                                      data-tip
+                                      data-for="Delete"
+                                      className="cursor-pointer text-white bg-[#FF0000] hover:bg-rose-700 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                       onClick={() =>
                                         handleDeletePermanently(
                                           item.assetID,
@@ -553,10 +559,20 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                       }
                                     >
                                       <MdDeleteForever />
-                                    </button>
+                                      <ReactTooltip
+                                        id="Delete"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="solid"
+                                      >
+                                        <span>Delete</span>
+                                      </ReactTooltip>
+                                    </div>
                                   )}
                                   {permissions.isSave && (
                                     <button
+                                      data-tip
+                                      data-for="Restore"
                                       type="button"
                                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                       onClick={() =>
@@ -567,6 +583,14 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                       }
                                     >
                                       <MdRestore />
+                                      <ReactTooltip
+                                        id="Restore"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="solid"
+                                      >
+                                        <span>Restore</span>
+                                      </ReactTooltip>
                                     </button>
                                   )}
                                 </div>

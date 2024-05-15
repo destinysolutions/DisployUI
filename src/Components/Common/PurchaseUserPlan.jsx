@@ -328,7 +328,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                     handleCreate()
                                                                 }}
                                                             >
-                                                                Upgrade Plan
+                                                               {userDetails?.planID < item?.listOfPlansID ? "Upgrade Plan" :"Downgrade Plan"} 
                                                             </button>
                                                         )}
                                                         {userDetails?.planID !== item?.listOfPlansID && item?.listOfPlansID === 4 && (

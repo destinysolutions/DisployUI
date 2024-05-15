@@ -238,7 +238,11 @@ export const PAYMENT_INTENT_CREATE_REQUEST = `${baseUrl}Common/PaymentIntentCrea
 export const PAYMENT_DETAILS = `${baseUrl}PaymentDetails/AddorUpdatePaymentDetails`
 export const CREATE_SUBSCRIPTION = `${baseUrl}Common/CreateAutopay`
 export const UPGRADE_SUBSCRIPTION = `${baseUrl}Common/UpgradeAutopay`
+export const CANCEL_SUBSCRIPTION = `${baseUrl}Common/CancelAutopay`
+export const INCREASE_TRIAL_DAYS = `${baseUrl}Common/IncreaseTrialDays`
 export const GET_ALL_BILLING = `${baseUrl}BillingMaster/GetAllBilling`
+export const GET_BILLING_BY_ID = `${baseUrl}BillingMaster/GetBillingById`
+export const ADD_CREDIT_CARD = `${baseUrl}common/AddCreditCard`
 
 
 // Notifications

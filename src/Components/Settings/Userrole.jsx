@@ -393,6 +393,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
           setShowUsers={setShowUsers}
           loading={userLoading}
           userList={userList}
+          sidebarOpen={sidebarOpen}
         />
       )}
       {showModal && (

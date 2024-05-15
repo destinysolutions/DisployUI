@@ -8,7 +8,7 @@ import { BsEyeFill } from "react-icons/bs";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineSearch } from "react-icons/ai";
 import UserInfo from "./UserInfo";
-import { GET_ALL_BILLING } from "../../../Pages/Api";
+import { GET_ALL_BILLING, GET_BILLING_BY_ID } from "../../../Pages/Api";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { handleGetAllBillings } from "../../../Redux/AdminSettingSlice";
@@ -101,6 +101,23 @@ const Billing = () => {
   useEffect(() => {
     fetchAllBilling()
   }, [])
+
+  const handleViewProfile = () =>{
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${GET_BILLING_BY_ID}}`,
+      headers: {
+        Authorization: authToken
+      },
+    }
+    dispatch(handleGetAllBillings({ config })).then((res) => {
+      if (res?.payload?.status) {
+
+      }
+    }).catch((error) => console.log('error', error))
+    setShowBillingProfile(true)
+  }
 
   return (
     <>
@@ -208,10 +225,9 @@ const Billing = () => {
                               data-tip
                               data-for="View"
                               className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                              onClick={() => handleViewProfile()}
                             >
-                              <BsEyeFill
-                                onClick={() => setShowBillingProfile(true)}
-                              />
+                              <BsEyeFill/>
                               <ReactTooltip
                                 id="View"
                                 place="bottom"

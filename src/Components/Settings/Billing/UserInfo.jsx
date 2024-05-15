@@ -2,16 +2,91 @@ import React, { useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa6";
 import AddCreditCard from "../../../admin/AddCreditCard";
+import { useSelector } from "react-redux";
+import { handleAddCard } from "../../../Redux/AdminSettingSlice";
+import { ADD_CREDIT_CARD, CANCEL_SUBSCRIPTION, INCREASE_TRIAL_DAYS } from "../../../Pages/Api";
+import { useDispatch } from "react-redux";
+import { IncreaseTrialDays, handleCancelSubscription } from "../../../Redux/PaymentSlice";
+
 const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
+  const dispatch = useDispatch()
+  const { token } = useSelector((s) => s.root.auth);
+  const authToken = `Bearer ${token}`;
   const [newCardShow, setNewCardShow] = useState(false);
 
   const onSubmit = () => {
+    const Params = {
+
+    }
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${ADD_CREDIT_CARD}}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken
+      },
+      data: JSON.stringify(Params)
+    }
+    dispatch(handleAddCard({ config }))
+      .then((res) => {
+        if (res?.payload?.status) {
+
+        }
+      })
+      .catch((error) => console.log('error', error))
     setNewCardShow(!newCardShow);
   };
 
   const toggleModal = () => {
     setNewCardShow(!newCardShow);
   };
+
+  const CancelSubscription = () => {
+    const Params = {
+
+    }
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${CANCEL_SUBSCRIPTION}}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken
+      },
+      data: JSON.stringify(Params)
+    }
+    dispatch(handleCancelSubscription({ config }))
+      .then((res) => {
+        if (res?.payload?.status) {
+
+        }
+      })
+      .catch((error) => console.log('error', error))
+  }
+
+  const handleIncreaseTrial =() =>{
+    const Params = {
+
+    }
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${INCREASE_TRIAL_DAYS}}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken
+      },
+      data: JSON.stringify(Params)
+    }
+    dispatch(IncreaseTrialDays({ config }))
+      .then((res) => {
+        if (res?.payload?.status) {
+
+        }
+      })
+      .catch((error) => console.log('error', error))
+  }
 
   return (
     <>
@@ -87,7 +162,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
                 <label>Country:</label>
                 <span>USA</span>
               </div>
-              <div className="flex justify-center w-full mt-2">
+              {/*<div className="flex justify-center w-full mt-2">
                 <button className="text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-8 py-2 text-center mr-3">
                   Edit
                 </button>
@@ -95,7 +170,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
                   {" "}
                   Suspend
                 </button>
-              </div>
+  </div>*/}
             </div>
           </div>
         </div>
@@ -109,9 +184,6 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
               <p className="mb-4">
                 We will send you a notification upon Subscription expiration.
               </p>
-              <div className="flex justify-center w-full my-5">
-                <button className="temp-button">Temp Button </button>
-              </div>
               <div className="w-full py-6 my-5 bg-light-red text-center">
                 <p className="mt-5">We need your attention!</p>
                 <p className="mb-5"> Your plan requires update</p>
@@ -128,11 +200,18 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
                 />
               </div>
               <div className="flex justify-center w-full mb-5">
-                <button className="mr-3 text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-3 py-2 text-center ">
+                <button 
+                className="mr-3 text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-3 py-2 text-center"
+                onClick={()=> handleIncreaseTrial()}
+                >
                   increase trial days
                 </button>
-                <button className="bg-[#FF0000] rounded-full px-3 py-2 text-white hover:bg-primary text-base">
-                  {" "}
+                <button
+                  className="bg-[#FF0000] rounded-full px-3 py-2 text-white hover:bg-primary text-base"
+                  onClick={() => {
+                    CancelSubscription()
+                  }}
+                >
                   Cancel Subscription
                 </button>
               </div>
@@ -198,7 +277,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
             >
               <div className="flex flex-col mr-6">
                 <div className="lg:flex md:flex sm:flex xs:block items-center">
-                  <FaPlus className="bg-blue-600 text-gray p-2 mr-3 rounded-lg" size={30}/> 
+                  <FaPlus className="bg-blue-600 text-gray p-2 mr-3 rounded-lg" size={30} />
                   <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
                     Add New Card
                   </h4>
@@ -214,62 +293,62 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
           <div className="w-full px-3 mb-6 md:mb-0">
             <div className="user-pro-details text-base">
               <table cellpadding="0" className="w-full border-[#D5E3FF] border-t rounded screen-status">
-                  <tbody>
-                      <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-left px-5 py-2">
-                              <label className="text-base font-medium sm:font-base xs:font-base">Company Name:</label>
-                          </td>
-                          <td className="text-left text-base px-5 py-2">Pixinvent</td>
-                      </tr>
-                      <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-left px-5 py-2">
-                              <label className="text-base font-medium sm:font-base xs:font-base">Contact:</label>
-                          </td>
-                          <td className="text-left text-base px-5 py-2">+1(609) 933-44-22</td>
-                      </tr>
-                      <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-left px-5 py-2">
-                              <label className="text-base font-medium sm:font-base xs:font-base">Billing Email:</label>
-                          </td>
-                          <td className="text-left text-base px-5 py-2">gertrude@gmail.com</td>
-                      </tr>
-                      <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-left px-5 py-2">
-                              <label className="text-base font-medium sm:font-base xs:font-base">Country:</label>
-                          </td>
-                          <td className="text-left text-base px-5 py-2">USA</td>
-                      </tr>
-                      <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-left px-5 py-2">
-                              <label className="text-base font-medium sm:font-base xs:font-base">State:</label>
-                          </td>
-                          <td className="text-left text-base px-5 py-2">Queensland</td>
-                      </tr>
-                      <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-left px-5 py-2">
-                              <label className="text-base font-medium sm:font-base xs:font-base">Tax ID:</label>
-                          </td>
-                          <td className="text-left text-base px-5 py-2">TAX-875623</td>
-                      </tr>
-                      <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-left px-5 py-2">
-                              <label className="text-base font-medium sm:font-base xs:font-base">VAT Number:</label>
-                          </td>
-                          <td className="text-left text-base px-5 py-2">SDF754K77</td>
-                      </tr>
-                      <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-left px-5 py-2">
-                              <label className="text-base font-medium sm:font-base xs:font-base">Billing Address:</label>
-                          </td>
-                          <td className="text-left text-base px-5 py-2">100 Water Plant Avenue, Building 303 Wake Island</td>
-                      </tr>
-                      <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-left px-5 py-2">
-                              <label className="text-base font-medium sm:font-base xs:font-base">Zip Code:</label>
-                          </td>
-                          <td className="text-left text-base px-5 py-2">403114</td>
-                      </tr>
-                  </tbody>
+                <tbody>
+                  <tr className="border-b border-[#D5E3FF]">
+                    <td className="text-left px-5 py-2">
+                      <label className="text-base font-medium sm:font-base xs:font-base">Company Name:</label>
+                    </td>
+                    <td className="text-left text-base px-5 py-2">Pixinvent</td>
+                  </tr>
+                  <tr className="border-b border-[#D5E3FF]">
+                    <td className="text-left px-5 py-2">
+                      <label className="text-base font-medium sm:font-base xs:font-base">Contact:</label>
+                    </td>
+                    <td className="text-left text-base px-5 py-2">+1(609) 933-44-22</td>
+                  </tr>
+                  <tr className="border-b border-[#D5E3FF]">
+                    <td className="text-left px-5 py-2">
+                      <label className="text-base font-medium sm:font-base xs:font-base">Billing Email:</label>
+                    </td>
+                    <td className="text-left text-base px-5 py-2">gertrude@gmail.com</td>
+                  </tr>
+                  <tr className="border-b border-[#D5E3FF]">
+                    <td className="text-left px-5 py-2">
+                      <label className="text-base font-medium sm:font-base xs:font-base">Country:</label>
+                    </td>
+                    <td className="text-left text-base px-5 py-2">USA</td>
+                  </tr>
+                  <tr className="border-b border-[#D5E3FF]">
+                    <td className="text-left px-5 py-2">
+                      <label className="text-base font-medium sm:font-base xs:font-base">State:</label>
+                    </td>
+                    <td className="text-left text-base px-5 py-2">Queensland</td>
+                  </tr>
+                  <tr className="border-b border-[#D5E3FF]">
+                    <td className="text-left px-5 py-2">
+                      <label className="text-base font-medium sm:font-base xs:font-base">Tax ID:</label>
+                    </td>
+                    <td className="text-left text-base px-5 py-2">TAX-875623</td>
+                  </tr>
+                  <tr className="border-b border-[#D5E3FF]">
+                    <td className="text-left px-5 py-2">
+                      <label className="text-base font-medium sm:font-base xs:font-base">VAT Number:</label>
+                    </td>
+                    <td className="text-left text-base px-5 py-2">SDF754K77</td>
+                  </tr>
+                  <tr className="border-b border-[#D5E3FF]">
+                    <td className="text-left px-5 py-2">
+                      <label className="text-base font-medium sm:font-base xs:font-base">Billing Address:</label>
+                    </td>
+                    <td className="text-left text-base px-5 py-2">100 Water Plant Avenue, Building 303 Wake Island</td>
+                  </tr>
+                  <tr className="border-b border-[#D5E3FF]">
+                    <td className="text-left px-5 py-2">
+                      <label className="text-base font-medium sm:font-base xs:font-base">Zip Code:</label>
+                    </td>
+                    <td className="text-left text-base px-5 py-2">403114</td>
+                  </tr>
+                </tbody>
               </table>
 
 
@@ -336,7 +415,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
       </div>
 
       {newCardShow && (
-        <AddCreditCard  onSubmit ={onSubmit} toggleModal={toggleModal}/>
+        <AddCreditCard onSubmit={onSubmit} toggleModal={toggleModal} />
       )}
     </>
   );

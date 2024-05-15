@@ -14,7 +14,9 @@ const initialState = {
     allSegment: [],
     plan: null,
     verifyCoupon: null,
-    AllBilling : [],
+    AllBilling: [],
+    bill: null,
+    creditcard: null
 };
 
 export const handleGetAllDiscount = createAsyncThunk(
@@ -117,6 +119,34 @@ export const verifyDiscountCoupon = createAsyncThunk(
 
 export const handleGetAllBillings = createAsyncThunk(
     "AdminSetting/handleGetAllBillings",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            return response.data;
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
+
+export const handleGetBillingByID = createAsyncThunk(
+    "AdminSetting/handleGetBillingByID",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            return response.data;
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
+
+export const handleAddCard = createAsyncThunk(
+    "AdminSetting/handleAddCard",
     async ({ config }, { rejectWithValue }) => {
         try {
             const response = await axios.request(config);
@@ -232,7 +262,7 @@ const AdminSettingSlice = createSlice({
                 state.error = action.error.message;
             })
 
-            builder
+        builder
             .addCase(handleGetAllBillings.pending, (state) => {
                 state.status = null;
             })
@@ -241,6 +271,32 @@ const AdminSettingSlice = createSlice({
                 state.AllBilling = action.payload?.data;
             })
             .addCase(handleGetAllBillings.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message;
+            })
+
+        builder
+            .addCase(handleGetBillingByID.pending, (state) => {
+                state.status = null;
+            })
+            .addCase(handleGetBillingByID.fulfilled, (state, action) => {
+                state.status = null;
+                state.bill = action.payload?.data;
+            })
+            .addCase(handleGetBillingByID.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message;
+            })
+
+        builder
+            .addCase(handleAddCard.pending, (state) => {
+                state.status = null;
+            })
+            .addCase(handleAddCard.fulfilled, (state, action) => {
+                state.status = null;
+                state.creditcard = action.payload?.data;
+            })
+            .addCase(handleAddCard.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message;
             })

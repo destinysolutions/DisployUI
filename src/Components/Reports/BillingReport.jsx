@@ -3,6 +3,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { LuDownload } from "react-icons/lu";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { Link } from "react-router-dom";
+import ReactTooltip from "react-tooltip";
 
 const BillingReport = ({
   allReportData,
@@ -49,13 +50,23 @@ const BillingReport = ({
               </div>
 
               <div className="ml-2">
-                <button
-                  className="border rounded-full  hover:shadow-xl hover:bg-SlateBlue border-primary "
-                  onClick={() => exportDataToCSV()}
+              <div
+                data-tip
+                data-for="Download"
+                className="cursor-pointer text-white bg-SlateBlue hover:bg-primary focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                onClick={() => exportDataToCSV()}
+              >
+                <LuDownload />
+                <ReactTooltip
+                  id="Download"
+                  place="bottom"
+                  type="warning"
+                  effect="solid"
                 >
-                  <LuDownload className="p-2 text-4xl text-primary hover:text-white " />
-                </button>
+                  <span>Download</span>
+                </ReactTooltip>
               </div>
+            </div>
             </div>
           </div>
 

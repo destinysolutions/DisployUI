@@ -170,7 +170,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 </li>
 
-                <li>
+                {/*<li>
                   <button
                     className={
                       STabs === 8 ? "stabshow settingtabactive" : "settingtab"
@@ -191,7 +191,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                     <MdDiscount className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">Discount</span>
                   </button>
-                </li>
+                  </li>*/}
                 {/*<li>
                   <button
                     className={

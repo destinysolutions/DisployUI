@@ -5,6 +5,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { LuDownload } from "react-icons/lu";
 import { CiFilter } from "react-icons/ci";
 import { Link } from "react-router-dom";
+import ReactTooltip from "react-tooltip";
 
 const Uptimereport = ({
   allReportData,
@@ -51,12 +52,22 @@ const Uptimereport = ({
               </div>
 
               <div className="ml-2">
-                <button
-                  className="border rounded-full  hover:shadow-xl hover:bg-SlateBlue border-primary "
+                <div
+                  data-tip
+                  data-for="Download"
+                  className="cursor-pointer text-white bg-SlateBlue hover:bg-primary focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   onClick={() => exportDataToCSV()}
                 >
-                  <LuDownload className="p-2 text-4xl text-primary hover:text-white " />
-                </button>
+                  <LuDownload />
+                  <ReactTooltip
+                    id="Download"
+                    place="bottom"
+                    type="warning"
+                    effect="solid"
+                  >
+                    <span>Download</span>
+                  </ReactTooltip>
+                </div>
               </div>
             </div>
           </div>

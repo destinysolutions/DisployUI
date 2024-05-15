@@ -99,6 +99,34 @@ export const handleUpgradeSubscription = createAsyncThunk(
     }
 );
 
+export const handleCancelSubscription = createAsyncThunk(
+    "Common/handleCancelSubscription",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            return response.data;
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
+
+export const IncreaseTrialDays = createAsyncThunk(
+    "Common/IncreaseTrialDays",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            return response.data;
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
+
 
 
 const initialState = {
@@ -214,6 +242,32 @@ const PaymentSlice = createSlice({
             state.message = action.payload?.message;
         });
         builder.addCase(handleUpgradeSubscription.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload.message;
+            state.message = action.payload?.message;
+        });
+
+        builder.addCase(handleCancelSubscription.pending, (state) => {
+            state.status = "loading";
+        });
+        builder.addCase(handleCancelSubscription.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.message = action.payload?.message;
+        });
+        builder.addCase(handleCancelSubscription.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload.message;
+            state.message = action.payload?.message;
+        });
+
+        builder.addCase(IncreaseTrialDays.pending, (state) => {
+            state.status = "loading";
+        });
+        builder.addCase(IncreaseTrialDays.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.message = action.payload?.message;
+        });
+        builder.addCase(IncreaseTrialDays.rejected, (state, action) => {
             state.status = "failed";
             state.error = action.payload.message;
             state.message = action.payload?.message;
