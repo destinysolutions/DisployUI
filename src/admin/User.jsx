@@ -82,11 +82,11 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       hasError = true;
     }
 
-    if (email === "") {
+    if (email === "" && !editMode) {
       setEmailError(true);
       hasError = true;
     }
-    if (password === "") {
+    if (password === "" && !editMode) {
       setPassError(true);
       hasError = true;
     }
@@ -164,12 +164,14 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     setLastName("");
     setPhoneNumber("");
     setEmail("");
+    setPassword("")
     setSelectedUserType("");
     setIsActive(false);
     setEditMode(false);
     setEditUserId("");
     setPassError(false)
     setEmailError(false)
+    setShowPassword(false)
     setUsernameError(false)
     setPhoneError(false)
     setFirstError(false)
@@ -202,7 +204,8 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        setUserTypeData(response.data.data);
+        let data = response?.data?.data?.filter(item => item?.isActive)
+        setUserTypeData(data);
       })
       .catch((error) => {
         console.log(error);

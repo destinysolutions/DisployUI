@@ -94,6 +94,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     myComposition: [],
   });
   const [screenName, setScreenName] = useState("");
+  const [scrollPerSec, setScrollPerSec] = useState("");
+  const [isScroll, setIsScroll] = useState(false)
   const [selectScreenResolution, setSelectScreenResolution] = useState();
   const [getScreenResolution, setScreenResolution] = useState([]);
   const [compositionData, setCompositionData] = useState([]);
@@ -207,6 +209,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           setSelectedTag(fetchedData[0].tags);
           setGoogleLoc(fetchedData[0].googleLocation);
           setScreenName(fetchedData[0].screenName);
+          setScrollPerSec(fetchedData[0].scrollPerSec)
+          setIsScroll(fetchedData[0].isScroll)
           setSelectedMediaDetailID(fetchedData[0].mediaDetailID);
           setSelectedMediaTypeID(fetchedData[0].mediaType);
           if (fetchedData[0].mediaType === 5) {
@@ -710,6 +714,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       tags: screenData[0]?.tags,
       mediaDetailID: moduleID || 0,
       screenName: screenName,
+      scrollPerSec: scrollPerSec,
+      isScroll:isScroll,
       operation: "Update",
       screenOperatingHours: screenOperatingHours,
       screenType: selectedScreenType
@@ -825,6 +831,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       tvScreenOrientation,
       tvScreenResolution,
       screenName: screenData[0]?.editedScreenName,
+      scrollPerSec,
+      isScroll,
       operation: "Update",
     });
 
@@ -2141,7 +2149,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
 
-                    {/*  <tr className="border-b border-[#D5E3FF]">
+                      {/*  <tr className="border-b border-[#D5E3FF]">
                         <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                             Payment Method:
@@ -2202,6 +2210,43 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 </option>
                               ))}
                           </select>
+                        </td>
+                      </tr>
+
+                      <tr className="border-b border-[#D5E3FF]">
+                        <td className="text-left lg:py-3 md:py-2 pb-0 ">
+                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base pb-0">
+                            PDF Scroll
+                          </p>
+                        </td>
+                        <td className="text-left lg:py-3 md:py-2 pt-0">
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4"
+                            onChange={(e) => {
+                              setIsScroll(e.target.checked);
+                            }}
+                            checked={isScroll}
+                          />
+                        </td>
+                      </tr>
+
+                      <tr className="border-b border-[#D5E3FF]">
+                        <td className="text-left lg:py-3 md:py-2 pb-0 ">
+                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base pb-0">
+                          </p>
+                        </td>
+
+                        <td className="text-left lg:py-3 md:py-2 pt-0">
+                          <input
+                            type="number"
+                            placeholder="Enter Scroll Per Second"
+                            className="border border-[#D5E3FF] rounded-full px-3 py-2.5 w-full "
+                            onChange={(e) => {
+                              setScrollPerSec(e.target.value);
+                            }}
+                            value={scrollPerSec}
+                          />
                         </td>
                       </tr>
 

@@ -38,6 +38,7 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             setLastName("");
                                             setPhoneNumber("");
                                             setEmail("");
+                                            setPassword("")
                                             setSelectedUserType("");
                                             setIsActive("");
                                             setEditMode(false);
@@ -45,6 +46,7 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             setPassError(false)
                                             setEmailError(false)
                                             setUsernameError(false)
+                                            setShowPassword(false)
                                             setPhoneError(false)
                                             setFirstError(false)
                                             setLastError(false)
@@ -171,6 +173,7 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                                 setLastName("");
                                                 setPhoneNumber("");
                                                 setEmail("");
+                                                setPassword("")
                                                 setSelectedUserType("");
                                                 setIsActive("");
                                                 setEditMode(false);
@@ -178,6 +181,7 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                                 setPassError(false)
                                                 setEmailError(false)
                                                 setUsernameError(false)
+                                                setShowPassword(false)
                                                 setPhoneError(false)
                                                 setFirstError(false)
                                                 setLastError(false)

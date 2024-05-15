@@ -21,7 +21,7 @@ import { handleGetUserDetails } from '../../Redux/Authslice';
 import toast from 'react-hot-toast';
 
 const Myplan = () => {
-    const { token, user,userDetails } = useSelector((state) => state.root.auth);
+    const { token, user, userDetails } = useSelector((state) => state.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [myplan, setmyPlan] = useState([]);
@@ -89,7 +89,10 @@ const Myplan = () => {
         })
     }
 
-    const fetchTrialDetails = () => {
+    const fetchTrialDetails = ({ add }) => {
+        if(add === "add"){
+            toast.loading("Fetching data..")
+        }
         const config = {
             method: "get",
             maxBodyLength: Infinity,
@@ -102,15 +105,20 @@ const Myplan = () => {
             if (res?.payload?.status) {
                 setTrialDetails(res?.payload?.data)
                 setTrialData(res?.payload?.data)
+                if (add === "add") {
+                    setTrialPlanModal(!trialPlanModel)
+                }
+                toast.remove()
             }
         }).catch((err) => {
             console.log('err', err)
+            toast.remove()
         })
     }
 
     useEffect(() => {
         fetchAllPlan()
-        fetchTrialDetails()
+        fetchTrialDetails({ add: "" })
         GetFeatureList()
     }, [])
 
@@ -120,8 +128,8 @@ const Myplan = () => {
     }
 
     const handleSaveTrialPlan = () => {
-        if(trialData?.trialDays < 0){
-            toast.error("Please Enter Proper Trial Days")
+        if (trialData?.trialDays < 0) {
+            // toast.error("Please Enter Proper Trial Days")
             return;
         }
         const config = {
@@ -134,7 +142,7 @@ const Myplan = () => {
         }
         dispatch(handleEditTrialPlan({ config })).then((res) => {
             if (res?.payload?.status) {
-                fetchTrialDetails()
+                fetchTrialDetails({ add: "" })
                 setTrialPlanModal(!trialPlanModel);
             }
         }).catch((error) => {
@@ -162,7 +170,9 @@ const Myplan = () => {
                         <div className="flex items-center justify-end gap-2 w-full lg:w-2/3 ">
                             <button
                                 className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
-                                onClick={() => setTrialPlanModal(!trialPlanModel)}
+                                onClick={() => {
+                                    fetchTrialDetails({ add: "add" })
+                                }}
                             >
                                 <GrPlan className="text-2xl mr-1" />
                                 Trial Plan

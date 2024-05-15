@@ -5,6 +5,7 @@ import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import * as Yup from "yup";
 import { addRetailerData, updateRetailerData } from "../../Redux/admin/RetailerSlice";
 import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
 const AddEditRetailer = ({
   heading,
   toggleModal,
@@ -70,14 +71,34 @@ const AddEditRetailer = ({
       if (editId) {
         formData.append("OrgUserSpecificID", editId);
         formData.append("orgUserID", orgUserID);
-        dispatch(updateRetailerData(formData));
+        dispatch(updateRetailerData(formData)).then((res) => {
+          if (res?.payload?.status === 200) {
+            formik.resetForm();
+            setShowModal(false);
+          } else {
+            toast.error(res?.payload?.message)
+          }
+        }).catch((err) => {
+          console.log('err', err)
+        });
       } else {
         formData.append("Operation", "Insert");
-        dispatch(addRetailerData(formData));
+        dispatch(addRetailerData(formData)).then((res) => {
+          if (res?.payload?.status === 200) {
+            formik.resetForm();
+            setShowModal(false);
+          } else {
+            toast.error(res?.payload?.message)
+          }
+        }).catch((err) => {
+          console.log('err', err)
+        });
+
+        formik.resetForm();
+        setShowModal(false);
       }
 
-      formik.resetForm();
-      setShowModal(false);
+
     },
   });
 

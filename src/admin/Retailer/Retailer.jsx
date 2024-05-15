@@ -108,9 +108,9 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
       setLoadFist(false);
     }
 
-    if (store && store.status === "failed") {
-      toast.error(store.error);
-    }
+    // if (store && store.status === "failed") {
+    //   toast.error(store.error);
+    // }
 
     if (store && store.status === "succeeded") {
       toast.success(store.message);

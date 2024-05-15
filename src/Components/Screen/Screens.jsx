@@ -1007,8 +1007,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           type="button"
                           className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                           onClick={() => {
-                            verifyScreenStorage()
-                            // setShowOTPModal(true)
+                            if (userDetails?.isRetailer === true) {
+                              setShowOTPModal(true)
+                            } else {
+                              verifyScreenStorage()
+                            }
                           }}
                         >
                           <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />

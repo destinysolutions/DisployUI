@@ -677,7 +677,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                       <label className="formLabel">First Name</label>
                       <input
                         type="text"
-                        placeholder="Enter User Name"
+                        placeholder="Enter First Name"
                         name="fname"
                         className="formInput user-Input"
                         value={firstName}
@@ -693,7 +693,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                       <label className="formLabel">Last Name </label>
                       <input
                         type="text"
-                        placeholder="Enter User Name"
+                        placeholder="Enter Last Name"
                         name="lname"
                         className="formInput user-Input"
                         value={lastName}
@@ -729,7 +729,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                           <label className="formLabel">Password</label>
                           <input
                             type={showPassword ? "text" : "password"}
-                            placeholder="Enter User Password"
+                            placeholder="Enter Your Password"
                             name="fname"
                             className="formInput user-Input"
                             value={password}
@@ -760,7 +760,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                       <label className="formLabel">Phone No</label>
                       <input
                         type="number"
-                        placeholder="Enter Phone No"
+                        placeholder="Enter Your Phone No"
                         name="phoneno"
                         className="formInput user-Input"
                         value={phone}

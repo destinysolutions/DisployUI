@@ -246,7 +246,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                 {item?.listOfPlansID === 4 && (
                                                     <div className="pricing-amount bg-indigo-100 p-4 h-24 flex items-center justify-start flex-wrap">
                                                         <p>Call us at:</p>
-                                                        <p>+44 (0)20 3808 5585</p>
+                                                        <p>+1 224 244 9969</p>
                                                     </div>
                                                 )}
 

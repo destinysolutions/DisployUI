@@ -443,7 +443,11 @@ const Sidebar = ({ sidebarOpen }) => {
                                         <span
                                           className="ml-5"
                                           onClick={() => {
-                                            verifyScreenStorage()
+                                            if(userDetails?.isRetailer === true){
+                                              setShowOTPModal(true)
+                                            }else{
+                                              verifyScreenStorage()
+                                            }
                                           }}
                                         >
                                           {submenu.title}
@@ -579,7 +583,11 @@ const Sidebar = ({ sidebarOpen }) => {
                                     <span
                                       className="ml-5"
                                       onClick={() => {
-                                        verifyScreenStorage()
+                                        if(userDetails?.isRetailer === true){
+                                          setShowOTPModal(true)
+                                        }else{
+                                          verifyScreenStorage()
+                                        }
                                       }}
                                     >
                                       {submenu.title}

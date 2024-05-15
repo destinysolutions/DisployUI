@@ -34,112 +34,11 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const data = [
-    {
-      id: 1,
-      cname: "Company 1",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">15</label>
-      ),
-      location: "India, USA ",
-      enabled: true,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 2,
-      cname: "Patels",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">25</label>
-      ),
-      location: "India, USA ",
-      enabled: false,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 3,
-      cname: "Sundari",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">55</label>
-      ),
-      location: "India, USA ",
-      enabled: false,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 4,
-      cname: "Company 4",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">45</label>
-      ),
-      location: "India, USA ",
-      enabled: true,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 5,
-      cname: "Company 5",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">105</label>
-      ),
-      location: "India, USA ",
-      enabled: false,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 6,
-      cname: "Company 6",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">15</label>
-      ),
-      location: "India, USA ",
-      enabled: false,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 7,
-      cname: "Company 7",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">45</label>
-      ),
-      location: "India, USA ",
-      enabled: true,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-  ];
-  const storedTab = localStorage.getItem("STabs");
-  const initialTab = storedTab ? parseInt(storedTab) : 1;
-  const [STabs, setSTabs] = useState(initialTab);
-  const [records, setRecords] = useState(data);
+  // const storedTab = localStorage.getItem("STabs");
+  // const initialTab = storedTab ? parseInt(storedTab) : 1;
+  const [STabs, setSTabs] = useState(1);
   const [searchValue, setSearchValue] = useState("");
-  const { token, user,userDetails } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const [showInvoice, setShowInvoice] = useState(false);
   const InvoiceRef = useRef(null);
   const dispatch = useDispatch();
@@ -173,7 +72,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   function updateTab(id) {
     setSTabs(id);
-    localStorage.setItem("STabs", id.toString());
+    // localStorage.setItem("STabs", id.toString());
   }
 
   const DownloadInvoice = () => {
@@ -336,7 +235,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             Invoice
                           </span>
                         </button>
-                        </li>
+                      </li>
 
                       <li>
                         <button
@@ -443,8 +342,8 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
         </Suspense>
       )}
 
-      
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

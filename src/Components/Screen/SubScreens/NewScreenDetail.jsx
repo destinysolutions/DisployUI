@@ -306,13 +306,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       setScreenNameError("Screen name is required");
       hasError = true;
     }
-    if ((screenRatePerSec === "" || screenRatePerSec < 1)) {
-      setScreenRatePerSecondError('Screen Rate is required')
-      hasError = true;
-    }
-    if ((screenMargin === "" || screenMargin < 1)) {
-      setScreenMargin('Screen margin is required')
-      hasError = true;
+    if (userDetails?.isRetailer === true) {
+      if ((screenRatePerSec === "" || screenRatePerSec < 1)) {
+        setScreenRatePerSecondError('Screen Rate is required')
+        hasError = true;
+      }
+      if ((screenMargin === "" || screenMargin < 1)) {
+        setScreenMargin('Screen margin is required')
+        hasError = true;
+      }
     }
     if (hasError) {
       return;

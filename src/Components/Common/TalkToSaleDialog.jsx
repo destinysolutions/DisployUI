@@ -51,7 +51,7 @@ const TalkToSaleDialog = ({ setTalkToSale, TalkToSale }) => {
         <div className="modal w-full h-screen bg-neutral-950 flex items-center">
           <div className="mb-4 flex items-center justify-between p-4 bg-white absolute w-full top-0">
             <h3 className="text-xl font-semibold text-gray-900">
-              Talk to Sales1
+              Talk to Sales
             </h3>
             <AiOutlineCloseCircle
               className="text-4xl text-primary cursor-pointer"
