@@ -9,7 +9,7 @@ import { handleGetAllPlans } from "../../Redux/CommonSlice";
 
 const BillingsPlans = () => {
   const dispatch = useDispatch()
-  const { token } = useSelector((s) => s.root.auth);
+  const { user, token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   const [purchasePlan, setPurchasePlan] = useState(false)
   const [selectPlan, setSelectPlan] = useState("")
@@ -42,7 +42,7 @@ const BillingsPlans = () => {
 
   const CancelSubscription = () => {
     const Params = {
-
+      Email: user?.emailID
     }
     const config = {
       method: "get",

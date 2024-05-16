@@ -10,7 +10,7 @@ import { IncreaseTrialDays, handleCancelSubscription } from "../../../Redux/Paym
 
 const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
   const dispatch = useDispatch()
-  const { token } = useSelector((s) => s.root.auth);
+  const {user, token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   const [newCardShow, setNewCardShow] = useState(false);
 
@@ -44,7 +44,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
 
   const CancelSubscription = () => {
     const Params = {
-
+      Email : user?.emailID
     }
     const config = {
       method: "get",
