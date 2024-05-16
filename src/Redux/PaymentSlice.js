@@ -127,7 +127,19 @@ export const IncreaseTrialDays = createAsyncThunk(
     }
 );
 
-
+export const handleTalkToSale = createAsyncThunk(
+    "Common/handleTalkToSale",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            return response.data;
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
 
 const initialState = {
     loading: false,
@@ -268,6 +280,19 @@ const PaymentSlice = createSlice({
             state.message = action.payload?.message;
         });
         builder.addCase(IncreaseTrialDays.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload.message;
+            state.message = action.payload?.message;
+        });
+
+        builder.addCase(handleTalkToSale.pending, (state) => {
+            state.status = "loading";
+        });
+        builder.addCase(handleTalkToSale.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.message = action.payload?.message;
+        });
+        builder.addCase(handleTalkToSale.rejected, (state, action) => {
             state.status = "failed";
             state.error = action.payload.message;
             state.message = action.payload?.message;

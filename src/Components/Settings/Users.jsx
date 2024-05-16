@@ -1985,8 +1985,8 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
           password={password}
           setPassword={setPassword}
           setShowPassword={setShowPassword}
-          showPassword
-          phone={showPassword}
+          showPassword={showPassword}
+          phone={phone}
           setPhone={setPhone}
           company={company}
           setCompany={setCompany}

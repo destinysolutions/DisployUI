@@ -137,7 +137,7 @@ const Login = () => {
                 const user_ID = response.userID;
                 // localStorage.setItem("userID", JSON.stringify(response));
                 // if (response?.userDetails?.isRetailer === false) {
-                  localStorage.setItem("role_access", "USER");
+                localStorage.setItem("role_access", "USER");
                 // } else {
                 //   localStorage.setItem("role_access", "RETAILER");
                 // }
@@ -225,13 +225,25 @@ const Login = () => {
     }
   };
 
+  const SignInWithGooglebtn = async () => {
+
+    const res = await signInWithPopup(auth, Googleauthprovider)
+      .then((result) => {
+        // Google sign-in successful, you can access user information via result.user
+        console.log(result.user, "hello");
+      })
+      .catch((error) => {
+        // Handle errors here
+        console.error(error);
+      });
+  };
+
   const SignInFaceBook = async () => {
     try {
       const res = await signInWithRedirect(auth, facebookProvider);
 
       // const res = await signInWithCredential(auth, facebookProvider);
       const user = res.user;
-      return console.log(res);
 
       axios
         .post(ADD_REGISTER_URL, {
@@ -487,7 +499,7 @@ const Login = () => {
               </div>
             </div>
             {/* login with google */}
-            {/* <div className="mt-4">
+       {/*     <div className="mt-4">
               <GoogleOAuthProvider
                 clientId={process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID}
               >
@@ -500,10 +512,10 @@ const Login = () => {
                   onError={(err) => console.log(err)}
                 ></GoogleLogin>
               </GoogleOAuthProvider>
-            </div>
-            {/* <div className="flex items-center justify-center mt-4">
+                </div>*/}
+            <div className="flex items-center justify-center mt-4">
               <div className="socialIcon socialIcon1">
-                <button onClick={SignInWithGoogle}>
+                <button onClick={SignInWithGooglebtn}>
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
@@ -522,7 +534,7 @@ const Login = () => {
                   <BsMicrosoft className="text-lg text-primary" />
                 </button>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

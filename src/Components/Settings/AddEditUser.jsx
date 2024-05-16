@@ -57,6 +57,7 @@ const AddEditUser = ({
     handleUpdateUser,
     sidebarOpen
 }) => {
+    
     return (
         <>
             <div className="backdrop z-9990">
@@ -214,7 +215,10 @@ const AddEditUser = ({
                                             value={countryID}
                                             onChange={(e) => setCountryID(e.target.value)}
                                         >
-                                            {labelTitle !== "Update User" && (
+                                            {countryID && labelTitle !== "Update User" && (
+                                                <option label="Select Country"></option>
+                                            )}
+                                            {!countryID && (
                                                 <option label="Select Country"></option>
                                             )}
                                             {Countries.map((country) => (
@@ -236,8 +240,11 @@ const AddEditUser = ({
                                             onChange={(e) => setSelectedState(e.target.value)}
                                             value={selectedState}
                                         >
-                                            {labelTitle !== "Update User" && (
+                                            {selectedState && labelTitle !== "Update User" && (
                                                 <option label="Select State"></option>
+                                            )}
+                                            {!selectedState && (
+                                                <option label="Select User Role"></option>
                                             )}
                                             {countryID &&
                                                 Array.isArray(states) &&
@@ -257,7 +264,10 @@ const AddEditUser = ({
                                             value={selectRoleID}
                                             onChange={(e) => setSelectRoleID(e.target.value)}
                                         >
-                                            {labelTitle !== "Update User" && (
+                                            {selectRoleID && labelTitle !== "Update User" && (
+                                                <option label="Select User Role"></option>
+                                            )}
+                                            {!selectRoleID && (
                                                 <option label="Select User Role"></option>
                                             )}
                                             {userRoleData && userRoleData?.length > 0 ? (
@@ -337,7 +347,7 @@ const AddEditUser = ({
                             </div>
                         </div>
                     </div>
-                    <div className="col-span-12 p-5 text-center">
+                    <div className="col-span-12 p-5 text-center border-t border-gray">
                         <button
                             className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                             onClick={() => {

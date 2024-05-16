@@ -249,7 +249,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                 scope="col"
                                 className="px-3.5 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize"
                               >
-                                {item.firstName + " " + item.lastName}
+                                {item.firstName !== null ? item.firstName : "" + " " + item.lastName !== null ? item.lastName : ""}
                               </td>
                               <td scope="col" className="px-6 py-4">{item.email}</td>
                               <td scope="col" className="px-6 py-4">
@@ -366,7 +366,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                           </td>
                         </tr>
                       )}
-                      {sortedAndPaginatedData?.length === 0 && (
+                      {!store?.loading && sortedAndPaginatedData?.length === 0 && (
                         <tr>
                           <td colSpan={10}>
                             <div className="flex text-center justify-center">
@@ -382,7 +382,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                   <div className="flex items-center">
-                    <span className="text-gray-500">{`Total ${store?.data?.length} Customer`}</span>
+                    <span className="text-gray-500">{`Total ${filteredData?.length} Customer`}</span>
                   </div>
                   <div className="flex justify-end">
                     <button
@@ -412,7 +412,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={(currentPage === totalPages) || (store?.data?.length === 0)}
+                      disabled={(currentPage === totalPages) || (filteredData?.length === 0)}
                       className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                     >
                       {sidebarOpen ? "Next" : ""}

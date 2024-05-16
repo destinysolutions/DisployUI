@@ -19,7 +19,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
 
     }
     const config = {
-      method: "get",
+      method: "post",
       maxBodyLength: Infinity,
       url: `${ADD_CREDIT_CARD}}`,
       headers: {

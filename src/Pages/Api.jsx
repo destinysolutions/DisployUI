@@ -168,6 +168,7 @@ export const BILLINGREPORT = `${baseUrl}Report/GetBillingReport`;
 //http://192.168.1.115
 
 // Retailar
+
 export const GETALLRETAILER = `${baseUrl}UserMaster/GetAllRetailer?IsRetailer=true`
 
 // weatherschedule
@@ -195,16 +196,12 @@ export const  ADD_ADMIN_RATE  = `${baseUrl}AdsCustomer/AddAdminMargin`
 export const  ADVERTISEMENT_SCREEN  = `${baseUrl}Common/AdvertisementScreen`
 export const  ADD_USER_LIST  = `${baseUrl}AdsCustomer/GetAdsDatabyAdsID`
 
-
-
-
 // Approval
 
 export const GETALLAPPROVAL = `${baseUrl}OrganizationUsersRole/GetApproveNotifications`
 export const APPROVEDETAILBYID = `${baseUrl}OrganizationUsersRole/ApproveDetailsByID`
 
 // Book Slot
-
 
 export const SCREEN_LIST = `${baseUrl}AdsCustomer/GetAllRetaileScreen`
 export const ALL_CITY = `${baseUrl}Common/GetAllCity`
@@ -243,13 +240,13 @@ export const INCREASE_TRIAL_DAYS = `${baseUrl}Common/IncreaseTrialDays`
 export const GET_ALL_BILLING = `${baseUrl}BillingMaster/GetAllBilling`
 export const GET_BILLING_BY_ID = `${baseUrl}BillingMaster/GetBillingById`
 export const ADD_CREDIT_CARD = `${baseUrl}common/AddCreditCard`
+export const TALK_TO_SALE = `${baseUrl}common/TalkToSale`
 
 
 // Notifications
 
 export const GET_ALL_NOTIFICATIONS = `${baseUrl}Common/GetAllNotificationMaster`
 export const GET_ALL_REMOVE_NOTIFICATIONS = `${baseUrl}Common/GetRemoveAllNotificationMaster`
-
 
 // Invoice
 

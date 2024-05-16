@@ -2,9 +2,14 @@ import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs'
 import { useDispatch } from 'react-redux';
+import { handleTalkToSale } from '../../Redux/PaymentSlice';
+import { useSelector } from 'react-redux';
+import { TALK_TO_SALE } from '../../Pages/Api';
 
 const TalkToSaleDialog = ({ setTalkToSale, TalkToSale }) => {
   const dispatch = useDispatch();
+  const { token } = useSelector((s) => s.root.auth);
+  const authToken = `Bearer ${token}`;
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState({
     firstName: false,
@@ -38,6 +43,30 @@ const TalkToSaleDialog = ({ setTalkToSale, TalkToSale }) => {
       [name]: false
     });
   };
+
+  const handleCreate = () => {
+
+    const Params = {
+
+    }
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${TALK_TO_SALE}}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken
+      },
+      data: JSON.stringify(Params)
+    }
+    dispatch(handleTalkToSale({ config }))
+      .then((res) => {
+        if (res?.payload?.status) {
+
+        }
+      })
+      .catch((error) => console.log('error', error))
+  }
 
 
   return (
@@ -223,7 +252,7 @@ const TalkToSaleDialog = ({ setTalkToSale, TalkToSale }) => {
                       <div className="flex justify-end pt-2 h-full items-end">
                         <button
                           className="sm:ml-2 xs:ml-1 flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          // onClick={() => handleCreate()}
+                          onClick={() => handleCreate()}
                           type="submit"
                         >
                           Submit

@@ -1,8 +1,11 @@
 import "../Styles/loginRegister.css";
 import {
+  BsApple,
   BsFillEyeFill,
   BsFillEyeSlashFill,
   BsFillInfoCircleFill,
+  BsGoogle,
+  BsMicrosoft,
 } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 // import {BsMicrosoft} from "react-icons/bs";
@@ -17,6 +20,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { ADD_REGISTER_URL } from "./Api";
 import video from "../images/DisployImg/iStock-1137481126.mp4";
 import {
+  Googleauthprovider,
   appleProvider,
   auth,
   facebookProvider,
@@ -28,6 +32,10 @@ import { handleLoginWithGoogle, handleRegisterUser } from "../Redux/Authslice";
 // import logo from "../images/DisployImg/logo.svg";
 import logo from "../images/DisployImg/White-Logo2.png";
 import ReCAPTCHA from "react-google-recaptcha";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import { FaFacebookF } from "react-icons/fa";
+import { jwtDecode } from "jwt-decode";
+import { signInWithPopup } from "firebase/auth";
 
 const Registration = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -259,20 +267,30 @@ const Registration = () => {
 
     // setTimeout(async () => {
     try {
-      const response = await dispatch(handleLoginWithGoogle({ config }));
-      if (!response) return;
-      response
-        .then(() => {
+      const response = await dispatch(handleLoginWithGoogle({ config })).then((res) => {
+        if (res?.payload?.status === 200) {
           window.localStorage.setItem("timer", JSON.stringify(18_00));
           toast.success("Sign up successfully.");
-          // navigate("/screens");
-          console.log(data);
-        })
-        .catch((error) => {
-          console.log(error);
-          setErrorMessgeVisible(true);
-          setErrorMessge("Registration failed.");
-        });
+        } else {
+          // setErrorMessgeVisible(true);
+          // setErrorMessge("Registration failed.");
+          toast.error("Registration failed.")
+        }
+      });
+      console.log('response', response)
+      if (!response) return;
+      // response
+      //   .then(() => {
+      //     window.localStorage.setItem("timer", JSON.stringify(18_00));
+      //     toast.success("Sign up successfully.");
+      //     // navigate("/screens");
+      //     console.log(data);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //     setErrorMessgeVisible(true);
+      //     setErrorMessge("Registration failed.");
+      //   });
     } catch (err) {
       console.log(err);
       setErrorMessgeVisible(true);
@@ -281,10 +299,75 @@ const Registration = () => {
     // }, 1000);
   };
 
+  const SignInWithGooglebtn = async () => {
+
+    const res = await signInWithPopup(auth, Googleauthprovider)
+      .then((result) => {
+        // Google sign-in successful, you can access user information via result.user
+        console.log('result', result.user)
+        const data = result.user;
+        const formData = new FormData();
+
+        formData.append("FirstName", result?.user?.displayName);
+        formData.append("Email", result?.user?.email);
+        formData.append("Phone", null);
+        formData.append("Operation", "Insert");
+        formData.append("googleID", result?.user?.uid);
+
+        const config = {
+          method: "post",
+          url: ADD_REGISTER_URL,
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        };
+
+        // setTimeout(async () => {
+        try {
+          const response = dispatch(handleLoginWithGoogle({ config })).then((res) => {
+            if (res?.payload?.status === 200) {
+              window.localStorage.setItem("timer", JSON.stringify(18_00));
+              toast.success("Sign up successfully.");
+            } else {
+              // setErrorMessgeVisible(true);
+              // setErrorMessge("Registration failed.");
+              toast.error("Registration failed.")
+            }
+          });
+          console.log('response', response)
+          if (!response) return;
+          // response
+          //   .then(() => {
+          //     window.localStorage.setItem("timer", JSON.stringify(18_00));
+          //     toast.success("Sign up successfully.");
+          //     // navigate("/screens");
+          //     console.log(data);
+          //   })
+          //   .catch((error) => {
+          //     console.log(error);
+          //     setErrorMessgeVisible(true);
+          //     setErrorMessge("Registration failed.");
+          //   });
+        } catch (err) {
+          console.log(err);
+          setErrorMessgeVisible(true);
+          setErrorMessge("Registration failed.");
+        }
+      })
+      .catch((error) => {
+        // Handle errors here
+        console.error(error);
+      });
+    console.log('res', res)
+  };
+
   const SignInFaceBook = async () => {
     try {
-      const res = await auth.signInWithPopup(facebookProvider);
+      const res = await signInWithPopup(auth, facebookProvider);
+      console.log('res', res)
       const user = res.user;
+      console.log('user', user)
       // onclose();
       axios
         .post(ADD_REGISTER_URL, {
@@ -313,7 +396,7 @@ const Registration = () => {
 
   const SignInapple = async () => {
     try {
-      const res = await auth.signInWithPopup(appleProvider);
+      const res = await signInWithPopup(auth, appleProvider);
       const user = res.user;
       // onclose();
     } catch (err) {
@@ -327,8 +410,10 @@ const Registration = () => {
       tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
     });
     try {
-      const res = await auth.signInWithPopup(microsoftProvider);
+      const res = await signInWithPopup(auth, microsoftProvider);
+      console.log('res', res)
       const user = res.user;
+      console.log('user', user)
       // onclose();
     } catch (err) {
       console.log(err);
@@ -337,10 +422,11 @@ const Registration = () => {
 
   const handleCheckboxChange = (e, formik) => {
     setIsCheckboxChecked(e.target.checked);
-    setShowModal(true);
+    // setShowModal(true);
   };
 
   const handleAcceptTerms = () => {
+    setIsCheckboxChecked(true);
     setShowModal(false);
   };
 
@@ -605,7 +691,7 @@ const Registration = () => {
               </div>
             </div>
             {/* login with google  */}
-            {/* <div className="mt-4">
+          {/*  <div className="mt-4">
               <GoogleOAuthProvider
                 clientId={process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID}
               >
@@ -618,29 +704,29 @@ const Registration = () => {
                   onError={(err) => console.log(err)}
                 ></GoogleLogin>
               </GoogleOAuthProvider>
-            </div> */}
-            {/* <div className="flex items-center justify-center mt-4">
-              <div className="socialIcon socialIcon1">
-                <button onClick={SignInWithGoogle}>
+                </div>*/}
+            <div className="flex items-center justify-center mt-4">
+              <button onClick={SignInWithGooglebtn}>
+                <div className="socialIcon socialIcon1">
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
-                </button>
-              </div>
-              <div className="socialIcon socialIcon2">
-                <button onClick={SignInFaceBook}>
+                </div>
+              </button>
+              <button onClick={SignInFaceBook}>
+                <div className="socialIcon socialIcon2">
                   <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
-                </button>
-              </div>
-              <div className="socialIcon socialIcon3">
-                <button onClick={SignInapple}>
+                </div>
+              </button>
+              <button onClick={SignInapple}>
+                <div className="socialIcon socialIcon3">
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
-                </button>
-              </div>
-              <div className="socialIcon socialIcon4">
-                <button onClick={SignInMicroSoft}>
+                </div>
+              </button>
+              <button onClick={SignInMicroSoft}>
+                <div className="socialIcon socialIcon4">
                   <BsMicrosoft className="text-lg text-primary" />
-                </button>
-              </div>
-            </div> */}
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
