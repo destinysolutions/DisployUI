@@ -326,16 +326,15 @@ const Registration = () => {
         // setTimeout(async () => {
         try {
           const response = dispatch(handleLoginWithGoogle({ config })).then((res) => {
-            if (res?.payload?.status === 200) {
+            if (res?.payload?.status) {
               window.localStorage.setItem("timer", JSON.stringify(18_00));
               toast.success("Sign up successfully.");
             } else {
               // setErrorMessgeVisible(true);
               // setErrorMessge("Registration failed.");
-              toast.error("Registration failed.")
+              toast.error(res?.payload?.message)
             }
           });
-          console.log('response', response)
           if (!response) return;
           // response
           //   .then(() => {

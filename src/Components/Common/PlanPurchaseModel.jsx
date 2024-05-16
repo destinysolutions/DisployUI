@@ -76,8 +76,11 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         } else {
             totalPrice = userDetails?.extraScreen * 3
         }
+
+        const { card, ...newObj } = paymentIntent;
+        const updatedObj = { ...newObj, ...card };
         let params = {
-            ...paymentIntent,
+            ...updatedObj,
             PaymentType: PaymentofScreenBoolen === false ? `${selectPlan?.planName} Plan` : "Screen",
             PaymentValue: PaymentofScreenBoolen ? userDetails?.extraScreen : 1,
             AutoPay: autoPay,

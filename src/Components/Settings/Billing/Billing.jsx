@@ -11,7 +11,7 @@ import UserInfo from "./UserInfo";
 import { GET_ALL_BILLING, GET_BILLING_BY_ID } from "../../../Pages/Api";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { handleGetAllBillings } from "../../../Redux/AdminSettingSlice";
+import { handleGetAllBillings, handleGetBillingByID } from "../../../Redux/AdminSettingSlice";
 
 const Data = [
   {
@@ -111,7 +111,7 @@ const Billing = () => {
         Authorization: authToken
       },
     }
-    dispatch(handleGetAllBillings({ config })).then((res) => {
+    dispatch(handleGetBillingByID({ config })).then((res) => {
       if (res?.payload?.status) {
 
       }

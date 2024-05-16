@@ -43,7 +43,28 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
 
     const handleCreatePlan = () => {
         let Params = {
-
+            "listOfPlansID": 0,
+            "planDetailss": "string",
+            "planName": "string",
+            "isRecomnded": true,
+            "planPrice": 0,
+            "isdefault": true,
+            "planDetails": [
+                {
+                    "listOfFeaturesID": 0,
+                    "featureType": "string",
+                    "lstOfFeatures": [
+                        {
+                            "listOfPlansDetailsID": 0,
+                            "name": "string",
+                            "value": "string",
+                            "listOfFeaturesID": 0,
+                            "listOfPlansID": 0,
+                            "isCheckBox": true
+                        }
+                    ]
+                }
+            ]
         }
         let config = {
             method: "get",

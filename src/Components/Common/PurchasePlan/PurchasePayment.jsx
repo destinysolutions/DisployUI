@@ -62,8 +62,10 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
     }
 
     const PaymentDetails = ({ paymentIntent, organizationID, Subscription }) => {
+        const { card, ...newObj } = paymentIntent;
+        const updatedObj = { ...newObj, ...card };
         let params = {
-            ...paymentIntent,
+            ...updatedObj,
             PaymentType: `${selectPlan?.planName} Plan`,
             PaymentValue: 1,
             AutoPay: true,

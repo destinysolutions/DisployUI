@@ -70,8 +70,11 @@ const backupPayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         } else {
             totalPrice = PaymentValue * 47
         }
+
+        const { card, ...newObj } = paymentIntent;
+        const updatedObj = { ...newObj, ...card };
         let params = {
-            ...paymentIntent,
+            ...updatedObj,
             // PaymentType: `${selectPlan?.planName} Plan`,
             PaymentValue: PaymentValue,
             AutoPay: true,

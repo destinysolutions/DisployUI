@@ -12,7 +12,7 @@ import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import toast from 'react-hot-toast';
 const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
 
-    const { user,userDetails } = useSelector((state) => state.root.auth);
+    const { user, userDetails } = useSelector((state) => state.root.auth);
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
@@ -64,6 +64,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
     const PaymentDetails = ({ paymentIntent, organizationID, Subscription }) => {
         let totalPrice;
+
         if (userDetails?.planID === 1 && type === "Screen") {
             totalPrice = PaymentValue * 10
         } else if (userDetails?.planID === 2 && type === "Screen") {
@@ -75,8 +76,10 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         } else {
             totalPrice = PaymentValue * 3
         }
+        const { card, ...newObj } = paymentIntent;
+        const updatedObj = { ...newObj, ...card };
         let params = {
-            ...paymentIntent,
+            ...updatedObj,
             // PaymentType: `${selectPlan?.planName} Plan`,
             PaymentValue: PaymentValue,
             AutoPay: true,
@@ -110,7 +113,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             if (res?.payload?.status) {
                 setIsLoading(false);
                 navigation("/dashboard"); // Navigate to dashboard after processing payment
-            }else{
+            } else {
                 setIsLoading(false);
                 toast.error("Error!")
             }
@@ -153,7 +156,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
                 PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription })
-            }else{
+            } else {
                 setIsLoading(false);
                 toast.error("Error!")
             }

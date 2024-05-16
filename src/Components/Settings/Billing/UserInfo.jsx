@@ -1,18 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa6";
 import AddCreditCard from "../../../admin/AddCreditCard";
 import { useSelector } from "react-redux";
-import { handleAddCard } from "../../../Redux/AdminSettingSlice";
-import { ADD_CREDIT_CARD, CANCEL_SUBSCRIPTION, INCREASE_TRIAL_DAYS } from "../../../Pages/Api";
+import { handleAddCard, handleGetBillingByID } from "../../../Redux/AdminSettingSlice";
+import { ADD_CREDIT_CARD, CANCEL_SUBSCRIPTION, GET_BILLING_BY_ID, INCREASE_TRIAL_DAYS } from "../../../Pages/Api";
 import { useDispatch } from "react-redux";
 import { IncreaseTrialDays, handleCancelSubscription } from "../../../Redux/PaymentSlice";
 
 const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
+
   const dispatch = useDispatch()
-  const {user, token } = useSelector((s) => s.root.auth);
+  const { user, token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   const [newCardShow, setNewCardShow] = useState(false);
+  const [rangeValue, setRangeValue] = useState(10);
+
+
+  const fetchBillingDataById = () => {
+    const Params = {
+
+    }
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${GET_BILLING_BY_ID}}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken
+      },
+      data: JSON.stringify(Params)
+    }
+    dispatch(handleGetBillingByID({ config }))
+      .then((res) => {
+        if (res?.payload?.status) {
+
+        }
+      })
+      .catch((error) => console.log('error', error))
+  }
+
+  useEffect(() => {
+    fetchBillingDataById()
+  }, [])
 
   const onSubmit = () => {
     const Params = {
@@ -44,7 +74,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
 
   const CancelSubscription = () => {
     const Params = {
-      Email : user?.emailID
+      Email: user?.emailID
     }
     const config = {
       method: "get",
@@ -65,12 +95,13 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
       .catch((error) => console.log('error', error))
   }
 
-  const handleIncreaseTrial =() =>{
+  const handleIncreaseTrial = () => {
     const Params = {
-
+      OrgID: "",
+      Days: rangeValue
     }
     const config = {
-      method: "get",
+      method: "post",
       maxBodyLength: Infinity,
       url: `${INCREASE_TRIAL_DAYS}}`,
       headers: {
@@ -87,6 +118,14 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
       })
       .catch((error) => console.log('error', error))
   }
+
+
+  const handleChange = (event) => {
+    // Extract the value from the event
+    const value = event.target.value;
+    // Update the state with the new value
+    setRangeValue(value);
+  };
 
   return (
     <>
@@ -197,12 +236,16 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
                   id="customRange1"
                   className="w-full form-range"
                   type="range"
+                  value={rangeValue}
+                  onChange={handleChange}
+                  min={0}
+                  max={14}
                 />
               </div>
               <div className="flex justify-center w-full mb-5">
-                <button 
-                className="mr-3 text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-3 py-2 text-center"
-                onClick={()=> handleIncreaseTrial()}
+                <button
+                  className="mr-3 text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-3 py-2 text-center"
+                  onClick={() => handleIncreaseTrial()}
                 >
                   increase trial days
                 </button>

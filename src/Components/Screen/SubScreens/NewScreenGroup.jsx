@@ -496,7 +496,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       AssetType: "",
       FilePath: "",
     };
-    debugger;
 
     if (selectedAsset?.assetID) {
       payload.MediaID = selectedAsset.assetID;
