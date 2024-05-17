@@ -8,6 +8,7 @@ import PlanPurchaseModel from './PlanPurchaseModel';
 import { Elements } from '@stripe/react-stripe-js';
 import { useSelector } from 'react-redux';
 import TalkToSaleDialog from './TalkToSaleDialog';
+import PurchasePlan from '../Screen/PurchasePlan';
 
 const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanType, myplan, setSelectPlan }) => {
     const dispatch = useDispatch();
@@ -20,7 +21,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
     const [openPayment, setOpenPayment] = useState(false)
     const [TalkToSale, setTalkToSale] = useState(false)
     const [purchaseType, setPurchaseType] = useState("")
-    
+    const [buyPlan, setBuyPlan] = useState(false)
     const TotalPrice = Screen <= 1 ? selectPlan?.planPrice : ((Screen * selectPlan?.planPrice))
 
     const appearance = {
@@ -317,10 +318,10 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                         </ul>
                                                     )}
                                                     <div className="pt-4">
-                                                        {userDetails?.planID === item?.listOfPlansID && (
+                                                        {userDetails?.isActivePlan && userDetails?.planID === item?.listOfPlansID && (
                                                             <button className="bg-blue-700 cursor-not-allowed hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300">Subscribed</button>
                                                         )}
-                                                        {userDetails?.planID !== item?.listOfPlansID && item?.listOfPlansID !== 4 && (
+                                                        {userDetails?.isActivePlan && userDetails?.planID !== item?.listOfPlansID && item?.listOfPlansID !== 4 && (
                                                             <button
                                                                 className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
                                                                 onClick={() => {
@@ -328,7 +329,19 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                     handleCreate()
                                                                 }}
                                                             >
-                                                               {userDetails?.planID < item?.listOfPlansID ? "Upgrade Plan" :"Downgrade Plan"} 
+                                                                {userDetails?.planID < item?.listOfPlansID ? "Upgrade Plan" : "Downgrade Plan"}
+                                                            </button>
+                                                        )}
+                                                        {!userDetails?.isActivePlan && item?.listOfPlansID !== 4 && (
+                                                            <button
+                                                                className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
+                                                                onClick={() => {
+                                                                    setSelectPlan(item)
+                                                                    
+                                                                    setBuyPlan(true)
+                                                                }}
+                                                            >
+                                                                Buy Plan
                                                             </button>
                                                         )}
                                                         {userDetails?.planID !== item?.listOfPlansID && item?.listOfPlansID === 4 && (
@@ -364,6 +377,9 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
             )}
             {TalkToSale && (
                 <TalkToSaleDialog setTalkToSale={setTalkToSale} TalkToSale={TalkToSale} />
+            )}
+            {buyPlan && (
+                <PurchasePlan buyPlan={buyPlan} setBuyPlan={setBuyPlan} selectPlan={selectPlan}/>
             )}
         </>
     )

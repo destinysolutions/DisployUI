@@ -583,21 +583,21 @@ const Login = () => {
               </GoogleOAuthProvider>
                 </div>*/}
             <div className="flex items-center justify-center mt-4">
-              <div className="socialIcon socialIcon1">
-                <button onClick={SignInWithGooglebtn}>
+              <button onClick={SignInWithGooglebtn}>
+                <div className="socialIcon socialIcon1">
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
-                </button>
-              </div>
-              <div className="socialIcon socialIcon2">
-                <button onClick={SignInFaceBook}>
+                </div>
+              </button>
+              <button onClick={SignInFaceBook}>
+                <div className="socialIcon socialIcon2">
                   <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
-                </button>
-              </div>
-              <div className="socialIcon socialIcon3">
-                <button onClick={SignInapple}>
+                </div>
+              </button>
+              <button onClick={SignInapple}>
+                <div className="socialIcon socialIcon3">
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
-                </button>
-              </div>
+                </div>
+              </button>
               <MsalProvider instance={msalInstance}>
                 <MicrosoftBtn register={false} />
               </MsalProvider>
