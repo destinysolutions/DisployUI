@@ -6,6 +6,8 @@ import { handleCancelSubscription } from "../../Redux/PaymentSlice";
 import PurchaseUserPlan from "../../Components/Common/PurchaseUserPlan";
 import { useEffect } from "react";
 import { handleGetAllPlans } from "../../Redux/CommonSlice";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 const BillingsPlans = () => {
   const dispatch = useDispatch()
@@ -41,26 +43,37 @@ const BillingsPlans = () => {
 
 
   const CancelSubscription = () => {
-    const Params = {
-      Email: user?.emailID
-    }
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${CANCEL_SUBSCRIPTION}}`,
+      url: `${CANCEL_SUBSCRIPTION}?Email=${user?.emailID}`,
       headers: {
-        "Content-Type": "application/json",
         Authorization: authToken
       },
-      data: JSON.stringify(Params)
     }
-    dispatch(handleCancelSubscription({ config }))
-      .then((res) => {
-        if (res?.payload?.status) {
 
-        }
-      })
-      .catch((error) => console.log('error', error))
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to cancel subscription!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, cancel it!",
+      cancelButtonText: "Close"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(handleCancelSubscription({ config }))
+          .then((res) => {
+            console.log('res', res)
+            if (res?.payload?.status) {
+              toast.success(res?.payload?.message)
+            }
+          })
+          .catch((error) => console.log('error', error))
+      }
+    });
+
   }
   return (
     <>
@@ -93,14 +106,14 @@ const BillingsPlans = () => {
                 >
                   Upgrade Plan
                 </button>
-                {/*<button
-                className=" px-5 py-2 border border-primary rounded-full text-primary"
-                onClick={() => {
-                  CancelSubscription()
-                }}
-              >
-                Cancel Subscription
-              </button>*/}
+                <button
+                  className=" px-5 py-2 border border-primary rounded-full text-primary"
+                  onClick={() => {
+                    CancelSubscription()
+                  }}
+                >
+                  Cancel Subscription
+                </button>
               </div>
             </div>
             <div className="md:w-1/2 px-3 mb-6 md:mb-0">

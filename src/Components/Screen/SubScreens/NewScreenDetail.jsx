@@ -301,18 +301,20 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleScreenDetail = () => {
+    debugger;
     let hasError = false;
     if (screenName.trim() === "") {
       setScreenNameError("Screen name is required");
       hasError = true;
     }
     if (userDetails?.isRetailer === true) {
+    debugger;
       if ((screenRatePerSec === "" || screenRatePerSec < 1)) {
         setScreenRatePerSecondError('Screen Rate is required')
         hasError = true;
       }
       if ((screenMargin === "" || screenMargin < 1)) {
-        setScreenMargin('Screen margin is required')
+        setScreenMarginError('Screen margin is required')
         hasError = true;
       }
     }

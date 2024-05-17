@@ -358,11 +358,11 @@ const Registration = () => {
         // Handle errors here
         console.error(error);
       });
-    console.log('res', res)
   };
 
   const SignInFaceBook = async () => {
     try {
+      debugger
       const res = await signInWithPopup(auth, facebookProvider);
       console.log('res', res)
       const user = res.user;

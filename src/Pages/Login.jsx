@@ -230,7 +230,70 @@ const Login = () => {
     const res = await signInWithPopup(auth, Googleauthprovider)
       .then((result) => {
         // Google sign-in successful, you can access user information via result.user
-        console.log(result.user, "hello");
+        console.log(result?.user, "hello");
+
+        const data = JSON.stringify({
+          emailID: result?.user?.email,
+          googleID: result?.user?.uid,
+          SystemTimeZone: new Date()
+            .toLocaleDateString(undefined, {
+              day: "2-digit",
+              timeZoneName: "long",
+            })
+            .substring(4),
+        });
+
+        let config = {
+          method: "post",
+          maxBodyLength: Infinity,
+          url: LOGIN_URL,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: data,
+        };
+
+        const response = dispatch(handleLoginUser({ config }));
+        if (response) {
+          response
+            .then((res) => {
+              const response = res?.payload;
+              if (response.status == 200) {
+                window.localStorage.setItem("timer", JSON.stringify(18_00));
+                const userRole = response.role;
+                if (userRole == 1) {
+                  localStorage.setItem("role_access", "ADMIN");
+                  toast.success("Login successfully.");
+                  window.location.href = "/";
+                } else if (userRole == 2) {
+                  // User login logic
+                  const user_ID = response.userID;
+                  // localStorage.setItem("userID", JSON.stringify(response));
+                  // if (response?.userDetails?.isRetailer === false) {
+                  localStorage.setItem("role_access", "USER");
+                  // } else {
+                  //   localStorage.setItem("role_access", "RETAILER");
+                  // }
+                  toast.success("Login successfully.");
+                  // console.log(response);
+                  // navigate("/screens");
+                  window.location.href = "/dashboard";
+                } else {
+                  // Handle other roles or unknown roles
+                  console.log("Unexpected role value:", userRole);
+                  alert("Invalid role: " + userRole);
+                }
+              } else {
+                toast.error(response?.message);
+                setErrorMessge(response.message);
+                toast.remove();
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+
       })
       .catch((error) => {
         // Handle errors here
@@ -499,7 +562,7 @@ const Login = () => {
               </div>
             </div>
             {/* login with google */}
-       {/*     <div className="mt-4">
+            {/*     <div className="mt-4">
               <GoogleOAuthProvider
                 clientId={process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID}
               >
