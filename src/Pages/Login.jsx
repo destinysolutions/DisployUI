@@ -36,6 +36,10 @@ import {
 import logo from "../images/DisployImg/White-Logo2.png";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import MicrosoftBtn from "./MicrosoftBtn";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { msalConfig } from "../Components/Common/authconfig";
+import { MsalProvider } from "@azure/msal-react";
 
 // import.meta.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
@@ -45,6 +49,7 @@ const Login = () => {
   //using for routing
   // const { loginUser } = useUser();
   //using show or hide password field
+  const msalInstance = new PublicClientApplication(msalConfig);
   const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -235,6 +240,7 @@ const Login = () => {
         const data = JSON.stringify({
           emailID: result?.user?.email,
           googleID: result?.user?.uid,
+          password: "",
           SystemTimeZone: new Date()
             .toLocaleDateString(undefined, {
               day: "2-digit",
@@ -592,11 +598,9 @@ const Login = () => {
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
-              <div className="socialIcon socialIcon4">
-                <button onClick={SignInMicroSoft}>
-                  <BsMicrosoft className="text-lg text-primary" />
-                </button>
-              </div>
+              <MsalProvider instance={msalInstance}>
+                <MicrosoftBtn register={false} />
+              </MsalProvider>
             </div>
           </div>
         </div>

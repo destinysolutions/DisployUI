@@ -36,21 +36,26 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { FaFacebookF } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import { signInWithPopup } from "firebase/auth";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { loginRequest, msalConfig } from "../Components/Common/authconfig";
+import { MsalProvider, useMsal } from "@azure/msal-react";
+import MicrosoftBtn from "./MicrosoftBtn";
 
 const Registration = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const modalRef = useRef(null);
+  const msalInstance = new PublicClientApplication(msalConfig);
+  const { instance } = useMsal();
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessge, setErrorMessge] = useState("");
   const [errorMessgeVisible, setErrorMessgeVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const modalRef = useRef(null);
-  // console.log("errorMessgeVisible:", errorMessgeVisible); // Check if it's true
-  // console.log("errorMessge:", errorMessge);
-  //using for routing
-  const navigate = useNavigate();
 
-  const dispatch = useDispatch();
+
+  console.log('msalInstance', msalInstance)
 
   //using for validation and register api calling
   const phoneRegExp =
@@ -403,19 +408,26 @@ const Registration = () => {
   };
 
   const SignInMicroSoft = async () => {
-    microsoftProvider.setCustomParameters({
-      prompt: "consent",
-      tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
-    });
-    try {
-      const res = await signInWithPopup(auth, microsoftProvider);
+    // microsoftProvider.setCustomParameters({
+    //   prompt: "consent",
+    //   tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+    // });
+    // try {
+    //   const res = await signInWithPopup(auth, microsoftProvider);
+    //   console.log('res', res)
+    //   const user = res.user;
+    //   console.log('user', user)
+    //   // onclose();
+    // } catch (err) {
+    //   console.log(err);
+    // }
+
+    const data = instance.loginPopup(loginRequest).then((res) => {
       console.log('res', res)
-      const user = res.user;
-      console.log('user', user)
-      // onclose();
-    } catch (err) {
-      console.log(err);
-    }
+    }).
+      catch((e) => {
+        console.log(e);
+      });
   };
 
   const handleCheckboxChange = (e, formik) => {
@@ -689,7 +701,7 @@ const Registration = () => {
               </div>
             </div>
             {/* login with google  */}
-          {/*  <div className="mt-4">
+            {/*  <div className="mt-4">
               <GoogleOAuthProvider
                 clientId={process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID}
               >
@@ -719,11 +731,9 @@ const Registration = () => {
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
                 </div>
               </button>
-              <button onClick={SignInMicroSoft}>
-                <div className="socialIcon socialIcon4">
-                  <BsMicrosoft className="text-lg text-primary" />
-                </div>
-              </button>
+              <MsalProvider instance={msalInstance}>
+                <MicrosoftBtn register={true} />
+              </MsalProvider>
             </div>
           </div>
         </div>
