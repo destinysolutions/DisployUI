@@ -147,7 +147,7 @@ const Navbar = () => {
         <div>
           <div className="flex-col flex">
             <div className="w-full">
-              {user?.isTrial && user?.userDetails?.isRetailer === false && !user?.isActivePlan && (
+              {userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan && (
                 <div>
                   <div className="flex items-center justify-center gap-2 bg-[#343c5c] p-3">
                     <p className="text-white">You have {user?.trialDays} Trial Days Remaining</p>
