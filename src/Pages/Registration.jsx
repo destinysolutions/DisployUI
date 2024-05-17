@@ -362,7 +362,6 @@ const Registration = () => {
 
   const SignInFaceBook = async () => {
     try {
-      debugger
       const res = await signInWithPopup(auth, facebookProvider);
       console.log('res', res)
       const user = res.user;
