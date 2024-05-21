@@ -582,7 +582,7 @@ const Login = () => {
                 ></GoogleLogin>
               </GoogleOAuthProvider>
                 </div>*/}
-            <div className="flex items-center justify-center mt-4">
+            {/*<div className="flex items-center justify-center mt-4">
               <button onClick={SignInWithGooglebtn}>
                 <div className="socialIcon socialIcon1">
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
@@ -601,7 +601,7 @@ const Login = () => {
               <MsalProvider instance={msalInstance}>
                 <MicrosoftBtn register={false} />
               </MsalProvider>
-            </div>
+              </div>*/}
           </div>
         </div>
       </div>
