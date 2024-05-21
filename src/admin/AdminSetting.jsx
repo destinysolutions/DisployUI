@@ -212,7 +212,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="col-span-3 w-full bg-white  tabdetails rounded-md relative">
               {STabs === 5 && (
                 <div>
-                  <Billing permissions={permissions} />
+                  <Billing permissions={permissions} sidebarOpen={sidebarOpen} />
                 </div>
               )}
               {STabs === 6 && (

@@ -139,6 +139,7 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
                 let Subscription = res?.payload?.subscriptionId
                 PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: (Screen - 1), TotalPrice: (selectPlan?.planPrice * (Screen - 1)), ScreenpaymentType: true })
                 setTimeout(() => {
+                toast.success("Payment Submitted Successfully.")
                     setIsLoading(false);
                     navigation("/"); // Navigate to dashboard after processing payment
                 }, 2000);

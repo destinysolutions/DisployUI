@@ -165,7 +165,7 @@ const NavbarPurchase = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                     <div class="relative">
                                                         <input type="checkbox" id="toggleThree" class="peer sr-only" />
                                                         <div class="block h-8 rounded-full bg-gray-300 w-14"></div>
-                                                        <div class="absolute flex items-center justify-center w-6 h-6 transition bg-red-500 bg-[#FF0000] rounded-full dot left-1 top-1 peer-checked:translate-x-full peer-checked:bg-blue-700"></div>
+                                                        <div class="absolute flex items-center justify-center w-6 h-6 transition bg-red-500 bg-[#FF0000] rounded-full dot left-1 top-1 peer-checked:translate-x-full peer-checked:bg-green"></div>
                                                     </div>
                                                 </label>
                                             </div>

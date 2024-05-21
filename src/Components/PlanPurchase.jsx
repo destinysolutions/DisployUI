@@ -91,8 +91,12 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
         }
         dispatch(handlePaymentDetails({ config })).then((res) => {
             if (res?.payload?.status) {
-                setIsLoading(false);
-                navigation("/"); // Navigate to dashboard after processing payment
+                toast.success("Payment Submitted Successfully.")
+                setTimeout(() => {
+                    setIsLoading(false);
+                    toast.remove()
+                    navigation("/"); // Navigate to dashboard after processing payment
+                }, 1000);
             }
         })
     }

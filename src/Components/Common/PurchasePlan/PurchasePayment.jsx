@@ -96,9 +96,13 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
         }
         dispatch(handlePaymentDetails({ config })).then((res) => {
             if (res?.payload?.status) {
-                setIsLoading(false);
-                dispatch(handleLogout());
-                navigation("/"); // Navigate to dashboard after processing payment
+                toast.success("Payment Submitted Successfully.")
+                setTimeout(() => {
+                    setIsLoading(false);
+                    toast.remove()
+                    // dispatch(handleLogout());
+                    navigation("/"); // Navigate to dashboard after processing payment
+                }, 1000);
             }
         })
     }

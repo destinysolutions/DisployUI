@@ -111,8 +111,12 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         }
         dispatch(handlePaymentDetails({ config })).then((res) => {
             if (res?.payload?.status) {
-                setIsLoading(false);
-                navigation("/dashboard"); // Navigate to dashboard after processing payment
+                toast.success("Payment Submitted Successfully.")
+                setTimeout(() => {
+                    toast.remove()
+                    setIsLoading(false);
+                    navigation("/dashboard"); // Navigate to dashboard after processing payment
+                }, 1000);
             } else {
                 setIsLoading(false);
                 toast.error("Error!")

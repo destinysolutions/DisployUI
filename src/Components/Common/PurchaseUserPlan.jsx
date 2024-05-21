@@ -9,6 +9,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { useSelector } from 'react-redux';
 import TalkToSaleDialog from './TalkToSaleDialog';
 import PurchasePlan from '../Screen/PurchasePlan';
+import UpgradePlan from '../Screen/UpgradePlan';
 
 const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanType, myplan, setSelectPlan }) => {
     const dispatch = useDispatch();
@@ -22,6 +23,8 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
     const [TalkToSale, setTalkToSale] = useState(false)
     const [purchaseType, setPurchaseType] = useState("")
     const [buyPlan, setBuyPlan] = useState(false)
+    const [upgradePlan, setUpgradePlan] = useState(false)
+
     const TotalPrice = Screen <= 1 ? selectPlan?.planPrice : ((Screen * selectPlan?.planPrice))
 
     const appearance = {
@@ -326,7 +329,9 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                 className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
                                                                 onClick={() => {
                                                                     setSelectPlan(item)
-                                                                    handleCreate()
+                                                                    setPurchaseType("Upgrade")
+                                                                    setUpgradePlan(true)
+                                                                    // handleCreate()
                                                                 }}
                                                             >
                                                                 {userDetails?.planID < item?.listOfPlansID ? "Upgrade Plan" : "Downgrade Plan"}
@@ -337,7 +342,6 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                 className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
                                                                 onClick={() => {
                                                                     setSelectPlan(item)
-                                                                    
                                                                     setBuyPlan(true)
                                                                 }}
                                                             >
@@ -379,7 +383,11 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                 <TalkToSaleDialog setTalkToSale={setTalkToSale} TalkToSale={TalkToSale} />
             )}
             {buyPlan && (
-                <PurchasePlan buyPlan={buyPlan} setBuyPlan={setBuyPlan} selectPlan={selectPlan}/>
+                <PurchasePlan buyPlan={buyPlan} setBuyPlan={setBuyPlan} selectPlan={selectPlan} />
+            )}
+
+            {upgradePlan && (
+                <UpgradePlan upgradePlan={upgradePlan} setUpgradePlan={setUpgradePlan} selectPlan={selectPlan} userPlanType={userPlanType} purchaseType={purchaseType} Screen={Screen}/>
             )}
         </>
     )

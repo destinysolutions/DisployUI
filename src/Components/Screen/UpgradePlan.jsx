@@ -1,27 +1,27 @@
+import { Elements } from '@stripe/react-stripe-js';
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { PAYMENT_INTENT_CREATE_REQUEST, VERIFY_COUPON, stripePromise } from '../../Pages/Api';
 import { verifyDiscountCoupon } from '../../Redux/AdminSettingSlice';
+import { handlePaymentIntegration } from '../../Redux/PaymentSlice';
 import { round } from 'lodash';
+import toast from 'react-hot-toast';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import SubscriptionTerm from '../Common/PurchasePlan/SubscriptionTerm';
-import { handlePaymentIntegration } from '../../Redux/PaymentSlice';
 import PlanPurchaseModel from '../Common/PlanPurchaseModel';
-import toast from 'react-hot-toast';
-import { Elements } from '@stripe/react-stripe-js';
-import BuyNewPlan from './BuyNewPlan';
 
-const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
+const UpgradePlan = ({ setUpgradePlan, upgradePlan, selectPlan, userPlanType, purchaseType ,Screen}) => {
+    console.log('purchaseType', purchaseType)
     const { user, token, userDetails } = useSelector((s) => s.root.auth);
+    console.log('userDetails', userDetails)
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [showDiscount, setShowDiscount] = useState(false);
     const [disclaimer, setDisclaimer] = useState(false);
     const [isRead, setIsRead] = useState(false)
-    const [addScreen, setAddScreen] = useState(1)
+    const [addScreen, setAddScreen] = useState(userDetails?.extraScreen)
     const [showError, setShowError] = useState(false)
-    const [trialDay,setTrialDay] = useState(false)
     const [discount, setDiscount] = useState("")
     const [discountCoupon, setDiscountCoupon] = useState("")
     const [clientSecret, setClientSecret] = useState("");
@@ -71,30 +71,31 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
         if (addScreen < 1) {
             toast.error("Please Enter Proper Required Screen ")
             return;
-          }
-      
-          const price = round(((addScreen * selectPlan?.planPrice) + selectPlan?.planPrice ), 2) - discount;
-          const params = {
+        }
+
+        const price = round(((addScreen * selectPlan?.planPrice) + selectPlan?.planPrice), 2) - discount;
+        const params = {
             "items": {
-              "id": "0",
-              "amount": String(round(price * 100)),
+                "id": "0",
+                "amount": String(round(price * 100)),
             }
-          }
-          const config = {
+        }
+        const config = {
             method: "post",
             maxBodyLength: Infinity,
             url: PAYMENT_INTENT_CREATE_REQUEST,
             headers: {
-              "Content-Type": "application/json",
+                "Content-Type": "application/json",
             },
             data: JSON.stringify(params),
-          }
-      
-          dispatch(handlePaymentIntegration({ config })).then((res) => {
+        }
+
+        dispatch(handlePaymentIntegration({ config })).then((res) => {
             setClientSecret(res?.payload?.clientSecret)
             setOpenPayment(true)
-          })
+        })
     }
+
 
     return (
         <>
@@ -118,7 +119,7 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
                                     <AiOutlineCloseCircle
                                         className="text-4xl text-primary cursor-pointer"
                                         onClick={() => {
-                                            setBuyPlan(!buyPlan);
+                                            setUpgradePlan(!upgradePlan);
                                         }}
                                     />
                                 </div>
@@ -132,11 +133,11 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
                                                         <input type='number'
                                                             className="relative border border-black rounded-md p-2 w-24"
                                                             onChange={(e) => {
-                                                                // if (e.target.value <= 0) {
-                                                                //     setAddScreen(addScreen)
-                                                                // } else {
-                                                                setAddScreen(e.target.value)
-                                                                // }
+                                                                if (e.target.value <= userDetails?.extraScreen) {
+                                                                    setAddScreen(addScreen)
+                                                                } else {
+                                                                    setAddScreen(e.target.value)
+                                                                }
                                                             }
                                                             }
                                                             value={addScreen}
@@ -198,18 +199,6 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
                                             </div>
 
                                             <div className="flex items-center justify-between py-3 border-t border-gray-200">
-                                                <p class="text-xs text-gray-500 leading-4">Your trial period has not yet expired. Would you like to use the remaining trial days or begin your subscription today?</p>
-
-                                                <label for="toggleThree" class="flex items-center cursor-pointer select-none text-dark dark:text-white">
-                                                    <div class="relative">
-                                                        <input type="checkbox" id="toggleThree" class="peer sr-only" onChange={()=> setTrialDay(!trialDay)} checked={trialDay} />
-                                                        <div class="block h-8 rounded-full bg-gray-300 w-14"></div>
-                                                        <div class="absolute flex items-center justify-center w-6 h-6 transition bg-red-500 bg-[#FF0000] rounded-full dot left-1 top-1 peer-checked:translate-x-full peer-checked:bg-green"></div>
-                                                    </div>
-                                                </label>
-                                            </div>
-
-                                            <div className="flex items-center justify-between py-3 border-t border-gray-200">
                                                 <div class="flex items-center space-x-3">
                                                     <input type="checkbox" class="border-gray-300 rounded h-5 w-5 cursor-pointer" onChange={() => setDisclaimer(!disclaimer)} checked={disclaimer} />
                                                     <p class="text-xs text-gray-500 leading-4"><b>Disclaimer: </b> Monthly Subscription Charges</p>
@@ -221,7 +210,7 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
                                                 <button
                                                     className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                                                     type="button"
-                                                    onClick={() => setBuyPlan(!buyPlan)}
+                                                    onClick={() => setUpgradePlan(!upgradePlan)}
                                                 >
                                                     Cancel
                                                 </button>
@@ -251,7 +240,7 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
                 <div className="lg:w-[600px] md:w-[600px] w-full h-[30vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg flex items-center justify-center">
                     <>
                         <Elements options={options} stripe={stripePromise}>
-                            <BuyNewPlan selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={addScreen} openPayment={openPayment} setOpenPayment={setOpenPayment} trialDay={trialDay}/>
+                            <PlanPurchaseModel selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={Screen} openPayment={openPayment} setOpenPayment={setOpenPayment} userPlanType={userPlanType} purchaseType={purchaseType} />
                         </Elements>
                     </>
                 </div>
@@ -260,4 +249,4 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
     )
 }
 
-export default PurchasePlan
+export default UpgradePlan
