@@ -21,7 +21,6 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
   const { user, token,userDetails} = useSelector((s) => s.root.auth);
-  console.log('user', user)
   const authToken = `Bearer ${token}`;
   //using for registration success messge
   const location = useLocation();

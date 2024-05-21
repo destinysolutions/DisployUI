@@ -141,7 +141,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [startTime, setStartTime] = useState(getCurrentTime());
   const [endTime, setEndTime] = useState(getCurrentTime());
 
-  console.log("isPlay", isPlay);
   const dispatch = useDispatch();
   const [selectedDays, setSelectedDays] = useState(
     new Array(TotalDay.length).fill(false)

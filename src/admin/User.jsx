@@ -135,7 +135,6 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
         } else {
           toast.error(response?.data?.message)
         }
-        console.log('response', response)
 
         // if (!editMode) {
         //   setUserData((prevData) => [

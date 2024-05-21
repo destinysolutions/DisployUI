@@ -12,9 +12,7 @@ import SubscriptionTerm from '../Common/PurchasePlan/SubscriptionTerm';
 import PlanPurchaseModel from '../Common/PlanPurchaseModel';
 
 const UpgradePlan = ({ setUpgradePlan, upgradePlan, selectPlan, userPlanType, purchaseType ,Screen}) => {
-    console.log('purchaseType', purchaseType)
     const { user, token, userDetails } = useSelector((s) => s.root.auth);
-    console.log('userDetails', userDetails)
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [showDiscount, setShowDiscount] = useState(false);

@@ -54,7 +54,6 @@ const Navbar = () => {
   //show profile and notification box
   const dispatch = useDispatch();
   const { user, userDetails, token } = useSelector((state) => state.root.auth);
-  console.log('user', user)
   const authToken = `Bearer ${token}`;
   const history = useNavigate();
   const [showProfileBox, setShowProfileBox] = useState(false);

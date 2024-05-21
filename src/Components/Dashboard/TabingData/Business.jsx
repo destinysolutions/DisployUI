@@ -373,7 +373,6 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
   });
 
   const handleScreenClick = (screen) => {
-    console.log('screen', screen)
     setSelectedScreen(screen);
     const arr = screenList?.filter((item) => item?.longitude === screen?.longituted && item?.latitude === screen?.lattitude);
     setScreen(arr);
