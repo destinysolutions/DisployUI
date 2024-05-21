@@ -120,7 +120,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         })
     }
 
-    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
+    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
         let product;
         if (type === "Screen" && ((userDetails?.planID === 1 || userDetails?.planID === "1") || (userDetails?.isTrial && userDetails?.isActivePlan === false))) {
             product = "prod_Q1wI9ksVDBdRW3"
@@ -139,6 +139,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
             quantity: PaymentValue,
+            Name: name
         }
 
         let config = {
@@ -207,7 +208,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                 } else {
                     // Payment was successful, you can access paymentIntent for confirmation data
                     setMessage("Payment successful!");
-                    CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    CreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " +  user?.userDetails?.lastName, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
 
                     // let params = {
                     //     ...paymentMethod,

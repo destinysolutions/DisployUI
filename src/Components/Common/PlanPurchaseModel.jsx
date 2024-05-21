@@ -123,7 +123,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         })
     }
 
-    const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreenBoolen }) => {
+    const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreenBoolen ,name}) => {
         let product;
         if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
             product = "prod_Q1wI9ksVDBdRW3"
@@ -139,7 +139,8 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
-            quantity: userDetails?.extraScreen
+            quantity: userDetails?.extraScreen,
+            Name:name
         }
 
         let config = {
@@ -168,7 +169,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         })
     }
 
-    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
+    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
         let product;
         if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
             product = "prod_PwkVKbLSFWLFbG"
@@ -184,6 +185,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
+            Name: name
         }
 
         let config = {
@@ -212,7 +214,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         })
     }
 
-    const UpgradeSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
+    const UpgradeSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID,name }) => {
         let product;
         let screenID;
         if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
@@ -233,7 +235,8 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
-            screenProductID: screenID
+            screenProductID: screenID,
+            Name:name
         }
 
         let config = {
@@ -254,7 +257,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                 if (userDetails?.extraScreen > 0) {
                     PaymentofScreen = true;
                     // handleSubmitPayment()
-                    ScreenCreateSubscription({ email: user?.emailID, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId, PaymentofScreenBoolen: true })
+                    ScreenCreateSubscription({ email: user?.emailID,name: user?.userDetails?.firstName + " " +  user?.userDetails?.lastName, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId, PaymentofScreenBoolen: true })
                 } else {
                     setTimeout(() => {
                         setIsLoading(false);
@@ -311,13 +314,13 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                 } else {
                     setMessage("Payment successful!");
                     if (purchaseType !== "Upgrade" && PaymentofScreen === false) {
-                        CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                        CreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " +  user?.userDetails?.lastName, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
                     }
                     //  else if (PaymentofScreen === true) {
                     //     ScreenCreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
                     // }
                     else {
-                        UpgradeSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                        UpgradeSubscription({ email: user?.emailID,name: user?.userDetails?.firstName + " " +  user?.userDetails?.lastName, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
                     }
                     // PaymentDetails({ paymentIntent: paymentMethod, organizationID: user?.organizationId })
                 }

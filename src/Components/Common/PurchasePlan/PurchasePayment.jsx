@@ -103,7 +103,7 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
         })
     }
 
-    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
+    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID ,name}) => {
         let product;
         if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
             product = "prod_PwkVKbLSFWLFbG"
@@ -119,6 +119,7 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
+            Name:name
         }
 
         let config = {
@@ -182,7 +183,7 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
                 } else {
                     // Payment was successful, you can access paymentIntent for confirmation data
                     setMessage("Payment successful!");
-                    CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    CreateSubscription({ email: user?.emailID,name: user?.userDetails?.firstName + " " +  user?.userDetails?.lastName, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
 
                     // let params = {
                     //     ...paymentMethod,

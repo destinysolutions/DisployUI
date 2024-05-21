@@ -104,7 +104,7 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
         })
     }
 
-    const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreen }) => {
+    const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreen ,name}) => {
         let product;
         if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
             product = "prod_Q1wI9ksVDBdRW3"
@@ -120,7 +120,8 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
-            quantity: (Screen - 1)
+            quantity: (Screen - 1),
+            Name:name
         }
 
         let config = {
@@ -149,7 +150,7 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
         })
     }
 
-    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
+    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID,name }) => {
         let product;
         if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
             product = "prod_PwkVKbLSFWLFbG"
@@ -165,7 +166,8 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
-            trialDay
+            trialDay,
+            Name:name
         }
 
         let config = {
@@ -184,7 +186,7 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
                 PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: 1, TotalPrice: selectPlan?.planPrice, ScreenpaymentType: false })
                 PaymentofScreen = true
                 if (Screen > 1) {
-                    ScreenCreateSubscription({ email: user?.emailID, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId })
+                    ScreenCreateSubscription({ email: user?.emailID,name: user?.userDetails?.firstName + " " +  user?.userDetails?.lastName, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId })
                 }
             }
         })
@@ -224,7 +226,7 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
                 } else {
                     // Payment was successful, you can access paymentIntent for confirmation data
                     setMessage("Payment successful!");
-                    CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    CreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " +  user?.userDetails?.lastName,PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
                 }
 
             } catch (error) {
