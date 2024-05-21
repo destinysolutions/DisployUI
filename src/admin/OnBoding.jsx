@@ -275,12 +275,22 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                     onClick={() =>
                                       handleClick(item.organizationID)
                                     }
-                                    className="capitalize cursor-pointer text-xs bg-gray-300 hover:bg-gray-400 text-[#000] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                    className="cursor-pointer text-xs bg-gray-300 hover:bg-gray-400 text-[#000] font-semibold px-2 text-green-800 rounded dark:bg-green-900 dark:text-green-300"
                                   >
                                     {!item.increaseSize == 0 &&
-                                      `${item.increaseSize} GB`}{" "}
-                                    View Request
+                                      `${item.increaseSize} GB`}
+                                    
                                   </span>
+                                  // <span
+                                  //   onClick={() =>
+                                  //     handleClick(item.organizationID)
+                                  //   }
+                                  //   className="capitalize cursor-pointer text-xs bg-gray-300 hover:bg-gray-400 text-[#000] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  // >
+                                  //   {!item.increaseSize == 0 &&
+                                  //     `${item.increaseSize} GB`}{" "}
+                                  //   View Request
+                                  // </span>
                                 )}
                               </td>
                               <td className="px-6 py-4 capitalize">

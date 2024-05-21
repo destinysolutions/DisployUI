@@ -212,7 +212,8 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
                             .then((res) => {
                                 if (res?.payload?.status === 200) {
                                     if (autoPay) {
-                                        CreateSubscription({ email: res?.payload?.data?.email, name: res?.payload?.data?.name, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
+                                        console.log('res?.payload', res?.payload)
+                                        CreateSubscription({ email: res?.payload?.data?.email, name: res?.payload?.data?.firstName + " " + res?.payload?.data?.lastName, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
                                     } else {
                                         PaymentDetails({ paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
                                     }
