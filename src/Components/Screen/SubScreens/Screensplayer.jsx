@@ -1642,9 +1642,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         // setIsPlay(!isPlay);
                         setIsPlay(prevIsPlay => !prevIsPlay);
                         const Params = {
-                          play: isPlay,
+                          play: true,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
+                        console.log('Params', Params)
                         socket.emit('play_pause', Params);
                         // socket.emit('updateTime', time);
 
@@ -1671,9 +1672,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         // setIsPlay(!isPlay);
                         setIsPlay(prevIsPlay => !prevIsPlay);
                         const Params = {
-                          play: isPlay,
+                          play: false,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
+                        console.log('Params', Params)
                         socket.emit('play_pause', Params);
                         // socket.emit('updateTime', time);
                       }}
