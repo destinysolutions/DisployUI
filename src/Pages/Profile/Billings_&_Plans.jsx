@@ -280,7 +280,7 @@ const BillingsPlans = () => {
           </div>
         </div>
 
-        <div className="rounded-xl mt-8 shadow bg-white ">
+       {/* <div className="rounded-xl mt-8 shadow bg-white ">
           <h4 className="user-name p-5 pb-0">Billing Address</h4>
           <form>
             <div className="px-5 pb-5">
@@ -380,7 +380,7 @@ const BillingsPlans = () => {
               </div>
             </div>
           </form>
-        </div>
+                </div>*/}
       </div>
       {purchasePlan && (
         <PurchaseUserPlan setPurchasePlan={setPurchasePlan} purchasePlan={purchasePlan} selectPlan={selectPlan} setSelectPlan={setSelectPlan} userPlanType="" myplan={myplan} />

@@ -250,7 +250,8 @@ export const GET_ALL_REMOVE_NOTIFICATIONS = `${baseUrl}Common/GetRemoveAllNotifi
 
 // Invoice
 
-export const GET_ALL_INVOICE = `${baseUrl}Invoice/GetAllInvoiceMaster`
+// export const GET_ALL_INVOICE = `${baseUrl}Invoice/GetAllInvoiceMaster`
+export const GET_ALL_INVOICE = `${baseUrl}common/GetBillingDetails`
 export const GET_INVOICE_BY_ID = `${baseUrl}Invoice/GetInvoiceById`
 export const SEND_INVOICE = `${baseUrl}Invoice/GetInvoiceById`
 

@@ -330,7 +330,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
           </div>
         </form>
       </div>
-      <div className="bg-white shadow-xl rounded-xl border border-gray-200 min-h-full m-5">
+      {/*<div className="bg-white shadow-xl rounded-xl border border-gray-200 min-h-full m-5">
         <h3 className="user-name my-2 ml-5">Billing Address</h3>
         <div className="full flex flex-wrap -mx-3 mb-3">
           <div className="w-full px-3 mb-6 md:mb-0">
@@ -395,7 +395,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
               </table>
 
 
-              {/* <div className="flex mb-2">
+              <div className="flex mb-2">
                 <label>Company Name:</label>
                 <span>Pixinvent</span>
               </div>
@@ -430,11 +430,11 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
               <div className="flex mb-2">
                 <label>Zip Code:</label>
                 <span>403114</span>
-              </div> */}
+              </div> 
 
             </div>
           </div>
-          {/* <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
             <div className="user-pro-details text-base">
               <div className="flex mb-2">
                 <label>Contact</label>
@@ -453,9 +453,9 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
                 <span>403114</span>
               </div>
             </div>
-          </div> */}
+          </div> 
         </div>
-      </div>
+        </div>*/}
 
       {newCardShow && (
         <AddCreditCard onSubmit={onSubmit} toggleModal={toggleModal} />
