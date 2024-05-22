@@ -20,7 +20,7 @@ const DummyDashboard = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { userDetails, token } = useSelector((s) => s.root.auth);
+  const {user, userDetails, token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   const location = useLocation();
   const message = location?.state?.message || null;
