@@ -276,6 +276,7 @@ const AddEventScheduleEditors = ({
     const selectedDaysInNumber = selectedDays
       .map((isSelected, index) => (isSelected ? index : null))
       .filter((index) => index !== null);
+      
     const selectedDaysInString = selectedDaysInNumber.map(
       (index) => buttons[index]
     );

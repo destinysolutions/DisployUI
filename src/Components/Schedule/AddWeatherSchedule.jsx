@@ -27,36 +27,19 @@ import axios from "axios";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import { handleAllTimeZone } from "../../Redux/CommonSlice";
 import Loading from "../Loading";
+import { buttons } from "../Common/Common";
 
 const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const store = useSelector((state) => state.root.weather);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const TodayDate = new Date();
-
-  function getTimeFromDate(date) {
-    const hours = String(date.getHours()).padStart(2, "0"); // Ensure two digits
-    const minutes = String(date.getMinutes()).padStart(2, "0"); // Ensure two digits
-    const time = `${hours}:${minutes}`;
-    return time;
-  }
-
-  function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
   const currentTime = getTimeFromDate(TodayDate);
   const currentDate = formatDate(TodayDate);
-
   const queryParams = new URLSearchParams(window.location.search);
   const weatherScheduleId = queryParams.get("weatherScheduleId");
-
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [weatherScheduleName, setWeatherScheduleName] = useState(
     moment(TodayDate).format("YYYY-MM-DD hh:mm")
@@ -86,6 +69,44 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [isLoading, setIsLoading] = useState(weatherScheduleId ? true : false)
   const [disablebtn, setDisableBtn] = useState(false)
   const [assetError, setAssetError] = useState(false)
+  const [showRepeatSettings, setShowRepeatSettings] = useState(false);
+  const [selectedDays, setSelectedDays] = useState(
+    new Array(buttons.length).fill(false)
+  );
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const [repeatDays, setRepeatDays] = useState([]);
+  const [day, setDay] = useState([]);
+  const [selectAllDays, setSelectAllDays] = useState(false);
+  const dayDifference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+
+  const countRepeatedDaysInRange = () => {
+    let count = 0;
+    for (let i = 0; i <= dayDifference; i++) {
+      const dayIndex = (start.getDay() + i) % 7;
+      if (selectedDays[dayIndex]) {
+        count++;
+      }
+    }
+    return count;
+  };
+
+
+  function getTimeFromDate(date) {
+    const hours = String(date.getHours()).padStart(2, "0"); // Ensure two digits
+    const minutes = String(date.getMinutes()).padStart(2, "0"); // Ensure two digits
+    const time = `${hours}:${minutes}`;
+    return time;
+  }
+
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+
   useEffect(() => {
     if (store && store.status === "succeeded") {
       toast.success(store.message);
@@ -179,6 +200,9 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
+
+
+
   const handleAssetUpdate = () => { };
 
   const handleSubmit = () => {
@@ -188,6 +212,27 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       setDisableBtn(false)
       return;
     }
+
+    const selectedDaysInNumber = selectedDays
+      .map((isSelected, index) => (isSelected ? index : null))
+      .filter((index) => index !== null);
+
+    const selectedDaysInString = selectedDaysInNumber.map(
+      (index) => buttons[index]
+    );
+
+    const areSpecificDaysSelected = selectedDays.some(
+      (isSelected) => isSelected
+    );
+
+    let repeatDayValue = null;
+    if (areSpecificDaysSelected || selectAllDays) {
+      repeatDayValue = selectAllDays
+        ? buttons.map((dayName) => dayName)
+        : selectedDaysInString;
+    }
+
+
     toast.loading("Saving...");
     const timeZone = allTimezone?.filter((item) => item?.timeZoneName === selectedTimezoneName)
     let data = {
@@ -203,6 +248,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       temperature: Number(temperature),
       isAbove: isAbove,
       timeZoneID: timeZone?.[0]?.timeZoneID,
+      repeatDay: repeatDayValue,
     };
     setTimeout(() => {
       dispatch(addData(data)).then((res) => {
@@ -331,13 +377,57 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTimezoneName(e.target.value);
   };
 
+  const handleDayButtonClick = (index, label) => {
+    if (!repeatDays[index]) {
+      toast.remove();
+      return toast.error("Please change end date");
+    }
+    const newSelectedDays = [...selectedDays];
+    newSelectedDays[index] = !selectedDays[index];
+    const newSelectAllDays = newSelectedDays.every((day) => day === true);
+
+    setSelectedDays(newSelectedDays);
+    setSelectAllDays(newSelectAllDays);
+  };
+
+  function handleCheckboxChange() {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const daysDiff = moment(end).diff(start, "days");
+    if (daysDiff >= 6 && !selectAllDays) {
+      setSelectAllDays(true);
+    } else if (daysDiff < 6 && selectAllDays) {
+      setSelectAllDays(false);
+    }
+    let days = [];
+    for (let i = 0; i < daysDiff; i++) {
+      days[i] = moment(moment(start).add(i, "day")).format("dddd");
+    }
+    days[days.length] = moment(end).format("dddd");
+    setDay(days);
+    let changeDayTrueOrFalse;
+    for (let i = 0; i < days.length; i++) {
+      changeDayTrueOrFalse = buttons.map((i) => days.includes(i));
+    }
+    setRepeatDays(changeDayTrueOrFalse);
+    setSelectedDays(changeDayTrueOrFalse);
+  }
+
+  const countAllDaysInRange = () => {
+    if (selectAllDays) {
+      return dayDifference + 1; // All days in the date range
+    } else {
+      return countRepeatedDaysInRange(); // Only selected days
+    }
+  };
+
   return (
     <>
       <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           {isLoading && (
             <Loading />
@@ -522,6 +612,60 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           />
                         </div>
                       </div>
+                    </div>
+                    <div>
+                      {!showRepeatSettings && (
+                        <div className="p-3">
+                          <div className="mb-2">Repeat Multiple Day</div>
+                          <div>
+                            <button
+                              onClick={() => setShowRepeatSettings(true)}
+                              className="border border-primary rounded-full px-4 py-1"
+                            >
+                              Repeat
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {showRepeatSettings && (
+                        <div className="flex flex-col gap-3 mt-2">
+                          <div className=" text-black font-medium text-lg">
+                            <label>
+                              Repeating {countAllDaysInRange()} Day(s)
+                            </label>
+                          </div>
+                          <div className="flex flex-row gap-3">
+                            <input
+                              type="checkbox"
+                              checked={selectAllDays}
+                              onChange={handleCheckboxChange}
+                              id="repeat_all_day"
+                            />
+                            <label
+                              className="ml-3 select-none"
+                              htmlFor="repeat_all_day"
+                            >
+                              Repeat for All Day
+                            </label>
+                          </div>
+                          <div>
+                            {buttons.map((label, index) => (
+                              <button
+                                className={`border border-primary px-3 py-1 mr-2 mb-2 rounded-full ${selectedDays[index] &&
+                                  "bg-SlateBlue border-white"
+                                  } 
+                          `}
+                                key={index}
+                                onClick={() =>
+                                  handleDayButtonClick(index, label)
+                                }
+                              >
+                                {label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     <div className="mt-3">
