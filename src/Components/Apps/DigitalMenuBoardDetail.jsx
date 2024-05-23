@@ -76,6 +76,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [PreviewData, setPreviewData] = useState([])
   const [PosTheme, setPosTheme] = useState([])
   const [theme, setTheme] = useState({})
+  const [selectedtheme, setSelectedTheme] = useState({})
   const [addCategory, setAddCategory] = useState([{
     categoryname: "UNNAMED CATEGORY",
     allItem: [{
@@ -187,7 +188,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
         "textColor": textColor,
         "priceColor": priceColor,
         "logo": "string",
-        "theme": customizeData?.Theme
+        "theme": selectedtheme
       }
     });
 
@@ -293,6 +294,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
             "Theme": data?.customizeMaster?.theme,
             "Topfeature": data?.customizeMaster?.isMovetop,
           })
+          setSelectedTheme(data?.customizeMaster?.theme)
           const matchedTheme = PosTheme.find(item => Number(item?.posThemeID) === Number(data?.customizeMaster?.theme));
           setTheme(matchedTheme)
           setSelectedColor(data?.customizeMaster?.color)
@@ -507,8 +509,8 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   }
 
   const onSubmit = (data) => {
-    if (data?.Theme !== "") {
-      const matchedTheme = PosTheme.find(item => Number(item?.posThemeID) === Number(data?.Theme));
+    if (selectedtheme !== "") {
+      const matchedTheme = PosTheme.find(item => Number(item?.posThemeID) === Number(selectedtheme));
       setTheme(matchedTheme)
     }
     setCustomizeData(data)
@@ -1157,7 +1159,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
       <Footer />
 
       {showCustomizemodal && (
-        <DigitalMenuCustomize toggleModal={toggleModal} register={register} errors={errors} handleSubmit={handleSubmit} onSubmit={onSubmit} selectedColor={selectedColor} setSelectedColor={setSelectedColor} setTextColor={setTextColor} textColor={textColor} setPriceColor={setPriceColor} priceColor={priceColor} PosTheme={PosTheme} />
+        <DigitalMenuCustomize toggleModal={toggleModal} register={register} errors={errors} handleSubmit={handleSubmit} onSubmit={onSubmit} selectedColor={selectedColor} setSelectedColor={setSelectedColor} setTextColor={setTextColor} textColor={textColor} setPriceColor={setPriceColor} priceColor={priceColor} PosTheme={PosTheme} setSelectedTheme={setSelectedTheme} selectedtheme={selectedtheme}/>
       )}
       {openModal && (
         <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />

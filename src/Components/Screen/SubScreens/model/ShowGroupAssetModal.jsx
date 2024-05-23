@@ -396,7 +396,7 @@ const ShowAssetModal = ({
                       Apps
                     </button>
 
-                    {/*  <button
+                    <button
                       type="button"
                       className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 4 ? "active" : ""
                         }`}
@@ -411,7 +411,7 @@ const ShowAssetModal = ({
                         <LuCalendarClock size={15} />
                       </span>
                       Schedule
-                        </button>*/}
+                    </button>
                   </nav>
                 </>
               )}
@@ -680,12 +680,12 @@ const ShowAssetModal = ({
                             }}
                           >
                             <td className="p-3 text-left">
-                              {instance.instanceName ? instance.instanceName : instance.name }
+                              {instance.instanceName ? instance.instanceName : instance.name}
                             </td>
                             <td className="p-3 text-center">
                               {instance.youTubePlaylist && "Youtube Video"}
-                              {!instance.youTubePlaylist && !instance.weatherAppId  && "TextScroll"}
-                              {!instance.youTubePlaylist && instance.weatherAppId  && "Weather"}
+                              {!instance.youTubePlaylist && !instance.weatherAppId && "TextScroll"}
+                              {!instance.youTubePlaylist && instance.weatherAppId && "Weather"}
                             </td>
                           </tr>
                         </tbody>

@@ -235,7 +235,8 @@ const Myplan = () => {
                                                         </div>
                                                         <div>
                                                             <div className="role-user flex justify-center items-end my-2">
-                                                                ${item?.planPrice}
+                                                                ${item?.planPrice} per screen /mo
+                                                                + VAT
                                                             </div>
                                                             {/*{user?.role === "1" && (
                                                         <div className="role-user flex justify-center">
@@ -333,7 +334,8 @@ const Myplan = () => {
                                                         </div>
                                                         <div>
                                                             <div className="role-user flex justify-center items-end my-2">
-                                                                ${item?.planPrice}
+                                                                ${item?.planPrice} per screen /mo
+                                                                + VAT
                                                             </div>
                                                             {/*{user?.role === "1" && (
                                                         <div className="role-user flex justify-center">

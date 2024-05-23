@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { CANCEL_SUBSCRIPTION, GET_ALL_PLANS } from "../Api";
+import { CANCEL_SUBSCRIPTION, GET_ALL_PLANS, stripePromise } from "../Api";
 import { handleCancelSubscription } from "../../Redux/PaymentSlice";
 import PurchaseUserPlan from "../../Components/Common/PurchaseUserPlan";
 import { useEffect } from "react";
 import { handleGetAllPlans } from "../../Redux/CommonSlice";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import Card from "./Card";
+import { Elements } from "@stripe/react-stripe-js";
+import MyCard from "./MyCard";
 
 const BillingsPlans = () => {
   const dispatch = useDispatch()
-  const { user, token } = useSelector((s) => s.root.auth);
+  const { user, token ,userDetails} = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   const [purchasePlan, setPurchasePlan] = useState(false)
   const [selectPlan, setSelectPlan] = useState("")
@@ -104,7 +107,8 @@ const BillingsPlans = () => {
                     setPurchasePlan(true)
                   }}
                 >
-                  Upgrade Plan
+                {userDetails?.planID === 0 ? "Buy Plan" : "Upgrade Plan"}
+                  
                 </button>
                 <button
                   className=" px-5 py-2 border border-primary rounded-full text-primary"
@@ -138,10 +142,12 @@ const BillingsPlans = () => {
         </div>
 
         <div className="rounded-xl mt-8 shadow bg-white my-3 p-5">
-          <h4 className="user-name mb-3">Payment Methods</h4>
+          {/*<h4 className="user-name mb-3">Payment Methods</h4>*/}
+
           <div className="-mx-3 flex items-start">
             <div className="md:w-1/2 px-3">
-              <div className="text-center flex flex-wrap my-3">
+              <h4 className="user-name mb-3">Card Details</h4>
+              {/*<div className="text-center flex flex-wrap my-3">
                 <div className="flex items-center mr-4 ">
                   <input
                     id="atmcard"
@@ -161,126 +167,16 @@ const BillingsPlans = () => {
                     COD/Cheque
                   </label>
                 </div>
-              </div>
-              <form>
-                <div className="card-shadow lg:p-5 md:p-5 sm:p-2 xs:p-2">
-                  <div className="w-full">
-                    <label className="label_top text-sm">Card Number </label>
-                    <input
-                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                      type="text"
-                      placeholder="Enter Card Number"
-                    />
-                  </div>
-                  <div className="-mx-3 md:flex mb-6">
-                    <div className="md:w-1/2 px-3 mb-6 md:mb-0">
-                      <label className="label_top text-sm">Name</label>
-                      <input
-                        className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                        type="text"
-                        placeholder="Enter Holder Name"
-                      />
-                    </div>
-                    <div className="md:w-1/2 px-3 mb-6 md:mb-0">
-                      <label className="label_top text-sm">Expiry Date</label>
-                      <input
-                        className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                        type="text"
-                        placeholder="mm / yyyyExpiry Date"
-                      />
-                    </div>
-                    <div className="md:w-1/2 px-3">
-                      <label className="label_top text-sm">CVV</label>
-                      <input
-                        className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                        type="text"
-                        placeholder="Enter CVV"
-                      />
-                    </div>
-                  </div>
-                  <div className="w-full flex items-center">
-                    <input
-                      type="checkbox"
-                      className="border-gray-300 rounded h-5 w-5 me-3"
-                    />
-                    <div className="flex flex-col">
-                      <h1 className="text-gray-700 font-medium leading-none">
-                        Save card for future billing?
-                      </h1>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full flex mt-5">
-                  <button className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3">
-                    Save Changes
-                  </button>
-                  <button className=" px-5 py-2 border border-primary rounded-full text-primary">
-                    Reset
-                  </button>
-                </div>
-              </form>
+                </div>*/}
+              <Elements stripe={stripePromise}>
+                <Card />
+              </Elements>
             </div>
-            <div className="md:w-1/2 px-3">
-              <h3 className="user-name mb-3">My Cards</h3>
-              <div className="card-shadow px-5 py-3 mb-3">
-                <div className="w-full flex justify-between">
-                  <div className="card_detail">
-                    <img
-                      className="middle rounded-fullmiddle rounded-full"
-                      src="../../../Settings/logos_mastercard.svg"
-                      alt=""
-                    />
-                    <p className="text-gray-900 whitespace-no-wrap flex-center-middle my-2">
-                      Tom McBride{" "}
-                      <a href="#" className="blue-btn ml-2">
-                        Primary
-                      </a>
-                    </p>
-                    <p className="text-gray-900 whitespace-no-wrap flex-center-middle">
-                      Axis Bank **** **** **** 8395
-                    </p>
-                  </div>
-                  <div className="card_btn_detail relative">
-                    <div className="flex">
-                      <button className="edit-btn me-3">Edit</button>
-                      <button className="delete-btn">Delete</button>
-                    </div>
-                    <p className="absolute bottom-0">Card expires at 10/27</p>
-                  </div>
-                </div>
-              </div>
-              <div className="card-shadow px-5 py-3">
-                <div className="w-full flex justify-between">
-                  <div className="card_detail">
-                    <img
-                      className="middle rounded-fullmiddle rounded-full"
-                      src="../../../Settings/logos_mastercard.svg"
-                      alt=""
-                    />
-                    <p className="text-gray-900 whitespace-no-wrap flex-center-middle my-2">
-                      Tom McBride{" "}
-                      <a href="#" className="blue-btn ml-2">
-                        Primary
-                      </a>
-                    </p>
-                    <p className="text-gray-900 whitespace-no-wrap flex-center-middle">
-                      Axis Bank **** **** **** 8395
-                    </p>
-                  </div>
-                  <div className="card_btn_detail relative">
-                    <div className="flex">
-                      <button className="edit-btn me-3">Edit</button>
-                      <button className="delete-btn">Delete</button>
-                    </div>
-                    <p className="absolute bottom-0">Card expires at 10/27</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <MyCard />
           </div>
         </div>
 
-       {/* <div className="rounded-xl mt-8 shadow bg-white ">
+        {/* <div className="rounded-xl mt-8 shadow bg-white ">
           <h4 className="user-name p-5 pb-0">Billing Address</h4>
           <form>
             <div className="px-5 pb-5">

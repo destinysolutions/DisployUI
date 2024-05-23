@@ -265,3 +265,9 @@ export const DELETE_DISCOUNT = `${baseUrl}DiscountMaster/DeleteDiscount`
 export const GET_ALL_SEGMENT = `${baseUrl}common/GetAllSegment`
 export const VERIFY_COUPON = `${baseUrl}common/VerfiyDiscountCoupon`
 
+// Card
+
+export const ADD_CARD = `${baseUrl}CardMaster/AddEditCard`
+export const DELETE_CARD = `${baseUrl}CardMaster/DeleteCard`
+export const GET_ALL_CARD = `${baseUrl}CardMaster/GetAllCard`
+

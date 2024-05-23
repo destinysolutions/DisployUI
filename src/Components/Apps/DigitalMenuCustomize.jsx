@@ -3,7 +3,10 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { Currency, FontSize, ImageLayout, PageArray, Theme } from '../Common/Common';
 import { SketchPicker } from 'react-color';
 
-const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, errors, selectedColor, setSelectedColor, setTextColor, textColor, setPriceColor, priceColor, PosTheme }) => {
+const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, errors, selectedColor, setSelectedColor, setTextColor, textColor, setPriceColor, priceColor, PosTheme, setSelectedTheme, selectedtheme }) => {
+    const handleChange = (item) => {
+        setSelectedTheme(item?.posThemeID);
+    };
     return (
         <>
             <div
@@ -109,47 +112,16 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                             </label>
                                         </div>
                                     </div>
-                                    {/*<div className='flex justify-between m-3 items-center'>
-                                        <span>
-                                            Move 'featured' items to the top of category
-                                        </span>
-                                        <div>
-                                            <label className="relative inline-flex items-center me-5 cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    className="sr-only peer"
-                                                    id='Topfeature'
-                                                    {...register("Topfeature")}
-                                                />
-                                                <div className="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
-                                            </label>
-                                        </div>
-                                        </div>*/}
-                                    {/*  <div className='flex justify-between m-3 items-center'>
-                                        <span>
-                                            Font Size
-                                        </span>
-                                        <select id="FontSize" name="FontSize" className="w-48 relative border border-black rounded-md p-3"
-                                            {...register("FontSize")}
-                                        >
-                                            {FontSize?.map((item, index) => {
-                                                return (
-                                                    <option value={item?.size} key={index}>{item?.size}</option>
-                                                )
-                                            })}
-                                        </select>
-                                        </div>*/}
 
                                     <div className='border-t border-gray m-3'>
                                     </div>
 
                                     <div className='m-3'>
-                                        <span className='text-3xl font-medium'>
+                                        <span className='text-2xl font-medium'>
                                             Appearance
                                         </span>
-
                                     </div>
-                                    <div className='m-3'>
+                                    {/* <div className='m-3'>
                                         <select
                                             id="Theme"
                                             name="Theme"
@@ -163,7 +135,27 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                                                 )
                                             })}
                                         </select>
-
+                                    </div> */}
+                                    <div className='flex justify-between m-3 items-center'>
+                                        <span className='w-2/5'>
+                                            Select Theme
+                                        </span>
+                                        <div className='p-3 border rounded-lg border-gray w-3/5'>
+                                            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2'>
+                                                {PosTheme?.map((item) => (
+                                                    <div
+                                                        key={item?.posThemeID}
+                                                        className={`p-2 flex flex-col gap-2 cursor-pointer ${selectedtheme === item?.posThemeID ? 'border-2 rounded-lg p-2 border-blue-500' : ''}`}
+                                                        onClick={() => handleChange(item)}
+                                                    >
+                                                        <div className='flex justify-center'>
+                                                            <img src={item?.posThemePath} className='w-12 h-12 rounded-md' alt={item?.posThemeName} />
+                                                        </div>
+                                                        <div className='color-name text-sm text-center'>{item?.posThemeName}</div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className='flex justify-between m-3 items-center'>
                                         <span>
