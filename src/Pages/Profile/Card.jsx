@@ -29,19 +29,14 @@ const Card = () => {
             toast.error(error.message)
         } else {
 
-            const Parmas = JSON.stringify({
-                Email: user?.emailID,
-                token: token.id,
-            })
             const config = {
                 method: "post",
                 maxBodyLength: Infinity,
-                url: ADD_CARD,
+                url: `${ADD_CARD}?Email=${user?.emailID}&token=${token.id}`,
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: authToken
                 },
-                data: Parmas
             }
 
             dispatch(handleAddCard({ config })).then((res) => {
