@@ -155,6 +155,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       dispatch(getByIdData(weatherScheduleId)).then((items) => {
         const data = items.payload.data.model;
         if (data) {
+          console.log('data', data)
           setWeatherScheduleName(data.name);
           setStartDate(moment(data.startDate).format("YYYY-MM-DD"));
           setEndDate(moment(data.endDate).format("YYYY-MM-DD"));
@@ -164,6 +165,20 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           setTemprature(data.temperature);
           setSelectedScreens(data.screens)
           setIsAbove(data.isAbove);
+          setShowRepeatSettings(data?.repeatDay !== null ? true : false)
+          if(data?.repeatDay !== null){
+            let arr = []
+            buttons?.map((item) => {
+              if (data?.repeatDay?.includes(item)) {
+                arr.push(true)
+              } else {
+                arr.push(false)
+              }
+            })
+            const newSelectAllDays = arr.every((day) => day === true);
+            setSelectAllDays(newSelectAllDays);
+            setSelectedDays(arr)
+          }
           const timeZone = allTimezone?.filter((item) => item?.timeZoneID === data?.timeZoneID)
           setSelectedTimezoneName(timeZone?.[0]?.timeZoneName)
           setSelectedAsset({ assetName: data.assetName });
