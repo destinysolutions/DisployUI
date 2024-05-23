@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { ADD_CARD } from '../Api';
 import { handleAddCard } from '../../Redux/AdminSettingSlice';
 
-const Card = () => {
+const Card = ({ setLoading, fetchCards }) => {
     const { user, token } = useSelector((state) => state.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch();
@@ -28,7 +28,7 @@ const Card = () => {
             console.error(error);
             toast.error(error.message)
         } else {
-
+            setLoading(true)
             const config = {
                 method: "post",
                 maxBodyLength: Infinity,
@@ -41,7 +41,7 @@ const Card = () => {
 
             dispatch(handleAddCard({ config })).then((res) => {
                 if (res?.payload?.status) {
-                    console.log('response', res)
+                    fetchCards()
                     toast.success('Card added successfully!')
                 } else {
                     toast.error("'Failed to add card'")

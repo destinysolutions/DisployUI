@@ -503,3 +503,8 @@ export function multiOptionsFeature(arr) {
     value: feature.name,
   }));
 }
+
+export function capitalizeFirstLetter(string) {
+  if (!string) return string; // Return the string as is if it is empty or falsy
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
