@@ -370,7 +370,6 @@ const Registration = () => {
       const res = await signInWithPopup(auth, facebookProvider);
       console.log('res', res)
       const user = res.user;
-      console.log('user', user)
       // onclose();
       axios
         .post(ADD_REGISTER_URL, {

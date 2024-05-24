@@ -94,7 +94,6 @@ const BillingsPlans = () => {
       if (result.isConfirmed) {
         dispatch(handleCancelSubscription({ config }))
           .then((res) => {
-            console.log('res', res)
             if (res?.payload?.status) {
               toast.success(res?.payload?.message)
             }

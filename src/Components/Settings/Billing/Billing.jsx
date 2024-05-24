@@ -73,7 +73,6 @@ const Billing = ({ sidebarOpen }) => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = billingList?.slice(indexOfFirstItem, indexOfLastItem);
-  console.log('currentItems', currentItems)
   // Function to handle search input change
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -95,7 +94,6 @@ const Billing = ({ sidebarOpen }) => {
     }
     dispatch(handleGetAllBillings({ config })).then((res) => {
       if (res?.payload?.status) {
-        console.log('res', res)
         setBillingList(res?.payload?.data)
       }
     }).catch((error) => console.log('error', error))

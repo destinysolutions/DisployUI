@@ -138,7 +138,6 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
               },
             })
             .then((response) => {
-              // console.log("Upload Success:", response.data);
               if (selectedMedia.images?.length - 1 === index) {
                 toast.success("Uploaded successfully.");
                 // navigate(-1);
@@ -217,7 +216,6 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
           },
         })
         .then((response) => {
-          // console.log("Upload Success:", response.data);
           if (selectedMedia?.videos?.length - 1 === index) {
             toast.success("Uploaded successfully.");
             navigate(-1);

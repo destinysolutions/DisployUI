@@ -120,7 +120,6 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
               },
             })
             .then((response) => {
-              // console.log("Upload Success:", response.data);
               if (selectedImages?.length - 1 === index) {
                 toast.success("Uploaded successfully.");
                 // navigate(-1);

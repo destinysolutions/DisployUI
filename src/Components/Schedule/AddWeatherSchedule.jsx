@@ -155,7 +155,6 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       dispatch(getByIdData(weatherScheduleId)).then((items) => {
         const data = items.payload.data.model;
         if (data) {
-          console.log('data', data)
           setWeatherScheduleName(data.name);
           setStartDate(moment(data.startDate).format("YYYY-MM-DD"));
           setEndDate(moment(data.endDate).format("YYYY-MM-DD"));
