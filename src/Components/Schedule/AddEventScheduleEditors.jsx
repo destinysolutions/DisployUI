@@ -276,7 +276,7 @@ const AddEventScheduleEditors = ({
     const selectedDaysInNumber = selectedDays
       .map((isSelected, index) => (isSelected ? index : null))
       .filter((index) => index !== null);
-      
+
     const selectedDaysInString = selectedDaysInNumber.map(
       (index) => buttons[index]
     );
@@ -590,546 +590,574 @@ const AddEventScheduleEditors = ({
         aria-hidden="true"
         className="fixed top-0 right-0 left-0 z-9990 flex justify-center items-center w-full h-full m-0 md:inset-0 max-h-full bg-black bg-opacity-50"
       >
-        <div className="relative p-4 w-full max-w-6xl max-h-full">
-          {/* Modal content */}
-          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <div className="relative">
-              <div className="flex items-center justify-between p-3 md:p-4 border-b rounded-t dark:border-gray-600">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Select Assets and Schedule Time
-                </h3>
-                <AiOutlineCloseCircle
-                  className="text-4xl text-primary cursor-pointer"
-                  onClick={() => {
-                    onClose();
-                  }}
-                />
-              </div>
-
-              <div className="grid grid-cols-12 relative max-h-[500px] vertical-scroll-inner p-5">
-                <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 rounded-lg">
-                  <div className="my-4 relative ">
-                    <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
-                    <input
-                      type="text"
-                      placeholder=" Search by Asset"
-                      className="border border-primary rounded-full px-7 py-2 search-user"
-                      onChange={(e) =>
-                        debounceForSearchAsset(
-                          e.target.value.toLocaleLowerCase()
-                        )
-                      }
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="relative p-4 w-full max-w-6xl max-h-full">
+              {/* Modal content */}
+              <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div className="relative">
+                  <div className="flex items-center justify-between p-3 md:p-4 border-b rounded-t dark:border-gray-600">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                      Select Assets and Schedule Time
+                    </h3>
+                    <AiOutlineCloseCircle
+                      className="text-4xl text-primary cursor-pointer"
+                      onClick={() => {
+                        onClose();
+                      }}
                     />
                   </div>
-                  
-                    <div className="overflow-x-scroll sc-scrollbar rounded-lg bg-white shadow-2xl md:pb-1">
-                      <div className="max-w-full custom-scrollbar max-h-[450px]">
-                        <table
-                          className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words "
-                          cellPadding={15}
-                        >
-                          <thead className="sticky z-20">
-                            <tr className="table-head-bg text-left mb-5">
-                              <th className="py-4 px-4 font-semibold text-black md:pl-10">
-                                Assets
-                              </th>
-                              <th className="py-4 px-4 font-semibold text-black">
-                                Assets Name
-                              </th>
-                              <th className="py-4 px-4 font-semibold text-black">
-                                Date Added
-                              </th>
-                              {/* <th className="min-w-[120px] py-4 px-4 font-semibold text-black">
-                            Associated Schedule
-                          </th> */}
-                              <th className="py-4 px-4 font-semibold text-black">
-                                Resolution
-                              </th>
-                              {/* <th className="py-4 px-4 font-semibold text-black">
-                            Tags
-                          </th> */}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {allAssets.length > 0 ? (
-                              allAssets
-                                .filter(
-                                  (item) =>
-                                    item?.assetType !== "Folder" 
-                                )
-                                .map((item, index) => (
-                                  <tr
-                                    key={index}
-                                    className={`${selectedAsset === item
+
+                  <div className="grid grid-cols-12 relative max-h-[500px] vertical-scroll-inner p-5">
+                    <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 rounded-lg">
+                      <div className="my-4 relative ">
+                        <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+                        <input
+                          type="text"
+                          placeholder=" Search by Asset"
+                          className="border border-primary rounded-full px-7 py-2 search-user"
+                          onChange={(e) =>
+                            debounceForSearchAsset(
+                              e.target.value.toLocaleLowerCase()
+                            )
+                          }
+                        />
+                      </div>
+
+                      <div className="overflow-x-scroll sc-scrollbar rounded-lg bg-white shadow-2xl md:pb-1">
+                        <div className="max-w-full custom-scrollbar max-h-[450px]">
+                          <table
+                            className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words "
+                            cellPadding={15}
+                          >
+                            <thead className="sticky z-20">
+                              <tr className="table-head-bg text-left mb-5">
+                                <th className="py-4 px-4 font-semibold text-black md:pl-10">
+                                  Assets
+                                </th>
+                                <th className="py-4 px-4 font-semibold text-black">
+                                  Assets Name
+                                </th>
+                                <th className="py-4 px-4 font-semibold text-black">
+                                  Date Added
+                                </th>
+                                {/* <th className="min-w-[120px] py-4 px-4 font-semibold text-black">
+                                    Associated Schedule
+                                  </th> */}
+                                <th className="py-4 px-4 font-semibold text-black">
+                                  Resolution
+                                </th>
+                                {/* <th className="py-4 px-4 font-semibold text-black">
+                                    Tags
+                                  </th> */}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {loading ? (
+                                <>
+                                  <div className="flex text-center m-5 justify-center">
+                                    <svg
+                                      aria-hidden="true"
+                                      role="status"
+                                      className="inline w-10 h-10 me-3 text-black animate-spin dark:text-gray-600"
+                                      viewBox="0 0 100 101"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor"
+                                      />
+                                      <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="#1C64F2"
+                                      />
+                                    </svg>
+
+                                  </div>
+                                </>
+
+                              ) : allAssets?.length > 0 ? (
+                                allAssets
+                                  .filter(
+                                    (item) =>
+                                      item?.assetType !== "Folder"
+                                  )
+                                  .map((item, index) => (
+                                    <tr
+                                      key={index}
+                                      className={`${selectedAsset === item
                                         ? "bg-[#f3c953]"
                                         : ""
-                                      } border-b border-[#eee] mt-5`}
-                                    onClick={() => {
-                                      handleAssetAdd(item);
-                                    }}
-                                  >
-                                    <td className="w-full flex justify-center items-center">
-                                      {item.assetType === "OnlineImage" && (
-                                        <div className="imagebox relative z-0">
+                                        } border-b border-[#eee] mt-5`}
+                                      onClick={() => {
+                                        handleAssetAdd(item);
+                                      }}
+                                    >
+                                      <td className="w-full flex justify-center items-center">
+                                        {item.assetType === "OnlineImage" && (
+                                          <div className="imagebox relative z-0">
+                                            <img
+                                              src={item.assetFolderPath}
+                                              alt={item.assetName}
+                                              className="videoTab rounded-2xl object-cover"
+                                            />
+                                          </div>
+                                        )}
+
+                                        {item.assetType === "Image" && (
                                           <img
                                             src={item.assetFolderPath}
                                             alt={item.assetName}
                                             className="videoTab rounded-2xl object-cover"
                                           />
-                                        </div>
-                                      )}
+                                        )}
+                                        {(item.assetType === "Video" ||
+                                          item.assetType === "OnlineVideo") && (
+                                            <div>
+                                              <ReactPlayer
+                                                url={item?.assetFolderPath}
+                                                className="rounded-2xl videoTab w-full h-full"
+                                                controls={false}
+                                                playing={false}
+                                              />
+                                            </div>
+                                          )}
 
-                                      {item.assetType === "Image" && (
-                                        <img
-                                          src={item.assetFolderPath}
-                                          alt={item.assetName}
-                                          className="videoTab rounded-2xl object-cover"
-                                        />
-                                      )}
-                                      {(item.assetType === "Video" ||
-                                        item.assetType === "OnlineVideo") && (
-                                          <div>
-                                            <ReactPlayer
-                                              url={item?.assetFolderPath}
-                                              className="rounded-2xl videoTab w-full h-full"
-                                              controls={false}
-                                              playing={false}
-                                            />
+                                        {item.text && (
+                                          <div className="w-full h-full ">
+                                            <marquee
+                                              className="text-lg h-full w-full text-black"
+                                              scrollamount="10"
+                                              direction={
+                                                assetPreview?.scrollType == 1
+                                                  ? "right"
+                                                  : "left"
+                                              }
+                                            >
+                                              {assetPreview?.text}
+                                            </marquee>
                                           </div>
                                         )}
+                                        {/* {item.assetType === "DOC" && (
+                                                <a
+                                                  href={item.assetFolderPath}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                >
+                                                  {item.assetName}
+                                                </a>
+                                             )}*/}
 
-                                      {item.text && (
-                                        <div className="w-full h-full ">
-                                          <marquee
-                                            className="text-lg h-full w-full text-black"
-                                            scrollamount="10"
-                                            direction={
-                                              assetPreview?.scrollType == 1
-                                                ? "right"
-                                                : "left"
-                                            }
-                                          >
-                                            {assetPreview?.text}
-                                          </marquee>
-                                        </div>
-                                      )}
-                                     {/* {item.assetType === "DOC" && (
-                                        <a
-                                          href={item.assetFolderPath}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
+                                        {item.assetType === "DOC" && (
+                                          <div className="flex justify-center items-center">
+                                            <HiDocumentDuplicate className=" text-primary text-4xl" />
+                                          </div>
+                                        )}
+                                      </td>
+                                      <td className="text-center">
+                                        <h5
+                                          className="font-medium text-black cursor-pointer"
+                                          onClick={() => {
+                                            handleAssetAdd(item);
+                                          }}
                                         >
-                                          {item.assetName}
-                                        </a>
-                                     )}*/}
-
-                                     {item.assetType === "DOC" && (
-                                      <div className="flex justify-center items-center">
-                                      <HiDocumentDuplicate className=" text-primary text-4xl"/>
-                                      </div>
-                                    )}
-                                    </td>
-                                    <td className="text-center">
-                                      <h5
-                                        className="font-medium text-black cursor-pointer"
+                                          {item.assetName && item?.assetName}
+                                          {item.instanceName &&
+                                            item?.instanceName}
+                                        </h5>
+                                      </td>
+                                      <td className="text-center">
+                                        <p className="text-black font-medium">
+                                          {moment(item.createdDate).format(
+                                            "DD-MM-YYYY HH:mm"
+                                          )}
+                                        </p>
+                                      </td>
+                                      {/* <td className="">
+                                          <p className="text-black font-medium">
+                                            Schedule Name Till 28 June 2023
+                                          </p>
+                                        </td> */}
+                                      <td className="text-center">
+                                        <p className="text-black font-medium">
+                                          {item.resolutions}
+                                        </p>
+                                      </td>
+                                      {/* <td className="">
+                                          <p className="text-black font-medium">
+                                            Tags, Tags
+                                          </p>
+                                        </td> */}
+                                    </tr>
+                                  ))
+                              ) : searchAsset !== "" ? (
+                                <tr>
+                                  <td
+                                    colSpan={4}
+                                    className="text-center text-xl font-semibold h-60"
+                                  >
+                                    <p>No assets found related "{searchAsset}"</p>
+                                  </td>
+                                </tr>
+                              ) : (
+                                <tr>
+                                  <td
+                                    colSpan={4}
+                                    className="text-center font-semibold h-60"
+                                  >
+                                    <p>
+                                      No assets here, please upload some assets.
+                                    </p>
+                                    <br />
+                                    <Link
+                                      to="/fileupload"
+                                      target="_blank"
+                                      className="border-2 mt-4 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                                    >
+                                      <button
+                                        type="button"
                                         onClick={() => {
-                                          handleAssetAdd(item);
+                                          localStorage.setItem(
+                                            "isWindowClosed",
+                                            "false"
+                                          );
                                         }}
                                       >
-                                        {item.assetName && item?.assetName}
-                                        {item.instanceName &&
-                                          item?.instanceName}
-                                      </h5>
-                                    </td>
-                                    <td className="text-center">
-                                      <p className="text-black font-medium">
-                                        {moment(item.createdDate).format(
-                                          "DD-MM-YYYY HH:mm"
-                                        )}
-                                      </p>
-                                    </td>
-                                    {/* <td className="">
-                                  <p className="text-black font-medium">
-                                    Schedule Name Till 28 June 2023
-                                  </p>
-                                </td> */}
-                                    <td className="text-center">
-                                      <p className="text-black font-medium">
-                                        {item.resolutions}
-                                      </p>
-                                    </td>
-                                    {/* <td className="">
-                                  <p className="text-black font-medium">
-                                    Tags, Tags
-                                  </p>
-                                </td> */}
-                                  </tr>
-                                ))
-                            ) : searchAsset !== "" ? (
-                              <tr>
-                                <td
-                                  colSpan={4}
-                                  className="text-center text-xl font-semibold h-60"
-                                >
-                                  <p>No assets found related "{searchAsset}"</p>
-                                </td>
-                              </tr>
-                            ) : (
-                              <tr>
-                                <td
-                                  colSpan={4}
-                                  className="text-center font-semibold h-60"
-                                >
-                                  <p>
-                                    No assets here, please upload some assets.
-                                  </p>
-                                  <br />
-                                  <Link
-                                    to="/fileupload"
-                                    target="_blank"
-                                    className="border-2 mt-4 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                                        Upload asset
+                                      </button>
+                                    </Link>
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-4 md:mt-4">
+                      <div className="bg-white shadow-2xl rounded-md max-h-[500px] vertical-scroll-inner">
+                        <div className="p-3">
+                          <ul className="border-2 border-lightgray rounded">
+                            <li className="border-b-2 border-lightgray p-3">
+                              <h3>Title :</h3>
+                              <div className="mt-2">
+                                <input
+                                  type="text"
+                                  value={title}
+                                  onChange={(e) => setTitle(e.target.value)}
+                                  placeholder="Enter Title"
+                                  className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                />
+                              </div>
+                            </li>
+
+                            <li className="border-b-2 border-lightgray p-3">
+                              <h3>Asset :</h3>
+                              <div className="mt-2 ">
+                                <div className="bg-lightgray rounded-full px-4 py-2 w-full overflow-hidden whitespace-nowrap text-ellipsis">
+                                  {selectedAsset === "" && "Set Media"}
+                                  {selectedAsset &&
+                                    selectedAsset?.assetName &&
+                                    selectedAsset?.assetName}
+                                  {selectedAsset &&
+                                    selectedAsset?.assetName &&
+                                    selectedAsset?.instanceName}
+                                </div>
+                                <div className="flex items-center justify-center mt-4">
+                                  <button
+                                    className="border text-sm border-white bg-SlateBlue hover:bg-primary text-white rounded-full px-4 py-2 "
+                                    onClick={() => {
+                                      assetPreview && setAssetPreviewPopup(true);
+                                    }}
                                   >
+                                    Preview
+                                  </button>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                        {repeatDayWarning && (
+                          <div className="bg-black bg-opacity-50 justify-center ite
+                              
+                              ms-center flex vertical-scroll-inner fixed inset-0 z-9990 outline-none focus:outline-none">
+                            <div className="relative w-full max-w-xl max-h-full">
+                              <div className="relative bg-white rounded-lg shadow">
+                                <div className="py-6 text-center">
+                                  <h3 className="mb-5 text-xl text-primary">
+                                    can you update all event ?
+                                  </h3>
+                                  <div className="flex justify-center items-center space-x-4">
                                     <button
-                                      type="button"
+                                      className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
                                       onClick={() => {
-                                        localStorage.setItem(
-                                          "isWindowClosed",
-                                          "false"
-                                        );
+                                        handleSave(0);
+                                        setRepeatDayWarning(false);
                                       }}
                                     >
-                                      Upload asset
+                                      No, cancel
                                     </button>
-                                  </Link>
-                                </td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                </div>
 
-                <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-4 md:mt-4">
-                  <div className="bg-white shadow-2xl rounded-md max-h-[500px] vertical-scroll-inner">
-                    <div className="p-3">
-                        <ul className="border-2 border-lightgray rounded">
-                          <li className="border-b-2 border-lightgray p-3">
-                            <h3>Title :</h3>
-                            <div className="mt-2">
-                              <input
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder="Enter Title"
-                                className="bg-lightgray rounded-full px-3 py-2 w-full"
-                              />
-                            </div>
-                          </li>
-
-                          <li className="border-b-2 border-lightgray p-3">
-                            <h3>Asset :</h3>
-                            <div className="mt-2 ">
-                              <div className="bg-lightgray rounded-full px-4 py-2 w-full overflow-hidden whitespace-nowrap text-ellipsis">
-                                {selectedAsset === "" && "Set Media"}
-                                {selectedAsset &&
-                                  selectedAsset?.assetName &&
-                                  selectedAsset?.assetName}
-                                {selectedAsset &&
-                                  selectedAsset?.assetName &&
-                                  selectedAsset?.instanceName}
-                              </div>
-                              <div className="flex items-center justify-center mt-4">
-                                <button
-                                  className="border text-sm border-white bg-SlateBlue hover:bg-primary text-white rounded-full px-4 py-2 "
-                                  onClick={() => {
-                                    assetPreview && setAssetPreviewPopup(true);
-                                  }}
-                                >
-                                  Preview
-                                </button>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                    </div>
-                    {repeatDayWarning && (
-                      <div className="bg-black bg-opacity-50 justify-center ite
-                      
-                      ms-center flex vertical-scroll-inner fixed inset-0 z-9990 outline-none focus:outline-none">
-                        <div className="relative w-full max-w-xl max-h-full">
-                          <div className="relative bg-white rounded-lg shadow">
-                            <div className="py-6 text-center">
-                              <h3 className="mb-5 text-xl text-primary">
-                                can you update all event ?
-                              </h3>
-                              <div className="flex justify-center items-center space-x-4">
-                                <button
-                                  className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-                                  onClick={() => {
-                                    handleSave(0);
-                                    setRepeatDayWarning(false);
-                                  }}
-                                >
-                                  No, cancel
-                                </button>
-
-                                <button
-                                  className="text-white bg-SlateBlue rounded text-lg font-bold px-5 py-2"
-                                  onClick={() => {
-                                    handleSave(1);
-                                    setRepeatDayWarning(false);
-                                  }}
-                                >
-                                  Yes, I'm sure
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    {showRepeatSettings ? (
-                      <>
-                        <div className="relative rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0  p-4">
-                          <div className="backbtn absolute top-[5px] left-[5px] ">
-                            <button
-                              className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
-                              onClick={() => setShowRepeatSettings(false)}
-                            >
-                              <MdOutlineArrowBackIosNew className="text-white" />
-                            </button>
-                          </div>
-                          <div className="mt-3">
-                            <div>
-                              <label>Start Date:</label>
-                              <div className="mt-1">
-                                <input
-                                  type="date"
-                                  value={editedStartDate}
-                                  min={today}
-                                  onChange={handleStartDateChange}
-                                  className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                />
-                              </div>
-                            </div>
-                            <div className=" mt-5">
-                              <label>End Date:</label>
-                              <div className="mt-1">
-                                <input
-                                  type="date"
-                                  min={editedStartDate}
-                                  value={editedEndDate}
-                                  onChange={handleEndDateChange}
-                                  className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="mt-5 text-black font-medium text-lg">
-                            <label>
-                              Repeating {countAllDaysInRange()} Day(s)
-                            </label>
-                          </div>
-                          <div className="lg:flex md:block sm:block xs:block items-center mt-5 lg:flex-nowrap md:flex-wrap sm:flex-wrap">
-                            <div className="mr-2 w-full">
-                              <label className="ml-2">Start Time</label>
-                              <div>
-                                <input
-                                  type="time"
-                                  value={editedStartTime}
-                                  onChange={handleStartTimeChange}
-                                  className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="w-full">
-                              <label className="ml-2">End Time</label>
-                              <div>
-                                <input
-                                  type="time"
-                                  value={editedEndTime}
-                                  onChange={handleEndTimeChange}
-                                  className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          <>
-                            <div className="mt-5 text-black font-medium text-lg mr-2">
-                              <input
-                                type="checkbox"
-                                checked={selectAllDays}
-                                onChange={handleCheckboxChange}
-                                id="repeat_all_day"
-                              />
-                              <label
-                                className="ml-3 select-none"
-                                htmlFor="repeat_all_day"
-                              >
-                                Repeat for All Day
-                              </label>
-                            </div>
-
-                            <div>
-                              {buttons.map((label, index) => (
-                                <button
-                                  className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${selectedDays[index] &&
-                                    "bg-SlateBlue border-white"
-                                    } 
-                                `}
-                                  key={index}
-                                  onClick={() =>
-                                    handleDayButtonClick(index, label)
-                                  }
-                                >
-                                  {label}
-                                </button>
-                              ))}
-                            </div>
-                          </>
-                        </div>
-                        <div className="border-b-2 border-lightgray mt-2"></div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="border-b-2 border-lightgray mt-2"></div>
-                        <div className="p-3">
-                          <div className="mb-2">Schedule Date time</div>
-                          <div>
-                            <ul className="border-2 border-lightgray rounded">
-                              <li className="border-b-2 border-lightgray p-3">
-                                <h3>Start Date:</h3>
-                                <div className="mt-2">
-                                  <input
-                                    type="date"
-                                    min={today}
-                                    value={editedStartDate}
-                                    onChange={handleStartDateChange}
-                                    className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                  />
+                                    <button
+                                      className="text-white bg-SlateBlue rounded text-lg font-bold px-5 py-2"
+                                      onClick={() => {
+                                        handleSave(1);
+                                        setRepeatDayWarning(false);
+                                      }}
+                                    >
+                                      Yes, I'm sure
+                                    </button>
+                                  </div>
                                 </div>
-                              </li>
-                              <li className="border-b-2 border-lightgray p-3">
-                                <h3>End Date:</h3>
-                                <div className="mt-2">
-                                  <input
-                                    type="date"
-                                    value={editedStartDate}
-                                    className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                    readOnly
-                                  />
-                                </div>
-                              </li>
-                              <li className="border-b-2 border-lightgray p-3">
-                                <h3>Start Time:</h3>
-                                <div className="mt-2">
-                                  <input
-                                    type="time"
-                                    value={editedStartTime}
-                                    onChange={handleStartTimeChange}
-                                    className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                  />
-                                </div>
-                              </li>
-                              <li className=" p-3">
-                                <h3>End Time:</h3>
-                                <div className="mt-2">
-                                  <input
-                                    type="time"
-                                    value={editedEndTime}
-                                    onChange={handleEndTimeChange}
-                                    className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                  />
-                                </div>
-                              </li>
-                            </ul>
-                          </div>
-
-                          <div className="p-3">
-                            <div className="mb-2">Repeat Multiple Day</div>
-                            <div>
-                              <button
-                                onClick={() => setShowRepeatSettings(true)}
-                                className="border border-primary rounded-full px-4 py-1"
-                              >
-                                Repeat
-                              </button>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    <div className="border-b-2 border-lightgray"></div>
-                    <div className="bg-white shadow-2xl mt-4 ">
-                      <div className="p-3 w-full">
-                        <h3>Select Color :</h3>
-                        {selectedColor !== null && (
-                          <div className="mt-2">
-                            <SketchPicker
-                              color={selectedColor}
-                              onChange={(color) => setSelectedColor(color.hex)}
-                              className="sketch-picker"
-                            />
                           </div>
                         )}
+                        {showRepeatSettings ? (
+                          <>
+                            <div className="relative rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0  p-4">
+                              <div className="backbtn absolute top-[5px] left-[5px] ">
+                                <button
+                                  className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
+                                  onClick={() => setShowRepeatSettings(false)}
+                                >
+                                  <MdOutlineArrowBackIosNew className="text-white" />
+                                </button>
+                              </div>
+                              <div className="mt-3">
+                                <div>
+                                  <label>Start Date:</label>
+                                  <div className="mt-1">
+                                    <input
+                                      type="date"
+                                      value={editedStartDate}
+                                      min={today}
+                                      onChange={handleStartDateChange}
+                                      className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                    />
+                                  </div>
+                                </div>
+                                <div className=" mt-5">
+                                  <label>End Date:</label>
+                                  <div className="mt-1">
+                                    <input
+                                      type="date"
+                                      min={editedStartDate}
+                                      value={editedEndDate}
+                                      onChange={handleEndDateChange}
+                                      className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="mt-5 text-black font-medium text-lg">
+                                <label>
+                                  Repeating {countAllDaysInRange()} Day(s)
+                                </label>
+                              </div>
+                              <div className="lg:flex md:block sm:block xs:block items-center mt-5 lg:flex-nowrap md:flex-wrap sm:flex-wrap">
+                                <div className="mr-2 w-full">
+                                  <label className="ml-2">Start Time</label>
+                                  <div>
+                                    <input
+                                      type="time"
+                                      value={editedStartTime}
+                                      onChange={handleStartTimeChange}
+                                      className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className="w-full">
+                                  <label className="ml-2">End Time</label>
+                                  <div>
+                                    <input
+                                      type="time"
+                                      value={editedEndTime}
+                                      onChange={handleEndTimeChange}
+                                      className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <>
+                                <div className="mt-5 text-black font-medium text-lg mr-2">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectAllDays}
+                                    onChange={handleCheckboxChange}
+                                    id="repeat_all_day"
+                                  />
+                                  <label
+                                    className="ml-3 select-none"
+                                    htmlFor="repeat_all_day"
+                                  >
+                                    Repeat for All Day
+                                  </label>
+                                </div>
+
+                                <div>
+                                  {buttons.map((label, index) => (
+                                    <button
+                                      className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${selectedDays[index] &&
+                                        "bg-SlateBlue border-white"
+                                        } 
+                                        `}
+                                      key={index}
+                                      onClick={() =>
+                                        handleDayButtonClick(index, label)
+                                      }
+                                    >
+                                      {label}
+                                    </button>
+                                  ))}
+                                </div>
+                              </>
+                            </div>
+                            <div className="border-b-2 border-lightgray mt-2"></div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="border-b-2 border-lightgray mt-2"></div>
+                            <div className="p-3">
+                              <div className="mb-2">Schedule Date time</div>
+                              <div>
+                                <ul className="border-2 border-lightgray rounded">
+                                  <li className="border-b-2 border-lightgray p-3">
+                                    <h3>Start Date:</h3>
+                                    <div className="mt-2">
+                                      <input
+                                        type="date"
+                                        min={today}
+                                        value={editedStartDate}
+                                        onChange={handleStartDateChange}
+                                        className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                      />
+                                    </div>
+                                  </li>
+                                  <li className="border-b-2 border-lightgray p-3">
+                                    <h3>End Date:</h3>
+                                    <div className="mt-2">
+                                      <input
+                                        type="date"
+                                        value={editedStartDate}
+                                        className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                        readOnly
+                                      />
+                                    </div>
+                                  </li>
+                                  <li className="border-b-2 border-lightgray p-3">
+                                    <h3>Start Time:</h3>
+                                    <div className="mt-2">
+                                      <input
+                                        type="time"
+                                        value={editedStartTime}
+                                        onChange={handleStartTimeChange}
+                                        className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                      />
+                                    </div>
+                                  </li>
+                                  <li className=" p-3">
+                                    <h3>End Time:</h3>
+                                    <div className="mt-2">
+                                      <input
+                                        type="time"
+                                        value={editedEndTime}
+                                        onChange={handleEndTimeChange}
+                                        className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                      />
+                                    </div>
+                                  </li>
+                                </ul>
+                              </div>
+
+                              <div className="p-3">
+                                <div className="mb-2">Repeat Multiple Day</div>
+                                <div>
+                                  <button
+                                    onClick={() => setShowRepeatSettings(true)}
+                                    className="border border-primary rounded-full px-4 py-1"
+                                  >
+                                    Repeat
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        <div className="border-b-2 border-lightgray"></div>
+                        <div className="bg-white shadow-2xl mt-4 ">
+                          <div className="p-3 w-full">
+                            <h3>Select Color :</h3>
+                            {selectedColor !== null && (
+                              <div className="mt-2">
+                                <SketchPicker
+                                  color={selectedColor}
+                                  onChange={(color) => setSelectedColor(color.hex)}
+                                  className="sketch-picker"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className="col-span-12 bg-white schedual-btn">
-                <div className="flex justify-center ">
-                  <button
-                    className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
-                    onClick={() => {
-                      onClose();
-                      setSelectedDays([]);
-                      setSearchAsset("");
-                      setSelectedAsset(null);
-                      setTitle("");
-                      setAllAssets([...assets]);
-                      setShowRepeatSettings(false);
-                    }}
-                  >
-                    Cancel
-                  </button>
+                  <div className="col-span-12 bg-white schedual-btn">
+                    <div className="flex justify-center ">
+                      <button
+                        className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
+                        onClick={() => {
+                          onClose();
+                          setSelectedDays([]);
+                          setSearchAsset("");
+                          setSelectedAsset(null);
+                          setTitle("");
+                          setAllAssets([...assets]);
+                          setShowRepeatSettings(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
 
-                  {isEditMode ? (
-                    <button
-                      className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
-                      onClick={() => {
-                        selectedEvent?.isfutureDateExists == 0
-                          ? handleSave()
-                          : handleWarn();
-                      }}
-                    >
-                      Update
-                    </button>
-                  ) : (
-                    <button
-                      className="border-2 border-white text-white hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
-                      onClick={() => {
-                        handleSave();
-                      }}
-                    >
-                      Save
-                    </button>
-                  )}
-                  {isEditMode && (
-                    <button
-                      className="border-2 border-lightgray hover:bg-primary hover:text-white   px-6 py-2 rounded-full ml-3"
-                      onClick={() => {
-                        handelDeletedata();
-                        setShowRepeatSettings(false);
-                      }}
-                    >
-                      Delete
-                    </button>
-                  )}
+                      {isEditMode ? (
+                        <button
+                          className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                          onClick={() => {
+                            selectedEvent?.isfutureDateExists == 0
+                              ? handleSave()
+                              : handleWarn();
+                          }}
+                        >
+                          Update
+                        </button>
+                      ) : (
+                        <button
+                          className="border-2 border-white text-white hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                          onClick={() => {
+                            handleSave();
+                          }}
+                        >
+                          Save
+                        </button>
+                      )}
+                      {isEditMode && (
+                        <button
+                          className="border-2 border-lightgray hover:bg-primary hover:text-white   px-6 py-2 rounded-full ml-3"
+                          onClick={() => {
+                            handelDeletedata();
+                            setShowRepeatSettings(false);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

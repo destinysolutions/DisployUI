@@ -1262,7 +1262,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           url={playerData?.fileType}
                           className="relative z-20 videoinner object-fill screenvideoinner"
                           controls={true}
-                          playing={true}
+                          playing={isPlay ? true : false}
                           loop={true}
                         />
                       </div>

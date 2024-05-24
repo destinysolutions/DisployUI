@@ -2159,8 +2159,8 @@ table.screen-table {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  animation: fadeIn 0.3s ease;
+  background-color: rgba(0, 0, 0, 0.2);
+  animation: fadeIn 1s ease;
   z-index: 999 !important;
 }
 

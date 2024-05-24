@@ -106,8 +106,7 @@ const Account = () => {
     if (response) {
       response.then((res) => {
         if (res?.type.includes("fulfilled")) {
-          toast.success("profile edited successfully.", { duration: 2000 });
-          setFile(null);
+          toast.success("Profile Edited Successfully.");
         }
       });
     }
