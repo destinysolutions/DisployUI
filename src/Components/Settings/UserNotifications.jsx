@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { GET_ALL_USER_NOTIFICATION, SAVE_NOTIFICATION } from '../../Pages/Api'
+import { GET_ALL_USER_NOTIFICATION, GET_NOTIFICATION, SAVE_NOTIFICATION } from '../../Pages/Api'
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { handleUserNotificationList } from '../../Redux/SettingUserSlice';
+import { SaveUserNotification, handleUserNotificationList } from '../../Redux/SettingUserSlice';
 import { NotificationType } from '../Common/Common';
 import { getUserRoleData } from '../../Redux/UserRoleSlice';
+import { HiPlus } from "react-icons/hi";
+import toast from 'react-hot-toast';
 
 const UserNotifications = () => {
     const { token } = useSelector((s) => s.root.auth);
@@ -14,6 +16,7 @@ const UserNotifications = () => {
     const [Notification, setNotification] = useState([])
     const [loading, setLoading] = useState(false)
     const [userData, setUserData] = useState([]);
+    const [getNotification,setGetNotification] = useState([])
 
     const fetchList = () => {
         const config = {
@@ -35,7 +38,26 @@ const UserNotifications = () => {
         }).catch((error) => {
             console.log('error', error)
         })
+    }
 
+    const fetchGetNotification = () =>{
+        const config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: `${GET_NOTIFICATION}`,
+            headers: {
+                Authorization: authToken,
+                "Content-Type": "application/json",
+            },
+        }
+
+        dispatch(handleUserNotificationList({ config })).then((res) => {
+            if (res?.payload?.status) {
+                setGetNotification(res?.payload?.data)
+            }
+        }).catch((error) => {
+            console.log('error', error)
+        })
     }
 
     const handleGetOrgUsers = () => {
@@ -49,6 +71,7 @@ const UserNotifications = () => {
     useEffect(() => {
         fetchList()
         handleGetOrgUsers()
+        fetchGetNotification()
     }, [])
 
     const handleAlertChange = (index, event, indexs) => {
@@ -56,7 +79,7 @@ const UserNotifications = () => {
             if (idx === indexs) {
                 const updatedUser = item.user.map((userData, i) => {
                     if (i === index) {
-                        return { ...userData, alert: event.target.value };
+                        return { ...userData, NotificationType: event.target.value };
                     }
                     return userData;
                 });
@@ -72,7 +95,7 @@ const UserNotifications = () => {
             if (idx === indexs) {
                 const updatedUser = item.user.map((userData, i) => {
                     if (i === index) {
-                        return { ...userData, email: event.target.value };
+                        return { ...userData, EmailOrgUserID: event.target.value };
                     }
                     return userData;
                 });
@@ -88,7 +111,7 @@ const UserNotifications = () => {
             if (idx === indexs) {
                 const updatedUser = item.user.map((userData, i) => {
                     if (i === index) {
-                        return { ...userData, phone: event.target.value };
+                        return { ...userData, PhoneOrgUserID: event.target.value };
                     }
                     return userData;
                 });
@@ -105,7 +128,7 @@ const UserNotifications = () => {
     const handleReset = (indexs) => {
         const updatedListNotification = listNotification.map((item, idx) => {
             if (idx === indexs) {
-                const updatedUser = item.user.map(userData => ({ ...userData, alert: '', email: '', phone: '' }));
+                const updatedUser = item.user.map(userData => ({ ...userData, NotificationType: '', EmailOrgUserID: '', PhoneOrgUserID: '' }));
                 return { ...item, user: updatedUser };
             }
             return item;
@@ -113,7 +136,70 @@ const UserNotifications = () => {
         setListNotification(updatedListNotification);
     };
 
-    const handleSave = (index) => {
+    const handleSave = (indexs) => {
+        const Params = [];
+        let hasError = false
+        listNotification.forEach((item, idx) => {
+            if (idx === indexs) {
+                item.user.forEach(userData => {
+                    const obj = {
+                        UserNotificationID: "0",
+                        NotificationFeatureID: userData?.notificationFeatureId,
+                        NotificationType: userData?.NotificationType || "",
+                        EmailOrgUserID: userData?.EmailOrgUserID || 0,
+                        PhoneOrgUserID: userData?.PhoneOrgUserID || 0
+                    };
+                    Params.push(obj);
+
+                    // Validate each item
+                    if (!obj.NotificationType) {
+                        hasError = true
+                        toast.error("Please Fill Proper Details");
+                        return;
+                    }
+                    if ((obj.NotificationType === "Email" || obj.NotificationType === "Both") && !obj.EmailOrgUserID) {
+                        hasError = true
+                        toast.error("Please Fill Proper Details");
+                        return;
+                    }
+                    if ((obj.NotificationType === "Phone" || obj.NotificationType === "Both") && !obj.PhoneOrgUserID) {
+                        hasError = true
+                        toast.error("Please Fill Proper Details");
+                        return;
+                    }
+                });
+            }
+        });
+
+        // Params?.map(((item) => {
+        //     if (item?.NotificationType === "") {
+        //         toast.error("Please Fill Proper Details")
+        //         return
+        //     }
+        //     if (item?.NotificationType === "Email") {
+        //         if (!item?.EmailOrgUserID) {
+        //             toast.error("Please Fill Proper Details")
+        //             return
+        //         }
+        //     }
+        //     if (item?.NotificationType === "Phone") {
+        //         if (!item?.PhoneOrgUserID) {
+        //             toast.error("Please Fill Proper Details")
+        //             return
+        //         }
+        //     }
+        //     if (item?.NotificationType === "Both") {
+        //         if (!item?.PhoneOrgUserID) {
+        //             toast.error("Please Fill Proper Details")
+        //             return
+        //         }
+        //         if (!item?.EmailOrgUserID) {
+        //             toast.error("Please Fill Proper Details")
+        //             return
+        //         }
+        //     }
+        // }))
+
         const config = {
             method: "post",
             maxBodyLength: Infinity,
@@ -122,9 +208,18 @@ const UserNotifications = () => {
                 Authorization: authToken,
                 "Content-Type": "application/json",
             },
+            data: JSON.stringify(Params)
         }
+        if (!hasError) {
+            dispatch(SaveUserNotification({ config }))
+                .then((res) => {
+                    if (res?.payload?.status) {
 
-
+                    }
+                }).catch((err) => {
+                    console.log('err', err)
+                })
+        }
     };
 
 
@@ -136,9 +231,10 @@ const UserNotifications = () => {
                         Notifications
                     </h2>
                     <button
-                        className={`flex cursor-pointer align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+                        className={`flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 lg:mb-5 lg:mt-0 mt-3 mb-4 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
                         onClick={() => handleAdd()}
                     >
+                        <HiPlus className="text-2xl mr-1" />
                         Add
                     </button>
                 </div>
@@ -159,7 +255,7 @@ const UserNotifications = () => {
                                                             Type
                                                         </th>
                                                         <th className="text-[#000000] text-base font-semibold text-center">
-                                                            Send Alerts
+                                                            Send With
                                                         </th>
                                                         <th className="text-[#000000] text-base font-semibold text-center">
                                                             Email
@@ -171,7 +267,7 @@ const UserNotifications = () => {
                                                 </thead>
                                                 <tbody>
                                                     {data?.user?.map((item, index) => {
-                                                        console.log('data[indexs]?.user[index]?.alert', listNotification[indexs]?.user[index]?.alert)
+                                                        console.log('data[indexs]?.user[index]?.NotificationType', listNotification[indexs]?.user[index]?.NotificationType)
                                                         return (
                                                             <tr className="border-b border-b-[#E4E6FF]" key={index}>
                                                                 <td className="text-[#5E5E5E] text-center">
@@ -180,7 +276,7 @@ const UserNotifications = () => {
                                                                 <td className="text-[#5E5E5E] text-center">
                                                                     <select
                                                                         className="relative border border-gray rounded-md p-3 user-input bg-white w-28"
-                                                                        value={listNotification[indexs]?.user[index]?.alert}
+                                                                        value={listNotification[indexs]?.user[index]?.NotificationType}
                                                                         onChange={(event) => handleAlertChange(index, event, indexs)}
                                                                     >
                                                                         <option label="Select" value=""></option>
@@ -192,9 +288,9 @@ const UserNotifications = () => {
                                                                 <td className="text-[#5E5E5E] text-center">
                                                                     <select
                                                                         className="relative border border-gray rounded-md p-3 user-input bg-white w-48"
-                                                                        value={listNotification[indexs]?.user[index]?.email}
+                                                                        value={listNotification[indexs]?.user[index]?.EmailOrgUserID}
                                                                         onChange={(event) => handleEmailChange(index, event, indexs)}
-                                                                        disabled={(listNotification[indexs]?.user[index]?.alert === "Phone" || listNotification[indexs]?.user[index]?.alert === "None")}
+                                                                        disabled={(listNotification[indexs]?.user[index]?.NotificationType === "Phone" || listNotification[indexs]?.user[index]?.NotificationType === "None")}
                                                                     >
                                                                         <option label="Select" value=""></option>
                                                                         {userData?.map((user) => (
@@ -205,9 +301,9 @@ const UserNotifications = () => {
                                                                 <td className="text-[#5E5E5E] text-center">
                                                                     <select
                                                                         className="relative border border-gray rounded-md p-3 user-input bg-white w-48"
-                                                                        value={listNotification[indexs]?.user[index]?.phone}
+                                                                        value={listNotification[indexs]?.user[index]?.PhoneOrgUserID}
                                                                         onChange={(event) => handlePhoneChange(index, event, indexs)}
-                                                                        disabled={(listNotification[indexs]?.user[index]?.alert === "Email" || listNotification[indexs]?.user[index]?.alert === "None")}
+                                                                        disabled={(listNotification[indexs]?.user[index]?.NotificationType === "Email" || listNotification[indexs]?.user[index]?.NotificationType === "None")}
 
                                                                     >
                                                                         <option label="Select" value=""></option>
@@ -222,22 +318,22 @@ const UserNotifications = () => {
 
                                                 </tbody>
                                             </table>
-                                            <div className='flex gap-3 items-center mt-4'>
-                                                <button
-                                                    className="bg-primary text-white text-base px-6 py-3 border border-primary shadow-md rounded-full "
-                                                    type="button"
-                                                    onClick={() => handleSave(indexs)}
-                                                >
-                                                    Save Changes
-                                                </button>
-                                                <button
-                                                    className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
-                                                    type="button"
-                                                    onClick={() => handleReset(indexs)}
-                                                >
-                                                    Reset
-                                                </button>
-                                            </div>
+                                        </div>
+                                        <div className='flex gap-3 items-center mt-4'>
+                                            <button
+                                                className="bg-primary text-white text-base px-6 py-3 border border-primary shadow-md rounded-full "
+                                                type="button"
+                                                onClick={() => handleSave(indexs)}
+                                            >
+                                                Save Changes
+                                            </button>
+                                            <button
+                                                className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
+                                                type="button"
+                                                onClick={() => handleReset(indexs)}
+                                            >
+                                                Reset
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

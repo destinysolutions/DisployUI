@@ -309,6 +309,42 @@ export const handleUserNotificationList = createAsyncThunk(
   }
 );
 
+export const SaveUserNotification = createAsyncThunk(
+  "UserMaster/SaveUserNotification",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+export const handleGetUserNotification = createAsyncThunk(
+  "UserMaster/handleGetUserNotification",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
 const initialState = {
   Countries: [],
   error: null,
@@ -522,7 +558,28 @@ const SettingUserSlice = createSlice({
     builder.addCase(handleUserNotificationList.rejected, (state, action) => {
       state.status = false;
       state.error = action.payload.message;
-      
+    });
+
+    builder.addCase(SaveUserNotification.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(SaveUserNotification.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(SaveUserNotification.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+    });
+
+    builder.addCase(handleGetUserNotification.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(handleGetUserNotification.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(handleGetUserNotification.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
     });
   },
 });

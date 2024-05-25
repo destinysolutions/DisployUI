@@ -248,7 +248,8 @@ export const TALK_TO_SALE = `${baseUrl}common/TalkToSale`
 export const GET_ALL_NOTIFICATIONS = `${baseUrl}Common/GetAllNotificationMaster`
 export const GET_ALL_REMOVE_NOTIFICATIONS = `${baseUrl}Common/GetRemoveAllNotificationMaster`
 export const GET_ALL_USER_NOTIFICATION = `${baseUrl}Common/GetAllNotificationFeature`
-export const SAVE_NOTIFICATION = `${baseUrl}Common/GetAllNotificationFeature`
+export const SAVE_NOTIFICATION = `${baseUrl}UserNotification/AddEditUserNotification`
+export const GET_NOTIFICATION = `${baseUrl}UserNotification/GetUserNotification`
 
 // Invoice
 
