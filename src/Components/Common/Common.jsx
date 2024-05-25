@@ -522,3 +522,22 @@ export const NotificationType = [{
   Name: "None",
   Value: "None"
 }]
+
+
+export  function mergeNotificationData(listNotification, res) {
+    return listNotification.map((listItem, index) => {
+        const correspondingArrItem = res?.payload?.data.find(item => item.index === index);
+
+        if (correspondingArrItem) {
+            const updatedUser = listItem.user.map(userItem => {
+                if (userItem.notificationFeatureId === correspondingArrItem.notificationFeatureID) {
+                    return { ...userItem, ...correspondingArrItem };
+                }
+                return userItem;
+            });
+            return { ...listItem, user: updatedUser };
+        }
+
+        return listItem;
+    });
+}

@@ -13,10 +13,11 @@ const UserNotifications = () => {
     const dispatch = useDispatch()
     const authToken = `Bearer ${token}`;
     const [listNotification, setListNotification] = useState([])
+    console.log('listNotification', listNotification)
     const [Notification, setNotification] = useState([])
     const [loading, setLoading] = useState(false)
     const [userData, setUserData] = useState([]);
-    const [getNotification,setGetNotification] = useState([])
+    const [getNotification, setGetNotification] = useState([])
 
     const fetchList = () => {
         const config = {
@@ -40,7 +41,26 @@ const UserNotifications = () => {
         })
     }
 
-    const fetchGetNotification = () =>{
+    useEffect(() => {
+        const result = listNotification.map((listItem, index) => {
+            const correspondingArrItem = getNotification.find(item => item.index === index);
+
+            if (correspondingArrItem) {
+                const updatedUser = listItem.user.map(userItem => {
+                    if (userItem.notificationFeatureId === correspondingArrItem.notificationFeatureID) {
+                        return { ...userItem, ...correspondingArrItem };
+                    }
+                    return userItem;
+                });
+                return { ...listItem, user: updatedUser };
+            }
+
+            return listItem;
+        });
+        setListNotification(result)
+    }, [getNotification])
+
+    const fetchGetNotification = () => {
         const config = {
             method: "get",
             maxBodyLength: Infinity,
@@ -53,7 +73,9 @@ const UserNotifications = () => {
 
         dispatch(handleUserNotificationList({ config })).then((res) => {
             if (res?.payload?.status) {
-                setGetNotification(res?.payload?.data)
+                if (res?.payload?.data?.length > 0) {
+                    setGetNotification(res?.payload?.data)
+                }
             }
         }).catch((error) => {
             console.log('error', error)
@@ -79,7 +101,7 @@ const UserNotifications = () => {
             if (idx === indexs) {
                 const updatedUser = item.user.map((userData, i) => {
                     if (i === index) {
-                        return { ...userData, NotificationType: event.target.value };
+                        return { ...userData, notificationType: event.target.value, emailOrgUserID: "", phoneOrgUserID: "" };
                     }
                     return userData;
                 });
@@ -95,7 +117,7 @@ const UserNotifications = () => {
             if (idx === indexs) {
                 const updatedUser = item.user.map((userData, i) => {
                     if (i === index) {
-                        return { ...userData, EmailOrgUserID: event.target.value };
+                        return { ...userData, emailOrgUserID: event.target.value };
                     }
                     return userData;
                 });
@@ -111,7 +133,7 @@ const UserNotifications = () => {
             if (idx === indexs) {
                 const updatedUser = item.user.map((userData, i) => {
                     if (i === index) {
-                        return { ...userData, PhoneOrgUserID: event.target.value };
+                        return { ...userData, phoneOrgUserID: event.target.value };
                     }
                     return userData;
                 });
@@ -128,7 +150,7 @@ const UserNotifications = () => {
     const handleReset = (indexs) => {
         const updatedListNotification = listNotification.map((item, idx) => {
             if (idx === indexs) {
-                const updatedUser = item.user.map(userData => ({ ...userData, NotificationType: '', EmailOrgUserID: '', PhoneOrgUserID: '' }));
+                const updatedUser = item.user.map(userData => ({ ...userData, notificationType: '', emailOrgUserID: '', phoneOrgUserID: '' }));
                 return { ...item, user: updatedUser };
             }
             return item;
@@ -142,12 +164,14 @@ const UserNotifications = () => {
         listNotification.forEach((item, idx) => {
             if (idx === indexs) {
                 item.user.forEach(userData => {
+                    console.log('userData', userData)
                     const obj = {
-                        UserNotificationID: "0",
+                        UserNotificationID: userData?.userNotificationID ? userData?.userNotificationID : "0",
                         NotificationFeatureID: userData?.notificationFeatureId,
-                        NotificationType: userData?.NotificationType || "",
-                        EmailOrgUserID: userData?.EmailOrgUserID || 0,
-                        PhoneOrgUserID: userData?.PhoneOrgUserID || 0
+                        NotificationType: userData?.notificationType || "",
+                        EmailOrgUserID: userData?.emailOrgUserID || 0,
+                        PhoneOrgUserID: userData?.phoneOrgUserID || 0,
+                        Index: indexs
                     };
                     Params.push(obj);
 
@@ -171,35 +195,6 @@ const UserNotifications = () => {
             }
         });
 
-        // Params?.map(((item) => {
-        //     if (item?.NotificationType === "") {
-        //         toast.error("Please Fill Proper Details")
-        //         return
-        //     }
-        //     if (item?.NotificationType === "Email") {
-        //         if (!item?.EmailOrgUserID) {
-        //             toast.error("Please Fill Proper Details")
-        //             return
-        //         }
-        //     }
-        //     if (item?.NotificationType === "Phone") {
-        //         if (!item?.PhoneOrgUserID) {
-        //             toast.error("Please Fill Proper Details")
-        //             return
-        //         }
-        //     }
-        //     if (item?.NotificationType === "Both") {
-        //         if (!item?.PhoneOrgUserID) {
-        //             toast.error("Please Fill Proper Details")
-        //             return
-        //         }
-        //         if (!item?.EmailOrgUserID) {
-        //             toast.error("Please Fill Proper Details")
-        //             return
-        //         }
-        //     }
-        // }))
-
         const config = {
             method: "post",
             maxBodyLength: Infinity,
@@ -214,7 +209,8 @@ const UserNotifications = () => {
             dispatch(SaveUserNotification({ config }))
                 .then((res) => {
                     if (res?.payload?.status) {
-
+                        toast.success(res?.payload?.message)
+                        fetchGetNotification()
                     }
                 }).catch((err) => {
                     console.log('err', err)
@@ -267,7 +263,7 @@ const UserNotifications = () => {
                                                 </thead>
                                                 <tbody>
                                                     {data?.user?.map((item, index) => {
-                                                        console.log('data[indexs]?.user[index]?.NotificationType', listNotification[indexs]?.user[index]?.NotificationType)
+                                                        console.log(listNotification[indexs]?.user[index], "123456")
                                                         return (
                                                             <tr className="border-b border-b-[#E4E6FF]" key={index}>
                                                                 <td className="text-[#5E5E5E] text-center">
@@ -276,7 +272,7 @@ const UserNotifications = () => {
                                                                 <td className="text-[#5E5E5E] text-center">
                                                                     <select
                                                                         className="relative border border-gray rounded-md p-3 user-input bg-white w-28"
-                                                                        value={listNotification[indexs]?.user[index]?.NotificationType}
+                                                                        value={listNotification[indexs]?.user[index]?.notificationType}
                                                                         onChange={(event) => handleAlertChange(index, event, indexs)}
                                                                     >
                                                                         <option label="Select" value=""></option>
@@ -288,9 +284,9 @@ const UserNotifications = () => {
                                                                 <td className="text-[#5E5E5E] text-center">
                                                                     <select
                                                                         className="relative border border-gray rounded-md p-3 user-input bg-white w-48"
-                                                                        value={listNotification[indexs]?.user[index]?.EmailOrgUserID}
+                                                                        value={listNotification[indexs]?.user[index]?.emailOrgUserID}
                                                                         onChange={(event) => handleEmailChange(index, event, indexs)}
-                                                                        disabled={(listNotification[indexs]?.user[index]?.NotificationType === "Phone" || listNotification[indexs]?.user[index]?.NotificationType === "None")}
+                                                                        disabled={(listNotification[indexs]?.user[index]?.notificationType === "Phone" || listNotification[indexs]?.user[index]?.notificationType === "None")}
                                                                     >
                                                                         <option label="Select" value=""></option>
                                                                         {userData?.map((user) => (
@@ -301,9 +297,9 @@ const UserNotifications = () => {
                                                                 <td className="text-[#5E5E5E] text-center">
                                                                     <select
                                                                         className="relative border border-gray rounded-md p-3 user-input bg-white w-48"
-                                                                        value={listNotification[indexs]?.user[index]?.PhoneOrgUserID}
+                                                                        value={listNotification[indexs]?.user[index]?.phoneOrgUserID}
                                                                         onChange={(event) => handlePhoneChange(index, event, indexs)}
-                                                                        disabled={(listNotification[indexs]?.user[index]?.NotificationType === "Email" || listNotification[indexs]?.user[index]?.NotificationType === "None")}
+                                                                        disabled={(listNotification[indexs]?.user[index]?.notificationType === "Email" || listNotification[indexs]?.user[index]?.notificationType === "None")}
 
                                                                     >
                                                                         <option label="Select" value=""></option>
