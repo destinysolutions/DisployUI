@@ -1,12 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { Currency, FontSize, ImageLayout, PageArray, Theme } from '../Common/Common';
 import { SketchPicker } from 'react-color';
+import ThemePreview from './ThemePreview';
 
 const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, errors, selectedColor, setSelectedColor, setTextColor, textColor, setPriceColor, priceColor, PosTheme, setSelectedTheme, selectedtheme }) => {
+
+    const [viewerSrc, setViewerSrc] = useState("")
+    const [openmodel, setOpenModel] = useState(false)
+
     const handleChange = (item) => {
+        setViewerSrc(item?.posThemePath)
         setSelectedTheme(item?.posThemeID);
+        setOpenModel(true)
     };
+
+    const HandleClose = () => {
+        setOpenModel(!openmodel)
+    }
+
     return (
         <>
             <div
@@ -220,6 +232,9 @@ const DigitalMenuCustomize = ({ toggleModal, register, onSubmit, handleSubmit, e
                     </div>
                 </div>
             </div>
+            {openmodel && (
+                <ThemePreview viewerSrc={viewerSrc} HandleClose={HandleClose} />
+            )}
         </>
     )
 }

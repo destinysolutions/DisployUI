@@ -5,7 +5,7 @@ import Navbar from "../Navbar";
 import PropTypes from "prop-types";
 import { FaCertificate, FaDownload, FaFileInvoiceDollar, FaUserShield } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi";
-import { MdOutlineStorage } from "react-icons/md";
+import { MdNotificationsActive, MdOutlineStorage } from "react-icons/md";
 import { SiMediamarkt } from "react-icons/si";
 import { RiEyeLine } from "react-icons/ri";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -27,6 +27,7 @@ import { HiClipboardDocumentList } from "react-icons/hi2";
 import Loading from "../Loading";
 import ScreenAuthorize from "./ScreenAuthorize";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import UserNotifications from "./UserNotifications";
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   Settings.propTypes = {
@@ -102,7 +103,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
               <Navbar />
             </div>
 
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="lg:flex justify-between sm:flex xs:block  items-center mb-5 ">
                   <div className=" lg:mb-0 md:mb-0 sm:mb-4">
@@ -269,6 +270,22 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </li>
 
+                      <li>
+                        <button
+                          className={
+                            STabs === 9
+                              ? "stabshow settingtabactive"
+                              : "settingtab"
+                          }
+                          onClick={() => updateTab(9)}
+                        >
+                          <MdNotificationsActive className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">
+                            Notifications
+                          </span>
+                        </button>
+                      </li>
+
 
 
 
@@ -329,6 +346,12 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                     {STabs === 7 && (
                       <div>
                         <Myplan />
+                      </div>
+                    )}
+
+                    {STabs === 9 && (
+                      <div>
+                        <UserNotifications />
                       </div>
                     )}
 

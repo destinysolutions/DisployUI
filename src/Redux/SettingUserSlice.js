@@ -291,6 +291,24 @@ export const handleOTPverify = createAsyncThunk(
   }
 );
 
+export const handleUserNotificationList = createAsyncThunk(
+  "UserMaster/handleUserNotificationList",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
 const initialState = {
   Countries: [],
   error: null,
@@ -490,6 +508,18 @@ const SettingUserSlice = createSlice({
       state.data = action.payload;
     });
     builder.addCase(handleOTPverify.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+      
+    });
+
+    builder.addCase(handleUserNotificationList.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(handleUserNotificationList.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(handleUserNotificationList.rejected, (state, action) => {
       state.status = false;
       state.error = action.payload.message;
       

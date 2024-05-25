@@ -508,3 +508,17 @@ export function capitalizeFirstLetter(string) {
   if (!string) return string; // Return the string as is if it is empty or falsy
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export const NotificationType = [{
+  Name: "Email",
+  Value: "Email"
+}, {
+  Name: "Phone",
+  Value: "Phone"
+}, {
+  Name: "Both",
+  Value: "Both"
+}, {
+  Name: "None",
+  Value: "None"
+}]
