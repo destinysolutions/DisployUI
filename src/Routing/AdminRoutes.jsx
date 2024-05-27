@@ -100,7 +100,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
           />
 
           <Route
-            path="onboarded/customer-details/:id"
+            path="onboarded/customer-details/:id/:email"
             element={
               <CustomerOnboding sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
             }

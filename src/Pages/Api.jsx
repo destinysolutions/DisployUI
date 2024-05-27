@@ -113,17 +113,17 @@ export const DELETE_ALL_ASSET = `${baseUrl}AssetMaster/DeleteAllAsset`;
 export const ASSIGN_COMPOSITION_TO_SCREEN = `${baseUrl}CompositionMaster/AssignCompoitiontoScreen`;
 export const GET_DEFAULT_ASSET = `${baseUrl}UserMaster/GetDefaultAsset`;
 export const GET_EMERGENCY_ASSET = `${baseUrl}UserMaster/GetEmergencyAsset`;
-
 export const SAVE_DEFAULT_ASSET = `${baseUrl}UserMaster/SaveDefaultAsset`;
 export const SAVE_EMERGENCY_ASSET = `${baseUrl}UserMaster/SaveEmergencyAsset`;
-
 export const ADD_STORAGE = `${baseUrl}Storage/AddStorage`;
 export const ADD_UPDATE_ORGANIZATION_USER_ROLE = `${baseUrl}OrganizationUsersRole/AddUpdateOrganizationUsersRole`;
 export const GET_ORG_USERS = `${baseUrl}UserMaster/GetOrgUsers`;
 export const GET_USER_SCREEN_DETAILS = `${baseUrl}UserMaster/GetUsetScreenDetails`;
 export const DELETE_ORG_USER = `${baseUrl}UserMaster/DeleteOrgUser`;
 export const GET_TIME_ZONE = `${baseUrl}ScheduleMaster/GetTimeZoneCurrentTime`
+
 // Weather App Api
+
 export const WEATHER_APP = `${baseUrl}WeatherApp/AddWeatherApp`;
 export const GET_All_WEATHER = `${baseUrl}WeatherApp/GetWeatherApp`;
 export const GET_WEATHER_BY_ID = `${baseUrl}WeatherApp/GetWeatherApp?`;
@@ -134,6 +134,7 @@ export const USER_ROLE_COMBINE = `${baseUrl}OrganizationUsersRole/GetUserRolesCo
 export const SCREEN_DELETE_ALL = `${baseUrl}NewScreen/DeleteAllScreenByIds`;
 
 // Group Screen
+
 export const GET_GROUP_SCREEN = `${baseUrl}GroupScreen/GetAllGroupData`;
 export const ADD_GROUP_SCREEN = `${baseUrl}GroupScreen/AddGroupScreen`;
 export const DELETE_SINGLE_GROUP_SCREEN = `${baseUrl}GroupScreen/DeleteGroupByID`;
@@ -144,6 +145,7 @@ export const PRIVIEW_GROUP_SCREEN = `${baseUrl}GroupScreen/GetGroupPreview`;
 export const UPDATE_GROUP_NAME = `${baseUrl}GroupScreen/UpdateGroupScreen`;
 
 // screen Marge
+
 export const GET_MARGE_SCREEN = `${baseUrl}MergeScreen/GetAllMergeScreen`;
 export const ADD_MERGE_SCREEN = `${baseUrl}MergeScreen/AddMergeScreen`;
 export const DELETE_MERGE_SCREEN_ALL = `${baseUrl}MergeScreen/DeleteAllMergeScreen`;
@@ -152,11 +154,13 @@ export const UPDATE_MERGE_NAME = `${baseUrl}MergeScreen/UpdateMergeScreen`;
 export const SCREEN_DEACTIVATE_ACTIVATE = `${baseUrl}NewScreen/EnableScreen`;
 
 // sidebar
+
 export const GET_SIDEBAR_MENU = `${baseUrl}OrganizationUsersRole/SideBarMenu`;
 export const MENU_ACCESS = `${baseUrl}OrganizationUsersRole/GetAllLevelData`;
 
 
 // reports
+
 export const AUDITREPORT = `${baseUrl}Report/GetAuditLogsReport`;
 export const UPTIMEREPORT = `${baseUrl}Report/GetUptimeReport`;
 export const SALESREPORT = `${baseUrl}Report/GetSalesReport`;
@@ -216,6 +220,7 @@ export const OTP_SCREEN_VERIFY = `${baseUrl}NewScreen/VerifyScreenOTP`;
 export const SCREEN_STORAGE = `${baseUrl}NewScreen/CheckScreenCnt`;
 
 // Digital Menu Board
+
 export const POS_ITEM_LIST = `${baseUrl}DigitalMenu/GetPOSItemDetails`
 export const ADD_EDIT_DIGITAL_MENU = `${baseUrl}DigitalMenu/AddORUpdateDigitalMenuApp`
 export const GET_ALL_DIGITAL_MENU = `${baseUrl}DigitalMenu/GetAllDigitalMenuApp`
@@ -243,8 +248,7 @@ export const ADD_CREDIT_CARD = `${baseUrl}common/AddCreditCard`
 export const TALK_TO_SALE = `${baseUrl}common/TalkToSale`
 export const ADD_EDIT_BILLINGDETAILS = `${baseUrl}BillingDetails/AddEditBillingDetails`
 export const GET_BILLING_DETAILS = `${baseUrl}BillingDetails/GetBillingDetails`
-
-
+export const GET_USER_BILLING_DETAILS = `${baseUrl}Common/GetUserBillingDetails`
 
 // Notifications
 

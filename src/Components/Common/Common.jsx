@@ -541,3 +541,67 @@ export  function mergeNotificationData(listNotification, res) {
         return listItem;
     });
 }
+
+export function extractSubstring(str) {
+  // Find the index positions of '×' and '('
+  let startIndex = str.indexOf('×') + 1; // Add 1 to get the position after '×'
+  let endIndex = str.indexOf('(');
+
+  // Extract the substring between '×' and '(' and trim any leading/trailing whitespace
+  if (startIndex > 0 && endIndex > startIndex) {
+      return str.substring(startIndex, endIndex).trim();
+  }
+
+  // Return an empty string if '×' or '(' are not found in the expected order
+  return '';
+}
+
+export function extractPrice(string) {
+  let match = string.match(/\$(\d+)\.00/);
+  if (match) {
+      return match[1];
+  } else {
+      return null;
+  }
+}
+
+export function getDifferenceInDays(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  // Calculate the difference in milliseconds
+  const differenceInTime = endDate - startDate;
+
+  // Convert the difference from milliseconds to days
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+  return differenceInDays;
+}
+
+
+export function getRemainingDays(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  // Calculate the difference in milliseconds
+  const differenceInTime = endDate - startDate;
+
+  // Convert the difference from milliseconds to days
+  const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+
+  return differenceInDays;
+}
+
+
+export function getDaysPassed(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  // Calculate the difference in milliseconds
+  const differenceInTime = endDate - startDate;
+
+  // Convert the difference from milliseconds to days
+  const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+
+  return differenceInDays;
+}

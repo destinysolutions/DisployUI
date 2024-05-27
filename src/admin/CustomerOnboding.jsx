@@ -23,7 +23,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     if (loadFist) {
-      dispatch(getAllCustomerDetails({ OrgID: params?.id }))
+      dispatch(getAllCustomerDetails({Email:params?.email ,OrgID: params?.id }))
       setLoadFist(false)
     }
   }, [loadFist]);
@@ -104,7 +104,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                         </span>
                         <span className="screen-count text-left">
                           <strong>{store.data?.userRoleName}</strong>
-                          <p>Total Screens</p>
+                         {/* <p>Total Screens</p>*/}
                         </span>
                       </div>
                     </div>
@@ -133,10 +133,6 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="flex mb-2">
                         <label>Role::</label>
                         <span>{store.data?.userRoleName}</span>
-                      </div>
-                      <div className="flex mb-2">
-                        <label>Tax ID:</label>
-                        <span>Tax-8894</span>
                       </div>
                       <div className="flex mb-2">
                         <label>Contact:</label>

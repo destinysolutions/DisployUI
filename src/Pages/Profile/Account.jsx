@@ -142,14 +142,16 @@ const Account = () => {
 
   // Fetch states based on the selected country
   useEffect(() => {
-    fetch(`${GET_SELECT_BY_STATE}?CountryID=${parseInt(selectedCountry)}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setStates(data.data);
-      })
-      .catch((error) => {
-        console.log("Error fetching states data:", error);
-      });
+    if(selectedCountry !== ""){
+      fetch(`${GET_SELECT_BY_STATE}?CountryID=${parseInt(selectedCountry)}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setStates(data.data);
+        })
+        .catch((error) => {
+          console.log("Error fetching states data:", error);
+        });
+    }
   }, [watch("country"), selectedCountry]);
 
   useEffect(() => {

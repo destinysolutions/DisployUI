@@ -7,42 +7,17 @@ import { handleAddCard, handleGetBillingByID } from "../../../Redux/AdminSetting
 import { ADD_CREDIT_CARD, CANCEL_SUBSCRIPTION, GET_BILLING_BY_ID, INCREASE_TRIAL_DAYS } from "../../../Pages/Api";
 import { useDispatch } from "react-redux";
 import { IncreaseTrialDays, handleCancelSubscription } from "../../../Redux/PaymentSlice";
+import { capitalizeFirstLetter, extractSubstring, getDaysPassed, getDifferenceInDays } from "../../Common/Common";
+import moment from "moment";
 
-const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
+const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPlan, customerData }) => {
 
   const dispatch = useDispatch()
   const { user, token } = useSelector((s) => s.root.auth);
+  console.log('user', user)
   const authToken = `Bearer ${token}`;
   const [newCardShow, setNewCardShow] = useState(false);
-  const [rangeValue, setRangeValue] = useState(10);
-
-
-  const fetchBillingDataById = () => {
-    const Params = {
-
-    }
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${GET_BILLING_BY_ID}}`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authToken
-      },
-      data: JSON.stringify(Params)
-    }
-    dispatch(handleGetBillingByID({ config }))
-      .then((res) => {
-        if (res?.payload?.status) {
-
-        }
-      })
-      .catch((error) => console.log('error', error))
-  }
-
-  useEffect(() => {
-    fetchBillingDataById()
-  }, [])
+  const [rangeValue, setRangeValue] = useState(getDaysPassed(userPlan?.startDate, new Date()));
 
   const onSubmit = () => {
     const Params = {
@@ -72,9 +47,9 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
     setNewCardShow(!newCardShow);
   };
 
-  const CancelSubscription = () => {
+  const CancelSubscription = (email) => {
     const Params = {
-      Email: user?.emailID
+      Email: email
     }
     const config = {
       method: "get",
@@ -95,9 +70,9 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
       .catch((error) => console.log('error', error))
   }
 
-  const handleIncreaseTrial = () => {
+  const handleIncreaseTrial = (email) => {
     const Params = {
-      OrgID: "",
+      Email: email,
       Days: rangeValue
     }
     const config = {
@@ -145,37 +120,37 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
           <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 min-h-full m-1">
             <div className="user-details text-center border-b border-light-blue mb-4">
               <span className="user-img">
-                <img src="dist/images/3user-img.png" />
+                <img src={customerData?.profilePhoto} alt="Profile Not Found" />
               </span>
-              <span className="user-name my-2">Harry McCall</span>
-              <span className="user-designation">Manager</span>
+              <span className="user-name my-2">{customerData?.firstName} {" "} {customerData?.lastName}</span>
+              <span className="user-designation">{customerData?.userRoleName}</span>
               <div className="total-screens-count mt-2 mb-4">
                 <span className="screen-icon mr-3">
                   <i className="fa fa-tv text-blue text-2xl"></i>
                 </span>
-                <span className="screen-count text-left">
+                {/*<span className="screen-count text-left">
                   <strong>50</strong>
                   <p>Total Screens</p>
-                </span>
+  </span>*/}
               </div>
             </div>
             <div className="user-pro-details text-base">
               <h3 className="user-name my-2">Details</h3>
               <div className="flex mb-2">
                 <label>User ID:</label>
-                <span>#5036</span>
+                <span>#${customerData?.orgUserID}</span>
               </div>
               <div className="flex mb-2">
                 <label>User Name:</label>
-                <span>Harry McCall</span>
+                <span>{customerData?.firstName} {" "} {customerData?.lastName}</span>
               </div>
               <div className="flex mb-2">
                 <label>Company Name:</label>
-                <span>Schneider-Kuphal</span>
+                <span>{customerData?.company}</span>
               </div>
               <div className="flex mb-2">
                 <label>Email:</label>
-                <span>harrymc.call@gmail.com</span>
+                <span>{customerData?.email}</span>
               </div>
               <div className="flex mb-2">
                 <label>Status:</label>
@@ -183,23 +158,19 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
               </div>
               <div className="flex mb-2">
                 <label>Role::</label>
-                <span>Manager</span>
-              </div>
-              <div className="flex mb-2">
-                <label>Tax ID:</label>
-                <span>Tax-8894</span>
+                <span>{customerData?.userRoleName}</span>
               </div>
               <div className="flex mb-2">
                 <label>Contact:</label>
-                <span>(397) 294-5153</span>
+                <span>{customerData?.phone}</span>
               </div>
               <div className="flex mb-2">
                 <label>Language:</label>
-                <span>English</span>
+                <span>{customerData?.languageName}</span>
               </div>
               <div className="flex mb-2">
                 <label>Country:</label>
-                <span>USA</span>
+                <span>{customerData?.countryName}</span>
               </div>
               {/*<div className="flex justify-center w-full mt-2">
                 <button className="text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-8 py-2 text-center mr-3">
@@ -217,9 +188,11 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
           <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 min-h-full">
             <div className="user-pro-details text-base">
               <h3 className="user-name my-2">Current Plan</h3>
-              <h4 className="text-base font-medium">Your Current Plan 14-day FREE trial</h4>
+              <h4 className="text-base font-medium">Your Current Plan {extractSubstring(userPlan?.description)}</h4>
               <p className="mb-4">A simple start for everyone</p>
-              <h4 className="text-base font-medium">Active until July 25, 2023</h4>
+              <h4 className="text-base font-medium">Active until {moment(
+                userPlan?.endDate
+              ).format("LL")}</h4>
               <p className="mb-4">
                 We will send you a notification upon Subscription expiration.
               </p>
@@ -230,7 +203,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
               <div className="w-full mb-4">
                 <div className="flex justify-between">
                   <span>Days</span>
-                  <span>10 of 14 Days</span>
+                  <span>{getDaysPassed(userPlan?.startDate, new Date())} of {getDifferenceInDays(userPlan?.startDate, userPlan?.endDate)} Days</span>
                 </div>
                 <input
                   id="customRange1"
@@ -239,20 +212,20 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
                   value={rangeValue}
                   onChange={handleChange}
                   min={0}
-                  max={14}
+                  max={getDifferenceInDays(userPlan?.startDate, userPlan?.endDate)}
                 />
               </div>
               <div className="flex justify-center w-full mb-5">
                 <button
                   className="mr-3 text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-3 py-2 text-center"
-                  onClick={() => handleIncreaseTrial()}
+                  onClick={() => handleIncreaseTrial(customerData?.email)}
                 >
                   increase trial days
                 </button>
                 <button
                   className="bg-[#FF0000] rounded-full px-3 py-2 text-white hover:bg-primary text-base"
                   onClick={() => {
-                    CancelSubscription()
+                    CancelSubscription(customerData?.email)
                   }}
                 >
                   Cancel Subscription
@@ -265,69 +238,37 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile }) => {
       <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 m-5 ">
         <h3 className="user-name mb-4">Credit &amp; Debit Cards</h3>
         <form className="w-full space-y-6" action="">
-          <div className="mb-5">
-            <input
-              className="sr-only peer"
-              type="radio"
-              name="options"
-              id="option_1"
-            />
-            <label
-              className="flex items-center justify-between h-16 px-5 bg-white border border-gray-300 rounded-lg cursor-pointer group"
-              htmlFor="option_1"
-            >
-              <div className="flex flex-col mr-6">
-                <div className="lg:flex md:flex sm:flex xs:block items-center">
-                  <img
-                    src="dist/images/logos_mastercard.png"
-                    className="mr-2"
-                  />
-                  <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                    Axis Bank
-                  </h4>
-                  <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                    **** **** **** 8395
-                  </h4>
-                </div>
+          {cardList?.length > 0 && cardList?.map((item) => {
+            return (
+              <div className="mb-5" index={item?.paymentMethodID}>
+                <label
+                  className="flex items-center justify-between h-16 px-5 bg-white border border-gray-300 rounded-lg cursor-pointer group"
+                  htmlFor="option_1"
+                >
+                  <div className="flex flex-col mr-6">
+                    <div className="lg:flex md:flex sm:flex xs:block items-center">
+                      <img
+                        src="../../Settings/logos_mastercard.svg"
+                        className="mr-2"
+                        alt=""
+                      />
+                      <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
+                        {capitalizeFirstLetter(item?.funding)} Card
+                      </h4>
+                      <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
+                        **** **** **** {item?.cardNumber}
+                      </h4>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <span className="bg-green-600 bg-gray-500 text-white px-6 py-2 mr-5 rounded-full">
+                      Default Card
+                    </span>
+                  </div>
+                </label>
               </div>
-              <div className="flex items-center justify-center">
-                <span className="bg-green-600 bg-gray-500 text-white px-6 py-2 mr-5 rounded-full">
-                  Default Card
-                </span>
-                <div className="flex items-center justify-center w-6 h-6 border border-gray-600 rounded-full peer-checked:group:bg-indigo-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="hidden w-4 h-4 text-indigo-200 fill-current peer-checked:group:visible"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
-                  </svg>
-                </div>
-              </div>
-            </label>
-          </div>
-          <div className="mb-5" onClick={() => setNewCardShow(true)}>
-            <input
-              className="sr-only peer"
-              type="radio"
-              name="options"
-              id="option_5"
-            />
-            <label
-              className="flex items-center justify-between h-16 px-5 bg-white border border-gray-300 rounded-lg cursor-pointer group"
-              htmlFor="option_5"
-            >
-              <div className="flex flex-col mr-6">
-                <div className="lg:flex md:flex sm:flex xs:block items-center">
-                  <FaPlus className="bg-blue-600 text-gray p-2 mr-3 rounded-lg" size={30} />
-                  <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                    Add New Card
-                  </h4>
-                </div>
-              </div>
-            </label>
-          </div>
+            )
+          })}
         </form>
       </div>
       {/*<div className="bg-white shadow-xl rounded-xl border border-gray-200 min-h-full m-5">

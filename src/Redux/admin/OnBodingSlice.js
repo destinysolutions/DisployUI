@@ -61,6 +61,7 @@ export const getAllCustomerDetails = createAsyncThunk("data/getAllCustomerDetail
   try {
     const token = thunkAPI.getState().root.auth.token;
     const queryParams = new URLSearchParams(payload).toString();
+    console.log('queryParams', queryParams)
     const response = await axios.get(`${CUSTOMER_DETAILS_ALL}?${queryParams}`,null,{headers: { Authorization: `Bearer ${token}` }});
     return response.data;
   } catch (error) {

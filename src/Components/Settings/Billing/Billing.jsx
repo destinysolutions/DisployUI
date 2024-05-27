@@ -8,79 +8,33 @@ import { BsEyeFill } from "react-icons/bs";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineSearch } from "react-icons/ai";
 import UserInfo from "./UserInfo";
-import { GET_ALL_BILLING, GET_BILLING_BY_ID } from "../../../Pages/Api";
+import { GET_ALL_BILLING, GET_BILLING_BY_ID, GET_ALL_CARD, GET_USER_BILLING_DETAILS } from "../../../Pages/Api";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { handleGetAllBillings, handleGetBillingByID } from "../../../Redux/AdminSettingSlice";
-
-const Data = [
-  {
-    id: "1",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/2202/2202112.png",
-    name: "test 1",
-    Plan: "Basic",
-    Billing: "Axis Bank **** **** **** 8395",
-    Status: 1,
-  },
-  {
-    id: "2",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/6997/6997662.png",
-    name: "test 2",
-    Plan: "Basic",
-    Billing: "Axis Bank **** **** **** 8395",
-    Status: 0,
-  },
-  {
-    id: "3",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/14507/14507916.png",
-    name: "test 3",
-    Plan: "Basic",
-    Billing: "Axis Bank **** **** **** 8395",
-    Status: 0,
-  },
-  {
-    id: "4",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/9408/9408175.png",
-    name: "test 4",
-    Plan: "Basic",
-    Billing: "Axis Bank **** **** **** 8395",
-    Status: 1,
-  },
-  {
-    id: "5",
-    profilePhoto: "https://cdn-icons-png.flaticon.com/128/219/219970.png",
-    name: "test 5",
-    Plan: "Basic",
-    Billing: "Axis Bank **** **** **** 8395",
-    Status: 1,
-  },
-];
+import { GetAllCardList } from "../../../Redux/CardSlice.js"
+import { GetBillingDetails } from "../../../Redux/SettingUserSlice.js"
+import toast from "react-hot-toast";
+import { getAllCustomerDetails } from "../../../Redux/admin/OnBodingSlice.js";
 
 const Billing = ({ sidebarOpen }) => {
   const dispatch = useDispatch()
   const { token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   // pagination Start
-  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [billingList, setBillingList] = useState([])
-  // Filter data based on search term
-  // const filteredData = billingList?.filter((item) =>
-  //   item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
-  // Get current items based on pagination
+  const [cardList, setCardList] = useState([])
+  const [userPlan, setUserPlan] = useState({});
+  const [customerData, setCustomerData] = useState({});
+  console.log('customerData', customerData)
+
+  const [showBillingProfile, setShowBillingProfile] = useState(false);
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = billingList?.slice(indexOfFirstItem, indexOfLastItem);
-  // Function to handle search input change
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset pagination when search term changes
-  };
-  // pagination End
-
-  const [showBillingProfile, setShowBillingProfile] = useState(false);
 
 
   const fetchAllBilling = () => {
@@ -103,21 +57,63 @@ const Billing = ({ sidebarOpen }) => {
     fetchAllBilling()
   }, [])
 
-  const handleViewProfile = () => {
-    const config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${GET_BILLING_BY_ID}}`,
-      headers: {
-        Authorization: authToken
-      },
-    }
-    dispatch(handleGetBillingByID({ config })).then((res) => {
-      if (res?.payload?.status) {
-
+  const fetchCards = async (email) => {
+    try {
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${GET_ALL_CARD}?Email=${email}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authToken
+        },
       }
-    }).catch((error) => console.log('error', error))
-    setShowBillingProfile(true)
+      dispatch(GetAllCardList({ config })).then((res) => {
+        if (res?.payload?.status) {
+          setCardList(res?.payload?.data);
+        }
+      })
+    } catch (error) {
+      toast.error('Error fetching cards');
+    }
+  };
+
+
+  const getUserBilling = (email) => {
+    try {
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${GET_USER_BILLING_DETAILS}?Email=${email}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authToken
+        },
+      }
+      dispatch(GetBillingDetails({ config })).then((res) => {
+        if (res?.payload?.status) {
+          setUserPlan(res?.payload?.data)
+          setShowBillingProfile(true)
+        }
+      })
+    } catch (error) {
+      toast.error('Error fetching cards');
+    }
+  }
+
+  const handleViewProfile = async (email) => {
+    toast.loading("fetching data...")
+    await fetchCards(email)
+    await getUserBilling(email)
+    dispatch(getAllCustomerDetails({ Email: email, OrgID: 0 }))
+      .then((res) => {
+        setCustomerData(res?.payload?.data);
+        toast.remove()
+      })
+      .catch((err) => {
+        console.log('err', err)
+        toast.remove()
+      })
   }
 
   return (
@@ -126,6 +122,9 @@ const Billing = ({ sidebarOpen }) => {
         <UserInfo
           setShowBillingProfile={setShowBillingProfile}
           showBillingProfile={showBillingProfile}
+          cardList={cardList}
+          userPlan={userPlan}
+          customerData={customerData}
         />
       ) : (
         <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
@@ -169,9 +168,9 @@ const Billing = ({ sidebarOpen }) => {
                       <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                         Plan
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      {/* <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                         Billing
-                      </th>
+  </th>*/}
                       <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                         Status
                       </th>
@@ -204,9 +203,9 @@ const Billing = ({ sidebarOpen }) => {
                           {item?.plan}
                         </td>
 
-                        <td className="text-[#5E5E5E] text-center">
+                        {/*<td className="text-[#5E5E5E] text-center">
                           {item?.cardNumber ? `**** **** **** ${item?.cardNumber}` : ""}
-                        </td>
+                        </td>*/}
 
                         <td className="text-[#5E5E5E] text-center">
                           {item.status === "Paid" ? (
@@ -226,7 +225,7 @@ const Billing = ({ sidebarOpen }) => {
                               data-tip
                               data-for="View"
                               className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                              onClick={() => handleViewProfile()}
+                              onClick={() => handleViewProfile(item?.customer_email)}
                             >
                               <BsEyeFill />
                               <ReactTooltip

@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { ADD_EDIT_BILLINGDETAILS, CANCEL_SUBSCRIPTION, GET_ALL_CARD, GET_ALL_COUNTRY, GET_ALL_PLANS, GET_BILLING_DETAILS, GET_SELECT_BY_STATE, stripePromise } from "../Api";
+import { ADD_EDIT_BILLINGDETAILS, CANCEL_SUBSCRIPTION, GET_ALL_CARD, GET_ALL_COUNTRY, GET_ALL_PLANS, GET_BILLING_DETAILS, GET_SELECT_BY_STATE, GET_USER_BILLING_DETAILS, stripePromise } from "../Api";
 import { handleCancelSubscription } from "../../Redux/PaymentSlice";
 import PurchaseUserPlan from "../../Components/Common/PurchaseUserPlan";
 import { useEffect } from "react";
@@ -15,6 +15,8 @@ import { GetAllCardList } from "../../Redux/CardSlice";
 import Loading from "../../Components/Loading";
 import { AddEditBillingDetails, GetBillingDetails } from "../../Redux/SettingUserSlice";
 import { useNavigate } from "react-router-dom";
+import { extractPrice, extractSubstring, getDaysPassed, getDifferenceInDays, getRemainingDays } from "../../Components/Common/Common";
+import moment from "moment";
 
 const BillingsPlans = () => {
   const dispatch = useDispatch()
@@ -28,6 +30,8 @@ const BillingsPlans = () => {
   const [loading, setLoading] = useState(true)
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
+  const [userPlan, setUserPlan] = useState({});
+  console.log('userPlan', userPlan)
   const [billingDetails, setBillingDetails] = useState({
     companyName: "",
     billingEmail: "",
@@ -106,6 +110,27 @@ const BillingsPlans = () => {
     }
   };
 
+  const getUserBilling = () => {
+    try {
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${GET_USER_BILLING_DETAILS}?Email=${user?.emailID}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authToken
+        },
+      }
+      dispatch(GetBillingDetails({ config })).then((res) => {
+        if (res?.payload?.status) {
+          setUserPlan(res?.payload?.data)
+        }
+      })
+    } catch (error) {
+      toast.error('Error fetching cards');
+    }
+  }
+
   const getBillingDetails = () => {
     try {
       const config = {
@@ -132,6 +157,7 @@ const BillingsPlans = () => {
     await fetchAllPlan()
     await fetchCards()
     await getBillingDetails()
+    await getUserBilling()
     setLoading(false)
   }
 
@@ -225,21 +251,23 @@ const BillingsPlans = () => {
               <div className="-mx-3 flex items-center mb-6">
                 <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                   <p className="my-3 font-medium lg:text-md">
-                    Your Current Plan is Basic
+                    Your Current Plan is {extractSubstring(userPlan?.description)}
                   </p>
                   <p className="mb-3">A simple start for everyone</p>
 
                   <p className="my-3">
-                    <strong>Active until July 25, 2023</strong>
+                    <strong>Active until {moment(
+                      userPlan?.endDate
+                    ).format("LL")}</strong>
                   </p>
                   <p className="mb-3">
                     We will send you a notification upon Subscription expiration.
                   </p>
 
                   <p className="my-3">
-                    <strong>$199 Per Month</strong>{" "}
+                    <strong>${extractPrice(userPlan?.description)} Per Month</strong>{" "}
                   </p>
-                  <p className="mb-3">A simple start for everyone</p>
+
                   <div className="w-full flex">
                     <button className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
                       onClick={() => {
@@ -267,14 +295,18 @@ const BillingsPlans = () => {
                   <div className="w-full mb-4">
                     <div className="flex justify-between">
                       <span>Days</span>
-                      <span>26 of 30 Days</span>
+                      <span>{getDaysPassed(userPlan?.startDate, new Date())} of {getDifferenceInDays(userPlan?.startDate, userPlan?.endDate)} Days</span>
                     </div>
                     <input
                       id="customRange1"
                       className="w-full form-range"
                       type="range"
+                      value={getDaysPassed(userPlan?.startDate, new Date())}
+                      min={0}
+                      max={getDifferenceInDays(userPlan?.startDate, userPlan?.endDate)}
+                      disabled
                     />
-                    <p>6 days remaining until your plan requires update</p>
+                    <p>{getRemainingDays(new Date(), userPlan?.endDate)} days remaining until your plan requires update</p>
                   </div>
                 </div>
               </div>
@@ -316,7 +348,7 @@ const BillingsPlans = () => {
             </div>
 
             <div className="rounded-xl mt-8 shadow bg-white ">
-              <h4 className="user-name p-5 pb-0">Billing billingAddress</h4>
+              <h4 className="user-name p-5 pb-0">Billing Address</h4>
               <div className="px-5 pb-5">
                 <div className="-mx-3 md:flex">
                   <div className="md:w-1/2 px-3 mb-6 md:mb-0">

@@ -380,6 +380,23 @@ export const GetBillingDetails = createAsyncThunk(
     }
   }
 );
+export const GetUserBillingDetails = createAsyncThunk(
+  "common/GetUserBillingDetails",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
 
 const initialState = {
   Countries: [],
@@ -636,6 +653,17 @@ const SettingUserSlice = createSlice({
       state.status = true;
     });
     builder.addCase(GetBillingDetails.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+    });
+
+    builder.addCase(GetUserBillingDetails.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(GetUserBillingDetails.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(GetUserBillingDetails.rejected, (state, action) => {
       state.status = false;
       state.error = action.payload.message;
     });
