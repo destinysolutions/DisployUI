@@ -176,7 +176,7 @@ const BillingsPlans = () => {
   const handleBillingDetails = () => {
     let Params = {
       ...billingDetails,
-      userBillingDetailsID: 0
+      userBillingDetailsID: billingDetails?.userBillingDetailsID
     }
     const config = {
       method: "post",
