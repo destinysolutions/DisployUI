@@ -253,6 +253,22 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                           </span>
                         </button>
                       </li>
+                      
+                      <li>
+                        <button
+                          className={
+                            STabs === 9
+                              ? "stabshow settingtabactive"
+                              : "settingtab"
+                          }
+                          onClick={() => updateTab(9)}
+                        >
+                          <MdNotificationsActive className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">
+                            Notifications
+                          </span>
+                        </button>
+                      </li>
 
                       <li>
                         <button
@@ -270,21 +286,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </li>
 
-                      <li>
-                        <button
-                          className={
-                            STabs === 9
-                              ? "stabshow settingtabactive"
-                              : "settingtab"
-                          }
-                          onClick={() => updateTab(9)}
-                        >
-                          <MdNotificationsActive className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                          <span className="text-base text-primary">
-                            Notifications
-                          </span>
-                        </button>
-                      </li>
+                      
 
 
 

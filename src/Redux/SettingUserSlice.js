@@ -345,6 +345,42 @@ export const handleGetUserNotification = createAsyncThunk(
   }
 );
 
+export const AddEditBillingDetails = createAsyncThunk(
+  "Billing/AddEditBillingDetails",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+export const GetBillingDetails = createAsyncThunk(
+  "Billing/GetBillingDetails",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
 const initialState = {
   Countries: [],
   error: null,
@@ -578,6 +614,28 @@ const SettingUserSlice = createSlice({
       state.status = true;
     });
     builder.addCase(handleGetUserNotification.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+    });
+
+    builder.addCase(AddEditBillingDetails.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(AddEditBillingDetails.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(AddEditBillingDetails.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+    });
+
+    builder.addCase(GetBillingDetails.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(GetBillingDetails.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(GetBillingDetails.rejected, (state, action) => {
       state.status = false;
       state.error = action.payload.message;
     });

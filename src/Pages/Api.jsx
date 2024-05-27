@@ -241,6 +241,9 @@ export const GET_ALL_BILLING = `${baseUrl}Common/GetAllBillingDetails`
 export const GET_BILLING_BY_ID = `${baseUrl}BillingMaster/GetBillingById`
 export const ADD_CREDIT_CARD = `${baseUrl}common/AddCreditCard`
 export const TALK_TO_SALE = `${baseUrl}common/TalkToSale`
+export const ADD_EDIT_BILLINGDETAILS = `${baseUrl}common/AddorEditBillingDetails`
+export const GET_BILLING_DETAILS = `${baseUrl}common/GetUserBillingDetails`
+
 
 
 // Notifications
