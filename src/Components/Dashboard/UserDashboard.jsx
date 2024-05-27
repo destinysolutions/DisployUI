@@ -14,6 +14,8 @@ import { USERDASHBOARD } from "../../Pages/Api";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import { handleGetUserDetails } from "../../Redux/Authslice";
+import { useDispatch } from "react-redux";
 
 const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   UserDashboard.propTypes = {
@@ -22,6 +24,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const { user, token,userDetails} = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
+  const dispatch = useDispatch()
   //using for registration success messge
   const location = useLocation();
   const message = location?.state?.message || null;
@@ -48,6 +51,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   useEffect(() => {
+    dispatch(handleGetUserDetails({ id: user?.userID, token }));
     let config = {
       method: "get",
       maxBodyLength: Infinity,

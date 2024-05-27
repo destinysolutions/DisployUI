@@ -38,7 +38,6 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
   const [STabs, setSTabs] = useState(5);
   const [searchValue, setSearchValue] = useState("");
   const [showInvoice, setShowInvoice] = useState(false);
-  const [InvoiceID, setInvoiceID] = useState("");
 
   const InvoiceRef = useRef(null);
   const [permissions, setPermissions] = useState({
@@ -223,7 +222,6 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                     setShowInvoice={setShowInvoice}
                     InvoiceRef={InvoiceRef}
                     DownloadInvoice={DownloadInvoice}
-                    setInvoiceID={setInvoiceID}
                     sidebarOpen={sidebarOpen}
                   />
                 </div>

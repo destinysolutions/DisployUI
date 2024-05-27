@@ -14,11 +14,13 @@ import MyCard from "./MyCard";
 import { GetAllCardList } from "../../Redux/CardSlice";
 import Loading from "../../Components/Loading";
 import { AddEditBillingDetails, GetBillingDetails } from "../../Redux/SettingUserSlice";
+import { useNavigate } from "react-router-dom";
 
 const BillingsPlans = () => {
   const dispatch = useDispatch()
   const { user, token, userDetails } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
+  const navigation = useNavigate()
   const [purchasePlan, setPurchasePlan] = useState(false)
   const [selectPlan, setSelectPlan] = useState("")
   const [myplan, setmyPlan] = useState([]);
@@ -27,17 +29,17 @@ const BillingsPlans = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [billingDetails, setBillingDetails] = useState({
-    companyname: "",
-    email: "",
-    taxId: "",
-    vatno: "",
-    phone: "",
-    Address: "",
-    country: "",
-    state: "",
-    zipcode: ""
+    companyName: "",
+    billingEmail: "",
+    taxID: "",
+    vatNumber: "",
+    phoneNumber: "",
+    billingAddress: "",
+    countryID: "",
+    stateID: "",
+    zipCode: ""
   })
-
+  console.log('billingDetails', billingDetails)
 
   useEffect(() => {
     fetch(GET_ALL_COUNTRY)
@@ -46,12 +48,14 @@ const BillingsPlans = () => {
         setCountries(data.data);
       })
       .catch((error) => {
-        console.log("Error fetching country data:", error);
+        console.log("Error fetching countryID data:", error);
       });
   }, []);
+
+
   useEffect(() => {
-    if (billingDetails?.country !== "") {
-      fetch(`${GET_SELECT_BY_STATE}?CountryID=${parseInt(billingDetails?.country)}`)
+    if (billingDetails?.countryID !== "") {
+      fetch(`${GET_SELECT_BY_STATE}?CountryID=${parseInt(billingDetails?.countryID)}`)
         .then((response) => response.json())
         .then((data) => {
           setStates(data.data);
@@ -60,7 +64,7 @@ const BillingsPlans = () => {
           console.log("Error fetching states data:", error);
         });
     }
-  }, [billingDetails?.country])
+  }, [billingDetails?.countryID])
 
   const fetchAllPlan = () => {
     const config = {
@@ -102,7 +106,7 @@ const BillingsPlans = () => {
     }
   };
 
-  const getBillingDetails = () =>{
+  const getBillingDetails = () => {
     try {
       const config = {
         method: "get",
@@ -115,7 +119,7 @@ const BillingsPlans = () => {
       }
       dispatch(GetBillingDetails({ config })).then((res) => {
         if (res?.payload?.status) {
-       
+          setBillingDetails(res?.payload?.data)
         }
       })
     } catch (error) {
@@ -123,12 +127,16 @@ const BillingsPlans = () => {
     }
   }
 
-  useEffect(async() => {
+  const fetchAllAPI = async () => {
     setLoading(true)
     await fetchAllPlan()
     await fetchCards()
     await getBillingDetails()
     setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchAllAPI()
   }, [])
 
 
@@ -157,6 +165,7 @@ const BillingsPlans = () => {
           .then((res) => {
             if (res?.payload?.status) {
               toast.success(res?.payload?.message)
+              navigation("/")
             }
           })
           .catch((error) => console.log('error', error))
@@ -165,6 +174,10 @@ const BillingsPlans = () => {
   }
 
   const handleBillingDetails = () => {
+    let Params = {
+      ...billingDetails,
+      userBillingDetailsID: 0
+    }
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -173,7 +186,7 @@ const BillingsPlans = () => {
         "Content-Type": "application/json",
         Authorization: authToken
       },
-      data: JSON.stringify(billingDetails)
+      data: JSON.stringify(Params)
     }
 
     dispatch(AddEditBillingDetails({ config })).then((res) => {
@@ -187,15 +200,15 @@ const BillingsPlans = () => {
 
   const handleResetBilling = () => {
     setBillingDetails({
-      companyname: "",
-      email: "",
-      taxId: "",
-      vatno: "",
-      phone: "",
-      Address: "",
-      country: "",
-      state: "",
-      zipcode: ""
+      companyName: "",
+      billingEmail: "",
+      taxID: "",
+      vatNumber: "",
+      phoneNumber: "",
+      billingAddress: "",
+      countryID: "",
+      stateID: "",
+      zipCode: ""
     })
   }
 
@@ -303,140 +316,136 @@ const BillingsPlans = () => {
             </div>
 
             <div className="rounded-xl mt-8 shadow bg-white ">
-              <h4 className="user-name p-5 pb-0">Billing Address</h4>
-              <form>
-                <div className="px-5 pb-5">
-                  <div className="-mx-3 md:flex">
-                    <div className="md:w-1/2 px-3 mb-6 md:mb-0">
-                      <label className="label_top text-sm">Company Name</label>
-                      <input
-                        className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                        type="text"
-                        placeholder="Enter Company Name"
-                        onChange={(e) => setBillingDetails({ ...billingDetails, companyname: e.target.value })}
-                        value={billingDetails.companyname}
-                      />
-                      <div></div>
-                    </div>
-                    <div className="md:w-1/2 px-3 mb-6 md:mb-0">
-                      <label className="label_top text-sm">Billing Email</label>
-                      <input
-                        className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                        type="email"
-                        placeholder="Enter Billing Email"
-                        onChange={(e) => setBillingDetails({ ...billingDetails, email: e.target.value })}
-                        value={billingDetails.email}
-                      />
-                      <div></div>
-                    </div>
-                    <div className="md:w-1/2 px-3">
-                      <label className="label_top text-sm">Tax ID </label>
-                      <input
-                        className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                        type="number"
-                        placeholder="Enter Tax ID"
-                        onChange={(e) => setBillingDetails({ ...billingDetails, taxId: e.target.value })}
-                        value={billingDetails.taxId}
-                      />
-                    </div>
+              <h4 className="user-name p-5 pb-0">Billing billingAddress</h4>
+              <div className="px-5 pb-5">
+                <div className="-mx-3 md:flex">
+                  <div className="md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label className="label_top text-sm">Company Name</label>
+                    <input
+                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                      type="text"
+                      placeholder="Enter Company Name"
+                      onChange={(e) => setBillingDetails({ ...billingDetails, companyName: e.target.value })}
+                      value={billingDetails.companyName}
+                    />
+                    <div></div>
                   </div>
-                  <div className="-mx-3 md:flex">
-                    <div className="md:w-1/2 px-3 mb-6 md:mb-0">
-                      <label className="label_top text-sm">VAT Number</label>
-                      <input
-                        className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                        type="number"
-                        placeholder="Enter VAT Number"
-                        onChange={(e) => setBillingDetails({ ...billingDetails, vatno: e.target.value })}
-                        value={billingDetails.vatno}
-                      />
-                    </div>
-                    <div className="md:w-1/2 px-3">
-                      <label className="label_top text-sm">Phone Number</label>
-                      <input
-                        className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                        type="number"
-                        placeholder="Enter Phone Number"
-                        onChange={(e) => setBillingDetails({ ...billingDetails, phone: e.target.value })}
-                        value={billingDetails.phone}
-                        max={10}
-                      />
-                    </div>
-                    <div className="md:w-1/2 px-3">
-                      <label className="label_top text-sm">Billing Address</label>
-                      <input
-                        className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                        type="text"
-                        placeholder="Enter Billing Address"
-                        onChange={(e) => setBillingDetails({ ...billingDetails, Address: e.target.value })}
-                        value={billingDetails.Address}
-                      />
-                    </div>
+                  <div className="md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label className="label_top text-sm">Billing Email</label>
+                    <input
+                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                      type="email"
+                      placeholder="Enter Billing Email"
+                      onChange={(e) => setBillingDetails({ ...billingDetails, billingEmail: e.target.value })}
+                      value={billingDetails.billingEmail}
+                    />
+                    <div></div>
                   </div>
-                  <div className="-mx-3 md:flex ">
-                    <div className="md:w-1/2 px-3">
-                      <label className="label_top text-sm">Country</label>
-                      <div>
-                        <select className="w-full text-black border rounded-lg py-3 px-4 bg-white"
-                          onChange={(e) => setBillingDetails({ ...billingDetails, country: e.target.value })}
-                          value={billingDetails.country}
-                        >
-                          <option label="Select country"></option>
-                          {countries.map((country) => (
-                            <option
-                              key={country.countryID}
-                              value={country.countryID}
-                            >
-                              {country.countryName}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="md:w-1/2 px-3">
-                      <label className="label_top text-sm">State</label>
-                      <div>
-                        <select className="w-full text-black border rounded-lg py-3 px-4 bg-white"
-                          onChange={(e) => setBillingDetails({ ...billingDetails, state: e.target.value })}
-                          value={billingDetails.state}
-                        >
-                          <option label="Select state"></option>
-                          {Array.isArray(states) &&
-                            states.map((state) => (
-                              <option
-                                key={state.stateId}
-                                value={state.stateId}
-                              >
-                                {state.stateName}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="md:w-1/2 px-3">
-                      <label className="label_top text-sm">Zip Code</label>
-                      <input
-                        className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                        type="number"
-                        placeholder="Enter Zip Code"
-                        onChange={(e) => setBillingDetails({ ...billingDetails, zipcode: e.target.value })}
-                        value={billingDetails.zipcode}
-                        max={6}
-                      />
-                    </div>
-                  </div>
-                  <div className="-mx-3 md:flex ">
-                    <div className="md:w-full px-3 flex">
-                      <button className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3" onClick={() => handleBillingDetails()}>
-                        Save Changes
-                      </button>
-                      <button className=" px-5 py-2 border border-primary rounded-full text-primary" onClick={() => handleResetBilling()}>
-                        Reset
-                      </button>
-                    </div>
+                  <div className="md:w-1/2 px-3">
+                    <label className="label_top text-sm">Tax ID </label>
+                    <input
+                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                      type="number"
+                      placeholder="Enter Tax ID"
+                      onChange={(e) => setBillingDetails({ ...billingDetails, taxID: e.target.value })}
+                      value={billingDetails.taxID}
+                    />
                   </div>
                 </div>
-              </form>
+                <div className="-mx-3 md:flex">
+                  <div className="md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label className="label_top text-sm">VAT Number</label>
+                    <input
+                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                      type="number"
+                      placeholder="Enter VAT Number"
+                      onChange={(e) => setBillingDetails({ ...billingDetails, vatNumber: e.target.value })}
+                      value={billingDetails.vatNumber}
+                    />
+                  </div>
+                  <div className="md:w-1/2 px-3">
+                    <label className="label_top text-sm">Phone Number</label>
+                    <input
+                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                      type="number"
+                      placeholder="Enter Phone Number"
+                      onChange={(e) => setBillingDetails({ ...billingDetails, phoneNumber: e.target.value })}
+                      value={billingDetails.phoneNumber}
+                    />
+                  </div>
+                  <div className="md:w-1/2 px-3">
+                    <label className="label_top text-sm">Billing billingAddress</label>
+                    <input
+                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                      type="text"
+                      placeholder="Enter Billing billingAddress"
+                      onChange={(e) => setBillingDetails({ ...billingDetails, billingAddress: e.target.value })}
+                      value={billingDetails.billingAddress}
+                    />
+                  </div>
+                </div>
+                <div className="-mx-3 md:flex ">
+                  <div className="md:w-1/2 px-3">
+                    <label className="label_top text-sm">Country</label>
+                    <div>
+                      <select className="w-full text-black border rounded-lg py-3 px-4 bg-white"
+                        onChange={(e) => setBillingDetails({ ...billingDetails, countryID: e.target.value })}
+                        value={billingDetails.countryID}
+                      >
+                        <option label="Select country"></option>
+                        {countries.map((country) => (
+                          <option
+                            key={country.countryID}
+                            value={country.countryID}
+                          >
+                            {country.countryName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="md:w-1/2 px-3">
+                    <label className="label_top text-sm">State</label>
+                    <div>
+                      <select className="w-full text-black border rounded-lg py-3 px-4 bg-white"
+                        onChange={(e) => setBillingDetails({ ...billingDetails, stateID: e.target.value })}
+                        value={billingDetails.stateID}
+                      >
+                        <option label="Select state"></option>
+                        {Array.isArray(states) &&
+                          states.map((state) => (
+                            <option
+                              key={state.stateId}
+                              value={state.stateId}
+                            >
+                              {state.stateName}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="md:w-1/2 px-3">
+                    <label className="label_top text-sm">Zip Code</label>
+                    <input
+                      className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                      type="number"
+                      placeholder="Enter Zip Code"
+                      onChange={(e) => setBillingDetails({ ...billingDetails, zipCode: e.target.value })}
+                      value={billingDetails.zipCode}
+                    />
+                  </div>
+                </div>
+                <div className="-mx-3 md:flex ">
+                  <div className="md:w-full px-3 flex">
+                    <button className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3" onClick={() => handleBillingDetails()}>
+                      Save Changes
+                    </button>
+                    <button className=" px-5 py-2 border border-primary rounded-full text-primary" onClick={() => handleResetBilling()}>
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </Suspense>
