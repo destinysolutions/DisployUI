@@ -165,7 +165,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           setSelectedScreens(data.screens)
           setIsAbove(data.isAbove);
           setShowRepeatSettings(data?.repeatDay !== null ? true : false)
-          if(data?.repeatDay !== null){
+          if (data?.repeatDay !== null) {
             let arr = []
             buttons?.map((item) => {
               if (data?.repeatDay?.includes(item)) {
@@ -239,7 +239,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       (isSelected) => isSelected
     );
 
-    let repeatDayValue = null;
+    let repeatDayValue = "";
     if (areSpecificDaysSelected || selectAllDays) {
       repeatDayValue = selectAllDays
         ? buttons.map((dayName) => dayName)
@@ -262,7 +262,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       temperature: Number(temperature),
       isAbove: isAbove,
       timeZoneID: timeZone?.[0]?.timeZoneID,
-      repeatDay: repeatDayValue,
+      repeatDay: repeatDayValue ? repeatDayValue : "",
     };
     setTimeout(() => {
       dispatch(addData(data)).then((res) => {
