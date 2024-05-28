@@ -91,6 +91,13 @@ const AdminSidebar = ({ sidebarOpen }) => {
       path: "/settings",
       icon: <img src={settingIcon} alt="Settings" className="w-6" />,
     },
+
+    // {
+    //   title: "Sales Man",
+    //   cName: "nav-text link-items",
+    //   path: "/SalesMan",
+    //   icon: <img src={settingIcon} alt="Settings" className="w-6" />,
+    // },
   ];
 
   //using for mobile sidebar

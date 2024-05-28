@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { IncreaseTrialDays, handleCancelSubscription } from "../../../Redux/PaymentSlice";
 import { capitalizeFirstLetter, extractSubstring, getDaysPassed, getDifferenceInDays } from "../../Common/Common";
 import moment from "moment";
+import toast from "react-hot-toast";
 
 const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPlan, customerData }) => {
 
@@ -78,7 +79,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
     const config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${INCREASE_TRIAL_DAYS}}`,
+      url: `${INCREASE_TRIAL_DAYS}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken
@@ -88,7 +89,9 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
     dispatch(IncreaseTrialDays({ config }))
       .then((res) => {
         if (res?.payload?.status) {
-
+          toast.error(res?.payload?.message)
+        } else {
+          toast.error(res?.payload?.message)
         }
       })
       .catch((error) => console.log('error', error))

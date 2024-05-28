@@ -605,3 +605,27 @@ export function getDaysPassed(start, end) {
 
   return differenceInDays;
 }
+
+export const months = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+
+export function generateYearArray() {
+  // Get the current year
+  const currentYear = new Date().getFullYear();
+
+  // Create an array of years from 2000 to the current year
+  const years = [];
+  for (let year = 2000; year <= currentYear; year++) {
+      years.push(year);
+  }
+
+  return years;
+}
+
+
+export function getRandomTwoDigitNumber(Num,Num1) {
+  return Math.floor(Math.random() * Num) + 10;
+}
