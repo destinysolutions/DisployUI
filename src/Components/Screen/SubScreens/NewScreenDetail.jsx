@@ -132,7 +132,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const compositionRef = useRef(null);
   const appRef = useRef(null);
 
-  // console.log(otpData);
 
   // useEffect(() => {
   //   // get youtube data
@@ -242,7 +241,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const signalROnConfirm = () => {
-    console.log("run signal r");
     const Params = {
       id: socket.id,
       connection: socket.connected,
@@ -255,49 +253,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedAsset(assetPreview);
       setShowAssestOptionsPopup(false);
     }, 1000);
-    // let config = {
-    //   method: 'put',
-    //   maxBodyLength: Infinity,
-    //   url: `https://disploystage.disploy.com/api/NewScreen/SendTvStatus?status=${socket.connected === true ? true : false}&MacID=${otpData[0]?.MACID}`,
-    // };
-    // axios.request(config)
-    // .then((response) => {
-    //   console.log(JSON.stringify(response.data));
-    // })
-    // .catch((error) => {
-    //   console.log(error);
-    // });
-
-    // try {
-    //   if (connection.state == "Disconnected") {
-    //     connection
-    //       .start()
-    //       .then((res) => {
-    //         console.log("signal connected");
-    //       })
-    //       .then(() => {
-    //         connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {
-    //           console.log("invoked");
-    //           console.log("Message sent:", otpData[0]?.MACID);
-    //           // setShowAssetModal(false);
-    //           // setSearchAsset("");
-    //           // setSelectedAsset(assetPreview);
-    //           // setShowAssestOptionsPopup(false);
-    //         });
-    //       });
-    //   } else {
-    //     connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {
-    //       console.log("invoked");
-    //       console.log("Message sent:", otpData[0]?.MACID);
-    //       // setShowAssetModal(false);
-    //       // setSearchAsset("");
-    //       // setSelectedAsset(assetPreview);
-    //       // setShowAssestOptionsPopup(false);
-    //     });
-    //   }
-    // } catch (error) {
-    //   console.error("Error during connection:", error);
-    // }
   };
 
   const handleScreenDetail = () => {
@@ -516,7 +471,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         setTagsData(tagsResponse.data.data);
         setCompositionData(compositionResponse.data.data);
         setAllCompositionData(compositionResponse.data.data);
-        // console.log(tagsResponse);
       })
       .catch((error) => {
         console.error(error);
@@ -734,64 +688,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           console.log(error);
         });
     }, 1000);
-    // if (connection.state == "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke("ScreenConnected")
-    //         .then(() => {
-    //           console.log("SignalR method invoked after Asset update");
-    //           // const response = dispatch(
-    //           //   handleUpdateScreenAsset({
-    //           //     mediaName,
-    //           //     dataToUpdate: data,
-    //           //     token,
-    //           //   })
-    //           // );
-    //           // if (!response) return;
-    //           // response
-    //           //   .then((response) => {
-    //           //     toast.remove();
-    //           //     toast.success("Media Updated.");
-    //           //   })
-    //           //   .catch((error) => {
-    //           //     toast.remove();
-    //           //     console.log(error);
-    //           //   });
-    //         })
-    //         .catch((error) => {
-    //           toast.remove();
-    //           console.error("Error invoking SignalR method:", error);
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke("ScreenConnected")
-    //     .then(() => {
-    //       console.log("SignalR method invoked after Asset update");
-    //       // const response = dispatch(
-    //       //   handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
-    //       // );
-    //       // if (!response) return;
-    //       // response
-    //       //   .then((response) => {
-    //       //     toast.remove();
-    //       //     toast.success("Media Updated.");
-    //       //   })
-    //       //   .catch((error) => {
-    //       //     toast.remove();
-    //       //     console.log(error);
-    //       //   });
-    //     })
-    //     .catch((error) => {
-    //       toast.remove();
-    //       console.error("Error invoking SignalR method:", error);
-    //     });
-    // }
   };
 
   return (

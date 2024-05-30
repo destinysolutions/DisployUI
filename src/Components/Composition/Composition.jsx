@@ -248,44 +248,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           ?.replace(/^\s+/g, ""),
       };
       socket.emit("ScreenConnected", Params);
-      // if (connection.state == "Disconnected") {
-      //   connection
-      //     .start()
-      //     .then((res) => {
-      //       console.log("signal connected");
-      //     })
-      //     .then(() => {
-      //       connection
-      //         .invoke(
-      //           "ScreenConnected",
-      //           compositionData
-      //             ?.map((item) => item?.maciDs)
-      //             ?.join(",")
-      //             ?.replace(/^\s+/g, "")
-      //         )
-      //         .then(() => {
-      //           console.log("SignalR method invoked after screen update");
-      //         })
-      //         .catch((error) => {
-      //           console.error("Error invoking SignalR method:", error);
-      //         });
-      //     });
-      // } else {
-      //   connection
-      //     .invoke(
-      //       "ScreenConnected",
-      //       compositionData
-      //         ?.map((item) => item?.maciDs)
-      //         ?.join(",")
-      //         ?.replace(/^\s+/g, "")
-      //     )
-      //     .then(() => {
-      //       console.log("SignalR method invoked after screen update");
-      //     })
-      //     .catch((error) => {
-      //       console.error("Error invoking SignalR method:", error);
-      //     });
-      // }
       setSelectScreenModal(false);
       setAddScreenModal(false);
     });
@@ -467,40 +429,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               setAddScreenModal(false);
               loadComposition();
             }, 2000);
-            // Invoke ScreenConnected method
-            // if (connection.state == "Disconnected") {
-            //   connection
-            //     .start()
-            //     .then((res) => {
-            //       console.log("signal connected");
-            //     })
-            //     .then(() => {
-            //       connection
-            //         .invoke("ScreenConnected", macids)
-            //         .then(() => {
-            //           console.log("func. invoked");
-            //           // loadComposition();
-            //         })
-            //         .catch((err) => {
-            //           toast.remove();
-            //           console.log("error from invoke", err);
-            //           toast.error("Something went wrong, try again");
-            //         });
-            //     });
-            // } else {
-            //   connection
-            //     .invoke("ScreenConnected", macids)
-            //     .then(() => {
-            //       console.log("func. invoked");
-            //       // toast.remove();
-            //       // loadComposition();
-            //     })
-            //     .catch((err) => {
-            //       toast.remove();
-            //       console.log("error from invoke", err);
-            //       toast.error("Something went wrong, try again");
-            //     });
-            // }
           } catch (error) {
             console.error("Error during connection:", error);
             toast.error("Something went wrong, try again");

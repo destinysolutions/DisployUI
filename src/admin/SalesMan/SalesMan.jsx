@@ -105,7 +105,6 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
         sortedField,
         sortOrder
     ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    console.log('sortedAndPaginatedData', sortedAndPaginatedData)
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -131,7 +130,6 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
     };
 
     const handleEdit = (value) => {
-        console.log('value', value)
         setHeading("Update");
         setEditId(value.orgSingupID);
         setShowModal(true);
@@ -249,7 +247,7 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                                                             <td scope="col" className="px-6 py-4">
                                                                 {item.phone}
                                                             </td>
-                                                            <td scope="col" className="px-6 py-4">{item.percentageratio}</td>
+                                                            <td scope="col" className="px-6 py-4">{item.percentageRatio}</td>
                                                             <td className="px-6 py-4">
                                                                 <div className="cursor-pointer text-xl flex gap-4 ">
                                                                     <button

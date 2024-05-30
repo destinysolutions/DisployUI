@@ -137,36 +137,6 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
           toast.remove();
           history("/youtube");
         }, 1000);
-        // Wrap the SignalR invocation in a Promise
-        // if (connection.state == "Disconnected") {
-        //   connection
-        //     .start()
-        //     .then((res) => {
-        //       console.log("signal connected");
-        //     })
-        //     .then(() => {
-        //       connection
-        //         .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
-        //         .then(() => {
-        //           console.log("SignalR method invoked after youtube update");
-        //           // history("/youtube");
-        //         })
-        //         .catch((error) => {
-        //           console.error("Error invoking SignalR method:", error);
-        //         });
-        //     });
-        // } else {
-        //   connection
-        //     .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
-        //     .then(() => {
-        //       console.log("SignalR method invoked after youtube update");
-        //       // history("/youtube");
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error invoking SignalR method:", error);
-        //     });
-        // }
-
         setSaveLoading(false);
       }
     } catch (error) {

@@ -141,7 +141,6 @@ const ScreenAssignModal = ({
   //     selectedScreens: selectedScreenIdsString,
   //   };
 
-  //   console.log(" Merged Screens ---- ", { paylod });
   //   // ...
 
   //   // Clear screenName and validationError after updating

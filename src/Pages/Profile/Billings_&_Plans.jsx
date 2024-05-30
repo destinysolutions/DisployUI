@@ -31,7 +31,6 @@ const BillingsPlans = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [userPlan, setUserPlan] = useState({});
-  console.log('userPlan', userPlan)
   const [billingDetails, setBillingDetails] = useState({
     companyName: "",
     billingEmail: "",
@@ -43,7 +42,6 @@ const BillingsPlans = () => {
     stateID: "",
     zipCode: ""
   })
-  console.log('billingDetails', billingDetails)
 
   useEffect(() => {
     fetch(GET_ALL_COUNTRY)
@@ -124,6 +122,7 @@ const BillingsPlans = () => {
       dispatch(GetBillingDetails({ config })).then((res) => {
         if (res?.payload?.status) {
           setUserPlan(res?.payload?.data)
+          setLoading(false)
         }
       })
     } catch (error) {
@@ -158,7 +157,6 @@ const BillingsPlans = () => {
     await fetchCards()
     await getBillingDetails()
     await getUserBilling()
-    setLoading(false)
   }
 
   useEffect(() => {
@@ -251,7 +249,7 @@ const BillingsPlans = () => {
               <div className="-mx-3 flex items-center mb-6">
                 <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                   <p className="my-3 font-medium lg:text-md">
-                    Your Current Plan is {extractSubstring(userPlan?.description)}
+                    Your Current Plan is {userPlan?.description ? extractSubstring(userPlan?.description) : ""}
                   </p>
                   <p className="mb-3">A simple start for everyone</p>
 

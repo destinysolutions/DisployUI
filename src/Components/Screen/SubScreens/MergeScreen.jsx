@@ -160,45 +160,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       macId: macIds,
     };
     socket.emit("ScreenConnected", Params);
-
-    // if (connection.state === "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke(
-    //           "ScreenConnected",
-    //           store?.data
-    //             ?.map((item) => item?.maciDs)
-    //             .join(",")
-    //             .replace(/^\s+/g, "")
-    //         )
-    //         .then(() => {
-    //           console.log("SignalR method invoked after screen update");
-    //         })
-    //         .catch((error) => {
-    //           console.error("Error invoking SignalR method:", error);
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke(
-    //       "ScreenConnected",
-    //       store?.data
-    //         ?.map((item) => item?.maciDs)
-    //         .join(",")
-    //         .replace(/^\s+/g, "")
-    //     )
-    //     .then(() => {
-    //       console.log("SignalR method invoked after screen update");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error invoking SignalR method:", error);
-    //     });
-    // }
   };
 
   const closeModal = () => {

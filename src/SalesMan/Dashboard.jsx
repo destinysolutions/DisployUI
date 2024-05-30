@@ -22,7 +22,7 @@ const Dashboard = ({sidebarOpen,setSidebarOpen}) => {
                 />
                 <SalesManNavbar />
             </div>
-            <div className="pt-10 px-5 page-contain ">
+            <div className="pt-28 px-5 page-contain ">
                 <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                     <div className='shadow rounded-lg p-5 '>
 

@@ -326,7 +326,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       <button
                         data-tip
                         data-for="Delete"
-                        className="p-2 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                         onClick={handleDeleteAllPermanently}
                       >
                         <RiDeleteBin5Line className="text-lg" />

@@ -86,7 +86,6 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  console.log('sortedAndPaginatedData', sortedAndPaginatedData)
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);

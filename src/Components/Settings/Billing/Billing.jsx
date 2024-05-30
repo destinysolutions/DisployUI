@@ -28,10 +28,7 @@ const Billing = ({ sidebarOpen }) => {
   const [cardList, setCardList] = useState([])
   const [userPlan, setUserPlan] = useState({});
   const [customerData, setCustomerData] = useState({});
-  console.log('customerData', customerData)
-
   const [showBillingProfile, setShowBillingProfile] = useState(false);
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = billingList?.slice(indexOfFirstItem, indexOfLastItem);

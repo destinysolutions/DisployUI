@@ -43,7 +43,6 @@ const Defaultmedia = ({ permissions }) => {
   const [filePath, setFilePath] = useState("");
   const [emergencyfilePath, setEmergencyFilePath] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  console.log('filteredData', filteredData)
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [searchAssest, setSearchAssest] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);

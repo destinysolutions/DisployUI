@@ -20,7 +20,6 @@ const AddEditSalesMan = ({
     fetchData
 }) => {
     const { token } = useSelector((s) => s.root.auth);
-    console.log('token', token)
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     //using for validation and register api calling
