@@ -276,7 +276,7 @@ const ScreenAssignModal = ({
   //   let config = {
   //     method: "get",
   //     maxBodyLength: Infinity,
-  //     // url: `https://disploystage.disploy.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${selectedScreenIdsString}`,
+  //     // url: `https://back.disploy.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${selectedScreenIdsString}`,
   //     // headers: {
   //     //   Authorization: authToken,
   //     // },

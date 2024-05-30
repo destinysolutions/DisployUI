@@ -3,7 +3,7 @@ import axios from "axios";
 
 // live URl:- back.disploy.com
 
-export const baseUrl = "https://disploystage.disploy.com/api/";
+export const baseUrl = "https://back.disploy.com/api/";
 
 export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
 
@@ -13,17 +13,17 @@ export const paypalOptions = {
 };
 
 export const postUrl = axios.create({
-  baseURL: "https://disploystage.disploy.com/api/",
+  baseURL: "https://back.disploy.com/api/",
   method: "post",
 });
 
 export const deleteUrl = axios.create({
-  baseURL: "https://disploystage.disploy.com/api/",
+  baseURL: "https://back.disploy.com/api/",
   method: "delete",
 });
 
 export const getUrl = axios.create({
-  baseURL: "https://disploystage.disploy.com/api/",
+  baseURL: "https://back.disploy.com/api/",
   method: "get",
 });
 
@@ -66,7 +66,7 @@ export const SCHEDULE_EVENT_SELECT_BY_ID = `${baseUrl}EventMaster/SelectByID`;
 export const SCHEDULE_SELECT_BY_ID = `${baseUrl}ScheduleMaster/SelectByID`;
 export const UPDATED_SCHEDULE_DATA = `${baseUrl}EventMaster/SelectAllGetScheduleList`;
 export const UPDATE_TIMEZONE = `${baseUrl}ScheduleMaster/UpdateTimeZone`;
-export const SIGNAL_R = `https://disploystage.disploy.com/chatHub`;
+export const SIGNAL_R = `https://back.disploy.com/chatHub`;
 export const GET_ALL_TRASHDATA = `${baseUrl}Trash/GetAllTrash`;
 export const ADD_TRASH = `${baseUrl}Trash/AddTrash`;
 export const SINGL_DELETED_TRASH = `${baseUrl}Trash/singlDeletedTrash`;
@@ -170,7 +170,7 @@ export const CANCELREPORT = `${baseUrl}Report/GetCancelReport`;
 export const MEDIAREPORT = `${baseUrl}Report/GetAssetReport`;
 export const BILLINGREPORT = `${baseUrl}Report/GetBillingReport`;
 
-//https://disploystage.disploy.com
+//https://back.disploy.com
 //http://192.168.1.115
 
 // Retailar
