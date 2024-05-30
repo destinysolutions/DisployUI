@@ -1,10 +1,9 @@
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { CgYoutube } from "react-icons/cg";
 import { FaUserCheck } from "react-icons/fa6";
 import { FiImage } from "react-icons/fi";
 import { HiDocument, HiFolder, HiVideoCamera } from "react-icons/hi";
-import { MdDeleteForever, MdRestore } from "react-icons/md";
 
 const UserTrash = ({ selectUser, TrashData, sidebarOpen }) => {
   // Pagination
@@ -200,23 +199,6 @@ const UserTrash = ({ selectUser, TrashData, sidebarOpen }) => {
                         <td className=" border-b border-lightgray text-sm ">
                           {item.assetType}
                         </td>
-                        {/*<td className="border-b border-lightgray text-sm">
-                                    <div className="cursor-pointer text-xl flex gap-4 ">
-                                      <button
-                                        type="button"
-                                        className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-3"
-                                      >
-                                        <MdDeleteForever />
-                                      </button>
-                                        <button
-                                          type="button"
-                                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                          
-                                        >
-                                          <MdRestore />
-                                        </button>
-                                    </div>
-                                    </td>*/}
                       </tr>
                     ))
                   )}

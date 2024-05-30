@@ -1,6 +1,4 @@
-import React, { useRef, useState } from "react";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
+import React, { lazy, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { SiMediamarkt } from "react-icons/si";
 import {
@@ -9,23 +7,36 @@ import {
   FaRegCalendarPlus,
 } from "react-icons/fa";
 import { HiClipboardDocumentList } from "react-icons/hi2";
-import Invoice from "../Components/Settings/Invoice";
-import Myplan from "../Components/Settings/Myplan";
 import { BsFillPrinterFill, BsFillSendFill } from "react-icons/bs";
 import ReactToPrint from "react-to-print";
-import { AiOutlineSearch } from "react-icons/ai";
 import html2pdf from "html2pdf.js";
-import CreateAPI from "./CreateAPI";
-import Discount from "./Discount";
 import { MdDiscount } from "react-icons/md";
 import { FiCodesandbox } from "react-icons/fi";
-import SupplierPlan from "./SupplierPlan";
-import Footer from "../Components/Footer";
-import Billing from "../Components/Settings/Billing/Billing";
 import { useDispatch } from "react-redux";
 import { handleSendInvoice } from "../Redux/PaymentSlice";
 import { SEND_INVOICE } from "../Pages/Api";
 import { useSelector } from "react-redux";
+
+import SupplierPlan from "./SupplierPlan";
+import Footer from "../Components/Footer";
+import Billing from "../Components/Settings/Billing/Billing";
+import AdminSidebar from "./AdminSidebar";
+import AdminNavbar from "./AdminNavbar";
+import CreateAPI from "./CreateAPI";
+import Discount from "./Discount";
+import Invoice from "../Components/Settings/Invoice";
+import Myplan from "../Components/Settings/Myplan";
+
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
+// const Billing = lazy(() => import('../Components/Settings/Billing/Billing'));
+// const SupplierPlan = lazy(() => import('./SupplierPlan'));
+// const Footer = lazy(() => import('../Components/Footer'));
+// const CreateAPI = lazy(() => import('./CreateAPI'));
+// const Discount = lazy(() => import('./Discount'));
+// const Myplan = lazy(() => import('../Components/Settings/Myplan'));
+// const Invoice = lazy(() => import('../Components/Settings/Invoice'));
+
 
 const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
   AdminSetting.propTypes = {

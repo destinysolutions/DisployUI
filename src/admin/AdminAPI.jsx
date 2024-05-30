@@ -1,23 +1,26 @@
+export const BackURL = `https://disploystage.disploy.com/api/`
+// export const BackURL = `https://back.disploy.com/api/`
+
 export const ADD_USER_TYPE_MASTER =
-  "https://disploystage.disploy.com/api/UserMaster/AddUserTypeMaster";
+  `${BackURL}UserMaster/AddUserTypeMaster`;
 export const GET_ALL_USER_TYPE_MASTER =
-  "https://disploystage.disploy.com/api/UserMaster/GetAllUserTypeMaster";
+  `${BackURL}UserMaster/GetAllUserTypeMaster`;
 export const GET_ALL_ORGANIZATION_MASTER =
-  "https://disploystage.disploy.com/api/UserMaster/GetAllOrganizationMaster";
+  `${BackURL}UserMaster/GetAllOrganizationMaster`;
 export const ADD_ORGANIZATION_MASTER =
-  "https://disploystage.disploy.com/api/UserMaster/AddOrganizationMaster";
+  `${BackURL}UserMaster/AddOrganizationMaster`;
 export const GET_ALL_ORGANIZATION_SIGNUPS =
-  "https://disploystage.disploy.com/api/UserMaster/GetAllOrganizationSignups";
+  `${BackURL}UserMaster/GetAllOrganizationSignups`;
 export const SELECT_BY_ORGANIZATION_SIGNUPS_ID =
-  "https://disploystage.disploy.com/api/UserMaster/SelectByOrganizationSignupsID";
+  `${BackURL}UserMaster/SelectByOrganizationSignupsID`;
 export const ADD_USER_MASTER =
-  "https://disploystage.disploy.com/api/UserMaster/AddUserMaster";
+  `${BackURL}UserMaster/AddUserMaster`;
 export const GET_ALL_USER_MASTER =
-  "https://disploystage.disploy.com/api/UserMaster/GetAllUserMaster";
+  `${BackURL}UserMaster/GetAllUserMaster`;
 export const GET_ALL_STORAGE =
-  "https://disploystage.disploy.com/api/Storage/GetAllStorage";
+  `${BackURL}Storage/GetAllStorage`;
 export const INCREASE_STORAGE =
-  "https://disploystage.disploy.com/api/Storage/IncreaseStorage";
+  `${BackURL}Storage/IncreaseStorage`;
 
   export const CUSTOMER_DETAILS_ALL =
-  "https://disploystage.disploy.com/api/Common/GetAllOrganizationDetails";
+  `${BackURL}Common/GetAllOrganizationDetails`;

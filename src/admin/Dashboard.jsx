@@ -1,54 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import mapImg from "../images/DisployImg/mapImg.png";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import ReactApexChart from "react-apexcharts";
-import RevenueTable from "../Components/Dashboard/RevenueTable";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { ADMINDASHBOARD } from "../Pages/Api";
-import DashboardScreen from "../Components/Common/DashboardScreen";
 import { handleGetAllScreenAdmin } from "../Redux/Screenslice";
 import { useDispatch } from "react-redux";
 
-const SalesOptions = {
-  colors: ["#404f8b"],
-  chart: {
-    type: "basic-bar",
-  },
+import RevenueTable from "../Components/Dashboard/RevenueTable";
+import mapImg from "../images/DisployImg/mapImg.png";
+import DashboardScreen from "../Components/Common/DashboardScreen";
 
-  dataLabels: {
-    enabled: false,
-  },
+// const DashboardScreen = lazy(() => import('../Components/Common/DashboardScreen'));
+// const RevenueTable = lazy(() => import('../Components/Dashboard/RevenueTable'));
 
-  xaxis: {
-    categories: [
-      "Jan",
-      "Feb",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-  },
-};
-
-const stateVlaue = {
-  series: [
-    {
-      name: "Sales",
-      data: [44, 55, 41, 67, 22, 43, 65, 25, 80, 60, 40, 15],
-    },
-  ],
-};
 
 const Dashboard = ({ sidebarOpen }) => {
   const customIcon = new L.Icon({

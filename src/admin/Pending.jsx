@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
 import { DELETE_USER } from "../Pages/Api";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
 import {
   ADD_ORGANIZATION_MASTER,
   GET_ALL_ORGANIZATION_SIGNUPS,
   SELECT_BY_ORGANIZATION_SIGNUPS_ID,
 } from "./AdminAPI";
+
+import AdminSidebar from "./AdminSidebar";
+import AdminNavbar from "./AdminNavbar";
+
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
 
 const Pending = ({ sidebarOpen, setSidebarOpen }) => {
   const [userData, setUserData] = useState([]);

@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
+import React, { lazy, useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -13,8 +11,14 @@ import toast from "react-hot-toast";
 import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
 import { BsEyeFill } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
+
+import AdminSidebar from "./AdminSidebar";
+import AdminNavbar from "./AdminNavbar";
+
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
 
 const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.onBoding);

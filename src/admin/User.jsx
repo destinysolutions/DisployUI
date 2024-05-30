@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
+import React, { lazy, useEffect } from "react";
 import { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
@@ -11,11 +9,18 @@ import {
   GET_ALL_USER_MASTER,
   GET_ALL_USER_TYPE_MASTER,
 } from "./AdminAPI";
-import AddEditUser from "./AddEditUser";
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
 import ReactTooltip from "react-tooltip";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+
+import AddEditUser from "./AddEditUser";
+import AdminSidebar from "./AdminSidebar";
+import AdminNavbar from "./AdminNavbar";
+
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AddEditUser = lazy(() => import('./AddEditUser'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
 
 const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [addUserModal, setAddUserModal] = useState(false);

@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getAllCustomerDetails, handleRemoveUser } from "../Redux/admin/OnBodingSlice";
 import { useSelector } from "react-redux";
 import { RiUser3Fill } from "react-icons/ri";
-import { AiOutlineCloudUpload } from "react-icons/ai";
 import ReactPlayer from "react-player";
 import Swal from "sweetalert2";
 import { extractSubstring, getDaysPassed, getDifferenceInDays } from "../Components/Common/Common";
@@ -18,6 +15,11 @@ import { GetBillingDetails } from "../Redux/SettingUserSlice";
 import toast from "react-hot-toast";
 import moment from "moment";
 
+import AdminSidebar from "./AdminSidebar";
+import AdminNavbar from "./AdminNavbar";
+
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
 
 const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, token } = useSelector((s) => s.root.auth);

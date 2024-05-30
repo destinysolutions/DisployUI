@@ -1,14 +1,10 @@
-import React, { useRef, useState } from "react";
-import AdminSidebar from "../AdminSidebar";
-import AdminNavbar from "../AdminNavbar";
+import React, { lazy, useRef, useState } from "react";
 import { BiUserPlus } from "react-icons/bi";
 import { AiOutlineSearch } from "react-icons/ai";
 import * as Yup from "yup";
 import axios from "axios";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
-import AddEditAdvertisement from "./AddEditAdvertisement";
-import CustomerScreen from "./CustomerScreen";
 import { useEffect } from "react";
 import { ADDEDITADVERTISEMENT } from "../../Pages/Api";
 import { MdOutlineResetTv, MdPreview } from "react-icons/md";
@@ -19,11 +15,24 @@ import {
 } from "../../Redux/admin/AdvertisementSlice";
 import { useDispatch } from "react-redux";
 import { getOnBodingData } from "../../Redux/admin/OnBodingSlice";
-import AssetsPreview from "../../Components/Common/AssetsPreview";
 import { BsEyeFill } from "react-icons/bs";
-import AdminMarginmodel from "./AdminMarginmodel";
 import { getTimeFromDate } from "../../Components/Common/Common";
 import ReactTooltip from "react-tooltip";
+
+import AssetsPreview from "../../Components/Common/AssetsPreview";
+import AdminMarginmodel from "./AdminMarginmodel";
+import AddEditAdvertisement from "./AddEditAdvertisement";
+import CustomerScreen from "./CustomerScreen";
+import AdminSidebar from "../AdminSidebar";
+import AdminNavbar from "../AdminNavbar";
+
+// const AssetsPreview = lazy(() => import('../../Components/Common/AssetsPreview'));
+// const AddEditAdvertisement = lazy(() => import('./AddEditAdvertisement'));
+// const CustomerScreen = lazy(() => import('./CustomerScreen'));
+// const AdminSidebar = lazy(() => import('../AdminSidebar'));
+// const AdminNavbar = lazy(() => import('../AdminNavbar'));
+// const AdminMarginmodel = lazy(() => import('./AdminMarginmodel'));
+
 
 const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const hiddenFileInput = useRef(null);

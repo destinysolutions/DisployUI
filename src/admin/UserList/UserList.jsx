@@ -1,21 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { getOnBodingData } from "../../Redux/admin/OnBodingSlice";
-import AdminSidebar from "../AdminSidebar";
-import AdminNavbar from "../AdminNavbar";
 import { MdOutlineScreenshotMonitor } from "react-icons/md";
 import { BsImages } from "react-icons/bs";
 import { BiSolidPlaylist } from "react-icons/bi";
 import { GrScheduleNew } from "react-icons/gr";
 import { TbAppsFilled } from "react-icons/tb";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import UserScreen from "./UserScreen";
-import UserAssets from "./UserAssets";
-import UserComposition from "./UserComposition";
-import UserApp from "./UserApp";
-import UserSchedule from "./UserSchedule";
-import UserTrash from "./UserTrash";
 import { handleGetScreen } from "../../Redux/Screenslice";
 import {
   ADMINUSERTOKEN,
@@ -31,6 +23,26 @@ import {
 } from "../../Redux/AppsSlice";
 import { handleGetTrash } from "../../Redux/Trash";
 import axios from "axios";
+
+import AdminSidebar from "../AdminSidebar";
+import AdminNavbar from "../AdminNavbar";
+import UserScreen from "./UserScreen";
+import UserAssets from "./UserAssets";
+import UserComposition from "./UserComposition";
+import UserApp from "./UserApp";
+import UserSchedule from "./UserSchedule";
+import UserTrash from "./UserTrash";
+
+// const AdminNavbar = lazy(() => import('../AdminNavbar'));
+// const AdminSidebar = lazy(() => import('../AdminSidebar'));
+// const UserScreen = lazy(() => import('./UserScreen'));
+// const UserAssets = lazy(() => import('./UserAssets'));
+// const UserComposition = lazy(() => import('./UserComposition'));
+// const UserApp = lazy(() => import('./UserApp'));
+// const UserSchedule = lazy(() => import('./UserSchedule'));
+// const UserTrash = lazy(() => import('./UserTrash'));
+
+
 const UserList = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.onBoding);
   const { loading, screens } = useSelector((s) => s.root.screen);

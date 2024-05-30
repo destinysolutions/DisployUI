@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { lazy, useEffect, useState } from 'react'
 import { IoIosArrowBack } from 'react-icons/io'
 import { getTimeFromDate, multiOptionsFeature } from '../../Components/Common/Common';
-import AddSegments from './AddSegments';
 import Select from "react-select";
 import { handleAddEditDiscount } from '../../Redux/AdminSettingSlice';
 import { ADD_EDIT_DISCOUNT, GET_ALL_FEATURE_LIST } from '../../Pages/Api';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { handleAllFeatureList } from '../../Redux/CommonSlice';
+
+import AddSegments from './AddSegments';
+
+// const AddSegments = lazy(() => import('./AddSegments'));
+
 const FeatureDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData, selectData, getTimezone, selectedTimezoneName, setSelectedTimezoneName }) => {
   const { token } = useSelector((s) => s.root.auth);
   const dispatch = useDispatch()

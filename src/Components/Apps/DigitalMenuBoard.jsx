@@ -1,9 +1,6 @@
-import React, { Suspense, useEffect, useRef, useState } from 'react'
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import Loading from '../Loading';
-import Sidebar from '../Sidebar';
-import Navbar from '../Navbar';
 import { getMenuAll, getMenuPermission } from '../../Redux/SidebarSlice';
 import { TbAppsFilled } from 'react-icons/tb';
 import { MdArrowBackIosNew, MdOutlineEdit } from 'react-icons/md';
@@ -13,15 +10,27 @@ import { ADD_TAGS_DIGITAL_MENU, ASSIGN_SCREEN_DIGITAL_MENU, DELETE_DIGITAL_MENU,
 import { BiDotsHorizontalRounded } from 'react-icons/bi';
 import { FiUpload } from 'react-icons/fi';
 import { RiDeleteBin5Line, RiDeleteBinLine } from 'react-icons/ri';
-import digitalMenuLogo from "../../images/AppsImg/foods.svg";
-import Digital_Menu from "../../images/AppsImg/Digital_Menu.jpg"
-import AddOrEditTagPopup from '../AddOrEditTagPopup';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import toast from 'react-hot-toast';
 import { socket } from '../../App';
-import ScreenAssignModal from '../ScreenAssignModal';
 import { BsInfoLg } from 'react-icons/bs';
+
+
+import digitalMenuLogo from "../../images/AppsImg/foods.svg";
+import Digital_Menu from "../../images/AppsImg/Digital_Menu.jpg"
+import AddOrEditTagPopup from '../AddOrEditTagPopup';
+import ScreenAssignModal from '../ScreenAssignModal';
+import Loading from '../Loading';
+import Sidebar from '../Sidebar';
+import Navbar from '../Navbar';
 import PurchasePlanWarning from '../Common/PurchasePlan/PurchasePlanWarning';
+
+// const Navbar = lazy(() => import('../Navbar'));
+// const Sidebar = lazy(() => import('../Sidebar'));
+// const Loading = lazy(() => import('../Loading'));
+// const PurchasePlanWarning = lazy(() => import('../Common/PurchasePlan/PurchasePlanWarning'));
+// const ScreenAssignModal = lazy(() => import('../ScreenAssignModal'));
+// const AddOrEditTagPopup = lazy(() => import('../AddOrEditTagPopup'));
 
 const DigitalMenuBoard = ({ sidebarOpen, setSidebarOpen }) => {
   const {userDetails, token, user } = useSelector((state) => state.root.auth);
