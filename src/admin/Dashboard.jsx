@@ -61,7 +61,7 @@ const Dashboard = ({ sidebarOpen }) => {
   const center = [20.5937, 78.9629];
   const { token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
-  const [dashboardData, setDashboardData] = useState(null);
+  const [dashboardData, setDashboardData] = useState([]);
   const [selectedScreen, setSelectedScreen] = useState("");
   const [screenList, setScreenList] = useState([]);
   const [screenDialogOpen, setScreenDialogOpen] = useState(false)
@@ -229,7 +229,7 @@ const Dashboard = ({ sidebarOpen }) => {
               <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
 
               <MarkerClusterGroup>
-                {dashboardData?.screen.map((screen, index) => (
+                {dashboardData?.screen?.map((screen, index) => (
                   <Marker
                     key={index}
                     position={[screen.lattitude, screen.longituted]}
