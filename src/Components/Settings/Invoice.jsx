@@ -179,14 +179,13 @@ const Invoice = ({
                               </p>
                             </td>
                             <td className="px-5 py-3 text-lg text-center">
-                              {item?.status === "paid" && (
-                                <span className="relative inline-block px-3 py-1 font-semibold bg-lime-300 text-green leading-tight rounded-full">
-                                  {item?.status}
+                              {item.status === "paid" ? (
+                                <span className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
+                                  Active
                                 </span>
-                              )}
-                              {item?.status !== "paid" && (
-                                <span className="relative inline-block px-3 py-1 font-semibold bg-orange-200 text-orange-400 leading-tight rounded-full">
-                                  {item?.status}
+                              ) : (
+                                <span className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
+                                  Inactive
                                 </span>
                               )}
                             </td>

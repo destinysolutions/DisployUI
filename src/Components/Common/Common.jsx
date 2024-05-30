@@ -543,17 +543,13 @@ export  function mergeNotificationData(listNotification, res) {
 }
 
 export function extractSubstring(str) {
-  // Find the index positions of '×' and '('
-  let startIndex = str.indexOf('×') + 1; // Add 1 to get the position after '×'
-  let endIndex = str.indexOf('(');
+  let match = str.match(/× (.*?) \(/);
+    if (match) {
+        return match[1];
+    } else {
+        return null; // or an appropriate error message
+    }
 
-  // Extract the substring between '×' and '(' and trim any leading/trailing whitespace
-  if (startIndex > 0 && endIndex > startIndex) {
-      return str.substring(startIndex, endIndex).trim();
-  }
-
-  // Return an empty string if '×' or '(' are not found in the expected order
-  return '';
 }
 
 export function extractPrice(string) {

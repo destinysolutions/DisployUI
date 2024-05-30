@@ -133,6 +133,7 @@ const Login = () => {
             if (response.status == 200) {
               window.localStorage.setItem("timer", JSON.stringify(18_00));
               const userRole = response.role;
+              console.log('response', response)
               if (userRole == 1) {
                 localStorage.setItem("role_access", "ADMIN");
                 toast.success("Login successfully.");
@@ -150,6 +151,10 @@ const Login = () => {
                 // console.log(response);
                 // navigate("/screens");
                 window.location.href = "/dashboard";
+              } else if (response?.IsSalesMan) {
+                localStorage.setItem("role_access", "SALESMAN");
+                toast.success("Login successfully.");
+
               } else {
                 // Handle other roles or unknown roles
                 console.log("Unexpected role value:", userRole);

@@ -188,7 +188,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
           </div>
         </div>
         <div className="w-full lg:w-1/2 pr-5 pl-3 mb-4 ">
-          <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 min-h-full">
+          <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200">
             <div className="user-pro-details text-base">
               <h3 className="user-name my-2">Current Plan</h3>
               <h4 className="text-base font-medium">Your Current Plan {extractSubstring(userPlan?.description)}</h4>
@@ -196,18 +196,19 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
               <h4 className="text-base font-medium">Active until {moment(
                 userPlan?.endDate
               ).format("LL")}</h4>
-              <p className="mb-4">
+           <p className="mb-4">
                 We will send you a notification upon Subscription expiration.
               </p>
+                {/* 
               <div className="w-full py-6 my-5 bg-light-red text-center">
                 <p className="mt-5">We need your attention!</p>
                 <p className="mb-5"> Your plan requires update</p>
               </div>
               <div className="w-full mb-4">
-                <div className="flex justify-between">
+               <div className="flex justify-between">
                   <span>Days</span>
                   <span>{getDaysPassed(userPlan?.startDate, new Date())} of {getDifferenceInDays(userPlan?.startDate, userPlan?.endDate)} Days</span>
-                </div>
+              </div>
                 <input
                   id="customRange1"
                   className="w-full form-range"
@@ -216,9 +217,9 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
                   onChange={handleChange}
                   min={0}
                   max={getDifferenceInDays(userPlan?.startDate, userPlan?.endDate)}
-                />
-              </div>
-              <div className="flex justify-center w-full mb-5">
+              />
+              </div>*/}
+              {/*<div className="flex justify-center w-full mb-5">
                 <button
                   className="mr-3 text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-3 py-2 text-center"
                   onClick={() => handleIncreaseTrial(customerData?.email)}
@@ -233,7 +234,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
                 >
                   Cancel Subscription
                 </button>
-              </div>
+                </div>*/}
             </div>
           </div>
         </div>

@@ -2323,3 +2323,7 @@ input.Talk-formInput {
 .border-b-none{
   border-bottom: none !important;
 }
+
+.admin-media {
+  width: 100% !important;
+}

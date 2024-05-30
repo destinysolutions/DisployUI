@@ -1,23 +1,23 @@
 export const ADD_USER_TYPE_MASTER =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/AddUserTypeMaster";
+  "disploystage.disploy.com/api/UserMaster/AddUserTypeMaster";
 export const GET_ALL_USER_TYPE_MASTER =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/GetAllUserTypeMaster";
+  "disploystage.disploy.com/api/UserMaster/GetAllUserTypeMaster";
 export const GET_ALL_ORGANIZATION_MASTER =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/GetAllOrganizationMaster";
+  "disploystage.disploy.com/api/UserMaster/GetAllOrganizationMaster";
 export const ADD_ORGANIZATION_MASTER =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrganizationMaster";
+  "disploystage.disploy.com/api/UserMaster/AddOrganizationMaster";
 export const GET_ALL_ORGANIZATION_SIGNUPS =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/GetAllOrganizationSignups";
+  "disploystage.disploy.com/api/UserMaster/GetAllOrganizationSignups";
 export const SELECT_BY_ORGANIZATION_SIGNUPS_ID =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/SelectByOrganizationSignupsID";
+  "disploystage.disploy.com/api/UserMaster/SelectByOrganizationSignupsID";
 export const ADD_USER_MASTER =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/AddUserMaster";
+  "disploystage.disploy.com/api/UserMaster/AddUserMaster";
 export const GET_ALL_USER_MASTER =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/GetAllUserMaster";
+  "disploystage.disploy.com/api/UserMaster/GetAllUserMaster";
 export const GET_ALL_STORAGE =
-  "https://disployapi.thedestinysolutions.com/api/Storage/GetAllStorage";
+  "disploystage.disploy.com/api/Storage/GetAllStorage";
 export const INCREASE_STORAGE =
-  "https://disployapi.thedestinysolutions.com/api/Storage/IncreaseStorage";
+  "disploystage.disploy.com/api/Storage/IncreaseStorage";
 
   export const CUSTOMER_DETAILS_ALL =
-  "https://disployapi.thedestinysolutions.com/api/Common/GetAllOrganizationDetails";
+  "disploystage.disploy.com/api/Common/GetAllOrganizationDetails";

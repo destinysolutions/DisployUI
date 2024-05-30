@@ -30,11 +30,6 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    if (loadFist) {
-      dispatch(getOnBodingData());
-      setLoadFist(false);
-    }
-
     if (store && store.status === "failed") {
       toast.error(store.error);
     }
@@ -47,7 +42,14 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
     if (store && store.status) {
       dispatch(resetStatus());
     }
-  }, [loadFist, store]);
+  }, [store]);
+
+useEffect(() => {
+  if (loadFist) {
+    dispatch(getOnBodingData());
+    setLoadFist(false);
+  }
+}, [loadFist])
 
   // Filter data based on search term
   const filteredData = Array.isArray(store?.data)
@@ -224,13 +226,16 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                           Organization Name
                         </th>
                         <th scope="col" className="px-6 py-3">
-                          Trial Day
+                          Total Screen
                         </th>
                         <th scope="col" className="px-6 py-3">
-                          Screen
+                          Ads Screen
                         </th>
                         <th scope="col" className="px-6 py-3">
                           Storage Request
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                        Associated
                         </th>
                         <th scope="col" className="px-6 py-3">
                           Status
@@ -250,7 +255,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                 scope="col"
                                 className="px-3.5 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize"
                               >
-                                {item.firstName !== null ? item.firstName : "" + " " + item.lastName !== null ? item.lastName : ""}
+                                {item.firstName !== null ? item.firstName : ""} {" "}  {item.lastName !== null ? item.lastName : ""}
                               </td>
                               <td scope="col" className="px-6 py-4">{item.email}</td>
                               <td scope="col" className="px-6 py-4">
@@ -263,7 +268,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
 
                               <td scope="col" className="px-6 py-4 capitalize">
-                                {item.trialDays}
+                                {item.totalScreens}
                               </td>
 
                               <td scope="col" className="px-6 py-4 capitalize">
@@ -280,7 +285,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                   >
                                     {!item.increaseSize == 0 &&
                                       `${item.increaseSize} GB`}
-                                    
+
                                   </span>
                                   // <span
                                   //   onClick={() =>
@@ -293,6 +298,9 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                   //   View Request
                                   // </span>
                                 )}
+                              </td>
+                              <td scope="col" className="px-6 py-4 capitalize">
+                              {item?.associated}
                               </td>
                               <td className="px-6 py-4 capitalize">
                                 <span>

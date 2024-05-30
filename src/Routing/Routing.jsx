@@ -57,9 +57,10 @@ import DigitalMenuBoard from "../Components/Apps/DigitalMenuBoard";
 import DigitalMenuBoardDetail from "../Components/Apps/DigitalMenuBoardDetail";
 import DummyDashboard from "../Components/Common/DummyDashboard";
 import RetailerRoutes from "./RetailerRoutes";
+import SalesManRoutes from "./SalesManRoutes";
 
 const Routing = () => {
-  const { user, token,userDetails } = useSelector((state) => state.root.auth);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const accessDetails = localStorage.getItem("role_access");
   const handleResize = useCallback(() => {
@@ -108,6 +109,14 @@ const Routing = () => {
         setSidebarOpen={setSidebarOpen}
       />
     );
+
+  if (accessDetails === "SALESMAN")
+    return (
+      <SalesManRoutes
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
+    )
 
   if (accessDetails === "USER" && ((userDetails?.isTrial || userDetails?.isActivePlan) || (user?.userDetails?.isRetailer === true))) {
     return (
@@ -597,7 +606,7 @@ const Routing = () => {
     );
   }
 
-  if (accessDetails === "USER" && (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ) {
+  if (accessDetails === "USER" && (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false)) {
     return (
       <BrowserRouter>
         <ErrorBoundary
@@ -624,6 +633,8 @@ const Routing = () => {
       </BrowserRouter>
     )
   }
+
+
 
   return (
     <Loading />

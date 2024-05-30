@@ -258,7 +258,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     // let config = {
     //   method: 'put',
     //   maxBodyLength: Infinity,
-    //   url: `https://disployapi.thedestinysolutions.com/api/NewScreen/SendTvStatus?status=${socket.connected === true ? true : false}&MacID=${otpData[0]?.MACID}`,
+    //   url: `disploystage.disploy.com/api/NewScreen/SendTvStatus?status=${socket.connected === true ? true : false}&MacID=${otpData[0]?.MACID}`,
     // };
     // axios.request(config)
     // .then((response) => {

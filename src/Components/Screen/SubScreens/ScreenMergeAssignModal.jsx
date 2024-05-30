@@ -127,7 +127,7 @@ const ScreenAssignModal = ({
   //   let config = {
   //     method: "get",
   //     maxBodyLength: Infinity,
-  //     // url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${selectedScreenIdsString}`,
+  //     // url: `disploystage.disploy.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${selectedScreenIdsString}`,
   //     // headers: {
   //     //   Authorization: authToken,
   //     // },

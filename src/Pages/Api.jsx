@@ -1,7 +1,9 @@
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 
-export const baseUrl = "https://disployapi.thedestinysolutions.com/api/";
+// live URl:- back.disploy.com
+
+export const baseUrl = "disploystage.disploy.com/api/";
 
 export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
 
@@ -11,17 +13,17 @@ export const paypalOptions = {
 };
 
 export const postUrl = axios.create({
-  baseURL: "https://disployapi.thedestinysolutions.com/api/",
+  baseURL: "disploystage.disploy.com/api/",
   method: "post",
 });
 
 export const deleteUrl = axios.create({
-  baseURL: "https://disployapi.thedestinysolutions.com/api/",
+  baseURL: "disploystage.disploy.com/api/",
   method: "delete",
 });
 
 export const getUrl = axios.create({
-  baseURL: "https://disployapi.thedestinysolutions.com/api/",
+  baseURL: "disploystage.disploy.com/api/",
   method: "get",
 });
 
@@ -64,7 +66,7 @@ export const SCHEDULE_EVENT_SELECT_BY_ID = `${baseUrl}EventMaster/SelectByID`;
 export const SCHEDULE_SELECT_BY_ID = `${baseUrl}ScheduleMaster/SelectByID`;
 export const UPDATED_SCHEDULE_DATA = `${baseUrl}EventMaster/SelectAllGetScheduleList`;
 export const UPDATE_TIMEZONE = `${baseUrl}ScheduleMaster/UpdateTimeZone`;
-export const SIGNAL_R = `https://disployapi.thedestinysolutions.com/chatHub`;
+export const SIGNAL_R = `disploystage.disploy.com/chatHub`;
 export const GET_ALL_TRASHDATA = `${baseUrl}Trash/GetAllTrash`;
 export const ADD_TRASH = `${baseUrl}Trash/AddTrash`;
 export const SINGL_DELETED_TRASH = `${baseUrl}Trash/singlDeletedTrash`;
@@ -168,7 +170,7 @@ export const CANCELREPORT = `${baseUrl}Report/GetCancelReport`;
 export const MEDIAREPORT = `${baseUrl}Report/GetAssetReport`;
 export const BILLINGREPORT = `${baseUrl}Report/GetBillingReport`;
 
-//https://disployapi.thedestinysolutions.com
+//disploystage.disploy.com
 //http://192.168.1.115
 
 // Retailar
@@ -281,3 +283,6 @@ export const ADD_CARD = `${baseUrl}CardMaster/AddEditCard`
 export const DELETE_CARD = `${baseUrl}CardMaster/DeleteCard`
 export const GET_ALL_CARD = `${baseUrl}CardMaster/GetAllCard`
 
+// Sales Man
+
+export const All_SAELS_MAN_LIST = `${baseUrl}SalesMan/GetAllSalesMan`

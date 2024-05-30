@@ -3,9 +3,9 @@ import React from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import * as Yup from "yup";
-import { addRetailerData, updateRetailerData } from "../../Redux/admin/RetailerSlice";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
+import { addRetailerData, updateRetailerData } from "../../Redux/admin/RetailerSlice";
 const AddEditRetailer = ({
   heading,
   toggleModal,
