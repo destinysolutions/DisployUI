@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
+import React, { lazy, useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -13,8 +11,14 @@ import toast from "react-hot-toast";
 import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
 import { BsEyeFill } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
+
+import AdminSidebar from "./AdminSidebar";
+import AdminNavbar from "./AdminNavbar";
+
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
 
 const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.onBoding);
@@ -44,12 +48,12 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [store]);
 
-useEffect(() => {
-  if (loadFist) {
-    dispatch(getOnBodingData());
-    setLoadFist(false);
-  }
-}, [loadFist])
+  useEffect(() => {
+    if (loadFist) {
+      dispatch(getOnBodingData());
+      setLoadFist(false);
+    }
+  }, [loadFist])
 
   // Filter data based on search term
   const filteredData = Array.isArray(store?.data)
@@ -82,7 +86,6 @@ useEffect(() => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  console.log('sortedAndPaginatedData', sortedAndPaginatedData)
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -235,7 +238,7 @@ useEffect(() => {
                           Storage Request
                         </th>
                         <th scope="col" className="px-6 py-3">
-                        Associated
+                          Associated
                         </th>
                         <th scope="col" className="px-6 py-3">
                           Status
@@ -300,7 +303,7 @@ useEffect(() => {
                                 )}
                               </td>
                               <td scope="col" className="px-6 py-4 capitalize">
-                              {item?.associated}
+                                {item?.associated}
                               </td>
                               <td className="px-6 py-4 capitalize">
                                 <span>
@@ -361,7 +364,7 @@ useEffect(() => {
                         })}
                       {store?.loading && (
                         <tr>
-                          <td colSpan={10}>
+                          <td colSpan={11}>
                             <div className="flex text-center m-5 justify-center">
                               <svg
                                 aria-hidden="true"
@@ -387,9 +390,9 @@ useEffect(() => {
                       )}
                       {!store?.loading && sortedAndPaginatedData?.length === 0 && (
                         <tr>
-                          <td colSpan={10}>
+                          <td colSpan={11}>
                             <div className="flex text-center justify-center">
-                              <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
+                              <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                 No Data Available
                               </span>
                             </div>

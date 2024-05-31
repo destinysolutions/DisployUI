@@ -95,7 +95,7 @@ const App = () => {
 
   // when user enter first time after login
   useEffect(() => {
-    if (user !== null && timer == 1800) {
+    if (user !== null && timer === 1800) {
       start();
     }
   }, [user, timer]);
@@ -109,7 +109,7 @@ const App = () => {
   }, [user]);
 
   useEffect(() => {
-    if (user !== null) {
+    if (user !== null && user?.role !== "1") {
       dispatch(handleGetUserDetails({ id: user?.userID, token }));
     }
   }, [user]);

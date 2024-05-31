@@ -164,36 +164,6 @@ const ShowAssetModal = ({
       macId: setscreenMacID,
     };
     socket.emit("ScreenConnected", Params);
-    // try {
-    //   if (connection.state == "Disconnected") {
-    //     connection
-    //       .start()
-    //       .then((res) => {
-    //         console.log("signal connected");
-    //       })
-    //       .then(() => {
-    //         connection.invoke("ScreenConnected", setscreenMacID).then(() => {
-    //           console.log("invoked");
-    //           console.log("Message sent:");
-    //         });
-    //       })
-    //       .catch((err) => {
-    //         console.log(err, "signal error");
-    //       });
-    //   } else {
-    //     connection
-    //       .invoke("ScreenConnected", setscreenMacID)
-    //       .then(() => {
-    //         console.log("invoked");
-    //         console.log("Message sent:");
-    //       })
-    //       .catch((err) => {
-    //         console.log(err, "signal error");
-    //       });
-    //   }
-    // } catch (error) {
-    //   console.error("Error during connection:", error);
-    // }
   };
   const handleOnConfirm = (setscreenMacID) => {
     setShowAssetModal(false);

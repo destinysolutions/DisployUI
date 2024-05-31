@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from "react";
-import AdminSidebar from "../AdminSidebar";
-import AdminNavbar from "../AdminNavbar";
+import React, { lazy, useEffect, useState } from "react";
 import { BiUserPlus } from "react-icons/bi";
 import { AiOutlineSearch } from "react-icons/ai";
-import AddEditRetailer from "./AddEditRetailer";
-import * as Yup from "yup";
-import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import {
-  addRetailerData,
   getRetailerData,
   resetStatus,
-  updateRetailerData,
 } from "../../Redux/admin/RetailerSlice";
 import { MdOutlineModeEdit } from "react-icons/md";
 import ReactTooltip from "react-tooltip";
+
+import AdminSidebar from "../AdminSidebar";
+import AdminNavbar from "../AdminNavbar";
+import AddEditRetailer from "./AddEditRetailer";
+
+// const AdminNavbar = lazy(() => import('../AdminNavbar'));
+// const AdminSidebar = lazy(() => import('../AdminSidebar'));
+// const AddEditRetailer = lazy(() => import('./AddEditRetailer'));
+
 
 const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.retailerData);

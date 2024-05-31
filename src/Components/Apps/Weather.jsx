@@ -351,38 +351,6 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
             setAddScreenModal(false);
             FetchData();
           }, 1000);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke("ScreenConnected", macids)
-          //         .then(() => {
-          //           console.log(" method invoked");
-          //           // setSelectScreenModal(false);
-          //           // setAddScreenModal(false);
-          //           // FetchData();
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke("ScreenConnected", macids)
-          //     .then(() => {
-          //       console.log(" method invoked");
-          //       // setSelectScreenModal(false);
-          //       // setAddScreenModal(false);
-          //       // FetchData();
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
         }
       })
       .catch((error) => {

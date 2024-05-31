@@ -1,9 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { AiOutlinePlusCircle, AiOutlineSearch } from "react-icons/ai";
-import { BiEdit } from "react-icons/bi";
+import { AiOutlineSearch } from "react-icons/ai";
 import { FaUserCheck } from "react-icons/fa6";
-import { MdOutlineResetTv, MdPreview } from "react-icons/md";
 
 const UserComposition = ({ selectUser, compositions, loading ,sidebarOpen}) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -227,41 +225,6 @@ const UserComposition = ({ selectUser, compositions, loading ,sidebarOpen}) => {
                                       : ""}
                                   </div>
                                 </td>
-
-                                {/* <td className="text-center">
-                                    <div className="flex justify-center gap-2 items-center">
-                                      <div className="relative">
-                                        <button
-                                          data-tip
-                                          data-for="Edit"
-                                          type="button"
-                                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        >
-                                          <BiEdit />
-                                        </button>
-                                      </div>
-                                      <div className="relative">
-                                        <button
-                                          data-tip
-                                          data-for="Preview"
-                                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-3"
-                                        >
-                                          <MdPreview />
-                                        </button>
-                                      </div>
-                                      <div className="relative">
-                                        <button
-                                          data-tip
-                                          data-for="Set to Screen"
-                                          type="button"
-                                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        >
-                                          <MdOutlineResetTv />
-
-                                        </button>
-                                      </div>
-                                    </div>
-                                        </td>*/}
                               </tr>
                             );
                           })}

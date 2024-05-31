@@ -88,7 +88,6 @@ const GoogleDrive = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const authorizationCode = urlParams.get("code");
-    console.log("run");
     if (authorizationCode) {
       let data = JSON.stringify({
         userId: user?.userID,

@@ -752,7 +752,6 @@ const Registration = () => {
                   data-modal-hide="default-modal"
                   onClick={() => {
                     setShowModal(false);
-                    setIsCheckboxChecked();
                   }}
                 >
                   <svg

@@ -354,32 +354,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           macId: allScreenMacids,
         };
         socket.emit("ScreenConnected", Params);
-        // if (connection.state == "Disconnected") {
-        //   connection
-        //     .start()
-        //     .then((res) => {
-        //       console.log("signal connected");
-        //     })
-        //     .then(() => {
-        //       connection
-        //         .invoke("ScreenConnected", allScreenMacids)
-        //         .then(() => {
-        //           console.log("SignalR method invoked after Asset update");
-        //         })
-        //         .catch((error) => {
-        //           console.error("Error invoking SignalR method:", error);
-        //         });
-        //     });
-        // } else {
-        //   connection
-        //     .invoke("ScreenConnected", allScreenMacids)
-        //     .then(() => {
-        //       console.log("SignalR method invoked after Asset update");
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error invoking SignalR method:", error);
-        //     });
-        // }
       }
     });
   };
@@ -410,62 +384,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           });
       }
     }, 1000);
-    // if (connection.state == "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke("ScreenConnected", MACID)
-    //         .then(() => {
-    //           // const response = dispatch(
-    //           //   handleDeleteScreenById({ screenID: screenId, token })
-    //           // );
-    //           // if (response) {
-    //           //   response
-    //           //     .then((res) => {
-    //           //       toast.remove();
-    //           //       toast.success("Deleted Successfully.");
-    //           //       console.log(MACID);
-    //           //     })
-    //           //     .catch((error) => {
-    //           //       toast.remove();
-    //           //       console.log(error);
-    //           //     });
-    //           // }
-    //           console.log("SignalR method invoked after Asset update");
-    //         })
-    //         .catch((error) => {
-    //           console.error("Error invoking SignalR method:", error);
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke("ScreenConnected", MACID)
-    //     .then(() => {
-    //       // const response = dispatch(
-    //       //   handleDeleteScreenById({ screenID: screenId, token })
-    //       // );
-    //       // if (response) {
-    //       //   response
-    //       //     .then((res) => {
-    //       //       toast.remove();
-    //       //       toast.success("Deleted Successfully.");
-    //       //       console.log(MACID);
-    //       //     })
-    //       //     .catch((error) => {
-    //       //       toast.remove();
-    //       //       console.log(error);
-    //       //     });
-    //       // }
-    //       console.log("SignalR method invoked after Asset update");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error invoking SignalR method:", error);
-    //     });
-    // }
   };
 
   const handleScheduleAdd = (schedule) => {
@@ -518,7 +436,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       selectedComposition?.compositionID ||
       selectedYoutube?.youtubeId ||
       selectedTextScroll?.textScroll_Id;
-    // return console.log(moduleID, selectedComposition);
     let mediaType = selectedAsset?.assetID
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
@@ -561,40 +478,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             macId: screenToUpdate?.macid.replace(/^\s+/g, ""),
           };
           socket.emit("ScreenConnected", Params);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke(
-          //           "ScreenConnected",
-          //           screenToUpdate?.macid.replace(/^\s+/g, "")
-          //         )
-          //         .then(() => {
-          //           toast.success("Media Updated.");
-          //           console.log("SignalR method invoked after Asset update");
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke(
-          //       "ScreenConnected",
-          //       screenToUpdate?.macid.replace(/^\s+/g, "")
-          //     )
-          //     .then(() => {
-          //       toast.success("Media Updated.");
-          //       console.log("SignalR method invoked after Asset update");
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
           setIsEditingScreen(false);
         })
         .catch((error) => {
@@ -645,38 +528,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             macId: screenToUpdate?.macid.replace(/^\s+/g, ""),
           };
           socket.emit("ScreenConnected", Params);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke(
-          //           "ScreenConnected",
-          //           screenToUpdate?.macid.replace(/^\s+/g, "")
-          //         )
-          //         .then(() => {
-          //           console.log("SignalR method invoked after Schedule update");
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke(
-          //       "ScreenConnected",
-          //       screenToUpdate?.macid.replace(/^\s+/g, "")
-          //     )
-          //     .then(() => {
-          //       console.log("SignalR method invoked after Schedule update");
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
           setIsEditingScreen(false);
         })
         .catch((error) => {
@@ -831,32 +682,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       macId: allScreenMacids,
     };
     socket.emit("ScreenConnected", Params);
-    // if (connection.state == "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke("ScreenConnected", allScreenMacids)
-    //         .then(() => {
-    //           console.log("SignalR method invoked after Asset update");
-    //         })
-    //         .catch((error) => {
-    //           console.error("Error invoking SignalR method:", error);
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke("ScreenConnected", allScreenMacids)
-    //     .then(() => {
-    //       console.log("SignalR method invoked after Asset update");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error invoking SignalR method:", error);
-    //     });
-    // }
   };
 
   const handleUpdateMenu = () => {

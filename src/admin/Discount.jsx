@@ -1,10 +1,5 @@
-import React, { useState } from 'react'
+import React, { lazy, useState } from 'react'
 import { BiSolidDiscount } from "react-icons/bi";
-import AddEditDiscount from './Discount/AddEditDiscount';
-import ScreenDiscount from './Discount/ScreenDiscount';
-import FeatureDiscount from './Discount/FeatureDiscount';
-import TrialPeriodDiscount from './Discount/TrialPeriodDiscount';
-import CustomDiscount from './Discount/CustomDiscount';
 import { DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID, GET_SCEDULE_TIMEZONE } from '../Pages/Api';
 import { handleDeleteDiscount, handleGetAllDiscount, handleGetAllSegment } from '../Redux/AdminSettingSlice';
 import { useSelector } from 'react-redux';
@@ -17,6 +12,19 @@ import moment from 'moment';
 import axios from 'axios';
 import { MdOutlineEdit } from 'react-icons/md';
 import ReactTooltip from 'react-tooltip';
+
+import AddEditDiscount from './Discount/AddEditDiscount';
+import ScreenDiscount from './Discount/ScreenDiscount';
+import FeatureDiscount from './Discount/FeatureDiscount';
+import TrialPeriodDiscount from './Discount/TrialPeriodDiscount';
+import CustomDiscount from './Discount/CustomDiscount';
+
+// const AddEditDiscount = lazy(() => import('./Discount/AddEditDiscount'));
+// const ScreenDiscount = lazy(() => import('./Discount/ScreenDiscount'));
+// const FeatureDiscount = lazy(() => import('./Discount/FeatureDiscount'));
+// const TrialPeriodDiscount = lazy(() => import('./Discount/TrialPeriodDiscount'));
+// const CustomDiscount = lazy(() => import('./Discount/CustomDiscount'));
+
 
 const Discount = ({ sidebarOpen }) => {
     const { token } = useSelector((s) => s.root.auth);

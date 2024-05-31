@@ -9,7 +9,17 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
     const dispatch = useDispatch();
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        PlanDetails: featureList,
+        PlanName: "",
+        totalscreen: 1,
+        storage: "",
+        cost: "",
+        Status: "Active"
+    });
+    const [errorPlanName, setErrorPlanName] = useState(false)
+    const [errorStorage, setErrorStorage] = useState(false)
+    const [errorCost, setErrorCost] = useState(false)
 
     useEffect(() => {
         if (selectPlan) {
@@ -42,39 +52,37 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
     };
 
     const handleCreatePlan = () => {
-        let Params = {
-            "listOfPlansID": 0,
-            "planDetailss": "string",
-            "planName": "string",
-            "isRecomnded": true,
-            "planPrice": 0,
-            "isdefault": true,
-            "planDetails": [
-                {
-                    "listOfFeaturesID": 0,
-                    "featureType": "string",
-                    "lstOfFeatures": [
-                        {
-                            "listOfPlansDetailsID": 0,
-                            "name": "string",
-                            "value": "string",
-                            "listOfFeaturesID": 0,
-                            "listOfPlansID": 0,
-                            "isCheckBox": true
-                        }
-                    ]
-                }
-            ]
+        let hasError = false;
+        if (!formData?.PlanName) {
+            setErrorPlanName(true)
+            hasError = true
         }
+        if (!formData?.storage) {
+            setErrorStorage(true)
+            hasError = true
+        }
+
+        if (!formData?.cost) {
+            setErrorCost(true)
+            hasError = true
+        }
+
+        if (hasError) {
+            return;
+        }
+
+        console.log(formData, "formData")
+
+        
         let config = {
-            method: "get",
+            method: "post",
             maxBodyLength: Infinity,
             url: `${ADD_EDTT_PLAN}`,
             headers: {
                 "Content-Type": "application/json",
                 Authorization: authToken,
             },
-            data: JSON.stringify(Params)
+            data: JSON.stringify(formData)
         };
         dispatch(handleAddPlan({ config })).then((res) => {
             if (res?.payload?.status === 200) {
@@ -126,6 +134,9 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                         value={formData?.PlanName}
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
+                                                {errorPlanName && (
+                                                    <span className='error'> This Field is Required.</span>
+                                                )}
                                             </div>
                                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
                                                 <div className="relative">
@@ -150,6 +161,9 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                         value={formData?.storage}
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
+                                                {errorStorage && (
+                                                    <span className='error'> This Field is Required.</span>
+                                                )}
                                             </div>
                                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
                                                 <div className="relative">
@@ -162,6 +176,9 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                         value={formData?.cost}
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
+                                                {errorCost && (
+                                                    <span className='error'> This Field is Required.</span>
+                                                )}
                                             </div>
                                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
                                                 <div className="relative">
@@ -172,8 +189,8 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                         value={formData?.Status}
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)}
                                                     >
-                                                        <option>Active</option>
-                                                        <option>Deactive</option>
+                                                        <option value="Active">Active</option>
+                                                        <option value="Deactive">Deactive</option>
                                                     </select>
                                                 </div>
                                             </div>

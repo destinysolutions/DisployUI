@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
+import React, { lazy, useEffect } from "react";
 import { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSelector } from "react-redux";
@@ -13,8 +11,15 @@ import {
 import toast from "react-hot-toast";
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
 import Swal from "sweetalert2";
-import AddEditManageUserType from "./AddEditManageUserType";
 import ReactTooltip from "react-tooltip";
+
+import AddEditManageUserType from "./AddEditManageUserType";
+import AdminNavbar from "./AdminNavbar";
+import AdminSidebar from "./AdminSidebar";
+
+// const AddEditManageUserType = lazy(() => import('./AddEditManageUserType'));
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
 
 const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.ManageUser);
@@ -38,7 +43,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
       dispatch(getManageUserData());
       setLoadFist(false);
     }
-  }, [loadFist, store]);
+  }, [loadFist]);
 
   const filteredData = Array.isArray(store?.data)
     ? store?.data?.filter((item) =>
@@ -148,6 +153,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
           } else {
             toast.success("Add data successFully");
           }
+          setLoadFist(true);
           setAddUserTypeModal(false);
         }
       })

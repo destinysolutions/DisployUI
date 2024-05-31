@@ -13,7 +13,6 @@ const UserNotifications = () => {
     const dispatch = useDispatch()
     const authToken = `Bearer ${token}`;
     const [listNotification, setListNotification] = useState([])
-    console.log('listNotification', listNotification)
     const [Notification, setNotification] = useState([])
     const [loading, setLoading] = useState(false)
     const [userData, setUserData] = useState([]);
@@ -164,7 +163,6 @@ const UserNotifications = () => {
         listNotification.forEach((item, idx) => {
             if (idx === indexs) {
                 item.user.forEach(userData => {
-                    console.log('userData', userData)
                     const obj = {
                         UserNotificationID: userData?.userNotificationID ? userData?.userNotificationID : "0",
                         NotificationFeatureID: userData?.notificationFeatureId,
@@ -263,7 +261,6 @@ const UserNotifications = () => {
                                                 </thead>
                                                 <tbody>
                                                     {data?.user?.map((item, index) => {
-                                                        console.log(listNotification[indexs]?.user[index], "123456")
                                                         return (
                                                             <tr className="border-b border-b-[#E4E6FF]" key={index}>
                                                                 <td className="text-[#5E5E5E] text-center">

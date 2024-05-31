@@ -1,54 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import mapImg from "../images/DisployImg/mapImg.png";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import ReactApexChart from "react-apexcharts";
-import RevenueTable from "../Components/Dashboard/RevenueTable";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { ADMINDASHBOARD } from "../Pages/Api";
-import DashboardScreen from "../Components/Common/DashboardScreen";
 import { handleGetAllScreenAdmin } from "../Redux/Screenslice";
 import { useDispatch } from "react-redux";
 
-const SalesOptions = {
-  colors: ["#404f8b"],
-  chart: {
-    type: "basic-bar",
-  },
+import RevenueTable from "../Components/Dashboard/RevenueTable";
+import mapImg from "../images/DisployImg/mapImg.png";
+import DashboardScreen from "../Components/Common/DashboardScreen";
 
-  dataLabels: {
-    enabled: false,
-  },
+// const DashboardScreen = lazy(() => import('../Components/Common/DashboardScreen'));
+// const RevenueTable = lazy(() => import('../Components/Dashboard/RevenueTable'));
 
-  xaxis: {
-    categories: [
-      "Jan",
-      "Feb",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-  },
-};
-
-const stateVlaue = {
-  series: [
-    {
-      name: "Sales",
-      data: [44, 55, 41, 67, 22, 43, 65, 25, 80, 60, 40, 15],
-    },
-  ],
-};
 
 const Dashboard = ({ sidebarOpen }) => {
   const customIcon = new L.Icon({
@@ -61,7 +29,7 @@ const Dashboard = ({ sidebarOpen }) => {
   const center = [20.5937, 78.9629];
   const { token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
-  const [dashboardData, setDashboardData] = useState(null);
+  const [dashboardData, setDashboardData] = useState([]);
   const [selectedScreen, setSelectedScreen] = useState("");
   const [screenList, setScreenList] = useState([]);
   const [screenDialogOpen, setScreenDialogOpen] = useState(false)
@@ -229,7 +197,7 @@ const Dashboard = ({ sidebarOpen }) => {
               <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
 
               <MarkerClusterGroup>
-                {dashboardData?.screen.map((screen, index) => (
+                {dashboardData?.screen?.map((screen, index) => (
                   <Marker
                     key={index}
                     position={[screen.lattitude, screen.longituted]}

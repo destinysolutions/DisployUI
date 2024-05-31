@@ -81,8 +81,6 @@ const Account = () => {
   const onSubmit = (data) => {
     const { phone } = data;
 
-    // return console.log(!isPossiblePhoneNumber(phone) || !isValidPhoneNumber(phone));
-    // if (!isDirty) return;
     if (!isPossiblePhoneNumber(phone) || !isValidPhoneNumber(phone)) {
       toast.remove();
       toast.error("phone is invalid");
@@ -162,7 +160,6 @@ const Account = () => {
       setSelectedCountry(userDetails?.countryID);
     }
   }, [loading]);
-  // console.log(userDetails);
 
   return (
     <>

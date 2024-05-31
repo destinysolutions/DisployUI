@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import Sidebar from "../Sidebar";
-import Navbar from "../Navbar";
+import React, { lazy, useEffect } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { getApprovalData, handleApproval } from "../../Redux/ApprovalSlice";
@@ -8,7 +6,15 @@ import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { APPROVEDETAILBYID } from "../../Pages/Api";
 import { socket } from "../../App";
+
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import Sidebar from "../Sidebar";
+import Navbar from "../Navbar";
+
+// const Navbar = lazy(() => import('../Navbar'));
+// const Sidebar = lazy(() => import('../Sidebar'));
+// const PurchasePlanWarning = lazy(() => import('../Common/PurchasePlan/PurchasePlanWarning'));
+
 const Approval = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   const {userDetails,user, token } = useSelector((state) => state.root.auth);

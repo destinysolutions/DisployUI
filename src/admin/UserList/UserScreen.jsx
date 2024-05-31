@@ -1,14 +1,13 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
-import { BiEdit } from "react-icons/bi";
 import { FaUserCheck } from "react-icons/fa6";
 import {
   AiOutlineCloudUpload,
-  AiOutlinePlusCircle,
-  AiOutlineSave,
 } from "react-icons/ai";
 import { HiUserGroup } from "react-icons/hi2";
+
+
 const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);

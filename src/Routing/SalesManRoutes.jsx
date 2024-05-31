@@ -3,6 +3,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import SalesManDashboard from "../SalesMan/Dashboard"
 import ErrorFallback from '../Components/ErrorFallback';
+import SalesUserProfile from '../SalesMan/SalesUserProfile';
 const SalesManRoutes = ({ sidebarOpen, setSidebarOpen }) => {
     return (
         <BrowserRouter>
@@ -20,6 +21,16 @@ const SalesManRoutes = ({ sidebarOpen, setSidebarOpen }) => {
                         path="/dashboard"
                         element={
                             <SalesManDashboard
+                                sidebarOpen={sidebarOpen}
+                                setSidebarOpen={setSidebarOpen}
+                            />
+                        }
+                    />
+
+                    <Route
+                        path="/userprofile"
+                        element={
+                            <SalesUserProfile
                                 sidebarOpen={sidebarOpen}
                                 setSidebarOpen={setSidebarOpen}
                             />

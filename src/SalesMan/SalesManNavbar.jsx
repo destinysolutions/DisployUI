@@ -50,7 +50,7 @@ const SalesManNavbar = () => {
             <div className="w-full">
               <div className="justify-end items-center py-2 mx-auto gap-3 px-4 flex relative">
                 <div className="relative">
-                  <div>
+                  <div className='flex items-center flex-row'>
                     {userDetails?.profilePhoto == "" ? (
                       <img
                         src={createImageFromInitials(
@@ -70,8 +70,9 @@ const SalesManNavbar = () => {
                         onClick={handleProfileClick}
                       />
                     )}
+                    <label>{userDetails?.firstName}{" "} {userDetails?.lastName}</label>
 
-                    {showProfileBox && (
+                   {/* {showProfileBox && (
                       <>
                         <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                           <div className="flex items-center space-x-3  p-2">
@@ -129,7 +130,7 @@ const SalesManNavbar = () => {
                           </div>
                         </div>
                       </>
-                    )}
+                            )}*/}
                   </div>
                  
                 </div>

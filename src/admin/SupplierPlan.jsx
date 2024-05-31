@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
+import React, { lazy, useState } from 'react'
 import { SlCalender } from 'react-icons/sl';
+
 import AddSuppliarPlan from './AddSuppliarPlan';
+
+// const AddSuppliarPlan = lazy(() => import('./AddSuppliarPlan'));
 
 const SupplierPlan = () => {
   const [planModel, setPlanModal] = useState(false);

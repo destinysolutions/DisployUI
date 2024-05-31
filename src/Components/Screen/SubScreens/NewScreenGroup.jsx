@@ -202,47 +202,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       macId: macIds,
     };
     socket.emit("ScreenConnected", Params);
-
-    // if (connection.state === "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke(
-    //           "ScreenConnected",
-    //           // store?.data
-    //           //   ?.map((item) => item?.maciDs)
-    //           //   .join(",")
-    //           //   .replace(/^\s+/g, "")
-    //           macIds
-    //         )
-    //         .then(() => {
-    //           console.log("SignalR method invoked");
-    //         })
-    //         .catch((error) => {
-    //           console.error("Error invoking SignalR method:", error);
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke(
-    //       "ScreenConnected",
-    //       // store?.data
-    //       //   ?.map((item) => item?.maciDs)
-    //       //   .join(",")
-    //       //   .replace(/^\s+/g, "")
-    //       macIds
-    //     )
-    //     .then(() => {
-    //       console.log("SignalR method invoked");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error invoking SignalR method:", error);
-    //     });
-    // }
   };
 
   const closeModal = () => {
@@ -411,32 +370,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         macId: screen.macID,
       };
       socket.emit("ScreenConnected", Params);
-      // if (connection.state == "Disconnected") {
-      //   connection
-      //     .start()
-      //     .then((res) => {
-      //       console.log("signal connected");
-      //     })
-      //     .then(() => {
-      //       connection
-      //         .invoke("ScreenConnected", screen.macID)
-      //         .then(() => {
-      //           console.log("SignalR method invoked after Asset update");
-      //         })
-      //         .catch((error) => {
-      //           console.error("Error invoking SignalR method:", error);
-      //         });
-      //     });
-      // } else {
-      //   connection
-      //     .invoke("ScreenConnected", screen.macID)
-      //     .then(() => {
-      //       console.log("SignalR method invoked after Asset update");
-      //     })
-      //     .catch((error) => {
-      //       console.error("Error invoking SignalR method:", error);
-      //     });
-      // }
     } else {
       toast.error("Can't Delete This Screen. You Need To Delete Group.");
     }

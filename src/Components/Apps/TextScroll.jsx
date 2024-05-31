@@ -129,38 +129,6 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
             setAddScreenModal(false);
             FetchData();
           }, 1000);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke("ScreenConnected", macids)
-          //         .then(() => {
-          //           console.log(" method invoked");
-          //           // setSelectScreenModal(false);
-          //           // setAddScreenModal(false);
-          //           // FetchData();
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke("ScreenConnected", macids)
-          //     .then(() => {
-          //       console.log(" method invoked");
-          //       // setSelectScreenModal(false);
-          //       // setAddScreenModal(false);
-          //       // FetchData();
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
         }
       })
       .catch((error) => {
@@ -197,32 +165,6 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
           macId: maciDs,
         };
         socket.emit("ScreenConnected", Params);
-        // if (connection.state == "Disconnected") {
-        //   connection
-        //     .start()
-        //     .then((res) => {
-        //       console.log("signal connected");
-        //     })
-        //     .then(() => {
-        //       connection
-        //         .invoke("ScreenConnected", maciDs)
-        //         .then(() => {
-        //           console.log("SignalR method invoked after youtube update");
-        //         })
-        //         .catch((error) => {
-        //           console.error("Error invoking SignalR method:", error);
-        //         });
-        //     });
-        // } else {
-        //   connection
-        //     .invoke("ScreenConnected", maciDs)
-        //     .then(() => {
-        //       console.log("SignalR method invoked after youtube update");
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error invoking SignalR method:", error);
-        //     });
-        // }
         const updatedInstanceData = instanceData.filter(
           (instanceData) => instanceData.textScroll_Id !== scrollId
         );

@@ -1,11 +1,7 @@
-import React, { useState } from 'react'
-import AdminNavbar from '../AdminNavbar'
-import AdminSidebar from '../AdminSidebar'
-import { useNavigate } from 'react-router-dom'
+import React, { lazy, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { BiUserPlus } from 'react-icons/bi'
-import AddEditSalesMan from './AddEditSalesMan'
 import { MdOutlineModeEdit } from 'react-icons/md'
 import ReactTooltip from 'react-tooltip'
 import { All_SAELS_MAN_LIST } from '../../Pages/Api'
@@ -13,12 +9,18 @@ import { useSelector } from 'react-redux'
 import { GetAllSalesMan } from '../../Redux/SalesMan/SalesManSlice'
 import { useEffect } from 'react'
 import toast from 'react-hot-toast'
+import AdminNavbar from '../AdminNavbar'
+import AdminSidebar from '../AdminSidebar'
+import AddEditSalesMan from './AddEditSalesMan'
 
+// const AddEditSalesMan = lazy(() => import('./AddEditSalesMan'));
+// const AdminNavbar = lazy(() => import('../AdminNavbar'));
+// const AdminSidebar = lazy(() => import('../AdminSidebar'));
+// const Loading = lazy(() => import("../../Components/Loading"))
 
 const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
-    const navigate = useNavigate()
     const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
     const [heading, setHeading] = useState("Add");
@@ -101,7 +103,6 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
         sortedField,
         sortOrder
     ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    console.log('sortedAndPaginatedData', sortedAndPaginatedData)
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -123,11 +124,18 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
     };
 
     const toggleModal = () => {
+        setEditData({
+            password: "",
+            firstName: "",
+            lastName: "",
+            emailID: "",
+            percentageRatio: "",
+            phoneNumber: "",
+        })
         setShowModal(!showModal);
     };
 
     const handleEdit = (value) => {
-        console.log('value', value)
         setHeading("Update");
         setEditId(value.orgSingupID);
         setShowModal(true);
@@ -245,7 +253,7 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                                                         <td scope="col" className="px-6 py-4">
                                                             {item.phone}
                                                         </td>
-                                                        <td scope="col" className="px-6 py-4">{item.percentageratio}</td>
+                                                        <td scope="col" className="px-6 py-4">{item.percentageRatio}</td>
                                                         <td className="px-6 py-4">
                                                             <div className="cursor-pointer text-xl flex gap-4 ">
                                                                 <button
@@ -379,8 +387,10 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                     editData={editData}
                     editId={editId}
                     fetchData={fetchData}
+
                 />
-            )}
+            )
+            }
         </>
     )
 }

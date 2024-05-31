@@ -1,20 +1,22 @@
 import PropTypes from "prop-types";
-import Sidebar from "../Sidebar";
-import Navbar from "../Navbar";
-import { TbBoxMultiple } from "react-icons/tb";
-import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { Suspense, useEffect, useState } from "react";
-import { FiUpload } from "react-icons/fi";
-import { MdPlaylistPlay } from "react-icons/md";
-import { MdOutlineWidgets } from "react-icons/md";
-import { RiDeleteBin5Line } from "react-icons/ri";
+import { Suspense, lazy, useEffect, useState } from "react";
 import "../../Styles/apps.css";
 import { Link } from "react-router-dom";
-import Footer from "../Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { handleGetAllApps } from "../../Redux/AppsSlice";
+
+
+import Footer from "../Footer";
 import Loading from "../Loading";
+import Sidebar from "../Sidebar";
+import Navbar from "../Navbar";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+
+// const Footer = lazy(() => import('../Footer'));
+// const Loading = lazy(() => import('../Loading'));
+// const Navbar = lazy(() => import('../Navbar'));
+// const Sidebar = lazy(() => import('../Sidebar'));
+// const PurchasePlanWarning = lazy(() => import('../Common/PurchasePlan/PurchasePlanWarning'));
 
 const Apps = ({ sidebarOpen, setSidebarOpen }) => {
   Apps.propTypes = {
@@ -38,14 +40,6 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
     })
   }, []);
 
-  const handleAppDropDownClick = (id) => {
-    if (appDropDown === id) {
-      setAppDropDown(null);
-    } else {
-      setAppDropDown(id);
-    }
-  };
-
   return (
     <>
       {sidebarload && (
@@ -64,10 +58,6 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                   <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
                     Apps
                   </h1>
-                  {/* <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-              <MdOutlineWidgets className="text-2xl mr-2 text-white" />
-              New Instance
-            </button> */}
                 </div>
                 <div className="mt-5 mb-5">
                   <div className="grid grid-cols-10 gap-4">
@@ -109,36 +99,6 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                               key={app.app_Id}
                             >
                               <div className="shadow-md bg-white rounded-lg p-3">
-                                {/* <div className="relative">
-                          <button className="float-right">
-                            <BiDotsHorizontalRounded
-                              className="text-2xl"
-                              onClick={() => handleAppDropDownClick(app.app_Id)}
-                            />
-                          </button>
-                          {appDropDown === app.app_Id && (
-                            <div className="appdw">
-                              <ul>
-                                <li className="flex text-sm items-center">
-                                  <FiUpload className="mr-2 text-lg" />
-                                  Set to Screen
-                                </li>
-                                <li className="flex text-sm items-center">
-                                  <MdPlaylistPlay className="mr-2 text-lg" />
-                                  Add to Playlist
-                                </li>
-                                <li className="flex text-sm items-center">
-                                  <TbBoxMultiple className="mr-2 text-lg" />
-                                  Duplicate
-                                </li>
-                                <li className="flex text-sm items-center">
-                                  <RiDeleteBin5Line className="mr-2 text-lg" />
-                                  Delete App
-                                </li>
-                              </ul>
-                            </div>
-                          )}
-                        </div> */}
                                 <Link to={`/${app.appURL}`}>
                                   <div className="text-center clear-both">
                                     <img

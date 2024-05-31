@@ -89,39 +89,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
           macId: macids,
         };
         socket.emit("ScreenConnected", Params);
-        // if (connection.state == "Disconnected") {
-        //   connection
-        //     .start()
-        //     .then((res) => {
-        //       console.log("signal connected");
-        //     })
-        //     .then(() => {
-        //       connection
-        //         .invoke("ScreenConnected", macids)
-        //         .then(() => {
-        //           console.log(
-        //             "SignalR method invoked after text scroll update"
-        //           );
-        //         })
-        //         .catch((error) => {
-        //           console.error("Error invoking SignalR method:", error);
-        //         });
-        //     });
-        // } else {
-        //   connection
-        //     .invoke("ScreenConnected", macids)
-        //     .then(() => {
-        //       console.log("SignalR method invoked after text scroll update");
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error invoking SignalR method:", error);
-        //     });
-        // }
-
-        // Wait for the SignalR invocation to complete before navigating
-
         history("/text-scroll");
-
         setSaveLoading(false);
       }
     } catch (error) {

@@ -543,6 +543,7 @@ export  function mergeNotificationData(listNotification, res) {
 }
 
 export function extractSubstring(str) {
+  console.log(str,"str")
   let match = str.match(/× (.*?) \(/);
     if (match) {
         return match[1];

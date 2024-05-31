@@ -139,22 +139,22 @@ const Login = () => {
                 toast.success("Login successfully.");
                 window.location.href = "/";
               } else if (userRole == 2) {
-                // User login logic
-                const user_ID = response.userID;
-                // localStorage.setItem("userID", JSON.stringify(response));
-                // if (response?.userDetails?.isRetailer === false) {
-                localStorage.setItem("role_access", "USER");
-                // } else {
-                //   localStorage.setItem("role_access", "RETAILER");
-                // }
-                toast.success("Login successfully.");
-                // console.log(response);
-                // navigate("/screens");
-                window.location.href = "/dashboard";
-              } else if (response?.IsSalesMan) {
-                localStorage.setItem("role_access", "SALESMAN");
-                toast.success("Login successfully.");
-
+                if (response?.isSalesMan) {
+                  localStorage.setItem("role_access", "SALESMAN");
+                  toast.success("Login successfully.");
+                } else {
+                  // User login logic
+                  const user_ID = response.userID;
+                  // localStorage.setItem("userID", JSON.stringify(response));
+                  // if (response?.userDetails?.isRetailer === false) {
+                  localStorage.setItem("role_access", "USER");
+                  // } else {
+                  //   localStorage.setItem("role_access", "RETAILER");
+                  // }
+                  toast.success("Login successfully.");
+                  // navigate("/screens");
+                  window.location.href = "/dashboard";
+                }
               } else {
                 // Handle other roles or unknown roles
                 console.log("Unexpected role value:", userRole);
@@ -240,8 +240,6 @@ const Login = () => {
     const res = await signInWithPopup(auth, Googleauthprovider)
       .then((result) => {
         // Google sign-in successful, you can access user information via result.user
-        console.log(result?.user, "hello");
-
         const data = JSON.stringify({
           emailID: result?.user?.email,
           googleID: result?.user?.uid,
@@ -286,7 +284,6 @@ const Login = () => {
                   //   localStorage.setItem("role_access", "RETAILER");
                   // }
                   toast.success("Login successfully.");
-                  // console.log(response);
                   // navigate("/screens");
                   window.location.href = "/dashboard";
                 } else {
