@@ -4,7 +4,15 @@ import { FaUserTie, FaWallet } from 'react-icons/fa';
 import { MdOutlineScreenshotMonitor, MdPayments } from 'react-icons/md';
 import SalesManNavbar from './SalesManNavbar';
 import SalesManSidebar from "./SalesManSidebar"
-const Dashboard = ({sidebarOpen,setSidebarOpen}) => {
+import { SAELS_MAN_DASHBOARD } from '../Pages/Api';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { GetSalesManDashboard } from '../Redux/SalesMan/SalesManSlice';
+import { useEffect } from 'react';
+const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
+    const dispatch = useDispatch()
+    const { token } = useSelector((s) => s.root.auth);
+    const authToken = `Bearer ${token}`;
     const yearsArray = generateYearArray();
     const [currentmonth, setCurrentMonth] = useState(months[new Date().getMonth()])
     const [currentyear, setCurrentYear] = useState(new Date().getFullYear())
@@ -13,6 +21,29 @@ const Dashboard = ({sidebarOpen,setSidebarOpen}) => {
 
     // Round the percentage value to the nearest whole number
     let roundedPercentage = Math.round(percentage);
+
+    const fetchData = () => {
+        let config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: SAELS_MAN_DASHBOARD,
+            headers: {
+                Authorization: authToken,
+            },
+        };
+        dispatch(GetSalesManDashboard(config)).then((res) => {
+            if (res?.payload?.status) {
+
+            }
+        }).catch((error) => {
+            console.log('error', error)
+        })
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
     return (
         <>
             <div className="flex border-b border-gray ">
@@ -28,7 +59,7 @@ const Dashboard = ({sidebarOpen,setSidebarOpen}) => {
 
                         <div className="-mx-3 md:flex justify-between items-center">
                             <div className='ml-8'>
-                                <h1 className='font-bold text-3xl'>Dashboard</h1>
+                                <h1 className='font-bold text-2xl'>Dashboard</h1>
                             </div>
                             <div className='flex'>
                                 <div className="px-3">

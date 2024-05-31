@@ -5,10 +5,8 @@ import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
-import { addSalesManData, handleAddEditSalesMan, updateSalesManData } from "../../Redux/SalesMan/SalesManSlice";
-import { ADD_EDIT_SAELS_MAN, ADD_REGISTER_URL } from "../../Pages/Api";
+import { addSalesManData, updateSalesManData } from "../../Redux/SalesMan/SalesManSlice";
 import { useSelector } from "react-redux";
-import { updateRetailerData } from "../../Redux/admin/RetailerSlice";
 const AddEditSalesMan = ({
     setShowModal,
     heading,
@@ -17,7 +15,7 @@ const AddEditSalesMan = ({
     setShowPassword,
     editData,
     editId,
-    fetchData
+    fetchData,
 }) => {
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
@@ -46,10 +44,26 @@ const AddEditSalesMan = ({
             .max(100, "Percentage Ratio must be at most 100"),
     });
 
+
+    const editValidationSchema = Yup.object().shape({
+        firstName: Yup.string().required("First Name is required").max(50),
+        lastName: Yup.string().required("Last Name is required").max(50),
+        emailID: Yup.string()
+            .required("Email is required")
+            .email("E-mail must be a valid e-mail!"),
+        phoneNumber: Yup.string()
+            .required("Phone Number is required")
+            .matches(phoneRegExp, "Phone number is not valid"),
+        percentageRatio: Yup.string().required("Percentage Ratio is required")
+            .min(0, "Percentage Ratio must be at least 0")
+            .max(100, "Percentage Ratio must be at most 100"),
+
+    });
+
     const formik = useFormik({
         initialValues: editData,
         enableReinitialize: editData,
-        validationSchema: validationSchema,
+        validationSchema: editId ? editValidationSchema : validationSchema,
         onSubmit: async (values) => {
             const formData = new FormData();
             formData.append("Password", values.password || ""); // Set a default value if null
@@ -64,12 +78,12 @@ const AddEditSalesMan = ({
                 formData.append("OrgUserSpecificID", editId);
                 dispatch(updateSalesManData(formData)).then((res) => {
                     if (res?.payload?.status) {
-                        formik.resetForm();
                         fetchData()
-                        setShowModal(false);
+                        formik.resetForm();
                     } else {
                         toast.error(res?.payload?.message)
                     }
+                    setShowModal(false);
                 }).catch((err) => {
                     console.log('err', err)
                 });
@@ -77,18 +91,15 @@ const AddEditSalesMan = ({
                 formData.append("Operation", "Insert");
                 dispatch(addSalesManData(formData)).then((res) => {
                     if (res?.payload?.status) {
-                        formik.resetForm();
                         fetchData()
-                        setShowModal(false);
+                        formik.resetForm();
                     } else {
                         toast.error(res?.payload?.message)
                     }
+                    setShowModal(false);
                 }).catch((err) => {
                     console.log('err', err)
                 });
-
-                formik.resetForm();
-                setShowModal(false);
             }
         },
     });
@@ -115,8 +126,8 @@ const AddEditSalesMan = ({
                                     <AiOutlineCloseCircle
                                         className="text-4xl text-primary cursor-pointer"
                                         onClick={() => {
-                                            formik.resetForm();
                                             toggleModal();
+                                            formik.resetForm();
                                         }}
                                     />
                                 </div>
@@ -191,37 +202,39 @@ const AddEditSalesMan = ({
                                                     <div className="error">{formik.errors.emailID}</div>
                                                 )}
                                             </div>
-                                            <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
-                                                <div className="relative">
-                                                    <input
-                                                        type={showPassword ? "text" : "password"}
-                                                        name="password"
-                                                        id="password"
-                                                        placeholder="Enter Your Password"
-                                                        className="formInput"
-                                                        onChange={formik.handleChange}
-                                                        onBlur={formik.handleBlur}
-                                                        value={formik.values.password}
-                                                        disabled={editId}
-                                                    />
-                                                    {!editId && (
-                                                        <div className="icon">
-                                                            {showPassword ? (
-                                                                <BsFillEyeFill
-                                                                    onClick={() => setShowPassword(!showPassword)}
-                                                                />
-                                                            ) : (
-                                                                <BsFillEyeSlashFill
-                                                                    onClick={() => setShowPassword(!showPassword)}
-                                                                />
-                                                            )}
-                                                        </div>
+                                            {!editId && (
+                                                <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
+                                                    <div className="relative">
+                                                        <input
+                                                            type={showPassword ? "text" : "password"}
+                                                            name="password"
+                                                            id="password"
+                                                            placeholder="Enter Your Password"
+                                                            className="formInput"
+                                                            onChange={formik.handleChange}
+                                                            onBlur={formik.handleBlur}
+                                                            value={formik.values.password}
+                                                            disabled={editId}
+                                                        />
+                                                        {!editId && (
+                                                            <div className="icon">
+                                                                {showPassword ? (
+                                                                    <BsFillEyeFill
+                                                                        onClick={() => setShowPassword(!showPassword)}
+                                                                    />
+                                                                ) : (
+                                                                    <BsFillEyeSlashFill
+                                                                        onClick={() => setShowPassword(!showPassword)}
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    {formik.errors.password && formik.touched.password && (
+                                                        <div className="error">{formik.errors.password}</div>
                                                     )}
                                                 </div>
-                                                {formik.errors.password && formik.touched.password && (
-                                                    <div className="error">{formik.errors.password}</div>
-                                                )}
-                                            </div>
+                                            )}
 
                                             <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
                                                 <input
@@ -244,8 +257,8 @@ const AddEditSalesMan = ({
                                                 type="button"
                                                 className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                                                 onClick={() => {
-                                                    formik.resetForm();
                                                     toggleModal()
+                                                    formik.resetForm();
                                                 }}
                                             >
                                                 Cancel

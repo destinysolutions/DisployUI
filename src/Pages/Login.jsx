@@ -134,7 +134,6 @@ const Login = () => {
               window.localStorage.setItem("timer", JSON.stringify(18_00));
               const userRole = response.role;
               console.log('response', response)
-              debugger;
               if (userRole == 1) {
                 localStorage.setItem("role_access", "ADMIN");
                 toast.success("Login successfully.");

@@ -57,6 +57,25 @@ export const GetAllSalesMan = createAsyncThunk(
     }
 );
 
+export const GetSalesManDashboard = createAsyncThunk(
+    "salesMan/GetSalesManDashboard",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            if (response?.data?.status) {
+                return response.data;
+            } else {
+                return rejectWithValue(response?.data);
+            }
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
+
+
 
 const SalesManSlice = createSlice({
     name: "salesMan",
@@ -106,6 +125,19 @@ const SalesManSlice = createSlice({
             state.data = action.payload;
         })
         .addCase(GetAllSalesMan.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload.message;
+        });
+
+        builder
+        .addCase(GetSalesManDashboard.pending, (state) => {
+            state.status = "loading";
+        })
+        .addCase(GetSalesManDashboard.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.data = action.payload;
+        })
+        .addCase(GetSalesManDashboard.rejected, (state, action) => {
             state.status = "failed";
             state.error = action.payload.message;
         });

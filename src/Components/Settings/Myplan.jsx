@@ -78,7 +78,9 @@ const Myplan = () => {
                 Authorization: authToken
             },
         }
-        dispatch(handleGetUserDetails({ id: user?.userID, token }));
+        if (user?.role !== "1") {
+            dispatch(handleGetUserDetails({ id: user?.userID, token }));
+        }
         dispatch(handleGetAllPlans({ config })).then((res) => {
             if (res?.payload?.status === 200) {
                 setmyPlan(res?.payload?.data)
@@ -90,7 +92,7 @@ const Myplan = () => {
     }
 
     const fetchTrialDetails = ({ add }) => {
-        if(add === "add"){
+        if (add === "add") {
             toast.loading("Fetching data..")
         }
         const config = {

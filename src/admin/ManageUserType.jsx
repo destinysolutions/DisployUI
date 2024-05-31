@@ -43,7 +43,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
       dispatch(getManageUserData());
       setLoadFist(false);
     }
-  }, [loadFist, store]);
+  }, [loadFist]);
 
   const filteredData = Array.isArray(store?.data)
     ? store?.data?.filter((item) =>
@@ -153,6 +153,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
           } else {
             toast.success("Add data successFully");
           }
+          setLoadFist(true);
           setAddUserTypeModal(false);
         }
       })
