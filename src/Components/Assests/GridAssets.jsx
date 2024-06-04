@@ -61,7 +61,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // move to data in folder
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const store = useSelector((state) => state.root.asset);
+  const history = useNavigate();
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
   const [asstab, setTogglebtn] = useState(2);
   const [assetsdw2, setassetsdw2] = useState(null);
@@ -81,7 +84,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectDoc, setSelectDoc] = useState(null);
   const actionBoxRef = useRef(null);
   const addScreenRef = useRef(null);
-  const { token, user ,userDetails} = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const [permissions, setPermissions] = useState({
     isDelete: false,
     isSave: false,
@@ -90,8 +93,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [sidebarload, setSidebarLoad] = useState(true);
   const [screenAssetID, setScreenAssetID] = useState();
   const authToken = `Bearer ${token}`;
+  const tabs = localStorage.getItem("tabs");
+  const [loadFist, setLoadFist] = useState(true);
+  const [activeTab, setActiveTab] = useState(tabs ? tabs : "ALL"); // Set the default active tab
+  const [tabsDelete, setTabsDelete] = useState(Array);
+  const [folderElements, setFolderElements] = useState([]);
 
-  const history = useNavigate();
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
@@ -262,15 +269,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Start
   // get tabs New change
-  const tabs = localStorage.getItem("tabs");
-  const [loadFist, setLoadFist] = useState(true);
-  const [activeTab, setActiveTab] = useState(tabs ? tabs : "ALL"); // Set the default active tab
-  const [tabsDelete, setTabsDelete] = useState(Array);
-  const [folderElements, setFolderElements] = useState([]);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const store = useSelector((state) => state.root.asset);
 
   useEffect(() => {
     const query = `ScreenType=${activeTab}&searchAsset=${searchAsset}`;
@@ -325,7 +324,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSearchAsset = (event) => {
-    toast.loading("Searching...");
+    if (store?.data?.length > 0) {
+      toast.loading("Searching...");
+    }
     const searchQuery = event.target.value;
     setSearchAsset(searchQuery);
     setLoadFist(true);
@@ -627,7 +628,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               />
               <Navbar />
             </div>
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-2 gap-2 lg:mt-5 mt-3">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -1058,7 +1059,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <div className="move-to-dropdown">
                                                   <ul className="space-y-3">
                                                     {folderElements &&
-                                                    folderElements?.length >
+                                                      folderElements?.length >
                                                       0 ? (
                                                       folderElements?.map(
                                                         (folder) => {
@@ -1140,8 +1141,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             <td colSpan={8} className="text-center">
                               {/* <div className="text-center font-semibold text-2xl col-span-full p-5 "> */}
                               {store?.data?.length === 0 ? (
-                                <div className="text-center">
-                                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                                <div className="flex text-center m-5 justify-center">
+                                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                     No Data Available
                                   </span>
                                 </div>
@@ -1165,7 +1166,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         fill="#1C64F2"
                                       />
                                     </svg>
-                                  
+
                                   </div>
                                 </>
                               )}
@@ -1263,7 +1264,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

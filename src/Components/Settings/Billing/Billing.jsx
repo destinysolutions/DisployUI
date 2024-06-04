@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { handleGetAllBillings, handleGetBillingByID } from "../../../Redux/AdminSettingSlice";
 import { GetAllCardList } from "../../../Redux/CardSlice.js"
-import { GetBillingDetails } from "../../../Redux/SettingUserSlice.js"
+import { GetBillingDetails, GetUserBillingDetails } from "../../../Redux/SettingUserSlice.js"
 import toast from "react-hot-toast";
 import { getAllCustomerDetails } from "../../../Redux/admin/OnBodingSlice.js";
 
@@ -38,12 +38,13 @@ const Billing = ({ sidebarOpen }) => {
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${GET_ALL_BILLING}`,
+      url: `${GET_USER_BILLING_DETAILS}`,
       headers: {
         Authorization: authToken
       },
     }
-    dispatch(handleGetAllBillings({ config })).then((res) => {
+    dispatch(GetUserBillingDetails({ config })).then((res) => {
+      console.log('res', res)
       if (res?.payload?.status) {
         setBillingList(res?.payload?.data)
       }

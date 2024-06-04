@@ -16,7 +16,7 @@ import {
   SCHEDULE_EVENT_SELECT_BY_ID,
   UPDATED_SCHEDULE_DATA,
   UPDATE_SCREEN_ASSIGN,
-  GET_SCEDULE_TIMEZONE,
+  GET_TIMEZONE,
   GET_TIME_ZONE,
 } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
@@ -534,7 +534,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
 
     axios
-      .get(GET_SCEDULE_TIMEZONE, {
+      .get(GET_TIMEZONE, {
         headers: {
           Authorization: authToken,
         },

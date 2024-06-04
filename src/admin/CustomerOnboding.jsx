@@ -312,7 +312,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                               className="mr-3 text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-3 py-2 text-center"
                               onClick={() => handleIncreaseTrial(params?.email)}
                             >
-                              increase trial days
+                              Increase Trial Days
                             </button>
                           )}
                             <button

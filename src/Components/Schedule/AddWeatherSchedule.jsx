@@ -22,7 +22,7 @@ import { useDispatch } from "react-redux";
 // import { connection } from "../../SignalR";
 import { socket } from "../../App";
 import { addData, getByIdData, resetStatus } from "../../Redux/WeatherSlice";
-import { GET_SCEDULE_TIMEZONE, SET_TO_SCREEN_WEATHER } from "../../Pages/Api";
+import { GET_TIMEZONE, SET_TO_SCREEN_WEATHER } from "../../Pages/Api";
 import axios from "axios";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import { handleAllTimeZone } from "../../Redux/CommonSlice";
@@ -119,7 +119,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: GET_SCEDULE_TIMEZONE,
+      url: GET_TIMEZONE,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",

@@ -1,6 +1,6 @@
 import React, { lazy, useState } from 'react'
 import { BiSolidDiscount } from "react-icons/bi";
-import { DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID, GET_SCEDULE_TIMEZONE } from '../Pages/Api';
+import { DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID, GET_TIMEZONE } from '../Pages/Api';
 import { handleDeleteDiscount, handleGetAllDiscount, handleGetAllSegment } from '../Redux/AdminSettingSlice';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -79,7 +79,7 @@ const Discount = ({ sidebarOpen }) => {
 
     useEffect(() => {
         axios
-            .get(GET_SCEDULE_TIMEZONE, {
+            .get(GET_TIMEZONE, {
                 headers: {
                     Authorization: authToken,
                 },

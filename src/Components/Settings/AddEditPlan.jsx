@@ -14,9 +14,11 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
         PlanName: "",
         totalscreen: 1,
         storage: "",
-        cost: "",
+        planPrice: "",
         Status: "Active"
     });
+
+    console.log('formData', formData)
     const [errorPlanName, setErrorPlanName] = useState(false)
     const [errorStorage, setErrorStorage] = useState(false)
     const [errorCost, setErrorCost] = useState(false)
@@ -25,7 +27,7 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
         if (selectPlan) {
             let obj = {}
             obj.PlanName = selectPlan?.planName;
-            obj.cost = selectPlan?.planPrice;
+            obj.planPrice = selectPlan?.planPrice;
             obj.storage = 2;
             obj.totalscreen = 1;
             selectPlan?.planDetails?.map((item) => {
@@ -62,7 +64,7 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
             hasError = true
         }
 
-        if (!formData?.cost) {
+        if (!formData?.planPrice) {
             setErrorCost(true)
             hasError = true
         }
@@ -71,9 +73,42 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
             return;
         }
 
-        console.log(formData, "formData")
+        const FeatureList = formData?.PlanDetails?.map((item) => {
+            if (item?.listOfFeaturesID === 32) {
+                return {
+                    ...item,
+                    value: formData?.totalscreen
+                }
+            }
+            if (item?.listOfFeaturesID === 3) {
+                return {
+                    ...item,
+                    value: formData?.storage
+                }
+            }
 
-        
+            if (formData.hasOwnProperty(item?.name)) {
+                return {
+                    ...item,
+                    value: formData[item.name]
+                };
+            }
+            return item
+        })
+
+        let Params = {
+            "listOfPlansID": 0,
+            "planDetailss": "string",
+            "planName": formData?.PlanName,
+            "isRecomnded": true,
+            "planPrice": formData?.planPrice,
+            "isdefault": true,
+            "planDetails": FeatureList,
+            "IsActive": formData?.Status
+        };
+
+        console.log('Params', Params)
+
         let config = {
             method: "post",
             maxBodyLength: Infinity,
@@ -82,7 +117,7 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                 "Content-Type": "application/json",
                 Authorization: authToken,
             },
-            data: JSON.stringify(formData)
+            data: JSON.stringify(Params)
         };
         dispatch(handleAddPlan({ config })).then((res) => {
             if (res?.payload?.status === 200) {
@@ -171,9 +206,9 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                     <input
                                                         type='number'
                                                         placeholder='Enter Plan Cost'
-                                                        name="cost"
+                                                        name="planPrice"
                                                         className="formInput"
-                                                        value={formData?.cost}
+                                                        value={formData?.planPrice}
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
                                                 {errorCost && (
@@ -181,54 +216,53 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                 )}
                                             </div>
                                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
-                                                <div className="relative">
-                                                    <label className="formLabel">Status</label>
-                                                    <select
+                                                <div className="flex items-center gap-3">
+                                                    <input
+                                                        type='checkbox'
                                                         name='Status'
-                                                        className="formInput"
-                                                        value={formData?.Status}
-                                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                                    >
-                                                        <option value="Active">Active</option>
-                                                        <option value="Deactive">Deactive</option>
-                                                    </select>
+                                                        className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink"
+                                                        onChange={(e) => handleInputChange(e.target.name, e.target.checked)}
+                                                    />
+                                                    <label>Is Active</label>
                                                 </div>
                                             </div>
                                             {featureList?.map((item, index) => {
-                                                return (
-                                                    <>
-                                                        {item?.IsCheckBox && (
-                                                            <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
-                                                                <div className="relative">
-                                                                    <label className="formLabel">{item?.name}</label>
-                                                                    <input
-                                                                        type='text'
-                                                                        placeholder={`Enter ${item?.name}`}
-                                                                        name={item?.name}
-                                                                        className="formInput"
-                                                                        value={formData[item?.name]}
-                                                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-                                                                    />
+                                                if (item?.listOfFeaturesID !== 3 && item?.listOfFeaturesID !== 32) {
+                                                    return (
+                                                        <>
+                                                            {item?.IsCheckBox && (
+                                                                <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
+                                                                    <div className="relative">
+                                                                        <label className="formLabel">{item?.name}</label>
+                                                                        <input
+                                                                            type='text'
+                                                                            placeholder={`Enter ${item?.name}`}
+                                                                            name={item?.name}
+                                                                            className="formInput"
+                                                                            value={formData[item?.name]}
+                                                                            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+                                                                        />
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        )}
-                                                        {!item?.IsCheckBox && (
-                                                            <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 flex'>
-                                                                <div className="flex items-center gap-3">
-                                                                    <input
-                                                                        type='checkbox'
-                                                                        placeholder={`Enter ${item?.name}`}
-                                                                        name={item?.name}
-                                                                        checked={formData[item?.name]}
-                                                                        className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink"
-                                                                        onChange={(e) => handleCheckboxChange(e.target.name, e.target.checked)}
-                                                                    />
-                                                                    <label className="">{item?.name}</label>
+                                                            )}
+                                                            {!item?.IsCheckBox && (
+                                                                <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 flex'>
+                                                                    <div className="flex items-center gap-3">
+                                                                        <input
+                                                                            type='checkbox'
+                                                                            placeholder={`Enter ${item?.name}`}
+                                                                            name={item?.name}
+                                                                            checked={formData[item?.name]}
+                                                                            className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink"
+                                                                            onChange={(e) => handleCheckboxChange(e.target.name, e.target.checked)}
+                                                                        />
+                                                                        <label className="">{item?.name}</label>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        )}
-                                                    </>
-                                                )
+                                                            )}
+                                                        </>
+                                                    )
+                                                }
                                             })}
 
                                         </div>

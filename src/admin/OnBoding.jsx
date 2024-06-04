@@ -16,6 +16,8 @@ import ReactTooltip from "react-tooltip";
 
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
+import { FiPlusCircle } from "react-icons/fi";
+import AddAssociated from "./AddAssociated";
 
 // const AdminNavbar = lazy(() => import('./AdminNavbar'));
 // const AdminSidebar = lazy(() => import('./AdminSidebar'));
@@ -32,6 +34,9 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false)
+  const [selectedCustomer, setSelectedCustomer] = useState("")
+
 
   useEffect(() => {
     if (store && store.status === "failed") {
@@ -303,7 +308,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
                               </td>
                               <td scope="col" className="px-6 py-4 capitalize">
-                                {item?.associated}
+                                {item?.salesMan}
                               </td>
                               <td className="px-6 py-4 capitalize">
                                 <span>
@@ -333,6 +338,23 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                     data-for="View"
                                     type="button"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    onClick={() => { setShowModal(true); setSelectedCustomer(item) }}
+                                  >
+                                    <FiPlusCircle />
+                                    <ReactTooltip
+                                      id="Add Associated"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>Add Associated</span>
+                                    </ReactTooltip>
+                                  </button>
+                                  <button
+                                    data-tip
+                                    data-for="View"
+                                    type="button"
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => {
                                       navigate(`/onboarded/customer-details/${item.organizationID}/${item?.email}`)
                                     }}
@@ -347,6 +369,8 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                       <span>View</span>
                                     </ReactTooltip>
                                   </button>
+
+
 
                                   {/*<button
                                     type="button"
@@ -461,6 +485,10 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <AddAssociated showModal={showModal} setShowModal={setShowModal} selectedCustomer={selectedCustomer} setLoadFist={setLoadFist}/>
+      )}
     </>
   );
 };

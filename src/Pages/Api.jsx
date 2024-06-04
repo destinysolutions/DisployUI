@@ -49,8 +49,6 @@ export const SELECT_BY_USER_SCREENDETAIL = `${baseUrl}NewScreen/SelectByUserScre
 export const SELECT_BY_SCREENID_SCREENDETAIL = `${baseUrl}NewScreen/SelectByScreen`;
 export const GET_ALL_SCREEN_RESOLUTION = `${baseUrl}NewScreen/GetAllScreenResolution`;
 export const GET_ALL_SCREEN_ORIENTATION = `${baseUrl}NewScreen/GetAllScreenOrientation`;
-export const GET_SCREEN_TIMEZONE = `${baseUrl}NewScreen/GetAllTimeZone`;
-export const GET_SCEDULE_TIMEZONE = `${baseUrl}NewScreen/GetAllTimeZone`;
 export const GET_TIMEZONE = `${baseUrl}NewScreen/GetAllTimeZone`;
 export const GET_ALL_FILES = `${baseUrl}AssetMaster/GetAll`;
 export const ALL_FILES_UPLOAD = `${baseUrl}AssetMaster/AssetUpload`;
@@ -286,3 +284,4 @@ export const GET_ALL_CARD = `${baseUrl}CardMaster/GetAllCard`
 // Sales Man
 export const All_SAELS_MAN_LIST = `${baseUrl}SalesMan/GetAllSalesMan`
 export const SAELS_MAN_DASHBOARD = `${baseUrl}SalesMan/GetAllSalesMan`
+export const ADD_ASSOCIATED_SALESMAN = `${baseUrl}SalesMan/AddEditSalesMan`

@@ -15,7 +15,7 @@ import {
   GET_ALL_SCREEN_ORIENTATION,
   GET_ALL_SCREEN_RESOLUTION,
   GET_ALL_TAGS,
-  GET_SCREEN_TIMEZONE,
+  GET_TIMEZONE,
   GET_SCREEN_TYPE,
   SIGNAL_R,
   UPDATE_NEW_SCREEN,
@@ -417,7 +417,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       axios.get(GET_ALL_SCREEN_RESOLUTION, {
         headers: { Authorization: authToken },
       }),
-      axios.get(GET_SCREEN_TIMEZONE, { headers: { Authorization: authToken } }),
+      axios.get(GET_TIMEZONE, { headers: { Authorization: authToken } }),
       axios.get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } }),
       axios.get(GET_ALL_TAGS, { headers: { Authorization: authToken } }),
       axios.get(GET_ALL_COMPOSITIONS, {

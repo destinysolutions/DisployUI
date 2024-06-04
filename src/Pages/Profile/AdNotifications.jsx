@@ -71,7 +71,7 @@ const AdNotifications = ({ sidebarOpen }) => {
               </span>
               <input
                 type="text"
-                placeholder="Searching.."
+                placeholder="Searching..."
                 className="border border-primary rounded-full pl-10 py-1.5 search-user"
                 value={searchTerm}
                 onChange={handleSearchChange}

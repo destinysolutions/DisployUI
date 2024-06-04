@@ -131,7 +131,7 @@ const Myplan = () => {
 
     const handleSaveTrialPlan = () => {
         if (trialData?.trialDays < 0) {
-            // toast.error("Please Enter Proper Trial Days")
+            toast.error("Please Enter Proper Trial Days")
             return;
         }
         const config = {
