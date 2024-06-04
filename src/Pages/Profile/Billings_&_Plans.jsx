@@ -121,7 +121,7 @@ const BillingsPlans = () => {
       }
       dispatch(GetBillingDetails({ config })).then((res) => {
         if (res?.payload?.status) {
-          setUserPlan(res?.payload?.data)
+          setUserPlan(res?.payload?.data[0])
           setLoading(false)
         }
       })
@@ -249,7 +249,7 @@ const BillingsPlans = () => {
               <div className="-mx-3 flex items-center mb-6">
                 <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                   <p className="my-3 font-medium lg:text-md">
-                    Your Current Plan is {userPlan?.description ? extractSubstring(userPlan?.description) : ""}
+                    Your Current Plan is {extractSubstring(userPlan?.description) ? extractSubstring(userPlan?.description) : "Trial Period"}
                   </p>
                   <p className="mb-3">A simple start for everyone</p>
 

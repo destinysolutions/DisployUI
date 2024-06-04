@@ -89,7 +89,7 @@ const Billing = ({ sidebarOpen }) => {
       }
       dispatch(GetBillingDetails({ config })).then((res) => {
         if (res?.payload?.status) {
-          setUserPlan(res?.payload?.data)
+          setUserPlan(res?.payload?.data[0])
           setShowBillingProfile(true)
         }
       })

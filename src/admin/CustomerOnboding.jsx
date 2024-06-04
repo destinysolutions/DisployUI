@@ -46,7 +46,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
       }
       dispatch(GetBillingDetails({ config })).then((res) => {
         if (res?.payload?.status) {
-          setUserPlan(res?.payload?.data)
+          setUserPlan(res?.payload?.data[0])
           setLoadFist(false)
         } else {
           setLoadFist(false)
@@ -280,7 +280,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 ">
                         <div className="user-pro-details text-base">
                           <h3 className="user-name my-2">Current Plan</h3>
-                          <h4 className="text-base font-medium">Your Current Plan {extractSubstring(userPlan?.description)}</h4>
+                          <h4 className="text-base font-medium">Your Current Plan {extractSubstring(userPlan?.description) ? extractSubstring(userPlan?.description) : "Trial Period"}</h4>
                           <p className="mb-4">A simple start for everyone</p>
                           <h4 className="text-base font-medium">Active until {moment(
                             userPlan?.endDate
