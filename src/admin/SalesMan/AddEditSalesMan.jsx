@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import * as Yup from "yup";
@@ -20,6 +20,7 @@ const AddEditSalesMan = ({
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
+    const [loading,setLoading] = useState(false)
     //using for validation and register api calling
     const phoneRegExp =
         /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -65,6 +66,8 @@ const AddEditSalesMan = ({
         enableReinitialize: editData,
         validationSchema: editId ? editValidationSchema : validationSchema,
         onSubmit: async (values) => {
+            setLoading(true)
+            toast.loading("Saving...")
             const formData = new FormData();
             formData.append("Password", values.password || ""); // Set a default value if null
             formData.append("FirstName", values.firstName);
@@ -79,10 +82,12 @@ const AddEditSalesMan = ({
                 dispatch(updateSalesManData(formData)).then((res) => {
                     if (res?.payload?.status) {
                         fetchData()
+                        toast.remove()
                         formik.resetForm();
                     } else {
                         toast.error(res?.payload?.message)
                     }
+                    setLoading(false)
                     setShowModal(false);
                 }).catch((error) => {
                     console.log('error', error)
@@ -92,10 +97,12 @@ const AddEditSalesMan = ({
                 dispatch(addSalesManData(formData)).then((res) => {
                     if (res?.payload?.status) {
                         fetchData()
+                        toast.remove()
                         formik.resetForm();
                     } else {
                         toast.error(res?.payload?.message)
                     }
+                    setLoading(false)
                     setShowModal(false);
                 }).catch((error) => {
                     console.log('error', error)
@@ -266,8 +273,11 @@ const AddEditSalesMan = ({
                                             <button
                                                 type="submit"
                                                 className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
+                                                disabled={loading}
                                             >
-                                                {heading === "Add" ? "Save" : heading}
+                                                {heading === "Add" 
+                                                ? (loading ? "Saving..." : "Save")
+                                                : (loading ? "Updating..." : "Update")}
                                             </button>
                                         </div>
                                     </form>

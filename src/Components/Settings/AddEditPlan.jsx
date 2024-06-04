@@ -4,6 +4,7 @@ import { handleAddPlan } from '../../Redux/AdminSettingSlice';
 import { useSelector } from 'react-redux';
 import { ADD_EDTT_PLAN } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
+import toast from 'react-hot-toast';
 
 const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, heading }) => {
     const dispatch = useDispatch();
@@ -16,14 +17,14 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
         storage: "",
         planPrice: "",
         Status: false,
-        description:""
+        description: ""
     });
     console.log('formData', formData)
     const [errorPlanName, setErrorPlanName] = useState(false)
     const [errorStorage, setErrorStorage] = useState(false)
     const [errorCost, setErrorCost] = useState(false)
     const [errorDescription, setErrorDescription] = useState(false)
-
+    const [loading, setLoading] = useState(false)
 
 
     useEffect(() => {
@@ -74,7 +75,7 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
             setErrorCost(true)
             hasError = true
         }
-        if(!formData?.description){
+        if (!formData?.description) {
             setErrorDescription(true)
             hasError = true
         }
@@ -105,6 +106,8 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
             }
             return item
         })
+        setLoading(true)
+        toast.loading("Saving...")
 
         let Params = {
             "listOfPlansID": selectPlan?.listOfPlansID ? selectPlan?.listOfPlansID : 0,
@@ -130,9 +133,15 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
             data: JSON.stringify(Params)
         };
         dispatch(handleAddPlan({ config })).then((res) => {
-            if (res?.payload?.status === 200) {
+            if (res?.payload?.status) {
+                setLoading(false)
                 setSelectPlan("");
                 showPlanModal(false)
+            } else {
+                setSelectPlan("");
+                showPlanModal(false)
+                setLoading(false)
+                toast.error(res?.payload?.message)
             }
         }).catch((error) => {
             console.log('error', error)
@@ -297,10 +306,12 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
 
                                     <div className='border-t border-gray-600'>
                                         <div className='col-span-12 text-center mt-3'>
-                                            <button className='bg-white text-primary text-base px-8 py-3 border border-primary shadow-md rounded-full hover:bg-primary hover:text-white'
+                                            <button
+                                                className='bg-white text-primary text-base px-8 py-3 border border-primary shadow-md rounded-full hover:bg-primary hover:text-white'
                                                 onClick={() => handleCreatePlan()}
+                                                disabled={loading}
 
-                                            >Save</button>
+                                            >{loading ? "Saving..." : "Save"}</button>
                                         </div>
                                     </div>
                                 </div>
