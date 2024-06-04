@@ -275,14 +275,16 @@ const BillingsPlans = () => {
                       {userDetails?.planID === 0 ? "Buy Plan" : "Upgrade Plan"}
 
                     </button>
-                    <button
-                      className=" px-5 py-2 border border-primary rounded-full text-primary"
-                      onClick={() => {
-                        CancelSubscription()
-                      }}
-                    >
-                      Cancel Subscription
-                    </button>
+                    {userDetails?.isActivePlan && (
+                      <button
+                        className=" px-5 py-2 border border-primary rounded-full text-primary"
+                        onClick={() => {
+                          CancelSubscription()
+                        }}
+                      >
+                        Cancel Subscription
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="md:w-1/2 px-3 mb-6 md:mb-0">

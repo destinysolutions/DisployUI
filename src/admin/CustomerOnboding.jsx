@@ -32,7 +32,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
   const [loadFist, setLoadFist] = useState(true);
   const [userPlan, setUserPlan] = useState({});
   const [rangeValue, setRangeValue] = useState(getDaysPassed(userPlan?.startDate, new Date()));
-
+  
   const getUserBilling = () => {
     try {
       const config = {
@@ -315,6 +315,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                               Increase Trial Days
                             </button>
                           )}
+                          {store?.data?.isActivePlan && (
                             <button
                               className="bg-[#FF0000] rounded-full px-3 py-2 text-white hover:bg-primary text-base"
                               onClick={() => {
@@ -323,6 +324,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               Cancel Subscription
                             </button>
+                          )}
                           </div>
                         </div>
                       </div>
