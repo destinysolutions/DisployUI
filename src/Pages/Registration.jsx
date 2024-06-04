@@ -208,6 +208,9 @@ const Registration = () => {
       formData.append("Email", values.emailID);
       formData.append("GoogleLocation", values.googleLocation);
       formData.append("Phone", values.phoneNumber);
+      formData.append("IsRetailer", false);
+      formData.append("IsSalesMan", false);
+
       // formData.append("UserTokan", usertoken);   // used Firebase token
       formData.append("Operation", "Insert");
       setLoading(true);
@@ -257,6 +260,8 @@ const Registration = () => {
     formData.append("Phone", null);
     formData.append("Operation", "Insert");
     formData.append("googleID", data?.sub);
+    formData.append("IsRetailer", false);
+    formData.append("IsSalesMan", false);
 
     const config = {
       method: "post",
@@ -315,6 +320,8 @@ const Registration = () => {
         formData.append("Phone", null);
         formData.append("Operation", "Insert");
         formData.append("googleID", result?.user?.uid);
+        formData.append("IsRetailer", false);
+        formData.append("IsSalesMan", false);
 
         const config = {
           method: "post",
