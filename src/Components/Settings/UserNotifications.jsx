@@ -219,13 +219,13 @@ const UserNotifications = () => {
 
     return (
         <>
-            <div className="p-8">
+            <div className="p-5">
                 <div className="flex justify-between">
                     <h2 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
                         Notifications
                     </h2>
                     <button
-                        className={`flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 lg:mb-5 lg:mt-0 mt-3 mb-4 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+                        className={`flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 lg:mt-0 mt-3 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
                         onClick={() => handleAdd()}
                     >
                         <HiPlus className="text-2xl mr-1" />

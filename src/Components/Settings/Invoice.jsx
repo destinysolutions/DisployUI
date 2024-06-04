@@ -77,14 +77,14 @@ const Invoice = ({
   return (
     <>
       {!showInvoice && (
-        <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-          <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
+        <>
+          <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2 mt-5">
             <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl mb-5">
               Invoice
             </h1>
           </div>
-          <div className="clear-both">
-            <div className="bg-white rounded-xl mt-8 shadow screen-section ">
+          <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2 pb-5 mt-2 ">
+            <div className="rounded-xl shadow">
               <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
                 <table
                   className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
@@ -308,7 +308,7 @@ const Invoice = ({
               </div>
             </div>
           </div>
-        </div >
+        </>
       )}
       {
         showInvoice && (

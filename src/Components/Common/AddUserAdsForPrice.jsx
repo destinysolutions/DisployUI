@@ -304,7 +304,11 @@ const AddUserAdsForPrice = ({ toggleModal, sidebarOpen, editIdAds, setloadFirst 
                                         ) : (
                                             <tr>
                                                 <td colSpan={6}>
-                                                    <p className="text-center p-2">No Screen available.</p>
+                                                <div className="flex text-center m-5 justify-center">
+                                                <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                                                  No Data Available
+                                                </span>
+                                              </div>
                                                 </td>
                                             </tr>
                                         )}
@@ -316,7 +320,7 @@ const AddUserAdsForPrice = ({ toggleModal, sidebarOpen, editIdAds, setloadFirst 
                             )}
                             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                                 <div className="flex items-center">
-                                    <span className="text-gray-500">{`Total ${screenData?.length} Screen`}</span>
+                                    <span className="text-gray-500">{`Total ${filteredData?.length} Screen`}</span>
                                 </div>
                                 <div className="flex justify-end">
                                     <button

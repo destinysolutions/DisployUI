@@ -2327,3 +2327,8 @@ input.Talk-formInput {
 .admin-media {
   width: 100% !important;
 }
+
+.video-width {
+  width: 100% !important;
+  height: 100% !important;
+}

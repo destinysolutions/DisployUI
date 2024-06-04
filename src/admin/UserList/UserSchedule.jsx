@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaUserCheck } from "react-icons/fa6";
 
-const UserSchedule = ({ selectUser, schedules, loading,sidebarOpen }) => {
+const UserSchedule = ({ selectUser, schedules, loading, sidebarOpen }) => {
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Adjust items per page as needed
@@ -13,15 +13,15 @@ const UserSchedule = ({ selectUser, schedules, loading,sidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value
-              .toString()
-              .toLowerCase()
-              .includes(searchSchedule.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value
+            .toString()
+            .toLowerCase()
+            .includes(searchSchedule.toLowerCase())
       )
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -164,7 +164,7 @@ const UserSchedule = ({ selectUser, schedules, loading,sidebarOpen }) => {
                                 fill="#1C64F2"
                               />
                             </svg>
-                            
+
                           </div>
                         </td>
                       </tr>
@@ -222,24 +222,24 @@ const UserSchedule = ({ selectUser, schedules, loading,sidebarOpen }) => {
                                   <div className="flex items-center justify-center gap-2 w-full flex-wrap">
                                     {schedule.tags !== null
                                       ? schedule.tags
-                                          .split(",")
-                                          .slice(
-                                            0,
-                                            schedule.tags.split(",").length > 2
-                                              ? 3
-                                              : schedule.tags.split(",").length
-                                          )
-                                          .map((text) => {
-                                            if (text.toString().length > 10) {
-                                              return text
-                                                .split("")
-                                                .slice(0, 10)
-                                                .concat("...")
-                                                .join("");
-                                            }
-                                            return text;
-                                          })
-                                          .join(",")
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          schedule.tags.split(",").length > 2
+                                            ? 3
+                                            : schedule.tags.split(",").length
+                                        )
+                                        .map((text) => {
+                                          if (text.toString().length > 10) {
+                                            return text
+                                              .split("")
+                                              .slice(0, 10)
+                                              .concat("...")
+                                              .join("");
+                                          }
+                                          return text;
+                                        })
+                                        .join(",")
                                       : ""}
                                   </div>
                                 </td>
@@ -253,59 +253,59 @@ const UserSchedule = ({ selectUser, schedules, loading,sidebarOpen }) => {
               </div>
 
               <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
-              <div className="flex items-center">
-                <span className="text-gray-500">{`Total ${schedules?.length} Schedules`}</span>
-              </div>
-              <div className="flex justify-end">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
-                >
-                  <svg
-                    className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 5H1m0 0 4 4M1 5l4-4"
-                    />
-                  </svg>
-                  {sidebarOpen ? "Previous" : ""}
-                </button>
-                <div className="flex items-center me-3">
-                  <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                <div className="flex items-center">
+                  <span className="text-gray-500">{`Total ${filteredData?.length} Schedules`}</span>
                 </div>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={(currentPage === totalPages) || (schedules?.length === 0)}
-                  className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
-                >
-                  {sidebarOpen ? "Next" : ""}
-                  <svg
-                    className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 10"
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                   >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M1 5h12m0 0L9 1m4 4L9 9"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 5H1m0 0 4 4M1 5l4-4"
+                      />
+                    </svg>
+                    {sidebarOpen ? "Previous" : ""}
+                  </button>
+                  <div className="flex items-center me-3">
+                    <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                  </div>
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={(currentPage === totalPages) || (schedules?.length === 0)}
+                    className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
+                  >
+                    {sidebarOpen ? "Next" : ""}
+                    <svg
+                      className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
             </div>
           </>
         )}

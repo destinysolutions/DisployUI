@@ -948,7 +948,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                   <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                     <div className="flex items-center">
-                      <span className="text-gray-500">{`Total ${compositionData?.length} Compositions`}</span>
+                      <span className="text-gray-500">{`Total ${filteredData?.length} Compositions`}</span>
                     </div>
                     <div className="flex justify-end">
                       <button

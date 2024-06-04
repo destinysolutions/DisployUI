@@ -393,7 +393,7 @@ const Defaultmedia = ({ permissions }) => {
                 Object.values(filePath).includes("OnlineVideo")) && (
                 <ReactPlayer
                   url={filePath?.assetFolderPath}
-                  className="relative w-full h-full z-20"
+                  className="relative z-20 video-width"
                   controls={true}
                   playing={true}
                 />

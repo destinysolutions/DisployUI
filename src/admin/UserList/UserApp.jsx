@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaUserCheck } from "react-icons/fa6";
 
-const UserApp = ({ selectUser, allAppsData, userloading,sidebarOpen }) => {
+const UserApp = ({ selectUser, allAppsData, userloading, sidebarOpen }) => {
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Adjust items per page as needed
@@ -25,12 +25,12 @@ const UserApp = ({ selectUser, allAppsData, userloading,sidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(allAppsData)
     ? allAppsData?.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value.toString().toLowerCase().includes(searchApps.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value.toString().toLowerCase().includes(searchApps.toLowerCase())
       )
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -95,7 +95,7 @@ const UserApp = ({ selectUser, allAppsData, userloading,sidebarOpen }) => {
               </div>
             </div>
             <div className="bg-white rounded-xl mt-5 shadow screen-section">
-            <div className="schedual-tabl mt-5 overflow-x-scroll sc-scrollbar rounded-lg">
+              <div className="schedual-tabl mt-5 overflow-x-scroll sc-scrollbar rounded-lg">
                 <table
                   className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
                   cellPadding={15}
@@ -163,79 +163,79 @@ const UserApp = ({ selectUser, allAppsData, userloading,sidebarOpen }) => {
                                   fill="#1C64F2"
                                 />
                               </svg>
-                              
+
                             </div>
                           </td>
                         </tr>
                       )}
                     {sortedAndPaginatedData?.length === 0 && (
                       <tr>
-                      <td colSpan={2}>
-                        <div className="flex text-center m-5 justify-center">
-                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
-                            No Data Available
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
+                        <td colSpan={2}>
+                          <div className="flex text-center m-5 justify-center">
+                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                              No Data Available
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
                     )}
                   </tbody>
                 </table>
               </div>
               <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
-              <div className="flex items-center">
-                <span className="text-gray-500">{`Total ${allAppsData?.length} Apps`}</span>
-              </div>
-              <div className="flex justify-end">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
-                >
-                  <svg
-                    className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 10"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 5H1m0 0 4 4M1 5l4-4"
-                    />
-                  </svg>
-                  {sidebarOpen ? "Previous" : ""}
-                </button>
-                <div className="flex items-center me-3">
-                  <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                <div className="flex items-center">
+                  <span className="text-gray-500">{`Total ${filteredData?.length} Apps`}</span>
                 </div>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={(currentPage === totalPages) || (allAppsData?.length === 0)}
-                  className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
-                >
-                  {sidebarOpen ? "Next" : ""}
-                  <svg
-                    className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 10"
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                   >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M1 5h12m0 0L9 1m4 4L9 9"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 5H1m0 0 4 4M1 5l4-4"
+                      />
+                    </svg>
+                    {sidebarOpen ? "Previous" : ""}
+                  </button>
+                  <div className="flex items-center me-3">
+                    <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                  </div>
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={(currentPage === totalPages) || (allAppsData?.length === 0)}
+                    className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
+                  >
+                    {sidebarOpen ? "Next" : ""}
+                    <svg
+                      className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
             </div>
           </>
         )}
