@@ -529,9 +529,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
                               <td className=" text-[#5E5E5E] items-center text-sm ">
                                 <div className="flex justify-center items-center">
-                                  {moment(item.deleteDate).format(
-                                    "DD/MM/YY, h:mm:ss a"
-                                  )}
+                                  {moment(item.deleteDate).format('MMMM D, YYYY')}
                                 </div>
                               </td>
                               <td className=" text-[#5E5E5E] items-center text-sm ">

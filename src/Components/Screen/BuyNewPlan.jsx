@@ -142,6 +142,8 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
                 // dispatch(handleLogout());
                 // navigation("/"); // Navigate to dashboard after processing payment
             }
+        }).catch((error) => {
+            console.log('error', error)
         })
     }
 
@@ -189,6 +191,8 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
                 setIsLoading(false);
                 toast.error(res?.payload?.data)
             }
+        }).catch((error) => {
+            console.log('error', error)
         })
     }
 

@@ -43,6 +43,8 @@ const BillingsPlans = () => {
     zipCode: ""
   })
 
+  console.log('userPlan', userPlan)
+
   useEffect(() => {
     fetch(GET_ALL_COUNTRY)
       .then((response) => response.json())
@@ -261,10 +263,11 @@ const BillingsPlans = () => {
                   <p className="mb-3">
                     We will send you a notification upon Subscription expiration.
                   </p>
-
-                  <p className="my-3">
-                    <strong>${extractPrice(userPlan?.description)} Per Month</strong>{" "}
-                  </p>
+                  {extractPrice(userPlan?.description) && (
+                    <p className="my-3">
+                      <strong>${extractPrice(userPlan?.description)} Per Month</strong>{" "}
+                    </p>
+                  )}
 
                   <div className="w-full flex">
                     <button className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"

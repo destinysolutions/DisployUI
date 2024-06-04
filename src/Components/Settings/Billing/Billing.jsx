@@ -8,7 +8,7 @@ import { BsEyeFill } from "react-icons/bs";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineSearch } from "react-icons/ai";
 import UserInfo from "./UserInfo";
-import { GET_ALL_BILLING, GET_BILLING_BY_ID, GET_ALL_CARD, GET_USER_BILLING_DETAILS } from "../../../Pages/Api";
+import { GET_ALL_BILLING, GET_BILLING_BY_ID, GET_ALL_CARD, GET_USER_BILLING_DETAILS, GET_ALL_BILLING_DETAILS } from "../../../Pages/Api";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { handleGetAllBillings, handleGetBillingByID } from "../../../Redux/AdminSettingSlice";
@@ -38,7 +38,7 @@ const Billing = ({ sidebarOpen }) => {
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${GET_USER_BILLING_DETAILS}`,
+      url: `${GET_ALL_BILLING_DETAILS}`,
       headers: {
         Authorization: authToken
       },

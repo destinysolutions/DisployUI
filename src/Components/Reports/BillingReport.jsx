@@ -2,6 +2,7 @@ import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { LuDownload } from "react-icons/lu";
 import { MdKeyboardArrowLeft } from "react-icons/md";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 
@@ -12,9 +13,10 @@ const BillingReport = ({
   loading,
   sidebarOpen,
 }) => {
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   return (
     <>
-      <div className="pt-16 px-5 page-contain">
+    <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <div className="flex items-center lg:mb-0 md:mb-0 sm:mb-4">

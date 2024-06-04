@@ -107,6 +107,8 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer,setLoadFist }
                                                     {salesman.firstName}{" "}{salesman?.lastName}
                                                 </option>
                                             ))}
+                                            <option value="0">Direct</option>
+                                            <option value="-1">Reference</option>
                                         </select>
 
                                         {error && (

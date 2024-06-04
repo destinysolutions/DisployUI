@@ -249,6 +249,8 @@ export const TALK_TO_SALE = `${baseUrl}common/TalkToSale`
 export const ADD_EDIT_BILLINGDETAILS = `${baseUrl}BillingDetails/AddEditBillingDetails`
 export const GET_BILLING_DETAILS = `${baseUrl}BillingDetails/GetBillingDetails`
 export const GET_USER_BILLING_DETAILS = `${baseUrl}Common/GetUserBillingDetails`
+export const GET_ALL_BILLING_DETAILS = `${baseUrl}Common/GetUserBillingDetailsByUserEmail`
+
 
 // Notifications
 
