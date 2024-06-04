@@ -36,7 +36,6 @@ const GoogleDrive = () => {
   };
 
   const handleOpenPicker = async (token) => {
-    console.log(token);
     openPicker({
       clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID, // Your client ID
       developerKey: process.env.REACT_APP_GOOGLE_DEVELOPER_KEY, // Your developer key

@@ -54,9 +54,6 @@ const Registration = () => {
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-
-  console.log('msalInstance', msalInstance)
-
   //using for validation and register api calling
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -296,8 +293,8 @@ const Registration = () => {
       //     setErrorMessgeVisible(true);
       //     setErrorMessge("Registration failed.");
       //   });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
       setErrorMessgeVisible(true);
       setErrorMessge("Registration failed.");
     }
@@ -353,8 +350,8 @@ const Registration = () => {
           //     setErrorMessgeVisible(true);
           //     setErrorMessge("Registration failed.");
           //   });
-        } catch (err) {
-          console.log(err);
+        } catch (error) {
+          console.log(error);
           setErrorMessgeVisible(true);
           setErrorMessge("Registration failed.");
         }
@@ -391,8 +388,8 @@ const Registration = () => {
           setErrorMessgeVisible(true);
           setErrorMessge("Registration failed.");
         });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -401,8 +398,8 @@ const Registration = () => {
       const res = await signInWithPopup(auth, appleProvider);
       const user = res.user;
       // onclose();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -417,8 +414,8 @@ const Registration = () => {
     //   const user = res.user;
     //   console.log('user', user)
     //   // onclose();
-    // } catch (err) {
-    //   console.log(err);
+    // } catch (error) {
+    //   console.log(error);
     // }
 
     const data = instance.loginPopup(loginRequest).then((res) => {
@@ -710,7 +707,7 @@ const Registration = () => {
                   onSuccess={(res) => {
                     SignInWithGoogle(jwtDecode(res.credential));
                   }}
-                  onError={(err) => console.log(err)}
+                  onError={(error) => console.log(error)}
                 ></GoogleLogin>
               </GoogleOAuthProvider>
                 </div>*/}

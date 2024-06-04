@@ -86,8 +86,8 @@ const Myplan = () => {
                 setmyPlan(res?.payload?.data)
                 setLoading(false)
             }
-        }).catch((err) => {
-            console.log('err', err)
+        }).catch((error) => {
+            console.log('error', error)
         })
     }
 
@@ -112,8 +112,8 @@ const Myplan = () => {
                 }
                 toast.remove()
             }
-        }).catch((err) => {
-            console.log('err', err)
+        }).catch((error) => {
+            console.log('error', error)
             toast.remove()
         })
     }
@@ -226,13 +226,13 @@ const Myplan = () => {
                                                 <div className="p-4 rounded-lg h-full">
                                                     <div className="flex justify-between mb-4">
                                                         <div className="role-name">
-                                                            {user?.role === "1" && (
+                                                            {/*{user?.role === "1" && (
                                                                 <p>Total 5 Users</p>
-                                                            )}
+                                                            )}*/}
                                                             <h3 className="text-2xl font-semibold my-2">
                                                                 {item?.planName}
                                                             </h3>
-                                                            <p>A simple start for Everyone</p>
+                                                            <p>{item?.planDetailss}</p>
 
                                                         </div>
                                                         <div>
@@ -325,13 +325,13 @@ const Myplan = () => {
                                                 <div className="p-4 bg-[#ECF0F1] rounded-lg h-full">
                                                     <div className="flex justify-between mb-4">
                                                         <div className="role-name">
-                                                            {user?.role === "1" && (
+                                                            {/*{user?.role === "1" && (
                                                                 <p>Total 5 Users</p>
-                                                            )}
+                                                            )}*/}
                                                             <h3 className="text-2xl font-semibold my-2">
                                                                 {item?.planName}
                                                             </h3>
-                                                            <p>A simple start for Everyone</p>
+                                                            <p>{item?.planDetailss}</p>
 
                                                         </div>
                                                         <div>

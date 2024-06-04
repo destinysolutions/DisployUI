@@ -46,8 +46,8 @@ const Card = ({ setLoading, fetchCards }) => {
                 } else {
                     toast.error("'Failed to add card'")
                 }
-            }).catch((err) => {
-                console.log('err', err)
+            }).catch((error) => {
+                console.log('error', error)
             })
 
         }

@@ -575,7 +575,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleChangePreviewScreen() {
     const { data, myComposition } = screenPreviewData;
-    // console.log(data,myComposition);
     const findCurrentSchedule = data?.find((item) => {
       // for schedule
       if (
@@ -742,45 +741,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
             macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
           };
           socket.emit("ScreenConnected", Params);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke(
-          //           "ScreenConnected",
-          //           screenData[0]?.macid.replace(/^\s+/g, "")
-          //         )
-          //         .then(() => {
-          //           console.log(
-          //             "SignalR method invoked after screen detail update"
-          //           );
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke(
-          //       "ScreenConnected",
-          //       screenData[0]?.macid.replace(/^\s+/g, "")
-          //     )
-          //     .then(() => {
-          //       console.log(
-          //         "SignalR method invoked after screen detail update"
-          //       );
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
-
           navigate("/screens");
-
           toast.remove();
         }
       })
@@ -1029,64 +990,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           console.log(error);
         });
     }, 1000);
-    // if (connection.state == "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke(
-    //           "ScreenConnected",
-    //           screenData[0]?.macid.replace(/^\s+/g, "")
-    //         )
-    //         .then(() => {
-    //           console.log("SignalR method invoked after Asset update");
-    //           // const response = dispatch(
-    //           //   handleUpdateScreenAsset({
-    //           //     mediaName,
-    //           //     dataToUpdate: data,
-    //           //     token,
-    //           //   })
-    //           // );
-    //           // if (!response) return;
-    //           // response
-    //           //   .then((response) => {
-    //           //     toast.remove();
-    //           //     toast.success("Media Updated.");
-    //           //     getScreenByid()
-    //           //   })
-    //           //   .catch((error) => {
-    //           //     toast.remove();
-    //           //     console.log(error);
-    //           //   });
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke("ScreenConnected", screenData[0]?.macid.replace(/^\s+/g, ""))
-    //     .then(() => {
-    //       console.log("SignalR method invoked after Asset update");
-    //       // const response = dispatch(
-    //       //   handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
-    //       // );
-    //       // if (!response) return;
-    //       // response
-    //       //   .then((response) => {
-    //       //     toast.remove();
-    //       //     toast.success("Media Updated.");
-    //       //     getScreenByid()
-    //       //   })
-    //       //   .catch((error) => {
-    //       //     toast.remove();
-    //       //     console.log(error);
-    //       //   });
-    //     });
-    // }
-    // }) .catch((error) => {
-    //   console.error("Error invoking SignalR method:", error);
-    // });
   };
 
   const handleDayButtonClick = (index, item) => {

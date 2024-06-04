@@ -319,7 +319,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       operation: "Update",
       UpdatedDate: new Date().toISOString().split("T")[0],
     });
-    // return console.log(data);
     toast.loading("Saving...");
     let config = {
       method: "post",

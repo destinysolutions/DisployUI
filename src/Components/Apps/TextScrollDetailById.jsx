@@ -50,7 +50,6 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
       });
   }, []);
 
-  // console.log(macids);
 
   const handleUpdateScrollText = async () => {
     if (instanceName === "" || text === "") {

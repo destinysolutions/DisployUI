@@ -63,8 +63,8 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
             } else {
                 toast.error(res?.payload?.message)
             }
-        }).catch((err) => {
-            console.log('err', err)
+        }).catch((error) => {
+            console.log('error', error)
         });
     }
 

@@ -210,8 +210,8 @@ const UserNotifications = () => {
                         toast.success(res?.payload?.message)
                         fetchGetNotification()
                     }
-                }).catch((err) => {
-                    console.log('err', err)
+                }).catch((error) => {
+                    console.log('error', error)
                 })
         }
     };

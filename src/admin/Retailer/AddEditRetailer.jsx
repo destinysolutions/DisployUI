@@ -78,8 +78,8 @@ const AddEditRetailer = ({
           } else {
             toast.error(res?.payload?.message)
           }
-        }).catch((err) => {
-          console.log('err', err)
+        }).catch((error) => {
+          console.log('error', error)
         });
       } else {
         formData.append("Operation", "Insert");
@@ -90,8 +90,8 @@ const AddEditRetailer = ({
           } else {
             toast.error(res?.payload?.message)
           }
-        }).catch((err) => {
-          console.log('err', err)
+        }).catch((error) => {
+          console.log('error', error)
         });
 
         formik.resetForm();

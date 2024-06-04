@@ -34,8 +34,8 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer,setLoadFist }
             } else {
                 toast.error(res?.payload?.message)
             }
-        }).catch((err) => {
-            console.log('err', err)
+        }).catch((error) => {
+            console.log('error', error)
         });
     }, [])
 
@@ -63,8 +63,8 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer,setLoadFist }
                 toast.error(res?.payload?.message)
             }
 
-        }).catch((err) => {
-            console.log('err', err)
+        }).catch((error) => {
+            console.log('error', error)
         })
     }
 

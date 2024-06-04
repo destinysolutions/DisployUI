@@ -12,7 +12,6 @@ const MicrosoftBtn = ({ register }) => {
     const { instance } = useMsal();
     const SignInMicroSoft = async () => {
         instance.loginPopup(loginRequest).then(async (res) => {
-            console.log('res', res)
 
             if (register) {
                 await Registration(res)
@@ -54,8 +53,8 @@ const MicrosoftBtn = ({ register }) => {
             });
             if (!response) return;
 
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            console.log(error);
 
         }
     }

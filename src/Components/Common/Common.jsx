@@ -155,7 +155,6 @@ export function combineUserroleObjects(selectedRole) {
   return combinedObj;
 }
 
-
 export const Pagination = (page, length) => {
   if (page === 1) {
     return 1;
@@ -211,7 +210,6 @@ export const getCurrentTime = () => {
   return `${hours}:${minutes}`;
 };
 
-
 // Function to convert time string (HH:MM:SS) to seconds
 function timeToSeconds(time) {
   const [hours, minutes, seconds] = time.split(':').map(Number);
@@ -231,9 +229,6 @@ export function secondsToHMS(seconds) {
   const remainingSeconds = seconds % 60;
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
-
-
-
 
 export const greenOptions = {
   color: "blue",
@@ -406,7 +401,6 @@ export const Theme = [
   { theme: "Dark Theme" },
 ];
 
-
 export function generateAllCategory(addCategory) {
   const allCategory = addCategory.map(category => {
     const items = category.allItem.map(item => ({
@@ -523,7 +517,6 @@ export const NotificationType = [{
   Value: "None"
 }]
 
-
 export  function mergeNotificationData(listNotification, res) {
     return listNotification.map((listItem, index) => {
         const correspondingArrItem = res?.payload?.data.find(item => item.index === index);
@@ -543,7 +536,6 @@ export  function mergeNotificationData(listNotification, res) {
 }
 
 export function extractSubstring(str) {
-  console.log(str,"str")
   let match = str.match(/× (.*?) \(/);
     if (match) {
         return match[1];
@@ -575,7 +567,6 @@ export function getDifferenceInDays(start, end) {
   return differenceInDays;
 }
 
-
 export function getRemainingDays(start, end) {
   const startDate = new Date(start);
   const endDate = new Date(end);
@@ -588,7 +579,6 @@ export function getRemainingDays(start, end) {
 
   return differenceInDays;
 }
-
 
 export function getDaysPassed(start, end) {
   const startDate = new Date(start);
@@ -608,7 +598,6 @@ export const months = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-
 export function generateYearArray() {
   // Get the current year
   const currentYear = new Date().getFullYear();
@@ -618,10 +607,8 @@ export function generateYearArray() {
   for (let year = 2000; year <= currentYear; year++) {
       years.push(year);
   }
-
   return years;
 }
-
 
 export function getRandomTwoDigitNumber(Num,Num1) {
   return Math.floor(Math.random() * Num) + 10;

@@ -133,7 +133,6 @@ const Login = () => {
             if (response.status == 200) {
               window.localStorage.setItem("timer", JSON.stringify(18_00));
               const userRole = response.role;
-              console.log('response', response)
               if (userRole == 1) {
                 localStorage.setItem("role_access", "ADMIN");
                 toast.success("Login successfully.");
@@ -230,8 +229,8 @@ const Login = () => {
           console.log(error);
           setErrorMessge("Registration failed.");
         });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -335,8 +334,8 @@ const Login = () => {
           console.log(error);
           setErrorMessge("Registration failed.");
         });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -345,8 +344,8 @@ const Login = () => {
       const res = await signInWithRedirect(auth, appleProvider);
       const user = res.user;
       // onclose();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -360,8 +359,8 @@ const Login = () => {
       const res = await signInWithRedirect(auth, microsoftProvider);
       const user = res.user;
       // onclose();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -580,7 +579,7 @@ const Login = () => {
                   onSuccess={(res) => {
                     SignInWithGoogle(jwtDecode(res.credential));
                   }}
-                  onError={(err) => console.log(err)}
+                  onError={(error) => console.log(error)}
                 ></GoogleLogin>
               </GoogleOAuthProvider>
                 </div>*/}

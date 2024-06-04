@@ -84,8 +84,8 @@ const AddEditSalesMan = ({
                         toast.error(res?.payload?.message)
                     }
                     setShowModal(false);
-                }).catch((err) => {
-                    console.log('err', err)
+                }).catch((error) => {
+                    console.log('error', error)
                 });
             } else {
                 formData.append("Operation", "Insert");
@@ -97,8 +97,8 @@ const AddEditSalesMan = ({
                         toast.error(res?.payload?.message)
                     }
                     setShowModal(false);
-                }).catch((err) => {
-                    console.log('err', err)
+                }).catch((error) => {
+                    console.log('error', error)
                 });
             }
         },

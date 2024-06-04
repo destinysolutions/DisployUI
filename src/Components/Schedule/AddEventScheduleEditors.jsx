@@ -473,8 +473,8 @@ const AddEventScheduleEditors = ({
     if (!isNaN(daysDiff)) {
       DAYS.then((res) => {
         setSelectedDays(res);
-      }).catch((err) => {
-        console.log(err);
+      }).catch((error) => {
+        console.log(error);
       });
     }
   }, [daysDiff]);

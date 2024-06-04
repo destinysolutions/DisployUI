@@ -82,8 +82,8 @@ const BillingsPlans = () => {
       if (res?.payload?.status === 200) {
         setmyPlan(res?.payload?.data)
       }
-    }).catch((err) => {
-      console.log('err', err)
+    }).catch((error) => {
+      console.log('error', error)
     })
   }
 
@@ -217,8 +217,8 @@ const BillingsPlans = () => {
       if (res?.payload?.status === 200) {
         setBillingDetails(res?.payload?.data)
       }
-    }).catch((err) => {
-      console.log('err', err)
+    }).catch((error) => {
+      console.log('error', error)
     })
   }
 

@@ -15,7 +15,6 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
 
   const dispatch = useDispatch()
   const { user, token } = useSelector((s) => s.root.auth);
-  console.log('user', user)
   const authToken = `Bearer ${token}`;
   const [newCardShow, setNewCardShow] = useState(false);
   const [rangeValue, setRangeValue] = useState(getDaysPassed(userPlan?.startDate, new Date()));

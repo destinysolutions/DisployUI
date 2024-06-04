@@ -15,13 +15,16 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
         totalscreen: 1,
         storage: "",
         planPrice: "",
-        Status: "Active"
+        Status: false,
+        description:""
     });
-
     console.log('formData', formData)
     const [errorPlanName, setErrorPlanName] = useState(false)
     const [errorStorage, setErrorStorage] = useState(false)
     const [errorCost, setErrorCost] = useState(false)
+    const [errorDescription, setErrorDescription] = useState(false)
+
+
 
     useEffect(() => {
         if (selectPlan) {
@@ -30,6 +33,9 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
             obj.planPrice = selectPlan?.planPrice;
             obj.storage = 2;
             obj.totalscreen = 1;
+            obj.PlanDetails = featureList;
+            obj.Status = true;
+            obj.description = selectPlan?.planDetailss
             selectPlan?.planDetails?.map((item) => {
                 return (item?.lstOfFeatures?.map((list) => {
                     obj[list?.name] = list?.value === "Yes" ? true : false
@@ -68,6 +74,10 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
             setErrorCost(true)
             hasError = true
         }
+        if(!formData?.description){
+            setErrorDescription(true)
+            hasError = true
+        }
 
         if (hasError) {
             return;
@@ -97,8 +107,8 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
         })
 
         let Params = {
-            "listOfPlansID": 0,
-            "planDetailss": "string",
+            "listOfPlansID": selectPlan?.listOfPlansID ? selectPlan?.listOfPlansID : 0,
+            "planDetailss": formData?.description,
             "planName": formData?.PlanName,
             "isRecomnded": true,
             "planPrice": formData?.planPrice,
@@ -139,7 +149,7 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
             >
                 <div className="modal-overlay">
                     <div className="modal">
-                        <div className="relative p-4 lg:w-[600px] md:w-[600px] sm:w-full max-h-full">
+                        <div className="relative p-4 lg:w-[700px] md:w-[700px] sm:w-full max-h-full">
                             {/* Modal content */}
                             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                                 {/* Modal header */}
@@ -170,7 +180,7 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
                                                 {errorPlanName && (
-                                                    <span className='error'> This Field is Required.</span>
+                                                    <span className='error'>This Field is Required.</span>
                                                 )}
                                             </div>
                                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
@@ -197,12 +207,12 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
                                                 {errorStorage && (
-                                                    <span className='error'> This Field is Required.</span>
+                                                    <span className='error'>This Field is Required.</span>
                                                 )}
                                             </div>
                                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
                                                 <div className="relative">
-                                                    <label className="formLabel">Cost</label>
+                                                    <label className="formLabel">Plan Price</label>
                                                     <input
                                                         type='number'
                                                         placeholder='Enter Plan Cost'
@@ -212,15 +222,32 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
                                                 {errorCost && (
-                                                    <span className='error'> This Field is Required.</span>
+                                                    <span className='error'>This Field is Required.</span>
                                                 )}
                                             </div>
+
                                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
+                                                <div className="relative">
+                                                    <label className="formLabel">Description</label>
+                                                    <input
+                                                        type='text'
+                                                        placeholder='Enter Plan Description'
+                                                        name="description"
+                                                        className="formInput"
+                                                        value={formData?.description}
+                                                        onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
+                                                </div>
+                                                {errorDescription && (
+                                                    <span className='error'>This Field is Required.</span>
+                                                )}
+                                            </div>
+                                            <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 flex items-center'>
                                                 <div className="flex items-center gap-3">
                                                     <input
                                                         type='checkbox'
                                                         name='Status'
                                                         className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink"
+                                                        checked={formData?.Status}
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.checked)}
                                                     />
                                                     <label>Is Active</label>

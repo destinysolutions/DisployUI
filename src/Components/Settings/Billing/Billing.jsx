@@ -44,7 +44,6 @@ const Billing = ({ sidebarOpen }) => {
       },
     }
     dispatch(GetUserBillingDetails({ config })).then((res) => {
-      console.log('res', res)
       if (res?.payload?.status) {
         setBillingList(res?.payload?.data)
       }
@@ -108,8 +107,8 @@ const Billing = ({ sidebarOpen }) => {
         setCustomerData(res?.payload?.data);
         toast.remove()
       })
-      .catch((err) => {
-        console.log('err', err)
+      .catch((error) => {
+        console.log('error', error)
         toast.remove()
       })
   }
