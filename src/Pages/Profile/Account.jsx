@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import "react-phone-input-2/lib/style.css";
 import { UpdateUserDetails, handleGetUserDetails } from "../../Redux/Authslice";
 import { useDispatch } from "react-redux";
+import { handleGetState } from "../../Redux/SettingUserSlice";
 
 const Account = () => {
   const [file, setFile] = useState(null);
@@ -112,10 +113,10 @@ const Account = () => {
 
   useEffect(() => {
     const axiosRequests = [
-      axios.get(GET_ALL_CURRENCIES),
-      axios.get(GET_ALL_LANGUAGES),
-      axios.get(GET_ALL_COUNTRY),
-      axios.get(GET_TIMEZONE),
+      axios.get(GET_ALL_CURRENCIES, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_LANGUAGES, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_COUNTRY, { headers: { Authorization: authToken } }),
+      axios.get(GET_TIMEZONE, { headers: { Authorization: authToken } }),
     ];
 
     // Use Promise.all to send all requests concurrently
@@ -140,11 +141,11 @@ const Account = () => {
 
   // Fetch states based on the selected country
   useEffect(() => {
-    if(selectedCountry !== ""){
-      fetch(`${GET_SELECT_BY_STATE}?CountryID=${parseInt(selectedCountry)}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setStates(data.data);
+    console.log('selectedCountry', selectedCountry)
+    if (selectedCountry !== "") {
+      dispatch(handleGetState(selectedCountry))
+        ?.then((res) => {
+          setStates(res?.payload?.data);
         })
         .catch((error) => {
           console.log("Error fetching states data:", error);
@@ -218,10 +219,10 @@ const Account = () => {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          // onSubmit={(e) => {
-          //   e.preventDefault();
-          //   updateUser();
-          // }}
+        // onSubmit={(e) => {
+        //   e.preventDefault();
+        //   updateUser();
+        // }}
         >
           <div className="p-5 pt-0 mb-5 flex flex-col">
             <div className="-mx-3 md:flex">
@@ -348,7 +349,7 @@ const Account = () => {
                         key={country.countryID}
                         selected={country?.countryID == getValues("countryID")}
                         value={country.countryID}
-                        // onChange={(e) => {}}
+                      // onChange={(e) => {}}
                       >
                         {country.countryName}
                       </option>

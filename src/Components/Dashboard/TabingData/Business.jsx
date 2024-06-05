@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { handleGetAllApps } from "../../../Redux/AppsSlice";
 import { handleGetScreen } from "../../../Redux/Screenslice";
 import DashboardScreen from "../../Common/DashboardScreen";
+import { handleGetState } from "../../../Redux/SettingUserSlice";
 
 //for Screen chart options
 const ScreenOption = {
@@ -234,10 +235,9 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
   // Fetch states based on the selected country
   useEffect(() => {
     if (selectedCountry !== "") {
-      fetch(`${GET_SELECT_BY_STATE}?CountryID=${selectedCountry?.countryID}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setStates(data.data);
+      dispatch(handleGetState(selectedCountry))
+        ?.then((res) => {
+          setStates(res?.payload?.data);
         })
         .catch((error) => {
           console.log("Error fetching states data:", error);

@@ -13,7 +13,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import MyCard from "./MyCard";
 import { GetAllCardList } from "../../Redux/CardSlice";
 import Loading from "../../Components/Loading";
-import { AddEditBillingDetails, GetBillingDetails } from "../../Redux/SettingUserSlice";
+import { AddEditBillingDetails, GetBillingDetails, handleGetState } from "../../Redux/SettingUserSlice";
 import { useNavigate } from "react-router-dom";
 import { extractPrice, extractSubstring, getDaysPassed, getDifferenceInDays, getRemainingDays } from "../../Components/Common/Common";
 import moment from "moment";
@@ -58,11 +58,10 @@ const BillingsPlans = () => {
 
 
   useEffect(() => {
-    if (billingDetails?.countryID !== "") {
-      fetch(`${GET_SELECT_BY_STATE}?CountryID=${parseInt(billingDetails?.countryID)}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setStates(data.data);
+    if (billingDetails?.countryID !== "" && billingDetails?.countryID !== null) {
+      dispatch(handleGetState(billingDetails?.countryID))
+        ?.then((res) => {
+          setStates(res?.payload?.data);
         })
         .catch((error) => {
           console.log("Error fetching states data:", error);

@@ -46,6 +46,7 @@ import ReactTooltip from "react-tooltip";
 import WarningDialog from "../Common/WarningDialog";
 import AddEditUser from "./AddEditUser";
 import UserScreenAccess from "./UserScreenAccess";
+import AttentionDialog from "../Common/AttentionDialog";
 
 const Users = ({ searchValue, permissions, sidebarOpen }) => {
   const [loadFist, setLoadFist] = useState(true);
@@ -2030,7 +2031,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
       )}
 
       {warning && (
-        <WarningDialog warning={warning} setWarning={setWarning} />
+        <AttentionDialog warning={warning} setWarning={setWarning} />
       )}
     </>
   );

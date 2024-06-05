@@ -341,7 +341,6 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
                                         <label className='text-black text-2xl font-semibold'>
                                             Select Payment
                                         </label>
-
                                     </div>
                                     <div className='flex flex-row flex-wrap'>
                                         <div className='w-full sm:w-1/3 md:w-1/4'>

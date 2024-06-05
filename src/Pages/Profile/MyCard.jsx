@@ -43,6 +43,8 @@ const MyCard = ({ fetchCards, cardList, setLoading }) => {
                     if (res?.payload?.status) {
                         toast.success(res?.payload?.message)
                         fetchCards()
+                        setLoading(false)
+
                     }
                 })
             }
@@ -52,7 +54,7 @@ const MyCard = ({ fetchCards, cardList, setLoading }) => {
     return (
         <>
             <div className="md:w-1/2 px-3">
-                <h3 className="user-name mb-3">{cardList?.length > 0 ? "My Cards" : "" }</h3>
+                <h3 className="user-name mb-3">{cardList?.length > 0 ? "My Cards" : ""}</h3>
                 {cardList?.length > 0 && cardList?.map((item, index) => {
                     return (
                         <div className="card-shadow px-5 py-3 mb-3" key={index}>

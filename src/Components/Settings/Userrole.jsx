@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { combineUserroleObjects } from "../Common/Common";
 import WarningDialog from "../Common/WarningDialog";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import AttentionDialog from "../Common/AttentionDialog";
 
 const Userrole = ({ searchValue, sidebarOpen }) => {
   const { user, token ,userDetails} = useSelector((state) => state.root.auth);
@@ -417,7 +418,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
       )}
 
       {warning && (
-        <WarningDialog warning={warning} setWarning={setWarning} />
+        <AttentionDialog warning={warning} setWarning={setWarning} />
       )}
       
       {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (

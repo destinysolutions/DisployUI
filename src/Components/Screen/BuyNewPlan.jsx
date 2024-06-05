@@ -228,11 +228,18 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
 
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
+                debugger;
                 let Subscription = res?.payload?.subscriptionId
                 PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: 1, TotalPrice: selectPlan?.planPrice, ScreenpaymentType: false })
                 PaymentofScreen = true
                 if (Screen > 1) {
                     ScreenCreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId })
+                } else {
+                    setTimeout(() => {
+                        toast.success("Payment Submitted Successfully.")
+                        setIsLoading(false);
+                        navigation("/"); // Navigate to dashboard after processing payment
+                    }, 2000);
                 }
             }
         })
@@ -307,11 +314,11 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
                             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                                 <div className="p-4 md:p-5">
                                     <div id="payment-form" className='Payment'>
-                                        <div className="text-gray-500 hover:text-gray-700 duration-200 flex justify-between items-center mb-5 cursor-pointer" onClick={() => setOpenPayment(!openPayment)}>
+                                        <div className="text-gray-500 hover:text-gray-700 duration-200 flex justify-between items-center mb-5 cursor-pointer" >
                                             <label className='text-black text-2xl font-semibold'>
                                                 Select Payment
                                             </label>
-                                            <IoClose size={26} />
+                                            <IoClose size={26} onClick={() => setOpenPayment(!openPayment)} />
                                         </div>
                                         <div className='flex flex-row flex-wrap'>
                                             <div className='w-full sm:w-1/3 md:w-1/4'>
