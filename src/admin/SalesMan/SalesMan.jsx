@@ -154,9 +154,9 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
 
     const handleDeactive = (item) => {
         let config = {
-            method: "get",
+            method: "post",
             maxBodyLength: Infinity,
-            url: `${DEACTIVE_SAELS_MAN}?Email=${item?.email}`,
+            url: `${DEACTIVE_SAELS_MAN}?Email=${item?.email}&IsActive=${item?.isActive ? false : true}`,
             headers: {
                 Authorization: authToken,
             },
