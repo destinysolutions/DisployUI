@@ -259,22 +259,22 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                         <span>Annual</span>
                                                         <label
                                                             for="toggleFive"
-                                                            class="mx-2 flex items-center cursor-pointer select-none text-dark dark:text-white"
+                                                            className="mx-2 flex items-center cursor-pointer select-none text-dark dark:text-white"
                                                         >
-                                                            <div class="relative">
+                                                            <div className="relative">
                                                                 <input
                                                                     id="toggleFive"
                                                                     type="checkbox"
-                                                                    class="peer sr-only"
+                                                                    className="peer sr-only"
                                                                 />
                                                                 <div
-                                                                    class="h-3 rounded-full shadow-inner w-10 bg-gray-300"
+                                                                    className="h-3 rounded-full shadow-inner w-10 bg-gray-300"
                                                                 ></div>
                                                                 <div
-                                                                    class="absolute left-0 flex items-center justify-center transition bg-white rounded-full dot shadow-switch-1 -top-1 h-5 w-5 peer-checked:translate-x-full"
+                                                                    className="absolute left-0 flex items-center justify-center transition bg-white rounded-full dot shadow-switch-1 -top-1 h-5 w-5 peer-checked:translate-x-full"
                                                                 >
                                                                     <span
-                                                                        class="w-3 h-3 rounded-full active bg-gray-300"
+                                                                        className="w-3 h-3 rounded-full active bg-gray-300"
                                                                     ></span>
                                                                 </div>
                                                             </div>

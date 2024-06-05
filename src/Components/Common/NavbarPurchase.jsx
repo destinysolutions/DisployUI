@@ -159,21 +159,21 @@ const NavbarPurchase = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                             </div>
 
                                             <div className="flex items-center justify-between py-3 border-t border-gray-200">
-                                                <p class="text-xs text-gray-500 leading-4">Your trial period has not yet expired. Would you like to use the remaining trial days or begin your subscription today?</p>
+                                                <p className="text-xs text-gray-500 leading-4">Your trial period has not yet expired. Would you like to use the remaining trial days or begin your subscription today?</p>
 
-                                                <label for="toggleThree" class="flex items-center cursor-pointer select-none text-dark dark:text-white">
-                                                    <div class="relative">
-                                                        <input type="checkbox" id="toggleThree" class="peer sr-only" />
-                                                        <div class="block h-8 rounded-full bg-gray-300 w-14"></div>
-                                                        <div class="absolute flex items-center justify-center w-6 h-6 transition bg-red-500 bg-[#FF0000] rounded-full dot left-1 top-1 peer-checked:translate-x-full peer-checked:bg-green"></div>
+                                                <label for="toggleThree" className="flex items-center cursor-pointer select-none text-dark dark:text-white">
+                                                    <div className="relative">
+                                                        <input type="checkbox" id="toggleThree" className="peer sr-only" />
+                                                        <div className="block h-8 rounded-full bg-gray-300 w-14"></div>
+                                                        <div className="absolute flex items-center justify-center w-6 h-6 transition bg-red-500 bg-[#FF0000] rounded-full dot left-1 top-1 peer-checked:translate-x-full peer-checked:bg-green"></div>
                                                     </div>
                                                 </label>
                                             </div>
 
                                             <div className="flex items-center justify-between py-3 border-t border-gray-200">
-                                                <div class="flex items-center space-x-3">
-                                                    <input type="checkbox" class="border-gray-300 rounded h-5 w-5 cursor-pointer" onChange={() => setDisclaimer(!disclaimer)} checked={disclaimer} />
-                                                    <p class="text-xs text-gray-500 leading-4"><b>Disclaimer: </b> Monthly Subscription Charges</p>
+                                                <div className="flex items-center space-x-3">
+                                                    <input type="checkbox" className="border-gray-300 rounded h-5 w-5 cursor-pointer" onChange={() => setDisclaimer(!disclaimer)} checked={disclaimer} />
+                                                    <p className="text-xs text-gray-500 leading-4"><b>Disclaimer: </b> Monthly Subscription Charges</p>
                                                 </div>
                                                 <a className='underline font-medium cursor-pointer' onClick={() => setIsRead(!isRead)}>Read More</a>
                                             </div>

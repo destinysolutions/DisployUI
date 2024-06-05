@@ -181,11 +181,11 @@ const Invoice = ({
                             <td className="px-5 py-3 text-lg text-center">
                               {item.status === "paid" ? (
                                 <span className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
-                                  Active
+                                  {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
                                 </span>
                               ) : (
                                 <span className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
-                                  Inactive
+                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
                                 </span>
                               )}
                             </td>

@@ -87,9 +87,9 @@ const TalkToSaleDialog = ({ setTalkToSale, TalkToSale }) => {
               onClick={() => setTalkToSale(!TalkToSale)}
             />
           </div>
-          <div class="container mx-auto p-5">
-            <div class="w-full flex mb-4 gap-8 h-full">
-              <div class="w-1/2 bg-gray-500 h-full">
+          <div className="container mx-auto p-5">
+            <div className="w-full flex mb-4 gap-8 h-full">
+              <div className="w-1/2 bg-gray-500 h-full">
                 <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-full">
                   <div className="flex flex-wrap p-6">
                     <div className="grid grid-cols-2 gap-2 my-2 w-full">
@@ -262,43 +262,43 @@ const TalkToSaleDialog = ({ setTalkToSale, TalkToSale }) => {
                   </div>
                 </div>
               </div>
-              <div class="w-1/2 h-full">
+              <div className="w-1/2 h-full">
                 <div className='w-full'>
                   <h2 className='text-3xl font-bold text-slate-100 mb-4'>Talk to Sales</h2>
                   <h4 className='text-xl text-slate-300 mb-4'>We’ll show you:</h4>
-                  <ul class="p-0 m-0 text-slate-300 list-inside">
-                    <li class="flex items-start mb-2">
-                      <i class="mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
+                  <ul className="p-0 m-0 text-slate-300 list-inside">
+                    <li className="flex items-start mb-2">
+                      <i className="mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
                       </i>
                       How to remotely manage screens in multiple locations</li>
-                    <li class="flex items-start mb-2"><i class="mr-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
+                    <li className="flex items-start mb-2"><i className="mr-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
                     </i>
                       Our powerful and intuitive content management system that only requires minimal training</li>
-                    <li class="flex items-start mb-2">
-                      <i class="mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
+                    <li className="flex items-start mb-2">
+                      <i className="mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
                       </i>
                       How to show your business-critical information securely</li>
-                    <li class="flex items-start mb-2">
-                      <i class="mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
+                    <li className="flex items-start mb-2">
+                      <i className="mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
                       </i>
                       How to take over and cast to screens with live broadcasts</li>
-                    <li class="flex items-start mb-2">
-                      <i class="mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
+                    <li className="flex items-start mb-2">
+                      <i className="mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
                       </i>
                       Best practices from your industry</li>
-                    <li class="flex items-start mb-2">
-                      <i class="mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
+                    <li className="flex items-start mb-2">
+                      <i className="mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
                       </i>
                       The most suitable and affordable hardware options for your screen network</li>
-                    <li class="flex items-start mb-2">
-                      <i class="mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
+                    <li className="flex items-start mb-2">
+                      <i className="mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path></svg>
                       </i>
                       How to create a business case demonstrating digital signage ROI for your organizationy</li>
                   </ul>

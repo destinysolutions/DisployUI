@@ -150,9 +150,9 @@ const AddEditStorage = ({ toggleModal, setAddStorage, addStorage, handlePay, set
 
                                         </div>
                                         <div className="flex items-center justify-between py-3 border-t border-gray-200">
-                                            <div class="flex items-center space-x-3">
-                                                <input type="checkbox" class="border-gray-300 rounded h-5 w-5 cursor-pointer" onChange={() => setDisclaimer(!disclaimer)} checked={disclaimer} />
-                                                <p class="text-xs text-gray-500 leading-4"><b>Disclaimer: </b> Monthly Subscription Charges</p>
+                                            <div className="flex items-center space-x-3">
+                                                <input type="checkbox" className="border-gray-300 rounded h-5 w-5 cursor-pointer" onChange={() => setDisclaimer(!disclaimer)} checked={disclaimer} />
+                                                <p className="text-xs text-gray-500 leading-4"><b>Disclaimer: </b> Monthly Subscription Charges</p>
                                             </div>
                                             <a className='underline font-medium cursor-pointer' onClick={() => setIsRead(!isRead)}>Read More</a>
                                         </div>

@@ -286,5 +286,5 @@ export const GET_ALL_CARD = `${baseUrl}CardMaster/GetAllCard`
 // Sales Man
 export const All_SAELS_MAN_LIST = `${baseUrl}SalesMan/GetAllSalesMan`
 export const DEACTIVE_SAELS_MAN = `${baseUrl}UserMaster/ChangeCustomerStatus`
-export const SAELS_MAN_DASHBOARD = `${baseUrl}SalesMan/GetAllSalesMan`
+export const SAELS_MAN_DASHBOARD = `${baseUrl}SalesMan/GetSalesManAllRecord`
 export const ADD_ASSOCIATED_SALESMAN = `${baseUrl}SalesMan/AddEditSalesMan`

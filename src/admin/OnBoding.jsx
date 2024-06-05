@@ -276,7 +276,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
 
                               <td scope="col" className="px-6 py-4 capitalize">
-                                {item.totalScreens}
+                                {item.totalScreen}
                               </td>
 
                               <td scope="col" className="px-6 py-4 capitalize">
