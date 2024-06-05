@@ -4,10 +4,11 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import { BiUserPlus } from 'react-icons/bi'
 import { MdOutlineModeEdit } from 'react-icons/md'
 import ReactTooltip from 'react-tooltip'
-import { All_SAELS_MAN_LIST } from '../../Pages/Api'
+import { All_SAELS_MAN_LIST, DEACTIVE_SAELS_MAN } from '../../Pages/Api'
 import { useSelector } from 'react-redux'
-import { GetAllSalesMan } from '../../Redux/SalesMan/SalesManSlice'
+import { GetAllSalesMan, handleSalesManDeactive } from '../../Redux/SalesMan/SalesManSlice'
 import { useEffect } from 'react'
+import { TbLockCancel } from "react-icons/tb";
 import toast from 'react-hot-toast'
 import AdminNavbar from '../AdminNavbar'
 import AdminSidebar from '../AdminSidebar'
@@ -132,6 +133,7 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
             percentageRatio: "",
             phoneNumber: "",
         })
+        setEditId(null)
         setShowModal(!showModal);
     };
 
@@ -149,6 +151,26 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
         };
         setEditData(data);
     };
+
+    const handleDeactive = (item) => {
+        let config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: `${DEACTIVE_SAELS_MAN}?Email=${item?.email}`,
+            headers: {
+                Authorization: authToken,
+            },
+        };
+
+        dispatch(handleSalesManDeactive({ config })).then((res) => {
+            if (res?.payload?.status) {
+                fetchData()
+            }
+            console.log('res', res)
+        }).catch((error) => {
+            console.log('error', error)
+        })
+    }
 
     return (
         <>
@@ -233,6 +255,9 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                                                 Percentage Ratio
                                             </th>
                                             <th scope="col" className="px-6 py-3">
+                                                Status
+                                            </th>
+                                            <th scope="col" className="px-6 py-3">
                                                 Action
                                             </th>
                                         </tr>
@@ -254,6 +279,26 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                                                             {item.phone}
                                                         </td>
                                                         <td scope="col" className="px-6 py-4">{item.percentageRatio}</td>
+
+                                                        <td scope="col" className="px-6 py-4">
+                                                            <span>
+                                                                {item?.isActive ? (
+                                                                    <span
+                                                                        style={{ backgroundColor: "#cee9d6" }}
+                                                                        className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                                                    >
+                                                                        Active
+                                                                    </span>
+                                                                ) : (
+                                                                    <span
+                                                                        style={{ backgroundColor: "#f1b2b2" }}
+                                                                        className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                                                    >
+                                                                        Inactive
+                                                                    </span>
+                                                                )}
+                                                            </span>
+                                                        </td>
                                                         <td className="px-6 py-4">
                                                             <div className="cursor-pointer text-xl flex gap-4 ">
                                                                 <button
@@ -271,6 +316,24 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                                                                         effect="solid"
                                                                     >
                                                                         <span>Edit</span>
+                                                                    </ReactTooltip>
+                                                                </button>
+
+                                                                <button
+                                                                    data-tip
+                                                                    data-for="Inactive"
+                                                                    type="button"
+                                                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                                    onClick={() => handleDeactive(item)}
+                                                                >
+                                                                    <TbLockCancel />
+                                                                    <ReactTooltip
+                                                                        id="Inactive"
+                                                                        place="bottom"
+                                                                        type="warning"
+                                                                        effect="solid"
+                                                                    >
+                                                                        <span>Inactive</span>
                                                                     </ReactTooltip>
                                                                 </button>
                                                             </div>
@@ -386,6 +449,7 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                     setShowModal={setShowModal}
                     editData={editData}
                     editId={editId}
+                    setEditId={setEditId}
                     fetchData={fetchData}
 
                 />

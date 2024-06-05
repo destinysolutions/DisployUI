@@ -16,7 +16,7 @@ import ReactTooltip from "react-tooltip";
 
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
-import { FiPlusCircle } from "react-icons/fi";
+import { FiEdit, FiPlusCircle } from "react-icons/fi";
 import AddAssociated from "./AddAssociated";
 
 // const AdminNavbar = lazy(() => import('./AdminNavbar'));
@@ -91,7 +91,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
+  
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -332,25 +332,24 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
 
                               <td className="px-6 py-4">
                                 <div className="cursor-pointer text-xl flex gap-4 ">
-                                  {(item?.salesMan === null || item?.salesMan === "") && (
-                                    <button
-                                      data-tip
-                                      data-for="Add Associated"
-                                      type="button"
-                                      className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                      onClick={() => { setShowModal(true); setSelectedCustomer(item) }}
+                                  <button
+                                    data-tip
+                                    data-for={`${item?.salesMan === null ? "Add" : "Update"} Associated`}
+                                    type="button"
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    onClick={() => { setShowModal(true); setSelectedCustomer(item) }}
+                                  >
+
+                                    {item?.salesMan === null ? <FiPlusCircle /> : <FiEdit />}
+                                    <ReactTooltip
+                                      id={`${item?.salesMan === null ? "Add" : "Update"} Associated`}
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
                                     >
-                                      <FiPlusCircle />
-                                      <ReactTooltip
-                                        id="Add Associated"
-                                        place="bottom"
-                                        type="warning"
-                                        effect="solid"
-                                      >
-                                        <span>Add Associated</span>
-                                      </ReactTooltip>
-                                    </button>
-                                  )}
+                                      <span>{item?.salesMan === null ? "Add" : "Update"} Associated</span>
+                                    </ReactTooltip>
+                                  </button>
                                   <button
                                     data-tip
                                     data-for="View"

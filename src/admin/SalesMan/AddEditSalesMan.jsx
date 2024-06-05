@@ -6,7 +6,6 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { addSalesManData, updateSalesManData } from "../../Redux/SalesMan/SalesManSlice";
-import { useSelector } from "react-redux";
 const AddEditSalesMan = ({
     setShowModal,
     heading,
@@ -16,11 +15,11 @@ const AddEditSalesMan = ({
     editData,
     editId,
     fetchData,
+    setEditId
 }) => {
-    const { token } = useSelector((s) => s.root.auth);
-    const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [loading,setLoading] = useState(false)
+    
     //using for validation and register api calling
     const phoneRegExp =
         /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -40,7 +39,8 @@ const AddEditSalesMan = ({
         phoneNumber: Yup.string()
             .required("Phone Number is required")
             .matches(phoneRegExp, "Phone number is not valid"),
-        percentageRatio: Yup.string().required("Percentage Ratio is required")
+        percentageRatio: Yup.number()
+            .required("Percentage Ratio is required")
             .min(0, "Percentage Ratio must be at least 0")
             .max(100, "Percentage Ratio must be at most 100"),
     });
@@ -55,7 +55,8 @@ const AddEditSalesMan = ({
         phoneNumber: Yup.string()
             .required("Phone Number is required")
             .matches(phoneRegExp, "Phone number is not valid"),
-        percentageRatio: Yup.string().required("Percentage Ratio is required")
+        percentageRatio: Yup.number()
+            .required("Percentage Ratio is required")
             .min(0, "Percentage Ratio must be at least 0")
             .max(100, "Percentage Ratio must be at most 100"),
 
@@ -84,9 +85,11 @@ const AddEditSalesMan = ({
                         fetchData()
                         toast.remove()
                         formik.resetForm();
+                        setEditId(null)
                     } else {
                         toast.error(res?.payload?.message)
                     }
+                    setEditId(null)
                     setLoading(false)
                     setShowModal(false);
                 }).catch((error) => {
@@ -99,9 +102,11 @@ const AddEditSalesMan = ({
                         fetchData()
                         toast.remove()
                         formik.resetForm();
+                        setEditId(null)
                     } else {
                         toast.error(res?.payload?.message)
                     }
+                    setEditId(null)
                     setLoading(false)
                     setShowModal(false);
                 }).catch((error) => {

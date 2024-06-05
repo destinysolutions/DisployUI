@@ -7,13 +7,13 @@ import { useDispatch } from 'react-redux'
 import { GetAllSalesMan, handleAddAssociated } from '../Redux/SalesMan/SalesManSlice'
 import toast from 'react-hot-toast'
 
-const AddAssociated = ({ showModal, setShowModal, selectedCustomer,setLoadFist }) => {
+const AddAssociated = ({ showModal, setShowModal, selectedCustomer, setLoadFist }) => {
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch();
     const [salesManList, setSalesManList] = useState([])
     const [loading, setLoading] = useState(false)
-    const [selectedData, setSelectedData] = useState("")
+    const [selectedData, setSelectedData] = useState(selectedCustomer?.salesMan ? selectedCustomer?.salesManID : "")
     const [error, setError] = useState(false)
 
     useEffect(() => {
@@ -85,7 +85,7 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer,setLoadFist }
                                 {/* Modal header */}
                                 <div className="flex items-center justify-between p-3 border-b rounded-t dark:border-gray-600">
                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                        Add Associated
+                                    {selectedCustomer?.salesMan === null ? "Add" : "Update"} Associated
                                     </h3>
                                     <AiOutlineCloseCircle
                                         className="text-4xl text-primary cursor-pointer"
@@ -98,17 +98,20 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer,setLoadFist }
                                             className="w-full border border-[#D5E3FF] rounded-lg p-2 mb-1"
                                             onChange={(e) => setSelectedData(e.target.value)}
                                             value={selectedData}>
-                                            <option value="">Select Sales Man</option>
+                                            {!selectedCustomer?.salesMan && (
+                                                <option value="">Select Sales Man</option>
+                                            )}
                                             {salesManList.map((salesman) => (
                                                 <option
                                                     value={salesman.orgSingupID}
                                                     key={salesman.orgSingupID}
+                                                    disabled={selectedCustomer?.salesMan}
                                                 >
                                                     {salesman.firstName}{" "}{salesman?.lastName}
                                                 </option>
                                             ))}
                                             <option value="0">Direct</option>
-                                            <option value="-1">Reference</option>
+                                            <option value="-1" disabled={selectedCustomer?.salesMan}>Reference</option>
                                         </select>
 
                                         {error && (

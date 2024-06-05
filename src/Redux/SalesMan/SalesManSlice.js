@@ -93,6 +93,24 @@ export const GetSalesManDashboard = createAsyncThunk(
     }
 );
 
+export const handleSalesManDeactive = createAsyncThunk(
+    "salesMan/handleSalesManDeactive",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            if (response?.data?.status) {
+                return response.data;
+            } else {
+                return rejectWithValue(response?.data);
+            }
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
+
 
 
 const SalesManSlice = createSlice({
@@ -173,6 +191,18 @@ const SalesManSlice = createSlice({
             state.error = action.payload.message;
         });
 
+        builder
+        .addCase(handleSalesManDeactive.pending, (state) => {
+            state.status = "loading";
+        })
+        .addCase(handleSalesManDeactive.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.data = action.payload;
+        })
+        .addCase(handleSalesManDeactive.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload.message;
+        });
 
     },
 });
