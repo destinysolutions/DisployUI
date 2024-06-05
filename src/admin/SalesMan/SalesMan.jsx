@@ -13,6 +13,7 @@ import toast from 'react-hot-toast'
 import AdminNavbar from '../AdminNavbar'
 import AdminSidebar from '../AdminSidebar'
 import AddEditSalesMan from './AddEditSalesMan'
+import Swal from 'sweetalert2'
 
 // const AddEditSalesMan = lazy(() => import('./AddEditSalesMan'));
 // const AdminNavbar = lazy(() => import('../AdminNavbar'));
@@ -162,14 +163,27 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
             },
         };
 
-        dispatch(handleSalesManDeactive({ config })).then((res) => {
-            if (res?.payload?.status) {
-                fetchData()
+        Swal.fire({
+            title: "Are you sure?",
+            text: `You want to ${item?.isActive ? "Inactive" : "Active"} this user!`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: `Yes, ${item?.isActive ? "Inactive" : "Active"} it!`,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                dispatch(handleSalesManDeactive({ config })).then((res) => {
+                    if (res?.payload?.status) {
+                        fetchData()
+                    }
+                }).catch((error) => {
+                    console.log('error', error)
+                })
             }
-            console.log('res', res)
-        }).catch((error) => {
-            console.log('error', error)
-        })
+        });
+
+
     }
 
     return (
@@ -321,19 +335,19 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
 
                                                                 <button
                                                                     data-tip
-                                                                    data-for="Inactive"
+                                                                    data-for={`${item?.isActive ? "Inactive" : "Active"}`}
                                                                     type="button"
                                                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                                     onClick={() => handleDeactive(item)}
                                                                 >
                                                                     <TbLockCancel />
                                                                     <ReactTooltip
-                                                                        id="Inactive"
+                                                                        id={`${item?.isActive ? "Inactive" : "Active"}`}
                                                                         place="bottom"
                                                                         type="warning"
                                                                         effect="solid"
                                                                     >
-                                                                        <span>Inactive</span>
+                                                                        <span>{item?.isActive ? "Inactive" : "Active"}</span>
                                                                     </ReactTooltip>
                                                                 </button>
                                                             </div>
