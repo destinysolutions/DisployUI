@@ -7,6 +7,7 @@ import { CiFilter } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 import { useSelector } from "react-redux";
+import moment from "moment";
 
 const Auditlogreport = ({
   allReportData,
@@ -132,7 +133,7 @@ const Auditlogreport = ({
                           </td>
                           <td className="text-center">
                             <span className=" px-4 py-2 text-base ">
-                              {item?.performedOn}
+                              {moment(item?.performedOn).format('MMMM D, YYYY h:mm:ss A')}
                             </span>
                           </td>
                           <td className="text-center">
