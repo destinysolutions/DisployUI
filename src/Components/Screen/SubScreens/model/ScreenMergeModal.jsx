@@ -251,14 +251,12 @@ const ScreenGroupModal = ({
                             ))
                           ) : (
                             <tr>
-                              <td colSpan="4" className="text-center">
-                                {store && store.data?.length === 0 ? (
-                                  "No data found"
-                                ) : (
-                                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                              <td colSpan={4}>
+                                <div className="flex text-center m-5 justify-center">
+                                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                     No Data Available
                                   </span>
-                                )}
+                                </div>
                               </td>
                             </tr>
                           )}

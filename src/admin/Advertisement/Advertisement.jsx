@@ -443,7 +443,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                     sortedAndPaginatedAdsData?.length === 0 && (
                       <tr>
                         <td colSpan={8}>
-                          <div className="flex text-center justify-center">
+                          <div className="flex text-center m-5 justify-center">
                             <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                               No Data Available
                             </span>

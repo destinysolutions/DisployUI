@@ -115,7 +115,7 @@ const DefaultMediaAsset = ({ setShowAssetModal, handleOnConfirm, setAssetPreview
                                                                 .map((asset) => (
                                                                     <tbody key={asset.assetID}>
                                                                         <tr
-                                                                            className={`${selectedAsset?.assetID === asset?.assetID 
+                                                                            className={`${selectedAsset?.assetID === asset?.assetID
                                                                                 ? "bg-[#f3c953]"
                                                                                 : ""
                                                                                 } border-b border-[#eee] `}
@@ -154,8 +154,7 @@ const DefaultMediaAsset = ({ setShowAssetModal, handleOnConfirm, setAssetPreview
                                                                     .map((asset) => (
                                                                         <tbody key={asset.assetID}>
                                                                             <tr
-                                                                                className={`${
-                                                                                    selectedEmergencyAsset?.assetID === asset?.assetID
+                                                                                className={`${selectedEmergencyAsset?.assetID === asset?.assetID
                                                                                     ? "bg-[#f3c953]"
                                                                                     : ""
                                                                                     } border-b border-[#eee] `}
@@ -175,9 +174,15 @@ const DefaultMediaAsset = ({ setShowAssetModal, handleOnConfirm, setAssetPreview
                                                                     ))
                                                             )}
                                                         {filteredData?.length === 0 && (
-                                                            <div>
-                                                                No Data Available
-                                                            </div>
+                                                            <tr>
+                                                                <td colSpan={4}>
+                                                                    <div className="flex text-center m-5 justify-center">
+                                                                        <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                                                                            No Data Available
+                                                                        </span>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
                                                         )}
                                                     </table>
                                                 </div>

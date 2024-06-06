@@ -32,7 +32,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
   const [loadFist, setLoadFist] = useState(true);
   const [userPlan, setUserPlan] = useState({});
   const [rangeValue, setRangeValue] = useState(getDaysPassed(userPlan?.startDate, new Date()));
-  
+
   const getUserBilling = () => {
     try {
       const config = {
@@ -307,24 +307,24 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
 
                           <div className="flex justify-center w-full mb-5">
-                          {!store?.data?.isActivePlan && (
-                            <button
-                              className="mr-3 text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-3 py-2 text-center"
-                              onClick={() => handleIncreaseTrial(params?.email)}
-                            >
-                              Increase Trial Days
-                            </button>
-                          )}
-                          {store?.data?.isActivePlan && (
-                            <button
-                              className="bg-[#FF0000] rounded-full px-3 py-2 text-white hover:bg-primary text-base"
-                              onClick={() => {
-                                CancelSubscription(params?.email)
-                              }}
-                            >
-                              Cancel Subscription
-                            </button>
-                          )}
+                            {!store?.data?.isActivePlan && (
+                              <button
+                                className="mr-3 text-white bg-blue-700 hover:bg-blue-800 rounded-full text-base px-3 py-2 text-center"
+                                onClick={() => handleIncreaseTrial(params?.email)}
+                              >
+                                Increase Trial Days
+                              </button>
+                            )}
+                            {store?.data?.isActivePlan && (
+                              <button
+                                className="bg-[#FF0000] rounded-full px-3 py-2 text-white hover:bg-primary text-base"
+                                onClick={() => {
+                                  CancelSubscription(params?.email)
+                                }}
+                              >
+                                Cancel Subscription
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -551,8 +551,8 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                                 ) : (
                                   <tr>
                                     <td colSpan={5}>
-                                      <div className="flex text-center justify-center">
-                                        <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
+                                      <div className="flex text-center m-5 justify-center">
+                                        <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                           No Data Available
                                         </span>
                                       </div>
@@ -606,17 +606,15 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                                     );
                                   })}
                                 {store.roles?.length === 0 && (
-                                  <>
-                                    <tr>
-                                      <td colSpan={5}>
-                                        <div className="flex text-center justify-center">
-                                          <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
-                                            No Data Available
-                                          </span>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  </>
+                                  <tr>
+                                    <td colSpan={5}>
+                                      <div className="flex text-center m-5 justify-center">
+                                        <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                                          No Data Available
+                                        </span>
+                                      </div>
+                                    </td>
+                                  </tr>
                                 )}
                               </tbody>
 

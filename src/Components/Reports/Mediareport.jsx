@@ -17,10 +17,10 @@ const Mediareport = ({
 }) => {
 
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
-  
+
   return (
     <>
-    <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <div className="flex items-center lg:mb-0 md:mb-0 sm:mb-4">
@@ -159,11 +159,12 @@ const Mediareport = ({
                     })}
                   {allReportData?.SearchData?.length === 0 && !loading && (
                     <tr>
-                      <td
-                        className="font-semibold text-center bg-white text-lg p-3"
-                        colSpan={5}
-                      >
-                        No Data Available.
+                      <td colSpan={5}>
+                        <div className="flex text-center m-5 justify-center">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                            No Data Available
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   )}
