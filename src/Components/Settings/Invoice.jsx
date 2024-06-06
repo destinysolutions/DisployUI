@@ -84,8 +84,8 @@ const Invoice = ({
             </h1>
           </div>
           <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2 pb-5 mt-2 ">
-            <div className="rounded-xl shadow">
-              <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
+            <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
+              <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
                 <table
                   className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                   cellPadding={15}
@@ -185,7 +185,7 @@ const Invoice = ({
                                 </span>
                               ) : (
                                 <span className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
-                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                  {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
                                 </span>
                               )}
                             </td>

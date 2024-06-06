@@ -103,7 +103,7 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
         });
     }, [stripe, elements]);
 
-    const PaymentDetails = ({ paymentIntent, organizationID, Subscription, totalScreen, TotalPrice, ScreenpaymentType }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, Subscription, totalScreen, TotalPrice, ScreenpaymentType, product, screenId }) => {
         const { card, ...newObj } = paymentIntent;
         const updatedObj = { ...newObj, ...card };
         let params = {
@@ -124,6 +124,8 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
                     timeZoneName: "long",
                 })
                 .substring(4),
+            ProductID: product,
+            ScreenID: screenId
         }
 
         let config = {
@@ -148,21 +150,21 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
     }
 
     const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreen, name }) => {
-        let product;
+        let screenId;
         if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
-            product = "prod_Q1wI9ksVDBdRW3"
+            screenId = "prod_Q1wI9ksVDBdRW3"
         } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
-            product = "prod_Q1wITfBepgK1H7"
+            screenId = "prod_Q1wITfBepgK1H7"
         } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
-            product = "prod_Q1wJSPx0LoW70n"
+            screenId = "prod_Q1wJSPx0LoW70n"
         } else {
-            product = "prod_Q1wJcEtb58TKI5"
+            screenId = "prod_Q1wJcEtb58TKI5"
         }
 
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
-            ProductID: product,
+            ProductID: screenId,
             quantity: (Screen - 1),
             Name: name
         }
@@ -180,7 +182,7 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: (Screen - 1), TotalPrice: (selectPlan?.planPrice * (Screen - 1)), ScreenpaymentType: true })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: (Screen - 1), TotalPrice: (selectPlan?.planPrice * (Screen - 1)), ScreenpaymentType: true, product: "", screenId })
                 setTimeout(() => {
                     toast.success("Payment Submitted Successfully.")
                     setIsLoading(false);
@@ -230,7 +232,7 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
             if (res?.payload?.status) {
                 debugger;
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: 1, TotalPrice: selectPlan?.planPrice, ScreenpaymentType: false })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: 1, TotalPrice: selectPlan?.planPrice, ScreenpaymentType: false, product })
                 PaymentofScreen = true
                 if (Screen > 1) {
                     ScreenCreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId })

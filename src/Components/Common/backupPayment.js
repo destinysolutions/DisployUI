@@ -59,7 +59,7 @@ const backupPayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         layout: "tabs"
     }
 
-    const PaymentDetails = ({ paymentIntent, organizationID }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, product }) => {
         let totalPrice;
         if (userDetails?.planID === 1) {
             totalPrice = PaymentValue * 10
@@ -92,6 +92,7 @@ const backupPayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                     timeZoneName: "long",
                 })
                 .substring(4),
+            ProductID: product
         }
 
         let config = {
@@ -146,7 +147,7 @@ const backupPayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
-                PaymentDetails({ paymentIntent, organizationID: organizationID })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, product })
             }
         })
     }

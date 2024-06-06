@@ -105,7 +105,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         });
     }, [stripe, elements]);
 
-    const PaymentDetails = ({ paymentIntent, organizationID, Subscription, PaymentofScreenBoolen }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, Subscription, PaymentofScreenBoolen, product, screenID }) => {
         let totalPrice;
         if ((selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") && PaymentofScreenBoolen) {
             totalPrice = userDetails?.extraScreen * 10
@@ -139,6 +139,8 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                     timeZoneName: "long",
                 })
                 .substring(4),
+            ProductID: product,
+            ScreenID: screenID
         }
 
         let config = {
@@ -166,21 +168,21 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
     }
 
     const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreenBoolen, name }) => {
-        let product;
+        let screenId;
         if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
-            product = "prod_Q1wI9ksVDBdRW3"
+            screenId = "prod_Q1wI9ksVDBdRW3"
         } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
-            product = "prod_Q1wITfBepgK1H7"
+            screenId = "prod_Q1wITfBepgK1H7"
         } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
-            product = "prod_Q1wJSPx0LoW70n"
+            screenId = "prod_Q1wJSPx0LoW70n"
         } else {
-            product = "prod_Q1wJcEtb58TKI5"
+            screenId = "prod_Q1wJcEtb58TKI5"
         }
 
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
-            ProductID: product,
+            ProductID: screenId,
             quantity: userDetails?.extraScreen,
             Name: name
         }
@@ -198,7 +200,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, PaymentofScreenBoolen })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, PaymentofScreenBoolen, product :"", screenID: screenId })
                 setTimeout(() => {
                     toast.success("Payment Submitted Successfully.")
                     setIsLoading(false);
@@ -244,7 +246,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, PaymentofScreenBoolen: false })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, PaymentofScreenBoolen: false, product, screenID: "" })
                 setTimeout(() => {
                     setIsLoading(false);
                     navigation("/"); // Navigate to dashboard after processing payment
@@ -296,7 +298,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.plansubscriptionId
                 // let Subscription2 = res?.payload?.screensubscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription: Subscription, PaymentofScreenBoolen: false })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription: Subscription, PaymentofScreenBoolen: false, product, screenID })
                 if (userDetails?.extraScreen > 0) {
                     PaymentofScreen = true;
                     // handleSubmitPayment()
@@ -417,7 +419,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                                             <label className='text-black text-2xl font-semibold'>
                                                 Select Payment
                                             </label>
-                                            <IoClose size={26} onClick={() => setOpenPayment(!openPayment)}/>
+                                            <IoClose size={26} onClick={() => setOpenPayment(!openPayment)} />
                                         </div>
                                         <div className='flex flex-row flex-wrap'>
                                             <div className='w-full sm:w-1/3 md:w-1/4'>

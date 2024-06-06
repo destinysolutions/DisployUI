@@ -57,7 +57,7 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
         });
     }, [stripe, elements]);
 
-    const PaymentDetails = ({ paymentIntent, organizationID, Subscription }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, Subscription, product }) => {
         const { card, ...newObj } = paymentIntent;
         const updatedObj = { ...newObj, ...card };
         let params = {
@@ -78,6 +78,7 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
                     timeZoneName: "long",
                 })
                 .substring(4),
+            ProductID: product
         }
 
         let config = {
@@ -133,7 +134,7 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, product })
             }
         })
     }
@@ -218,7 +219,7 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
                                     if (autoPay) {
                                         CreateSubscription({ email: res?.payload?.data?.email, name: res?.payload?.data?.firstName + " " + res?.payload?.data?.lastName, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
                                     } else {
-                                        PaymentDetails({ paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID })
+                                        PaymentDetails({ paymentIntent: paymentMethod, organizationID: res?.payload?.data?.organizationID, product: "" })
                                     }
                                 }
                             })

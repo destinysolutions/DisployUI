@@ -104,7 +104,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         layout: "tabs"
     }
 
-    const PaymentDetails = ({ paymentIntent, organizationID, Subscription }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, Subscription, product, screenId }) => {
         let totalPrice;
 
         if (userDetails?.planID === 1 && type === "Screen") {
@@ -139,6 +139,8 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                     timeZoneName: "long",
                 })
                 .substring(4),
+            ProductID: product,
+            ScreenID: screenId
         }
 
         let config = {
@@ -168,23 +170,23 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
         setIsLoading(true)
-        let product;
+        let screenId;
         if (type === "Screen" && ((userDetails?.planID === 1 || userDetails?.planID === "1") || (userDetails?.isTrial && userDetails?.isActivePlan === false))) {
-            product = "prod_Q1wI9ksVDBdRW3"
+            screenId = "prod_Q1wI9ksVDBdRW3"
         } else if (type === "Screen" && (userDetails?.planID === 2 || userDetails?.planID === "2")) {
-            product = "prod_Q1wITfBepgK1H7"
+            screenId = "prod_Q1wITfBepgK1H7"
         } else if (type === "Screen" && (userDetails?.planID === 3 || userDetails?.planID === "3")) {
-            product = "prod_Q1wJSPx0LoW70n"
+            screenId = "prod_Q1wJSPx0LoW70n"
         } else if (type === "Screen" && (userDetails?.planID === 4 || userDetails?.planID === "4")) {
-            product = "prod_Q1wJHaR4iDXNRP"
+            screenId = "prod_Q1wJHaR4iDXNRP"
         } else if (type === "Storage") {
-            product = "prod_Q1wJcEtb58TKI5"
+            screenId = "prod_Q1wJcEtb58TKI5"
         }
 
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
-            ProductID: product,
+            ProductID: screenId,
             quantity: PaymentValue,
             Name: name
         }
@@ -203,7 +205,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, product: "", screenId })
             } else {
                 setIsLoading(false);
                 toast.error("Error!")
@@ -321,7 +323,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                                             <label className='text-black text-2xl font-semibold'>
                                                 Select Payment
                                             </label>
-                                            <IoClose size={26} onClick={() => togglePaymentModal()}/>
+                                            <IoClose size={26} onClick={() => togglePaymentModal()} />
                                         </div>
                                         <div className='flex flex-row flex-wrap'>
                                             <div className='w-full sm:w-1/3 md:w-1/4'>

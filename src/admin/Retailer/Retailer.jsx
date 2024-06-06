@@ -239,10 +239,10 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className=" bg-white rounded-xl shadow screen-section">
-              <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+            <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
+              <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
                 <table
-                  className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
+                  className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                   cellPadding={15}
                 >
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

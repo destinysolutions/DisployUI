@@ -363,57 +363,59 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
           </div>
-          <div className=" bg-white rounded-xl shadow screen-section">
-            <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+          <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
+            <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
               <table
-                className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
+                className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                 cellPadding={15}
               >
-                <thead className="table-head-bg screen-table-th">
-                  <tr className="text-left table-head-bg ">
-                    <th className="text-[#5A5881] text-base font-semibold w-200">
-                      <div className="flex">
-                        Name
-                        <svg
-                          className="w-3 h-3 ms-1.5 mt-2 cursor-pointer"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          onClick={() => handleSort("name")}
-                        >
-                          <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                        </svg>
-                      </div>
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr className="text-left table-head-bg capitalize">
+                    <th className=" sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
+                      UserName
+                      <svg
+                        className="w-3 h-3 ms-1.5 cursor-pointer"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        onClick={() => handleSort("name")}
+                      >
+                        <path
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                        />
+                      </svg>
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Email
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold  mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Google Location
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Phone Number
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Screen
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Start Date
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       End Date
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Action
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {load && (
-                    <tr className="text-left">
+                    <tr>
                       <td colSpan={8}>
-                        <div className="flex text-center justify-center m-5">
+                        <div className="flex text-center m-5 justify-center">
                           <svg
                             aria-hidden="true"
                             role="status"
@@ -439,9 +441,9 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                   {!load &&
                     allAdvertisement?.SearchData &&
                     sortedAndPaginatedAdsData?.length === 0 && (
-                      <tr className="text-left">
+                      <tr>
                         <td colSpan={8}>
-                          <div className="flex text-center m-5 justify-center">
+                          <div className="flex text-center justify-center">
                             <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                               No Data Available
                             </span>
