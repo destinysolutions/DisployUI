@@ -25,6 +25,7 @@ import AddEditAdvertisement from "./AddEditAdvertisement";
 import CustomerScreen from "./CustomerScreen";
 import AdminSidebar from "../AdminSidebar";
 import AdminNavbar from "../AdminNavbar";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 // const AssetsPreview = lazy(() => import('../../Components/Common/AssetsPreview'));
 // const AddEditAdvertisement = lazy(() => import('./AddEditAdvertisement'));
@@ -162,8 +163,8 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
     PhoneNumber: Yup.string()
-      .required("Phone Number is required")
-      .matches(phoneRegExp, "Phone number is not valid"),
+      .required('Phone number is required')
+      .test('is-valid-phone', 'Invalid phone number', value => isValidPhoneNumber(value)),
   });
 
   const formik = useFormik({

@@ -10,6 +10,8 @@ import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { handleLogout } from '../Redux/Authslice';
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
+import { TbLogout } from "react-icons/tb";
+import { MdOutlineLogout } from 'react-icons/md';
 
 const SalesManSidebar = ({ sidebarOpen }) => {
     SalesManSidebar.propTypes = {
@@ -49,7 +51,7 @@ const SalesManSidebar = ({ sidebarOpen }) => {
             title: "Log Out",
             cName: "nav-text link-items",
             path: "/",
-            icon: <ImStack className="text-2xl" />,
+            icon: <MdOutlineLogout className="text-2xl font-bold" />,
         },
     ];
 

@@ -5,6 +5,7 @@ import { MdKeyboardArrowLeft } from "react-icons/md";
 import { Link } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 import { useSelector } from "react-redux";
+import moment from "moment";
 
 const SalesReport = ({
   allReportData,
@@ -118,7 +119,9 @@ const SalesReport = ({
                       return (
                         <tr className=" border-b border-[#E4E6FF]" key={index}>
                           <td>
-                            <p>{item?.date}</p>
+                            <p>{moment(item?.date).format(
+                              "LLL"
+                            )}</p>
                           </td>
                           <td>
                             <p>{item?.plan}</p>

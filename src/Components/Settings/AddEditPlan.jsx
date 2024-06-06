@@ -6,7 +6,7 @@ import { ADD_EDTT_PLAN } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 
-const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, heading }) => {
+const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, heading ,fetchAllPlan}) => {
     const dispatch = useDispatch();
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
@@ -19,7 +19,6 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
         Status: false,
         description: ""
     });
-    console.log('formData', formData)
     const [errorPlanName, setErrorPlanName] = useState(false)
     const [errorStorage, setErrorStorage] = useState(false)
     const [errorCost, setErrorCost] = useState(false)
@@ -120,8 +119,6 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
             "IsActive": formData?.Status
         };
 
-        console.log('Params', Params)
-
         let config = {
             method: "post",
             maxBodyLength: Infinity,
@@ -134,6 +131,7 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
         };
         dispatch(handleAddPlan({ config })).then((res) => {
             if (res?.payload?.status) {
+                fetchAllPlan()
                 setLoading(false)
                 setSelectPlan("");
                 showPlanModal(false)
@@ -189,7 +187,7 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
                                                 {errorPlanName && (
-                                                    <span className='error'>This Field is Required.</span>
+                                                    <span className='error'>Please Enter Plan Name</span>
                                                 )}
                                             </div>
                                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
@@ -216,7 +214,7 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
                                                 {errorStorage && (
-                                                    <span className='error'>This Field is Required.</span>
+                                                    <span className='error'>Please Enter Storage</span>
                                                 )}
                                             </div>
                                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12'>
@@ -224,14 +222,14 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                     <label className="formLabel">Plan Price</label>
                                                     <input
                                                         type='number'
-                                                        placeholder='Enter Plan Cost'
+                                                        placeholder='Enter Plan Price'
                                                         name="planPrice"
                                                         className="formInput"
                                                         value={formData?.planPrice}
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
                                                 {errorCost && (
-                                                    <span className='error'>This Field is Required.</span>
+                                                    <span className='error'>Please Enter Plan Price</span>
                                                 )}
                                             </div>
 
@@ -247,7 +245,7 @@ const AddEditPlan = ({ showPlanModal, featureList, selectPlan, setSelectPlan, he
                                                         onChange={(e) => handleInputChange(e.target.name, e.target.value)} />
                                                 </div>
                                                 {errorDescription && (
-                                                    <span className='error'>This Field is Required.</span>
+                                                    <span className='error'>Please Enter Plan Description</span>
                                                 )}
                                             </div>
                                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 flex items-center'>

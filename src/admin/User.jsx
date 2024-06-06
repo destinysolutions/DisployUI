@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import AddEditUser from "./AddEditUser";
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 // const AdminNavbar = lazy(() => import('./AdminNavbar'));
 // const AddEditUser = lazy(() => import('./AddEditUser'));
@@ -66,6 +67,12 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     setIsActive(event.target.checked);
   };
 
+  const validateEmail = (value) => {
+    // Simple email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value);
+  };
+
   const handleInsertUser = () => {
     let hasError = false;
     if (userName === "") {
@@ -82,7 +89,14 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       hasError = true;
     }
 
-    if (phoneNumber === "") {
+    // if (phoneNumber === "") {
+    //   setPhoneError(true)
+    //   hasError = true;
+    // }
+
+    if (isValidPhoneNumber(phoneNumber)) {
+      setPhoneError(false);
+    } else {
       setPhoneError(true)
       hasError = true;
     }
@@ -91,6 +105,14 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       setEmailError(true);
       hasError = true;
     }
+
+    if (!validateEmail(email) && !editMode) {
+      setEmailError(true);
+      hasError = true;
+    } else {
+      setEmailError(false);
+    }
+
     if (password === "" && !editMode) {
       setPassError(true);
       hasError = true;

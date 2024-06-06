@@ -3,6 +3,9 @@ import React from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
 import ScreenAccess from './ScreenAccess';
+import { isValidPhoneNumber } from 'react-phone-number-input';
+import { Controller, useForm } from 'react-hook-form';
+import PhoneInput from 'react-phone-input-2';
 
 const AddEditUser = ({
     modalRef,
@@ -57,6 +60,8 @@ const AddEditUser = ({
     handleUpdateUser,
     sidebarOpen
 }) => {
+
+    const { control} = useForm();
 
     return (
         <>
@@ -172,18 +177,39 @@ const AddEditUser = ({
                                             <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                                                 <div className="relative">
                                                     <label className="formLabel">Phone No</label>
-                                                    <input
-                                                        type="number"
-                                                        placeholder="Enter Your Phone No"
-                                                        name="phoneno"
-                                                        className="formInput user-Input"
-                                                        value={phone}
-                                                        maxLength="10"
-                                                        onChange={(e) => {
-                                                            if (e.target.value.length <= 10) {
-                                                                setPhone(e.target.value);
-                                                            }
+                                                    <Controller
+                                                        name="phone"
+                                                        control={control}
+                                                        rules={{
+                                                            validate: (value) => isValidPhoneNumber(value),
                                                         }}
+                                                        render={({ field: { onChange, value } }) => (
+                                                            <PhoneInput
+                                                                country={"in"}
+                                                                onChange={(phoneNumber) => {
+                                                                    const formattedNumber = "+" + phoneNumber;
+                                                                    onChange(formattedNumber); // Update the value directly
+                                                                    setPhone(formattedNumber); // Update the state to reflect the phone number
+                                                                }}
+                                                                value={value}
+                                                                autocompleteSearch={true}
+                                                                countryCodeEditable={false}
+                                                                enableSearch={true}
+                                                                inputStyle={{
+                                                                    width: "100%",
+                                                                    background: "white",
+                                                                    padding: "25px 0 25px 3rem",
+                                                                    borderRadius: "10px",
+                                                                    fontSize: "1rem",
+                                                                    border: "1px solid #000",
+                                                                }}
+                                                                dropdownStyle={{
+                                                                    color: "#000",
+                                                                    fontWeight: "600",
+                                                                    padding: "0px 0px 0px 10px",
+                                                                }}
+                                                            />
+                                                        )}
                                                     />
                                                 </div>
                                             </div>

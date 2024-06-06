@@ -15,7 +15,7 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer, setLoadFist 
     const [loading, setLoading] = useState(false)
     const [selectedData, setSelectedData] = useState(selectedCustomer?.salesMan ? selectedCustomer?.salesManID : "")
     const [error, setError] = useState(false)
-
+    console.log('salesManList', salesManList)
     useEffect(() => {
         setLoading(true)
         let config = {
@@ -29,7 +29,8 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer, setLoadFist 
 
         dispatch(GetAllSalesMan({ config })).then((res) => {
             if (res?.payload?.status) {
-                setSalesManList(res?.payload?.data)
+                let data = res?.payload?.data?.filter(item => item?.isActive)
+                setSalesManList(data)
                 setLoading(false)
             } else {
                 toast.error(res?.payload?.message)
@@ -85,7 +86,7 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer, setLoadFist 
                                 {/* Modal header */}
                                 <div className="flex items-center justify-between p-3 border-b rounded-t dark:border-gray-600">
                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                    {selectedCustomer?.salesMan === null ? "Add" : "Update"} Associated
+                                        {selectedCustomer?.salesMan === null ? "Add" : "Update"} Associated
                                     </h3>
                                     <AiOutlineCloseCircle
                                         className="text-4xl text-primary cursor-pointer"

@@ -40,6 +40,8 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { loginRequest, msalConfig } from "../Components/Common/authconfig";
 import { MsalProvider, useMsal } from "@azure/msal-react";
 import MicrosoftBtn from "./MicrosoftBtn";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import PhoneInput from "react-phone-input-2";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -71,8 +73,8 @@ const Registration = () => {
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
     phoneNumber: Yup.string()
-      .required("Phone Number is required")
-      .matches(phoneRegExp, "Phone number is not valid"),
+      .required('Phone number is required')
+      .test('is-valid-phone', 'Invalid phone number', value => isValidPhoneNumber(value)),
     googleLocation: Yup.string().required("Google Location is required"),
     // terms: Yup.boolean()
     //   .oneOf([true], "You must accept the terms and conditions")
@@ -443,6 +445,10 @@ const Registration = () => {
     setShowModal(false);
   };
 
+  const handlePhoneChange = value => {
+    formik.setFieldValue('phoneNumber', '+' + value); // Update the phoneNumber value with the correct format
+  };
+
   return (
     <>
       {/* registration faild error msg display start*/}
@@ -558,17 +564,27 @@ const Registration = () => {
                         <div className="error">{formik.errors.lastName}</div>
                       )}
                     </div>
-                    <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
-                      <input
-                        type="tel"
-                        name="phoneNumber"
-                        id="phoneNumber"
-                        placeholder="Enter Phone Number"
-                        className="formInput"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.phoneNumber}
-                        maxLength="12"
+                    <div className="relative register lg:w-64 md:w-64 sm:max-w-[376px]">
+                      <PhoneInput
+                        country={"in"}
+                        onChange={handlePhoneChange}
+                        value={formik.values.phoneNumber.replace('+', '')} // Remove the '+' for the PhoneInput
+                        autocompleteSearch={true}
+                        countryCodeEditable={false}
+                        enableSearch={true}
+                        inputStyle={{
+                          width: "100%",
+                          background: "white",
+                          padding: "25px 0 25px 3rem",
+                          borderRadius: "10px",
+                          fontSize: "1rem",
+                          border: "1px solid #000",
+                        }}
+                        dropdownStyle={{
+                          color: "#000",
+                          fontWeight: "600",
+                          padding: "0px 0px 0px 10px",
+                        }}
                       />
                       {formik.errors.phoneNumber &&
                         formik.touched.phoneNumber && (
@@ -605,7 +621,7 @@ const Registration = () => {
                           onBlur={formik.handleBlur}
                           value={formik.values.password}
                         />
-                        <div className="icon">
+                        <div className="register-icon">
                           {showPassword ? (
                             <BsFillEyeFill
                               onClick={() => setShowPassword(!showPassword)}

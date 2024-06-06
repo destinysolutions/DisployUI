@@ -187,18 +187,16 @@ const UserTrash = ({ selectUser, TrashData, sidebarOpen }) => {
                             </div>
                           </td>
                           {/* <td className=" border-b border-lightgray text-sm ">{item.assetFolderPath}</td> */}
-                          <td className=" border-b border-lightgray text-sm ">
+                          <td className=" border-b border-lightgray text-sm text-center">
                             {item.folderPath}
                           </td>
-                          <td className=" border-b border-lightgray text-sm ">
-                            {moment(item.deleteDate).format(
-                              "DD/MM/YY, h:mm:ss a"
-                            )}
+                          <td className=" border-b border-lightgray text-sm text-center">
+                            {moment(item.deleteDate).format('MMMM D, YYYY')}
                           </td>
-                          <td className=" border-b border-lightgray text-sm ">
+                          <td className=" border-b border-lightgray text-sm text-center">
                             {item.fileSize}
                           </td>
-                          <td className=" border-b border-lightgray text-sm ">
+                          <td className=" border-b border-lightgray text-sm text-center">
                             {item.assetType}
                           </td>
                         </tr>

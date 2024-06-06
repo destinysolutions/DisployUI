@@ -2022,7 +2022,8 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
           loading={loading}
           screenData={screenData}
           handleScreenCheckboxChange={handleScreenCheckboxChange}
-          setshowuserModal={setshowuserModal} handleCancelPopup={handleCancelPopup}
+          setshowuserModal={setshowuserModal} 
+          handleCancelPopup={handleCancelPopup}
           handleAddUser={handleAddUser}
           setSelectedScreens={setSelectedScreens}
           handleUpdateUser={handleUpdateUser}

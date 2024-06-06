@@ -1,6 +1,9 @@
 import React from 'react'
+import { Controller, useForm } from 'react-hook-form';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
+import PhoneInput from 'react-phone-input-2';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 
 const AddEditUser = ({
     editMode,
@@ -43,6 +46,7 @@ const AddEditUser = ({
     setUserTypeError,
     userTypeError
 }) => {
+    const { control } = useForm();
     return (
         <>
 
@@ -121,16 +125,52 @@ const AddEditUser = ({
                                             <span className='error'>This field is required.</span>
                                         )}
 
-                                        <input
+                                        {/*      <input
                                             type="number"
                                             placeholder="Phone Number"
                                             className="formInput mt-4"
                                             value={phoneNumber}
                                             onChange={(e) => setPhoneNumber(e.target.value)}
-                                        />
-                                        {phoneError && (
-                                            <span className='error'>This field is required.</span>
-                                        )}
+                                        />*/}
+                                        <div className='mt-4'>
+                                            <Controller
+                                                name="phone"
+                                                control={control}
+                                                rules={{
+                                                    validate: (value) => isValidPhoneNumber(value),
+                                                }}
+                                                render={({ field: { onChange, value } }) => (
+                                                    <PhoneInput
+                                                        country={"in"}
+                                                        onChange={(phoneNumber) => {
+                                                            const formattedNumber = "+" + phoneNumber;
+                                                            onChange(formattedNumber); // Update the value directly
+                                                            setPhoneNumber(formattedNumber); // Update the state to reflect the phone number
+                                                        }}
+                                                        value={value}
+                                                        autocompleteSearch={true}
+                                                        countryCodeEditable={false}
+                                                        enableSearch={true}
+                                                        inputStyle={{
+                                                            width: "100%",
+                                                            background: "white",
+                                                            padding: "25px 0 25px 3rem",
+                                                            borderRadius: "10px",
+                                                            fontSize: "1rem",
+                                                            border: "1px solid #000",
+                                                        }}
+                                                        dropdownStyle={{
+                                                            color: "#000",
+                                                            fontWeight: "600",
+                                                            padding: "0px 0px 0px 10px",
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                            {phoneError && (
+                                                <span className='error'>Invalid Phone Number.</span>
+                                            )}
+                                        </div>
 
                                         {!editMode && (
                                             <>
@@ -142,7 +182,7 @@ const AddEditUser = ({
                                                     onChange={(e) => setEmail(e.target.value)}
                                                 />
                                                 {emailError && (
-                                                    <span className='error'>This field is required.</span>
+                                                    <span className='error'>Invalid Email Address.</span>
                                                 )}
                                                 <div className="relative">
                                                     <input

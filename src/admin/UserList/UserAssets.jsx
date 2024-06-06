@@ -107,11 +107,11 @@ const UserAssets = ({ selectUser, Asseststore, loading ,sidebarOpen}) => {
                       <th className="text-[#5A5881] text-base text-center font-semibold w-200">
                         Preview
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                        <div className="flex">
+                      <th className="text-[#5A5881] text-base font-semibold text-center w-200">
+                        <div className="flex items-center justify-center gap-1">
                           Name
                           <svg
-                            className="w-3 h-3 ms-1.5 mt-2 cursor-pointer"
+                            className="w-3 h-3 cursor-pointer"
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"

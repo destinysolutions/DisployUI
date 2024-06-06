@@ -221,34 +221,34 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                           </svg>
                         </th>
 
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Email
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Google Location
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           PhoneNo
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Organization Name
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Total Screen
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Ads Screen
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Storage Request
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Associated
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Status
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Action
                         </th>
                       </tr>

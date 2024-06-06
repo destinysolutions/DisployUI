@@ -471,7 +471,7 @@ const Myplan = () => {
                 )}
             </div>
             {planModel && (
-                <AddEditPlan showPlanModal={showPlanModal} featureList={featureList} selectPlan={selectPlan} setSelectPlan={setSelectPlan} heading={heading} />
+                <AddEditPlan showPlanModal={showPlanModal} featureList={featureList} selectPlan={selectPlan} setSelectPlan={setSelectPlan} heading={heading} fetchAllPlan={fetchAllPlan}/>
             )}
             {openView && (
                 <ViewPlan toggleModal={toggleModal} selectPlan={selectPlan} />

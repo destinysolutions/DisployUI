@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { FaPlusCircle } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
+import PhoneInput from 'react-phone-input-2';
 const AddEditAdvertisement = ({
   heading,
   toggleModal,
@@ -12,7 +13,6 @@ const AddEditAdvertisement = ({
 }) => {
 
   const [inputs, setInputs] = useState(['']);
-
 
   const addInput = () => {
     setInputs([...inputs, '']);
@@ -37,6 +37,11 @@ const AddEditAdvertisement = ({
   const handleClick = (e) => {
     hiddenFileInput.current.click();
   };
+
+  const handlePhoneChange = value => {
+    formik.setFieldValue('PhoneNumber', '+' + value); // Update the phoneNumber value with the correct format
+  };
+
   return (
     <>
       <div
@@ -130,15 +135,26 @@ const AddEditAdvertisement = ({
                             )}
                         </div>
                         <div className="relative full">
-                          <input
-                            type="text"
-                            name="PhoneNumber"
-                            id="PhoneNumber"
-                            placeholder="Enter Phone Number"
-                            className="formInput"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.PhoneNumber}
+                          <PhoneInput
+                            country={"in"}
+                            onChange={handlePhoneChange}
+                            value={formik.values.PhoneNumber.replace('+', '')} // Remove the '+' for the PhoneInput
+                            autocompleteSearch={true}
+                            countryCodeEditable={false}
+                            enableSearch={true}
+                            inputStyle={{
+                              width: "100%",
+                              background: "white",
+                              padding: "25px 0 25px 3rem",
+                              borderRadius: "10px",
+                              fontSize: "1rem",
+                              border: "1px solid #000",
+                            }}
+                            dropdownStyle={{
+                              color: "#000",
+                              fontWeight: "600",
+                              padding: "0px 0px 0px 10px",
+                            }}
                           />
                           {formik.errors.PhoneNumber &&
                             formik.touched.PhoneNumber && (

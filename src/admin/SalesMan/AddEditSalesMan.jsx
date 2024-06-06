@@ -6,6 +6,8 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { addSalesManData, updateSalesManData } from "../../Redux/SalesMan/SalesManSlice";
+import PhoneInput from "react-phone-input-2";
+import { isValidPhoneNumber } from "react-phone-number-input";
 const AddEditSalesMan = ({
     setShowModal,
     heading,
@@ -18,8 +20,8 @@ const AddEditSalesMan = ({
     setEditId
 }) => {
     const dispatch = useDispatch()
-    const [loading,setLoading] = useState(false)
-    
+    const [loading, setLoading] = useState(false)
+
     //using for validation and register api calling
     const phoneRegExp =
         /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -37,8 +39,8 @@ const AddEditSalesMan = ({
             .required("Email is required")
             .email("E-mail must be a valid e-mail!"),
         phoneNumber: Yup.string()
-            .required("Phone Number is required")
-            .matches(phoneRegExp, "Phone number is not valid"),
+            .required('Phone number is required')
+            .test('is-valid-phone', 'Invalid phone number', value => isValidPhoneNumber(value)),
         percentageRatio: Yup.number()
             .required("Percentage Ratio is required")
             .min(0, "Percentage Ratio must be at least 0")
@@ -53,8 +55,8 @@ const AddEditSalesMan = ({
             .required("Email is required")
             .email("E-mail must be a valid e-mail!"),
         phoneNumber: Yup.string()
-            .required("Phone Number is required")
-            .matches(phoneRegExp, "Phone number is not valid"),
+            .required('Phone number is required')
+            .test('is-valid-phone', 'Invalid phone number', value => isValidPhoneNumber(value)),
         percentageRatio: Yup.number()
             .required("Percentage Ratio is required")
             .min(0, "Percentage Ratio must be at least 0")
@@ -76,16 +78,20 @@ const AddEditSalesMan = ({
             formData.append("Email", values.emailID);
             formData.append("PercentageRatio", values.percentageRatio);
             formData.append("Phone", values.phoneNumber);
+            formData.append("GoogleLocation", "No Location");
+            formData.append("OrganizationName", "No Organization");
+            formData.append("IsRetailer", false);
             formData.append("IsSalesMan", true);
 
             if (editId) {
                 formData.append("OrgUserSpecificID", editId);
                 dispatch(updateSalesManData(formData)).then((res) => {
                     if (res?.payload?.status) {
+                        toast.success("Sales Man Updated Successfully.")
                         fetchData()
-                        toast.remove()
                         formik.resetForm();
                         setEditId(null)
+                        toast.remove()
                     } else {
                         toast.error(res?.payload?.message)
                     }
@@ -99,10 +105,11 @@ const AddEditSalesMan = ({
                 formData.append("Operation", "Insert");
                 dispatch(addSalesManData(formData)).then((res) => {
                     if (res?.payload?.status) {
+                        toast.success("Sales Man Created Successfully.")
                         fetchData()
-                        toast.remove()
                         formik.resetForm();
                         setEditId(null)
+                        toast.remove()
                     } else {
                         toast.error(res?.payload?.message)
                     }
@@ -116,6 +123,10 @@ const AddEditSalesMan = ({
         },
     });
 
+
+    const handlePhoneChange = value => {
+        formik.setFieldValue('phoneNumber', '+' + value); // Update the phoneNumber value with the correct format
+      };
 
     return (
         <>
@@ -181,20 +192,32 @@ const AddEditSalesMan = ({
                                                 )}
                                             </div>
                                             <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
-                                                <input
-                                                    type="number"
-                                                    name="phoneNumber"
-                                                    id="phoneNumber"
-                                                    placeholder="Enter Phone Number"
-                                                    className="formInput"
-                                                    onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                    value={formik.values.phoneNumber}
-                                                    maxLength="12"
+                                                <PhoneInput
+                                                    country={"in"}
+                                                    onChange={handlePhoneChange}
+                                                    value={formik.values.phoneNumber.replace('+', '')} // Remove the '+' for the PhoneInput
+                                                    autocompleteSearch={true}
+                                                    countryCodeEditable={false}
+                                                    enableSearch={true}
+                                                    inputStyle={{
+                                                        width: "100%",
+                                                        background: "white",
+                                                        padding: "25px 0 25px 3rem",
+                                                        borderRadius: "10px",
+                                                        fontSize: "1rem",
+                                                        border: "1px solid #000",
+                                                    }}
+                                                    dropdownStyle={{
+                                                        color: "#000",
+                                                        fontWeight: "600",
+                                                        padding: "0px 0px 0px 10px",
+                                                    }}
                                                 />
                                                 {formik.errors.phoneNumber &&
                                                     formik.touched.phoneNumber && (
-                                                        <div className="error">{formik.errors.phoneNumber}</div>
+                                                        <div className="error">
+                                                            {formik.errors.phoneNumber}
+                                                        </div>
                                                     )}
                                             </div>
 
@@ -229,7 +252,7 @@ const AddEditSalesMan = ({
                                                             disabled={editId}
                                                         />
                                                         {!editId && (
-                                                            <div className="icon">
+                                                            <div className="register-icon">
                                                                 {showPassword ? (
                                                                     <BsFillEyeFill
                                                                         onClick={() => setShowPassword(!showPassword)}
@@ -280,9 +303,9 @@ const AddEditSalesMan = ({
                                                 className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                                                 disabled={loading}
                                             >
-                                                {heading === "Add" 
-                                                ? (loading ? "Saving..." : "Save")
-                                                : (loading ? "Updating..." : "Update")}
+                                                {heading === "Add"
+                                                    ? (loading ? "Saving..." : "Save")
+                                                    : (loading ? "Updating..." : "Update")}
                                             </button>
                                         </div>
                                     </form>

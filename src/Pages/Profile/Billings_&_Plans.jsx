@@ -17,12 +17,16 @@ import { AddEditBillingDetails, GetBillingDetails, handleGetState } from "../../
 import { useNavigate } from "react-router-dom";
 import { extractPrice, extractSubstring, getDaysPassed, getDifferenceInDays, getRemainingDays } from "../../Components/Common/Common";
 import moment from "moment";
+import { Controller, useForm } from "react-hook-form";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import PhoneInput from "react-phone-input-2";
 
 const BillingsPlans = () => {
   const dispatch = useDispatch()
   const { user, token, userDetails } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   const navigation = useNavigate()
+  const { control } = useForm();
   const [purchasePlan, setPurchasePlan] = useState(false)
   const [selectPlan, setSelectPlan] = useState("")
   const [myplan, setmyPlan] = useState([]);
@@ -199,6 +203,7 @@ const BillingsPlans = () => {
   }
 
   const handleBillingDetails = () => {
+
     let Params = {
       ...billingDetails,
       userBillingDetailsID: billingDetails?.userBillingDetailsID
@@ -398,13 +403,47 @@ const BillingsPlans = () => {
                     />
                   </div>
                   <div className="md:w-1/2 px-3">
-                    <label className="label_top text-sm">Phone Number</label>
-                    <input
+                    <label className="label_top text-xs z-10">Phone Number</label>
+                    {/*     <input
                       className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                       type="number"
                       placeholder="Enter Phone Number"
                       onChange={(e) => setBillingDetails({ ...billingDetails, phoneNumber: e.target.value })}
                       value={billingDetails.phoneNumber}
+              />*/}
+                    <Controller
+                      name="phone"
+                      control={control}
+                      rules={{
+                        validate: (value) => isValidPhoneNumber(value),
+                      }}
+                      render={({ field: { onChange, value } }) => (
+                        <PhoneInput
+                          country={"in"}
+                          onChange={(phoneNumber) => {
+                            const formattedNumber = "+" + phoneNumber;
+                            onChange(formattedNumber); // Update the value directly
+                            setBillingDetails({ ...billingDetails, phoneNumber: formattedNumber })
+                          }}
+                          value={value}
+                          autocompleteSearch={true}
+                          countryCodeEditable={false}
+                          enableSearch={true}
+                          inputStyle={{
+                            width: "100%",
+                            background: "white",
+                            padding: "25px 0 25px 3rem",
+                            borderRadius: "10px",
+                            fontSize: "1rem",
+                            border: "1px solid #000",
+                          }}
+                          dropdownStyle={{
+                            color: "#000",
+                            fontWeight: "600",
+                            padding: "0px 0px 0px 10px",
+                          }}
+                        />
+                      )}
                     />
                   </div>
                   <div className="md:w-1/2 px-3">

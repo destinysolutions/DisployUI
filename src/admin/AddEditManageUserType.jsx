@@ -1,7 +1,7 @@
 import React from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
-const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive, HandleSubmit, userType, setUserType, error, setError }) => {
+const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive, HandleSubmit, userType, setUserType, error, setError,disable }) => {
     return (
         <>
             <div
@@ -74,6 +74,7 @@ const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive, Ha
                                                 type="submit"
                                                 className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                                                 onClick={() => HandleSubmit()}
+                                                disabled={disable}
                                             >
                                                 Save
                                             </button>

@@ -83,7 +83,7 @@ const BillingReport = ({
                     <th className="flex items-center font-medium p-3">
                       Customer
                     </th>
-                    <th className=" font-medium text-left p-3">Email</th>
+                    <th className=" font-medium p-3 text-center">Email</th>
                     <th className=" font-medium text-center p-3">
                       Phone Number
                     </th>
@@ -143,12 +143,10 @@ const BillingReport = ({
                               {item?.phoneNumber}
                             </span>
                           </td>
-                          <td className="text-left">
-                            <div className="text-left">
+                          <td className="text-center">
                               <span className="text-base">
                                 {item?.billingcycle}
                               </span>
-                            </div>
                           </td>
                           <td className="text-center">
                             <span className="text-base">

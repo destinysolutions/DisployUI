@@ -123,18 +123,18 @@ const Navbar = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const handleDocumentClick = () => {
-  //     setShowProfileBox(false);
-  //     setShowNotificationBox(false);
-  //   };
+  useEffect(() => {
+    const handleDocumentClick = () => {
+      setShowProfileBox(false);
+      setShowNotificationBox(false);
+    };
 
-  //   document.addEventListener("click", handleDocumentClick);
+    document.addEventListener("click", handleDocumentClick);
 
-  //   return () => {
-  //     document.removeEventListener("click", handleDocumentClick);
-  //   };
-  // }, []);
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, []);
 
   //used for apply navigation
  

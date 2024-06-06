@@ -6,6 +6,8 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { addRetailerData, updateRetailerData } from "../../Redux/admin/RetailerSlice";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import PhoneInput from "react-phone-input-2";
 const AddEditRetailer = ({
   heading,
   toggleModal,
@@ -18,6 +20,27 @@ const AddEditRetailer = ({
 }) => {
   const dispatch = useDispatch()
   //using for validation and register api calling
+
+  const handleApiResponse = (promise) => {
+    promise
+      .then((res) => {
+        if (res?.payload?.status) {
+          formik.resetForm();
+          setShowModal(false);
+        } else {
+          toast.error(res?.payload?.message);
+          formik.resetForm();
+          setShowModal(false);
+        }
+      })
+      .catch((error) => {
+        console.log('error', error);
+        formik.resetForm();
+        setShowModal(false);
+      });
+  };
+
+
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -35,8 +58,8 @@ const AddEditRetailer = ({
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
     phoneNumber: Yup.string()
-      .required("Phone Number is required")
-      .matches(phoneRegExp, "Phone number is not valid"),
+      .required('Phone number is required')
+      .test('is-valid-phone', 'Invalid phone number', value => isValidPhoneNumber(value)),
     googleLocation: Yup.string().required("Google Location is required"),
   });
 
@@ -48,8 +71,8 @@ const AddEditRetailer = ({
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
     phoneNumber: Yup.string()
-      .required("Phone Number is required")
-      .matches(phoneRegExp, "Phone number is not valid"),
+      .required('Phone number is required')
+      .test('is-valid-phone', 'Invalid phone number', value => isValidPhoneNumber(value)),
     googleLocation: Yup.string().required("Google Location is required"),
   });
 
@@ -71,36 +94,17 @@ const AddEditRetailer = ({
       if (editId) {
         formData.append("OrgUserSpecificID", editId);
         formData.append("orgUserID", orgUserID);
-        dispatch(updateRetailerData(formData)).then((res) => {
-          if (res?.payload?.status === 200) {
-            formik.resetForm();
-            setShowModal(false);
-          } else {
-            toast.error(res?.payload?.message)
-          }
-        }).catch((error) => {
-          console.log('error', error)
-        });
+        handleApiResponse(dispatch(updateRetailerData(formData)));
       } else {
         formData.append("Operation", "Insert");
-        dispatch(addRetailerData(formData)).then((res) => {
-          if (res?.payload?.status === 200) {
-            formik.resetForm();
-            setShowModal(false);
-          } else {
-            toast.error(res?.payload?.message)
-          }
-        }).catch((error) => {
-          console.log('error', error)
-        });
-
-        formik.resetForm();
-        setShowModal(false);
+        handleApiResponse(dispatch(addRetailerData(formData)));
       }
-
-
     },
   });
+
+  const handlePhoneChange = value => {
+    formik.setFieldValue('phoneNumber', '+' + value); // Update the phoneNumber value with the correct format
+  };
 
   return (
     <>
@@ -201,20 +205,32 @@ const AddEditRetailer = ({
                         )}
                       </div>
                       <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
-                        <input
-                          type="number"
-                          name="phoneNumber"
-                          id="phoneNumber"
-                          placeholder="Enter Phone Number"
-                          className="formInput"
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          value={formik.values.phoneNumber}
-                          maxLength="12"
+                        <PhoneInput
+                          country={"in"}
+                          onChange={handlePhoneChange}
+                          value={formik.values.phoneNumber.replace('+', '')} // Remove the '+' for the PhoneInput
+                          autocompleteSearch={true}
+                          countryCodeEditable={false}
+                          enableSearch={true}
+                          inputStyle={{
+                            width: "100%",
+                            background: "white",
+                            padding: "25px 0 25px 3rem",
+                            borderRadius: "10px",
+                            fontSize: "1rem",
+                            border: "1px solid #000",
+                          }}
+                          dropdownStyle={{
+                            color: "#000",
+                            fontWeight: "600",
+                            padding: "0px 0px 0px 10px",
+                          }}
                         />
                         {formik.errors.phoneNumber &&
                           formik.touched.phoneNumber && (
-                            <div className="error">{formik.errors.phoneNumber}</div>
+                            <div className="error">
+                              {formik.errors.phoneNumber}
+                            </div>
                           )}
                       </div>
 
@@ -248,7 +264,7 @@ const AddEditRetailer = ({
                             hidden={editId}
                           />
                           {!editId && (
-                            <div className="icon">
+                            <div className="register-icon">
                               {showPassword ? (
                                 <BsFillEyeFill
                                   onClick={() => setShowPassword(!showPassword)}

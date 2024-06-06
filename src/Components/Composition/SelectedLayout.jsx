@@ -676,7 +676,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 <input
                   type="text"
                   className="border border-primary rounded-full px-7 py-2.5 block"
-                  placeholder="Enter schedule name"
+                  placeholder="Enter Composition Name"
                   value={compositionName}
                   onChange={(e) => setCompositionName(e.target.value)}
                 />

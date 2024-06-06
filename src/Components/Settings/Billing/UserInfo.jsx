@@ -4,12 +4,13 @@ import { FaPlus } from "react-icons/fa6";
 import AddCreditCard from "../../../admin/AddCreditCard";
 import { useSelector } from "react-redux";
 import { handleAddCard, handleGetBillingByID } from "../../../Redux/AdminSettingSlice";
-import { ADD_CREDIT_CARD, CANCEL_SUBSCRIPTION, GET_BILLING_BY_ID, INCREASE_TRIAL_DAYS } from "../../../Pages/Api";
+import { ADD_CREDIT_CARD, CANCEL_SUBSCRIPTION, GET_BILLING_BY_ID, GET_BILLING_DETAILS, INCREASE_TRIAL_DAYS } from "../../../Pages/Api";
 import { useDispatch } from "react-redux";
 import { IncreaseTrialDays, handleCancelSubscription } from "../../../Redux/PaymentSlice";
 import { capitalizeFirstLetter, extractSubstring, getDaysPassed, getDifferenceInDays } from "../../Common/Common";
 import moment from "moment";
 import toast from "react-hot-toast";
+import { GetBillingDetails } from "../../../Redux/SettingUserSlice";
 
 const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPlan, customerData }) => {
 
@@ -18,6 +19,19 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
   const authToken = `Bearer ${token}`;
   const [newCardShow, setNewCardShow] = useState(false);
   const [rangeValue, setRangeValue] = useState(getDaysPassed(userPlan?.startDate, new Date()));
+  const [billingDetails, setBillingDetails] = useState({
+    companyName: "",
+    billingEmail: "",
+    taxID: "",
+    vatNumber: "",
+    phoneNumber: "",
+    billingAddress: "",
+    countryID: "",
+    stateID: "",
+    zipCode: "",
+    stateName:"",
+    countryName:""
+  })
 
   const onSubmit = () => {
     const Params = {
@@ -88,7 +102,7 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
     dispatch(IncreaseTrialDays({ config }))
       .then((res) => {
         if (res?.payload?.status) {
-          toast.error(res?.payload?.message)
+          toast.success(res?.payload?.message)
         } else {
           toast.error(res?.payload?.message)
         }
@@ -103,6 +117,32 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
     // Update the state with the new value
     setRangeValue(value);
   };
+
+
+  const getBillingDetails = () => {
+    try {
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${GET_BILLING_DETAILS}?Email=${customerData?.email}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authToken
+        },
+      }
+      dispatch(GetBillingDetails({ config })).then((res) => {
+        if (res?.payload?.status) {
+          setBillingDetails(res?.payload?.data)
+        }
+      })
+    } catch (error) {
+      toast.error('Error fetching cards');
+    }
+  }
+
+  useEffect(() => {
+    getBillingDetails()
+  }, [])
 
   return (
     <>
@@ -195,10 +235,10 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
               <h4 className="text-base font-medium">Active until {moment(
                 userPlan?.endDate
               ).format("LL")}</h4>
-           <p className="mb-4">
+              <p className="mb-4">
                 We will send you a notification upon Subscription expiration.
               </p>
-                {/* 
+              {/* 
               <div className="w-full py-6 my-5 bg-light-red text-center">
                 <p className="mt-5">We need your attention!</p>
                 <p className="mb-5"> Your plan requires update</p>
@@ -238,43 +278,45 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
           </div>
         </div>
       </div>
-      <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 m-5 ">
-        <h3 className="user-name mb-4">Credit &amp; Debit Cards</h3>
-        <form className="w-full space-y-6" action="">
-          {cardList?.length > 0 && cardList?.map((item) => {
-            return (
-              <div className="mb-5" index={item?.paymentMethodID}>
-                <label
-                  className="flex items-center justify-between h-16 px-5 bg-white border border-gray-300 rounded-lg cursor-pointer group"
-                  htmlFor="option_1"
-                >
-                  <div className="flex flex-col mr-6">
-                    <div className="lg:flex md:flex sm:flex xs:block items-center">
-                      <img
-                        src="../../Settings/logos_mastercard.svg"
-                        className="mr-2"
-                        alt=""
-                      />
-                      <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                        {capitalizeFirstLetter(item?.funding)} Card
-                      </h4>
-                      <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
-                        **** **** **** {item?.cardNumber}
-                      </h4>
+      {cardList?.length > 0 && (
+        <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 m-5 ">
+          <h3 className="user-name mb-4">Credit &amp; Debit Cards</h3>
+          <form className="w-full space-y-6" action="">
+            {cardList?.map((item) => {
+              return (
+                <div className="mb-5" index={item?.paymentMethodID}>
+                  <label
+                    className="flex items-center justify-between h-16 px-5 bg-white border border-gray-300 rounded-lg cursor-pointer group"
+                    htmlFor="option_1"
+                  >
+                    <div className="flex flex-col mr-6">
+                      <div className="lg:flex md:flex sm:flex xs:block items-center">
+                        <img
+                          src="../../../Settings/logos_mastercard.svg"
+                          className="mr-2"
+                          alt=""
+                        />
+                        <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
+                          {capitalizeFirstLetter(item?.funding)} Card
+                        </h4>
+                        <h4 className="text-[#606060] lg:text-lg md:text-lg sm:text-lg xs:text-xs">
+                          **** **** **** {item?.cardNumber}
+                        </h4>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center justify-center">
-                    <span className="bg-green-600 bg-gray-500 text-white px-6 py-2 mr-5 rounded-full">
-                      Default Card
-                    </span>
-                  </div>
-                </label>
-              </div>
-            )
-          })}
-        </form>
-      </div>
-      {/*<div className="bg-white shadow-xl rounded-xl border border-gray-200 min-h-full m-5">
+                    <div className="flex items-center justify-center">
+                      <span className="bg-green-600 bg-gray-500 text-white px-6 py-2 mr-5 rounded-full">
+                        Default Card
+                      </span>
+                    </div>
+                  </label>
+                </div>
+              )
+            })}
+          </form>
+        </div>
+      )}
+      <div className="bg-white shadow-xl rounded-xl border border-gray-200 min-h-full m-5">
         <h3 className="user-name my-2 ml-5">Billing Address</h3>
         <div className="full flex flex-wrap -mx-3 mb-3">
           <div className="w-full px-3 mb-6 md:mb-0">
@@ -285,61 +327,61 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
                     <td className="text-left px-5 py-2">
                       <label className="text-base font-medium sm:font-base xs:font-base">Company Name:</label>
                     </td>
-                    <td className="text-left text-base px-5 py-2">Pixinvent</td>
+                    <td className="text-left text-base px-5 py-2">{billingDetails?.companyName}</td>
                   </tr>
                   <tr className="border-b border-[#D5E3FF]">
                     <td className="text-left px-5 py-2">
                       <label className="text-base font-medium sm:font-base xs:font-base">Contact:</label>
                     </td>
-                    <td className="text-left text-base px-5 py-2">+1(609) 933-44-22</td>
+                    <td className="text-left text-base px-5 py-2">{billingDetails?.phoneNumber}</td>
                   </tr>
                   <tr className="border-b border-[#D5E3FF]">
                     <td className="text-left px-5 py-2">
                       <label className="text-base font-medium sm:font-base xs:font-base">Billing Email:</label>
                     </td>
-                    <td className="text-left text-base px-5 py-2">gertrude@gmail.com</td>
+                    <td className="text-left text-base px-5 py-2">{billingDetails?.billingEmail}</td>
                   </tr>
                   <tr className="border-b border-[#D5E3FF]">
                     <td className="text-left px-5 py-2">
                       <label className="text-base font-medium sm:font-base xs:font-base">Country:</label>
                     </td>
-                    <td className="text-left text-base px-5 py-2">USA</td>
+                    <td className="text-left text-base px-5 py-2">{billingDetails?.countryName}</td>
                   </tr>
                   <tr className="border-b border-[#D5E3FF]">
                     <td className="text-left px-5 py-2">
                       <label className="text-base font-medium sm:font-base xs:font-base">State:</label>
                     </td>
-                    <td className="text-left text-base px-5 py-2">Queensland</td>
+                    <td className="text-left text-base px-5 py-2">{billingDetails?.stateName}</td>
                   </tr>
                   <tr className="border-b border-[#D5E3FF]">
                     <td className="text-left px-5 py-2">
                       <label className="text-base font-medium sm:font-base xs:font-base">Tax ID:</label>
                     </td>
-                    <td className="text-left text-base px-5 py-2">TAX-875623</td>
+                    <td className="text-left text-base px-5 py-2">{billingDetails?.taxID}</td>
                   </tr>
                   <tr className="border-b border-[#D5E3FF]">
                     <td className="text-left px-5 py-2">
                       <label className="text-base font-medium sm:font-base xs:font-base">VAT Number:</label>
                     </td>
-                    <td className="text-left text-base px-5 py-2">SDF754K77</td>
+                    <td className="text-left text-base px-5 py-2">{billingDetails?.vatNumber}</td>
                   </tr>
                   <tr className="border-b border-[#D5E3FF]">
                     <td className="text-left px-5 py-2">
                       <label className="text-base font-medium sm:font-base xs:font-base">Billing Address:</label>
                     </td>
-                    <td className="text-left text-base px-5 py-2">100 Water Plant Avenue, Building 303 Wake Island</td>
+                    <td className="text-left text-base px-5 py-2">{billingDetails?.billingAddress}</td>
                   </tr>
                   <tr className="border-b border-[#D5E3FF]">
                     <td className="text-left px-5 py-2">
                       <label className="text-base font-medium sm:font-base xs:font-base">Zip Code:</label>
                     </td>
-                    <td className="text-left text-base px-5 py-2">403114</td>
+                    <td className="text-left text-base px-5 py-2">{billingDetails?.zipCode}</td>
                   </tr>
                 </tbody>
               </table>
 
 
-              <div className="flex mb-2">
+              {/*<div className="flex mb-2">
                 <label>Company Name:</label>
                 <span>Pixinvent</span>
               </div>
@@ -374,11 +416,11 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
               <div className="flex mb-2">
                 <label>Zip Code:</label>
                 <span>403114</span>
-              </div> 
+          </div>*/}
 
             </div>
           </div>
-           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+         {/* <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
             <div className="user-pro-details text-base">
               <div className="flex mb-2">
                 <label>Contact</label>
@@ -397,9 +439,9 @@ const UserInfo = ({ setShowBillingProfile, showBillingProfile, cardList, userPla
                 <span>403114</span>
               </div>
             </div>
-          </div> 
-        </div>
         </div>*/}
+        </div>
+      </div>
 
       {newCardShow && (
         <AddCreditCard onSubmit={onSubmit} toggleModal={toggleModal} />

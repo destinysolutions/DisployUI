@@ -259,19 +259,19 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                                                     />
                                                 </svg>
                                             </th>
-                                            <th scope="col" className="px-6 py-3">
+                                            <th scope="col" className="px-6 py-3 text-left">
                                                 Email
                                             </th>
-                                            <th scope="col" className="px-6 py-3">
+                                            <th scope="col" className="px-6 py-3 text-left">
                                                 PhoneNo
                                             </th>
-                                            <th scope="col" className="px-6 py-3">
+                                            <th scope="col" className="px-6 py-3 text-left">
                                                 Percentage Ratio
                                             </th>
-                                            <th scope="col" className="px-6 py-3">
+                                            <th scope="col" className="px-6 py-3 text-left">
                                                 Status
                                             </th>
-                                            <th scope="col" className="px-6 py-3">
+                                            <th scope="col" className="px-6 py-3 text-left">
                                                 Action
                                             </th>
                                         </tr>

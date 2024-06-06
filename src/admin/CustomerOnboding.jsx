@@ -17,11 +17,13 @@ import moment from "moment";
 
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
+import { createImageFromInitials } from "../Components/Navbar";
 
 // const AdminNavbar = lazy(() => import('./AdminNavbar'));
 // const AdminSidebar = lazy(() => import('./AdminSidebar'));
 
 const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
+  const color = "#e4aa07";
   const { user, token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
@@ -120,7 +122,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
     dispatch(IncreaseTrialDays({ config }))
       .then((res) => {
         if (res?.payload?.status) {
-          toast.error(res?.payload?.message)
+          toast.success(res?.payload?.message)
         } else {
           toast.error(res?.payload?.message)
         }
@@ -205,8 +207,20 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className="w-full lg:w-1/2 pl-5 pr-3 mb-4">
                       <div className="bg-white shadow-xl rounded-xl p-5 border border-gray-200 min-h-full m-1">
                         <div className="user-details text-center border-b border-light-blue mb-4">
-                          <span className="user-img">
-                            <img src={store.data?.profilePhoto} alt="Profile Not Found" />
+                          <span className="user-img flex w-full items-center justify-center">
+                            {!store.data?.profilePhoto ? (
+                              <img
+                                src={createImageFromInitials(500, store.data?.firstName, color)}
+                                alt="profile"
+                                className=" profile rounded-full w-10 h-10 "
+                              />
+                            ) : (
+                              <img
+                                src={store.data?.profilePhoto}
+                                alt="profile"
+                                className=" profile rounded-full"
+                              />
+                            )}
                           </span>
                           <span className="user-name my-2">{store.data?.firstName + " " + store.data?.lastName}</span>
                           {/*<span className="user-designation">Super Admin</span>*/}
@@ -244,7 +258,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
                             <span className="user-designation">Active</span>
                           </div>
                           <div className="flex mb-2">
-                            <label>Role::</label>
+                            <label>Role:</label>
                             <span>{store.data?.userRoleName}</span>
                           </div>
                           <div className="flex mb-2">

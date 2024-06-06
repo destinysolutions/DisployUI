@@ -315,7 +315,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                           <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <th
                               scope="col"
-                              className="px-3.5 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                              className="px-3.5 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-left"
                             >
                               {item.firstName + " " + item.lastName}
                             </th>

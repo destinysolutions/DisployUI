@@ -24,7 +24,7 @@ import AdminSidebar from "./AdminSidebar";
 const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.ManageUser);
   const dispatch = useDispatch();
-  const [loadFist, setLoadFist] = useState(true);
+  const [loadFist, setLoadFist] = useState(false);
   const [addUsertypeModal, setAddUserTypeModal] = useState(false);
   const [userType, setUserType] = useState("");
   const [isActive, setIsActive] = useState(false);
@@ -38,15 +38,31 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
   const [search, setSearch] = useState("");
   const [heading, setHeading] = useState("Add");
   const [selectData, setSelectData] = useState("");
-  useEffect(() => {
-    if (loadFist) {
-      dispatch(getManageUserData());
-      setLoadFist(false);
-    }
-  }, [loadFist]);
+  const [disable, setDisable] = useState(false);
+  const [manageUser, setManageUser] = useState([]);
 
-  const filteredData = Array.isArray(store?.data)
-    ? store?.data?.filter((item) =>
+  const fetchdata = () => {
+    setLoadFist(true)
+    dispatch(getManageUserData()).then((res) => {
+      if (res?.payload?.status === 200) {
+        setManageUser(res?.payload?.data)
+        setLoadFist(false)
+      } else {
+        setLoadFist(false)
+      }
+    }).catch((error) => {
+      console.log('error', error)
+      setLoadFist(false)
+
+    });
+  }
+
+  useEffect(() => {
+    fetchdata()
+  }, []);
+
+  const filteredData = Array.isArray(manageUser)
+    ? manageUser?.filter((item) =>
       Object.values(item).some(
         (value) =>
           value &&
@@ -110,12 +126,12 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
             .then((res) => {
               if (res?.payload?.status === 200) {
                 toast.success("Delete data successFully");
+                fetchdata();
               }
             })
             .catch((error) => {
               console.log("error", error);
             });
-          setLoadFist(true);
         }
       });
     } catch (error) {
@@ -144,22 +160,24 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
       operation: editMode ? "Update" : "Insert",
       userTypeID: editMode ? selectData?.userTypeID : 0,
     });
+    setDisable(true)
     dispatch(handleAddEdit(data))
       .then((res) => {
         if (res?.payload?.status === 200) {
-          dispatch(getManageUserData());
           if (editMode) {
             toast.success("Update data successFully");
           } else {
             toast.success("Add data successFully");
           }
-          setLoadFist(true);
+          setDisable(false)
+          fetchdata();
           setAddUserTypeModal(false);
         }
       })
       .catch((error) => {
         console.log("error", error);
         setAddUserTypeModal(false);
+        setDisable(false)
       });
     setError(false)
   };
@@ -252,7 +270,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {store?.loading && (
+                    {loadFist && (
                       <tr>
                         <td colSpan={3}>
                           <div className="flex text-center m-5 justify-center">
@@ -278,8 +296,8 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
                     )}
-                    {!store?.loading &&
-                      store?.data?.length > 0 && sortedAndPaginatedData?.length > 0 &&
+                    {!loadFist &&
+                      manageUser?.length > 0 && sortedAndPaginatedData?.length > 0 &&
                       sortedAndPaginatedData.map((item, index) => {
                         return (
                           <tr
@@ -364,7 +382,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                         );
                       })}
 
-                    {!store?.loading && sortedAndPaginatedData?.length === 0 && (
+                    {!loadFist && sortedAndPaginatedData?.length === 0 && (
                       <tr>
                         <td colSpan={3}>
                           <div className="flex text-center m-5 justify-center">
@@ -411,7 +429,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || (store?.data?.length === 0)}
+                    disabled={currentPage === totalPages || (manageUser?.length === 0)}
                     className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                   >
                     {sidebarOpen ? "Next" : ""}
@@ -449,6 +467,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
           HandleSubmit={HandleSubmit}
           error={error}
           setError={setError}
+          disable={disable}
         />
       )}
     </>

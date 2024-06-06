@@ -31,7 +31,6 @@ const SalesManNavbar = () => {
   const { user, userDetails, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [showProfileBox, setShowProfileBox] = useState(false);
-  console.log('userDetails', userDetails)
 
   const handleProfileClick = (e) => {
     if ((userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false)) {
@@ -70,9 +69,8 @@ const SalesManNavbar = () => {
                         onClick={handleProfileClick}
                       />
                     )}
-                    <label>{userDetails?.firstName}{" "} {userDetails?.lastName}</label>
-
-                    {/* {showProfileBox && (
+                    
+                    {showProfileBox && (
                       <>
                         <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                           <div className="flex items-center space-x-3  p-2">
@@ -97,9 +95,7 @@ const SalesManNavbar = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="border-b-[1px] border-[#8E94A9]"></div>
-
-                          <div className="flex justify-start items-center p-2">
+                          {/*<div className="flex justify-start items-center p-2">
                             <div className="mr-2">
                               <RiUserShared2Fill className="text-xl" />
                             </div>
@@ -108,7 +104,7 @@ const SalesManNavbar = () => {
                                 My Account
                               </button>
                             </Link>
-                          </div>
+                            </div>*/}
 
                           <div className="border-b-[1px] border-[#8E94A9]"></div>
                           <div className="flex justify-start items-center p-2">
@@ -130,7 +126,7 @@ const SalesManNavbar = () => {
                           </div>
                         </div>
                       </>
-                            )}*/}
+                    )}
                   </div>
 
                 </div>

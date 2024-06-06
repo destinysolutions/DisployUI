@@ -16,6 +16,7 @@ import { GetAllCardList } from "../../../Redux/CardSlice.js"
 import { GetBillingDetails, GetUserBillingDetails } from "../../../Redux/SettingUserSlice.js"
 import toast from "react-hot-toast";
 import { getAllCustomerDetails } from "../../../Redux/admin/OnBodingSlice.js";
+import { extractSubstring } from "../../Common/Common.jsx";
 
 const Billing = ({ sidebarOpen }) => {
   const dispatch = useDispatch()
@@ -197,7 +198,7 @@ const Billing = ({ sidebarOpen }) => {
                         </td>
 
                         <td className="text-[#5E5E5E] text-center">
-                          {item?.plan}
+                          {item?.plan ? item?.plan : `${extractSubstring(item?.description)} Plan`}
                         </td>
 
                         {/*<td className="text-[#5E5E5E] text-center">
@@ -205,15 +206,33 @@ const Billing = ({ sidebarOpen }) => {
                         </td>*/}
 
                         <td className="text-[#5E5E5E] text-center">
-                          {item.status === "Paid" ? (
-                            <span className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
-                            {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
-                            </span>
-                          ) : (
-                            <span className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
-                            {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
-                            </span>
-                          )}
+                          <>
+                            {item?.status === "paid" && (
+                              <span className="bg-[#22C55E29] rounded-md p-1.5 text-[#118D57] font-semibold text-sm">
+                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                              </span>
+                            )}
+                            {item?.status === "void" && (
+                              <span className="bg-[#9e97c7e7] rounded-md p-1.5 text-[#5341bde7] font-semibold text-sm">
+                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                              </span>
+                            )}
+                            {item?.status === "open" && (
+                              <span className="bg-[#ebc3fd] rounded-md p-1.5 text-[#b72cdad7] font-semibold text-sm">
+                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                              </span>
+                            )}
+                            {item?.status === "uncollectible" && (
+                              <span className="bg-[#d89b99c9] rounded-md p-1.5 text-[#f02004e8] font-semibold text-sm">
+                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                              </span>
+                            )}
+                            {item?.status === "draft" && (
+                              <span className="bg-[#c4a361e0] rounded-md p-1.5 text-[#B76E00] font-semibold text-sm">
+                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                              </span>
+                            )}
+                          </>
                         </td>
 
                         <td className="text-[#5E5E5E] text-center">
