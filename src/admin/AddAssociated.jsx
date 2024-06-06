@@ -49,7 +49,7 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer, setLoadFist 
         let config = {
             method: "post",
             maxBodyLength: Infinity,
-            url: `${ADD_ASSOCIATED_SALESMAN}?OrgID=${selectedCustomer?.orgID}&SalesManID=${selectedData}`,
+            url: `${ADD_ASSOCIATED_SALESMAN}?OrgID=${selectedCustomer?.organizationID}&SalesManID=${selectedData}`,
             headers: {
                 Authorization: authToken,
             },
