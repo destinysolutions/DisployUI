@@ -4,7 +4,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom';
 import "../../Styles/PaymentModal.css"
 import { useSelector } from 'react-redux';
-import { CREATE_SUBSCRIPTION, GET_ALL_CARD, PAYMENT_DETAILS, paypalOptions } from '../../Pages/Api';
+import { CREATE_SUBSCRIPTION, GET_ALL_CARD, GET_ALL_PLANS, PAYMENT_DETAILS, paypalOptions } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
 import { handleCreateSubscription, handlePaymentDetails } from '../../Redux/PaymentSlice';
 import { IoClose } from "react-icons/io5";
@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import { GetAllCardList } from '../../Redux/CardSlice';
 import { FaPlus } from "react-icons/fa6";
 import { capitalizeFirstLetter } from './Common';
+import { handleGetAllPlans } from '../../Redux/CommonSlice';
 const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
 
     const { user, userDetails } = useSelector((state) => state.root.auth);
@@ -31,11 +32,34 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
     const [selectCard, setSelectCard] = useState("")
     const [activeSection, setActiveSection] = useState(null);
     const [loading, setLoading] = useState(true)
-
+    const [selectPlan,setSelectPlan] = useState({})
 
     const toggleSection = (section) => {
         setActiveSection(activeSection === section ? null : section);
     };
+
+
+    useEffect(() => {
+        setLoading(true)
+        const config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: `${GET_ALL_PLANS}?PlanID=${userDetails?.planID}`,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: authToken
+            },
+        }
+        dispatch(handleGetAllPlans({ config })).then((res) => {
+            if (res?.payload?.status === 200) {
+                setSelectPlan(res?.payload?.data)
+                setLoading(false)
+            }
+        }).catch((error) => {
+            console.log('error', error)
+        })
+    
+    }, [userDetails?.planID])
 
     const fetchCards = async () => {
         try {
@@ -107,14 +131,8 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
     const PaymentDetails = ({ paymentIntent, organizationID, Subscription, product, screenId }) => {
         let totalPrice;
 
-        if (userDetails?.planID === 1 && type === "Screen") {
-            totalPrice = PaymentValue * 10
-        } else if (userDetails?.planID === 2 && type === "Screen") {
-            totalPrice = PaymentValue * 17
-        } else if (userDetails?.planID === 3 && type === "Screen") {
-            totalPrice = PaymentValue * 24
-        } else if (userDetails?.planID === 4 && type === "Screen") {
-            totalPrice = PaymentValue * 47
+        if (type === "Screen") {
+            totalPrice = PaymentValue * selectPlan?.planPrice
         } else {
             totalPrice = PaymentValue * 3
         }
@@ -170,16 +188,18 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
         setIsLoading(true)
-        let screenId;
-        if (type === "Screen" && ((userDetails?.planID === 1 || userDetails?.planID === "1") || (userDetails?.isTrial && userDetails?.isActivePlan === false))) {
-            screenId = "prod_Q1wI9ksVDBdRW3"
-        } else if (type === "Screen" && (userDetails?.planID === 2 || userDetails?.planID === "2")) {
-            screenId = "prod_Q1wITfBepgK1H7"
-        } else if (type === "Screen" && (userDetails?.planID === 3 || userDetails?.planID === "3")) {
-            screenId = "prod_Q1wJSPx0LoW70n"
-        } else if (type === "Screen" && (userDetails?.planID === 4 || userDetails?.planID === "4")) {
-            screenId = "prod_Q1wJHaR4iDXNRP"
-        } else if (type === "Storage") {
+        let screenId = selectPlan?.screenID;
+        // if (type === "Screen" && ((userDetails?.planID === 1 || userDetails?.planID === "1") || (userDetails?.isTrial && userDetails?.isActivePlan === false))) {
+        //     screenId = "prod_Q1wI9ksVDBdRW3"
+        // } else if (type === "Screen" && (userDetails?.planID === 2 || userDetails?.planID === "2")) {
+        //     screenId = "prod_Q1wITfBepgK1H7"
+        // } else if (type === "Screen" && (userDetails?.planID === 3 || userDetails?.planID === "3")) {
+        //     screenId = "prod_Q1wJSPx0LoW70n"
+        // } else if (type === "Screen" && (userDetails?.planID === 4 || userDetails?.planID === "4")) {
+        //     screenId = "prod_Q1wJHaR4iDXNRP"
+        // } 
+        
+        if (type === "Storage") {
             screenId = "prod_Q1wJcEtb58TKI5"
         }
 

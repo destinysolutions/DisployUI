@@ -106,16 +106,18 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
     }, [stripe, elements]);
 
     const PaymentDetails = ({ paymentIntent, organizationID, Subscription, PaymentofScreenBoolen, product, screenID }) => {
-        let totalPrice;
-        if ((selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") && PaymentofScreenBoolen) {
-            totalPrice = userDetails?.extraScreen * 10
-        } else if ((selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") && PaymentofScreenBoolen) {
-            totalPrice = userDetails?.extraScreen * 17
-        } else if ((selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") && PaymentofScreenBoolen) {
-            totalPrice = userDetails?.extraScreen * 24
-        } else if ((selectPlan?.listOfPlansID === 4 || selectPlan?.listOfPlansID === "4") && PaymentofScreenBoolen) {
-            totalPrice = userDetails?.extraScreen * 47
-        } else {
+        let totalPrice = selectPlan?.planPrice;
+        // if ((selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") && PaymentofScreenBoolen) {
+        //     totalPrice = userDetails?.extraScreen * selectPlan?.planPrice
+        // } else if ((selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") && PaymentofScreenBoolen) {
+        //     totalPrice = userDetails?.extraScreen * selectPlan?.planPrice
+        // } else if ((selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") && PaymentofScreenBoolen) {
+        //     totalPrice = userDetails?.extraScreen * selectPlan?.planPrice
+        // } else if ((selectPlan?.listOfPlansID === 4 || selectPlan?.listOfPlansID === "4") && PaymentofScreenBoolen) {
+        //     totalPrice = userDetails?.extraScreen * selectPlan?.planPrice
+        // }
+        
+        if(!selectPlan){
             totalPrice = userDetails?.extraScreen * 3
         }
 
@@ -168,16 +170,16 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
     }
 
     const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreenBoolen, name }) => {
-        let screenId;
-        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
-            screenId = "prod_Q1wI9ksVDBdRW3"
-        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
-            screenId = "prod_Q1wITfBepgK1H7"
-        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
-            screenId = "prod_Q1wJSPx0LoW70n"
-        } else {
-            screenId = "prod_Q1wJcEtb58TKI5"
-        }
+        let screenId = selectPlan?.screenID;
+        // if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+        //     screenId = selectPlan?.screenID
+        // } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+        //     screenId = selectPlan?.screenID
+        // } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+        //     screenId = selectPlan?.screenID
+        // } else {
+        //     screenId = selectPlan?.screenID
+        // }
 
         let params = {
             Email: email,
@@ -215,16 +217,16 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
     }
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
-        let product;
-        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
-            product = "prod_PwkVKbLSFWLFbG"
-        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
-            product = "prod_PwkV7yFNwyNMzl"
-        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
-            product = "prod_PwkWdO5AkzWyRX"
-        } else {
-            product = "prod_PwkWSDVFcbz4Ui"
-        }
+        let product = selectPlan?.productID;
+        // if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+        //     product = selectPlan?.productID
+        // } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+        //     product = selectPlan?.productID
+        // } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+        //     product = selectPlan?.productID
+        // } else {
+        //     product = selectPlan?.productID
+        // }
 
         let params = {
             Email: email,
@@ -260,21 +262,21 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
     }
 
     const UpgradeSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
-        let product;
-        let screenID;
-        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
-            product = "prod_PwkVKbLSFWLFbG"
-            screenID = "prod_Q1wI9ksVDBdRW3"
-        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
-            product = "prod_PwkV7yFNwyNMzl"
-            screenID = "prod_Q1wITfBepgK1H7"
-        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
-            product = "prod_PwkWdO5AkzWyRX"
-            screenID = "prod_Q1wJSPx0LoW70n"
-        } else {
-            product = "prod_PwkWSDVFcbz4Ui"
-            screenID = "prod_Q1wJHaR4iDXNRP"
-        }
+        let product = selectPlan?.productID;
+        let screenID = selectPlan?.screenID;
+        // if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+        //     product = selectPlan?.productID
+        //     screenID = "prod_Q1wI9ksVDBdRW3"
+        // } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+        //     product = selectPlan?.productID
+        //     screenID = "prod_Q1wITfBepgK1H7"
+        // } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+        //     product = selectPlan?.productID
+        //     screenID = "prod_Q1wJSPx0LoW70n"
+        // } else {
+        //     product = selectPlan?.productID
+        //     screenID = "prod_Q1wJHaR4iDXNRP"
+        // }
 
         let params = {
             Email: email,

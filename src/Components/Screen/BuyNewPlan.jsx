@@ -150,16 +150,16 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
     }
 
     const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreen, name }) => {
-        let screenId;
-        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
-            screenId = "prod_Q1wI9ksVDBdRW3"
-        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
-            screenId = "prod_Q1wITfBepgK1H7"
-        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
-            screenId = "prod_Q1wJSPx0LoW70n"
-        } else {
-            screenId = "prod_Q1wJcEtb58TKI5"
-        }
+        let screenId = selectPlan?.screenID;
+        // if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+        //     screenId = "prod_Q1wI9ksVDBdRW3"
+        // } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+        //     screenId = "prod_Q1wITfBepgK1H7"
+        // } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+        //     screenId = "prod_Q1wJSPx0LoW70n"
+        // } else {
+        //     screenId = "prod_Q1wJcEtb58TKI5"
+        // }
 
         let params = {
             Email: email,
@@ -199,16 +199,16 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
     }
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
-        let product;
-        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
-            product = "prod_PwkVKbLSFWLFbG"
-        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
-            product = "prod_PwkV7yFNwyNMzl"
-        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
-            product = "prod_PwkWdO5AkzWyRX"
-        } else {
-            product = "prod_PwkWSDVFcbz4Ui"
-        }
+        let product = selectPlan?.productID;
+        // if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+        //     product = "prod_PwkVKbLSFWLFbG"
+        // } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+        //     product = "prod_PwkV7yFNwyNMzl"
+        // } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+        //     product = "prod_PwkWdO5AkzWyRX"
+        // } else {
+        //     product = "prod_PwkWSDVFcbz4Ui"
+        // }
 
         let params = {
             Email: email,

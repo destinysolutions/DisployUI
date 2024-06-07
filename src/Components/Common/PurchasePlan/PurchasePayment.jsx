@@ -150,16 +150,16 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
     }
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
-        let product;
-        if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
-            product = "prod_PwkVKbLSFWLFbG"
-        } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
-            product = "prod_PwkV7yFNwyNMzl"
-        } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
-            product = "prod_PwkWdO5AkzWyRX"
-        } else {
-            product = "prod_PwkWSDVFcbz4Ui"
-        }
+        let product = selectPlan?.productID;
+        // if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
+        //     product = "prod_PwkVKbLSFWLFbG"
+        // } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
+        //     product = "prod_PwkV7yFNwyNMzl"
+        // } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
+        //     product = "prod_PwkWdO5AkzWyRX"
+        // } else {
+        //     product = "prod_PwkWSDVFcbz4Ui"
+        // }
 
         let params = {
             Email: email,

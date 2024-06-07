@@ -103,16 +103,16 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
     }
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
-        let product;
-        if (planId === 1 || planId === "1") {
-            product = "prod_PwkVKbLSFWLFbG"
-        } else if (planId === 2 || planId === "2") {
-            product = "prod_PwkV7yFNwyNMzl"
-        } else if (planId === 3 || planId === "3") {
-            product = "prod_PwkWdO5AkzWyRX"
-        } else {
-            product = "prod_PwkWSDVFcbz4Ui"
-        }
+        let product = selectedPlan?.productID;
+        // if (planId === 1 || planId === "1") {
+        //     product = "prod_PwkVKbLSFWLFbG"
+        // } else if (planId === 2 || planId === "2") {
+        //     product = "prod_PwkV7yFNwyNMzl"
+        // } else if (planId === 3 || planId === "3") {
+        //     product = "prod_PwkWdO5AkzWyRX"
+        // } else {
+        //     product = "prod_PwkWSDVFcbz4Ui"
+        // }
 
         let params = {
             Email: email,
