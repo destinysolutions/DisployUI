@@ -8,32 +8,44 @@ import { BsEyeFill } from "react-icons/bs";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineSearch } from "react-icons/ai";
 import UserInfo from "./UserInfo";
-import { GET_ALL_BILLING, GET_BILLING_BY_ID, GET_ALL_CARD, GET_USER_BILLING_DETAILS, GET_ALL_BILLING_DETAILS } from "../../../Pages/Api";
+import {
+  GET_ALL_BILLING,
+  GET_BILLING_BY_ID,
+  GET_ALL_CARD,
+  GET_USER_BILLING_DETAILS,
+  GET_ALL_BILLING_DETAILS,
+} from "../../../Pages/Api";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { handleGetAllBillings, handleGetBillingByID } from "../../../Redux/AdminSettingSlice";
-import { GetAllCardList } from "../../../Redux/CardSlice.js"
-import { GetBillingDetails, GetUserBillingDetails } from "../../../Redux/SettingUserSlice.js"
+import {
+  handleGetAllBillings,
+  handleGetBillingByID,
+} from "../../../Redux/AdminSettingSlice";
+import { GetAllCardList } from "../../../Redux/CardSlice.js";
+import {
+  GetBillingDetails,
+  GetUserBillingDetails,
+} from "../../../Redux/SettingUserSlice.js";
 import toast from "react-hot-toast";
 import { getAllCustomerDetails } from "../../../Redux/admin/OnBodingSlice.js";
 import { extractSubstring } from "../../Common/Common.jsx";
 
 const Billing = ({ sidebarOpen }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
   // pagination Start
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-  const [billingList, setBillingList] = useState([])
-  const [cardList, setCardList] = useState([])
+  const [billingList, setBillingList] = useState([]);
+  const [cardList, setCardList] = useState([]);
   const [userPlan, setUserPlan] = useState({});
   const [customerData, setCustomerData] = useState({});
   const [showBillingProfile, setShowBillingProfile] = useState(false);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = billingList?.slice(indexOfFirstItem, indexOfLastItem);
-
+  const [loading, setLoading] = useState(true);
 
   const fetchAllBilling = () => {
     const config = {
@@ -41,19 +53,22 @@ const Billing = ({ sidebarOpen }) => {
       maxBodyLength: Infinity,
       url: `${GET_ALL_BILLING_DETAILS}`,
       headers: {
-        Authorization: authToken
+        Authorization: authToken,
       },
-    }
-    dispatch(GetUserBillingDetails({ config })).then((res) => {
-      if (res?.payload?.status) {
-        setBillingList(res?.payload?.data)
-      }
-    }).catch((error) => console.log('error', error))
-  }
+    };
+    dispatch(GetUserBillingDetails({ config }))
+      .then((res) => {
+        if (res?.payload?.status) {
+          setBillingList(res?.payload?.data);
+          setLoading(false);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
 
   useEffect(() => {
-    fetchAllBilling()
-  }, [])
+    fetchAllBilling();
+  }, []);
 
   const fetchCards = async (email) => {
     try {
@@ -63,19 +78,18 @@ const Billing = ({ sidebarOpen }) => {
         url: `${GET_ALL_CARD}?Email=${email}`,
         headers: {
           "Content-Type": "application/json",
-          Authorization: authToken
+          Authorization: authToken,
         },
-      }
+      };
       dispatch(GetAllCardList({ config })).then((res) => {
         if (res?.payload?.status) {
           setCardList(res?.payload?.data);
         }
-      })
+      });
     } catch (error) {
-      toast.error('Error fetching cards');
+      toast.error("Error fetching cards");
     }
   };
-
 
   const getUserBilling = (email) => {
     try {
@@ -85,34 +99,34 @@ const Billing = ({ sidebarOpen }) => {
         url: `${GET_USER_BILLING_DETAILS}?Email=${email}`,
         headers: {
           "Content-Type": "application/json",
-          Authorization: authToken
+          Authorization: authToken,
         },
-      }
+      };
       dispatch(GetBillingDetails({ config })).then((res) => {
         if (res?.payload?.status) {
-          setUserPlan(res?.payload?.data[0])
-          setShowBillingProfile(true)
+          setUserPlan(res?.payload?.data[0]);
+          setShowBillingProfile(true);
         }
-      })
+      });
     } catch (error) {
-      toast.error('Error fetching cards');
+      toast.error("Error fetching cards");
     }
-  }
+  };
 
   const handleViewProfile = async (email) => {
-    toast.loading("fetching data...")
-    await fetchCards(email)
-    await getUserBilling(email)
+    toast.loading("fetching data...");
+    await fetchCards(email);
+    await getUserBilling(email);
     dispatch(getAllCustomerDetails({ Email: email, OrgID: 0 }))
       .then((res) => {
         setCustomerData(res?.payload?.data);
-        toast.remove()
+        toast.remove();
       })
       .catch((error) => {
-        console.log('error', error)
-        toast.remove()
-      })
-  }
+        console.log("error", error);
+        toast.remove();
+      });
+  };
 
   return (
     <>
@@ -177,7 +191,8 @@ const Billing = ({ sidebarOpen }) => {
                       </th>
                     </tr>
                   </thead>
-                  {currentItems.length > 0 ? (
+                  {!loading &&
+                    currentItems.length > 0 &&
                     currentItems.map((item, index) => (
                       <tr className="border-b border-b-[#E4E6FF]" key={index}>
                         <td className="text-[#5E5E5E] text-center flex">
@@ -198,7 +213,9 @@ const Billing = ({ sidebarOpen }) => {
                         </td>
 
                         <td className="text-[#5E5E5E] text-center">
-                          {item?.plan ? item?.plan : `${extractSubstring(item?.description)} Plan`}
+                          {item?.plan
+                            ? item?.plan
+                            : `${extractSubstring(item?.description)} Plan`}
                         </td>
 
                         {/*<td className="text-[#5E5E5E] text-center">
@@ -209,27 +226,32 @@ const Billing = ({ sidebarOpen }) => {
                           <>
                             {item?.status === "paid" && (
                               <span className="bg-[#22C55E29] rounded-md p-1.5 text-[#118D57] font-semibold text-sm">
-                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                {item?.status?.charAt(0).toUpperCase() +
+                                  item?.status.slice(1)}
                               </span>
                             )}
                             {item?.status === "void" && (
                               <span className="bg-[#9e97c7e7] rounded-md p-1.5 text-[#5341bde7] font-semibold text-sm">
-                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                {item?.status?.charAt(0).toUpperCase() +
+                                  item?.status.slice(1)}
                               </span>
                             )}
                             {item?.status === "open" && (
                               <span className="bg-[#ebc3fd] rounded-md p-1.5 text-[#b72cdad7] font-semibold text-sm">
-                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                {item?.status?.charAt(0).toUpperCase() +
+                                  item?.status.slice(1)}
                               </span>
                             )}
                             {item?.status === "uncollectible" && (
                               <span className="bg-[#d89b99c9] rounded-md p-1.5 text-[#f02004e8] font-semibold text-sm">
-                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                {item?.status?.charAt(0).toUpperCase() +
+                                  item?.status.slice(1)}
                               </span>
                             )}
                             {item?.status === "draft" && (
                               <span className="bg-[#c4a361e0] rounded-md p-1.5 text-[#B76E00] font-semibold text-sm">
-                                {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                {item?.status?.charAt(0).toUpperCase() +
+                                  item?.status.slice(1)}
                               </span>
                             )}
                           </>
@@ -241,7 +263,9 @@ const Billing = ({ sidebarOpen }) => {
                               data-tip
                               data-for="View"
                               className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                              onClick={() => handleViewProfile(item?.customer_email)}
+                              onClick={() =>
+                                handleViewProfile(item?.customer_email)
+                              }
                             >
                               <BsEyeFill />
                               <ReactTooltip
@@ -256,15 +280,39 @@ const Billing = ({ sidebarOpen }) => {
                           </div>
                         </td>
                       </tr>
-                    ))
-                  ) : (
-
+                    ))}
+                  {!loading && currentItems?.length === 0 && (
                     <tr>
                       <td colSpan={5}>
                         <div className="flex text-center m-5 justify-center">
                           <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                             No Data Available
                           </span>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  {loading && (
+                    <tr>
+                      <td colSpan={5}>
+                        <div className="flex text-center m-5 justify-center items-center">
+                          <svg
+                            aria-hidden="true"
+                            role="status"
+                            className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="#1C64F2"
+                            />
+                          </svg>
                         </div>
                       </td>
                     </tr>
@@ -299,7 +347,9 @@ const Billing = ({ sidebarOpen }) => {
                     {sidebarOpen ? "Previous" : ""}
                   </button>
                   <div className="flex items-center me-3">
-                    <span className="text-gray-500">{`Page ${currentPage} of ${Math.ceil(billingList?.length / itemsPerPage)}`}</span>
+                    <span className="text-gray-500">{`Page ${currentPage} of ${Math.ceil(
+                      billingList?.length / itemsPerPage
+                    )}`}</span>
                   </div>
                   <button
                     onClick={() => setCurrentPage(currentPage + 1)}
