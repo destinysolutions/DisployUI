@@ -40,6 +40,7 @@ import MicrosoftBtn from "./MicrosoftBtn";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { msalConfig } from "../Components/Common/authconfig";
 import { MsalProvider } from "@azure/msal-react";
+import { LoginSocialFacebook } from "reactjs-social-login";
 
 // import.meta.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
@@ -61,8 +62,9 @@ const Login = () => {
   const location = useLocation();
   const message = location?.state?.message || null;
   const [messageVisible, setMessageVisible] = useState(false);
+  const [loading, setLoading] = useState(false)
 
-  const { loading, user } = useSelector((state) => state.root.auth);
+  // const { loading, user } = useSelector((state) => state.root.auth);
 
   const navigate = useNavigate();
 
@@ -90,6 +92,7 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      setLoading(true)
       // if (!isCheckboxChecked) {
       //   toast.error("Please check & accept the terms and conditions.");
       //   return; // Exit the submission process if checkbox is not checked
@@ -159,15 +162,17 @@ const Login = () => {
                 console.log("Unexpected role value:", userRole);
                 alert("Invalid role: " + userRole);
               }
+              setLoading(false)
             } else {
               toast.remove();
               setErrorMessge(response.message);
-
+              setLoading(false)
               toast.error(response?.message);
             }
           })
           .catch((error) => {
             console.log(error);
+            setLoading(false)
           });
       }
     },
@@ -177,6 +182,7 @@ const Login = () => {
 
   const SignInWithGoogle = async (data) => {
     try {
+      setLoading(true)
       const loginData = {
         companyName: null,
         password: null,
@@ -235,7 +241,7 @@ const Login = () => {
   };
 
   const SignInWithGooglebtn = async () => {
-
+    setLoading(true)
     const res = await signInWithPopup(auth, Googleauthprovider)
       .then((result) => {
         // Google sign-in successful, you can access user information via result.user
@@ -295,47 +301,94 @@ const Login = () => {
                 setErrorMessge(response.message);
                 toast.remove();
               }
+              setLoading(false)
             })
             .catch((error) => {
               console.log(error);
+              setLoading(false)
             });
         }
-
       })
       .catch((error) => {
         // Handle errors here
+        setLoading(false)
         console.error(error);
       });
   };
 
-  const SignInFaceBook = async () => {
+  const SignInFaceBook = async (user) => {
     try {
-      const res = await signInWithRedirect(auth, facebookProvider);
-
+      setLoading(true)
+      const res = await signInWithPopup(auth, facebookProvider);
       // const res = await signInWithCredential(auth, facebookProvider);
-      const user = res.user;
 
-      axios
-        .post(ADD_REGISTER_URL, {
-          companyName: null,
-          password: null,
-          firstName: user.displayName,
-          emailID: user.email,
-          googleLocation: null,
-          phoneNumber: user.phoneNumber,
-          operation: "Insert",
-        })
-        .then(() => {
-          navigate("/", {
-            state: { message: "Registration successfull !!" },
+      const data = JSON.stringify({
+        emailID: res?.user?.email,
+        googleID: res?.user?.uid,
+        password: "",
+        SystemTimeZone: new Date()
+          .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+          })
+          .substring(4),
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: LOGIN_URL,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const response = dispatch(handleLoginUser({ config }));
+      if (response) {
+        response
+          .then((res) => {
+            const response = res?.payload;
+            if (response.status == 200) {
+              window.localStorage.setItem("timer", JSON.stringify(18_00));
+              const userRole = response.role;
+              if (userRole == 1) {
+                localStorage.setItem("role_access", "ADMIN");
+                toast.success("Login successfully.");
+                window.location.href = "/";
+              } else if (userRole == 2) {
+                // User login logic
+                const user_ID = response.userID;
+                // localStorage.setItem("userID", JSON.stringify(response));
+                // if (response?.userDetails?.isRetailer === false) {
+                localStorage.setItem("role_access", "USER");
+                // } else {
+                //   localStorage.setItem("role_access", "RETAILER");
+                // }
+                toast.success("Login successfully.");
+                // navigate("/screens");
+                window.location.href = "/dashboard";
+              } else {
+                // Handle other roles or unknown roles
+                console.log("Unexpected role value:", userRole);
+                alert("Invalid role: " + userRole);
+              }
+            } else {
+              toast.error(response?.message);
+              setErrorMessge(response.message);
+              toast.remove();
+            }
+            setLoading(false)
+          })
+          .catch((error) => {
+            console.log(error);
+            setLoading(false)
           });
-        })
-        .catch((error) => {
-          console.log(error);
-          setErrorMessge("Registration failed.");
-        });
+      }
+
     } catch (error) {
       console.log(error);
+      setLoading(false)
     }
   };
 
@@ -589,18 +642,34 @@ const Login = () => {
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
                 </div>
               </button>
+              {/*<LoginSocialFacebook
+                appId={process.env.REACT_APP_FACEBOOK_APK_SECRET_KEY}
+                onResolve={(response) => {
+                  console.log(response);
+                  SignInFaceBook(response.data);
+                }}
+                onReject={(error) => {
+                  console.log(error);
+                }}
+              >
+                <button>
+                  <div className="socialIcon socialIcon2">
+                    <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                  </div>
+                </button>
+              </LoginSocialFacebook>*/}
               <button onClick={SignInFaceBook}>
-                <div className="socialIcon socialIcon2">
-                  <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
-                </div>
-              </button>
+                  <div className="socialIcon socialIcon2">
+                    <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                  </div>
+                </button>
               <button onClick={SignInapple}>
                 <div className="socialIcon socialIcon3">
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
                 </div>
               </button>
               <MsalProvider instance={msalInstance}>
-                <MicrosoftBtn register={false} />
+                <MicrosoftBtn register={false} setLoading={setLoading} />
               </MsalProvider>
             </div>
           </div>

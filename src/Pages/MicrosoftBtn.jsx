@@ -7,7 +7,7 @@ import { ADD_REGISTER_URL, LOGIN_URL } from './Api';
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 
-const MicrosoftBtn = ({ register }) => {
+const MicrosoftBtn = ({ register, setLoading }) => {
     const dispatch = useDispatch()
     const { instance } = useMsal();
     const SignInMicroSoft = async () => {
@@ -25,6 +25,7 @@ const MicrosoftBtn = ({ register }) => {
     }
 
     const Registration = (res) => {
+        setLoading(true)
         const formData = new FormData();
         formData.append("FirstName", res?.account?.name);
         formData.append("Email", res?.account?.username);
@@ -47,15 +48,16 @@ const MicrosoftBtn = ({ register }) => {
                 if (res?.payload?.status) {
                     window.localStorage.setItem("timer", JSON.stringify(18_00));
                     toast.success("Sign up successfully.");
+                    setLoading(false)
                 } else {
                     toast.error(res?.payload?.message)
+                    setLoading(false)
                 }
             });
             if (!response) return;
-
         } catch (error) {
             console.log(error);
-
+            setLoading(false)
         }
     }
 
@@ -81,7 +83,7 @@ const MicrosoftBtn = ({ register }) => {
             },
             data: data,
         };
-
+        setLoading(true)
         const response = dispatch(handleLoginUser({ config }));
         if (response) {
             response
@@ -112,13 +114,16 @@ const MicrosoftBtn = ({ register }) => {
                             console.log("Unexpected role value:", userRole);
                             alert("Invalid role: " + userRole);
                         }
+                        setLoading(false)
                     } else {
                         toast.error(response?.message);
                         toast.remove();
+                        setLoading(false)
                     }
                 })
                 .catch((error) => {
                     console.log(error);
+                    setLoading(false)
                 });
         }
     }

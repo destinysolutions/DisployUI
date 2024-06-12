@@ -42,6 +42,7 @@ import { MsalProvider, useMsal } from "@azure/msal-react";
 import MicrosoftBtn from "./MicrosoftBtn";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import PhoneInput from "react-phone-input-2";
+import { LoginSocialFacebook } from "reactjs-social-login";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -309,7 +310,7 @@ const Registration = () => {
   };
 
   const SignInWithGooglebtn = async () => {
-
+    setLoading(true)
     const res = await signInWithPopup(auth, Googleauthprovider)
       .then((result) => {
         // Google sign-in successful, you can access user information via result.user
@@ -340,10 +341,12 @@ const Registration = () => {
             if (res?.payload?.status) {
               window.localStorage.setItem("timer", JSON.stringify(18_00));
               toast.success("Sign up successfully.");
+              setLoading(false)
             } else {
               // setErrorMessgeVisible(true);
               // setErrorMessge("Registration failed.");
               toast.error(res?.payload?.message)
+              setLoading(false)
             }
           });
           if (!response) return;
@@ -362,43 +365,64 @@ const Registration = () => {
         } catch (error) {
           console.log(error);
           setErrorMessgeVisible(true);
+          setLoading(false)
           setErrorMessge("Registration failed.");
         }
       })
       .catch((error) => {
+        setLoading(false)
         // Handle errors here
         console.error(error);
       });
   };
 
-  const SignInFaceBook = async () => {
+  const SignInFaceBook = async (data) => {
     try {
+      setLoading(true)
       const res = await signInWithPopup(auth, facebookProvider);
-      console.log('res', res)
-      const user = res.user;
+
+      const formData = new FormData();
+      formData.append("FirstName", res?.user?.displayName);
+      formData.append("Email", res?.user?.email);
+      formData.append("Phone", null);
+      formData.append("Operation", "Insert");
+      formData.append("googleID", res?.user?.uid);
+      formData.append("IsRetailer", false);
+      formData.append("IsSalesMan", false);
       // onclose();
-      axios
-        .post(ADD_REGISTER_URL, {
-          companyName: null,
-          password: null,
-          firstName: user.displayName,
-          emailID: user.email,
-          googleLocation: null,
-          phoneNumber: user.phoneNumber,
-          operation: "Insert",
-        })
-        .then(() => {
-          navigate("/", {
-            state: { message: "Registration successfull !!" },
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          setErrorMessgeVisible(true);
-          setErrorMessge("Registration failed.");
+      const config = {
+        method: "post",
+        url: ADD_REGISTER_URL,
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      try {
+        const response = dispatch(handleLoginWithGoogle({ config })).then((res) => {
+          if (res?.payload?.status) {
+            window.localStorage.setItem("timer", JSON.stringify(18_00));
+            toast.success("Sign up successfully.");
+            setLoading(false)
+          } else {
+            // setErrorMessgeVisible(true);
+            // setErrorMessge("Registration failed.");
+            toast.error(res?.payload?.message)
+            setLoading(false)
+          }
         });
+        if (!response) return;
+
+      } catch (error) {
+        console.log(error);
+        setErrorMessgeVisible(true);
+        setErrorMessge("Registration failed.");
+        setLoading(false)
+      }
     } catch (error) {
       console.log(error);
+      setLoading(false)
     }
   };
 
@@ -740,18 +764,34 @@ const Registration = () => {
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
                 </div>
               </button>
+             {/* <LoginSocialFacebook
+                appId={process.env.REACT_APP_FACEBOOK_APK_SECRET_KEY}
+                onResolve={(response) => {
+                  console.log(response);
+                  SignInFaceBook(response.data);
+                }}
+                onReject={(error) => {
+                  console.log(error);
+                }}
+              >
+                <button>
+                  <div className="socialIcon socialIcon2">
+                    <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                  </div>
+                </button>
+              </LoginSocialFacebook>*/}
               <button onClick={SignInFaceBook}>
-                <div className="socialIcon socialIcon2">
-                  <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
-                </div>
-              </button>
+                  <div className="socialIcon socialIcon2">
+                    <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                  </div>
+                </button>
               <button onClick={SignInapple}>
                 <div className="socialIcon socialIcon3">
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
                 </div>
               </button>
               <MsalProvider instance={msalInstance}>
-                <MicrosoftBtn register={true} />
+                <MicrosoftBtn register={true} setLoading={setLoading} />
               </MsalProvider>
             </div>
           </div>
