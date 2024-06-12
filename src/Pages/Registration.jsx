@@ -29,8 +29,8 @@ import {
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { handleLoginWithGoogle, handleRegisterUser } from "../Redux/Authslice";
-// import logo from "../images/DisployImg/logo.svg";
-import logo from "../images/DisployImg/White-Logo2.png";
+import logo from "../images/DisployImg/logo.svg";
+// import logo from "../images/DisployImg/White-Logo2.png";
 import ReCAPTCHA from "react-google-recaptcha";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { FaFacebookF } from "react-icons/fa";

@@ -18,7 +18,7 @@ import appsIcon from "../images/MenuIcons/apps_icon.svg";
 import compositionIcon from "../images/MenuIcons/playlist_icon.svg";
 import scheduleIcon from "../images/MenuIcons/schedule_icon.svg";
 import reportIcon from "../images/MenuIcons/reports_icon.svg";
-import logo from "../images/DisployImg/White-Logo2.png";
+import logo from "../images/DisployImg/logo.svg";
 import { useDispatch } from "react-redux";
 import { handleLogout } from "../Redux/Authslice";
 import merge_screen from "../images/MenuIcons/merge_screen.svg";

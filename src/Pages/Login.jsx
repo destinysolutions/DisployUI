@@ -32,8 +32,8 @@ import {
   signInWithPopup,
   signInWithRedirect,
 } from "firebase/auth";
-// import logo from "../images/DisployImg/logo.svg";
-import logo from "../images/DisployImg/White-Logo2.png";
+import logo from "../images/DisployImg/logo.svg";
+// import logo from "../images/DisployImg/White-Logo2.png";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import MicrosoftBtn from "./MicrosoftBtn";
