@@ -242,9 +242,9 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                         <th scope="col" className="px-6 py-3 text-left">
                           Storage Request
                         </th>
-                        {/*<th scope="col" className="px-6 py-3 text-left">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Associated
-  </th>*/}
+                        </th>
                         <th scope="col" className="px-6 py-3 text-left">
                           Status
                         </th>
@@ -307,9 +307,9 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                   // </span>
                                 )}
                               </td>
-                              {/*<td scope="col" className="px-6 py-4 capitalize">
+                              <td scope="col" className="px-6 py-4 capitalize">
                                 {item?.salesMan}
-                                    </td>*/}
+                              </td>
                               <td className="px-6 py-4 capitalize">
                                 <span>
                                   {item?.isActive ? (
@@ -332,7 +332,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
 
                               <td className="px-6 py-4">
                                 <div className="cursor-pointer text-xl flex gap-4 ">
-                                  {/*<button
+                                  <button
                                     data-tip
                                     data-for={`${item?.salesMan === null ? "Add" : "Update"} Associated`}
                                     type="button"
@@ -349,7 +349,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                     >
                                       <span>{item?.salesMan === null ? "Add" : "Update"} Associated</span>
                                     </ReactTooltip>
-                                  </button>*/}
+                                  </button>
                                   <button
                                     data-tip
                                     data-for="View"
@@ -414,14 +414,14 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
                       {!store?.loading && sortedAndPaginatedData?.length === 0 && (
                         <tr>
-                              <td colSpan={11}>
-                                <div className="flex text-center m-5 justify-center">
-                                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
-                                    No Data Available
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
+                          <td colSpan={11}>
+                            <div className="flex text-center m-5 justify-center">
+                              <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                                No Data Available
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
                       )}
                     </tbody>
                   </table>

@@ -78,11 +78,11 @@ const AdminSidebar = ({ sidebarOpen }) => {
           path: "/advertisement",
           icon: <RiAdvertisementFill  className="  text-xl  " />,
         },
-        // {
-        //   title: "Sales Man",
-        //   path: "/salesMan",
-        //   icon: <FaUserTie  className="  text-xl  " />,
-        // },
+        {
+          title: "Sales Man",
+          path: "/salesMan",
+          icon: <FaUserTie  className="  text-xl  " />,
+        },
       ],
     },
     {
