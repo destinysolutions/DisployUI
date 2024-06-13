@@ -15,7 +15,7 @@ import {
 import io from "socket.io-client";
 
 // export const socket = io.connect("http://108.166.190.137:3002");
-export const socket = io.connect("https://disploysocket.thedestinysolutions.com");
+export const socket = io.connect("https://disploysocket.disploy.com");
 // export const socket = io.connect("http://192.168.1.117:3002");
 
 // export const socket = io.connect("http://localhost:3002");
