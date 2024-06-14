@@ -35,6 +35,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
   const [userPlan, setUserPlan] = useState({});
   const [rangeValue, setRangeValue] = useState(getDaysPassed(userPlan?.startDate, new Date()));
 
+
   const getUserBilling = () => {
     try {
       const config = {
@@ -48,7 +49,9 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
       }
       dispatch(GetBillingDetails({ config })).then((res) => {
         if (res?.payload?.status) {
-          setUserPlan(res?.payload?.data[0])
+          let data = res?.payload?.data[0];
+          setUserPlan(data)
+          setRangeValue(getDaysPassed(data?.startDate, new Date()))
           setLoadFist(false)
         } else {
           setLoadFist(false)

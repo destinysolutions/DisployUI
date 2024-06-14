@@ -53,6 +53,7 @@ import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import { getTrueKeys } from "../Common/Common";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -122,12 +123,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
-    let idS = "";
-    for (const key in screenIds) {
-      if (screenIds[key] === true) {
-        idS += `${key},`;
-      }
-    }
+    // let idS = "";
+    // for (const key in screenIds) {
+    //   if (screenIds[key] === true) {
+    //     idS += `${key},`;
+    //   }
+    // }
+
+    const trueKeys = getTrueKeys(screenIds);
+    let idS = (trueKeys.join(','));
 
     let config = {
       method: "get",

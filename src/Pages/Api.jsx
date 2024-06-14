@@ -4,6 +4,8 @@ import axios from "axios";
 // live URl:- back.disploy.com
 
 export const baseUrl = "https://disploystage.disploy.com/api/";
+// export const baseUrl = "https://back.disploy.com/api/";
+
 
 export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
 
@@ -13,17 +15,17 @@ export const paypalOptions = {
 };
 
 export const postUrl = axios.create({
-  baseURL: "https://disploystage.disploy.com/api/",
+  baseURL: baseUrl,
   method: "post",
 });
 
 export const deleteUrl = axios.create({
-  baseURL: "https://disploystage.disploy.com/api/",
+  baseURL: baseUrl,
   method: "delete",
 });
 
 export const getUrl = axios.create({
-  baseURL: "https://disploystage.disploy.com/api/",
+  baseURL: baseUrl,
   method: "get",
 });
 
@@ -194,11 +196,11 @@ export const ADMINUSERTOKEN = `${baseUrl}Register/GetUserToken`
 export const ADDEDITADVERTISEMENT = `${baseUrl}AdsCustomer/AddorUpdateAdsCustomer`
 export const GETALLADS = `${baseUrl}AdsCustomer/GetAllAdsData`
 export const ASSIGN_ADS = `${baseUrl}AdsCustomer/InsertAdvertisementScreen`
-export const  GET_NOTIFICATIONS  = `${baseUrl}AdsCustomer/GetAdsDatabyID`
-export const  UPDATE_ADS_RATE  = `${baseUrl}AdsCustomer/UpdateAdsRate`
-export const  ADD_ADMIN_RATE  = `${baseUrl}AdsCustomer/AddAdminMargin`
-export const  ADVERTISEMENT_SCREEN  = `${baseUrl}Common/AdvertisementScreen`
-export const  ADD_USER_LIST  = `${baseUrl}AdsCustomer/GetAdsDatabyAdsID`
+export const GET_NOTIFICATIONS = `${baseUrl}AdsCustomer/GetAdsDatabyID`
+export const UPDATE_ADS_RATE = `${baseUrl}AdsCustomer/UpdateAdsRate`
+export const ADD_ADMIN_RATE = `${baseUrl}AdsCustomer/AddAdminMargin`
+export const ADVERTISEMENT_SCREEN = `${baseUrl}Common/AdvertisementScreen`
+export const ADD_USER_LIST = `${baseUrl}AdsCustomer/GetAdsDatabyAdsID`
 
 // Approval
 
@@ -228,7 +230,7 @@ export const DELETE_DIGITAL_MENU = `${baseUrl}DigitalMenu/DeleteDigitalMenuApp`
 export const GET_DIGITAL_MENU_BY_ID = `${baseUrl}DigitalMenu/GetDigitalMenuAppByID`
 export const ADD_TAGS_DIGITAL_MENU = `${baseUrl}DigitalMenu/AddDigitalMenuAppTags`
 export const ASSIGN_SCREEN_DIGITAL_MENU = `${baseUrl}DigitalMenu/AssignDigitalMenuAppToScreen`
-export const POS_THEME =  `${baseUrl}Common/GetPOSTheme`
+export const POS_THEME = `${baseUrl}Common/GetPOSTheme`
 
 // Billing
 

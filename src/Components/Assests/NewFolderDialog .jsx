@@ -35,6 +35,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import PreviewDoc from "./PreviewDoc";
 import { socket } from "../../App";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import { getTrueKeys } from "../Common/Common";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -75,12 +76,15 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
-    let idS = "";
-    for (const key in screenIds) {
-      if (screenIds[key] === true) {
-        idS += `${key},`;
-      }
-    }
+    // let idS = "";
+    // for (const key in screenIds) {
+    //   if (screenIds[key] === true) {
+    //     idS += `${key},`;
+    //   }
+    // }
+
+    const trueKeys = getTrueKeys(screenIds);
+    let idS = (trueKeys.join(','));
 
     let config = {
       method: "get",

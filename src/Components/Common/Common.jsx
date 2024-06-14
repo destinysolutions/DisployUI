@@ -628,3 +628,7 @@ export const monthNames = {
   "November": 11,
   "December": 12
 };
+
+export function getTrueKeys(obj) {
+  return Object.keys(obj).filter(key => obj[key] === true);
+}
