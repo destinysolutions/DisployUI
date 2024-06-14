@@ -203,7 +203,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 response.status === 200
               ) {
                 toast.success(`File uploaded successfully.`);
-                if (window.history.length == 1) {
+                if (window.history.length === 1) {
                   dispatch(handleNavigateFromComposition());
                   localStorage.setItem("isWindowClosed", "true");
                   window.close();
@@ -433,7 +433,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         mimeType,
       })
     );
-    if (window.history.length == 1) {
+    if (window.history.length === 1) {
       localStorage.setItem("isWindowClosed", "true");
       window.close();
     } else {

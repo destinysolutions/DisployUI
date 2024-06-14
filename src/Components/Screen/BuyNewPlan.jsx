@@ -227,10 +227,8 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
             },
             data: JSON.stringify(params),
         }
-
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
-                debugger;
                 let Subscription = res?.payload?.subscriptionId
                 PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: 1, TotalPrice: selectPlan?.planPrice, ScreenpaymentType: false, product })
                 PaymentofScreen = true

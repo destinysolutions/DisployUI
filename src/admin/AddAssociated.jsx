@@ -104,8 +104,8 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer, setLoadFist 
                                             )}
                                             {salesManList.map((salesman) => (
                                                 <option
-                                                    value={salesman.orgSingupID}
-                                                    key={salesman.orgSingupID}
+                                                    value={salesman.organizationID}
+                                                    key={salesman.organizationID}
                                                     disabled={selectedCustomer?.salesMan}
                                                 >
                                                     {salesman.firstName}{" "}{salesman?.lastName}

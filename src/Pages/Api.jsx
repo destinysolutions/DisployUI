@@ -6,8 +6,12 @@ import axios from "axios";
 export const baseUrl = "https://disploystage.disploy.com/api/";
 // export const baseUrl = "https://back.disploy.com/api/";
 
-
+// Test Mode
 export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
+
+// Live Mode
+// export const stripePromise = loadStripe("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");
+
 
 export const paypalOptions = {
   'client-id': 'Ac2YPb7PQ_z1TMuvWYOmWT1iafYTeVW9DubrVCxX0ub-se4zgR2D3qh4dKo8a6neF6b-vO2aDjH_CPWT', // Replace with your actual client ID

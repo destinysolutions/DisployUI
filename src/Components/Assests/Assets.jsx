@@ -89,7 +89,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const actionBoxRef = useRef(null);
   const addScreenRef = useRef(null);
-  const { token, user,userDetails } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
 
   const [screenAssetID, setScreenAssetID] = useState();
   const authToken = `Bearer ${token}`;
@@ -437,11 +437,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const handleWarning = async (assetId) => {
+  const handleWarning = async (item) => {
     try {
-      const checkImage = await checkFolderImage(assetId);
+      const checkImage = await checkFolderImage(item.assetID);
       const formData = new FormData();
-      formData.append("AssetID", assetId);
+      formData.append("AssetID", item.assetID);
       formData.append("Operation", "Delete");
       formData.append("IsActive", "true");
       formData.append("IsDelete", "true");
@@ -450,7 +450,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("AssetType", "Image");
       formData.append("IsDeleteFromALL", checkImage.data);
       formData.append("DeleteDate", new Date().toISOString().split("T")[0]);
-
       const config2 = {
         method: "post",
         maxBodyLength: Infinity,
@@ -478,7 +477,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           confirmButtonColor: "#ff0000",
         }).then(async (result) => {
           if (result.isConfirmed) {
-            await dispatch(handelDeletedataAssets(config2));
+            await dispatch(handelDeletedataAssets(config2)).then((res)=>{
+              const Params = {
+                id: socket.id,
+                connection: socket.connected,
+                macId: item?.macids,
+              };
+              socket.emit("ScreenConnected", Params);
+            }).catch((err)=>{
+              console.log('err', err)
+            });
           } else {
             setLoadFist(true);
           }
@@ -494,7 +502,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           },
           data: formData,
         };
-        await dispatch(handelDeletedataAssets(config2));
+        const data = await dispatch(handelDeletedataAssets(config2));
       }
     } catch (error) {
       console.error("Error in handleWarning:", error);
@@ -651,7 +659,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               <Navbar />
             </div>
 
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-2 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -788,9 +796,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       }
                     >
                       {!loadFist &&
-                      store &&
-                      store.data &&
-                      store.data.length > 0 ? (
+                        store &&
+                        store.data &&
+                        store.data.length > 0 ? (
                         store.data.map((item, index) => (
                           <div
                             key={index}
@@ -1086,7 +1094,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                               <div className="move-to-dropdown">
                                                 <ul className="space-y-3">
                                                   {folderElements &&
-                                                  folderElements?.length > 0 ? (
+                                                    folderElements?.length > 0 ? (
                                                     folderElements?.map(
                                                       (folder) => {
                                                         return (
@@ -1142,7 +1150,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                             {permissions.isDelete && (
                                               <button
                                                 onClick={() => {
-                                                  handleWarning(item.assetID);
+                                                  handleWarning(item);
                                                 }}
                                                 className="flex text-sm items-center"
                                               >
@@ -1188,7 +1196,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     fill="#1C64F2"
                                   />
                                 </svg>
-                               
+
                               </div>
                             </>
                           )}
@@ -1288,7 +1296,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

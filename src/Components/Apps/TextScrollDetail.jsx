@@ -79,7 +79,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
-          if (window.history.length == 1) {
+          if (window.history.length === 1) {
             dispatch(handleNavigateFromComposition());
             dispatch(handleChangeNavigateFromComposition(false));
             localStorage.setItem("isWindowClosed", "true");

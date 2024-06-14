@@ -701,21 +701,21 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setMoreModal(false);
   };
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const isClosed = localStorage.getItem("isWindowClosed");
-      if (isClosed === "true") {
-        dispatch(handleGetAllSchedule({ token }));
-        localStorage.setItem("isWindowClosed", "false");
-        // window.location.reload();
-      }
-    };
+  // useEffect(() => {
+  //   const handleStorageChange = () => {
+  //     const isClosed = localStorage.getItem("isWindowClosed");
+  //     if (isClosed === "true") {
+  //       dispatch(handleGetAllSchedule({ token }));
+  //       localStorage.setItem("isWindowClosed", "false");
+  //       // window.location.reload();
+  //     }
+  //   };
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+  //   window.addEventListener("storage", handleStorageChange);
+  //   return () => {
+  //     window.removeEventListener("storage", handleStorageChange);
+  //   };
+  // }, []);
 
   const handlePay = () => {
 
