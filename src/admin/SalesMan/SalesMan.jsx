@@ -90,15 +90,19 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
     // Function to sort the data based on a field and order
     const sortData = (data, field, order) => {
         const sortedData = [...data];
-        sortedData.sort((a, b) => {
+        if (field !== null) {
+          sortedData.sort((a, b) => {
             if (order === "asc") {
-                return a[field] > b[field] ? 1 : -1;
+              return a[field] > b[field] ? 1 : -1;
             } else {
-                return a[field] < b[field] ? 1 : -1;
+              return a[field] < b[field] ? 1 : -1;
             }
-        });
-        return sortedData;
-    };
+          });
+          return sortedData;
+        } else {
+          return data
+        }
+      };
 
     const sortedAndPaginatedData = sortData(
         filteredData,
