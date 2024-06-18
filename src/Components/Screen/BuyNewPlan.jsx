@@ -12,6 +12,7 @@ import { handleLogout } from '../../Redux/Authslice';
 import { GetAllCardList } from '../../Redux/CardSlice';
 import { capitalizeFirstLetter } from '../Common/Common';
 import { FaPlus } from 'react-icons/fa6';
+import PaymentURL from '../Common/PaymentURL';
 
 const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPayment, trialDay }) => {
     const { token, user, userDetails } = useSelector((state) => state.root.auth);
@@ -34,6 +35,8 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
     const [selectCard, setSelectCard] = useState("")
     const [activeSection, setActiveSection] = useState(null);
     const [loading, setLoading] = useState(true)
+    const [PaymentUrl, setPaymentUrl] = useState("")
+    const [PaymentUrlOpen, setPaymentUrlOpen] = useState(false)
 
 
     const toggleSection = (section) => {
@@ -103,8 +106,8 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
         });
     }, [stripe, elements]);
 
-    const PaymentDetails = ({ paymentIntent, organizationID, Subscription, totalScreen, TotalPrice, ScreenpaymentType, product, screenId }) => {
-        const { card, ...newObj } = paymentIntent;
+    const PaymentDetails = ({ paymentMethod, organizationID, Subscription, totalScreen, TotalPrice, ScreenpaymentType, product, screenId }) => {
+        const { card, ...newObj } = paymentMethod;
         const updatedObj = { ...newObj, ...card };
         let params = {
             ...updatedObj,
@@ -151,15 +154,6 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
 
     const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreen, name }) => {
         let screenId = selectPlan?.screenID;
-        // if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
-        //     screenId = "prod_Q1wI9ksVDBdRW3"
-        // } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
-        //     screenId = "prod_Q1wITfBepgK1H7"
-        // } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
-        //     screenId = "prod_Q1wJSPx0LoW70n"
-        // } else {
-        //     screenId = "prod_Q1wJcEtb58TKI5"
-        // }
 
         let params = {
             Email: email,
@@ -179,15 +173,44 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
             data: JSON.stringify(params),
         }
 
-        dispatch(handleCreateSubscription({ config })).then((res) => {
+        dispatch(handleCreateSubscription({ config })).then(async (res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: (Screen - 1), TotalPrice: (selectPlan?.planPrice * (Screen - 1)), ScreenpaymentType: true, product: "", screenId })
-                setTimeout(() => {
-                    toast.success("Payment Submitted Successfully.")
+                const SubscriptionData = res?.payload?.subscription
+                let client_secret_id;
+                if (SubscriptionData?.latest_invoice?.payment_intent?.client_secret) {
+                    client_secret_id = SubscriptionData?.latest_invoice?.payment_intent?.client_secret
+                } else {
+                    client_secret_id = clientSecret
+                }
+
+                const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret = client_secret_id, {
+                    payment_method: PaymentMethodId,
+                });
+
+                if (confirmError) {
                     setIsLoading(false);
-                    navigation("/"); // Navigate to dashboard after processing payment
-                }, 2000);
+                    console.error(confirmError.message);
+                    setMessage(confirmError.message);
+                } else if (paymentIntent.status === 'succeeded') {
+                    console.log('Payment successful!');
+                    setMessage("Payment successful!");
+                    PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: (Screen - 1), TotalPrice: (selectPlan?.planPrice * (Screen - 1)), ScreenpaymentType: true, product: "", screenId })
+                    setTimeout(() => {
+                        toast.success("Payment Submitted Successfully.")
+                        setIsLoading(false);
+                        navigation("/"); // Navigate to dashboard after processing payment
+                    }, 2000);
+                } else if (paymentIntent.status === 'requires_action') {
+                    setIsLoading(false);
+                    console.log('3D Secure authentication required');
+                    setErrorMessage('3D Secure authentication required. Please complete the authentication.');
+                } else if (paymentIntent.status === 'requires_payment_method') {
+                    setIsLoading(false);
+                    console.log('Payment failed: requires payment method');
+                    setErrorMessage('Payment failed: requires payment method. Please try again.');
+                }
+
             }
             else {
                 setIsLoading(false);
@@ -198,17 +221,8 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
         })
     }
 
-    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
+    const CreateSubscription = ({ email, PaymentMethodId, paymentMethod, organizationID, name }) => {
         let product = selectPlan?.productID;
-        // if (selectPlan?.listOfPlansID === 1 || selectPlan?.listOfPlansID === "1") {
-        //     product = "prod_PwkVKbLSFWLFbG"
-        // } else if (selectPlan?.listOfPlansID === 2 || selectPlan?.listOfPlansID === "2") {
-        //     product = "prod_PwkV7yFNwyNMzl"
-        // } else if (selectPlan?.listOfPlansID === 3 || selectPlan?.listOfPlansID === "3") {
-        //     product = "prod_PwkWdO5AkzWyRX"
-        // } else {
-        //     product = "prod_PwkWSDVFcbz4Ui"
-        // }
 
         let params = {
             Email: email,
@@ -227,19 +241,47 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
             },
             data: JSON.stringify(params),
         }
-        dispatch(handleCreateSubscription({ config })).then((res) => {
+        dispatch(handleCreateSubscription({ config })).then(async (res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, totalScreen: 1, TotalPrice: selectPlan?.planPrice, ScreenpaymentType: false, product })
-                PaymentofScreen = true
-                if (Screen > 1) {
-                    ScreenCreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId })
+                const SubscriptionData = res?.payload?.subscription
+                let client_secret_id;
+                if (SubscriptionData?.latest_invoice?.payment_intent?.client_secret) {
+                    client_secret_id = SubscriptionData?.latest_invoice?.payment_intent?.client_secret
                 } else {
-                    setTimeout(() => {
-                        toast.success("Payment Submitted Successfully.")
-                        setIsLoading(false);
-                        navigation("/"); // Navigate to dashboard after processing payment
-                    }, 2000);
+                    client_secret_id = clientSecret
+                }
+
+                const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret = client_secret_id, {
+                    payment_method: PaymentMethodId,
+                });
+
+                if (confirmError) {
+                    setIsLoading(false);
+                    console.error(confirmError.message);
+                    setMessage(confirmError.message);
+                } else if (paymentIntent.status === 'succeeded') {
+                    console.log('Payment successful!');
+                    setMessage("Payment successful!");
+                    PaymentDetails({ paymentMethod, organizationID: organizationID, Subscription, totalScreen: 1, TotalPrice: selectPlan?.planPrice, ScreenpaymentType: false, product })
+                    PaymentofScreen = true
+                    if (Screen > 1) {
+                        ScreenCreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId })
+                    } else {
+                        setTimeout(() => {
+                            toast.success("Payment Submitted Successfully.")
+                            setIsLoading(false);
+                            navigation("/"); // Navigate to dashboard after processing payment
+                        }, 2000);
+                    }
+                } else if (paymentIntent.status === 'requires_action') {
+                    setIsLoading(false);
+                    console.log('3D Secure authentication required');
+                    setErrorMessage('3D Secure authentication required. Please complete the authentication.');
+                } else if (paymentIntent.status === 'requires_payment_method') {
+                    setIsLoading(false);
+                    console.log('Payment failed: requires payment method');
+                    setErrorMessage('Payment failed: requires payment method. Please try again.');
                 }
             }
         })
@@ -263,7 +305,6 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
                     type: 'card',
                     card: elements.getElement(CardNumberElement),
                 });
-
                 cardMethod = paymentMethod
 
                 if (error) {
@@ -279,7 +320,7 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
                 } else {
                     // Payment was successful, you can access paymentIntent for confirmation data
                     setMessage("Payment successful!");
-                    CreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    CreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: paymentMethod?.id, paymentMethod: paymentMethod, organizationID: user?.organizationId })
                 }
 
             } catch (error) {
@@ -294,9 +335,10 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
     };
 
 
-    const handlePay = () => {
+    const handlePay = async () => {
         if (selectCard !== "") {
-            CreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: selectCard?.paymentMethodID, paymentIntent: selectCard?.paymentMethod, organizationID: user?.organizationId })
+            setIsLoading(true)
+            CreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: selectCard?.paymentMethodID, paymentMethod: selectCard?.paymentMethod, organizationID: user?.organizationId })
         }
     }
 
@@ -649,16 +691,16 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
                                                 )}
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
+            {PaymentUrlOpen && (
+                <PaymentURL PaymentUrl={PaymentUrl} PaymentUrlOpen={PaymentUrlOpen} setPaymentUrlOpen={setPaymentUrlOpen} />
+            )}
         </>
     )
 }

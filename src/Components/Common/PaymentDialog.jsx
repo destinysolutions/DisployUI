@@ -32,7 +32,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
     const [selectCard, setSelectCard] = useState("")
     const [activeSection, setActiveSection] = useState(null);
     const [loading, setLoading] = useState(true)
-    const [selectPlan,setSelectPlan] = useState({})
+    const [selectPlan, setSelectPlan] = useState({})
 
     const toggleSection = (section) => {
         setActiveSection(activeSection === section ? null : section);
@@ -58,7 +58,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         }).catch((error) => {
             console.log('error', error)
         })
-    
+
     }, [userDetails?.planID])
 
     const fetchCards = async () => {
@@ -189,16 +189,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
         setIsLoading(true)
         let screenId = selectPlan?.screenID;
-        // if (type === "Screen" && ((userDetails?.planID === 1 || userDetails?.planID === "1") || (userDetails?.isTrial && userDetails?.isActivePlan === false))) {
-        //     screenId = "prod_Q1wI9ksVDBdRW3"
-        // } else if (type === "Screen" && (userDetails?.planID === 2 || userDetails?.planID === "2")) {
-        //     screenId = "prod_Q1wITfBepgK1H7"
-        // } else if (type === "Screen" && (userDetails?.planID === 3 || userDetails?.planID === "3")) {
-        //     screenId = "prod_Q1wJSPx0LoW70n"
-        // } else if (type === "Screen" && (userDetails?.planID === 4 || userDetails?.planID === "4")) {
-        //     screenId = "prod_Q1wJHaR4iDXNRP"
-        // } 
-        
+
         if (type === "Storage") {
             screenId = "prod_Q1wJcEtb58TKI5"
         }
@@ -222,10 +213,38 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             data: JSON.stringify(params),
         }
 
-        dispatch(handleCreateSubscription({ config })).then((res) => {
+        dispatch(handleCreateSubscription({ config })).then(async (res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, product: "", screenId })
+                const SubscriptionData = res?.payload?.subscription
+                let client_secret_id;
+                if (SubscriptionData?.latest_invoice?.payment_intent?.client_secret) {
+                    client_secret_id = SubscriptionData?.latest_invoice?.payment_intent?.client_secret
+                } else {
+                    client_secret_id = clientSecret
+                }
+
+                const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret = client_secret_id, {
+                    payment_method: PaymentMethodId,
+                });
+
+                if (confirmError) {
+                    setIsLoading(false);
+                    console.error(confirmError.message);
+                    setMessage(confirmError.message);
+                } else if (paymentIntent.status === 'succeeded') {
+                    console.log('Payment successful!');
+                    setMessage("Payment successful!");
+                    PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, product: "", screenId })
+                } else if (paymentIntent.status === 'requires_action') {
+                    setIsLoading(false);
+                    console.log('3D Secure authentication required');
+                    setErrorMessage('3D Secure authentication required. Please complete the authentication.');
+                } else if (paymentIntent.status === 'requires_payment_method') {
+                    setIsLoading(false);
+                    console.log('Payment failed: requires payment method');
+                    setErrorMessage('Payment failed: requires payment method. Please try again.');
+                }
             } else {
                 setIsLoading(false);
                 toast.error("Error!")

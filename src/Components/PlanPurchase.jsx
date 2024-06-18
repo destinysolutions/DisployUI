@@ -131,10 +131,38 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
             data: JSON.stringify(params),
         }
 
-        dispatch(handleCreateSubscription({ config })).then((res) => {
+        dispatch(handleCreateSubscription({ config })).then(async(res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, product })
+                const SubscriptionData = res?.payload?.subscription
+                let client_secret_id;
+                if (SubscriptionData?.latest_invoice?.payment_intent?.client_secret) {
+                    client_secret_id = SubscriptionData?.latest_invoice?.payment_intent?.client_secret
+                } else {
+                    client_secret_id = clientSecret
+                }
+
+                const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret = client_secret_id, {
+                    payment_method: PaymentMethodId,
+                });
+
+                if (confirmError) {
+                    setIsLoading(false);
+                    console.error(confirmError.message);
+                    setMessage(confirmError.message);
+                } else if (paymentIntent.status === 'succeeded') {
+                    console.log('Payment successful!');
+                    setMessage("Payment successful!");
+                    PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, product })
+                } else if (paymentIntent.status === 'requires_action') {
+                    setIsLoading(false);
+                    console.log('3D Secure authentication required');
+                    setErrorMessage('3D Secure authentication required. Please complete the authentication.');
+                } else if (paymentIntent.status === 'requires_payment_method') {
+                    setIsLoading(false);
+                    console.log('Payment failed: requires payment method');
+                    setErrorMessage('Payment failed: requires payment method. Please try again.');
+                }
             }
         })
     }

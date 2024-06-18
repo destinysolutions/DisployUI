@@ -1,11 +1,13 @@
 import { round } from 'lodash';
 import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { VERIFY_COUPON } from '../../../Pages/Api';
+import { GET_ALL_PLANS, VERIFY_COUPON } from '../../../Pages/Api';
 import { useSelector } from 'react-redux';
 import { verifyDiscountCoupon } from '../../../Redux/AdminSettingSlice';
 import { useDispatch } from 'react-redux';
 import SubscriptionTerm from '../../Common/PurchasePlan/SubscriptionTerm';
+import { useEffect } from 'react';
+import { handleGetAllPlans } from '../../../Redux/CommonSlice';
 
 const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, handlePay, discountCoupon, setDiscountCoupon, showError, setShowError, setDiscount, discount }) => {
     const { user, token, userDetails } = useSelector((s) => s.root.auth);
@@ -14,24 +16,28 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
     const [showDiscount, setShowDiscount] = useState(false);
     const [disclaimer, setDisclaimer] = useState(false);
     const [isRead, setIsRead] = useState(false)
+    const [plan, setPlan] = useState({})
 
-    let planPrice;
 
-    if (userDetails?.planID === 1) {
-        planPrice = 10
-    } else if (userDetails?.planID === 2) {
-        planPrice = 17
-    } else if (userDetails?.planID === 2) {
-        planPrice = 17
-    } else {
-        planPrice = 47
-    }
+    useEffect(() => {
+        const config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: `${GET_ALL_PLANS}?PlanID=${userDetails?.planID}`,
+            headers: {
+            },
+        }
+        dispatch(handleGetAllPlans({ config })).then((res) => {
+            setPlan(res?.payload?.data)
+        })
+    }, [])
+
     const handleVerify = () => {
         const Params = {
             "discountCode": discountCoupon,
             "featureKey": "Screen",
             "currentDate": new Date().toISOString().split('T')[0],
-            "amount": round((addScreen * planPrice), 2),
+            "amount": round((addScreen * plan?.planPrice), 2),
             "items": addScreen
         }
 
@@ -108,7 +114,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                 <div className='flex items-center justify-between border-t border-gray-200 py-3'>
                                                     <p>Cost/Screen/Month:</p>
                                                     <div className='flex items-center gap-1'>
-                                                        <label>${round((addScreen * planPrice), 2)}</label>
+                                                        <label>${round((addScreen * plan?.planPrice), 2)}</label>
                                                     </div>
                                                 </div>
                                                 {discount && (
@@ -124,7 +130,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                         <label>Total Price:</label>
                                                     </div>
                                                     <div>
-                                                        <label>${round((addScreen * planPrice), 2) - discount}</label>
+                                                        <label>${round((addScreen * plan?.planPrice), 2) - discount}</label>
                                                     </div>
                                                 </div>
                                                 <div className='flex items-center justify-start border-t border-gray-200 py-3'>
