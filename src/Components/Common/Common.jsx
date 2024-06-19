@@ -536,7 +536,8 @@ export  function mergeNotificationData(listNotification, res) {
 }
 
 export function extractSubstring(str) {
-  let match = str.match(/× (.*?) \(/);
+
+  let match = str?.match(/× (.*?) \(/);
     if (match) {
         return match[1];
     } else {
@@ -546,7 +547,7 @@ export function extractSubstring(str) {
 }
 
 export function extractPrice(string) {
-  let match = string.match(/\$(\d+)\.00/);
+  let match = string?.match(/\$(\d+)\.00/);
   if (match) {
       return match[1];
   } else {

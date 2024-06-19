@@ -47,8 +47,6 @@ const BillingsPlans = () => {
     zipCode: ""
   })
 
-  console.log('userPlan', userPlan)
-
   useEffect(() => {
     fetch(GET_ALL_COUNTRY)
       .then((response) => response.json())
@@ -126,7 +124,7 @@ const BillingsPlans = () => {
       }
       dispatch(GetBillingDetails({ config })).then((res) => {
         if (res?.payload?.status) {
-          setUserPlan(res?.payload?.data[0])
+          setUserPlan(res?.payload?.data)
           setLoading(false)
         }
       })

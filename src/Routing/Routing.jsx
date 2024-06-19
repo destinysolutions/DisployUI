@@ -118,7 +118,7 @@ const Routing = () => {
       />
     )
 
-  if (accessDetails === "USER" && ((userDetails?.isTrial || userDetails?.isActivePlan) || (user?.userDetails?.isRetailer === true))) {
+  if (accessDetails === "USER" && ((user?.isTrial || user?.isActivePlan) || (user?.userDetails?.isRetailer === true))) {
     return (
       <BrowserRouter>
         <ErrorBoundary
@@ -606,7 +606,7 @@ const Routing = () => {
     );
   }
 
-  if (accessDetails === "USER" && (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false)) {
+  if (accessDetails === "USER" && (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false)) {
     return (
       <BrowserRouter>
         <ErrorBoundary
