@@ -281,7 +281,7 @@ const AddEditUser = ({
                                                             <option label="Select State"></option>
                                                         )}
                                                         {!selectedState && (
-                                                            <option label="Select User Role"></option>
+                                                            <option label="Select State"></option>
                                                         )}
                                                         {countryID &&
                                                             Array.isArray(states) &&

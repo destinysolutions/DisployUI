@@ -189,7 +189,7 @@ const Navbar = () => {
                 {/* profile box start */}
                 <div className="relative">
                   <div>
-                    {userDetails?.profilePhoto == "" ? (
+                    {(userDetails?.profilePhoto === "" || userDetails?.profilePhoto === null)  ? (
                       <img
                         src={createImageFromInitials(
                           500,
@@ -213,7 +213,7 @@ const Navbar = () => {
                       <>
                         <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                           <div className="flex items-center space-x-3  p-2">
-                            {userDetails?.profilePhoto === "" ? (
+                            {(userDetails?.profilePhoto === "" || userDetails?.profilePhoto === null ) ? (
                               <img
                                 src={createImageFromInitials(500, userDetails?.firstName, color)}
                                 alt="profile"

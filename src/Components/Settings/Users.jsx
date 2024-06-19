@@ -1758,11 +1758,11 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                               key={index}
                             >
                               <td className="text-[#5E5E5E] text-center flex">
-                                {item?.profilePhoto !== null ? (
+                                {(item?.profilePhoto !== "" || item?.profilePhoto !== null) ? (
                                   <img
                                     className="w-10 h-10 rounded-full"
                                     src={item?.profilePhoto}
-                                    alt="Jese image"
+                                    alt={item.firstName}
                                   />
                                 ) : (
                                   <RiUser3Fill className="w-10 h-10" />

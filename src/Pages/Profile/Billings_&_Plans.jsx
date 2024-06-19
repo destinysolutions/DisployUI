@@ -124,7 +124,7 @@ const BillingsPlans = () => {
       }
       dispatch(GetBillingDetails({ config })).then((res) => {
         if (res?.payload?.status) {
-          setUserPlan(res?.payload?.data)
+          setUserPlan(res?.payload?.data[0])
           setLoading(false)
         }
       })
