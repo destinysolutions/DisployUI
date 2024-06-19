@@ -2340,7 +2340,7 @@ input.Talk-formInput {
 
 .video-width {
   width: 100% !important;
-  height: 100% !important;
+  /* height: 100% !important; */
 }
 
 .register .react-tel-input .flag-dropdown{
