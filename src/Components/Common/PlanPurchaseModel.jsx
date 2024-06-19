@@ -116,8 +116,8 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         // } else if ((selectPlan?.listOfPlansID === 4 || selectPlan?.listOfPlansID === "4") && PaymentofScreenBoolen) {
         //     totalPrice = userDetails?.extraScreen * selectPlan?.planPrice
         // }
-        
-        if(!selectPlan){
+
+        if (!selectPlan) {
             totalPrice = userDetails?.extraScreen * 3
         }
 
@@ -199,7 +199,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             data: JSON.stringify(params),
         }
 
-        dispatch(handleCreateSubscription({ config })).then(async(res) => {
+        dispatch(handleCreateSubscription({ config })).then(async (res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
                 const SubscriptionData = res?.payload?.subscription
@@ -221,7 +221,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                 } else if (paymentIntent.status === 'succeeded') {
                     console.log('Payment successful!');
                     setMessage("Payment successful!");
-                    PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, PaymentofScreenBoolen, product :"", screenID: screenId })
+                    PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, PaymentofScreenBoolen, product: "", screenID: screenId })
                     setTimeout(() => {
                         toast.success("Payment Submitted Successfully.")
                         setIsLoading(false);
@@ -236,7 +236,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                     console.log('Payment failed: requires payment method');
                     setErrorMessage('Payment failed: requires payment method. Please try again.');
                 }
-               
+
             }
             else {
                 setIsLoading(false);
@@ -274,7 +274,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             data: JSON.stringify(params),
         }
 
-        dispatch(handleCreateSubscription({ config })).then(async(res) => {
+        dispatch(handleCreateSubscription({ config })).then(async (res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
                 const SubscriptionData = res?.payload?.subscription
@@ -310,7 +310,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                     console.log('Payment failed: requires payment method');
                     setErrorMessage('Payment failed: requires payment method. Please try again.');
                 }
-               
+
             }
             else {
                 setIsLoading(false);
@@ -341,21 +341,52 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             data: JSON.stringify(params),
         }
 
-        dispatch(handleUpgradeSubscription({ config })).then((res) => {
+        dispatch(handleUpgradeSubscription({ config })).then(async (res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.plansubscriptionId
-                // let Subscription2 = res?.payload?.screensubscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription: Subscription, PaymentofScreenBoolen: false, product, screenID })
-                if (userDetails?.extraScreen > 0) {
-                    PaymentofScreen = true;
-                    // handleSubmitPayment()
-                    ScreenCreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId, PaymentofScreenBoolen: true })
+
+                const SubscriptionData = res?.payload?.subscription
+                let client_secret_id;
+                if (SubscriptionData?.latest_invoice?.payment_intent?.client_secret) {
+                    client_secret_id = SubscriptionData?.latest_invoice?.payment_intent?.client_secret
                 } else {
-                    setTimeout(() => {
-                        setIsLoading(false);
-                        navigation("/"); // Navigate to dashboard after processing payment
-                    }, 2000);
+                    client_secret_id = clientSecret
                 }
+
+                const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret = client_secret_id, {
+                    payment_method: PaymentMethodId,
+                });
+
+                if (confirmError) {
+                    setIsLoading(false);
+                    console.error(confirmError.message);
+                    setMessage(confirmError.message);
+                } else if (paymentIntent.status === 'succeeded') {
+                    console.log('Payment successful!');
+                    setMessage("Payment successful!");
+                    PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription: Subscription, PaymentofScreenBoolen: false, product, screenID })
+                    if (userDetails?.extraScreen > 0) {
+                        PaymentofScreen = true;
+                        // handleSubmitPayment()
+                        ScreenCreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: cardMethod?.id, paymentIntent: cardMethod, organizationID: user?.organizationId, PaymentofScreenBoolen: true })
+                    } else {
+                        setTimeout(() => {
+                            setIsLoading(false);
+                            navigation("/"); // Navigate to dashboard after processing payment
+                        }, 2000);
+                    }
+                } else if (paymentIntent.status === 'requires_action') {
+                    setIsLoading(false);
+                    console.log('3D Secure authentication required');
+                    setErrorMessage('3D Secure authentication required. Please complete the authentication.');
+                } else if (paymentIntent.status === 'requires_payment_method') {
+                    setIsLoading(false);
+                    console.log('Payment failed: requires payment method');
+                    setErrorMessage('Payment failed: requires payment method. Please try again.');
+                }
+
+                // let Subscription2 = res?.payload?.screensubscriptionId
+
                 // PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription: Subscription2 })
             } else {
                 setIsLoading(false);
