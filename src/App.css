@@ -2346,3 +2346,12 @@ input.Talk-formInput {
 .register .react-tel-input .flag-dropdown{
   border-radius: 10px 0px 0px 10px !important;
 }
+
+.placeholder-gray::placeholder {
+  color: rgba(128, 128, 128, 0.5); /* Gray color with 50% opacity */
+}
+
+.blue-btn{
+  padding: 8px;
+  border-radius: 10px;
+}

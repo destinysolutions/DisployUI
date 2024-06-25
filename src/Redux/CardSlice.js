@@ -42,6 +42,20 @@ export const handleDeleteCard = createAsyncThunk(
         }
     }
 );
+
+export const handleDefaultCard = createAsyncThunk(
+    "Common/handleDefaultCard",
+    async ({ config }, { rejectWithValue }) => {
+        try {
+            const response = await axios.request(config);
+            return response.data;
+        } catch (error) {
+            if (error?.response) {
+                return rejectWithValue(error?.response?.data);
+            }
+        }
+    }
+);
 const initialState = {
     loading: false,
     card: null,
@@ -101,6 +115,19 @@ const CardSlice = createSlice({
             state.message = action.payload?.message;
         });
         builder.addCase(handleDeleteCard.rejected, (state, action) => {
+            state.status = "failed";
+            state.error = action.payload.message;
+            state.message = action.payload?.message;
+        });
+
+        builder.addCase(handleDefaultCard.pending, (state) => {
+            state.status = "loading";
+        });
+        builder.addCase(handleDefaultCard.fulfilled, (state, action) => {
+            state.status = "succeeded";
+            state.message = action.payload?.message;
+        });
+        builder.addCase(handleDefaultCard.rejected, (state, action) => {
             state.status = "failed";
             state.error = action.payload.message;
             state.message = action.payload?.message;

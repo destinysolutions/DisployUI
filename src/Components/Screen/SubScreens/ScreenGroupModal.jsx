@@ -235,7 +235,7 @@ const ScreenGroupModal = ({
               </button>
             </div>
 
-            <div className="p-2">
+            <div className="py-2 px-3">
               <label
                 for="name"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -243,34 +243,38 @@ const ScreenGroupModal = ({
                 Screen Group Name *
               </label>
             </div>
-            <div className="flex lg:justify-end lg:flex-row md:flex-row md:justify-end sm:flex-col flex-col gap-4 px-3">
-              <input
-                type="name"
-                name="name"
-                id="name"
-                onChange={handleScreenGroupNameChange}
-                value={screenGroupName}
-                className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white`}
-                placeholder="Enter Screen Group Name"
-              />
-              {screenGroupNameError && (
-                <p className="text-red-500 text-sm mt-1 error">
-                  {screenGroupNameError}
-                </p>
-              )}
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <AiOutlineSearch className="w-5 h-5 text-gray " />
-                </span>
+            <div className="flex lg:justify-between lg:flex-row md:flex-row md:justify-between sm:flex-col flex-col gap-4 px-3">
+              <div className="flex flex-col">
                 <input
-                  type="text"
-                  placeholder="Search Screen" //location ,screen, tag
-                  className="border border-primary rounded-full px-7 pl-10 py-2 search-user sm:w-64 xs:w-64"
-                  value={searchScreen}
-                  onChange={(e) => {
-                    handleScreenSearch(e);
-                  }}
+                  type="name"
+                  name="name"
+                  id="name"
+                  onChange={handleScreenGroupNameChange}
+                  value={screenGroupName}
+                  className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 w-[250px]  focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white`}
+                  placeholder="Enter Screen Group Name"
                 />
+                {screenGroupNameError && (
+                  <p className="text-red-500 text-sm mt-1 error">
+                    {screenGroupNameError}
+                  </p>
+                )}
+              </div>
+              <div>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <AiOutlineSearch className="w-5 h-5 text-gray " />
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search Screen" //location ,screen, tag
+                    className="border border-primary rounded-full px-7 pl-10 py-2 search-user sm:w-64 xs:w-64"
+                    value={searchScreen}
+                    onChange={(e) => {
+                      handleScreenSearch(e);
+                    }}
+                  />
+                </div>
               </div>
             </div>
 

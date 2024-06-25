@@ -141,7 +141,6 @@ const Account = () => {
 
   // Fetch states based on the selected country
   useEffect(() => {
-    console.log('selectedCountry', selectedCountry)
     if (selectedCountry !== "") {
       dispatch(handleGetState(selectedCountry))
         ?.then((res) => {

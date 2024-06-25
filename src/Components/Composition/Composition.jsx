@@ -72,7 +72,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectcheck, setSelectCheck] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(5);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
   const [permissions, setPermissions] = useState({
@@ -552,7 +552,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               <Navbar />
             </div>
 
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -736,11 +736,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     key={composition?.compositionID}
                                   >
                                     <td className="text-[#5E5E5E] mw-200">
-                                      <div className="flex gap-1">
+                                      <div className="flex gap-1 items-center">
                                         {permissions.isDelete && (
-                                          <div>
                                             <input
                                               type="checkbox"
+                                              className="cursor-pointer"
                                               checked={selectedItems.includes(
                                                 composition?.compositionID
                                               )}
@@ -750,7 +750,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                                 )
                                               }
                                             />
-                                          </div>
                                         )}
                                         {composition?.compositionName}
                                       </div>

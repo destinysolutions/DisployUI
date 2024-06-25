@@ -15,7 +15,7 @@ const AddAssociated = ({ showModal, setShowModal, selectedCustomer, setLoadFist 
     const [loading, setLoading] = useState(false)
     const [selectedData, setSelectedData] = useState(selectedCustomer?.salesMan ? selectedCustomer?.salesManID : "")
     const [error, setError] = useState(false)
-    console.log('salesManList', salesManList)
+    
     useEffect(() => {
         setLoading(true)
         let config = {

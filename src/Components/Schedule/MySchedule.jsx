@@ -248,7 +248,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(handleDeleteScheduleAll({ config })).then((res) => {
-          if(res?.payload?.status){
+          if (res?.payload?.status) {
             setSelectAllChecked(false);
             setSelectedItems([]);
             dispatch(handleGetAllSchedule({ token }));
@@ -472,7 +472,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <Navbar />
             </div>
             {/* navbar and sidebar end */}
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -665,14 +665,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     key={index}
                                   >
                                     <td className="text-[#5E5E5E] text-center">
-                                      <div className="flex gap-1">
+                                      <div className="flex gap-1 items-center">
                                         {permissions.isDelete && (
-                                          <div>
+                                          <>
                                             {selectAll ? (
                                               <CheckmarkIcon className="w-5 h-5" />
                                             ) : (
                                               <input
                                                 type="checkbox"
+                                                className="cursor-pointer"
                                                 checked={selectedItems.includes(
                                                   schedule.scheduleId
                                                 )}
@@ -683,7 +684,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                                 }
                                               />
                                             )}
-                                          </div>
+                                          </>
                                         )}
                                         {schedule.scheduleName}
                                       </div>

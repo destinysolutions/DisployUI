@@ -633,3 +633,13 @@ export const monthNames = {
 export function getTrueKeys(obj) {
   return Object.keys(obj).filter(key => obj[key] === true);
 }
+
+export function formatMonth(month) {
+  return month.toString().padStart(2, '0');
+}
+
+export const PerPage = [
+  "5",
+  "10",
+  "15",
+];

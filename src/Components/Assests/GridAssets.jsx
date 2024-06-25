@@ -97,8 +97,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const tabs = localStorage.getItem("tabs");
   const [loadFist, setLoadFist] = useState(true);
   const [activeTab, setActiveTab] = useState(tabs ? tabs : "ALL"); // Set the default active tab
-  const [tabsDelete, setTabsDelete] = useState(Array);
   const [folderElements, setFolderElements] = useState([]);
+  const [selectAssets, setSelectAssets] = useState([]);
+
 
 
   useEffect(() => {
@@ -499,7 +500,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       tabs: activeTab,
       selectedIds: selectedIds,
     };
-    setTabsDelete(payload);
+    setSelectAssets(selectedIds)
     setSelectAll(!selectAll);
   };
 
@@ -507,7 +508,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${DELETE_ALL_ASSET}?IsDeleteFromAll=true&AssetType=${activeTab}`,
+      url: `${DELETE_ALL_ASSET}??assetIDs=${selectAssets?.join(',')}`,
       headers: { Authorization: authToken },
     };
 
@@ -611,6 +612,23 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setPreviewDoc(false);
   };
 
+  const handleCheckboxChange = (assetID) => {
+    if (selectAssets?.length > 0) {
+      let newArr = selectAssets.includes(assetID)
+        ? selectAssets.filter(item => item !== assetID)
+        : [...selectAssets, assetID];
+
+      if (newArr?.length === store?.data?.length) {
+        setSelectAll(true)
+      } else {
+        setSelectAll(false)
+      }
+      setSelectAssets(newArr);
+    } else {
+      setSelectAssets([assetID]);
+    }
+  }
+
   return (
     <>
       {sidebarload && <Loading />}
@@ -632,7 +650,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               />
               <Navbar />
             </div>
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-2 gap-2 lg:mt-5 mt-3">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -702,7 +720,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           onClick={handleDeleteAll}
-                          style={{ display: selectAll ? "block" : "none" }}
+                          style={{ display: selectAssets?.length > 0 ? "block" : "none" }}
                         >
                           <RiDeleteBin5Line className="text-lg" />
                         </button>
@@ -778,6 +796,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       >
                         <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                           <tr className="items-center border-b border-b-[#E4E6FF] bg-gray-50 table-head-bg">
+                          {permissions.isDelete && (
+                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                              <input
+                                type="checkbox"
+                                className="w-4 h-4"
+                                checked={selectAll}
+                                onChange={handleSelectAll}
+                              />
+                            </th>
+                          )}
                             <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                               Preview
                             </th>
@@ -825,18 +853,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   handleDragStart(event, item.assetID, item)
                                 }
                               >
-                                <td className="text-center flex justify-center gap-4">
-                                  {selectAll && (
-                                    <div className="flex items-center justify-center">
-                                      <input
-                                        type="checkbox"
-                                        checked={true}
-                                        onChange={() => {
-                                          setSelectAll(!selectAll);
-                                        }}
-                                      />
-                                    </div>
-                                  )}
+                              {permissions.isDelete && (
+                                <td className="text-left gap-4">
+                                  <div className="flex items-center justify-center">
+                                    <input
+                                      type="checkbox"
+                                      checked={selectAssets?.includes(item.assetID)}
+                                      onChange={() => {
+                                        handleCheckboxChange(item?.assetID)
+                                      }}
+                                    />
+                                  </div>
+                                </td>
+                              )}
+                                <td className="text-left">
                                   {item.assetType === "Folder" && (
                                     <div
                                       onDragOver={(event) =>
@@ -966,7 +996,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         setSelectDoc(item);
                                       }}
                                     >
-                                      <HiDocumentDuplicate className=" text-primary text-4xl mt-10 " />
+                                      <HiDocumentDuplicate className=" text-primary text-4xl my-5 " />
                                     </div>
                                   )}
                                 </td>

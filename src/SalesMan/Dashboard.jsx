@@ -19,7 +19,6 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
     const [data, setData] = useState()
 
     const fetchData = () => {
-        console.log('data', data)
         let config = {
             method: "get",
             maxBodyLength: Infinity,
@@ -29,7 +28,6 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
             },
         };
         dispatch(GetSalesManDashboard({ config })).then((res) => {
-            console.log('res', res)
             if (res?.payload?.status) {
                 setData(res?.payload?.data)
             }

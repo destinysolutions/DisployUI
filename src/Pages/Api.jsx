@@ -287,6 +287,7 @@ export const VERIFY_COUPON = `${baseUrl}common/VerfiyDiscountCoupon`
 
 export const ADD_CARD = `${baseUrl}CardMaster/AddEditCard`
 export const DELETE_CARD = `${baseUrl}CardMaster/DeleteCard`
+export const DEFAULT_CARD = `${baseUrl}common/SetDefaultCard`
 export const GET_ALL_CARD = `${baseUrl}CardMaster/GetAllCard`
 
 // Sales Man

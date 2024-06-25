@@ -50,7 +50,7 @@ import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
-import { Pagination } from "../Common/Common";
+import { Pagination, PerPage } from "../Common/Common";
 import PurchaseScreen from "./SubScreens/PurchaseScreen";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentDialog from "../Common/PaymentDialog";
@@ -143,9 +143,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [sidebarload, setSidebarLoad] = useState(true);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
-  console.log('sortOrder', sortOrder)
   const [sortedField, setSortedField] = useState(null);
   const [permissions, setPermissions] = useState({
     isDelete: false,
@@ -242,7 +241,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       return data
     }
   };
-  
+
   const sortedAndPaginatedData = sortData(
     filteredData,
     sortedField,
@@ -789,7 +788,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               />
               <Navbar />
             </div>
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -1205,22 +1204,20 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       {screenContentVisible && (
                                         <td className="text-[#5E5E5E]">
                                           <div className="flex items-center">
-                                            <div>
-                                              {permissions.isDelete && (
-                                                <input
-                                                  type="checkbox"
-                                                  className="mr-2"
-                                                  onChange={() =>
-                                                    handleScreenCheckboxChange(
-                                                      screen.screenID
-                                                    )
-                                                  }
-                                                  checked={selectedItems.includes(
+                                            {permissions.isDelete && (
+                                              <input
+                                                type="checkbox"
+                                                className="mr-2 cursor-pointer"
+                                                onChange={() =>
+                                                  handleScreenCheckboxChange(
                                                     screen.screenID
-                                                  )}
-                                                />
-                                              )}
-                                            </div>
+                                                  )
+                                                }
+                                                checked={selectedItems.includes(
+                                                  screen.screenID
+                                                )}
+                                              />
+                                            )}
                                             {isEditingScreen &&
                                               editingScreenID ===
                                               screen.screenID ? (
@@ -1547,6 +1544,20 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       <span className="text-gray-500">{`Total ${filteredData?.length} Screens`}</span>
                     </div>
                     <div className="flex justify-end">
+                      {/*<select
+                        className="border border-[#D5E3FF] rounded-lg mr-3 p-1"
+                        onChange={(e) => setItemsPerPage(e.target.value)}
+                        value={itemsPerPage}>
+
+                        {PerPage?.map((page, index) => (
+                          <option
+                            value={page}
+                            key={index}
+                          >
+                            {page}
+                          </option>
+                        ))}
+                        </select>*/}
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}

@@ -55,7 +55,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [loading, setLoading] = useState(true)
   const [searchValue, setSearchValue] = useState("")
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6); // Adjust items per page as needed
+  const [itemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [selectData, setSelectData] = useState()

@@ -599,7 +599,9 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
                                                                                             </i>
                                                                                             {capitalizeFirstLetter(item?.funding)} Card **** **** **** {item?.cardNumber}
                                                                                         </div>
-                                                                                        <span className='bg-blue-200 px-3 py-1.5 text-blue-600 rounded-full text-sm'>Set as default</span>
+                                                                                        {item?.isDefault && (
+                                                                                            <span className='bg-blue-200 px-3 py-1.5 text-blue-600 rounded-full text-sm'>Default Card</span>
+                                                                                        )}
                                                                                         <input type='radio'
                                                                                             checked={selectCard?.paymentMethodID === item?.paymentMethodID}
                                                                                             onChange={() => handleChange(item)}

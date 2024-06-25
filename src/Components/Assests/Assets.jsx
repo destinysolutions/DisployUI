@@ -264,7 +264,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const tabs = localStorage.getItem("tabs");
   const [loadFist, setLoadFist] = useState(true);
   const [activeTab, setActiveTab] = useState(tabs ? tabs : "ALL"); // Set the default active tab
-  const [tabsDelete, setTabsDelete] = useState(Array);
+  const [tabsDelete, setTabsDelete] = useState({
+    tabs: "",
+    selectedIds: [],
+  });
   const [folderElements, setFolderElements] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -273,6 +276,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     isSave: false,
     isView: false,
   });
+
+  console.log('permissions', permissions)
   const [sidebarload, setSidebarLoad] = useState(true);
   const store = useSelector((state) => state.root.asset);
 
@@ -477,14 +482,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           confirmButtonColor: "#ff0000",
         }).then(async (result) => {
           if (result.isConfirmed) {
-            await dispatch(handelDeletedataAssets(config2)).then((res)=>{
+            await dispatch(handelDeletedataAssets(config2)).then((res) => {
               const Params = {
                 id: socket.id,
                 connection: socket.connected,
                 macId: item?.macids,
               };
               socket.emit("ScreenConnected", Params);
-            }).catch((err)=>{
+            }).catch((err) => {
               console.log('err', err)
             });
           } else {
@@ -533,15 +538,39 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         ? { ...asset, isChecked: !asset.isChecked }
         : asset
     );
-    const allChecked = updatedAsset.every((asset) => asset.isChecked);
-    setSelectAll(allChecked);
+    if (tabsDelete?.selectedIds) {
+      let newArr = tabsDelete.selectedIds.includes(assetID)
+        ? tabsDelete.selectedIds.filter(item => item !== assetID)
+        : [...tabsDelete.selectedIds, assetID];
+
+      const payload = {
+        tabs: activeTab,
+        selectedIds: newArr,
+      };
+      if (newArr?.length === store?.data?.length) {
+        setSelectAll(true)
+      } else {
+        setSelectAll(false)
+      }
+      setTabsDelete(payload);
+    } else {
+      const payload = {
+        tabs: activeTab,
+        selectedIds: [assetID],
+      };
+      setTabsDelete(payload);
+    }
+
+    // const allChecked = updatedAsset.every((asset) => asset.isChecked);
+    // setSelectAll(allChecked);
   };
 
   const handleDeleteAll = () => {
+
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${DELETE_ALL_ASSET}?IsDeleteFromAll=true&AssetType=${activeTab}`,
+      url: `${DELETE_ALL_ASSET}?assetIDs=${tabsDelete?.selectedIds?.join(',')}`,
       headers: { Authorization: authToken },
     };
 
@@ -561,9 +590,17 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await dispatch(handelAllDelete(config));
+        setTabsDelete({
+          tabs: "",
+          selectedIds: [],
+        })
         setSelectAll(false);
       } else {
         setLoadFist(true);
+        setTabsDelete({
+          tabs: "",
+          selectedIds: [],
+        })
         setSelectAll(false);
       }
     });
@@ -659,7 +696,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               <Navbar />
             </div>
 
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 pt-10 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-2 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -729,7 +766,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           onClick={handleDeleteAll}
-                          style={{ display: selectAll ? "block" : "none" }}
+                          style={{ display: tabsDelete?.selectedIds?.length > 0 ? "block" : "none" }}
                         >
                           <RiDeleteBin5Line className="text-lg" />
                         </button>
@@ -1007,17 +1044,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               {/*End hover icon details */}
 
                               <div className="checkbox flex justify-between absolute top-5 px-4 w-full">
-                                <input
-                                  type="checkbox"
-                                  className="w-[20px] h-[20px] relative"
-                                  style={{
-                                    display: selectAll ? "block" : "none",
-                                  }}
-                                  checked={selectAll || false}
-                                  onChange={() =>
-                                    handleCheckboxChange(item.assetID)
-                                  }
-                                />
+                                {permissions.isDelete && (
+                                  <input
+                                    type="checkbox"
+                                    className="w-[20px] h-[20px] relative"
+                                    // style={{
+                                    //   display: selectAll ? "block" : "none",
+                                    // }}
+                                    checked={tabsDelete?.selectedIds?.includes(item.assetID)}
+                                    onChange={() =>
+                                      handleCheckboxChange(item.assetID)
+                                    }
+                                  />
+                                )}
 
                                 <div
                                   style={{
@@ -1026,15 +1065,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     textAlign: "right",
                                   }}
                                 >
-                                  {permissions.isSave &&
-                                    permissions.isDelete && (
-                                      <button
-                                        onClick={() => updateassetsdw(item)}
-                                        className="relative"
-                                      >
-                                        <BsThreeDots className="text-xl bg-SlateBlue rounded" />
-                                      </button>
-                                    )}
+
+                                  <button
+                                    onClick={() => updateassetsdw(item)}
+                                    className="relative"
+                                  >
+                                    <BsThreeDots className="text-xl bg-SlateBlue rounded" />
+                                  </button>
+
 
                                   {assetsdw === item && (
                                     <div
@@ -1060,23 +1098,27 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         )}
 
                                         {item.assetType !== "Folder" && (
-                                          <li className="flex text-sm items-center relative w-full">
-                                            {permissions.isSave && (
-                                              <div className="move-to-button relative">
-                                                <button
-                                                  className="flex relative w-full"
-                                                  onClick={() => {
-                                                    setAddScreenModal(true);
-                                                    setassetsdw(null);
-                                                    setSelectData(item);
-                                                  }}
-                                                >
-                                                  <FiUpload className="mr-2 text-lg" />
-                                                  Set to Screen
-                                                </button>
-                                              </div>
-                                            )}
-                                          </li>
+                                          <>
+                                            {
+                                              permissions.isSave && (
+                                                <li className="flex text-sm items-center relative w-full">
+                                                  <div className="move-to-button relative">
+                                                    <button
+                                                      className="flex relative w-full"
+                                                      onClick={() => {
+                                                        setAddScreenModal(true);
+                                                        setassetsdw(null);
+                                                        setSelectData(item);
+                                                      }}
+                                                    >
+                                                      <FiUpload className="mr-2 text-lg" />
+                                                      Set to Screen
+                                                    </button>
+                                                  </div>
+                                                </li>
+                                              )
+                                            }
+                                          </>
                                         )}
 
                                         <li className="flex text-sm items-center relative w-full">
