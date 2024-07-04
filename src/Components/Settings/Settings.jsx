@@ -212,6 +212,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </li>
                       {!user?.userDetails?.isRetailer && (
+                        <>
                         <li>
                           <button
                             className={
@@ -223,7 +224,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             <span className="text-base text-primary">My Plan</span>
                           </button>
                         </li>
-                      )}
+                      
                       <li>
                         <button
                           className={
@@ -237,6 +238,8 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                           </span>
                         </button>
                       </li>
+                        </>
+                      )}
 
                       <li>
                         <button

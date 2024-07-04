@@ -2246,7 +2246,7 @@ table.screen-table {
 }
 
 .autoplay-progress{
-  /* bottom: 0 !important; */
+  bottom: 0px !important;
 }
 
 .pricing-plan:hover .pricing-amount {

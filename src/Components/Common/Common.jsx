@@ -643,3 +643,16 @@ export const PerPage = [
   "10",
   "15",
 ];
+
+export const preloadImage = (src) => {
+  return new Promise((resolve, reject) => {
+      if (!src) {
+          resolve(); // Resolve immediately if no src
+          return;
+      }
+      const img = new Image();
+      img.src = src;
+      img.onload = () => resolve(src); // Resolve with src for easier debugging
+      img.onerror = reject;
+  });
+};

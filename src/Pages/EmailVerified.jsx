@@ -121,7 +121,7 @@ const ForgotPassword = () => {
                       onClick={() => navigate("/")}
                       disabled={loading}
                     >
-                      Sign in here
+                      Sign up here
                     </button>
                   </div>
                 </form>

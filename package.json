@@ -26,6 +26,7 @@
     "formik": "^2.4.5",
     "gapi-script": "^1.2.0",
     "googleapis": "^129.0.0",
+    "html-to-image": "^1.11.11",
     "html2pdf.js": "^0.10.1",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",

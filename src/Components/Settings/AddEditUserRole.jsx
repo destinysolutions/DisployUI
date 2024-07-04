@@ -167,6 +167,22 @@ const AddEditUserRole = ({
                                         <input
                                           id={`${item?.alt}_View`}
                                           {...register(`${item?.alt}_View`)}
+                                          onChange={()=>{
+                                              if (
+                                                watch(`${item?.alt}_View`) ===
+                                                true
+                                              ) {
+                                                setValue(
+                                                  `${item?.alt}_Delete`,
+                                                  false
+                                                );
+                                                setValue(
+                                                  `${item?.alt}_Edit`,
+                                                  false
+                                                );
+                                              } 
+                                          }}
+                                         
                                           className="border border-primary text-center rounded h-4 w-4 cursor-pointer"
                                           type="checkbox"
                                         />
@@ -199,6 +215,10 @@ const AddEditUserRole = ({
                                             <input
                                               id={`${item?.alt}_Delete`}
                                               {...register(`${item?.alt}_Delete`)}
+                                              onChange={()=>{
+                                                setValue(`${item?.alt}_View`, true);
+                                                setValue(`${item?.alt}_Edit`, true);
+                                              }}
                                               className="border border-primary text-center rounded h-4 w-4 cursor-pointer"
                                               type="checkbox"
                                             />

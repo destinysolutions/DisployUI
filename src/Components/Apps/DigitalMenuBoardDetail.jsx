@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useState } from 'react'
+import React, { lazy, useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { MdDeleteForever, MdOutlineModeEdit, MdSave } from 'react-icons/md';
@@ -16,7 +16,7 @@ import Swal from 'sweetalert2';
 import { HiOutlineViewList } from 'react-icons/hi';
 import { chunkArray, generateAllCategory, generateCategorybyID } from '../Common/Common';
 import { handleAllPosTheme } from '../../Redux/CommonSlice';
-
+import { toPng } from 'html-to-image';
 import DigitalMenuCustomize from './DigitalMenuCustomize';
 import Footer from '../Footer';
 import digitalMenuLogo from "../../images/AppsImg/foods.svg";
@@ -57,6 +57,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   });
   const dispatch = useDispatch();
   const history = useNavigate();
+  const digitalMenuPreviewRef = useRef(null);
   const [saveLoading, setSaveLoading] = useState(false);
   const currentDate = new Date();
   const [instanceName, setInstanceName] = useState(
@@ -83,6 +84,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [PosTheme, setPosTheme] = useState([])
   const [theme, setTheme] = useState({})
   const [selectedtheme, setSelectedTheme] = useState({})
+  const [generatedImages, setGeneratedImages] = useState([]);
   const [addCategory, setAddCategory] = useState([{
     categoryname: "UNNAMED CATEGORY",
     allItem: [{
@@ -164,68 +166,91 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setEdited(false);
   };
 
-  //Insert  API
-  const addDigitalMenuApp = () => {
-    toast.loading("Saving...")
-    let data = JSON.stringify({
-      "digitalMenuAppId": id ? id : 0,
-      "userID": 0,
-      "appName": instanceName,
-      "nameOfthisMenu": menuName,
-      "subTitle": subtitle,
-      "createdDate": "2024-03-14T04:16:33.588Z",
-      "createdBy": 0,
-      "updatedDate": "2024-03-14T04:16:33.588Z",
-      "updatedBy": 0,
-      "category": generateAllCategory(addCategory),
-      "customizeMaster": {
-        "customizeID": 0,
-        "digitalMenuAppId": id ? id : 0,
-        "timespent": customizeData?.EachPageTime,
-        "imagestodisplay": customizeData?.EachPage,
-        "switchTo": customizeData?.ImageLayout,
-        "currencyID": 0,
-        "currencyName": customizeData?.Currency,
-        "isShowcurrencysign": customizeData?.CurrencyShow,
-        "isShowprices": customizeData?.ShowPrice,
-        "isMovetop": customizeData?.Topfeature,
-        "fontSize": customizeData?.FontSize,
-        "color": selectedColor,
-        "textColor": textColor,
-        "priceColor": priceColor,
-        "logo": "string",
-        "theme": selectedtheme
-      }
-    });
+  const fetchAllImages = () => {
+    if (digitalMenuPreviewRef.current) {
+      setTimeout(() => {
+        digitalMenuPreviewRef.current.generateImages();
+      }, 1000); // Short delay to ensure visibility
+      return 0
+    }
+  }
 
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: ADD_EDIT_DIGITAL_MENU,
-      headers: {
-        Authorization: authToken,
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-    setSaveLoading(true);
-    axios
-      .request(config)
-      .then((response) => {
-        toast.remove()
-        if (window.history.length === 1) {
-          localStorage.setItem("isWindowClosed", "true");
-          window.close();
-        } else {
-          history("/Digital-Menu-Board");
-        }
-        setSaveLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.remove()
-        setSaveLoading(false);
+  const handleImagesGenerated = (images) => {
+    setGeneratedImages(images);
+  };
+
+
+  useEffect(()=>{
+    if(generatedImages?.length > 0){
+      toast.loading("Saving...")
+      let data = JSON.stringify({
+        "digitalMenuAppId": id ? id : 0,
+        "userID": 0,
+        "appName": instanceName,
+        "nameOfthisMenu": menuName,
+        "subTitle": subtitle,
+        "createdDate": "2024-03-14T04:16:33.588Z",
+        "createdBy": 0,
+        "updatedDate": "2024-03-14T04:16:33.588Z",
+        "updatedBy": 0,
+        "category": generateAllCategory(addCategory),
+        "customizeMaster": {
+          "customizeID": 0,
+          "digitalMenuAppId": id ? id : 0,
+          "timespent": customizeData?.EachPageTime,
+          "imagestodisplay": customizeData?.EachPage,
+          "switchTo": customizeData?.ImageLayout,
+          "currencyID": 0,
+          "currencyName": customizeData?.Currency,
+          "isShowcurrencysign": customizeData?.CurrencyShow,
+          "isShowprices": customizeData?.ShowPrice,
+          "isMovetop": customizeData?.Topfeature,
+          "fontSize": customizeData?.FontSize,
+          "color": selectedColor,
+          "textColor": textColor,
+          "priceColor": priceColor,
+          "logo": "string",
+          "theme": selectedtheme
+        },
+        "Images": generatedImages
       });
+  
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: ADD_EDIT_DIGITAL_MENU,
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      axios
+        .request(config)
+        .then((response) => {
+          toast.remove()
+          if (window.history.length === 1) {
+            localStorage.setItem("isWindowClosed", "true");
+            window.close();
+          } else {
+            history("/Digital-Menu-Board");
+          }
+          setSaveLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.remove()
+          setGeneratedImages([])
+          setSaveLoading(false);
+        });
+    }
+
+  },[generatedImages])
+
+  //Insert  API
+  const addDigitalMenuApp = async () => {
+    const res = await fetchAllImages()
+    setSaveLoading(true);
   };
 
   const fetchPosItem = () => {
@@ -598,13 +623,16 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  
+
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           {loader ? <Loading /> : (
             <div className="lg:flex lg:justify-between sm:block  items-center">
@@ -945,23 +973,40 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
           )}
-          {showPreviewPopup && (
-            <DigitalMenuPreview customizeData={customizeData} PreviewData={PreviewData} selectedColor={selectedColor} textColor={textColor} priceColor={priceColor} theme={theme} />
-          )}
-        </div>
+          <div className={`${showPreviewPopup ? "opacity-100" : "opacity-0"}`} >
+            <DigitalMenuPreview
+              ref={digitalMenuPreviewRef}
+              customizeData={customizeData}
+              PreviewData={PreviewData}
+              selectedColor={selectedColor}
+              textColor={textColor}
+              priceColor={priceColor}
+              theme={theme}
+              onImagesGenerated={handleImagesGenerated}
+            />
+          </div>
+          <div>
       </div>
+        </div>
+      </div >
       <Footer />
 
-      {showCustomizemodal && (
-        <DigitalMenuCustomize toggleModal={toggleModal} register={register} errors={errors} handleSubmit={handleSubmit} onSubmit={onSubmit} selectedColor={selectedColor} setSelectedColor={setSelectedColor} setTextColor={setTextColor} textColor={textColor} setPriceColor={setPriceColor} priceColor={priceColor} PosTheme={PosTheme} setSelectedTheme={setSelectedTheme} selectedtheme={selectedtheme}/>
-      )}
-      {openModal && (
-        <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />
-      )}
+      {
+        showCustomizemodal && (
+          <DigitalMenuCustomize toggleModal={toggleModal} register={register} errors={errors} handleSubmit={handleSubmit} onSubmit={onSubmit} selectedColor={selectedColor} setSelectedColor={setSelectedColor} setTextColor={setTextColor} textColor={textColor} setPriceColor={setPriceColor} priceColor={priceColor} PosTheme={PosTheme} setSelectedTheme={setSelectedTheme} selectedtheme={selectedtheme} />
+        )
+      }
+      {
+        openModal && (
+          <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />
+        )
+      }
 
-      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
-        <PurchasePlanWarning />
-      )}
+      {
+        (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+          <PurchasePlanWarning />
+        )
+      }
     </>
   )
 }

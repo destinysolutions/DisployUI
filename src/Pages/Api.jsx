@@ -3,8 +3,8 @@ import axios from "axios";
 
 // live URl:- back.disploy.com
 
-export const baseUrl = "https://disploystage.disploy.com/api/";
-// export const baseUrl = "https://back.disploy.com/api/";
+// export const baseUrl = "https://disploystage.disploy.com/api/";
+export const baseUrl = "https://back.disploy.com/api/";
 
 // Test Mode
 // export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
