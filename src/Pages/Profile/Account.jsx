@@ -422,7 +422,7 @@ const Account = () => {
                           timezone?.timeZoneID == getValues("timeZoneId")
                         }
                       >
-                        {timezone.timeZoneName}
+                        {timezone.timeZoneLabel}
                       </option>
                     ))}
                   </select>

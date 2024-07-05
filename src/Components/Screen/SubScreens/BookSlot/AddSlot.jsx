@@ -731,7 +731,7 @@ const AddSlot = () => {
                               value={timezone.timeZoneID}
                               key={timezone.timeZoneID}
                             >
-                              {timezone.timeZoneName}
+                              {timezone.timeZoneLabel}
                             </option>
                           );
                         })}

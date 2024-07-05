@@ -244,7 +244,7 @@ const ScreenGroupModal = ({
               </label>
             </div>
             <div className="flex lg:justify-between lg:flex-row md:flex-row md:justify-between sm:flex-col flex-col gap-4 px-3">
-              <div className="flex flex-col">
+              <div className="flex flex-col w-60">
                 <input
                   type="name"
                   name="name"

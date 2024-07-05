@@ -211,7 +211,7 @@ const FeatureDiscount = ({ discount, setDiscount, allSegment, fetchDiscountData,
                         value={timezone.timeZoneName}
                         key={timezone.timeZoneID}
                       >
-                        {timezone.timeZoneName}
+                        {timezone.timeZoneLabel}
                       </option>
                     ))}
                   </select>

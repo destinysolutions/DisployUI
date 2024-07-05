@@ -507,7 +507,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             value={timezone.timeZoneName}
                             key={timezone.timeZoneID}
                           >
-                            {timezone.timeZoneName}
+                            {timezone.timeZoneLabel}
                           </option>
                         ))}
                       </select>

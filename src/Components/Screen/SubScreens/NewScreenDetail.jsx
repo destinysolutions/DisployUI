@@ -805,7 +805,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               value={timezone.timeZoneID}
                               key={timezone.timeZoneID}
                             >
-                              {timezone.timeZoneName}
+                              {timezone.timeZoneLabel}
                             </option>
                           ))}
                         </select>
