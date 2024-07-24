@@ -667,3 +667,23 @@ export const CustomLayout = [
     value: "Portrait 1080 x 1920"
   }
 ]
+
+
+export const ScrollList = [
+  {
+    id: 0,
+    value: "All"
+  },
+  {
+    id: 1,
+    value: "PDF Scroll"
+  },
+  {
+    id: 2,
+    value: "DOC Scroll"
+  },
+  {
+    id: 3,
+    value: "PPT Scroll"
+  },
+]

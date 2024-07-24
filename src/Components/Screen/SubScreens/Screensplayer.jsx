@@ -56,7 +56,8 @@ import {
   getTrueDays,
   extractTime,
   Screen_Type,
-  capitalizeFirstLetter
+  capitalizeFirstLetter,
+  ScrollList
 } from "../../Common/Common";
 import OperatingHourModal from "./OperatingHourModal";
 import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
@@ -2052,7 +2053,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       <tr className="border-b border-[#D5E3FF]">
                         <td className="text-left lg:py-3 md:py-2 pb-0 ">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base pb-0">
-                            PDF Scroll
+                            Scrolling
                           </p>
                         </td>
                         <td className="text-left lg:py-3 md:py-2 pt-0">
@@ -2065,6 +2066,23 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             checked={isScroll}
                           />
                         </td>
+
+                        {/*<td className="text-left lg:py-3 md:py-2 pt-0">
+                          <select
+                            className="px-2 py-2 border border-[#D5E3FF] w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-full"
+                            value={selectedScreenType}
+                            onChange={(e) => {
+                              setSelectedScreenType(e.target.value);
+                            }}
+                          >
+                            {ScrollList &&
+                              ScrollList?.map((scroll) => (
+                                <option value={scroll?.value} key={scroll?.value}>
+                                  {scroll?.value}
+                                </option>
+                              ))}
+                          </select>
+                        </td>*/}
                       </tr>
                       {isScroll && (
                         <tr className="border-b border-[#D5E3FF]">

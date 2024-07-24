@@ -11,6 +11,7 @@ import { CustomLayout } from '../Common/Common';
 import { MdArrowBackIosNew } from 'react-icons/md';
 import ElementComposition from './ElementComposition';
 import toast from 'react-hot-toast';
+import { debounce } from 'lodash';
 
 const CustomComposition = ({ sidebarOpen, setSidebarOpen }) => {
     CustomComposition.propTypes = {
@@ -29,144 +30,184 @@ const CustomComposition = ({ sidebarOpen, setSidebarOpen }) => {
     const [selectResolution, setSelectResolution] = useState(0);
     const [LayoutList, setLayoutList] = useState([])
 
-    const resizeElement = (id, currentInfo) => {
-
+    const updateComponentSizeAndPosition = debounce(
+        (id, newWidth, newHeight, newTop, newLeft) => {
+          setLayoutList((prevComponents) =>
+            prevComponents.map((comp) =>
+              comp.id === id
+                ? {
+                    ...comp,
+                    width: newWidth,
+                    height: newHeight,
+                    top: newTop,
+                    left: newLeft,
+                  }
+                : comp
+            )
+          );
+        },
+        100
+      );
+  
+      const resizeElement = (id, currentInfo, handler) => {
+  
         let isMoving = true;
-
+  
         const currentDiv = document.getElementById(id);
         const mouseMove = ({ movementX, movementY }) => {
-            if (isMoving) {
-                const newWidth = Math.max(
-                    parseInt(currentDiv.style.width) + movementX,
-                    50
-                ); // Minimum width of 50px
-                const newHeight = Math.max(
-                    parseInt(currentDiv.style.height) + movementY,
-                    50
-                ); // Minimum height of 50px
-                currentDiv.style.width = `${newWidth}px`;
-                currentDiv.style.height = `${newHeight}px`;
-            }
+          if (isMoving) {
+            handler(currentDiv, movementX, movementY);
+          }
         };
-
+  
         const mouseUp = () => {
-            isMoving = false;
-            window.removeEventListener("mousemove", mouseMove);
-            window.removeEventListener("mouseup", mouseUp);
-
-            // Update LayoutList state with new size
-            setLayoutList((prevComponents) =>
-                prevComponents.map((comp) =>
-                    comp.id === id
-                        ? {
-                            ...comp,
-                            width: parseInt(currentDiv.style.width),
-                            height: parseInt(currentDiv.style.height),
-                        }
-                        : comp
-                )
-            );
+          isMoving = false;
+          window.removeEventListener("mousemove", mouseMove);
+          window.removeEventListener("mouseup", mouseUp);
         };
-
+  
         window.addEventListener("mousemove", mouseMove);
         window.addEventListener("mouseup", mouseUp);
-    };
-
-    const moveElement = (id, currentInfo) => {
-
-        let isMoving = true;
-
-        const currentDiv = document.getElementById(id);
-        const mouseMove = ({ movementX, movementY }) => {
-            if (isMoving) {
-                const left = parseInt(currentDiv.style.left) || 0;
-                const top = parseInt(currentDiv.style.top) || 0;
-                currentDiv.style.left = `${left + movementX}px`;
-                currentDiv.style.top = `${top + movementY}px`;
-            }
-        };
-        const mouseUp = () => {
-            isMoving = false;
-            window.removeEventListener("mousemove", mouseMove);
-            window.removeEventListener("mouseup", mouseUp);
-        };
-        window.addEventListener("mousemove", mouseMove);
-        window.addEventListener("mouseup", mouseUp);
-    };
-
-    const rotateElement = (id, currentInfo) => {
-
-        let isMoving = true;
-
-        const target = document.getElementById(id);
-        const mouseMove = ({ movementX }) => {
-            if (isMoving) {
-                const getStyle = window.getComputedStyle(target);
-                const trans = getStyle.transform;
-                const values = trans.split("(")[1].split(")")[0].split(",");
-                const angle = Math.round(
-                    Math.atan2(values[1], values[0]) * (180 / Math.PI)
-                );
-                let deg = angle < 0 ? angle + 360 : angle;
-                if (movementX) {
-                    deg = deg + movementX;
-                }
-                target.style.transform = `rotate(${deg}deg)`;
-            }
-        };
-        const mouseUp = () => {
-            isMoving = false;
-            window.removeEventListener("mousemove", mouseMove);
-            window.removeEventListener("mouseup", mouseUp);
-            const getStyle = window.getComputedStyle(target);
-            const trans = getStyle.transform;
-            const values = trans.split("(")[1].split(")")[0].split(",");
-            const angle = Math.round(
-                Math.atan2(values[1], values[0]) * (180 / Math.PI)
-            );
-            let deg = angle < 0 ? angle + 360 : angle;
-            setRotate(deg);
-        };
-        window.addEventListener("mousemove", mouseMove);
-        window.addEventListener("mouseup", mouseUp);
-    };
-
-    function getRandomColor() {
-        var letters = "0123456789ABCDEF";
-        var color = "#";
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
+      };
+  
+      const resizeElementbottom_right = (id, currentInfo) => {
+        resizeElement(id, currentInfo, (currentDiv, movementX, movementY) => {
+          const newWidth = Math.max(
+            parseInt(currentDiv.style.width) + movementX,
+            50
+          );
+          const newHeight = Math.max(
+            parseInt(currentDiv.style.height) + movementY,
+            50
+          );
+          currentDiv.style.width = `${newWidth}px`;
+          currentDiv.style.height = `${newHeight}px`;
+          updateComponentSizeAndPosition(
+            id,
+            newWidth,
+            newHeight,
+            parseInt(currentDiv.style.top),
+            parseInt(currentDiv.style.left)
+          );
+        });
+      };
+  
+      const resizeElementtop_left = (id, currentInfo) => {
+        resizeElement(id, currentInfo, (currentDiv, movementX, movementY) => {
+          const newWidth = Math.max(
+            parseInt(currentDiv.style.width) - movementX,
+            50
+          );
+          const newHeight = Math.max(
+            parseInt(currentDiv.style.height) - movementY,
+            50
+          );
+          const newTop = parseInt(currentDiv.style.top) + movementY;
+          const newLeft = parseInt(currentDiv.style.left) + movementX;
+          currentDiv.style.width = `${newWidth}px`;
+          currentDiv.style.height = `${newHeight}px`;
+          currentDiv.style.top = `${newTop}px`;
+          currentDiv.style.left = `${newLeft}px`;
+          updateComponentSizeAndPosition(id, newWidth, newHeight, newTop, newLeft);
+        });
+      };
+  
+      const resizeElementtop_right = (id, currentInfo) => {
+        resizeElement(id, currentInfo, (currentDiv, movementX, movementY) => {
+          const newWidth = Math.max(
+            parseInt(currentDiv.style.width) + movementX,
+            50
+          );
+          const newHeight = Math.max(
+            parseInt(currentDiv.style.height) + movementY,
+            50
+          );
+          currentDiv.style.width = `${newWidth}px`;
+          currentDiv.style.height = `${newHeight}px`;
+          updateComponentSizeAndPosition(
+            id,
+            newWidth,
+            newHeight,
+            parseInt(currentDiv.style.top),
+            parseInt(currentDiv.style.left)
+          );
+        });
+      };
+      const resizeElementbottom_left = (id, currentInfo) => {
+        resizeElement(id, currentInfo, (currentDiv, movementX, movementY) => {
+          const newWidth = Math.max(
+            parseInt(currentDiv.style.width) + movementX,
+            50
+          );
+          const newHeight = Math.max(
+            parseInt(currentDiv.style.height) + movementY,
+            50
+          );
+          currentDiv.style.width = `${newWidth}px`;
+          currentDiv.style.height = `${newHeight}px`;
+          updateComponentSizeAndPosition(
+            id,
+            newWidth,
+            newHeight,
+            parseInt(currentDiv.style.top),
+            parseInt(currentDiv.style.left)
+          );
+        });
+      };
+  
+      const moveElement = (id, currentInfo) => {
+        resizeElement(id, currentInfo, (currentDiv, movementX, movementY) => {
+          const left = parseInt(currentDiv.style.left) || 0;
+          const top = parseInt(currentDiv.style.top) || 0;
+          currentDiv.style.left = `${left + movementX}px`;
+          currentDiv.style.top = `${top + movementY}px`;
+          updateComponentSizeAndPosition(
+            id,
+            parseInt(currentDiv.style.width),
+            parseInt(currentDiv.style.height),
+            top + movementY,
+            left + movementX
+          );
+        });
+      };
+  
+      const getRandomColor = () => {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
         }
         return color;
-    }
-
-    const createShape = (name, type) => {
-        // Calculate new position with a fixed gap of 0.2 units
-        const newPosition = {
-            left: 10, // Default left position for the first section
-            top: 10, // Default top position for the first section
-        };
-
-
+      };
+  
+      const createShape = (name, type) => {
+        const newPosition = { left: 10, top: 10,bottom:30,right:30 };
+  
         const style = {
-            id: `component-${LayoutList.length + 1}`,
-            name: name,
-            type,
-            left: `${newPosition.left}px`,
-            top: `${newPosition.top}px`,
-            opacity: 1,
-            width: 200,
-            height: 150,
-            rotate,
-            zIndex: 2,
-            color: getRandomColor(),
-            resizeElement,
-            moveElement,
-            rotateElement,
+          id: `component-${LayoutList.length + 1}`,
+          name,
+          type,
+          left: `${newPosition.left}px`,
+          top: `${newPosition.top}px`,
+          bottom: `${newPosition.bottom}px`,
+          right: `${newPosition.right}px`,
+          opacity: 1,
+          width: 200,
+          height: 150,
+          rotate,
+          zIndex: 2,
+          color: getRandomColor(),
+          resizeElementbottom_right,
+          moveElement,
+          resizeElementtop_left,
+          resizeElementtop_right,
+          resizeElementbottom_left
         };
-
+  
         setLayoutList([...LayoutList, style]);
-    };
+      };
+
+      
     return (
         <>
             <div className="flex bg-white border-b border-gray">
@@ -216,6 +257,8 @@ const CustomComposition = ({ sidebarOpen, setSidebarOpen }) => {
                                                                 position: "absolute",
                                                                 left: component.left,
                                                                 top: component.top,
+                                                                bottom: component.bottom,
+                                                                right: component.right,
                                                                 width: component.width + "px",
                                                                 height: component.height + "px",
                                                                 backgroundColor: component.color,
@@ -228,11 +271,13 @@ const CustomComposition = ({ sidebarOpen, setSidebarOpen }) => {
                                                             className="absolute group hover:border-[2px] border border-black hover:border-indigo-500"
                                                         >
                                                             <ElementComposition
-                                                                id={component.id}
-                                                                info={component}
-                                                                resizeElement={resizeElement}
-                                                                moveElement={moveElement}
-                                                                rotateElement={rotateElement}
+                                                            id={component.id}
+                                                            info={component}
+                                                            resizeElementbottom_right={resizeElementbottom_right}
+                                                            moveElement={moveElement}
+                                                            resizeElementtop_left={resizeElementtop_left}
+                                                            resizeElementtop_right={resizeElementtop_right}
+                                                            resizeElementbottom_left={resizeElementbottom_left}
                                                             />
                                                         </div>
                                                     )
@@ -257,29 +302,13 @@ const CustomComposition = ({ sidebarOpen, setSidebarOpen }) => {
                                             })}
                                         </select>
                                     </div>
-                                    {/*<div className='flex items-center justify-end'>
-                                        <button
-                                            className="flex align-middle border-white bg-SlateBlue text-white sm:mt-2  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 .  text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                            onClick={() => {
-                                                if (LayoutList?.length < 6) {
-                                                    setLayoutList([...LayoutList, {
-                                                        width: "", height: "", top: "", bottom: ""
-                                                    }]);
-                                                } else {
-                                                    toast.error("You can only Create 6 Section")
-                                                }
-                                            }}
-                                        >
-                                            Add
-                                        </button>
-                                    </div>*/}
                                     <div className='h-[260px]'>
                                         {LayoutList?.map((item, index) => {
                                             return (
                                                 <div className='flex flex-row items-center gap-2 mt-2' key={index}>
-                                                    <label className='w-36'>Section:- {index + 1}</label>
-                                                    <div className='flex items-center'>
-                                                        <div className="px-3 flex flex-row gap-2 items-center">
+                                                    <label className='w-28'>Section:- {index + 1}</label>
+                                                    <div className='flex items-center px-2'>
+                                                        <div className="flex flex-row gap-2 items-center">
                                                             <h6>Width</h6>
                                                             <h6 className="border border-bg-gray-200k p-1 ml-2 mr-2 rounded-lg w-[60px] flex items-center justify-center">
                                                                 {item.width}
@@ -287,11 +316,29 @@ const CustomComposition = ({ sidebarOpen, setSidebarOpen }) => {
                                                         </div>
                                                         <label>Pixels,</label>
                                                     </div>
-                                                    <div className='flex items-center'>
-                                                        <div className="px-3 flex flex-row gap-2 items-center">
+                                                    <div className='flex items-center px-2'>
+                                                        <div className="flex flex-row gap-2 items-center">
                                                             <h6>Height</h6>
                                                             <h6 className="border border-bg-gray-200k p-1 ml-2 mr-2 rounded-lg w-[60px] flex items-center justify-center">
                                                                 {item.height}
+                                                            </h6>
+                                                        </div>
+                                                        <label>Pixels</label>
+                                                    </div>
+                                                     <div className='flex items-center px-2'>
+                                                        <div className="flex flex-row gap-2 items-center">
+                                                            <h6>Top</h6>
+                                                            <h6 className="border border-bg-gray-200k p-1 ml-2 mr-2 rounded-lg w-[60px] flex items-center justify-center">
+                                                                {item.top}
+                                                            </h6>
+                                                        </div>
+                                                        <label>Pixels</label>
+                                                    </div>
+                                                     <div className='flex items-center px-2'>
+                                                        <div className="flex flex-row gap-2 items-center">
+                                                            <h6>Left</h6>
+                                                            <h6 className="border border-bg-gray-200k p-1 ml-2 mr-2 rounded-lg w-[60px] flex items-center justify-center">
+                                                                {item.left}
                                                             </h6>
                                                         </div>
                                                         <label>Pixels</label>

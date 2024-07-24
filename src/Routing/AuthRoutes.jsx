@@ -5,6 +5,8 @@ import ForgotPassword from "../Pages/ForgotPassword";
 import EmailVerified from "../Pages/EmailVerified";
 import TermsConditions from "../Pages/TermsConditions";
 import PlanIntegration from "../Components/PlanIntegration";
+import AddSlot from "../Components/Screen/SubScreens/BookSlot/AddSlot";
+import BookingSlot from "../Components/Screen/SubScreens/BookSlot/BookingSlot";
 
 const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
@@ -93,6 +95,22 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
               path="/termsconditions"
               element={
                 <TermsConditions
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+
+            <Route
+              path="/bookslot"
+              element={
+                <AddSlot />
+              }
+            />
+            <Route
+              path="/bookingslot"
+              element={
+                <BookingSlot
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />
