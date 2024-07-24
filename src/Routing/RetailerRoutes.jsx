@@ -129,7 +129,7 @@ const RetailerRoutes = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               }
             />
-            <Route
+            {/*<Route
               path="/bookslot"
               element={
                 <AddSlot />
@@ -143,7 +143,7 @@ const RetailerRoutes = ({ sidebarOpen, setSidebarOpen }) => {
                   setSidebarOpen={setSidebarOpen}
                 />
               }
-            />
+            />*/}
             <Route
               path="/screensplayer"
               element={

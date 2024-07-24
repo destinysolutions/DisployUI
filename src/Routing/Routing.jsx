@@ -197,7 +197,7 @@ const Routing = () => {
                 />
               }
             />
-            <Route
+           {/* <Route
               path="/bookslot"
               element={
                 <AddSlot />
@@ -211,7 +211,7 @@ const Routing = () => {
                   setSidebarOpen={setSidebarOpen}
                 />
               }
-            />
+            />*/}
             <Route
               path="/screensplayer"
               element={
