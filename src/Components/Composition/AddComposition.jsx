@@ -16,7 +16,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const {user, token,userDetails } = useSelector((state) => state.root.auth);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const { compositionLayouts, loading } = useSelector(
     (state) => state.root.composition
   );
@@ -48,25 +48,33 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center ">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737]"></h1>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn"></div>
           </div>
           <div className="rounded-xl shadow-lg bg-white p-5">
-            <h4
-              className="text-lg font-medium mb-5 flex w-fit items-center gap-2 cursor-pointer "
-              onClick={() => {
-                if (window.history.length > 1) {
-                  navigation("/composition");
-                } else {
-                  window.close();
-                }
-              }}
-            >
-              <HiArrowLongLeft size={30} /> Standard
-            </h4>
+            <div className="flex flex-row justify-between items-center mb-5">
+              <h4
+                className="text-lg font-medium flex w-fit items-center gap-2 cursor-pointer "
+                onClick={() => {
+                  if (window.history.length > 1) {
+                    navigation("/composition");
+                  } else {
+                    window.close();
+                  }
+                }}
+              >
+                <HiArrowLongLeft size={30} /> Standard
+              </h4>
+              {/*<button
+                className="bg-SlateBlue text-white rounded-full px-4 py-2 hover:bg-primary hover:text-white text-sm hover:bg-primary-500"
+                onClick={() =>  navigation("/addcustomcomposition")}
+              >
+                Add Custom Layout
+              </button>*/}
+            </div>
             <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-6">
               {loading ? (
                 <div className="flex col-span-3 text-center m-5 justify-center">
@@ -87,7 +95,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
                       fill="#1C64F2"
                     />
                   </svg>
-                 
+
                 </div>
               ) : compositionLayouts?.length == 0 && !loading ? (
                 <div>No layouts here.</div>
@@ -126,8 +134,8 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <Footer />
 
-      
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false)  && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

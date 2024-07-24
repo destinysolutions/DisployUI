@@ -58,6 +58,7 @@ import DigitalMenuBoardDetail from "../Components/Apps/DigitalMenuBoardDetail";
 import DummyDashboard from "../Components/Common/DummyDashboard";
 import RetailerRoutes from "./RetailerRoutes";
 import SalesManRoutes from "./SalesManRoutes";
+import CustomComposition from "../Components/Composition/CustomComposition";
 
 const Routing = () => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
@@ -394,6 +395,15 @@ const Routing = () => {
               path="/addcomposition"
               element={
                 <AddComposition
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/addcustomcomposition"
+              element={
+                <CustomComposition
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />

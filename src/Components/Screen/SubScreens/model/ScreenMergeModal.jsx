@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineCloseCircle, AiOutlineCloudUpload } from "react-icons/ai";
+import { AiOutlineCloseCircle, AiOutlineCloudUpload, AiOutlineSearch } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { SelectByUserScreen } from "../../../../Redux/ScreenGroupSlice";
 import { SELECT_BY_USER_SCREENDETAIL } from "../../../../Pages/Api";
@@ -9,7 +9,7 @@ import moment from "moment";
 import toast from "react-hot-toast";
 
 
-const ScreenGroupModal = ({
+const ScreenMergeModal = ({
   label,
   onClose,
   handleSaveNew,
@@ -30,6 +30,9 @@ const ScreenGroupModal = ({
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortedField, setSortedField] = useState(null);
+  const [searchScreen, setSearchScreen] = useState("");
 
   useEffect(() => {
     let config = {
@@ -47,11 +50,35 @@ const ScreenGroupModal = ({
     }
   }, [dispatch, loadFirst, store]);
 
-  const totalPages = Math.ceil(store.data?.length / itemsPerPage);
-  const paginatedData = store.data?.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+
+  const filteredData = Array.isArray(store.data)
+    ? store.data?.filter((item) =>
+      item?.screenName?.toLowerCase()?.includes(searchScreen?.toLowerCase())
+    )
+    : [];
+  const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
+  // Function to sort the data based on a field and order
+  const sortData = (data, field, order) => {
+    const sortedData = [...data];
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
+  };
+
+  const sortedAndPaginatedData = sortData(
+    filteredData,
+    sortedField,
+    sortOrder
+  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -70,7 +97,7 @@ const ScreenGroupModal = ({
       toast.error("Please Select Screen");
       return;
     }
-    const getName = paginatedData.find(
+    const getName = sortedAndPaginatedData?.find(
       (item) => item.screenID === selectedItems
     );
     const payLoad = {
@@ -85,9 +112,13 @@ const ScreenGroupModal = ({
     onClose();
   };
 
+
+  const handleScreenSearch = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchScreen(searchQuery);
+  };
+
   return (
-
-
     <>
       <div
         id="default-modal"
@@ -111,6 +142,23 @@ const ScreenGroupModal = ({
                       onClose();
                     }}
                   />
+                </div>
+
+                <div className="flex mt-3 justify-end mr-2">
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <AiOutlineSearch className="w-5 h-5 text-gray " />
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Search Screen" //location ,screen, tag
+                      className="border border-primary rounded-full px-7 pl-10 py-2 search-user sm:w-64 xs:w-64"
+                      value={searchScreen}
+                      onChange={(e) => {
+                        handleScreenSearch(e);
+                      }}
+                    />
+                  </div>
                 </div>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg screen-section">
                   <div className="schedual-table bg-white rounded-xl mt-5 px-3">
@@ -164,8 +212,8 @@ const ScreenGroupModal = ({
                           </tr>
                         </thead>
                         <tbody>
-                          {store && store.data?.length > 0 ? (
-                            paginatedData?.map((screen) => (
+                          {store && sortedAndPaginatedData?.length > 0 ? (
+                            sortedAndPaginatedData?.map((screen) => (
                               <tr
                                 key={screen.screenID}
                                 onClick={() => handleCheckboxChange(screen.screenID)}
@@ -251,7 +299,7 @@ const ScreenGroupModal = ({
                             ))
                           ) : (
                             <tr>
-                              <td colSpan={4}>
+                              <td colSpan={8}>
                                 <div className="flex text-center m-5 justify-center">
                                   <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                     No Data Available
@@ -321,7 +369,7 @@ const ScreenGroupModal = ({
                     </div>
 
                     {/* Modal footer */}
-                    <div className="flex gap-5 items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-center">
+                     <div className="flex gap-5 items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-center">
                       <button
                         className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                         type="submit"
@@ -348,4 +396,4 @@ const ScreenGroupModal = ({
   );
 };
 
-export default ScreenGroupModal;
+export default ScreenMergeModal;

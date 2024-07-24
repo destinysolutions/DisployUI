@@ -485,19 +485,17 @@ const ScreenGroupModal = ({
             </div>
 
             {/* Modal footer */}
-            <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-start">
+            <div className="flex gap-5 items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-center">
               <button
-                data-modal-hide="static-modal"
                 type="button"
-                className="border-2 border-primary  rounded-lg ml-3 text-white bg-primary  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                 onClick={handleSaveScreen}
               >
                 {label}
               </button>
               <button
-                data-modal-hide="static-modal"
                 type="button"
-                className="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                 onClick={onClose}
               >
                 Cancel

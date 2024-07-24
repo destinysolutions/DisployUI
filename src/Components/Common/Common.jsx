@@ -517,41 +517,41 @@ export const NotificationType = [{
   Value: "None"
 }]
 
-export  function mergeNotificationData(listNotification, res) {
-    return listNotification.map((listItem, index) => {
-        const correspondingArrItem = res?.payload?.data.find(item => item.index === index);
+export function mergeNotificationData(listNotification, res) {
+  return listNotification.map((listItem, index) => {
+    const correspondingArrItem = res?.payload?.data.find(item => item.index === index);
 
-        if (correspondingArrItem) {
-            const updatedUser = listItem.user.map(userItem => {
-                if (userItem.notificationFeatureId === correspondingArrItem.notificationFeatureID) {
-                    return { ...userItem, ...correspondingArrItem };
-                }
-                return userItem;
-            });
-            return { ...listItem, user: updatedUser };
+    if (correspondingArrItem) {
+      const updatedUser = listItem.user.map(userItem => {
+        if (userItem.notificationFeatureId === correspondingArrItem.notificationFeatureID) {
+          return { ...userItem, ...correspondingArrItem };
         }
+        return userItem;
+      });
+      return { ...listItem, user: updatedUser };
+    }
 
-        return listItem;
-    });
+    return listItem;
+  });
 }
 
 export function extractSubstring(str) {
 
   let match = str?.match(/× (.*?) \(/);
-    if (match) {
-        return match[1];
-    } else {
-        return null; // or an appropriate error message
-    }
+  if (match) {
+    return match[1];
+  } else {
+    return null; // or an appropriate error message
+  }
 
 }
 
 export function extractPrice(string) {
   let match = string?.match(/\$(\d+)\.00/);
   if (match) {
-      return match[1];
+    return match[1];
   } else {
-      return null;
+    return null;
   }
 }
 
@@ -606,12 +606,12 @@ export function generateYearArray() {
   // Create an array of years from 2000 to the current year
   const years = [];
   for (let year = 2000; year <= currentYear; year++) {
-      years.push(year);
+    years.push(year);
   }
   return years;
 }
 
-export function getRandomTwoDigitNumber(Num,Num1) {
+export function getRandomTwoDigitNumber(Num, Num1) {
   return Math.floor(Math.random() * Num) + 10;
 }
 
@@ -646,90 +646,24 @@ export const PerPage = [
 
 export const preloadImage = (src) => {
   return new Promise((resolve, reject) => {
-      if (!src) {
-          resolve(); // Resolve immediately if no src
-          return;
-      }
-      const img = new Image();
-      img.src = src;
-      img.onload = () => resolve(src); // Resolve with src for easier debugging
-      img.onerror = reject;
+    if (!src) {
+      resolve(); // Resolve immediately if no src
+      return;
+    }
+    const img = new Image();
+    img.src = src;
+    img.onload = () => resolve(src); // Resolve with src for easier debugging
+    img.onerror = reject;
   });
 };
 
-export const timeZoneNames = {
-    "Pacific/Midway": "Midway Island, Samoa",
-    "Pacific/Pago_Pago": "Pago Pago",
-    "Pacific/Honolulu": "Hawaii",
-    "America/Juneau": "Alaska",
-    "America/Los_Angeles": "Pacific Time (US & Canada)",
-    "America/Tijuana": "Tijuana, Baja California",
-    "America/Denver": "Mountain Time (US & Canada)",
-    "America/Phoenix": "Arizona",
-    "America/Chihuahua": "Chihuahua, La Paz, Mazatlan",
-    "America/Chicago": "Central Time (US & Canada)",
-    "America/Regina": "Saskatchewan",
-    "America/Mexico_City": "Guadalajara, Mexico City, Monterrey",
-    "America/Guatemala": "Central America",
-    "America/New_York": "Eastern Time (US & Canada)",
-    "America/Indiana/Indianapolis": "Indiana (East)",
-    "America/Bogota": "Bogota, Lima, Quito, Rio Branco",
-    "America/Caracas": "Caracas",
-    "America/Santiago": "Santiago",
-    "America/La_Paz": "La Paz",
-    "America/Halifax": "Atlantic Time (Canada)",
-    "America/Argentina/Buenos_Aires": "Buenos Aires, Georgetown",
-    "America/Guyana": "Guyana",
-    "America/Godthab": "Greenland",
-    "Atlantic/South_Georgia": "Mid-Atlantic",
-    "Atlantic/Azores": "Azores",
-    "Atlantic/Cape_Verde": "Cape Verde Is.",
-    "Europe/London": "London, Lisbon, Casablanca",
-    "Africa/Casablanca": "Casablanca",
-    "Africa/Nairobi": "Nairobi",
-    "Europe/Amsterdam": "Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna",
-    "Europe/Belgrade": "Belgrade, Bratislava, Budapest, Ljubljana, Prague",
-    "Europe/Brussels": "Brussels, Copenhagen, Madrid, Paris",
-    "Europe/Warsaw": "Sarajevo, Skopje, Warsaw, Zagreb",
-    "Africa/Johannesburg": "Pretoria",
-    "Europe/Bucharest": "Bucharest",
-    "Asia/Jerusalem": "Jerusalem",
-    "Asia/Amman": "Amman",
-    "Europe/Moscow": "Moscow, St. Petersburg, Volgograd",
-    "Asia/Baghdad": "Baghdad",
-    "Africa/Harare": "Harare, Pretoria",
-    "Asia/Kuwait": "Kuwait, Riyadh",
-    "Africa/Nairobi": "Nairobi",
-    "Asia/Tehran": "Tehran",
-    "Asia/Dubai": "Abu Dhabi, Muscat",
-    "Asia/Baku": "Baku, Tbilisi, Yerevan",
-    "Asia/Kabul": "Kabul",
-    "Asia/Karachi": "Islamabad, Karachi",
-    "Asia/Tashkent": "Tashkent",
-    "Asia/Kolkata": "Chennai, Kolkata, Mumbai, New Delhi",
-    "Asia/Kathmandu": "Kathmandu",
-    "Asia/Dhaka": "Astana, Dhaka",
-    "Asia/Colombo": "Sri Jayawardenepura",
-    "Asia/Almaty": "Almaty, Novosibirsk",
-    "Asia/Rangoon": "Yangon (Rangoon)",
-    "Asia/Bangkok": "Bangkok, Hanoi, Jakarta",
-    "Asia/Krasnoyarsk": "Krasnoyarsk",
-    "Asia/Hong_Kong": "Beijing, Chongqing, Hong Kong, Urumqi",
-    "Asia/Irkutsk": "Irkutsk, Ulaan Bataar",
-    "Australia/Perth": "Perth",
-    "Asia/Taipei": "Taipei",
-    "Asia/Tokyo": "Osaka, Sapporo, Tokyo",
-    "Asia/Seoul": "Seoul",
-    "Asia/Yakutsk": "Yakutsk",
-    "Australia/Adelaide": "Adelaide",
-    "Australia/Darwin": "Darwin",
-    "Australia/Brisbane": "Brisbane",
-    "Australia/Sydney": "Canberra, Melbourne, Sydney",
-    "Australia/Hobart": "Hobart",
-    "Asia/Vladivostok": "Vladivostok",
-    "Pacific/Guam": "Guam, Port Moresby",
-    "Asia/Magadan": "Magadan, Solomon Is., New Caledonia",
-    "Pacific/Fiji": "Fiji, Kamchatka, Marshall Is.",
-    "Pacific/Auckland": "Auckland, Wellington",
-    "Pacific/Tongatapu": "Nuku'alofa"
-  };
+export const CustomLayout = [
+  {
+    id: 0,
+    value: "Landscape 1920 x 1080"
+  },
+  {
+    id: 1,
+    value: "Portrait 1080 x 1920"
+  }
+]

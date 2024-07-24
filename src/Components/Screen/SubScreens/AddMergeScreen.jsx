@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import ShowAssetModal from "./model/ShowMergeAssetModal";
 import { AiOutlineCloudUpload } from "react-icons/ai";
-import ScreenGroupModal from "./model/ScreenMergeModal";
 import { useDispatch } from "react-redux";
 import { SELECT_BY_USER_SCREENDETAIL } from "../../../Pages/Api";
 import { useSelector } from "react-redux";
@@ -16,6 +15,7 @@ import { saveMergeData } from "../../../Redux/ScreenMergeSlice";
 import { socket } from "../../../App";
 import Loading from "../../Loading";
 import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
+import ScreenMergeModal from "./model/ScreenMergeModal";
 
 const selectRow = [
   { value: 1, label: "1 Row" },
@@ -456,7 +456,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
       {/* {isModalOpen && ( */}
       {isModalOpen && (
-        <ScreenGroupModal
+        <ScreenMergeModal
           isOpen={isModalOpen}
           onClose={closeModal}
           handleSaveNew={handleSaveNew}

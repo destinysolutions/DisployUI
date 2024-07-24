@@ -29,17 +29,6 @@ const App = () => {
   console.log('userDetails', userDetails)
   console.log('user', user)
 
-  // const date = new Date();
-  // let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-  // const offset = -date.getTimezoneOffset();
-  // const sign = offset >= 0 ? '+' : '-';
-  // const hours = String(Math.floor(Math.abs(offset) / 60)).padStart(2, '0');
-  // const minutes = String(Math.abs(offset) % 60).padStart(2, '0');
-
-  // const formattedTimeZone = `(GMT${sign}${hours}:${minutes}) ${timeZoneNames[timeZone] || timeZone}`;
-
-  // console.log(formattedTimeZone,"formattedTimeZone")
-
   useEffect(() => {
     dispatch(handleNavigateFromCompositionChannel());
     return () => {
