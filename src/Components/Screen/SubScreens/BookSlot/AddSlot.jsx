@@ -25,6 +25,7 @@ import {
   ADDUPDATESLOT,
   ALL_CITY,
   GET_TIMEZONE,
+  GET_TIMEZONE_TOKEN,
   PAYMENT_INTENT_CREATE_REQUEST,
   SCREEN_LIST,
   stripePromise,
@@ -51,6 +52,7 @@ import AddPayment from "./AddPayment";
 import { Elements } from "@stripe/react-stripe-js";
 import { handlePaymentIntegration } from "../../../../Redux/PaymentSlice";
 import { useDispatch } from "react-redux";
+import { handleAllTimeZone } from "../../../../Redux/CommonSlice";
 
 const AddSlot = () => {
   const {
@@ -528,10 +530,10 @@ const AddSlot = () => {
 
   const handlebook = (paymentMethod) => {
     let Params = JSON.stringify({
-      PaymentDetails : {
+      PaymentDetails: {
         ...paymentMethod,
-        AutoPay:true,
-        type:"Book Slot",
+        AutoPay: true,
+        type: "Book Slot",
       },
       bookingSlotCustomerID: 0,
       name: Name,
@@ -573,14 +575,17 @@ const AddSlot = () => {
   };
 
   const TimeZone = () => {
+
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${GET_TIMEZONE}`,
-      headers: {},
-    };
-    axios
-      .request(config)
+      url: GET_TIMEZONE_TOKEN,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+
+    dispatch(handleAllTimeZone({ config }))
       .then((response) => {
         const CurrentTimeZone = new Date()
           .toLocaleDateString(undefined, {
@@ -588,16 +593,16 @@ const AddSlot = () => {
             timeZoneName: "long",
           })
           .substring(4);
-        response?.data?.data?.map((item) => {
+        response?.payload?.data?.map((item) => {
           if (item?.timeZoneName === CurrentTimeZone) {
             setSelectedTimeZone(item?.timeZoneID);
           }
         });
-        setAllTimeZone(response?.data?.data);
+        setAllTimeZone(response?.payload?.data);
       })
       .catch((error) => {
-        console.log(error);
-      });
+        console.log('error', error)
+      })
   };
 
   useEffect(() => {
@@ -731,7 +736,7 @@ const AddSlot = () => {
                               value={timezone.timeZoneID}
                               key={timezone.timeZoneID}
                             >
-                              {timezone.timeZoneLabel}
+                              {timezone.timeZoneName}
                             </option>
                           );
                         })}
