@@ -687,3 +687,5 @@ export const ScrollList = [
     value: "PPT Scroll"
   },
 ]
+
+export const PageNumber = [5, 10, 25]

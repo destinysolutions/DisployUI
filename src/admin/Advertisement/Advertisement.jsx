@@ -16,7 +16,7 @@ import {
 import { useDispatch } from "react-redux";
 import { getOnBodingData } from "../../Redux/admin/OnBodingSlice";
 import { BsEyeFill } from "react-icons/bs";
-import { getTimeFromDate } from "../../Components/Common/Common";
+import { getTimeFromDate, PageNumber } from "../../Components/Common/Common";
 import ReactTooltip from "react-tooltip";
 
 import AssetsPreview from "../../Components/Common/AssetsPreview";
@@ -60,7 +60,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
 
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]); // Multipal check
@@ -563,6 +563,14 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                 <span className="text-gray-500">{`Total ${filteredData?.length} Advertisement`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}

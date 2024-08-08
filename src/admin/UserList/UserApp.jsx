@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaUserCheck } from "react-icons/fa6";
+import { PageNumber } from "../../Components/Common/Common";
 
 const UserApp = ({ selectUser, allAppsData, userloading, sidebarOpen }) => {
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [searchApps, setSearchApps] = useState("");
@@ -191,6 +192,14 @@ const UserApp = ({ selectUser, allAppsData, userloading, sidebarOpen }) => {
                   <span className="text-gray-500">{`Total ${filteredData?.length} Apps`}</span>
                 </div>
                 <div className="flex justify-end">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-distracting-elements */
 import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
@@ -35,6 +36,8 @@ import { HiDocumentDuplicate } from "react-icons/hi2";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { FcOpenedFolder } from "react-icons/fc";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import { FixedSizeList as List } from 'react-window';
+import VideoTable from "./VideoTable";
 
 const DEFAULT_IMAGE = "";
 const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -67,7 +70,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [NestedNewFolder, setNestedNewFolder] = useState([]);
   const [selectFolder, setSelectFolder] = useState()
   const { state } = useLocation();
-  const {user, token,userDetails } = useSelector((state) => state.root.auth);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const { editor, onReady } = useFabricJSEditor();
@@ -580,7 +583,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleDropForDivToDiv = (event) => {
-    if(event.dataTransfer.getData("text/plain")){
+    if (event.dataTransfer.getData("text/plain")) {
       const item = event.dataTransfer.getData("text/plain");
       if (dragStartForDivToDiv) {
         addSeletedAsset(JSON.parse(item));
@@ -683,7 +686,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   }
 
-
   return (
     <>
       {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
@@ -691,7 +693,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
@@ -835,226 +837,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   <IoArrowBackSharp size={26} className="cursor-pointer" onClick={() => setOpenFolder(false)} />
                 </div>
               )}
-              <div className="vertical-scroll-inner min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
-                <table
-                  className="w-full bg-white overflow-x-auto lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
-                  cellPadding={15}
-                >
-                  <thead className="sticky -top-1 z-20">
-                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                        {activeTab === "asset" ? "Asset" : "App"}
-                      </th>
-                      <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
-                        {activeTab === "asset" ? "Asset Name" : "App Name"}
-                      </th>
-                      <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
-                        Type
-                      </th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {!loading &&
-                      assetData
-                        .filter((item) => {
-                          if (activeTab === "asset" && !openFolder) {
-                            if (
-                              item.hasOwnProperty("assetID")
-                            ) {
-                              return item;
-                            }
-                          } else if (activeTab === "apps") {
-                            if (!item.hasOwnProperty("assetID")) {
-                              return item;
-                            }
-                          }
-                        })
-                        .map((data, index) => (
-                          <tr
-                            key={index}
-                            className="border-b border-b-[#E4E6FF] cursor-pointer"
-                            onClick={() => {
-                              if (data?.assetType === "Folder") {
-                                navigateToFolder(data)
-                              } else {
-                                addSeletedAsset(data, index + 1)
-                              }
-                            }}
-                            draggable
-                            onDragStart={(event) => {
-                              if (data?.assetType !== "Folder") {
-                                handleDragStartForDivToDiv(event, data)
-                              }
-                            }}
-                          >
-                            <td className="w-full flex justify-center items-center">
-                              {data.assetType === "OnlineImage" && (
-                                <img
-                                  className="imagebox relative h-80px w-160px"
-                                  src={data?.assetFolderPath}
-                                  alt={data?.assetName}
-                                />
-                              )}
-                              {data.assetType === "Image" && (
-                                <img
-                                  src={data?.assetFolderPath}
-                                  alt={data?.assetName}
-                                  className="imagebox relative h-80px w-160px"
-                                />
-                              )}
-                              {data.instanceName && data?.scrollType && (
-                                <marquee
-                                  className="text-lg w-full h-full flex items-center text-black"
-                                  direction={
-                                    data?.scrollType == 1 ? "right" : "left"
-                                  }
-                                  scrollamount="10"
-                                >
-                                  {data?.text}
-                                </marquee>
-                              )}
-                              {(data.assetType === "Video" ||
-                                data.assetType === "OnlineVideo" ||
-                                data.assetType === "Youtube" ||
-                                data?.youTubeURL) && (
-                                  <ReactPlayer
-                                    url={
-                                      data?.assetFolderPath || data?.youTubeURL
-                                    }
-                                    className="h-80px w-160px  relative z-10"
-                                    controls={true}
-                                    playing={false}
-                                    loop={false}
-                                  />
-                                )}
-
-                              {/*{data.assetType === "DOC" && (
-                                <p href={data?.assetFolderPath}>
-                                  {data.assetName}
-                                </p>
-                              )}*/}
-                              {data.assetType === "DOC" && (
-                                <div className="flex justify-center items-center">
-                                  <HiDocumentDuplicate className=" text-primary text-4xl" />
-                                </div>
-                              )}
-
-                              {data.assetType === "Folder" && (
-                                <FcOpenedFolder
-                                  className="text-8xl text-center mx-auto"
-                                />
-                              )}
-
-                            </td>
-                            <td className="p-2 w-full text-center hyphens-auto break-words">
-                              {data.assetName || data?.instanceName}
-                            </td>
-                            <td className="p-2 w-full text-center">
-                              {data?.fileExtention
-                                ? data?.fileExtention
-                                : data?.assetType}
-                              {data?.youtubeId && "Youtube video"}
-                              {data?.textScroll_Id && "TextScroll"}
-                            </td>
-                          </tr>
-                        ))}
-
-                    {!loading &&
-                      openFolder &&
-                      folderData
-                        .map((data, index) => (
-                          <tr
-                            key={index}
-                            className="border-b border-b-[#E4E6FF] cursor-pointer"
-                            onClick={() => {
-                              if (data?.assetType === "Folder") {
-                                navigateToFolder(data)
-                              } else {
-                                addSeletedAsset(data, index + 1)
-                              }
-                            }}
-                            draggable
-                            onDragStart={(event) => {
-                              if (data?.assetType !== "Folder") {
-                                handleDragStartForDivToDiv(event, data)
-                              }
-                            }
-                            }
-                          >
-                            <td className="w-full flex justify-center items-center">
-                              {data.assetType === "OnlineImage" && (
-                                <img
-                                  className="imagebox relative h-80px w-160px"
-                                  src={data?.assetFolderPath}
-                                  alt={data?.assetName}
-                                />
-                              )}
-                              {data.assetType === "Image" && (
-                                <img
-                                  src={data?.assetFolderPath}
-                                  alt={data?.assetName}
-                                  className="imagebox relative h-80px w-160px"
-                                />
-                              )}
-                              {data.instanceName && data?.scrollType && (
-                                <marquee
-                                  className="text-lg w-full h-full flex items-center text-black"
-                                  direction={
-                                    data?.scrollType == 1 ? "right" : "left"
-                                  }
-                                  scrollamount="10"
-                                >
-                                  {data?.text}
-                                </marquee>
-                              )}
-                              {(data.assetType === "Video" ||
-                                data.assetType === "OnlineVideo" ||
-                                data.assetType === "Youtube" ||
-                                data?.youTubeURL) && (
-                                  <ReactPlayer
-                                    url={
-                                      data?.assetFolderPath || data?.youTubeURL
-                                    }
-                                    className="h-80px w-160px  relative z-10"
-                                    controls={true}
-                                    playing={false}
-                                    loop={false}
-                                  />
-                                )}
-
-
-                              {/*{data.assetType === "DOC" && (
-                                        <p href={data?.assetFolderPath}>
-                                          {data.assetName}
-                                        </p>
-                                      )}*/}
-
-                              {data.assetType === "DOC" && (
-                                <div className="flex justify-center items-center">
-                                  <HiDocumentDuplicate className=" text-primary text-4xl" />
-                                </div>
-                              )}
-                              {data.assetType === "Folder" && (
-                                <FcOpenedFolder
-                                  className="text-8xl text-center mx-auto"
-                                />
-                              )}
-                            </td>
-                            <td className="p-2 w-full text-center hyphens-auto break-words">
-                              {data.assetName || data?.instanceName}
-                            </td>
-                            <td className="p-2 w-full text-center">
-                              {data?.fileExtention
-                                ? data?.fileExtention
-                                : data?.assetType}
-                              {data?.youtubeId && "Youtube video"}
-                              {data?.textScroll_Id && "TextScroll"}
-                            </td>
-                          </tr>
-                        ))}
-                  </tbody>
-                </table>
+              <div className=" rounded-xl shadow bg-white mb-6">
+                <VideoTable activeTab={activeTab} assetData={assetData} folderData={folderData} openFolder={openFolder} loading={loading} navigateToFolder={navigateToFolder} addSeletedAsset={addSeletedAsset} handleDragStartForDivToDiv={handleDragStartForDivToDiv} />
               </div>
             </div>
 
@@ -1116,7 +900,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
               <div
                 onDrop={(event) => handleDropForDivToDiv(event, "main_div")}
                 onDragOver={(event) => handleDragOverForDivToDiv(event)}
-                className="custom-scrollbar h-96 mt-3 mb-6"
+                className="vertical-scroll-inner min-h-[50vh] max-h-[50vh]"
               >
                 <table
                   className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto selected-img-table"
@@ -1142,6 +926,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               key={index}
                               className="w-full flex cursor-grab items-center md:gap-5 gap-3"
                             >
+
                               <td className="">
                                 {item.assetType === "OnlineImage" && (
                                   <img
@@ -1157,6 +942,22 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                     className="imagebox img_w relative object-cover"
                                   />
                                 )}
+                                {/* {(item.assetType === "Video" ||
+                                  item.assetType === "OnlineVideo" ||
+                                  item.assetType === "Youtube") && (
+                                    <video
+                                      controls
+                                      loop
+                                      className="relative z-20 videoinner img_w max-h-10"
+                                    >
+                                      <source
+                                        src={item.assetFolderPath}
+                                        type="video/mp4"
+                                      />
+
+                                      Your browser does not support the video tag.
+                                    </video>
+                                  )} */}
                                 {item.instanceName && item?.scrollType && (
                                   <marquee
                                     className="text-lg w-full h-full flex items-center text-black"
@@ -1258,8 +1059,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <Footer />
 
-      
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

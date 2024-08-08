@@ -47,6 +47,7 @@ import WarningDialog from "../Common/WarningDialog";
 import AddEditUser from "./AddEditUser";
 import UserScreenAccess from "./UserScreenAccess";
 import AttentionDialog from "../Common/AttentionDialog";
+import { PageNumber } from "../Common/Common";
 
 const Users = ({ searchValue, permissions, sidebarOpen }) => {
   const [loadFist, setLoadFist] = useState(true);
@@ -86,7 +87,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [editProfile, setEditProfile] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [screenAccessModal, setScreenAccessModal] = useState(false);
@@ -1634,11 +1635,11 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                   ) : (
                     <tr>
                       <td colSpan={6}>
-                      <div className="flex text-center m-5 justify-center">
-                      <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
-                        No Data Available
-                      </span>
-                    </div>
+                        <div className="flex text-center m-5 justify-center">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                            No Data Available
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -1913,6 +1914,14 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                     <span className="text-gray-500">{`Total ${filteredData?.length} Users`}</span>
                   </div>
                   <div className="flex justify-end">
+                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(e.target.value)}
+                    >
+                      {PageNumber.map((x) => (
+                        <option value={x}>{x}</option>
+                      ))}
+                    </select>
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
@@ -2026,7 +2035,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
           loading={loading}
           screenData={screenData}
           handleScreenCheckboxChange={handleScreenCheckboxChange}
-          setshowuserModal={setshowuserModal} 
+          setshowuserModal={setshowuserModal}
           handleCancelPopup={handleCancelPopup}
           handleAddUser={handleAddUser}
           setSelectedScreens={setSelectedScreens}

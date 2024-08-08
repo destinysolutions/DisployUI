@@ -18,6 +18,7 @@ import ScreenDiscount from './Discount/ScreenDiscount';
 import FeatureDiscount from './Discount/FeatureDiscount';
 import TrialPeriodDiscount from './Discount/TrialPeriodDiscount';
 import CustomDiscount from './Discount/CustomDiscount';
+import { PageNumber } from '../Components/Common/Common';
 
 // const AddEditDiscount = lazy(() => import('./Discount/AddEditDiscount'));
 // const ScreenDiscount = lazy(() => import('./Discount/ScreenDiscount'));
@@ -36,7 +37,7 @@ const Discount = ({ sidebarOpen }) => {
     const [selectData, setSelectData] = useState("")
     const [allSegment, setAllSegment] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Adjust items per page as needed
+    const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
     const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
     const [sortedField, setSortedField] = useState(null);
     const [loading, setLoading] = useState(true)
@@ -48,18 +49,18 @@ const Discount = ({ sidebarOpen }) => {
     const sortData = (data, field, order) => {
         const sortedData = [...data];
         if (field !== null) {
-          sortedData.sort((a, b) => {
-            if (order === "asc") {
-              return a[field] > b[field] ? 1 : -1;
-            } else {
-              return a[field] < b[field] ? 1 : -1;
-            }
-          });
-          return sortedData;
+            sortedData.sort((a, b) => {
+                if (order === "asc") {
+                    return a[field] > b[field] ? 1 : -1;
+                } else {
+                    return a[field] < b[field] ? 1 : -1;
+                }
+            });
+            return sortedData;
         } else {
-          return data
+            return data
         }
-      };
+    };
 
     const sortedAndPaginatedData = sortData(
         allDiscount,
@@ -379,6 +380,14 @@ const Discount = ({ sidebarOpen }) => {
                                     <span className="text-gray-500">{`Total ${allDiscount?.length} Discount`}</span>
                                 </div>
                                 <div className="flex justify-end">
+                                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                                        value={itemsPerPage}
+                                        onChange={(e) => setItemsPerPage(e.target.value)}
+                                    >
+                                        {PageNumber.map((x) => (
+                                            <option value={x}>{x}</option>
+                                        ))}
+                                    </select>
                                     <button
                                         onClick={() => handlePageChange(currentPage - 1)}
                                         disabled={currentPage === 1}

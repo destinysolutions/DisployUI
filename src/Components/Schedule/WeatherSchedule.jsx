@@ -29,6 +29,7 @@ import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { deletedData, getData } from "../../Redux/WeatherSlice";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import { PageNumber } from "../Common/Common";
 
 const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectcheck, setSelectCheck] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
   const [loadFist, setLoadFist] = useState(true);
@@ -358,7 +359,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {/* navbar and sidebar end */}
-      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -711,6 +712,14 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 <span className="text-gray-500">{`Total ${filteredData?.length} Weather Schedules`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}

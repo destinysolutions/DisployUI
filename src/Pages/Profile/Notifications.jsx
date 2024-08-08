@@ -15,6 +15,7 @@ import moment from "moment/moment";
 import toast from "react-hot-toast";
 import { handleGetAllNotifications } from "../../Redux/NotificationSlice";
 import { GET_ALL_NOTIFICATIONS } from "../Api";
+import { PageNumber } from "../../Components/Common/Common";
 
 const Notifications = ({ sidebarOpen }) => {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const Notifications = ({ sidebarOpen }) => {
   const [loading, setLoading] = useState(true)
   const [notification, setNotification] = useState([])
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = notification.slice(indexOfFirstItem, indexOfLastItem);
@@ -143,6 +144,14 @@ const Notifications = ({ sidebarOpen }) => {
                 <span className="text-gray-500">{`Total ${notification?.length} Notifications`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={currentPage === 1}

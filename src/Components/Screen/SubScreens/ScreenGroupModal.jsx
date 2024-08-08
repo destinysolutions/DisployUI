@@ -12,6 +12,7 @@ import { HiUserGroup } from "react-icons/hi2";
 import { Tooltip } from "@material-tailwind/react";
 import ReactTooltip from "react-tooltip";
 import { socket } from "../../../App";
+import { PageNumber } from "../../Common/Common";
 
 const ScreenGroupModal = ({
   label,
@@ -38,7 +39,7 @@ const ScreenGroupModal = ({
   const [searchScreen, setSearchScreen] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   useEffect(() => {
@@ -433,6 +434,14 @@ const ScreenGroupModal = ({
                 <span className="text-gray-500">{`Total ${store?.data?.length} Screen`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}

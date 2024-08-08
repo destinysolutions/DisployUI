@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import ReactTooltip from "react-tooltip";
+import { PageNumber } from "../Common/Common";
 
 const Invoice = ({
   permissions,
@@ -26,7 +27,7 @@ const Invoice = ({
   const [selectInvoiceId, setInvoiceId] = useState("")
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = invoiceData?.slice(indexOfFirstItem, indexOfLastItem);
@@ -274,6 +275,14 @@ const Invoice = ({
                   <span className="text-gray-500">{`Total ${invoiceData?.length} Invoice`}</span>
                 </div>
                 <div className="flex justify-end">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}

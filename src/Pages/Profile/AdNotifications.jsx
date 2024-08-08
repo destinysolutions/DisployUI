@@ -14,6 +14,7 @@ import {
 import moment from "moment/moment";
 import toast from "react-hot-toast";
 import AddUserAdsForPrice from "../../Components/Common/AddUserAdsForPrice";
+import { PageNumber } from "../../Components/Common/Common";
 
 const AdNotifications = ({ sidebarOpen }) => {
   const store = useSelector((state) => state.root.advertisementData);
@@ -22,7 +23,7 @@ const AdNotifications = ({ sidebarOpen }) => {
   // pagination Start
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const filteredData = store?.getNotification?.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -206,6 +207,14 @@ const AdNotifications = ({ sidebarOpen }) => {
                 <span className="text-gray-500">{`Total ${store?.getNotification?.length} Advertisement`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={currentPage === 1}

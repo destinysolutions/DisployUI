@@ -44,6 +44,7 @@ import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import { PageNumber } from "../Common/Common";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -79,12 +80,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectcheck, setSelectCheck] = useState(false);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [pageSize, setPageSize] = useState(5);// Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [sidebarload, setSidebarLoad] = useState(true);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const indexOfLastItem = currentPage * pageSize;
+  const indexOfFirstItem = indexOfLastItem - pageSize;
   // const currentItems = schedules?.slice(indexOfFirstItem, indexOfLastItem);
   const [permissions, setPermissions] = useState({
     isDelete: false,
@@ -133,7 +134,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     )
     : [];
 
-  const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredData?.length / pageSize);
 
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
@@ -156,7 +157,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     filteredData,
     sortedField,
     sortOrder
-  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  ).slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -906,6 +907,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       <span className="text-gray-500">{`Total ${filteredData?.length} Schedules`}</span>
                     </div>
                     <div className="flex justify-end">
+                      <select className='px-1 mr-2 border border-gray rounded-lg'
+                        value={pageSize}
+                        onChange={(e) => setPageSize(e.target.value)}
+                      >
+                        {PageNumber.map((x) => (
+                          <option value={x}>{x}</option>
+                        ))}
+                      </select>
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}

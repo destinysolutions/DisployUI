@@ -7,6 +7,7 @@ import { ADVERTISEMENT_SCREEN } from '../../Pages/Api';
 import moment from 'moment';
 import { UpdateAdsRate, getNotificationData } from '../../Redux/admin/AdvertisementSlice';
 import toast from 'react-hot-toast';
+import { PageNumber } from './Common';
 
 const AddUserAdsForPrice = ({ toggleModal, sidebarOpen, editIdAds, setloadFirst }) => {
     const dispatch = useDispatch();
@@ -17,7 +18,7 @@ const AddUserAdsForPrice = ({ toggleModal, sidebarOpen, editIdAds, setloadFirst 
     const [searchScreen, setSearchScreen] = useState("");
     const [screenData, setScreenData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
     const [loading, setLoading] = useState(false);
     const [screenError, setScreenError] = useState(false);
     const [priceError, setPriceError] = useState(false);
@@ -89,18 +90,18 @@ const AddUserAdsForPrice = ({ toggleModal, sidebarOpen, editIdAds, setloadFirst 
     const sortData = (data, field, order) => {
         const sortedData = [...data];
         if (field !== null) {
-          sortedData.sort((a, b) => {
-            if (order === "asc") {
-              return a[field] > b[field] ? 1 : -1;
-            } else {
-              return a[field] < b[field] ? 1 : -1;
-            }
-          });
-          return sortedData;
+            sortedData.sort((a, b) => {
+                if (order === "asc") {
+                    return a[field] > b[field] ? 1 : -1;
+                } else {
+                    return a[field] < b[field] ? 1 : -1;
+                }
+            });
+            return sortedData;
         } else {
-          return data
+            return data
         }
-      };
+    };
 
     const sortedAndPaginatedData = sortData(
         filteredData,
@@ -327,6 +328,14 @@ const AddUserAdsForPrice = ({ toggleModal, sidebarOpen, editIdAds, setloadFirst 
                                     <span className="text-gray-500">{`Total ${filteredData?.length} Screen`}</span>
                                 </div>
                                 <div className="flex justify-end">
+                                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                                        value={itemsPerPage}
+                                        onChange={(e) => setItemsPerPage(e.target.value)}
+                                    >
+                                        {PageNumber.map((x) => (
+                                            <option value={x}>{x}</option>
+                                        ))}
+                                    </select>
                                     <button
                                         onClick={() => handlePageChange(currentPage - 1)}
                                         disabled={currentPage === 1}

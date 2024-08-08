@@ -46,10 +46,11 @@ import { socket } from "../../../App";
 import Loading from "../../Loading";
 import PreviewMerge from "../../Common/PreviewMerge";
 import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
+import { PageNumber } from "../../Common/Common";
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
 
-  const { user, token ,userDetails} = useSelector((state) => state.root.auth);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const store = useSelector((state) => state.root.screenMarge);
   const authToken = `Bearer ${token}`;
 
@@ -100,7 +101,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [mergeData, setMergeData] = useState([]);
   const [loader, setLoader] = useState(false);
 
@@ -138,9 +139,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const paginatedData = mergeData
     ? mergeData?.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      )
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    )
     : [];
 
   const handlePageChange = (pageNumber) => {
@@ -207,7 +208,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => {};
+  const handleAssetUpdate = () => { };
 
   const editMergeScreenName = (index) => {
     // mergeNameUpdate
@@ -403,7 +404,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             />
             <Navbar />
           </div>
-          <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+          <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
             <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
               <div className="justify-between lg:flex md:flex items-center sm:block">
                 <div className="section-title">
@@ -521,7 +522,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         fill="#1C64F2"
                       />
                     </svg>
-                  
+
                   </div>
                 )}
                 {!loader &&
@@ -574,71 +575,85 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                           </div>
 
-                         
-                            <div className=" flex items-center justify-end">
-                              {isAccordionOpen && (
-                                <>
+
+                          <div className=" flex items-center justify-end">
+                            {isAccordionOpen && (
+                              <>
+                                <button
+                                  data-tip
+                                  data-for="Preview"
+                                  className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
+                                  onClick={() => handleOpenPreview(item)}
+                                >
+                                  Preview
+                                  <ReactTooltip
+                                    id="Preview"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="solid"
+                                  >
+                                    <span>Preview</span>
+                                  </ReactTooltip>
+                                </button>
+
+                                <button
+                                  data-tip
+                                  data-for="Upload"
+                                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                  onClick={() => {
+                                    setShowAssetModal(true);
+                                    setGetGroup(item);
+                                  }}
+                                >
+                                  <TbUpload className="text-3xl p-1 hover:text-white" />
+                                  <ReactTooltip
+                                    id="Upload"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="solid"
+                                  >
+                                    <span>Upload</span>
+                                  </ReactTooltip>
+                                </button>
+
+                                {!selectedItems?.length && (
                                   <button
                                     data-tip
-                                    data-for="Preview"
-                                    className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                                    onClick={() => handleOpenPreview(item)}
+                                    data-for="All Delete"
+                                    className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                                   >
-                                    Preview
+                                    <RiDeleteBin5Line
+                                      className="text-3xl p-1 hover:text-white"
+                                      onClick={() => handleDeleteGroup(item)}
+                                    />
                                     <ReactTooltip
-                                      id="Preview"
+                                      id="All Delete"
                                       place="bottom"
                                       type="warning"
                                       effect="solid"
                                     >
-                                      <span>Preview</span>
+                                      <span>Delete</span>
                                     </ReactTooltip>
                                   </button>
+                                )}
+                              </>
+                            )}
 
-                                  <button
-                                    data-tip
-                                    data-for="Upload"
-                                    className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                                    onClick={() => {
-                                      setShowAssetModal(true);
-                                      setGetGroup(item);
-                                    }}
-                                  >
-                                    <TbUpload className="text-3xl p-1 hover:text-white" />
-                                    <ReactTooltip
-                                      id="Upload"
-                                      place="bottom"
-                                      type="warning"
-                                      effect="solid"
-                                    >
-                                      <span>Upload</span>
-                                    </ReactTooltip>
-                                  </button>
-
-                                  {!selectedItems?.length && (
-                                    <button
-                                      data-tip
-                                      data-for="All Delete"
-                                      className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                                    >
-                                      <RiDeleteBin5Line
-                                        className="text-3xl p-1 hover:text-white"
-                                        onClick={() => handleDeleteGroup(item)}
-                                      />
-                                      <ReactTooltip
-                                        id="All Delete"
-                                        place="bottom"
-                                        type="warning"
-                                        effect="solid"
-                                      >
-                                        <span>Delete</span>
-                                      </ReactTooltip>
-                                    </button>
-                                  )}
-                                </>
-                              )}
-
-                              {selectAll ? (
+                            {selectAll ? (
+                              <input
+                                type="checkbox"
+                                data-tip
+                                data-for="Select"
+                                className=" mx-1 w-6 h-5 mt-2"
+                                checked={selectedItems.includes(
+                                  item?.mergeScreenId
+                                )}
+                                onChange={() =>
+                                  handleCheckboxChange(item?.mergeScreenId)
+                                }
+                              />
+                            ) : (
+                              <div>
                                 <input
                                   type="checkbox"
                                   data-tip
@@ -651,43 +666,29 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                     handleCheckboxChange(item?.mergeScreenId)
                                   }
                                 />
+                                <ReactTooltip
+                                  id="Select"
+                                  place="bottom"
+                                  type="warning"
+                                  effect="solid"
+                                >
+                                  <span>Select</span>
+                                </ReactTooltip>
+                              </div>
+                            )}
+
+                            <button>
+                              {isAccordionOpen ? (
+                                <div onClick={() => handleAccordionClick(i)}>
+                                  <IoIosArrowDropup className="text-3xl" />
+                                </div>
                               ) : (
-                                <div>
-                                  <input
-                                    type="checkbox"
-                                    data-tip
-                                    data-for="Select"
-                                    className=" mx-1 w-6 h-5 mt-2"
-                                    checked={selectedItems.includes(
-                                      item?.mergeScreenId
-                                    )}
-                                    onChange={() =>
-                                      handleCheckboxChange(item?.mergeScreenId)
-                                    }
-                                  />
-                                  <ReactTooltip
-                                    id="Select"
-                                    place="bottom"
-                                    type="warning"
-                                    effect="solid"
-                                  >
-                                    <span>Select</span>
-                                  </ReactTooltip>
+                                <div onClick={() => handleAccordionClick(i)}>
+                                  <IoIosArrowDropdown className="text-3xl" />
                                 </div>
                               )}
-
-                              <button>
-                                {isAccordionOpen ? (
-                                  <div onClick={() => handleAccordionClick(i)}>
-                                    <IoIosArrowDropup className="text-3xl" />
-                                  </div>
-                                ) : (
-                                  <div onClick={() => handleAccordionClick(i)}>
-                                    <IoIosArrowDropdown className="text-3xl" />
-                                  </div>
-                                )}
-                              </button>
-                            </div>
+                            </button>
+                          </div>
                         </div>
 
                         {isAccordionOpen && (
@@ -747,11 +748,10 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                           <td className="p-2 text-center">
                                             <span
                                               id={`changetvstatus${screen.macID}`}
-                                              className={`rounded-full px-6 py-2 text-white text-center ${
-                                                screen.screenStatus == 1
-                                                  ? "bg-[#3AB700]"
-                                                  : "bg-[#FF0000]"
-                                              }`}
+                                              className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                                ? "bg-[#3AB700]"
+                                                : "bg-[#FF0000]"
+                                                }`}
                                             >
                                               {screen.screenStatus == 1
                                                 ? "Live"
@@ -780,50 +780,50 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                           >
                                             {(screen?.tags === "" ||
                                               screen?.tags === null) && (
-                                              <span>
-                                                <AiOutlinePlusCircle
-                                                  size={30}
-                                                  className="mx-auto cursor-pointer"
-                                                  onClick={() => {
-                                                    setShowTagModal(true);
-                                                    screen.tags === "" ||
-                                                    screen?.tags === null
-                                                      ? setTags([])
-                                                      : setTags(
+                                                <span>
+                                                  <AiOutlinePlusCircle
+                                                    size={30}
+                                                    className="mx-auto cursor-pointer"
+                                                    onClick={() => {
+                                                      setShowTagModal(true);
+                                                      screen.tags === "" ||
+                                                        screen?.tags === null
+                                                        ? setTags([])
+                                                        : setTags(
                                                           screen?.tags?.split(
                                                             ","
                                                           )
                                                         );
-                                                    setTagUpdateScreeen(screen);
-                                                  }}
-                                                />
-                                              </span>
-                                            )}
+                                                      setTagUpdateScreeen(screen);
+                                                    }}
+                                                  />
+                                                </span>
+                                              )}
                                             {screen?.tags !== null
                                               ? screen.tags
-                                                  ?.split(",")
-                                                  .slice(
-                                                    0,
-                                                    screen.tags?.split(",")
-                                                      .length > 2
-                                                      ? 3
-                                                      : screen.tags?.split(",")
-                                                          .length
-                                                  )
-                                                  .map((text) => {
-                                                    if (
-                                                      text.toString().length >
-                                                      10
-                                                    ) {
-                                                      return text
-                                                        .split("")
-                                                        .slice(0, 10)
-                                                        .concat("...")
-                                                        .join("");
-                                                    }
-                                                    return text;
-                                                  })
-                                                  .join(",")
+                                                ?.split(",")
+                                                .slice(
+                                                  0,
+                                                  screen.tags?.split(",")
+                                                    .length > 2
+                                                    ? 3
+                                                    : screen.tags?.split(",")
+                                                      .length
+                                                )
+                                                .map((text) => {
+                                                  if (
+                                                    text.toString().length >
+                                                    10
+                                                  ) {
+                                                    return text
+                                                      .split("")
+                                                      .slice(0, 10)
+                                                      .concat("...")
+                                                      .join("");
+                                                  }
+                                                  return text;
+                                                })
+                                                .join(",")
                                               : ""}
                                             {screen?.tags !== "" &&
                                               screen?.tags !== null && (
@@ -831,13 +831,13 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                                   onClick={() => {
                                                     setShowTagModal(true);
                                                     screen.tags === "" ||
-                                                    screen?.tags === null
+                                                      screen?.tags === null
                                                       ? setTags([])
                                                       : setTags(
-                                                          screen?.tags?.split(
-                                                            ","
-                                                          )
-                                                        );
+                                                        screen?.tags?.split(
+                                                          ","
+                                                        )
+                                                      );
                                                     setTagUpdateScreeen(screen);
                                                   }}
                                                   className="mx-auto  w-5 h-5 cursor-pointer "
@@ -845,7 +845,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                               )}
 
                                             {/* add or edit tag modal */}
-                                            
+
                                           </td>
                                         </tr>
                                       );
@@ -871,6 +871,14 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                 {/* end  pagination */}
                 {paginatedData && paginatedData.length > 0 && (
                   <div className="flex justify-end">
+                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(e.target.value)}
+                    >
+                      {PageNumber.map((x) => (
+                        <option value={x}>{x}</option>
+                      ))}
+                    </select>
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
@@ -976,7 +984,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           setAssetPreviewPopup={setIsPreviewOpen}
         />
       )}
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

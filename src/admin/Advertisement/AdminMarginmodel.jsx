@@ -8,6 +8,7 @@ import moment from "moment";
 import { AddMarginRate } from "../../Redux/admin/AdvertisementSlice";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
+import { PageNumber } from "../../Components/Common/Common";
 
 const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds, fetchAds }) => {
   const dispatch = useDispatch();
@@ -17,7 +18,7 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds, fetchAds 
   const [searchUser, setSearchUser] = useState("");
   const [userData, setUserData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [loading, setLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
@@ -479,6 +480,14 @@ const AdminMarginmodel = ({ toggleMarginModal, sidebarOpen, selectAds, fetchAds 
                     <span className="text-gray-500">{`Total ${userData?.length} Screen`}</span>
                   </div>
                   <div className="flex justify-end">
+                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(e.target.value)}
+                    >
+                      {PageNumber.map((x) => (
+                        <option value={x}>{x}</option>
+                      ))}
+                    </select>
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}

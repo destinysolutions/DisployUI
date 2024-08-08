@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { PageNumber } from '../Common/Common';
 
 const ScreenAccess = ({
     selectScreenRef,
@@ -14,7 +15,7 @@ const ScreenAccess = ({
     sidebarOpen
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Adjust items per page as needed
+    const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
     const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
     const [sortedField, setSortedField] = useState(null);
 
@@ -24,18 +25,18 @@ const ScreenAccess = ({
     const sortData = (data, field, order) => {
         const sortedData = [...data];
         if (field !== null) {
-          sortedData.sort((a, b) => {
-            if (order === "asc") {
-              return a[field] > b[field] ? 1 : -1;
-            } else {
-              return a[field] < b[field] ? 1 : -1;
-            }
-          });
-          return sortedData;
+            sortedData.sort((a, b) => {
+                if (order === "asc") {
+                    return a[field] > b[field] ? 1 : -1;
+                } else {
+                    return a[field] < b[field] ? 1 : -1;
+                }
+            });
+            return sortedData;
         } else {
-          return data
+            return data
         }
-      };
+    };
 
     const sortedAndPaginatedData = sortData(
         screenData,
@@ -247,6 +248,14 @@ const ScreenAccess = ({
                                     <span className="text-gray-500">{`Total ${screenData?.length} Screens`}</span>
                                 </div>
                                 <div className="flex justify-end">
+                                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                                        value={itemsPerPage}
+                                        onChange={(e) => setItemsPerPage(e.target.value)}
+                                    >
+                                        {PageNumber.map((x) => (
+                                            <option value={x}>{x}</option>
+                                        ))}
+                                    </select>
                                     <button
                                         onClick={() => handlePageChange(currentPage - 1)}
                                         disabled={currentPage === 1}

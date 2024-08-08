@@ -7,6 +7,7 @@ import ReactTooltip from "react-tooltip";
 import { HiUserGroup } from "react-icons/hi2";
 import moment from "moment";
 import toast from "react-hot-toast";
+import { PageNumber } from "../../../Common/Common";
 
 
 const ScreenMergeModal = ({
@@ -29,7 +30,7 @@ const ScreenMergeModal = ({
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [searchScreen, setSearchScreen] = useState("");
@@ -317,6 +318,14 @@ const ScreenMergeModal = ({
                         <span className="text-gray-500">{`Total ${store?.data?.length} Screens`}</span>
                       </div>
                       <div className="flex justify-end">
+                        <select className='px-1 mr-2 border border-gray rounded-lg'
+                          value={itemsPerPage}
+                          onChange={(e) => setItemsPerPage(e.target.value)}
+                        >
+                          {PageNumber.map((x) => (
+                            <option value={x}>{x}</option>
+                          ))}
+                        </select>
                         <button
                           onClick={() => handlePageChange(currentPage - 1)}
                           disabled={currentPage === 1}
@@ -369,7 +378,7 @@ const ScreenMergeModal = ({
                     </div>
 
                     {/* Modal footer */}
-                     <div className="flex gap-5 items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-center">
+                    <div className="flex gap-5 items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-center">
                       <button
                         className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                         type="submit"

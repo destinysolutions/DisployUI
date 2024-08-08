@@ -4,11 +4,12 @@ import { CgYoutube } from "react-icons/cg";
 import { FaUserCheck } from "react-icons/fa6";
 import { FiImage } from "react-icons/fi";
 import { HiDocument, HiFolder, HiVideoCamera } from "react-icons/hi";
+import { PageNumber } from "../../Components/Common/Common";
 
 const UserTrash = ({ selectUser, TrashData, sidebarOpen }) => {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   // Filter data based on search term
@@ -215,6 +216,14 @@ const UserTrash = ({ selectUser, TrashData, sidebarOpen }) => {
                   <span className="text-gray-500">{`Total ${filteredData?.length} Trash`}</span>
                 </div>
                 <div className="flex justify-end">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}

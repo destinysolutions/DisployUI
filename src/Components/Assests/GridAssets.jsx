@@ -55,6 +55,7 @@ import Loading from "../Loading";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import { getTrueKeys } from "../Common/Common";
 
+
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -65,7 +66,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const store = useSelector((state) => state.root.asset);
+
   const history = useNavigate();
+
+  const videoRef = useRef(null);
+  const [isInView, setIsInView] = useState(false);
+
+
+
+
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
   const [asstab, setTogglebtn] = useState(2);
   const [assetsdw2, setassetsdw2] = useState(null);
@@ -101,16 +110,39 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAssets, setSelectAssets] = useState([]);
 
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setIsInView(true);
+          observer.unobserve(videoRef.current);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (videoRef?.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef?.current);
+      }
+    };
+  }, [videoRef]);
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
       const findData = item.payload.data.menu.find(
         (e) => e.pageName === "Assets"
       );
+
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
+
           if (
             Array.isArray(permissionItem.payload.data) &&
             permissionItem.payload.data.length > 0
@@ -796,16 +828,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       >
                         <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                           <tr className="items-center border-b border-b-[#E4E6FF] bg-gray-50 table-head-bg">
-                          {permissions.isDelete && (
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                              <input
-                                type="checkbox"
-                                className="w-4 h-4"
-                                checked={selectAll}
-                                onChange={handleSelectAll}
-                              />
-                            </th>
-                          )}
+                            {permissions.isDelete && (
+                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                <input
+                                  type="checkbox"
+                                  className="w-4 h-4"
+                                  checked={selectAll}
+                                  onChange={handleSelectAll}
+                                />
+                              </th>
+                            )}
                             <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                               Preview
                             </th>
@@ -853,19 +885,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   handleDragStart(event, item.assetID, item)
                                 }
                               >
-                              {permissions.isDelete && (
-                                <td className="text-left gap-4">
-                                  <div className="flex items-center justify-center">
-                                    <input
-                                      type="checkbox"
-                                      checked={selectAssets?.includes(item.assetID)}
-                                      onChange={() => {
-                                        handleCheckboxChange(item?.assetID)
-                                      }}
-                                    />
-                                  </div>
-                                </td>
-                              )}
+                                {permissions.isDelete && (
+                                  <td className="text-left gap-4">
+                                    <div className="flex items-center justify-center">
+                                      <input
+                                        type="checkbox"
+                                        checked={selectAssets?.includes(item.assetID)}
+                                        onChange={() => {
+                                          handleCheckboxChange(item?.assetID)
+                                        }}
+                                      />
+                                    </div>
+                                  </td>
+                                )}
                                 <td className="text-left">
                                   {item.assetType === "Folder" && (
                                     <div
@@ -931,12 +963,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       </div>
                                     </div>
                                   )}
-
                                   {item.assetType === "Video" && (
                                     <div className="img-cover ivratio img-cover-ratio">
                                       <div>
                                         <video
+                                          ref={videoRef}
                                           controls
+                                          autoPlay={isInView}
+
                                           onClick={() => {
                                             setShowImageAssetModal(true);
                                             setImageAssetModal(item);
@@ -946,8 +980,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                             src={item.assetFolderPath}
                                             type="video/mp4"
                                           />
-                                          Your browser does not support the
-                                          video tag.
+
+                                          Your browser does not support the video tag.
                                         </video>
                                       </div>
                                     </div>

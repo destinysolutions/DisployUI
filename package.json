@@ -67,6 +67,7 @@
     "react-to-print": "^2.14.15",
     "react-tooltip": "^4.5.1",
     "react-webcam": "^7.2.0",
+    "react-window": "^1.8.10",
     "react-ymd-date-select": "^0.3.0",
     "reactjs-social-login": "^2.6.3",
     "redux-persist": "^6.0.0",

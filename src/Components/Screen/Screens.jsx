@@ -50,7 +50,7 @@ import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
-import { Pagination, PerPage } from "../Common/Common";
+import { PageNumber, Pagination, PerPage } from "../Common/Common";
 import PurchaseScreen from "./SubScreens/PurchaseScreen";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentDialog from "../Common/PaymentDialog";
@@ -1544,20 +1544,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       <span className="text-gray-500">{`Total ${filteredData?.length} Screens`}</span>
                     </div>
                     <div className="flex justify-end">
-                      {/*<select
-                        className="border border-[#D5E3FF] rounded-lg mr-3 p-1"
+                      <select className='px-1 mr-2 border border-gray rounded-lg'
+                        value={itemsPerPage}
                         onChange={(e) => setItemsPerPage(e.target.value)}
-                        value={itemsPerPage}>
-
-                        {PerPage?.map((page, index) => (
-                          <option
-                            value={page}
-                            key={index}
-                          >
-                            {page}
-                          </option>
+                      >
+                        {PageNumber.map((x) => (
+                          <option value={x}>{x}</option>
                         ))}
-                        </select>*/}
+                      </select>
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RiUser3Fill } from "react-icons/ri";
+import { PageNumber } from "../Common/Common";
 
 const ShowUserScreen = ({
   showUsersRef,
@@ -11,7 +12,7 @@ const ShowUserScreen = ({
 }) => {
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
 
@@ -184,6 +185,14 @@ const ShowUserScreen = ({
                     <span className="text-gray-500">{`Total ${userList?.length} Users`}</span>
                   </div>
                   <div className="flex justify-end">
+                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(e.target.value)}
+                    >
+                      {PageNumber.map((x) => (
+                        <option value={x}>{x}</option>
+                      ))}
+                    </select>
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}

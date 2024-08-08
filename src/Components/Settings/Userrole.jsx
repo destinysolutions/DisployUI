@@ -13,7 +13,7 @@ import ShowUserScreen from "./ShowUserScreen";
 import AddEditUserRole from "./AddEditUserRole";
 import { ADD_UPDATE_ORGANIZATION_USER_ROLE } from "../../Pages/Api";
 import { useSelector } from "react-redux";
-import { combineUserroleObjects } from "../Common/Common";
+import { combineUserroleObjects, PageNumber } from "../Common/Common";
 import WarningDialog from "../Common/WarningDialog";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import AttentionDialog from "../Common/AttentionDialog";
@@ -35,7 +35,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
   const [showUsers, setShowUsers] = useState(false);
   const [userList, setUserList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [roleuserList, setRoleUserList] = useState([]);
@@ -339,6 +339,14 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
                 <span className="text-gray-500">{`Total ${filteredData?.length} User Role`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}

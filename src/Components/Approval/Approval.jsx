@@ -10,6 +10,7 @@ import { socket } from "../../App";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
+import { PageNumber } from "../Common/Common";
 
 // const Navbar = lazy(() => import('../Navbar'));
 // const Sidebar = lazy(() => import('../Sidebar'));
@@ -17,19 +18,20 @@ import Navbar from "../Navbar";
 
 const Approval = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
-  const {userDetails,user, token } = useSelector((state) => state.root.auth);
+  const { userDetails, user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [ApprovalList, setApprovalList] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // pagination Start
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
+
   // Get current items based on pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const indexOfLastItem = currentPage * pageSize;
+  const indexOfFirstItem = indexOfLastItem - pageSize;
   const currentItems = ApprovalList.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(ApprovalList?.length / itemsPerPage);
+  const totalPages = Math.ceil(ApprovalList?.length / pageSize);
   // pagination End
 
   const fetchApproval = () => {
@@ -138,7 +140,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {/* sidebar and navbar display end */}
-      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
@@ -191,7 +193,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                             fill="#1C64F2"
                           />
                         </svg>
-                       
+
                       </div>
                     </td>
                   </tr>
@@ -248,6 +250,14 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                 <span className="text-gray-500">{`Total ${ApprovalList?.length} Approval`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-3 border border-gray rounded-lg'
+                  value={pageSize}
+                  onChange={(e) => setPageSize(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -303,8 +313,8 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
-      
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

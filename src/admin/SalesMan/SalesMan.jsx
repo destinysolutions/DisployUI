@@ -14,6 +14,7 @@ import AdminNavbar from '../AdminNavbar'
 import AdminSidebar from '../AdminSidebar'
 import AddEditSalesMan from './AddEditSalesMan'
 import Swal from 'sweetalert2'
+import { PageNumber } from '../../Components/Common/Common'
 
 // const AddEditSalesMan = lazy(() => import('./AddEditSalesMan'));
 // const AdminNavbar = lazy(() => import('../AdminNavbar'));
@@ -39,7 +40,7 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10); // Adjust items per page as needed
+    const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
     const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
     const [sortedField, setSortedField] = useState(null);
     const [search, setSearch] = useState("");
@@ -91,18 +92,18 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
     const sortData = (data, field, order) => {
         const sortedData = [...data];
         if (field !== null) {
-          sortedData.sort((a, b) => {
-            if (order === "asc") {
-              return a[field] > b[field] ? 1 : -1;
-            } else {
-              return a[field] < b[field] ? 1 : -1;
-            }
-          });
-          return sortedData;
+            sortedData.sort((a, b) => {
+                if (order === "asc") {
+                    return a[field] > b[field] ? 1 : -1;
+                } else {
+                    return a[field] < b[field] ? 1 : -1;
+                }
+            });
+            return sortedData;
         } else {
-          return data
+            return data
         }
-      };
+    };
 
     const sortedAndPaginatedData = sortData(
         filteredData,
@@ -405,6 +406,14 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                                     <span className="text-gray-500">{`Total ${filteredData?.length} Sales Man`}</span>
                                 </div>
                                 <div className="flex justify-end">
+                                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                                        value={itemsPerPage}
+                                        onChange={(e) => setItemsPerPage(e.target.value)}
+                                    >
+                                        {PageNumber.map((x) => (
+                                            <option value={x}>{x}</option>
+                                        ))}
+                                    </select>
                                     <button
                                         onClick={() => handlePageChange(currentPage - 1)}
                                         disabled={currentPage === 1}

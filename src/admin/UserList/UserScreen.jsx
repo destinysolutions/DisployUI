@@ -6,12 +6,13 @@ import {
   AiOutlineCloudUpload,
 } from "react-icons/ai";
 import { HiUserGroup } from "react-icons/hi2";
+import { PageNumber } from "../../Components/Common/Common";
 
 
 const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [searchScreen, setSearchScreen] = useState("");
@@ -176,7 +177,7 @@ const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
                                 fill="#1C64F2"
                               />
                             </svg>
-                            
+
                           </div>
                         </td>
                       </tr>
@@ -214,8 +215,8 @@ const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
                                     <span
                                       id={`changetvstatus${screen.macid}`}
                                       className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                          ? "bg-[#3AB700]"
-                                          : "bg-[#FF0000]"
+                                        ? "bg-[#3AB700]"
+                                        : "bg-[#FF0000]"
                                         }`}
                                     >
                                       {screen.screenStatus == 1
@@ -326,6 +327,14 @@ const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
                   <span className="text-gray-500">{`Total ${filteredData?.length} Screens`}</span>
                 </div>
                 <div className="flex justify-end">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}

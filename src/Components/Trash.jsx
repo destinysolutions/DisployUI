@@ -28,6 +28,7 @@ import ReactTooltip from "react-tooltip";
 import { getMenuAll, getMenuPermission } from "../Redux/SidebarSlice";
 import Loading from "./Loading";
 import PurchasePlanWarning from "./Common/PurchasePlan/PurchasePlanWarning";
+import { PageNumber } from "./Common/Common";
 
 const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   Trash.propTypes = {
@@ -52,7 +53,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectcheck, setSelectCheck] = useState(false);
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -319,7 +320,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
               />
               <Navbar />
             </div>
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="flex justify-between items-center mb-5 ">
                   <h1 className="not-italic font-medium text-2xl text-[#001737]">
@@ -608,6 +609,14 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       <span className="text-gray-500">{`Total ${store?.deletedData?.length} Trash`}</span>
                     </div>
                     <div className="flex justify-end">
+                      <select className='px-1 mr-2 border border-gray rounded-lg'
+                        value={itemsPerPage}
+                        onChange={(e) => setItemsPerPage(e.target.value)}
+                      >
+                        {PageNumber.map((x) => (
+                          <option value={x}>{x}</option>
+                        ))}
+                      </select>
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}

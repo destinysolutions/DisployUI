@@ -28,7 +28,7 @@ import {
 } from "../../../Redux/SettingUserSlice.js";
 import toast from "react-hot-toast";
 import { getAllCustomerDetails } from "../../../Redux/admin/OnBodingSlice.js";
-import { extractSubstring } from "../../Common/Common.jsx";
+import { extractSubstring, PageNumber } from "../../Common/Common.jsx";
 
 const Billing = ({ sidebarOpen }) => {
   const dispatch = useDispatch();
@@ -36,7 +36,7 @@ const Billing = ({ sidebarOpen }) => {
   const authToken = `Bearer ${token}`;
   // pagination Start
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [billingList, setBillingList] = useState([]);
   const [cardList, setCardList] = useState([]);
   const [userPlan, setUserPlan] = useState({});
@@ -324,6 +324,14 @@ const Billing = ({ sidebarOpen }) => {
                   <span className="text-gray-500">{`Total ${billingList?.length} Biils`}</span>
                 </div>
                 <div className="flex justify-end">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}

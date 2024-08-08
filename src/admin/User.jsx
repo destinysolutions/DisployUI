@@ -18,6 +18,7 @@ import AddEditUser from "./AddEditUser";
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { PageNumber } from "../Components/Common/Common";
 
 // const AdminNavbar = lazy(() => import('./AdminNavbar'));
 // const AddEditUser = lazy(() => import('./AddEditUser'));
@@ -55,10 +56,11 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [loading, setLoading] = useState(true)
   const [searchValue, setSearchValue] = useState("")
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [selectData, setSelectData] = useState()
+
   const handleActionClick = (rowId) => {
     setShowActionBox(rowId);
   };
@@ -581,6 +583,14 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                   <span className="text-gray-500">{`Total ${filteredData?.length} Users`}</span>
                 </div>
                 <div className="flex justify-end">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
