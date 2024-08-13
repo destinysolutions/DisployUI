@@ -13,6 +13,7 @@ import {
   handleNavigateFromCompositionChannel,
 } from "./Redux/globalStates";
 import io from "socket.io-client";
+import { isValidToken } from "./Components/Common/Util";
 
 // export const socket = io.connect("http://108.166.190.137:3002");
 export const socket = io.connect("https://disploysocket.disploy.com");
@@ -25,9 +26,9 @@ const App = () => {
   const { user, token, loading, userDetails } = useSelector((state) => state.root.auth);
   const dispatch = useDispatch();
 
-  console.log('socket', socket)
-  console.log('userDetails', userDetails)
-  console.log('user', user)
+  // console.log('socket', socket)
+  // console.log('userDetails', userDetails)
+  // console.log('user', user)
 
   useEffect(() => {
     dispatch(handleNavigateFromCompositionChannel());
@@ -109,7 +110,7 @@ const App = () => {
   }, [user]);
 
   useEffect(() => {
-    if (user !== null && user?.role !== "1") {
+    if (user !== null && user?.role !== "1" && isValidToken(token)) {
       dispatch(handleGetUserDetails({ id: user?.userID, token }));
     }
   }, [user]);

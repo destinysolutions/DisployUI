@@ -277,7 +277,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     isView: false,
   });
 
-  console.log('permissions', permissions)
   const [sidebarload, setSidebarLoad] = useState(true);
   const store = useSelector((state) => state.root.asset);
 

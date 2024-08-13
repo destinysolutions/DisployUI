@@ -540,7 +540,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${DELETE_ALL_ASSET}??assetIDs=${selectAssets?.join(',')}`,
+      url: `${DELETE_ALL_ASSET}?assetIDs=${selectAssets?.join(',')}`,
       headers: { Authorization: authToken },
     };
 
@@ -560,7 +560,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await dispatch(handelAllDelete(config));
+      
         setSelectAll(false);
+        setLoadFist(true); // Trigger your action on cancel
       } else {
         setLoadFist(true); // Trigger your action on cancel
         setSelectAll(false);

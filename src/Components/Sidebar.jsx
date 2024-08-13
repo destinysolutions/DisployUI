@@ -35,8 +35,9 @@ const Sidebar = ({ sidebarOpen }) => {
   };
   const navigation = useNavigate();
   const dispatch = useDispatch();
-  const { userDetails,user, token } = useSelector((state) => state.root.auth);
+  const { userDetails, user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
+
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(false);
   const [mobileSidebar, setMobileSidebar] = useState(false);
@@ -44,7 +45,7 @@ const Sidebar = ({ sidebarOpen }) => {
   const [screenLimit, setScreenLimit] = useState(false);
   const [menuData, setMenuData] = useState([]);
   const [menuDataBottummenu, setMenuDataBottummenu] = useState([]);
-
+  // console.table(menuData);
   const store = useSelector((state) => state.root.sidebarData);
 
 
@@ -78,9 +79,11 @@ const Sidebar = ({ sidebarOpen }) => {
         .sort((a, b) => a.sortBy - b.sortBy || a.title.localeCompare(b.title)); // Sort by sortBy, then by title
 
       const currentPath = window.location.pathname;
+
       let foundActive = false;
 
       const updateIsActive = (menuItems) => {
+
         menuItems.forEach((menuItem) => {
           if (menuItem.path === currentPath) {
             menuItem.isActive = true;
@@ -443,9 +446,9 @@ const Sidebar = ({ sidebarOpen }) => {
                                         <span
                                           className="ml-5"
                                           onClick={() => {
-                                            if(userDetails?.isRetailer === true){
+                                            if (userDetails?.isRetailer === true) {
                                               setShowOTPModal(true)
-                                            }else{
+                                            } else {
                                               verifyScreenStorage()
                                             }
                                           }}
@@ -583,9 +586,9 @@ const Sidebar = ({ sidebarOpen }) => {
                                     <span
                                       className="ml-5"
                                       onClick={() => {
-                                        if(userDetails?.isRetailer === true){
+                                        if (userDetails?.isRetailer === true) {
                                           setShowOTPModal(true)
-                                        }else{
+                                        } else {
                                           verifyScreenStorage()
                                         }
                                       }}
