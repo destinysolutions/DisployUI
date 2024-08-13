@@ -12,6 +12,7 @@ import { HiUserGroup } from "react-icons/hi2";
 import { Tooltip } from "@material-tailwind/react";
 import ReactTooltip from "react-tooltip";
 import { socket } from "../../../App";
+import { PageNumber } from "../../Common/Common";
 
 const ScreenGroupModal = ({
   label,
@@ -38,7 +39,7 @@ const ScreenGroupModal = ({
   const [searchScreen, setSearchScreen] = useState("");
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   useEffect(() => {
@@ -59,8 +60,8 @@ const ScreenGroupModal = ({
   }, [dispatch, loadFirst, store]);
   const filteredData = Array.isArray(store.data)
     ? store.data?.filter((item) =>
-        item?.screenName?.toLowerCase()?.includes(searchScreen?.toLowerCase())
-      )
+      item?.screenName?.toLowerCase()?.includes(searchScreen?.toLowerCase())
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -68,14 +69,18 @@ const ScreenGroupModal = ({
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -223,7 +228,7 @@ const ScreenGroupModal = ({
                   />
                 </div>
                 <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
-                  All Select 
+                  All Select
                 </h3>
               </div>
               <button className="p-1 text-xl" onClick={onClose}>
@@ -231,7 +236,7 @@ const ScreenGroupModal = ({
               </button>
             </div>
 
-            <div className="p-2">
+            <div className="py-2 px-3">
               <label
                 for="name"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -239,34 +244,38 @@ const ScreenGroupModal = ({
                 Screen Group Name *
               </label>
             </div>
-            <div className="flex lg:justify-end lg:flex-row md:flex-row md:justify-end sm:flex-col flex-col gap-4 px-3">
-              <input
-                type="name"
-                name="name"
-                id="name"
-                onChange={handleScreenGroupNameChange}
-                value={screenGroupName}
-                className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white`}
-                placeholder="Enter Screen Group Name"
-              />
-              {screenGroupNameError && (
-                <p className="text-red-500 text-sm mt-1 error">
-                  {screenGroupNameError}
-                </p>
-              )}
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <AiOutlineSearch className="w-5 h-5 text-gray " />
-                </span>
+            <div className="flex lg:justify-between lg:flex-row md:flex-row md:justify-between sm:flex-col flex-col gap-4 px-3">
+              <div className="flex flex-col w-60">
                 <input
-                  type="text"
-                  placeholder="Search Screen" //location ,screen, tag
-                  className="border border-primary rounded-full px-7 pl-10 py-2 search-user sm:w-64 xs:w-64"
-                  value={searchScreen}
-                  onChange={(e) => {
-                    handleScreenSearch(e);
-                  }}
+                  type="name"
+                  name="name"
+                  id="name"
+                  onChange={handleScreenGroupNameChange}
+                  value={screenGroupName}
+                  className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 w-[250px]  focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white`}
+                  placeholder="Enter Screen Group Name"
                 />
+                {screenGroupNameError && (
+                  <p className="text-red-500 text-sm mt-1 error">
+                    {screenGroupNameError}
+                  </p>
+                )}
+              </div>
+              <div>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <AiOutlineSearch className="w-5 h-5 text-gray " />
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search Screen" //location ,screen, tag
+                    className="border border-primary rounded-full px-7 pl-10 py-2 search-user sm:w-64 xs:w-64"
+                    value={searchScreen}
+                    onChange={(e) => {
+                      handleScreenSearch(e);
+                    }}
+                  />
+                </div>
               </div>
             </div>
 
@@ -350,11 +359,10 @@ const ScreenGroupModal = ({
                           <td className="text-center">
                             <span
                               id={`changetvstatus${screen.macid}`}
-                              className={`rounded-full px-6 py-2 text-white text-center ${
-                                screen.screenStatus == 1
-                                  ? "bg-[#3AB700]"
-                                  : "bg-[#FF0000]"
-                              }`}
+                              className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                ? "bg-[#3AB700]"
+                                : "bg-[#FF0000]"
+                                }`}
                             >
                               {screen.screenStatus == 1 ? "Live" : "offline"}
                             </span>
@@ -408,14 +416,12 @@ const ScreenGroupModal = ({
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="8" className="text-center">
-                          {store && store.data?.length === 0 ? (
-                            "No data found"
-                          ) : (
-                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                        <td colSpan={8}>
+                          <div className="flex text-center m-5 justify-center">
+                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                               No Data Available
                             </span>
-                          )}
+                          </div>
                         </td>
                       </tr>
                     )}
@@ -428,6 +434,14 @@ const ScreenGroupModal = ({
                 <span className="text-gray-500">{`Total ${store?.data?.length} Screen`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -448,7 +462,7 @@ const ScreenGroupModal = ({
                       d="M13 5H1m0 0 4 4M1 5l4-4"
                     />
                   </svg>
-                  {sidebarOpen ? "Previous" : ""} 
+                  {sidebarOpen ? "Previous" : ""}
                 </button>
                 <div className="flex items-center me-3">
                   <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
@@ -479,25 +493,23 @@ const ScreenGroupModal = ({
               </div>
             </div>
 
-              {/* Modal footer */}
-              <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-start">
-                <button
-                  data-modal-hide="static-modal"
-                  type="button"
-                  className="border-2 border-primary  rounded-lg ml-3 text-white bg-primary  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  onClick={handleSaveScreen}
-                >
-                  {label}
-                </button>
-                <button
-                  data-modal-hide="static-modal"
-                  type="button"
-                  className="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
-                  onClick={onClose}
-                >
-                  Cancel
-                </button>
-              </div>
+            {/* Modal footer */}
+            <div className="flex gap-5 items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-center">
+              <button
+                type="button"
+                className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
+                onClick={handleSaveScreen}
+              >
+                {label}
+              </button>
+              <button
+                type="button"
+                className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
+                onClick={onClose}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       </div>

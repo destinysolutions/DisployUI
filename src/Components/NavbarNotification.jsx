@@ -161,12 +161,15 @@ const NavbarNotification = ({ setShowNotificationBox }) => {
                             )
                         })}
                         {!loading && notification?.length > 5 && (
-                            <div className='w-full flex justify-center items-center p-2 bg-gray cursor-pointer'>
-                                <button className='text-base font-semibold text-gray-600' onClick={() => navigation("/userprofile", {
+                            <div
+                                className='w-full flex justify-center items-center p-2 bg-gray cursor-pointer'
+                                onClick={() => navigation("/userprofile", {
                                     state: {
                                         notificationData: "notifications",
                                     },
-                                })}>
+                                })}
+                            >
+                                <button className='text-base font-semibold text-gray-600'>
                                     See All Notification
                                 </button>
                             </div>

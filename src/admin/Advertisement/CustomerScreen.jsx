@@ -107,7 +107,6 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                                         </tr>
                                                     )}
                                                     {!loading &&
-                                                        customerList?.allCustomer &&
                                                         sortedAndPaginatedData?.length === 0 && (
                                                             <tr>
                                                                 <td colSpan={4}>
@@ -120,7 +119,6 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                                             </tr>
                                                         )}
                                                     {!loading &&
-                                                        customerList?.allCustomer &&
                                                         sortedAndPaginatedData?.length !== 0 && (
                                                             <>
                                                                 {customerList?.allCustomer &&

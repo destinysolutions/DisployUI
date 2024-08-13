@@ -26,7 +26,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
   const notification = useLocation().state;
-  const { user } = useSelector((state) => state.root.auth);
+  const { user, userDetails } = useSelector((state) => state.root.auth);
   const [activeTab, setActiveTab] = useState(notification !== null ? notification?.notificationData : "account");
   const data = [
     {
@@ -52,7 +52,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
       label: "Advertisement",
       value: "ad-notifications",
       desc: <AdNotifications sidebarOpen={sidebarOpen} />,
-      icon: <RiAdvertisementLine  />,
+      icon: <RiAdvertisementLine />,
     },
     {
       label: "Notifications",
@@ -75,13 +75,15 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
     // },
   ];
 
+  const filteredData = data.filter(item => item.label !== "Billing");
+
   return (
     <>
       <div className="flex bg-white border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
@@ -90,23 +92,45 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="mt-5 page-contain">
             <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-              {data.map(({ icon, label, value }) => (
-                <li className="me-4">
-                  <a
-                    className={`inline-block px-4 py-3 ${activeTab === value ? "text-white bg-primary active" : "border border-primary text-black"} cursor-pointer rounded-full `}
-                    aria-current="page"
-                    onClick={() => setActiveTab(value)}
-                  >
-                    <div className="flex items-center sm:text-sm">
-                      <span className="lg:mr-2 mr-1 lg:text-xl text-lg">
-                        {icon}
-                      </span>
-                      {label}
-                    </div>
-                  </a>
-                </li>
-
-              ))}
+              {user?.userDetails?.isRetailer === false ? (
+                <>
+                  {data?.map(({ icon, label, value }) => (
+                    <li className="me-4">
+                      <a
+                        className={`inline-block px-4 py-3 ${activeTab === value ? "text-white bg-primary active" : "border border-primary text-black"} cursor-pointer rounded-full `}
+                        aria-current="page"
+                        onClick={() => setActiveTab(value)}
+                      >
+                        <div className="flex items-center sm:text-sm">
+                          <span className="lg:mr-2 mr-1 lg:text-xl text-lg">
+                            {icon}
+                          </span>
+                          {label}
+                        </div>
+                      </a>
+                    </li>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {filteredData?.map(({ icon, label, value }) => (
+                    <li className="me-4">
+                      <a
+                        className={`inline-block px-4 py-3 ${activeTab === value ? "text-white bg-primary active" : "border border-primary text-black"} cursor-pointer rounded-full `}
+                        aria-current="page"
+                        onClick={() => setActiveTab(value)}
+                      >
+                        <div className="flex items-center sm:text-sm">
+                          <span className="lg:mr-2 mr-1 lg:text-xl text-lg">
+                            {icon}
+                          </span>
+                          {label}
+                        </div>
+                      </a>
+                    </li>
+                  ))}
+                </>
+              )}
             </ul>
 
             {data.map(({ value, desc }) => (
@@ -120,7 +144,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <Footer />
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

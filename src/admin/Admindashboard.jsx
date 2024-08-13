@@ -1,10 +1,16 @@
-import Business from "../Components/Dashboard/TabingData/Business";
 import PropTypes from "prop-types";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
+import { lazy } from "react";
 import { BsLightningCharge } from "react-icons/bs";
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
+
 import Dashboard from "./Dashboard";
+import AdminNavbar from "./AdminNavbar";
+import AdminSidebar from "./AdminSidebar";
+
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
+// const Dashboard = lazy(() => import('./Dashboard'));
+
 
 const AdminDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   AdminDashboard.propTypes = {

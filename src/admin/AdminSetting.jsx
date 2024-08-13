@@ -1,6 +1,4 @@
-import React, { useRef, useState } from "react";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
+import React, { lazy, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { SiMediamarkt } from "react-icons/si";
 import {
@@ -9,23 +7,36 @@ import {
   FaRegCalendarPlus,
 } from "react-icons/fa";
 import { HiClipboardDocumentList } from "react-icons/hi2";
-import Invoice from "../Components/Settings/Invoice";
-import Myplan from "../Components/Settings/Myplan";
 import { BsFillPrinterFill, BsFillSendFill } from "react-icons/bs";
 import ReactToPrint from "react-to-print";
-import { AiOutlineSearch } from "react-icons/ai";
 import html2pdf from "html2pdf.js";
-import CreateAPI from "./CreateAPI";
-import Discount from "./Discount";
 import { MdDiscount } from "react-icons/md";
 import { FiCodesandbox } from "react-icons/fi";
-import SupplierPlan from "./SupplierPlan";
-import Footer from "../Components/Footer";
-import Billing from "../Components/Settings/Billing/Billing";
 import { useDispatch } from "react-redux";
 import { handleSendInvoice } from "../Redux/PaymentSlice";
 import { SEND_INVOICE } from "../Pages/Api";
 import { useSelector } from "react-redux";
+
+import SupplierPlan from "./SupplierPlan";
+import Footer from "../Components/Footer";
+import Billing from "../Components/Settings/Billing/Billing";
+import AdminSidebar from "./AdminSidebar";
+import AdminNavbar from "./AdminNavbar";
+import CreateAPI from "./CreateAPI";
+import Discount from "./Discount";
+import Invoice from "../Components/Settings/Invoice";
+import Myplan from "../Components/Settings/Myplan";
+
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
+// const Billing = lazy(() => import('../Components/Settings/Billing/Billing'));
+// const SupplierPlan = lazy(() => import('./SupplierPlan'));
+// const Footer = lazy(() => import('../Components/Footer'));
+// const CreateAPI = lazy(() => import('./CreateAPI'));
+// const Discount = lazy(() => import('./Discount'));
+// const Myplan = lazy(() => import('../Components/Settings/Myplan'));
+// const Invoice = lazy(() => import('../Components/Settings/Invoice'));
+
 
 const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
   AdminSetting.propTypes = {
@@ -38,7 +49,6 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
   const [STabs, setSTabs] = useState(5);
   const [searchValue, setSearchValue] = useState("");
   const [showInvoice, setShowInvoice] = useState(false);
-  const [InvoiceID, setInvoiceID] = useState("");
 
   const InvoiceRef = useRef(null);
   const [permissions, setPermissions] = useState({
@@ -99,14 +109,14 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             {showInvoice && STabs === 6 && (
               <div className="flex">
-                <button
+                {/*<button
                   type="button"
                   className="px-5 bg-primary flex items-center gap-2 text-white rounded-full py-2 border border-primary me-3 "
                   onClick={() => SendInvoice()}
                 >
                   <BsFillSendFill />
                   Send Invoice
-                </button>
+            </button>*/}
                 <button
                   className="bg-white text-primary text-base px-5 flex items-center gap-2 py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                   type="button"
@@ -170,7 +180,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 </li>
 
-                <li>
+                {/*<li>
                   <button
                     className={
                       STabs === 8 ? "stabshow settingtabactive" : "settingtab"
@@ -191,7 +201,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                     <MdDiscount className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">Discount</span>
                   </button>
-                </li>
+                  </li>*/}
                 {/*<li>
                   <button
                     className={
@@ -212,7 +222,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="col-span-3 w-full bg-white  tabdetails rounded-md relative">
               {STabs === 5 && (
                 <div>
-                  <Billing permissions={permissions} />
+                  <Billing permissions={permissions} sidebarOpen={sidebarOpen} />
                 </div>
               )}
               {STabs === 6 && (
@@ -223,7 +233,6 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
                     setShowInvoice={setShowInvoice}
                     InvoiceRef={InvoiceRef}
                     DownloadInvoice={DownloadInvoice}
-                    setInvoiceID={setInvoiceID}
                     sidebarOpen={sidebarOpen}
                   />
                 </div>

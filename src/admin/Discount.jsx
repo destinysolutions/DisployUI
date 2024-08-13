@@ -1,11 +1,6 @@
-import React, { useState } from 'react'
+import React, { lazy, useState } from 'react'
 import { BiSolidDiscount } from "react-icons/bi";
-import AddEditDiscount from './Discount/AddEditDiscount';
-import ScreenDiscount from './Discount/ScreenDiscount';
-import FeatureDiscount from './Discount/FeatureDiscount';
-import TrialPeriodDiscount from './Discount/TrialPeriodDiscount';
-import CustomDiscount from './Discount/CustomDiscount';
-import { DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID, GET_SCEDULE_TIMEZONE } from '../Pages/Api';
+import { DELETE_DISCOUNT, GET_ALL_DISCOUNT, GET_ALL_SEGMENT, GET_DISCOUNT_BY_ID, GET_TIMEZONE } from '../Pages/Api';
 import { handleDeleteDiscount, handleGetAllDiscount, handleGetAllSegment } from '../Redux/AdminSettingSlice';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -16,6 +11,21 @@ import toast from 'react-hot-toast';
 import moment from 'moment';
 import axios from 'axios';
 import { MdOutlineEdit } from 'react-icons/md';
+import ReactTooltip from 'react-tooltip';
+
+import AddEditDiscount from './Discount/AddEditDiscount';
+import ScreenDiscount from './Discount/ScreenDiscount';
+import FeatureDiscount from './Discount/FeatureDiscount';
+import TrialPeriodDiscount from './Discount/TrialPeriodDiscount';
+import CustomDiscount from './Discount/CustomDiscount';
+import { PageNumber } from '../Components/Common/Common';
+
+// const AddEditDiscount = lazy(() => import('./Discount/AddEditDiscount'));
+// const ScreenDiscount = lazy(() => import('./Discount/ScreenDiscount'));
+// const FeatureDiscount = lazy(() => import('./Discount/FeatureDiscount'));
+// const TrialPeriodDiscount = lazy(() => import('./Discount/TrialPeriodDiscount'));
+// const CustomDiscount = lazy(() => import('./Discount/CustomDiscount'));
+
 
 const Discount = ({ sidebarOpen }) => {
     const { token } = useSelector((s) => s.root.auth);
@@ -27,7 +37,7 @@ const Discount = ({ sidebarOpen }) => {
     const [selectData, setSelectData] = useState("")
     const [allSegment, setAllSegment] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Adjust items per page as needed
+    const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
     const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
     const [sortedField, setSortedField] = useState(null);
     const [loading, setLoading] = useState(true)
@@ -38,14 +48,18 @@ const Discount = ({ sidebarOpen }) => {
     // Function to sort the data based on a field and order
     const sortData = (data, field, order) => {
         const sortedData = [...data];
-        sortedData.sort((a, b) => {
-            if (order === "asc") {
-                return a[field] > b[field] ? 1 : -1;
-            } else {
-                return a[field] < b[field] ? 1 : -1;
-            }
-        });
-        return sortedData;
+        if (field !== null) {
+            sortedData.sort((a, b) => {
+                if (order === "asc") {
+                    return a[field] > b[field] ? 1 : -1;
+                } else {
+                    return a[field] < b[field] ? 1 : -1;
+                }
+            });
+            return sortedData;
+        } else {
+            return data
+        }
     };
 
     const sortedAndPaginatedData = sortData(
@@ -70,7 +84,7 @@ const Discount = ({ sidebarOpen }) => {
 
     useEffect(() => {
         axios
-            .get(GET_SCEDULE_TIMEZONE, {
+            .get(GET_TIMEZONE, {
                 headers: {
                     Authorization: authToken,
                 },
@@ -312,13 +326,21 @@ const Discount = ({ sidebarOpen }) => {
                                                                 <>
                                                                     <div
                                                                         data-tip
-                                                                        data-for="View"
+                                                                        data-for="Edit"
                                                                         className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                                         onClick={() => {
                                                                             handleEditDiscount(item?.discountID)
                                                                         }}
                                                                     >
                                                                         <MdOutlineEdit />
+                                                                        <ReactTooltip
+                                                                            id="Edit"
+                                                                            place="bottom"
+                                                                            type="warning"
+                                                                            effect="solid"
+                                                                        >
+                                                                            <span>Edit</span>
+                                                                        </ReactTooltip>
                                                                     </div>
 
                                                                     {/* <div
@@ -340,17 +362,15 @@ const Discount = ({ sidebarOpen }) => {
                                         {!loading &&
                                             allDiscount &&
                                             sortedAndPaginatedData?.length === 0 && (
-                                                <>
-                                                    <tr>
-                                                        <td colSpan={5}>
-                                                            <div className="flex text-center justify-center">
-                                                                <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
-                                                                    No Data Available
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </>
+                                                <tr>
+                                                    <td colSpan={5}>
+                                                        <div className="flex text-center m-5 justify-center">
+                                                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                                                                No Data Available
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                             )}
                                     </tbody>
                                 </table>
@@ -360,6 +380,14 @@ const Discount = ({ sidebarOpen }) => {
                                     <span className="text-gray-500">{`Total ${allDiscount?.length} Discount`}</span>
                                 </div>
                                 <div className="flex justify-end">
+                                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                                        value={itemsPerPage}
+                                        onChange={(e) => setItemsPerPage(e.target.value)}
+                                    >
+                                        {PageNumber.map((x) => (
+                                            <option value={x}>{x}</option>
+                                        ))}
+                                    </select>
                                     <button
                                         onClick={() => handlePageChange(currentPage - 1)}
                                         disabled={currentPage === 1}

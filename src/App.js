@@ -13,19 +13,22 @@ import {
   handleNavigateFromCompositionChannel,
 } from "./Redux/globalStates";
 import io from "socket.io-client";
+import { isValidToken } from "./Components/Common/Util";
 
 // export const socket = io.connect("http://108.166.190.137:3002");
-export const socket = io.connect("https://disploysocket.thedestinysolutions.com");
+export const socket = io.connect("https://disploysocket.disploy.com");
 // export const socket = io.connect("http://192.168.1.117:3002");
 
 // export const socket = io.connect("http://localhost:3002");
 
 const App = () => {
-  console.log('socket', socket)
   const [timer, setTimer] = useState(0);
-
-  const { user, token, loading } = useSelector((state) => state.root.auth);
+  const { user, token, loading, userDetails } = useSelector((state) => state.root.auth);
   const dispatch = useDispatch();
+
+  // console.log('socket', socket)
+  // console.log('userDetails', userDetails)
+  // console.log('user', user)
 
   useEffect(() => {
     dispatch(handleNavigateFromCompositionChannel());
@@ -93,7 +96,7 @@ const App = () => {
 
   // when user enter first time after login
   useEffect(() => {
-    if (user !== null && timer == 1800) {
+    if (user !== null && timer === 1800) {
       start();
     }
   }, [user, timer]);
@@ -107,7 +110,7 @@ const App = () => {
   }, [user]);
 
   useEffect(() => {
-    if (user !== null) {
+    if (user !== null && user?.role !== "1" && isValidToken(token)) {
       dispatch(handleGetUserDetails({ id: user?.userID, token }));
     }
   }, [user]);
@@ -132,12 +135,14 @@ const App = () => {
       console.log('Received TV status from server:', data);
       // Handle TV status data if needed
       var b = document.getElementById(`changetvstatus${data?.macId}`);
-      b.setAttribute(
-        "class",
-        "rounded-full px-6 py-2 text-white text-center " +
-        (data?.connection === true ? "bg-[#3AB700]" : "bg-[#FF0000]")
-      );
-      b.textContent = data?.connection === true ? "Live" : "offline";
+      if (b !== null) {
+        b.setAttribute(
+          "class",
+          "rounded-full px-6 py-2 text-white text-center " +
+          (data?.connection === true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+        );
+        b.textContent = data?.connection === true ? "Live" : "offline";
+      }
       // TvStatus = data?.connection == true ? "Live" : "Offline";
 
       // If you want to disconnect after receiving TV status, uncomment the line below

@@ -40,11 +40,11 @@ import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
-import { Pagination } from "../Common/Common";
+import { PageNumber, Pagination } from "../Common/Common";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const { successMessage, error, type } = useSelector(
     (state) => state.root.composition
   );
@@ -72,7 +72,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectcheck, setSelectCheck] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  // const [itemsPerPage] = useState(5);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
   const [permissions, setPermissions] = useState({
@@ -80,10 +80,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     isSave: false,
     isView: false,
   });
+  const [pageSize, setPageSize] = useState(5);
   const [sidebarload, setSidebarLoad] = useState(true);
   const modalRef = useRef(null);
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
+
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
@@ -96,7 +98,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         value.toString().toLowerCase().includes(searchComposition.toLowerCase())
     )
   );
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredData.length / pageSize);
 
   useEffect(() => {
     setCurrentPage(1)
@@ -105,21 +107,25 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
     filteredData,
     sortedField,
     sortOrder
-  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  ).slice((currentPage - 1) * pageSize, currentPage * pageSize);
   const endPage = currentPage * sortedAndPaginatedData?.length;
   const startPage = Pagination(currentPage, sortedAndPaginatedData?.length);
 
@@ -248,44 +254,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           ?.replace(/^\s+/g, ""),
       };
       socket.emit("ScreenConnected", Params);
-      // if (connection.state == "Disconnected") {
-      //   connection
-      //     .start()
-      //     .then((res) => {
-      //       console.log("signal connected");
-      //     })
-      //     .then(() => {
-      //       connection
-      //         .invoke(
-      //           "ScreenConnected",
-      //           compositionData
-      //             ?.map((item) => item?.maciDs)
-      //             ?.join(",")
-      //             ?.replace(/^\s+/g, "")
-      //         )
-      //         .then(() => {
-      //           console.log("SignalR method invoked after screen update");
-      //         })
-      //         .catch((error) => {
-      //           console.error("Error invoking SignalR method:", error);
-      //         });
-      //     });
-      // } else {
-      //   connection
-      //     .invoke(
-      //       "ScreenConnected",
-      //       compositionData
-      //         ?.map((item) => item?.maciDs)
-      //         ?.join(",")
-      //         ?.replace(/^\s+/g, "")
-      //     )
-      //     .then(() => {
-      //       console.log("SignalR method invoked after screen update");
-      //     })
-      //     .catch((error) => {
-      //       console.error("Error invoking SignalR method:", error);
-      //     });
-      // }
       setSelectScreenModal(false);
       setAddScreenModal(false);
     });
@@ -467,40 +435,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               setAddScreenModal(false);
               loadComposition();
             }, 2000);
-            // Invoke ScreenConnected method
-            // if (connection.state == "Disconnected") {
-            //   connection
-            //     .start()
-            //     .then((res) => {
-            //       console.log("signal connected");
-            //     })
-            //     .then(() => {
-            //       connection
-            //         .invoke("ScreenConnected", macids)
-            //         .then(() => {
-            //           console.log("func. invoked");
-            //           // loadComposition();
-            //         })
-            //         .catch((err) => {
-            //           toast.remove();
-            //           console.log("error from invoke", err);
-            //           toast.error("Something went wrong, try again");
-            //         });
-            //     });
-            // } else {
-            //   connection
-            //     .invoke("ScreenConnected", macids)
-            //     .then(() => {
-            //       console.log("func. invoked");
-            //       // toast.remove();
-            //       // loadComposition();
-            //     })
-            //     .catch((err) => {
-            //       toast.remove();
-            //       console.log("error from invoke", err);
-            //       toast.error("Something went wrong, try again");
-            //     });
-            // }
           } catch (error) {
             console.error("Error during connection:", error);
             toast.error("Something went wrong, try again");
@@ -620,7 +554,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               <Navbar />
             </div>
 
-            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -804,21 +738,20 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     key={composition?.compositionID}
                                   >
                                     <td className="text-[#5E5E5E] mw-200">
-                                      <div className="flex gap-1">
+                                      <div className="flex gap-1 items-center">
                                         {permissions.isDelete && (
-                                          <div>
-                                            <input
-                                              type="checkbox"
-                                              checked={selectedItems.includes(
+                                          <input
+                                            type="checkbox"
+                                            className="cursor-pointer"
+                                            checked={selectedItems.includes(
+                                              composition?.compositionID
+                                            )}
+                                            onChange={() =>
+                                              handleCheckboxChange(
                                                 composition?.compositionID
-                                              )}
-                                              onChange={() =>
-                                                handleCheckboxChange(
-                                                  composition?.compositionID
-                                                )
-                                              }
-                                            />
-                                          </div>
+                                              )
+                                            }
+                                          />
                                         )}
                                         {composition?.compositionName}
                                       </div>
@@ -918,7 +851,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                             />
                                           )}
                                         {/* add or edit tag modal */}
-                                       
+
                                       </div>
                                     </td>
 
@@ -1020,9 +953,17 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                   <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                     <div className="flex items-center">
-                      <span className="text-gray-500">{`Total ${compositionData?.length} Compositions`}</span>
+                      <span className="text-gray-500">{`Total ${filteredData?.length} Compositions`}</span>
                     </div>
-                    <div className="flex justify-end">
+                    <div className="flex justify-end ">
+                      <select className='px-1 mr-2 border border-gray rounded-lg'
+                        value={pageSize}
+                        onChange={(e) => setPageSize(e.target.value)}
+                      >
+                        {PageNumber.map((x) => (
+                          <option value={x}>{x}</option>
+                        ))}
+                      </select>
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
@@ -1174,7 +1115,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

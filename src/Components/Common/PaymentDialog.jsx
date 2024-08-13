@@ -4,14 +4,19 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom';
 import "../../Styles/PaymentModal.css"
 import { useSelector } from 'react-redux';
-import { CREATE_SUBSCRIPTION, PAYMENT_DETAILS, paypalOptions } from '../../Pages/Api';
+import { CREATE_SUBSCRIPTION, GET_ALL_CARD, GET_ALL_PLANS, PAYMENT_DETAILS, paypalOptions } from '../../Pages/Api';
 import { useDispatch } from 'react-redux';
 import { handleCreateSubscription, handlePaymentDetails } from '../../Redux/PaymentSlice';
 import { IoClose } from "react-icons/io5";
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
+import toast from 'react-hot-toast';
+import { GetAllCardList } from '../../Redux/CardSlice';
+import { FaPlus } from "react-icons/fa6";
+import { capitalizeFirstLetter } from './Common';
+import { handleGetAllPlans } from '../../Redux/CommonSlice';
 const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, discountCoupon }) => {
 
-    const { user } = useSelector((state) => state.root.auth);
+    const { user, userDetails } = useSelector((state) => state.root.auth);
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
@@ -23,6 +28,68 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
     const [errorMessage, setErrorMessage] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState("Credit")
     const [autoPay, setAutoPay] = useState(false)
+    const [cardList, setCardList] = useState([])
+    const [selectCard, setSelectCard] = useState("")
+    const [activeSection, setActiveSection] = useState(null);
+    const [loading, setLoading] = useState(true)
+    const [selectPlan, setSelectPlan] = useState({})
+
+    const toggleSection = (section) => {
+        setActiveSection(activeSection === section ? null : section);
+    };
+
+
+    useEffect(() => {
+        setLoading(true)
+        const config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: `${GET_ALL_PLANS}?PlanID=${userDetails?.planID}`,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: authToken
+            },
+        }
+        dispatch(handleGetAllPlans({ config })).then((res) => {
+            if (res?.payload?.status === 200) {
+                setSelectPlan(res?.payload?.data)
+                setLoading(false)
+            }
+        }).catch((error) => {
+            console.log('error', error)
+        })
+
+    }, [userDetails?.planID])
+
+    const fetchCards = async () => {
+        try {
+            const config = {
+                method: "get",
+                maxBodyLength: Infinity,
+                url: `${GET_ALL_CARD}?Email=${user?.emailID}`,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: authToken
+                },
+            }
+            dispatch(GetAllCardList({ config })).then((res) => {
+                if (res?.payload?.status) {
+                    if (res?.payload?.data?.length > 0) {
+                        setActiveSection(1)
+                    }
+                    setCardList(res?.payload?.data);
+                    setLoading(false)
+                }
+            })
+        } catch (error) {
+            toast.error('Error fetching cards');
+        }
+    };
+
+    useEffect(() => {
+        fetchCards()
+    }, [])
+
     useEffect(() => {
         if (!stripe) {
             return;
@@ -61,21 +128,18 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         layout: "tabs"
     }
 
-    const PaymentDetails = ({ paymentIntent, organizationID, Subscription }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, Subscription, product, screenId }) => {
         let totalPrice;
-        if (user?.planID === 1 && type === "Screen") {
-            totalPrice = PaymentValue * 10
-        } else if (user?.planID === 2 && type === "Screen") {
-            totalPrice = PaymentValue * 17
-        } else if (user?.planID === 3 && type === "Screen") {
-            totalPrice = PaymentValue * 24
-        } else if (user?.planID === 4 && type === "Screen") {
-            totalPrice = PaymentValue * 47
+
+        if (type === "Screen") {
+            totalPrice = PaymentValue * selectPlan?.planPrice
         } else {
             totalPrice = PaymentValue * 3
         }
+        const { card, ...newObj } = paymentIntent;
+        const updatedObj = { ...newObj, ...card };
         let params = {
-            ...paymentIntent,
+            ...updatedObj,
             // PaymentType: `${selectPlan?.planName} Plan`,
             PaymentValue: PaymentValue,
             AutoPay: true,
@@ -93,6 +157,8 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                     timeZoneName: "long",
                 })
                 .substring(4),
+            ProductID: product,
+            ScreenID: screenId
         }
 
         let config = {
@@ -107,31 +173,33 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         }
         dispatch(handlePaymentDetails({ config })).then((res) => {
             if (res?.payload?.status) {
+                toast.success("Payment Submitted Successfully.")
+                setTimeout(() => {
+                    toast.remove()
+                    setIsLoading(false);
+                    navigation("/dashboard"); // Navigate to dashboard after processing payment
+                }, 1000);
+            } else {
                 setIsLoading(false);
-                navigation("/dashboard"); // Navigate to dashboard after processing payment
+                toast.error("Error!")
             }
         })
     }
 
-    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
-        let product;
-        if (type === "Screen" && ((user?.planID === 1 || user?.planID === "1") || (user?.isTrial && user?.isActivePlan === false))) {
-            product = "prod_Q1wI9ksVDBdRW3"
-        } else if (type === "Screen" && (user?.planID === 2 || user?.planID === "2")) {
-            product = "prod_Q1wITfBepgK1H7"
-        } else if (type === "Screen" && (user?.planID === 3 || user?.planID === "3")) {
-            product = "prod_Q1wJSPx0LoW70n"
-        } else if (type === "Screen" && (user?.planID === 4 || user?.planID === "4")) {
-            product = "prod_Q1wJHaR4iDXNRP"
-        } else if (type === "Storage") {
-            product = "prod_Q1wJcEtb58TKI5"
+    const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
+        setIsLoading(true)
+        let screenId = selectPlan?.screenID;
+
+        if (type === "Storage") {
+            screenId = "prod_Q1wJcEtb58TKI5"
         }
 
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
-            ProductID: product,
+            ProductID: screenId,
             quantity: PaymentValue,
+            Name: name
         }
 
         let config = {
@@ -145,10 +213,41 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             data: JSON.stringify(params),
         }
 
-        dispatch(handleCreateSubscription({ config })).then((res) => {
+        dispatch(handleCreateSubscription({ config })).then(async (res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
-                PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription })
+                const SubscriptionData = res?.payload?.subscription
+                let client_secret_id;
+                if (SubscriptionData?.latest_invoice?.payment_intent?.client_secret) {
+                    client_secret_id = SubscriptionData?.latest_invoice?.payment_intent?.client_secret
+                } else {
+                    client_secret_id = clientSecret
+                }
+
+                const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret = client_secret_id, {
+                    payment_method: PaymentMethodId,
+                });
+
+                if (confirmError) {
+                    setIsLoading(false);
+                    console.error(confirmError.message);
+                    setMessage(confirmError.message);
+                } else if (paymentIntent.status === 'succeeded') {
+                    console.log('Payment successful!');
+                    setMessage("Payment successful!");
+                    PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, product: "", screenId })
+                } else if (paymentIntent.status === 'requires_action') {
+                    setIsLoading(false);
+                    console.log('3D Secure authentication required');
+                    setErrorMessage('3D Secure authentication required. Please complete the authentication.');
+                } else if (paymentIntent.status === 'requires_payment_method') {
+                    setIsLoading(false);
+                    console.log('Payment failed: requires payment method');
+                    setErrorMessage('Payment failed: requires payment method. Please try again.');
+                }
+            } else {
+                setIsLoading(false);
+                toast.error("Error!")
             }
         })
     }
@@ -186,14 +285,18 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
                 if (error) {
                     if (error.type === "card_error" || error.type === "validation_error") {
+                        toast.error(error?.message)
+                        setIsLoading(false);
                         setMessage(error.message);
                     } else {
+                        toast.error("An unexpected error occurred.")
+                        setIsLoading(false);
                         setMessage("An unexpected error occurred.");
                     }
                 } else {
                     // Payment was successful, you can access paymentIntent for confirmation data
                     setMessage("Payment successful!");
-                    CreateSubscription({ email: user?.emailID, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
+                    CreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: paymentMethod?.id, paymentIntent: paymentMethod, organizationID: user?.organizationId })
 
                     // let params = {
                     //     ...paymentMethod,
@@ -230,6 +333,17 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         }
     };
 
+    const handleChange = (data) => {
+        setSelectCard(data);
+    };
+
+
+    const handlePay = () => {
+        if (selectCard !== "") {
+            CreateSubscription({ email: user?.emailID, name: user?.userDetails?.firstName + " " + user?.userDetails?.lastName, PaymentMethodId: selectCard?.paymentMethodID, paymentIntent: selectCard?.paymentMethod, organizationID: user?.organizationId })
+        }
+    }
+
     return (
         <>
             <div
@@ -240,19 +354,19 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
             >
                 <div className="modal-overlay">
                     <div className="modal">
-                        <div className="relative p-4 w-[700px] max-h-full">
+                        <div className="relative p-4 lg:w-[1000px] md:w-[900px] sm:w-full max-h-full">
                             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                                 <div className="p-4 md:p-5">
                                     <div id="payment-form" className='Payment'>
-                                        <div className="text-gray-500 hover:text-gray-700 duration-200 flex justify-between items-center mb-5 cursor-pointer" onClick={() => togglePaymentModal()}>
+                                        <div className="text-gray-500 hover:text-gray-700 duration-200 flex justify-between items-center mb-5 cursor-pointer" >
                                             <label className='text-black text-2xl font-semibold'>
                                                 Select Payment
                                             </label>
-                                            <IoClose size={26} />
+                                            <IoClose size={26} onClick={() => togglePaymentModal()} />
                                         </div>
-                                        <div className='flex flex-row gap-3'>
-                                            <div className='flex flex-col w-60 gap-4 items-start border-r border-gray'>
-                                                <div className='flex items-center'>
+                                        <div className='flex flex-row flex-wrap'>
+                                            <div className='w-full sm:w-1/3 md:w-1/4'>
+                                                <div className='flex items-center border border-gray rounded py-2 px-3 mb-2'>
                                                     <input
                                                         id="Credit"
                                                         type="radio"
@@ -264,119 +378,322 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                                                     />
                                                     <label htmlFor="Credit" className="ms-2 text-lg font-medium text-gray-900 dark:text-gray-300">Credit Card</label>
                                                 </div>
-                                                <div className='flex items-center '>
-                                                    <input
-                                                        id="PayPal"
-                                                        type="radio"
-                                                        value="PayPal"
-                                                        name="option"
-                                                        checked={paymentMethod === "PayPal"}
-                                                        onChange={() => setPaymentMethod("PayPal")}
-                                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                                    />
-                                                    <label htmlFor="PayPal" className="ms-2 text-lg font-medium text-gray-900 dark:text-gray-300">PayPal</label>
-                                                </div>
+                                                {/*<div className='flex items-center border border-gray rounded py-2 px-3 mb-2'>
+                                                <input
+                                                    id="PayPal"
+                                                    type="radio"
+                                                    value="PayPal"
+                                                    name="option"
+                                                    checked={paymentMethod === "PayPal"}
+                                                    onChange={() => setPaymentMethod("PayPal")}
+                                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                                />
+                                                <label htmlFor="PayPal" className="ms-2 text-lg font-medium text-gray-900 dark:text-gray-300">PayPal</label>
+</div>*/}
                                             </div>
-                                            {paymentMethod === "Credit" && (
-                                                <div className="payment-form">
-                                                    <label className="card-label">
-                                                        Card Number
-                                                        <CardNumberElement
-                                                            className="card-input"
-                                                            options={{
-                                                                style: {
-                                                                    base: {
-                                                                        fontSize: '16px',
-                                                                        color: '#424770',
-                                                                        '::placeholder': {
-                                                                            color: '#aab7c4',
-                                                                        },
-                                                                    },
-                                                                    invalid: {
-                                                                        color: '#9e2146',
-                                                                    },
-                                                                },
-                                                            }}
-                                                        />
-                                                    </label>
-                                                    <label className="card-label">
-                                                        Expiration Date
-                                                        <CardExpiryElement
-                                                            className="card-input"
-                                                            options={{
-                                                                style: {
-                                                                    base: {
-                                                                        fontSize: '16px',
-                                                                        color: '#424770',
-                                                                        '::placeholder': {
-                                                                            color: '#aab7c4',
-                                                                        },
-                                                                    },
-                                                                    invalid: {
-                                                                        color: '#9e2146',
-                                                                    },
-                                                                },
-                                                            }}
-                                                        />
-                                                    </label>
-                                                    <label className="card-label">
-                                                        CVC
-                                                        <CardCvcElement
-                                                            className="card-input"
-                                                            options={{
-                                                                style: {
-                                                                    base: {
-                                                                        fontSize: '16px',
-                                                                        color: '#424770',
-                                                                        '::placeholder': {
-                                                                            color: '#aab7c4',
-                                                                        },
-                                                                    },
-                                                                    invalid: {
-                                                                        color: '#9e2146',
-                                                                    },
-                                                                },
-                                                            }}
-                                                        />
-                                                    </label>
-                                                    <div className="auto-pay">
-                                                        <input type="checkbox" className="auto-pay-checkbox" onChange={() => setAutoPay(!autoPay)} value={autoPay} />
-                                                        <label className="auto-pay-label">Auto Payment</label>
-                                                    </div>
-                                                    {errorMessage && (
-                                                        <div className='mb-2'>
-                                                            <label className="error-message">You need to Check Auto Pay for Further Process.</label>
-                                                        </div>
+                                            <div className='w-full sm:w-2/3 md:w-3/4 pl-5'>
+                                                <div className='bg-white border border-gray rounded-lg w-full p-4'>
+                                                    {paymentMethod === "Credit" && (
+                                                        <>
+                                                            {loading && (
+                                                                <div className="flex text-center m-5 justify-center">
+                                                                    <svg
+                                                                        aria-hidden="true"
+                                                                        role="status"
+                                                                        className="inline w-10 h-10 me-3 text-black animate-spin dark:text-gray-600"
+                                                                        viewBox="0 0 100 101"
+                                                                        fill="none"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                    >
+                                                                        <path
+                                                                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                                                            fill="currentColor"
+                                                                        />
+                                                                        <path
+                                                                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                                                            fill="#1C64F2"
+                                                                        />
+                                                                    </svg>
+
+                                                                </div>
+                                                            )}
+                                                            {!loading && cardList?.length > 0 && (
+                                                                <>
+                                                                    <div className="accordion-section mb-4">
+                                                                        <div
+                                                                            className={`border border-gray-300 rounded-lg flex justify-between px-4 py-3 items-center text-gray-500 transition ease duration-500 cursor-pointer pr-10 relative ${activeSection === 1 ? 'group-focus:text-white' : ''
+                                                                                }`}
+                                                                            onClick={() => toggleSection(1)}
+                                                                            tabIndex="1"
+                                                                        >
+                                                                            <div className="transition ease duration-500">Select Card</div>
+                                                                            <div
+                                                                                className={`h-8 w-8 items-center inline-flex justify-center transform transition ease duration-500 absolute top-0 right-0 mb-auto ml-auto mt-2 mr-2 ${activeSection === 1 ? '-rotate-180' : ''
+                                                                                    }`}
+                                                                            >
+                                                                                <svg
+                                                                                    stroke="currentColor"
+                                                                                    fill="none"
+                                                                                    strokeWidth="2"
+                                                                                    viewBox="0 0 24 24"
+                                                                                    strokeLinecap="round"
+                                                                                    strokeLinejoin="round"
+                                                                                    className="transition-transform duration-300 text-gray-500"
+                                                                                    height="1.5em"
+                                                                                    width="1.5em"
+                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                >
+                                                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                                                </svg>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div
+                                                                            className={`max-h-0 overflow-hidden ease duration-500 ${activeSection === 1 ? 'max-h-screen' : ''}`}
+                                                                        >
+                                                                            <div className="border border-gray-300 rounded-lg p-4 max-h-56 overflow-y-scroll mt-3">
+                                                                                {!loading && cardList?.length > 0 && cardList?.map((item) => (
+                                                                                    <div key={item.cardNumber} className='flex justify-between items-center border rounded-lg border-gray-300 px-4 py-2 mb-2'>
+                                                                                        <div className='flex items-center'>
+                                                                                            <i className='mr-3 w-12'>
+                                                                                                <svg viewBox="0 -11 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                    <rect x="0.5" y="0.5" width="69" height="47" rx="5.5" fill="white" stroke="#D9D9D9"></rect>
+                                                                                                    <path fillRule="evenodd" clipRule="evenodd" d="M35.3945 34.7619C33.0114 36.8184 29.92 38.0599 26.5421 38.0599C19.0047 38.0599 12.8945 31.8788 12.8945 24.254C12.8945 16.6291 19.0047 10.448 26.5421 10.448C29.92 10.448 33.0114 11.6895 35.3945 13.7461C37.7777 11.6895 40.869 10.448 44.247 10.448C51.7843 10.448 57.8945 16.6291 57.8945 24.254C57.8945 31.8788 51.7843 38.0599 44.247 38.0599C40.869 38.0599 37.7777 36.8184 35.3945 34.7619Z" fill="#ED0006"></path>
+                                                                                                    <path fillRule="evenodd" clipRule="evenodd" d="M35.3945 34.7619C38.3289 32.2296 40.1896 28.4616 40.1896 24.254C40.1896 20.0463 38.3289 16.2783 35.3945 13.7461C37.7777 11.6895 40.869 10.448 44.247 10.448C51.7843 10.448 57.8945 16.6291 57.8945 24.254C57.8945 31.8788 51.7843 38.0599 44.247 38.0599C40.869 38.0599 37.7777 36.8184 35.3945 34.7619Z" fill="#F9A000"></path>
+                                                                                                    <path fillRule="evenodd" clipRule="evenodd" d="M35.3946 13.7461C38.329 16.2784 40.1897 20.0463 40.1897 24.254C40.1897 28.4616 38.329 32.2295 35.3946 34.7618C32.4603 32.2295 30.5996 28.4616 30.5996 24.254C30.5996 20.0463 32.4603 16.2784 35.3946 13.7461Z" fill="#FF5E00"></path>
+                                                                                                </svg>
+                                                                                            </i>
+                                                                                            {capitalizeFirstLetter(item?.funding)} Card **** **** **** {item?.cardNumber}
+                                                                                        </div>
+                                                                                        {item?.isDefault && (
+                                                                                            <span className='bg-blue-200 px-3 py-1.5 text-blue-600 rounded-full text-sm'>Default Card</span>
+                                                                                        )}
+                                                                                        <input type='radio'
+                                                                                            checked={selectCard?.paymentMethodID === item?.paymentMethodID}
+                                                                                            onChange={() => handleChange(item)}
+                                                                                        />
+                                                                                    </div>
+                                                                                ))}
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="accordion-section">
+                                                                        <div
+                                                                            className={`border border-gray-300 rounded-lg flex justify-between px-4 py-3 items-center text-gray-500 transition ease duration-500 cursor-pointer pr-10 relative ${activeSection === 2 ? 'group-focus:text-white' : ''
+                                                                                }`}
+                                                                            onClick={() => toggleSection(2)}
+                                                                            tabIndex="2"
+                                                                        >
+                                                                            <div className='transition ease duration-500 flex items-center gap-4'>
+                                                                                <FaPlus />
+                                                                                <span>Add New Card</span>
+                                                                            </div>
+                                                                            <div
+                                                                                className={`h-8 w-8 items-center inline-flex justify-center transform transition ease duration-500 absolute top-0 right-0 mb-auto ml-auto mt-2 mr-2 ${activeSection === 2 ? '-rotate-180' : ''
+                                                                                    }`}
+                                                                            >
+                                                                                <svg
+                                                                                    stroke="currentColor"
+                                                                                    fill="none"
+                                                                                    strokeWidth="2"
+                                                                                    viewBox="0 0 24 24"
+                                                                                    strokeLinecap="round"
+                                                                                    strokeLinejoin="round"
+                                                                                    className="transition-transform duration-300 text-gray-500"
+                                                                                    height="1.5em"
+                                                                                    width="1.5em"
+                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                >
+                                                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                                                </svg>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div
+                                                                            className={`max-h-0 overflow-hidden ease duration-500 ${activeSection === 2 ? 'max-h-screen' : ''}`}
+                                                                        >
+                                                                            <div className="border border-gray-300 rounded-lg p-4 mt-3">
+                                                                                <div className="card-label w-full relative">
+                                                                                    <label className='formLabel'>Card Number</label>
+                                                                                    <CardNumberElement
+                                                                                        className="card-input"
+                                                                                        options={{
+                                                                                            style: {
+                                                                                                base: {
+                                                                                                    fontSize: '16px',
+                                                                                                    color: '#424770',
+                                                                                                    '::placeholder': {
+                                                                                                        color: '#aab7c4',
+                                                                                                    },
+                                                                                                },
+                                                                                                invalid: {
+                                                                                                    color: '#9e2146',
+                                                                                                },
+                                                                                            },
+                                                                                        }}
+                                                                                    />
+                                                                                </div>
+                                                                                <div className='flex items-center gap-4 pt-3'>
+                                                                                    <div className="card-label w-6/12 relative">
+                                                                                        <label className='formLabel'>Expiration Date</label>
+                                                                                        <CardExpiryElement
+                                                                                            className="card-input"
+                                                                                            options={{
+                                                                                                style: {
+                                                                                                    base: {
+                                                                                                        fontSize: '16px',
+                                                                                                        color: '#424770',
+                                                                                                        '::placeholder': {
+                                                                                                            color: '#aab7c4',
+                                                                                                        },
+                                                                                                    },
+                                                                                                    invalid: {
+                                                                                                        color: '#9e2146',
+                                                                                                    },
+                                                                                                },
+                                                                                            }}
+                                                                                        />
+                                                                                    </div>
+                                                                                    <div className="card-label w-6/12 relative">
+                                                                                        <label className='formLabel'>CVC</label>
+                                                                                        <CardCvcElement
+                                                                                            className="card-input"
+                                                                                            options={{
+                                                                                                style: {
+                                                                                                    base: {
+                                                                                                        fontSize: '16px',
+                                                                                                        color: '#424770',
+                                                                                                        '::placeholder': {
+                                                                                                            color: '#aab7c4',
+                                                                                                        },
+                                                                                                    },
+                                                                                                    invalid: {
+                                                                                                        color: '#9e2146',
+                                                                                                    },
+                                                                                                },
+                                                                                            }}
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="auto-pay">
+                                                                                    <input type="checkbox" className="auto-pay-checkbox" onChange={() => setAutoPay(!autoPay)} value={autoPay} />
+                                                                                    <label className="auto-pay-label">Auto Payment</label>
+                                                                                </div>
+                                                                                {errorMessage && (
+                                                                                    <div className='mb-2'>
+                                                                                        <label className="error-message">You need to Check Auto Pay for Further Process.</label>
+                                                                                    </div>
+                                                                                )}
+                                                                                <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type="button" className="pay-button">
+                                                                                    <span id="button-text">
+                                                                                        {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
+                                                                                    </span>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </>
+                                                            )}
+
+                                                            {!loading && cardList?.length === 0 && (
+                                                                <div className="border border-gray-300 rounded-lg p-4 mt-3">
+                                                                    <div className="card-label w-full relative">
+                                                                        <label className='formLabel'>Card Number</label>
+                                                                        <CardNumberElement
+                                                                            className="card-input"
+                                                                            options={{
+                                                                                style: {
+                                                                                    base: {
+                                                                                        fontSize: '16px',
+                                                                                        color: '#424770',
+                                                                                        '::placeholder': {
+                                                                                            color: '#aab7c4',
+                                                                                        },
+                                                                                    },
+                                                                                    invalid: {
+                                                                                        color: '#9e2146',
+                                                                                    },
+                                                                                },
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                    <div className='flex items-center gap-4 pt-3'>
+                                                                        <div className="card-label w-6/12 relative">
+                                                                            <label className='formLabel'>Expiration Date</label>
+                                                                            <CardExpiryElement
+                                                                                className="card-input"
+                                                                                options={{
+                                                                                    style: {
+                                                                                        base: {
+                                                                                            fontSize: '16px',
+                                                                                            color: '#424770',
+                                                                                            '::placeholder': {
+                                                                                                color: '#aab7c4',
+                                                                                            },
+                                                                                        },
+                                                                                        invalid: {
+                                                                                            color: '#9e2146',
+                                                                                        },
+                                                                                    },
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                        <div className="card-label w-6/12 relative">
+                                                                            <label className='formLabel'>CVC</label>
+                                                                            <CardCvcElement
+                                                                                className="card-input"
+                                                                                options={{
+                                                                                    style: {
+                                                                                        base: {
+                                                                                            fontSize: '16px',
+                                                                                            color: '#424770',
+                                                                                            '::placeholder': {
+                                                                                                color: '#aab7c4',
+                                                                                            },
+                                                                                        },
+                                                                                        invalid: {
+                                                                                            color: '#9e2146',
+                                                                                        },
+                                                                                    },
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="auto-pay">
+                                                                        <input type="checkbox" className="auto-pay-checkbox" onChange={() => setAutoPay(!autoPay)} value={autoPay} />
+                                                                        <label className="auto-pay-label">Auto Payment</label>
+                                                                    </div>
+                                                                    {errorMessage && (
+                                                                        <div className='mb-2'>
+                                                                            <label className="error-message">You need to Check Auto Pay for Further Process.</label>
+                                                                        </div>
+                                                                    )}
+                                                                    <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type="button" className="pay-button">
+                                                                        <span id="button-text">
+                                                                            {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
+                                                                        </span>
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </>
                                                     )}
-                                                    <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmit} type="button" className="pay-button">
-                                                        <span id="button-text">
-                                                            {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
-                                                        </span>
-                                                    </button>
                                                 </div>
-                                            )}
-                                            {paymentMethod === "PayPal" && (
-                                                <div className='w-full'>
-                                                    <PayPalScriptProvider options={paypalOptions}>
-                                                        <PayPalButtons
-                                                            style={{ layout: "horizontal" }}
-                                                            createOrder={(data, actions) => {
-                                                                return actions.order.create({
-                                                                    purchase_units: [{
-                                                                        amount: {
-                                                                            value: '100.00', // Replace with your desired amount
-                                                                        },
-                                                                    }],
-                                                                });
-                                                            }}
-                                                            onApprove={(data, actions) => {
-                                                                return actions.order.capture().then(function (details) {
-                                                                    alert('Transaction completed by ' + details.payer.name.given_name);
-                                                                });
-                                                            }} />
-                                                    </PayPalScriptProvider>
-                                                </div>
-                                            )}
+
+                                                {activeSection === 1 && (
+                                                    <div className='mt-4'>
+                                                        <button
+                                                            className={`bg-primary ${selectCard === "" ? "cursor-not-allowed" : "cursor-pointer"} text-white text-base px-8 py-3 border border-primary shadow-md rounded-full `}
+                                                            type="button"
+                                                            disabled={selectCard === ""}
+                                                            onClick={handlePay}
+                                                        >
+                                                            <span id="button-text">
+                                                                {isLoading ? <div className="spinner-add-payment" id="spinner"></div> : "Pay now"}
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
                                     </div>
@@ -386,7 +703,7 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }

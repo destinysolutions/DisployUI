@@ -11,7 +11,7 @@ const InvoiceBilling = ({ InvoiceRef ,selectData}) => {
                             <p>#5036</p>
     </div>*/}
                         <div className="screen-count text-left py-3"><strong>Customer Name:</strong>
-                            <p>{selectData?.name}</p>
+                            <p>{selectData?.invoiceData?.customer_name}</p>
                         </div>
                         <div className="screen-count text-left py-3"><strong>Bill To Address:</strong>
                             <p>{selectData?.address}</p>
@@ -24,28 +24,28 @@ const InvoiceBilling = ({ InvoiceRef ,selectData}) => {
                         </div>
                         <div className="screen-count text-right border-b border-gray py-3"><strong className="text-right">Invoice Summary</strong></div>
                         <div className="flex justify-between border-b border-gray text-right py-3">
-                            <label>Invoice Number:</label><span>{selectData?.invoiceNumber}</span></div>
+                            <label>Invoice Number:</label><span>{selectData?.invoiceData?.invoiceNumber}</span></div>
                         <div className="flex justify-between border-b border-gray text-right py-3">
-                            <label>Invoice Date:</label><span>DD / MM / YYYY</span></div>
+                            <label>Invoice Date:</label><span>{moment(selectData?.invoiceData?.startDate).format("LL")}</span></div>
                         <div className="flex justify-between border-b border-gray text-right py-3"><b>Total Amount due on {moment(
-                            selectData?.dueDate
+                            selectData?.invoiceData?.endDate
                           ).format("LL")}</b></div>
                     </div>
                 </div>
-                <div className="full mb-3 "><strong>This invoice is for the billing period {moment(selectData?.issuedDate).format("LL")} - {moment(selectData?.dueDate).format("LL")}</strong>
+                <div className="full mb-3 "><strong>This invoice is for the billing period {moment(selectData?.invoiceData?.startDate).format("LL")} - {moment(selectData?.invoiceData?.endDate).format("LL")}</strong>
                     <p> Greetings from disploy web services, we’re writing to provide you with an electronic invoice for your use of disploy services. Additional information about your bill, individual services charge details, and your account history are available on the Account Activity page.</p>
                 </div>
                 <div className="full ">
                     <div className="bg-blue-lighter screen-count text-left border-b border-gray py-3 px-3"><strong className="text-left">Summary</strong></div>
                     <div className="flex justify-between border-b border-gray text-right py-3 px-3">
-                        <label className="text-SlateBlue">{selectData?.paymentType === "Storage" ? `${selectData?.paymentValue}GB` : selectData?.paymentValue} x {selectData?.paymentType}</label><span>${(selectData?.totalAmount)}.00</span></div>
+                        <label className="text-SlateBlue">{selectData?.invoiceData?.description}</label><span>${(selectData?.invoiceData?.amount) / 100}.00</span></div>
                     <div className="flex justify-between border-b border-gray text-right py-3 px-3">
                         <label>Discount</label><span>$ 0.00</span></div>
                     <div className="flex justify-between border-b border-gray text-right py-3 px-3">
                         <label>Tax</label><span>$ 0.00</span></div>
                     <div className="bg-gray-100 flex justify-between border-b border-gray text-right py-3 px-3"><b>Total Amount due on {moment(
-                        selectData?.dueDate
-                      ).format("LL")}</b><b>${(selectData?.totalAmount)}.00</b></div>
+                        selectData?.invoiceData?.endDate
+                      ).format("LL")}</b><b>${(selectData?.invoiceData?.amount) / 100}.00</b></div>
                 </div>
               {/*  <div className="full ">
                     <div className="bg-blue-lighter screen-count text-left border-b border-gray py-3 px-3"><strong className="text-left">Detail</strong></div>

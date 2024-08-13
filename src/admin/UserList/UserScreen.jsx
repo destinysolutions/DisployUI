@@ -1,18 +1,18 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
-import { BiEdit } from "react-icons/bi";
 import { FaUserCheck } from "react-icons/fa6";
 import {
   AiOutlineCloudUpload,
-  AiOutlinePlusCircle,
-  AiOutlineSave,
 } from "react-icons/ai";
 import { HiUserGroup } from "react-icons/hi2";
+import { PageNumber } from "../../Components/Common/Common";
+
+
 const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [searchScreen, setSearchScreen] = useState("");
@@ -46,14 +46,18 @@ const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -173,7 +177,7 @@ const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
                                 fill="#1C64F2"
                               />
                             </svg>
-                            
+
                           </div>
                         </td>
                       </tr>
@@ -211,8 +215,8 @@ const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
                                     <span
                                       id={`changetvstatus${screen.macid}`}
                                       className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                          ? "bg-[#3AB700]"
-                                          : "bg-[#FF0000]"
+                                        ? "bg-[#3AB700]"
+                                        : "bg-[#FF0000]"
                                         }`}
                                     >
                                       {screen.screenStatus == 1
@@ -320,9 +324,17 @@ const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
               </div>
               <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                 <div className="flex items-center">
-                  <span className="text-gray-500">{`Total ${screens?.length} Screens`}</span>
+                  <span className="text-gray-500">{`Total ${filteredData?.length} Screens`}</span>
                 </div>
                 <div className="flex justify-end">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}

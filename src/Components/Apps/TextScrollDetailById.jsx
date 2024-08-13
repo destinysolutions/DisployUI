@@ -23,7 +23,7 @@ import { socket } from "../../App";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token ,user} = useSelector((state) => state.root.auth);
+  const { token,userDetails ,user} = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [scrollType, setScrollType] = useState([]);
@@ -50,7 +50,6 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
       });
   }, []);
 
-  // console.log(macids);
 
   const handleUpdateScrollText = async () => {
     if (instanceName === "" || text === "") {
@@ -89,39 +88,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
           macId: macids,
         };
         socket.emit("ScreenConnected", Params);
-        // if (connection.state == "Disconnected") {
-        //   connection
-        //     .start()
-        //     .then((res) => {
-        //       console.log("signal connected");
-        //     })
-        //     .then(() => {
-        //       connection
-        //         .invoke("ScreenConnected", macids)
-        //         .then(() => {
-        //           console.log(
-        //             "SignalR method invoked after text scroll update"
-        //           );
-        //         })
-        //         .catch((error) => {
-        //           console.error("Error invoking SignalR method:", error);
-        //         });
-        //     });
-        // } else {
-        //   connection
-        //     .invoke("ScreenConnected", macids)
-        //     .then(() => {
-        //       console.log("SignalR method invoked after text scroll update");
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error invoking SignalR method:", error);
-        //     });
-        // }
-
-        // Wait for the SignalR invocation to complete before navigating
-
         history("/text-scroll");
-
         setSaveLoading(false);
       }
     } catch (error) {
@@ -171,7 +138,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block  items-center">
             <div className="flex items-center">
@@ -290,7 +257,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

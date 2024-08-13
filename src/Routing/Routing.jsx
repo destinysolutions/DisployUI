@@ -57,9 +57,11 @@ import DigitalMenuBoard from "../Components/Apps/DigitalMenuBoard";
 import DigitalMenuBoardDetail from "../Components/Apps/DigitalMenuBoardDetail";
 import DummyDashboard from "../Components/Common/DummyDashboard";
 import RetailerRoutes from "./RetailerRoutes";
+import SalesManRoutes from "./SalesManRoutes";
+import CustomComposition from "../Components/Composition/CustomComposition";
 
 const Routing = () => {
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const accessDetails = localStorage.getItem("role_access");
   const handleResize = useCallback(() => {
@@ -108,6 +110,14 @@ const Routing = () => {
         setSidebarOpen={setSidebarOpen}
       />
     );
+
+  if (accessDetails === "SALESMAN")
+    return (
+      <SalesManRoutes
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
+    )
 
   if (accessDetails === "USER" && ((user?.isTrial || user?.isActivePlan) || (user?.userDetails?.isRetailer === true))) {
     return (
@@ -187,7 +197,7 @@ const Routing = () => {
                 />
               }
             />
-            <Route
+           {/* <Route
               path="/bookslot"
               element={
                 <AddSlot />
@@ -201,7 +211,7 @@ const Routing = () => {
                   setSidebarOpen={setSidebarOpen}
                 />
               }
-            />
+            />*/}
             <Route
               path="/screensplayer"
               element={
@@ -385,6 +395,15 @@ const Routing = () => {
               path="/addcomposition"
               element={
                 <AddComposition
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/addcustomcomposition"
+              element={
+                <CustomComposition
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />
@@ -597,7 +616,7 @@ const Routing = () => {
     );
   }
 
-  if (accessDetails === "USER" && (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ) {
+  if (accessDetails === "USER" && (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false)) {
     return (
       <BrowserRouter>
         <ErrorBoundary
@@ -624,6 +643,8 @@ const Routing = () => {
       </BrowserRouter>
     )
   }
+
+
 
   return (
     <Loading />

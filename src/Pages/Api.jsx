@@ -1,9 +1,17 @@
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 
-export const baseUrl = "https://disployapi.thedestinysolutions.com/api/";
+// live URl:- back.disploy.com
 
-export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
+// export const baseUrl = "https://disploystage.disploy.com/api/";
+export const baseUrl = "https://back.disploy.com/api/";
+
+// Test Mode
+// export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
+
+// Live Mode
+export const stripePromise = loadStripe("pk_live_51JIxSzLmxyI3WVNYdQLd2H64i4dU3EA0kHoDGWyu1MCxL6xfgCBFw2CP9qhkH1FGNWwkHosH4Jlx3xfIbRdhxsAw00wvPSXFZM");
+
 
 export const paypalOptions = {
   'client-id': 'Ac2YPb7PQ_z1TMuvWYOmWT1iafYTeVW9DubrVCxX0ub-se4zgR2D3qh4dKo8a6neF6b-vO2aDjH_CPWT', // Replace with your actual client ID
@@ -11,17 +19,17 @@ export const paypalOptions = {
 };
 
 export const postUrl = axios.create({
-  baseURL: "https://disployapi.thedestinysolutions.com/api/",
+  baseURL: baseUrl,
   method: "post",
 });
 
 export const deleteUrl = axios.create({
-  baseURL: "https://disployapi.thedestinysolutions.com/api/",
+  baseURL: baseUrl,
   method: "delete",
 });
 
 export const getUrl = axios.create({
-  baseURL: "https://disployapi.thedestinysolutions.com/api/",
+  baseURL: baseUrl,
   method: "get",
 });
 
@@ -47,9 +55,9 @@ export const SELECT_BY_USER_SCREENDETAIL = `${baseUrl}NewScreen/SelectByUserScre
 export const SELECT_BY_SCREENID_SCREENDETAIL = `${baseUrl}NewScreen/SelectByScreen`;
 export const GET_ALL_SCREEN_RESOLUTION = `${baseUrl}NewScreen/GetAllScreenResolution`;
 export const GET_ALL_SCREEN_ORIENTATION = `${baseUrl}NewScreen/GetAllScreenOrientation`;
-export const GET_SCREEN_TIMEZONE = `${baseUrl}NewScreen/GetAllTimeZone`;
-export const GET_SCEDULE_TIMEZONE = `${baseUrl}EventMaster/GetAllTimeZone`;
-export const GET_TIMEZONE = `${baseUrl}EventMaster/GetAllTimeZone`;
+export const GET_TIMEZONE = `${baseUrl}NewScreen/GetAllTimeZone`;
+export const GET_TIMEZONE_TOKEN = `${baseUrl}EventMaster/GetAllTimeZone`;
+
 export const GET_ALL_FILES = `${baseUrl}AssetMaster/GetAll`;
 export const ALL_FILES_UPLOAD = `${baseUrl}AssetMaster/AssetUpload`;
 export const GOOGLE_DRIVE = `${baseUrl}GoogleDrive/GoogleDrive`;
@@ -64,7 +72,7 @@ export const SCHEDULE_EVENT_SELECT_BY_ID = `${baseUrl}EventMaster/SelectByID`;
 export const SCHEDULE_SELECT_BY_ID = `${baseUrl}ScheduleMaster/SelectByID`;
 export const UPDATED_SCHEDULE_DATA = `${baseUrl}EventMaster/SelectAllGetScheduleList`;
 export const UPDATE_TIMEZONE = `${baseUrl}ScheduleMaster/UpdateTimeZone`;
-export const SIGNAL_R = `https://disployapi.thedestinysolutions.com/chatHub`;
+export const SIGNAL_R = `https://disploystage.disploy.com/chatHub`;
 export const GET_ALL_TRASHDATA = `${baseUrl}Trash/GetAllTrash`;
 export const ADD_TRASH = `${baseUrl}Trash/AddTrash`;
 export const SINGL_DELETED_TRASH = `${baseUrl}Trash/singlDeletedTrash`;
@@ -113,17 +121,17 @@ export const DELETE_ALL_ASSET = `${baseUrl}AssetMaster/DeleteAllAsset`;
 export const ASSIGN_COMPOSITION_TO_SCREEN = `${baseUrl}CompositionMaster/AssignCompoitiontoScreen`;
 export const GET_DEFAULT_ASSET = `${baseUrl}UserMaster/GetDefaultAsset`;
 export const GET_EMERGENCY_ASSET = `${baseUrl}UserMaster/GetEmergencyAsset`;
-
 export const SAVE_DEFAULT_ASSET = `${baseUrl}UserMaster/SaveDefaultAsset`;
 export const SAVE_EMERGENCY_ASSET = `${baseUrl}UserMaster/SaveEmergencyAsset`;
-
 export const ADD_STORAGE = `${baseUrl}Storage/AddStorage`;
 export const ADD_UPDATE_ORGANIZATION_USER_ROLE = `${baseUrl}OrganizationUsersRole/AddUpdateOrganizationUsersRole`;
 export const GET_ORG_USERS = `${baseUrl}UserMaster/GetOrgUsers`;
 export const GET_USER_SCREEN_DETAILS = `${baseUrl}UserMaster/GetUsetScreenDetails`;
 export const DELETE_ORG_USER = `${baseUrl}UserMaster/DeleteOrgUser`;
 export const GET_TIME_ZONE = `${baseUrl}ScheduleMaster/GetTimeZoneCurrentTime`
+
 // Weather App Api
+
 export const WEATHER_APP = `${baseUrl}WeatherApp/AddWeatherApp`;
 export const GET_All_WEATHER = `${baseUrl}WeatherApp/GetWeatherApp`;
 export const GET_WEATHER_BY_ID = `${baseUrl}WeatherApp/GetWeatherApp?`;
@@ -134,6 +142,7 @@ export const USER_ROLE_COMBINE = `${baseUrl}OrganizationUsersRole/GetUserRolesCo
 export const SCREEN_DELETE_ALL = `${baseUrl}NewScreen/DeleteAllScreenByIds`;
 
 // Group Screen
+
 export const GET_GROUP_SCREEN = `${baseUrl}GroupScreen/GetAllGroupData`;
 export const ADD_GROUP_SCREEN = `${baseUrl}GroupScreen/AddGroupScreen`;
 export const DELETE_SINGLE_GROUP_SCREEN = `${baseUrl}GroupScreen/DeleteGroupByID`;
@@ -144,6 +153,7 @@ export const PRIVIEW_GROUP_SCREEN = `${baseUrl}GroupScreen/GetGroupPreview`;
 export const UPDATE_GROUP_NAME = `${baseUrl}GroupScreen/UpdateGroupScreen`;
 
 // screen Marge
+
 export const GET_MARGE_SCREEN = `${baseUrl}MergeScreen/GetAllMergeScreen`;
 export const ADD_MERGE_SCREEN = `${baseUrl}MergeScreen/AddMergeScreen`;
 export const DELETE_MERGE_SCREEN_ALL = `${baseUrl}MergeScreen/DeleteAllMergeScreen`;
@@ -152,11 +162,13 @@ export const UPDATE_MERGE_NAME = `${baseUrl}MergeScreen/UpdateMergeScreen`;
 export const SCREEN_DEACTIVATE_ACTIVATE = `${baseUrl}NewScreen/EnableScreen`;
 
 // sidebar
+
 export const GET_SIDEBAR_MENU = `${baseUrl}OrganizationUsersRole/SideBarMenu`;
 export const MENU_ACCESS = `${baseUrl}OrganizationUsersRole/GetAllLevelData`;
 
 
 // reports
+
 export const AUDITREPORT = `${baseUrl}Report/GetAuditLogsReport`;
 export const UPTIMEREPORT = `${baseUrl}Report/GetUptimeReport`;
 export const SALESREPORT = `${baseUrl}Report/GetSalesReport`;
@@ -164,10 +176,11 @@ export const CANCELREPORT = `${baseUrl}Report/GetCancelReport`;
 export const MEDIAREPORT = `${baseUrl}Report/GetAssetReport`;
 export const BILLINGREPORT = `${baseUrl}Report/GetBillingReport`;
 
-//https://disployapi.thedestinysolutions.com
+//https://disploystage.disploy.com
 //http://192.168.1.115
 
 // Retailar
+
 export const GETALLRETAILER = `${baseUrl}UserMaster/GetAllRetailer?IsRetailer=true`
 
 // weatherschedule
@@ -189,14 +202,11 @@ export const ADMINUSERTOKEN = `${baseUrl}Register/GetUserToken`
 export const ADDEDITADVERTISEMENT = `${baseUrl}AdsCustomer/AddorUpdateAdsCustomer`
 export const GETALLADS = `${baseUrl}AdsCustomer/GetAllAdsData`
 export const ASSIGN_ADS = `${baseUrl}AdsCustomer/InsertAdvertisementScreen`
-export const  GET_NOTIFICATIONS  = `${baseUrl}AdsCustomer/GetAdsDatabyID`
-export const  UPDATE_ADS_RATE  = `${baseUrl}AdsCustomer/UpdateAdsRate`
-export const  ADD_ADMIN_RATE  = `${baseUrl}AdsCustomer/AddAdminMargin`
-export const  ADVERTISEMENT_SCREEN  = `${baseUrl}Common/AdvertisementScreen`
-export const  ADD_USER_LIST  = `${baseUrl}AdsCustomer/GetAdsDatabyAdsID`
-
-
-
+export const GET_NOTIFICATIONS = `${baseUrl}AdsCustomer/GetAdsDatabyID`
+export const UPDATE_ADS_RATE = `${baseUrl}AdsCustomer/UpdateAdsRate`
+export const ADD_ADMIN_RATE = `${baseUrl}AdsCustomer/AddAdminMargin`
+export const ADVERTISEMENT_SCREEN = `${baseUrl}Common/AdvertisementScreen`
+export const ADD_USER_LIST = `${baseUrl}AdsCustomer/GetAdsDatabyAdsID`
 
 // Approval
 
@@ -204,7 +214,6 @@ export const GETALLAPPROVAL = `${baseUrl}OrganizationUsersRole/GetApproveNotific
 export const APPROVEDETAILBYID = `${baseUrl}OrganizationUsersRole/ApproveDetailsByID`
 
 // Book Slot
-
 
 export const SCREEN_LIST = `${baseUrl}AdsCustomer/GetAllRetaileScreen`
 export const ALL_CITY = `${baseUrl}Common/GetAllCity`
@@ -219,6 +228,7 @@ export const OTP_SCREEN_VERIFY = `${baseUrl}NewScreen/VerifyScreenOTP`;
 export const SCREEN_STORAGE = `${baseUrl}NewScreen/CheckScreenCnt`;
 
 // Digital Menu Board
+
 export const POS_ITEM_LIST = `${baseUrl}DigitalMenu/GetPOSItemDetails`
 export const ADD_EDIT_DIGITAL_MENU = `${baseUrl}DigitalMenu/AddORUpdateDigitalMenuApp`
 export const GET_ALL_DIGITAL_MENU = `${baseUrl}DigitalMenu/GetAllDigitalMenuApp`
@@ -226,6 +236,7 @@ export const DELETE_DIGITAL_MENU = `${baseUrl}DigitalMenu/DeleteDigitalMenuApp`
 export const GET_DIGITAL_MENU_BY_ID = `${baseUrl}DigitalMenu/GetDigitalMenuAppByID`
 export const ADD_TAGS_DIGITAL_MENU = `${baseUrl}DigitalMenu/AddDigitalMenuAppTags`
 export const ASSIGN_SCREEN_DIGITAL_MENU = `${baseUrl}DigitalMenu/AssignDigitalMenuAppToScreen`
+export const POS_THEME = `${baseUrl}Common/GetPOSTheme`
 
 // Billing
 
@@ -237,18 +248,30 @@ export const PAYMENT_INTENT_CREATE_REQUEST = `${baseUrl}Common/PaymentIntentCrea
 export const PAYMENT_DETAILS = `${baseUrl}PaymentDetails/AddorUpdatePaymentDetails`
 export const CREATE_SUBSCRIPTION = `${baseUrl}Common/CreateAutopay`
 export const UPGRADE_SUBSCRIPTION = `${baseUrl}Common/UpgradeAutopay`
-export const GET_ALL_BILLING = `${baseUrl}BillingMaster/GetAllBilling`
+export const CANCEL_SUBSCRIPTION = `${baseUrl}Common/CancelAutopay`
+export const INCREASE_TRIAL_DAYS = `${baseUrl}Common/IncreaseTrialDays`
+export const GET_ALL_BILLING = `${baseUrl}Common/GetAllBillingDetails`
+export const GET_BILLING_BY_ID = `${baseUrl}BillingMaster/GetBillingById`
+export const ADD_CREDIT_CARD = `${baseUrl}common/AddCreditCard`
+export const TALK_TO_SALE = `${baseUrl}common/TalkToSale`
+export const ADD_EDIT_BILLINGDETAILS = `${baseUrl}BillingDetails/AddEditBillingDetails`
+export const GET_BILLING_DETAILS = `${baseUrl}BillingDetails/GetBillingDetails`
+export const GET_USER_BILLING_DETAILS = `${baseUrl}Common/GetUserBillingDetails`
+export const GET_ALL_BILLING_DETAILS = `${baseUrl}Common/GetUserBillingDetailsByUserEmail`
 
 
 // Notifications
 
 export const GET_ALL_NOTIFICATIONS = `${baseUrl}Common/GetAllNotificationMaster`
 export const GET_ALL_REMOVE_NOTIFICATIONS = `${baseUrl}Common/GetRemoveAllNotificationMaster`
-
+export const GET_ALL_USER_NOTIFICATION = `${baseUrl}Common/GetAllNotificationFeature`
+export const SAVE_NOTIFICATION = `${baseUrl}UserNotification/AddEditUserNotification`
+export const GET_NOTIFICATION = `${baseUrl}UserNotification/GetUserNotification`
 
 // Invoice
 
-export const GET_ALL_INVOICE = `${baseUrl}Invoice/GetAllInvoiceMaster`
+// export const GET_ALL_INVOICE = `${baseUrl}Invoice/GetAllInvoiceMaster`
+export const GET_ALL_INVOICE = `${baseUrl}common/GetBillingDetails`
 export const GET_INVOICE_BY_ID = `${baseUrl}Invoice/GetInvoiceById`
 export const SEND_INVOICE = `${baseUrl}Invoice/GetInvoiceById`
 
@@ -262,3 +285,15 @@ export const DELETE_DISCOUNT = `${baseUrl}DiscountMaster/DeleteDiscount`
 export const GET_ALL_SEGMENT = `${baseUrl}common/GetAllSegment`
 export const VERIFY_COUPON = `${baseUrl}common/VerfiyDiscountCoupon`
 
+// Card
+
+export const ADD_CARD = `${baseUrl}CardMaster/AddEditCard`
+export const DELETE_CARD = `${baseUrl}CardMaster/DeleteCard`
+export const DEFAULT_CARD = `${baseUrl}common/SetDefaultCard`
+export const GET_ALL_CARD = `${baseUrl}CardMaster/GetAllCard`
+
+// Sales Man
+export const All_SAELS_MAN_LIST = `${baseUrl}SalesMan/GetAllSalesMan`
+export const DEACTIVE_SAELS_MAN = `${baseUrl}UserMaster/ChangeCustomerStatus`
+export const SAELS_MAN_DASHBOARD = `${baseUrl}SalesMan/GetSalesManAllRecord`
+export const ADD_ASSOCIATED_SALESMAN = `${baseUrl}SalesMan/AddEditSalesMan`

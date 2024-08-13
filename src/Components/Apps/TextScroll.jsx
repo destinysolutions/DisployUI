@@ -37,7 +37,7 @@ import Loading from "../Loading";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token, user } = useSelector((state) => state.root.auth);
+  const {userDetails, token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
 
@@ -129,38 +129,6 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
             setAddScreenModal(false);
             FetchData();
           }, 1000);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke("ScreenConnected", macids)
-          //         .then(() => {
-          //           console.log(" method invoked");
-          //           // setSelectScreenModal(false);
-          //           // setAddScreenModal(false);
-          //           // FetchData();
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke("ScreenConnected", macids)
-          //     .then(() => {
-          //       console.log(" method invoked");
-          //       // setSelectScreenModal(false);
-          //       // setAddScreenModal(false);
-          //       // FetchData();
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
         }
       })
       .catch((error) => {
@@ -197,32 +165,6 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
           macId: maciDs,
         };
         socket.emit("ScreenConnected", Params);
-        // if (connection.state == "Disconnected") {
-        //   connection
-        //     .start()
-        //     .then((res) => {
-        //       console.log("signal connected");
-        //     })
-        //     .then(() => {
-        //       connection
-        //         .invoke("ScreenConnected", maciDs)
-        //         .then(() => {
-        //           console.log("SignalR method invoked after youtube update");
-        //         })
-        //         .catch((error) => {
-        //           console.error("Error invoking SignalR method:", error);
-        //         });
-        //     });
-        // } else {
-        //   connection
-        //     .invoke("ScreenConnected", maciDs)
-        //     .then(() => {
-        //       console.log("SignalR method invoked after youtube update");
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error invoking SignalR method:", error);
-        //     });
-        // }
         const updatedInstanceData = instanceData.filter(
           (instanceData) => instanceData.textScroll_Id !== scrollId
         );
@@ -414,7 +356,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
               />
               <Navbar />
             </div>
-            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 pt-10 px-5" : "lg:pt-24 md:pt-24 pt-10 px-5 "}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] ">
@@ -818,7 +760,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

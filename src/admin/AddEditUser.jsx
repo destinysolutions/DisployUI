@@ -1,13 +1,55 @@
 import React from 'react'
+import { Controller, useForm } from 'react-hook-form';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
+import PhoneInput from 'react-phone-input-2';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 
-const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, setLastName, setPhoneNumber, setEmail, setSelectedUserType
-    , setIsActive, setEditMode, setEditUserId, setShowPassword, showPassword, selectedUserType, userName, firstName, lastName, phoneNumber, email, password,
-    userTypeData, isActive, handleCheckboxChange, handleInsertUser, setPassword }) => {
+const AddEditUser = ({
+    editMode,
+    setAddUserModal,
+    setUserName,
+    setFirstName,
+    setLastName,
+    setPhoneNumber,
+    setEmail,
+    setSelectedUserType,
+    setIsActive,
+    setEditMode,
+    setEditUserId,
+    setShowPassword,
+    showPassword,
+    selectedUserType,
+    userName,
+    firstName,
+    lastName,
+    phoneNumber,
+    email,
+    password,
+    userTypeData,
+    isActive,
+    handleCheckboxChange,
+    handleInsertUser,
+    setPassword,
+    emailError,
+    passError,
+    usernameError,
+    setPassError,
+    setUsernameError,
+    setEmailError,
+    phoneError,
+    firstError,
+    lastError,
+    setPhoneError,
+    setLastError,
+    setFirstError,
+    setUserTypeError,
+    userTypeError
+}) => {
+    const { control } = useForm();
     return (
         <>
-           
+
             <div
                 id="default-modal"
                 tabIndex="-1"
@@ -33,10 +75,19 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             setLastName("");
                                             setPhoneNumber("");
                                             setEmail("");
+                                            setPassword("")
                                             setSelectedUserType("");
                                             setIsActive("");
                                             setEditMode(false);
                                             setEditUserId("");
+                                            setPassError(false)
+                                            setEmailError(false)
+                                            setUsernameError(false)
+                                            setShowPassword(false)
+                                            setPhoneError(false)
+                                            setFirstError(false)
+                                            setLastError(false)
+                                            setUserTypeError(false)
                                         }}
                                     />
                                 </div>
@@ -49,6 +100,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             value={userName}
                                             onChange={(e) => setUserName(e.target.value)}
                                         />
+                                        {usernameError && (
+                                            <span className='error'>This field is required.</span>
+                                        )}
 
                                         <input
                                             type="text"
@@ -57,6 +111,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             value={firstName}
                                             onChange={(e) => setFirstName(e.target.value)}
                                         />
+                                        {firstError && (
+                                            <span className='error'>This field is required.</span>
+                                        )}
                                         <input
                                             type="text"
                                             placeholder="Last Name"
@@ -64,14 +121,57 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             value={lastName}
                                             onChange={(e) => setLastName(e.target.value)}
                                         />
+                                        {lastError && (
+                                            <span className='error'>This field is required.</span>
+                                        )}
 
-                                        <input
-                                            type="text"
+                                        {/*      <input
+                                            type="number"
                                             placeholder="Phone Number"
                                             className="formInput mt-4"
                                             value={phoneNumber}
                                             onChange={(e) => setPhoneNumber(e.target.value)}
-                                        />
+                                        />*/}
+                                        <div className='mt-4'>
+                                            <Controller
+                                                name="phone"
+                                                control={control}
+                                                rules={{
+                                                    validate: (value) => isValidPhoneNumber(value),
+                                                }}
+                                                render={({ field: { onChange, value } }) => (
+                                                    <PhoneInput
+                                                        country={"in"}
+                                                        onChange={(phoneNumber) => {
+                                                            const formattedNumber = "+" + phoneNumber;
+                                                            onChange(formattedNumber); // Update the value directly
+                                                            setPhoneNumber(formattedNumber); // Update the state to reflect the phone number
+                                                        }}
+                                                        value={value}
+                                                        autocompleteSearch={true}
+                                                        countryCodeEditable={false}
+                                                        enableSearch={true}
+                                                        inputStyle={{
+                                                            width: "100%",
+                                                            background: "white",
+                                                            padding: "25px 0 25px 3rem",
+                                                            borderRadius: "10px",
+                                                            fontSize: "1rem",
+                                                            border: "1px solid #000",
+                                                        }}
+                                                        dropdownStyle={{
+                                                            color: "#000",
+                                                            fontWeight: "600",
+                                                            padding: "0px 0px 0px 10px",
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                            {phoneError && (
+                                                <span className='error'>Invalid Phone Number.</span>
+                                            )}
+                                        </div>
+
                                         {!editMode && (
                                             <>
                                                 <input
@@ -81,6 +181,9 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                 />
+                                                {emailError && (
+                                                    <span className='error'>Invalid Email Address.</span>
+                                                )}
                                                 <div className="relative">
                                                     <input
                                                         type={showPassword ? "text" : "password"}
@@ -101,6 +204,10 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                                         )}
                                                     </div>
                                                 </div>
+                                                {passError && (
+                                                    <span className='error'>This field is required.</span>
+                                                )}
+
                                             </>
                                         )}
                                         <select
@@ -108,12 +215,16 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                             value={selectedUserType}
                                             className="formInput mt-4"
                                         >
+                                            <option value="">Select User Type</option>
                                             {userTypeData.map((user) => (
                                                 <option key={user.userTypeID} value={user.userTypeID}>
                                                     {user.userType}
                                                 </option>
                                             ))}
                                         </select>
+                                        {userTypeError && (
+                                            <span className='error'>This field is required.</span>
+                                        )}
                                         <div className="mt-5 flex items-center">
                                             <input
                                                 className="border border-primary mr-3 ml-1 rounded h-6 w-6"
@@ -135,10 +246,19 @@ const AddEditUser = ({ editMode, setAddUserModal, setUserName, setFirstName, set
                                                 setLastName("");
                                                 setPhoneNumber("");
                                                 setEmail("");
+                                                setPassword("")
                                                 setSelectedUserType("");
                                                 setIsActive("");
                                                 setEditMode(false);
                                                 setEditUserId("");
+                                                setPassError(false)
+                                                setEmailError(false)
+                                                setUsernameError(false)
+                                                setShowPassword(false)
+                                                setPhoneError(false)
+                                                setFirstError(false)
+                                                setLastError(false)
+                                                setUserTypeError(false)
                                             }}
                                         >
                                             Cancel

@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
+import React, { lazy, useEffect } from "react";
 import { useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
@@ -11,11 +9,25 @@ import {
   GET_ALL_USER_MASTER,
   GET_ALL_USER_TYPE_MASTER,
 } from "./AdminAPI";
-import AddEditUser from "./AddEditUser";
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
+import ReactTooltip from "react-tooltip";
+import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+
+import AddEditUser from "./AddEditUser";
+import AdminSidebar from "./AdminSidebar";
+import AdminNavbar from "./AdminNavbar";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import { PageNumber } from "../Components/Common/Common";
+
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AddEditUser = lazy(() => import('./AddEditUser'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
 
 const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [addUserModal, setAddUserModal] = useState(false);
+  const { token } = useSelector((s) => s.root.auth);
+  const authToken = `Bearer ${token}`;
   const [userType, setUserType] = useState("");
   const [isActive, setIsActive] = useState(false);
   const [userTypeData, setUserTypeData] = useState([]);
@@ -27,7 +39,13 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [originalUserData, setOriginalUserData] = useState([]);
   const [selectedUserType, setSelectedUserType] = useState("");
   const [userName, setUserName] = useState("");
-
+  const [emailError, setEmailError] = useState(false)
+  const [passError, setPassError] = useState(false)
+  const [usernameError, setUsernameError] = useState(false)
+  const [firstError, setFirstError] = useState(false)
+  const [lastError, setLastError] = useState(false)
+  const [phoneError, setPhoneError] = useState(false)
+  const [userTypeError, setUserTypeError] = useState(false)
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -38,10 +56,11 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [loading, setLoading] = useState(true)
   const [searchValue, setSearchValue] = useState("")
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [selectData, setSelectData] = useState()
+
   const handleActionClick = (rowId) => {
     setShowActionBox(rowId);
   };
@@ -50,7 +69,64 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     setIsActive(event.target.checked);
   };
 
+  const validateEmail = (value) => {
+    // Simple email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value);
+  };
+
   const handleInsertUser = () => {
+    let hasError = false;
+    if (userName === "") {
+      setUsernameError(true)
+      hasError = true;
+    }
+    if (firstName === "") {
+      setFirstError(true)
+      hasError = true;
+    }
+
+    if (lastName === "") {
+      setLastError(true)
+      hasError = true;
+    }
+
+    // if (phoneNumber === "") {
+    //   setPhoneError(true)
+    //   hasError = true;
+    // }
+
+    if (isValidPhoneNumber(phoneNumber)) {
+      setPhoneError(false);
+    } else {
+      setPhoneError(true)
+      hasError = true;
+    }
+
+    if (email === "" && !editMode) {
+      setEmailError(true);
+      hasError = true;
+    }
+
+    if (!validateEmail(email) && !editMode) {
+      setEmailError(true);
+      hasError = true;
+    } else {
+      setEmailError(false);
+    }
+
+    if (password === "" && !editMode) {
+      setPassError(true);
+      hasError = true;
+    }
+    if (selectedUserType === "") {
+      setUserTypeError(true);
+      hasError = true
+    }
+
+    if (hasError) {
+      return;
+    }
     let data = JSON.stringify({
       userName: userName,
       password: password,
@@ -70,6 +146,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       url: ADD_USER_MASTER,
       headers: {
         "Content-Type": "application/json",
+        Authorization: authToken
       },
       data: data,
     };
@@ -77,24 +154,33 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        fetchUserData();
-
-        if (!editMode) {
-          setUserData((prevData) => [
-            ...prevData,
-            {
-              userID: response.data.data.model.userID,
-              userName,
-              password,
-              isActive,
-              userType,
-              firstName,
-              lastName,
-              email,
-              phoneNumber,
-            },
-          ]);
+        if (response?.data?.status) {
+          fetchUserData();
+          if (!editMode) {
+            toast.success("User Created Successfully.")
+          } else {
+            toast.success("User Updated Successfully.")
+          }
+        } else {
+          toast.error(response?.data?.message)
         }
+
+        // if (!editMode) {
+        //   setUserData((prevData) => [
+        //     ...prevData,
+        //     {
+        //       userID: response?.data?.data?.model?.userID,
+        //       userName,
+        //       password,
+        //       isActive,
+        //       userType,
+        //       firstName,
+        //       lastName,
+        //       email,
+        //       phoneNumber,
+        //     },
+        //   ]);
+        // }
       })
       .catch((error) => {
         console.log(error);
@@ -106,10 +192,19 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     setLastName("");
     setPhoneNumber("");
     setEmail("");
+    setPassword("")
     setSelectedUserType("");
-    setIsActive("");
+    setIsActive(false);
     setEditMode(false);
     setEditUserId("");
+    setPassError(false)
+    setEmailError(false)
+    setShowPassword(false)
+    setUsernameError(false)
+    setPhoneError(false)
+    setFirstError(false)
+    setLastError(false)
+    setUserTypeError(false)
     setAddUserModal(false);
   };
 
@@ -137,7 +232,8 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        setUserTypeData(response.data.data);
+        let data = response?.data?.data?.filter(item => item?.isActive)
+        setUserTypeData(data);
       })
       .catch((error) => {
         console.log(error);
@@ -207,14 +303,18 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -414,6 +514,8 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="flex gap-2">
                                 <div className="cursor-pointer text-xl flex gap-4">
                                   <button
+                                    data-tip
+                                    data-for="Edit"
                                     type="button"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => {
@@ -421,10 +523,21 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                                     }}
                                   >
                                     <MdModeEditOutline />
+                                    <ReactTooltip
+                                      id="Edit"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>Edit</span>
+                                    </ReactTooltip>
                                   </button>
                                 </div>
+
                                 <div className="cursor-pointer text-xl flex gap-4 ">
                                   <button
+                                    data-tip
+                                    data-for="Delete"
                                     type="button"
                                     className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
                                     onClick={() => {
@@ -434,6 +547,14 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                                     }
                                   >
                                     <MdDeleteForever />
+                                    <ReactTooltip
+                                      id="Delete"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>Delete</span>
+                                    </ReactTooltip>
                                   </button>
                                 </div>
                               </div>
@@ -444,26 +565,32 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                     {!loading &&
                       userData &&
                       sortedAndPaginatedData?.length === 0 && (
-                        <>
-                          <tr>
-                            <td colSpan={8}>
-                              <div className="flex text-center justify-center">
-                                <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
-                                  No Data Available
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        </>
+                        <tr>
+                          <td colSpan={8}>
+                            <div className="flex text-center m-5 justify-center">
+                              <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                                No Data Available
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
                       )}
                   </tbody>
                 </table>
               </div>
               <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                 <div className="flex items-center">
-                  <span className="text-gray-500">{`Total ${userData?.length} Users`}</span>
+                  <span className="text-gray-500">{`Total ${filteredData?.length} Users`}</span>
                 </div>
                 <div className="flex justify-end">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -579,6 +706,21 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
           handleCheckboxChange={handleCheckboxChange}
           handleInsertUser={handleInsertUser}
           setPassword={setPassword}
+          passError={passError}
+          emailError={emailError}
+          usernameError={usernameError}
+          setEmailError={setEmailError}
+          setPassError={setPassError}
+          setUsernameError={setUsernameError}
+          setPhoneError={setPhoneError}
+          setLastError={setLastError}
+          setFirstError={setFirstError}
+          setUserTypeError={setUserTypeError}
+          phoneError={phoneError}
+          firstError={firstError}
+          lastError={lastError}
+          userTypeError={userTypeError}
+
         />
       )}
     </>

@@ -22,7 +22,7 @@ import { useDispatch } from "react-redux";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 
 const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
-  const {user, token } = useSelector((state) => state.root.auth);
+  const {user,userDetails, token } = useSelector((state) => state.root.auth);
   const dispatch = useDispatch();
   const authToken = `Bearer ${token}`;
 
@@ -79,7 +79,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
-          if (window.history.length == 1) {
+          if (window.history.length === 1) {
             dispatch(handleNavigateFromComposition());
             dispatch(handleChangeNavigateFromComposition(false));
             localStorage.setItem("isWindowClosed", "true");
@@ -110,7 +110,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block  items-center">
             <div className="flex items-center">
@@ -225,7 +225,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

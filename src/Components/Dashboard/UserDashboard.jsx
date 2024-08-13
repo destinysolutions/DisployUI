@@ -14,15 +14,17 @@ import { USERDASHBOARD } from "../../Pages/Api";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import { handleGetUserDetails } from "../../Redux/Authslice";
+import { useDispatch } from "react-redux";
 
 const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   UserDashboard.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { user, token } = useSelector((s) => s.root.auth);
-  console.log('user', user)
+  const { user, token,userDetails} = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
+  const dispatch = useDispatch()
   //using for registration success messge
   const location = useLocation();
   const message = location?.state?.message || null;
@@ -49,6 +51,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   useEffect(() => {
+    dispatch(handleGetUserDetails({ id: user?.userID, token }));
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -105,7 +108,7 @@ const UserDashboard = ({ sidebarOpen, setSidebarOpen }) => {
             {/* registration success meg show end */}
 
             {/* dashboard component start */}
-            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">

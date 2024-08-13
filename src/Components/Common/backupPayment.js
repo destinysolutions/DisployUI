@@ -59,19 +59,22 @@ const backupPayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         layout: "tabs"
     }
 
-    const PaymentDetails = ({ paymentIntent, organizationID }) => {
+    const PaymentDetails = ({ paymentIntent, organizationID, product }) => {
         let totalPrice;
-        if (user?.planID === 1) {
+        if (userDetails?.planID === 1) {
             totalPrice = PaymentValue * 10
-        } else if (user?.planID === 2) {
+        } else if (userDetails?.planID === 2) {
             totalPrice = PaymentValue * 17
-        } else if (user?.planID === 2) {
+        } else if (userDetails?.planID === 2) {
             totalPrice = PaymentValue * 17
         } else {
             totalPrice = PaymentValue * 47
         }
+
+        const { card, ...newObj } = paymentIntent;
+        const updatedObj = { ...newObj, ...card };
         let params = {
-            ...paymentIntent,
+            ...updatedObj,
             // PaymentType: `${selectPlan?.planName} Plan`,
             PaymentValue: PaymentValue,
             AutoPay: true,
@@ -89,6 +92,7 @@ const backupPayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
                     timeZoneName: "long",
                 })
                 .substring(4),
+            ProductID: product
         }
 
         let config = {
@@ -111,13 +115,13 @@ const backupPayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID }) => {
         let product;
-        if (type === "Screen" && (user?.planID === 1 || user?.planID === "1")) {
+        if (type === "Screen" && (userDetails?.planID === 1 || userDetails?.planID === "1")) {
             product = "prod_Q1wI9ksVDBdRW3"
-        } else if (type === "Screen" && (user?.planID === 2 || user?.planID === "2")) {
+        } else if (type === "Screen" && (userDetails?.planID === 2 || userDetails?.planID === "2")) {
             product = "prod_Q1wITfBepgK1H7"
-        } else if (type === "Screen" && (user?.planID === 3 || user?.planID === "3")) {
+        } else if (type === "Screen" && (userDetails?.planID === 3 || userDetails?.planID === "3")) {
             product = "prod_Q1wJSPx0LoW70n"
-        } else if (type === "Screen" && (user?.planID === 4 || user?.planID === "4")) {
+        } else if (type === "Screen" && (userDetails?.planID === 4 || userDetails?.planID === "4")) {
             product = "prod_Q1wJHaR4iDXNRP"
         } else if (type === "Storage") {
             product = "prod_Q1wJcEtb58TKI5"
@@ -143,7 +147,7 @@ const backupPayment = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
 
         dispatch(handleCreateSubscription({ config })).then((res) => {
             if (res?.payload?.status) {
-                PaymentDetails({ paymentIntent, organizationID: organizationID })
+                PaymentDetails({ paymentIntent, organizationID: organizationID, product })
             }
         })
     }

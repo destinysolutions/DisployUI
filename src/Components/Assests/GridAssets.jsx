@@ -53,6 +53,8 @@ import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import { getTrueKeys } from "../Common/Common";
+
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -61,6 +63,17 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // move to data in folder
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const store = useSelector((state) => state.root.asset);
+
+  const history = useNavigate();
+
+  const videoRef = useRef(null);
+  const [isInView, setIsInView] = useState(false);
+
+
+
 
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
   const [asstab, setTogglebtn] = useState(2);
@@ -81,7 +94,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectDoc, setSelectDoc] = useState(null);
   const actionBoxRef = useRef(null);
   const addScreenRef = useRef(null);
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const [permissions, setPermissions] = useState({
     isDelete: false,
     isSave: false,
@@ -90,18 +103,46 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [sidebarload, setSidebarLoad] = useState(true);
   const [screenAssetID, setScreenAssetID] = useState();
   const authToken = `Bearer ${token}`;
+  const tabs = localStorage.getItem("tabs");
+  const [loadFist, setLoadFist] = useState(true);
+  const [activeTab, setActiveTab] = useState(tabs ? tabs : "ALL"); // Set the default active tab
+  const [folderElements, setFolderElements] = useState([]);
+  const [selectAssets, setSelectAssets] = useState([]);
 
-  const history = useNavigate();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setIsInView(true);
+          observer.unobserve(videoRef.current);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (videoRef?.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef?.current);
+      }
+    };
+  }, [videoRef]);
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
       const findData = item.payload.data.menu.find(
         (e) => e.pageName === "Assets"
       );
+
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
         dispatch(getMenuPermission(payload)).then((permissionItem) => {
+
           if (
             Array.isArray(permissionItem.payload.data) &&
             permissionItem.payload.data.length > 0
@@ -115,12 +156,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
-    let idS = "";
-    for (const key in screenIds) {
-      if (screenIds[key] === true) {
-        idS += `${key},`;
-      }
-    }
+    // let idS = "";
+    // for (const key in screenIds) {
+    //   if (screenIds[key] === true) {
+    //     idS += `${key},`;
+    //   }
+    // }
+
+    const trueKeys = getTrueKeys(screenIds);
+    let idS = (trueKeys.join(','));
 
     let config = {
       method: "get",
@@ -146,36 +190,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             setSelectScreenModal(false);
             setAddScreenModal(false);
           }, 1000);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke("ScreenConnected", macids)
-          //         .then(() => {
-          //           console.log(" method invoked");
-          //           // setSelectScreenModal(false);
-          //           // setAddScreenModal(false);
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke("ScreenConnected", macids)
-          //     .then(() => {
-          //       console.log(" method invoked");
-          //       // setSelectScreenModal(false);
-          //       // setAddScreenModal(false);
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
         }
       })
       .catch((error) => {
@@ -292,15 +306,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Start
   // get tabs New change
-  const tabs = localStorage.getItem("tabs");
-  const [loadFist, setLoadFist] = useState(true);
-  const [activeTab, setActiveTab] = useState(tabs ? tabs : "ALL"); // Set the default active tab
-  const [tabsDelete, setTabsDelete] = useState(Array);
-  const [folderElements, setFolderElements] = useState([]);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const store = useSelector((state) => state.root.asset);
 
   useEffect(() => {
     const query = `ScreenType=${activeTab}&searchAsset=${searchAsset}`;
@@ -355,7 +361,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSearchAsset = (event) => {
-    toast.loading("Searching...");
+    if (store?.data?.length > 0) {
+      toast.loading("Searching...");
+    }
     const searchQuery = event.target.value;
     setSearchAsset(searchQuery);
     setLoadFist(true);
@@ -524,7 +532,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       tabs: activeTab,
       selectedIds: selectedIds,
     };
-    setTabsDelete(payload);
+    setSelectAssets(selectedIds)
     setSelectAll(!selectAll);
   };
 
@@ -532,7 +540,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${DELETE_ALL_ASSET}?IsDeleteFromAll=true&AssetType=${activeTab}`,
+      url: `${DELETE_ALL_ASSET}?assetIDs=${selectAssets?.join(',')}`,
       headers: { Authorization: authToken },
     };
 
@@ -552,7 +560,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await dispatch(handelAllDelete(config));
+      
         setSelectAll(false);
+        setLoadFist(true); // Trigger your action on cancel
       } else {
         setLoadFist(true); // Trigger your action on cancel
         setSelectAll(false);
@@ -636,6 +646,23 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setPreviewDoc(false);
   };
 
+  const handleCheckboxChange = (assetID) => {
+    if (selectAssets?.length > 0) {
+      let newArr = selectAssets.includes(assetID)
+        ? selectAssets.filter(item => item !== assetID)
+        : [...selectAssets, assetID];
+
+      if (newArr?.length === store?.data?.length) {
+        setSelectAll(true)
+      } else {
+        setSelectAll(false)
+      }
+      setSelectAssets(newArr);
+    } else {
+      setSelectAssets([assetID]);
+    }
+  }
+
   return (
     <>
       {sidebarload && <Loading />}
@@ -657,7 +684,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               />
               <Navbar />
             </div>
-            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-2 gap-2 lg:mt-5 mt-3">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -727,7 +754,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           onClick={handleDeleteAll}
-                          style={{ display: selectAll ? "block" : "none" }}
+                          style={{ display: selectAssets?.length > 0 ? "block" : "none" }}
                         >
                           <RiDeleteBin5Line className="text-lg" />
                         </button>
@@ -803,6 +830,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       >
                         <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                           <tr className="items-center border-b border-b-[#E4E6FF] bg-gray-50 table-head-bg">
+                            {permissions.isDelete && (
+                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                <input
+                                  type="checkbox"
+                                  className="w-4 h-4"
+                                  checked={selectAll}
+                                  onChange={handleSelectAll}
+                                />
+                              </th>
+                            )}
                             <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                               Preview
                             </th>
@@ -850,18 +887,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   handleDragStart(event, item.assetID, item)
                                 }
                               >
-                                <td className="text-center flex justify-center gap-4">
-                                  {selectAll && (
+                                {permissions.isDelete && (
+                                  <td className="text-left gap-4">
                                     <div className="flex items-center justify-center">
                                       <input
                                         type="checkbox"
-                                        checked={true}
+                                        checked={selectAssets?.includes(item.assetID)}
                                         onChange={() => {
-                                          setSelectAll(!selectAll);
+                                          handleCheckboxChange(item?.assetID)
                                         }}
                                       />
                                     </div>
-                                  )}
+                                  </td>
+                                )}
+                                <td className="text-left">
                                   {item.assetType === "Folder" && (
                                     <div
                                       onDragOver={(event) =>
@@ -926,12 +965,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       </div>
                                     </div>
                                   )}
-
                                   {item.assetType === "Video" && (
                                     <div className="img-cover ivratio img-cover-ratio">
                                       <div>
                                         <video
+                                          ref={videoRef}
                                           controls
+                                          autoPlay={isInView}
+
                                           onClick={() => {
                                             setShowImageAssetModal(true);
                                             setImageAssetModal(item);
@@ -941,8 +982,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                             src={item.assetFolderPath}
                                             type="video/mp4"
                                           />
-                                          Your browser does not support the
-                                          video tag.
+
+                                          Your browser does not support the video tag.
                                         </video>
                                       </div>
                                     </div>
@@ -991,7 +1032,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         setSelectDoc(item);
                                       }}
                                     >
-                                      <HiDocumentDuplicate className=" text-primary text-4xl mt-10 " />
+                                      <HiDocumentDuplicate className=" text-primary text-4xl my-5 " />
                                     </div>
                                   )}
                                 </td>
@@ -1088,7 +1129,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <div className="move-to-dropdown">
                                                   <ul className="space-y-3">
                                                     {folderElements &&
-                                                    folderElements?.length >
+                                                      folderElements?.length >
                                                       0 ? (
                                                       folderElements?.map(
                                                         (folder) => {
@@ -1170,8 +1211,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             <td colSpan={8} className="text-center">
                               {/* <div className="text-center font-semibold text-2xl col-span-full p-5 "> */}
                               {store?.data?.length === 0 ? (
-                                <div className="text-center">
-                                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                                <div className="flex text-center m-5 justify-center">
+                                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                     No Data Available
                                   </span>
                                 </div>
@@ -1195,7 +1236,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         fill="#1C64F2"
                                       />
                                     </svg>
-                                  
+
                                   </div>
                                 </>
                               )}
@@ -1293,7 +1334,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

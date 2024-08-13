@@ -8,8 +8,8 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { GET_ALL_ORGANIZATION_MASTER } from "../../admin/AdminAPI";
 import toast from "react-hot-toast";
-// import BlackLogo from "../../images/DisployImg/BlackLogo.svg";
-import BlackLogo from "../../images/DisployImg/Black-Logo2.png";
+import BlackLogo from "../../images/DisployImg/BlackLogo.svg";
+// import BlackLogo from "../../images/DisployImg/Black-Logo2.png";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import disploy_tv_img from "../../images/ScreenImg/disploy-tv-img.png";
 import { useDispatch } from "react-redux";
@@ -58,7 +58,6 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
 
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-console.log('user', user)
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
@@ -146,7 +145,6 @@ console.log('user', user)
     axios
       .request(config)
       .then((response) => {
-        // console.log(response);
         if (response.data.status === 200) {
           if (response?.data?.data?.[0]?.IsNeedToValidate === true) {
             setOpenVerifyModel(true);

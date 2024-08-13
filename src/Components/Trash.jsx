@@ -28,6 +28,7 @@ import ReactTooltip from "react-tooltip";
 import { getMenuAll, getMenuPermission } from "../Redux/SidebarSlice";
 import Loading from "./Loading";
 import PurchasePlanWarning from "./Common/PurchasePlan/PurchasePlanWarning";
+import { PageNumber } from "./Common/Common";
 
 const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   Trash.propTypes = {
@@ -36,7 +37,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const dispatch = useDispatch();
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { userDetails, token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [sidebarload, setSidebarLoad] = useState(true);
   const [loadFist, setLoadFist] = useState(true);
@@ -52,7 +53,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectcheck, setSelectCheck] = useState(false);
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -72,14 +73,18 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -315,7 +320,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
               />
               <Navbar />
             </div>
-            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="flex justify-between items-center mb-5 ">
                   <h1 className="not-italic font-medium text-2xl text-[#001737]">
@@ -326,7 +331,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       <button
                         data-tip
                         data-for="Delete"
-                        className="p-2 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                         onClick={handleDeleteAllPermanently}
                       >
                         <RiDeleteBin5Line className="text-lg" />
@@ -342,23 +347,28 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     )}
 
                     {permissions.isDelete && sortedAndPaginatedData.length > 0 && (
-                      <input
+                      <button
                         data-tip
                         data-for="Select All"
-                        type="checkbox"
-                        className="lg:w-7 lg:h-6 w-5 h-5"
-                        checked={selectAllChecked}
-                        onChange={handleSelectAllChange}
-                      />
+                        type="button"
+                        className="flex align-middle text-white items-center rounded-full p-2 text-base  "
+                      >
+                        <input
+                          type="checkbox"
+                          className="lg:w-7 lg:h-6 w-5 h-5"
+                          checked={selectAllChecked}
+                          onChange={handleSelectAllChange}
+                        />
+                        <ReactTooltip
+                          id="Select All"
+                          place="bottom"
+                          type="warning"
+                          effect="solid"
+                        >
+                          <span>Select All</span>
+                        </ReactTooltip>
+                      </button>
                     )}
-                    <ReactTooltip
-                      id="Select All"
-                      place="bottom"
-                      type="warning"
-                      effect="solid"
-                    >
-                      <span>Select All</span>
-                    </ReactTooltip>
                   </div>
                 </div>
 
@@ -377,7 +387,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     >
                       <thead>
                         <tr className="items-center table-head-bg">
-                          <th className="sticky top-0th-bg-100 text-md font-semibold ">
+                          <th className="sticky top-0 th-bg-100 text-md font-semibold ">
                             <div className="flex justify-start items-center w-full">
                               Name
                               <svg
@@ -435,7 +445,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                     fill="#1C64F2"
                                   />
                                 </svg>
-                               
+
                               </div>
                             </td>
                           </tr>
@@ -456,32 +466,30 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                               key={i}
                               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                             >
-                              <td className=" border-b border-lightgray text-sm ">
+                              <td className="text-sm ">
                                 <div className="flex gap-2 text-[#5E5E5E] items-center justify-start">
                                   {permissions.isDelete && (
                                     <>
                                       {selectAll ? (
                                         <CheckmarkIcon />
                                       ) : (
-                                        <button>
-                                          <input
-                                            type="checkbox"
-                                            className="mx-1"
-                                            checked={selectedItems.some(
-                                              (selectedItem) =>
-                                                selectedItem.assetID ===
-                                                  item.assetID &&
-                                                selectedItem.assetType ===
-                                                  item.assetType
-                                            )}
-                                            onChange={() =>
-                                              handleCheckboxChange({
-                                                assetID: item.assetID,
-                                                assetType: item.assetType,
-                                              })
-                                            }
-                                          />
-                                        </button>
+                                        <input
+                                          type="checkbox"
+                                          className="mx-1"
+                                          checked={selectedItems.some(
+                                            (selectedItem) =>
+                                              selectedItem.assetID ===
+                                              item.assetID &&
+                                              selectedItem.assetType ===
+                                              item.assetType
+                                          )}
+                                          onChange={() =>
+                                            handleCheckboxChange({
+                                              assetID: item.assetID,
+                                              assetType: item.assetType,
+                                            })
+                                          }
+                                        />
                                       )}
                                     </>
                                   )}
@@ -491,27 +499,27 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                     </span>
                                   )}
                                   {item.assetType === "Image" && (
-                                    <span className="text-[#5E5E5E]">
+                                    <span className="text-[#5E5E5E] items-center">
                                       <FiImage />
                                     </span>
                                   )}
                                   {item.assetType === "OnlineImage" && (
-                                    <span className="text-[#5E5E5E]">
+                                    <span className="text-[#5E5E5E] items-center">
                                       <FiImage />
                                     </span>
                                   )}
                                   {item.assetType === "OnlineVideo" && (
-                                    <span className="text-[#5E5E5E]">
+                                    <span className="text-[#5E5E5E] items-center">
                                       <CgYoutube />
                                     </span>
                                   )}
                                   {item.assetType === "DOC" && (
-                                    <span className="text-[#5E5E5E]">
+                                    <span className="text-[#5E5E5E] items-center">
                                       <HiDocument />
                                     </span>
                                   )}
                                   {item.assetType === "Video" && (
-                                    <span className="text-[#5E5E5E]">
+                                    <span className="text-[#5E5E5E] items-center">
                                       <HiVideoCamera />
                                     </span>
                                   )}
@@ -519,26 +527,33 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                               </td>
                               {/* <td className=" border-b border-lightgray text-sm ">{item.assetFolderPath}</td> */}
-                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
-                                {item.folderPath}
+                              <td className=" text-[#5E5E5E] items-center text-sm ">
+                                <div className="flex justify-center items-center">
+                                  {item.folderPath}
+                                </div>
                               </td>
-                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
-                                {moment(item.deleteDate).format(
-                                  "DD/MM/YY, h:mm:ss a"
-                                )}
+                              <td className=" text-[#5E5E5E] items-center text-sm ">
+                                <div className="flex justify-center items-center">
+                                  {moment(item.deleteDate).format('MMMM D, YYYY')}
+                                </div>
                               </td>
-                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
-                                {item.fileSize}
+                              <td className=" text-[#5E5E5E] items-center text-sm ">
+                                <div className="flex justify-center items-center">
+                                  {item.fileSize}
+                                </div>
                               </td>
-                              <td className=" border-b text-[#5E5E5E] border-lightgray text-sm ">
-                                {item.assetType}
+                              <td className="text-[#5E5E5E] items-center text-sm ">
+                                <div className="flex justify-center items-center">
+                                  {item.assetType}
+                                </div>
                               </td>
-                              <td className="border-b border-lightgray text-sm">
-                                <div className="cursor-pointer text-xl flex gap-4 ">
+                              <td className="border-lightgray text-sm">
+                                <div className="cursor-pointer text-xl flex justify-center items-center gap-4 ">
                                   {permissions.isDelete && (
-                                    <button
-                                      type="button"
-                                      className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-3"
+                                    <div
+                                      data-tip
+                                      data-for="Delete"
+                                      className="cursor-pointer text-white bg-[#FF0000] hover:bg-rose-700 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                       onClick={() =>
                                         handleDeletePermanently(
                                           item.assetID,
@@ -547,10 +562,20 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                       }
                                     >
                                       <MdDeleteForever />
-                                    </button>
+                                      <ReactTooltip
+                                        id="Delete"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="solid"
+                                      >
+                                        <span>Delete</span>
+                                      </ReactTooltip>
+                                    </div>
                                   )}
                                   {permissions.isSave && (
                                     <button
+                                      data-tip
+                                      data-for="Restore"
                                       type="button"
                                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                       onClick={() =>
@@ -561,6 +586,14 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                       }
                                     >
                                       <MdRestore />
+                                      <ReactTooltip
+                                        id="Restore"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="solid"
+                                      >
+                                        <span>Restore</span>
+                                      </ReactTooltip>
                                     </button>
                                   )}
                                 </div>
@@ -576,6 +609,14 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       <span className="text-gray-500">{`Total ${store?.deletedData?.length} Trash`}</span>
                     </div>
                     <div className="flex justify-end">
+                      <select className='px-1 mr-2 border border-gray rounded-lg'
+                        value={itemsPerPage}
+                        onChange={(e) => setItemsPerPage(e.target.value)}
+                      >
+                        {PageNumber.map((x) => (
+                          <option value={x}>{x}</option>
+                        ))}
+                      </select>
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
@@ -596,7 +637,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                             d="M13 5H1m0 0 4 4M1 5l4-4"
                           />
                         </svg>
-                        {sidebarOpen ? "Previous" : ""} 
+                        {sidebarOpen ? "Previous" : ""}
                       </button>
                       <div className="flex items-center me-3">
                         <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
@@ -607,7 +648,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                         disabled={(currentPage === totalPages) || (store?.deletedData?.length === 0)}
                         className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                         {sidebarOpen ? "Next" : ""}
+                        {sidebarOpen ? "Next" : ""}
                         <svg
                           className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
                           aria-hidden="true"
@@ -626,7 +667,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       </button>
                     </div>
                   </div>
-                 
+
                 </div>
               </div>
             </div>
@@ -634,8 +675,8 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
         </Suspense>
       )}
 
-      
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

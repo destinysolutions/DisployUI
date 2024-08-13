@@ -14,6 +14,7 @@ import {
 import moment from "moment/moment";
 import toast from "react-hot-toast";
 import AddUserAdsForPrice from "../../Components/Common/AddUserAdsForPrice";
+import { PageNumber } from "../../Components/Common/Common";
 
 const AdNotifications = ({ sidebarOpen }) => {
   const store = useSelector((state) => state.root.advertisementData);
@@ -22,7 +23,7 @@ const AdNotifications = ({ sidebarOpen }) => {
   // pagination Start
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const filteredData = store?.getNotification?.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -71,7 +72,7 @@ const AdNotifications = ({ sidebarOpen }) => {
               </span>
               <input
                 type="text"
-                placeholder="Searching.."
+                placeholder="Searching..."
                 className="border border-primary rounded-full pl-10 py-1.5 search-user"
                 value={searchTerm}
                 onChange={handleSearchChange}
@@ -189,11 +190,12 @@ const AdNotifications = ({ sidebarOpen }) => {
                   ))
                 ) : (
                   <tr>
-                    <td
-                      className="text-[#5E5E5E] font-semibold text-center text-2xl"
-                      colSpan={6}
-                    >
-                      Data Not found !
+                    <td colSpan={6}>
+                      <div className="flex text-center m-5 justify-center">
+                        <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                          No Data Available
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 )}
@@ -205,6 +207,14 @@ const AdNotifications = ({ sidebarOpen }) => {
                 <span className="text-gray-500">{`Total ${store?.getNotification?.length} Advertisement`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={currentPage === 1}

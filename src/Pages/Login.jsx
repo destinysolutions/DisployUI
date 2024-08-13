@@ -32,10 +32,15 @@ import {
   signInWithPopup,
   signInWithRedirect,
 } from "firebase/auth";
-// import logo from "../images/DisployImg/logo.svg";
-import logo from "../images/DisployImg/White-Logo2.png";
+import logo from "../images/DisployImg/logo.svg";
+// import logo from "../images/DisployImg/White-Logo2.png";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import MicrosoftBtn from "./MicrosoftBtn";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { msalConfig } from "../Components/Common/authconfig";
+import { MsalProvider } from "@azure/msal-react";
+import { LoginSocialFacebook } from "reactjs-social-login";
 
 // import.meta.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
@@ -45,6 +50,7 @@ const Login = () => {
   //using for routing
   // const { loginUser } = useUser();
   //using show or hide password field
+  const msalInstance = new PublicClientApplication(msalConfig);
   const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -56,8 +62,9 @@ const Login = () => {
   const location = useLocation();
   const message = location?.state?.message || null;
   const [messageVisible, setMessageVisible] = useState(false);
+  const [loading, setLoading] = useState(false)
 
-  const { loading, user } = useSelector((state) => state.root.auth);
+  // const { loading, user } = useSelector((state) => state.root.auth);
 
   const navigate = useNavigate();
 
@@ -85,6 +92,7 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      setLoading(true)
       // if (!isCheckboxChecked) {
       //   toast.error("Please check & accept the terms and conditions.");
       //   return; // Exit the submission process if checkbox is not checked
@@ -133,32 +141,38 @@ const Login = () => {
                 toast.success("Login successfully.");
                 window.location.href = "/";
               } else if (userRole == 2) {
-                // User login logic
-                const user_ID = response.userID;
-                // localStorage.setItem("userID", JSON.stringify(response));
-                // if (response?.userDetails?.isRetailer === false) {
+                if (response?.isSalesMan) {
+                  localStorage.setItem("role_access", "SALESMAN");
+                  toast.success("Login successfully.");
+                } else {
+                  // User login logic
+                  const user_ID = response.userID;
+                  // localStorage.setItem("userID", JSON.stringify(response));
+                  // if (response?.userDetails?.isRetailer === false) {
                   localStorage.setItem("role_access", "USER");
-                // } else {
-                //   localStorage.setItem("role_access", "RETAILER");
-                // }
-                toast.success("Login successfully.");
-                // console.log(response);
-                // navigate("/screens");
-                window.location.href = "/dashboard";
+                  // } else {
+                  //   localStorage.setItem("role_access", "RETAILER");
+                  // }
+                  toast.success("Login successfully.");
+                  // navigate("/screens");
+                  window.location.href = "/dashboard";
+                }
               } else {
                 // Handle other roles or unknown roles
                 console.log("Unexpected role value:", userRole);
                 alert("Invalid role: " + userRole);
               }
+              setLoading(false)
             } else {
               toast.remove();
               setErrorMessge(response.message);
-
+              setLoading(false)
               toast.error(response?.message);
             }
           })
           .catch((error) => {
             console.log(error);
+            setLoading(false)
           });
       }
     },
@@ -168,6 +182,7 @@ const Login = () => {
 
   const SignInWithGoogle = async (data) => {
     try {
+      setLoading(true)
       const loginData = {
         companyName: null,
         password: null,
@@ -220,40 +235,160 @@ const Login = () => {
           console.log(error);
           setErrorMessge("Registration failed.");
         });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const SignInFaceBook = async () => {
-    try {
-      const res = await signInWithRedirect(auth, facebookProvider);
-
-      // const res = await signInWithCredential(auth, facebookProvider);
-      const user = res.user;
-      return console.log(res);
-
-      axios
-        .post(ADD_REGISTER_URL, {
-          companyName: null,
-          password: null,
-          firstName: user.displayName,
-          emailID: user.email,
-          googleLocation: null,
-          phoneNumber: user.phoneNumber,
-          operation: "Insert",
-        })
-        .then(() => {
-          navigate("/", {
-            state: { message: "Registration successfull !!" },
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          setErrorMessge("Registration failed.");
+  const SignInWithGooglebtn = async () => {
+    setLoading(true)
+    const res = await signInWithPopup(auth, Googleauthprovider)
+      .then((result) => {
+        // Google sign-in successful, you can access user information via result.user
+        const data = JSON.stringify({
+          emailID: result?.user?.email,
+          googleID: result?.user?.uid,
+          password: "",
+          SystemTimeZone: new Date()
+            .toLocaleDateString(undefined, {
+              day: "2-digit",
+              timeZoneName: "long",
+            })
+            .substring(4),
         });
-    } catch (err) {
-      console.log(err);
+
+        let config = {
+          method: "post",
+          maxBodyLength: Infinity,
+          url: LOGIN_URL,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: data,
+        };
+
+        const response = dispatch(handleLoginUser({ config }));
+        if (response) {
+          response
+            .then((res) => {
+              const response = res?.payload;
+              if (response.status == 200) {
+                window.localStorage.setItem("timer", JSON.stringify(18_00));
+                const userRole = response.role;
+                if (userRole == 1) {
+                  localStorage.setItem("role_access", "ADMIN");
+                  toast.success("Login successfully.");
+                  window.location.href = "/";
+                } else if (userRole == 2) {
+                  // User login logic
+                  const user_ID = response.userID;
+                  // localStorage.setItem("userID", JSON.stringify(response));
+                  // if (response?.userDetails?.isRetailer === false) {
+                  localStorage.setItem("role_access", "USER");
+                  // } else {
+                  //   localStorage.setItem("role_access", "RETAILER");
+                  // }
+                  toast.success("Login successfully.");
+                  // navigate("/screens");
+                  window.location.href = "/dashboard";
+                } else {
+                  // Handle other roles or unknown roles
+                  console.log("Unexpected role value:", userRole);
+                  alert("Invalid role: " + userRole);
+                }
+              } else {
+                toast.error(response?.message);
+                setErrorMessge(response.message);
+                toast.remove();
+              }
+              setLoading(false)
+            })
+            .catch((error) => {
+              console.log(error);
+              setLoading(false)
+            });
+        }
+      })
+      .catch((error) => {
+        // Handle errors here
+        setLoading(false)
+        console.error(error);
+      });
+  };
+
+  const SignInFaceBook = async (user) => {
+    try {
+      setLoading(true)
+      const res = await signInWithPopup(auth, facebookProvider);
+      // const res = await signInWithCredential(auth, facebookProvider);
+
+      const data = JSON.stringify({
+        emailID: res?.user?.email,
+        googleID: res?.user?.uid,
+        password: "",
+        SystemTimeZone: new Date()
+          .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+          })
+          .substring(4),
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: LOGIN_URL,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const response = dispatch(handleLoginUser({ config }));
+      if (response) {
+        response
+          .then((res) => {
+            const response = res?.payload;
+            if (response.status == 200) {
+              window.localStorage.setItem("timer", JSON.stringify(18_00));
+              const userRole = response.role;
+              if (userRole == 1) {
+                localStorage.setItem("role_access", "ADMIN");
+                toast.success("Login successfully.");
+                window.location.href = "/";
+              } else if (userRole == 2) {
+                // User login logic
+                const user_ID = response.userID;
+                // localStorage.setItem("userID", JSON.stringify(response));
+                // if (response?.userDetails?.isRetailer === false) {
+                localStorage.setItem("role_access", "USER");
+                // } else {
+                //   localStorage.setItem("role_access", "RETAILER");
+                // }
+                toast.success("Login successfully.");
+                // navigate("/screens");
+                window.location.href = "/dashboard";
+              } else {
+                // Handle other roles or unknown roles
+                console.log("Unexpected role value:", userRole);
+                alert("Invalid role: " + userRole);
+              }
+            } else {
+              toast.error(response?.message);
+              setErrorMessge(response.message);
+              toast.remove();
+            }
+            setLoading(false)
+          })
+          .catch((error) => {
+            console.log(error);
+            setLoading(false)
+          });
+      }
+
+    } catch (error) {
+      console.log(error);
+      setLoading(false)
     }
   };
 
@@ -262,8 +397,8 @@ const Login = () => {
       const res = await signInWithRedirect(auth, appleProvider);
       const user = res.user;
       // onclose();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -277,8 +412,8 @@ const Login = () => {
       const res = await signInWithRedirect(auth, microsoftProvider);
       const user = res.user;
       // onclose();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -480,14 +615,14 @@ const Login = () => {
                       onClick={handleRegister}
                       disabled={loading}
                     >
-                      Sign up here
+                      Sign in here
                     </button>
                   </div>
                 </form>
               </div>
             </div>
             {/* login with google */}
-            {/* <div className="mt-4">
+            {/*     <div className="mt-4">
               <GoogleOAuthProvider
                 clientId={process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID}
               >
@@ -497,32 +632,46 @@ const Login = () => {
                   onSuccess={(res) => {
                     SignInWithGoogle(jwtDecode(res.credential));
                   }}
-                  onError={(err) => console.log(err)}
+                  onError={(error) => console.log(error)}
                 ></GoogleLogin>
               </GoogleOAuthProvider>
-            </div>
-            {/* <div className="flex items-center justify-center mt-4">
-              <div className="socialIcon socialIcon1">
-                <button onClick={SignInWithGoogle}>
+                </div>*/}
+            <div className="flex items-center justify-center mt-4">
+              <button onClick={SignInWithGooglebtn}>
+                <div className="socialIcon socialIcon1">
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
+                </div>
+              </button>
+              {/*<LoginSocialFacebook
+                appId={process.env.REACT_APP_FACEBOOK_APK_SECRET_KEY}
+                onResolve={(response) => {
+                  console.log(response);
+                  SignInFaceBook(response.data);
+                }}
+                onReject={(error) => {
+                  console.log(error);
+                }}
+              >
+                <button>
+                  <div className="socialIcon socialIcon2">
+                    <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                  </div>
                 </button>
-              </div>
-              <div className="socialIcon socialIcon2">
-                <button onClick={SignInFaceBook}>
-                  <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+              </LoginSocialFacebook>*/}
+              <button onClick={SignInFaceBook}>
+                  <div className="socialIcon socialIcon2">
+                    <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                  </div>
                 </button>
-              </div>
-              <div className="socialIcon socialIcon3">
-                <button onClick={SignInapple}>
+              <button onClick={SignInapple}>
+                <div className="socialIcon socialIcon3">
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
-                </button>
-              </div>
-              <div className="socialIcon socialIcon4">
-                <button onClick={SignInMicroSoft}>
-                  <BsMicrosoft className="text-lg text-primary" />
-                </button>
-              </div>
-            </div> */}
+                </div>
+              </button>
+              <MsalProvider instance={msalInstance}>
+                <MicrosoftBtn register={false} setLoading={setLoading} />
+              </MsalProvider>
+            </div>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import Navbar from "../Navbar";
 import PropTypes from "prop-types";
 import { FaCertificate, FaDownload, FaFileInvoiceDollar, FaUserShield } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi";
-import { MdOutlineStorage } from "react-icons/md";
+import { MdNotificationsActive, MdOutlineStorage } from "react-icons/md";
 import { SiMediamarkt } from "react-icons/si";
 import { RiEyeLine } from "react-icons/ri";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -27,6 +27,7 @@ import { HiClipboardDocumentList } from "react-icons/hi2";
 import Loading from "../Loading";
 import ScreenAuthorize from "./ScreenAuthorize";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import UserNotifications from "./UserNotifications";
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   Settings.propTypes = {
@@ -34,112 +35,11 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const data = [
-    {
-      id: 1,
-      cname: "Company 1",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">15</label>
-      ),
-      location: "India, USA ",
-      enabled: true,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 2,
-      cname: "Patels",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">25</label>
-      ),
-      location: "India, USA ",
-      enabled: false,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 3,
-      cname: "Sundari",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">55</label>
-      ),
-      location: "India, USA ",
-      enabled: false,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 4,
-      cname: "Company 4",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">45</label>
-      ),
-      location: "India, USA ",
-      enabled: true,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 5,
-      cname: "Company 5",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">105</label>
-      ),
-      location: "India, USA ",
-      enabled: false,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 6,
-      cname: "Company 6",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">15</label>
-      ),
-      location: "India, USA ",
-      enabled: false,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-    {
-      id: 7,
-      cname: "Company 7",
-      totalscreen: (
-        <label className="text-base bg-lightgray p-3 rounded-xl">45</label>
-      ),
-      location: "India, USA ",
-      enabled: true,
-      show: (
-        <button>
-          <RiEyeLine className="text-xl text-[#8E94A9]" />
-        </button>
-      ),
-    },
-  ];
-  const storedTab = localStorage.getItem("STabs");
-  const initialTab = storedTab ? parseInt(storedTab) : 1;
-  const [STabs, setSTabs] = useState(initialTab);
-  const [records, setRecords] = useState(data);
+  // const storedTab = localStorage.getItem("STabs");
+  // const initialTab = storedTab ? parseInt(storedTab) : 1;
+  const [STabs, setSTabs] = useState(1);
   const [searchValue, setSearchValue] = useState("");
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const [showInvoice, setShowInvoice] = useState(false);
   const InvoiceRef = useRef(null);
   const dispatch = useDispatch();
@@ -173,7 +73,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   function updateTab(id) {
     setSTabs(id);
-    localStorage.setItem("STabs", id.toString());
+    // localStorage.setItem("STabs", id.toString());
   }
 
   const DownloadInvoice = () => {
@@ -203,7 +103,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
               <Navbar />
             </div>
 
-            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="lg:flex justify-between sm:flex xs:block  items-center mb-5 ">
                   <div className=" lg:mb-0 md:mb-0 sm:mb-4">
@@ -312,6 +212,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </li>
                       {!user?.userDetails?.isRetailer && (
+                        <>
                         <li>
                           <button
                             className={
@@ -323,7 +224,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             <span className="text-base text-primary">My Plan</span>
                           </button>
                         </li>
-                      )}
+                      
                       <li>
                         <button
                           className={
@@ -336,7 +237,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             Invoice
                           </span>
                         </button>
-                        </li>
+                      </li>
+                        </>
+                      )}
 
                       <li>
                         <button
@@ -350,6 +253,22 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                           <MdOutlineStorage className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                           <span className="text-base text-primary">
                             Storage Limit
+                          </span>
+                        </button>
+                      </li>
+                      
+                      <li>
+                        <button
+                          className={
+                            STabs === 9
+                              ? "stabshow settingtabactive"
+                              : "settingtab"
+                          }
+                          onClick={() => updateTab(9)}
+                        >
+                          <MdNotificationsActive className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                          <span className="text-base text-primary">
+                            Notifications
                           </span>
                         </button>
                       </li>
@@ -369,6 +288,8 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                           </span>
                         </button>
                       </li>
+
+                      
 
 
 
@@ -433,6 +354,12 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     )}
 
+                    {STabs === 9 && (
+                      <div>
+                        <UserNotifications />
+                      </div>
+                    )}
+
                     {/*Default Media*/}
                   </div>
                 </div>
@@ -443,8 +370,8 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
         </Suspense>
       )}
 
-      
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

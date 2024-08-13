@@ -9,6 +9,7 @@ import Advertisement from "../admin/Advertisement/Advertisement";
 import UserList from "../admin/UserList/UserList";
 import AdminSetting from "../admin/AdminSetting";
 import CustomerOnboding from "../admin/CustomerOnboding";
+import SalesMan from "../admin/SalesMan/SalesMan";
 
 const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
@@ -73,24 +74,24 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
           />
 
           <Route
-          path="/client"
-          element={
-            <UserList
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-
-        <Route
-        path="/settings"
-        element={
-          <AdminSetting
-            sidebarOpen={sidebarOpen}
-            setSidebarOpen={setSidebarOpen}
+            path="/client"
+            element={
+              <UserList
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
           />
-        }
-      />
+
+          <Route
+            path="/settings"
+            element={
+              <AdminSetting
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
 
           <Route
             path="/users"
@@ -100,12 +101,19 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
           />
 
           <Route
-            path="onboarded/customer-details/:id"
+            path="onboarded/customer-details/:id/:email"
             element={
               <CustomerOnboding sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
             }
           />
 
+          <Route
+            path="SalesMan"
+            element={
+              <SalesMan sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+            }
+          />
+          SalesMan
         </Routes>
       </BrowserRouter>
     </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
-const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive, HandleSubmit, userType, setUserType }) => {
+const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive, HandleSubmit, userType, setUserType, error, setError,disable }) => {
     return (
         <>
             <div
@@ -37,12 +37,22 @@ const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive, Ha
                                                     name="Name"
                                                     id="Name"
                                                     placeholder="Enter User Type"
-                                                    className="formInput mb-3"
+                                                    className="formInput mb-2"
                                                     value={userType}
-                                                    onChange={(e) => setUserType(e.target.value)}
+                                                    onChange={(e) => {
+                                                        if (e.target.value === "") {
+                                                            setError(true)
+                                                        } else {
+                                                            setError(false)
+                                                        }
+                                                        setUserType(e.target.value)
+                                                    }}
                                                 />
                                             </div>
-                                            <div className='flex items-center p-2'>
+                                            {error && (
+                                                <span className='error mb-1'>This field is required.</span>
+                                            )}
+                                            <div className='flex items-center py-2'>
                                                 <label>isActive </label>
                                                 <input
                                                     className="border border-primary ml-8 rounded h-6 w-6"
@@ -64,6 +74,7 @@ const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive, Ha
                                                 type="submit"
                                                 className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                                                 onClick={() => HandleSubmit()}
+                                                disabled={disable}
                                             >
                                                 Save
                                             </button>

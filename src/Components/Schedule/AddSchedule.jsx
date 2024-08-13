@@ -16,7 +16,7 @@ import {
   SCHEDULE_EVENT_SELECT_BY_ID,
   UPDATED_SCHEDULE_DATA,
   UPDATE_SCREEN_ASSIGN,
-  GET_SCEDULE_TIMEZONE,
+  GET_TIMEZONE,
   GET_TIME_ZONE,
 } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
@@ -79,7 +79,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const currentMinute = selectedCurrentTime.getMinutes();
   const interval =
     currentMinute < 20 ? 1 : currentMinute >= 20 && currentMinute <= 40 ? 2 : 3;
-  const { user, token } = useSelector((s) => s.root.auth);
+  const { user, token,userDetails } = useSelector((s) => s.root.auth);
   const { assets } = useSelector((s) => s.root.asset);
 
   const authToken = `Bearer ${token}`;
@@ -108,14 +108,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   const handleSelectEvent = useCallback((event) => {
-    // console.log("running",event);
     setSelectedEvent(event);
     setCreatePopupOpen(true);
   }, []);
 
   // Fetch events associated with the scheduleId
   const loadEventsForSchedule = (scheduleId) => {
-    // console.log("running",scheduleId);
     axios
       .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`, {
         headers: {
@@ -124,7 +122,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
-        // console.log(fetchedData);
         setScheduleAsset(response.data.data);
         const fetchedEvents = fetchedData.map((item) => ({
           id: item.eventId,
@@ -314,32 +311,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           macId: macids.replace(/^\s+/g, ""),
         };
         socket.emit("ScreenConnected", Params);
-        // if (connection.state == "Disconnected") {
-        //   connection
-        //     .start()
-        //     .then((res) => {
-        //       console.log("signal connected");
-        //     })
-        //     .then(() => {
-        //       connection
-        //         .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
-        //         .then(() => {
-        //           console.log("SignalR method invoked after screen update");
-        //         })
-        //         .catch((error) => {
-        //           console.error("Error invoking SignalR method:", error);
-        //         });
-        //     });
-        // } else {
-        //   connection
-        //     .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
-        //     .then(() => {
-        //       console.log("SignalR method invoked after screen update");
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error invoking SignalR method:", error);
-        //     });
-        // }
       })
       .catch((error) => {
         console.log(error);
@@ -406,38 +377,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               macId: myEvents[0]?.macids.replace(/^\s+/g, ""),
             };
             socket.emit("ScreenConnected", Params);
-            // if (connection.state == "Disconnected") {
-            //   connection
-            //     .start()
-            //     .then((res) => {
-            //       console.log("signal connected");
-            //     })
-            //     .then(() => {
-            //       connection
-            //         .invoke(
-            //           "ScreenConnected",
-            //           myEvents[0]?.macids.replace(/^\s+/g, "")
-            //         )
-            //         .then(() => {
-            //           console.log("SignalR invoked");
-            //         })
-            //         .catch((error) => {
-            //           console.error("Error invoking SignalR method:", error);
-            //         });
-            //     });
-            // } else {
-            //   connection
-            //     .invoke(
-            //       "ScreenConnected",
-            //       myEvents[0]?.macids.replace(/^\s+/g, "")
-            //     )
-            //     .then(() => {
-            //       console.log("SignalR invoked");
-            //     })
-            //     .catch((error) => {
-            //       console.error("Error invoking SignalR method:", error);
-            //     });
-            // }
             setEvents((prevEvents) => [...prevEvents, ...updateEvent]);
           } else {
             console.log("send add schedule mac id");
@@ -531,32 +470,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       macId: macids.replace(/^\s+/g, ""),
     };
     socket.emit("ScreenConnected", Params);
-    // if (connection.state == "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
-    //         .then(() => {
-    //           console.log("SignalR invoked");
-    //         })
-    //         .catch((error) => {
-    //           console.error("Error invoking SignalR method:", error);
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
-    //     .then(() => {
-    //       console.log("SignalR invoked");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error invoking SignalR method:", error);
-    //     });
-    // }
     if (selectedEvent && selectedEvent.id === eventId) {
       setSelectedEvent(null);
       setCreatePopupOpen(false);
@@ -621,7 +534,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
 
     axios
-      .get(GET_SCEDULE_TIMEZONE, {
+      .get(GET_TIMEZONE, {
         headers: {
           Authorization: authToken,
         },
@@ -792,7 +705,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     value={timezone.timeZoneName}
                     key={timezone.timeZoneID}
                   >
-                    {timezone.timeZoneName}
+                    {timezone.timeZoneLabel}
                   </option>
                 ))}
               </select>
@@ -1047,7 +960,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

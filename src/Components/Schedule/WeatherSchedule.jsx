@@ -29,6 +29,7 @@ import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { deletedData, getData } from "../../Redux/WeatherSlice";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import { PageNumber } from "../Common/Common";
 
 const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -46,8 +47,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectdata, setSelectData] = useState({});
   const store = useSelector((state) => state.root.weather);
   const [weatherList, setWeatherList] = useState([])
-  const { user, token } = useSelector((state) => state.root.auth);
-  const { loading, successMessage, type } = useSelector((s) => s.root.schedule);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
+  const { successMessage, type } = useSelector((s) => s.root.schedule);
+  const [isLoading, setIsLoading] = useState(true)
   const authToken = `Bearer ${token}`;
 
   const addScreenRef = useRef(null);
@@ -57,18 +59,12 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectcheck, setSelectCheck] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
   const [loadFist, setLoadFist] = useState(true);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (successMessage && type === "DELETE") {
-      toast.success(successMessage);
-    }
-  }, [successMessage]);
 
   // Filter data based on search term
   const filteredData = Array.isArray(weatherList)
@@ -89,14 +85,18 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -119,10 +119,11 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  
-  const fetchAllData =() =>{
+
+  const fetchAllData = () => {
     dispatch(getData()).then((res) => {
       setWeatherList(res?.payload?.data?.model)
+      setIsLoading(false)
     });
   }
 
@@ -133,12 +134,12 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFist]);
 
-  useEffect(() => {
-    if (store && store.status === "deleted") {
-      toast.success(store.message);
-      setLoadFist(true);
-    }
-  }, [store]);
+  // useEffect(() => {
+  //   if (store && store.status === "deleted") {
+  //     toast.success(store.message);
+  //     setLoadFist(true);
+  //   }
+  // }, [store]);
 
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
@@ -183,16 +184,24 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(deletedData(selectedItems));
-        setSelectAllChecked(false);
-        setSelectedItems([]);
+        dispatch(deletedData(selectedItems)).then((res) => {
+          if (res?.payload?.status) {
+            setSelectAllChecked(false);
+            setSelectedItems([]);
+            setLoadFist(true);
+            toast.success(res?.payload?.message)
+            const Params = {
+              id: socket.id,
+              connection: socket.connected,
+              macId: weatherList?.map((i) => i?.macIDs).join(",")
+            };
+            socket.emit("ScreenConnected", Params);
+          }
+
+        }).catch((error) => {
+          console.log('error', error)
+        });
       }
-      const Params = {
-        id: socket.id,
-        connection: socket.connected,
-        macId: weatherList?.map((i) => i?.macIDs).join(",")
-      };
-      socket.emit("ScreenConnected", Params);
     });
   };
 
@@ -224,7 +233,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status === 200) {
           try {
-            
+
             if (macids?.includes(",")) {
               let allMacIDs = macids?.split(",");
               allMacIDs?.map((item) => {
@@ -249,34 +258,6 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               setSelectScreenModal(false);
               setAddScreenModal(false);
             }, 2000);
-            // if (connection.state == "Disconnected") {
-            //   connection
-            //     .start()
-            //     .then((res) => {
-            //       console.log("signal connected");
-            //     })
-            //     .then(() => {
-            //       connection
-            //         .invoke("ScreenConnected", macids)
-            //         .then(() => {
-            //           console.log("func. invoked");
-            //         })
-            //         .catch((err) => {
-            //           toast.remove();
-            //           toast.error("Something went wrong, try again");
-            //         });
-            //     });
-            // } else {
-            //   connection
-            //     .invoke("ScreenConnected", macids)
-            //     .then(() => {
-            //       console.log("func. invoked");
-            //     })
-            //     .catch((err) => {
-            //       toast.remove();
-            //       toast.error("Something went wrong, try again");
-            //     });
-            // }
           } catch (error) {
             toast.error("Something went wrong, try again");
             toast.remove();
@@ -378,7 +359,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {/* navbar and sidebar end */}
-      <div className="pt-24 px-5 page-contain ">
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -507,7 +488,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {loading ? (
+                  {isLoading && (
                     <tr>
                       <td colSpan={7}>
                         <div className="flex text-center m-5 justify-center">
@@ -532,20 +513,22 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                     </tr>
-                  ) : weatherList &&
-                    sortedAndPaginatedData?.length === 0 ? (
-                    <tr>
-                      <td colSpan={7}>
-                        <div className="flex text-center m-5 justify-center">
-                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                            No Data Available
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
+                  )}
+                  {!isLoading && weatherList &&
+                    sortedAndPaginatedData?.length === 0 && (
+                      <tr>
+                        <td colSpan={7}>
+                          <div className="flex text-center m-5 justify-center">
+                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                              No Data Available
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  {(
                     <>
-                      {weatherList &&
+                      {!isLoading && weatherList &&
                         sortedAndPaginatedData.length > 0 &&
                         sortedAndPaginatedData.map((schedule, index) => {
                           return (
@@ -560,6 +543,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                   ) : (
                                     <input
                                       type="checkbox"
+                                      className="cursor-pointer"
                                       checked={selectedItems.includes(
                                         schedule.weatherSchedulingID
                                       )}
@@ -655,7 +639,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                                       />
                                     )}
-                                 
+
                                 </div>
                               </td>
 
@@ -725,9 +709,17 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
               <div className="flex items-center">
-                <span className="text-gray-500">{`Total ${weatherList?.length} Weather Schedules`}</span>
+                <span className="text-gray-500">{`Total ${filteredData?.length} Weather Schedules`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -870,7 +862,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

@@ -1,29 +1,30 @@
-import React, { useEffect, useState } from "react";
-import AdminSidebar from "../AdminSidebar";
-import AdminNavbar from "../AdminNavbar";
+import React, { lazy, useEffect, useState } from "react";
 import { BiUserPlus } from "react-icons/bi";
 import { AiOutlineSearch } from "react-icons/ai";
-import AddEditRetailer from "./AddEditRetailer";
-import * as Yup from "yup";
-import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import {
-  addRetailerData,
   getRetailerData,
   resetStatus,
-  updateRetailerData,
 } from "../../Redux/admin/RetailerSlice";
 import { MdOutlineModeEdit } from "react-icons/md";
+import ReactTooltip from "react-tooltip";
+
+import AdminSidebar from "../AdminSidebar";
+import AdminNavbar from "../AdminNavbar";
+import AddEditRetailer from "./AddEditRetailer";
+import { PageNumber } from "../../Components/Common/Common";
+
+// const AdminNavbar = lazy(() => import('../AdminNavbar'));
+// const AdminSidebar = lazy(() => import('../AdminSidebar'));
+// const AddEditRetailer = lazy(() => import('./AddEditRetailer'));
+
 
 const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.retailerData);
-
   const dispatch = useDispatch();
-
   const [loadFist, setLoadFist] = useState(true);
-
   const [showModal, setShowModal] = useState(false);
   const [heading, setHeading] = useState("Add");
   const [loading, setLoading] = useState(true);
@@ -31,7 +32,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [search, setSearch] = useState("");
@@ -40,10 +41,10 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const [retailerList, setRetailerList] = useState([])
   const [editData, setEditData] = useState({
     companyName: "",
-    Password: "",
+    password: "",
     firstName: "",
     lastName: "",
-    email: "",
+    emailID: "",
     googleLocation: "",
     phoneNumber: "",
   });
@@ -64,14 +65,18 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -94,51 +99,8 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const toggleModal = () => {
-    setShowModal(!showModal);
-    setEditId(null);
-    setOrgUserID(null);
-    setEditData({});
-  };
 
-  //using for validation and register api calling
-  const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
-  const validationSchema = Yup.object().shape({
-    companyName: Yup.string().required("Company Name is required"),
-    password: Yup.string().when("editId", {
-      is: false,
-      then: Yup.string()
-        .required("Password is required")
-        .matches(
-          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-          "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number, and one special case Character"
-        ),
-    }),
-    firstName: Yup.string().required("First Name is required").max(50),
-    lastName: Yup.string().required("Last Name is required").max(50),
-    emailID: Yup.string()
-      .required("Email is required")
-      .email("E-mail must be a valid e-mail!"),
-    phoneNumber: Yup.string()
-      .required("Phone Number is required")
-      .matches(phoneRegExp, "Phone number is not valid"),
-    googleLocation: Yup.string().required("Google Location is required"),
-  });
-
-  const editValidationSchema = Yup.object().shape({
-    companyName: Yup.string().required("Company Name is required"),
-    firstName: Yup.string().required("First Name is required").max(50),
-    lastName: Yup.string().required("Last Name is required").max(50),
-    emailID: Yup.string()
-      .required("Email is required")
-      .email("E-mail must be a valid e-mail!"),
-    phoneNumber: Yup.string()
-      .required("Phone Number is required")
-      .matches(phoneRegExp, "Phone number is not valid"),
-    googleLocation: Yup.string().required("Google Location is required"),
-  });
 
   useEffect(() => {
     if (loadFist) {
@@ -153,9 +115,9 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
       setLoadFist(false);
     }
 
-    if (store && store.status === "failed") {
-      toast.error(store.error);
-    }
+    // if (store && store.status === "failed") {
+    //   toast.error(store.error);
+    // }
 
     if (store && store.status === "succeeded") {
       toast.success(store.message);
@@ -167,34 +129,49 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFist, store]);
 
-  const formik = useFormik({
-    initialValues: editData,
-    enableReinitialize: editData,
-    validationSchema: editId ? editValidationSchema : validationSchema,
-    onSubmit: async (values) => {
-      const formData = new FormData();
-      formData.append("OrganizationName", values.companyName);
-      formData.append("Password", values.password || ""); // Set a default value if null
-      formData.append("FirstName", values.firstName);
-      formData.append("LastName", values.lastName);
-      formData.append("Email", values.emailID);
-      formData.append("GoogleLocation", values.googleLocation);
-      formData.append("Phone", values.phoneNumber);
-      formData.append("IsRetailer", true);
+  // const formik = useFormik({
+  //   initialValues: editData,
+  //   enableReinitialize: editData,
+  //   validationSchema: editId ? editValidationSchema : validationSchema,
+  //   onSubmit: async (values) => {
+  //     const formData = new FormData();
+  //     formData.append("OrganizationName", values.companyName);
+  //     formData.append("Password", values.password || ""); // Set a default value if null
+  //     formData.append("FirstName", values.firstName);
+  //     formData.append("LastName", values.lastName);
+  //     formData.append("Email", values.emailID);
+  //     formData.append("GoogleLocation", values.googleLocation);
+  //     formData.append("Phone", values.phoneNumber);
+  //     formData.append("IsRetailer", true);
 
-      if (editId) {
-        formData.append("OrgUserSpecificID", editId);
-        formData.append("orgUserID", orgUserID);
-        dispatch(updateRetailerData(formData));
-      } else {
-        formData.append("Operation", "Insert");
-        dispatch(addRetailerData(formData));
-      }
+  //     if (editId) {
+  //       formData.append("OrgUserSpecificID", editId);
+  //       formData.append("orgUserID", orgUserID);
+  //       dispatch(updateRetailerData(formData));
+  //     } else {
+  //       formData.append("Operation", "Insert");
+  //       dispatch(addRetailerData(formData));
+  //     }
 
-      formik.resetForm();
-      setShowModal(false);
-    },
-  });
+  //     formik.resetForm();
+  //     setShowModal(false);
+  //   },
+  // });
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+    setEditId(null);
+    setOrgUserID(null);
+    setEditData({
+      companyName: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      emailID: "",
+      googleLocation: "",
+      phoneNumber: "",
+    });
+  };
 
   const handleChange = (event) => {
     const searchQuery = event.target.value.toLowerCase();
@@ -267,10 +244,10 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
-              <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+            <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
+              <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
                 <table
-                  className="screeen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                  className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                   cellPadding={15}
                 >
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -343,7 +320,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                           <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                             <th
                               scope="col"
-                              className="px-3.5 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                              className="px-3.5 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-left"
                             >
                               {item.firstName + " " + item.lastName}
                             </th>
@@ -356,11 +333,21 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                             <td className="px-6 py-4">
                               <div className="cursor-pointer text-xl flex gap-4 ">
                                 <button
+                                  data-tip
+                                  data-for="Edit"
                                   type="button"
                                   className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                   onClick={() => handleEdit(item)}
                                 >
                                   <MdOutlineModeEdit />
+                                  <ReactTooltip
+                                    id="Edit"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="solid"
+                                  >
+                                    <span>Edit</span>
+                                  </ReactTooltip>
                                 </button>
                               </div>
                             </td>
@@ -370,7 +357,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                     {!loading && sortedAndPaginatedData?.length === 0 && (
                       <tr>
                         <td colSpan={6}>
-                          <div className="flex text-center justify-center">
+                          <div className="flex text-center m-5 justify-center">
                             <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                               No Data Available
                             </span>
@@ -383,9 +370,17 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                 <div className="flex items-center">
-                  <span className="text-gray-500">{`Total ${retailerList?.length} Retailer`}</span>
+                  <span className="text-gray-500">{`Total ${filteredData?.length} Retailer`}</span>
                 </div>
                 <div className="flex justify-end">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -445,10 +440,12 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
         <AddEditRetailer
           heading={heading}
           toggleModal={toggleModal}
-          formik={formik}
           showPassword={showPassword}
           setShowPassword={setShowPassword}
           editId={editId}
+          editData={editData}
+          setShowModal={setShowModal}
+          orgUserID={orgUserID}
         />
       )}
     </>

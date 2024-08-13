@@ -57,6 +57,7 @@ import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import { getTrueKeys } from "../Common/Common";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -88,7 +89,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const actionBoxRef = useRef(null);
   const addScreenRef = useRef(null);
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
 
   const [screenAssetID, setScreenAssetID] = useState();
   const authToken = `Bearer ${token}`;
@@ -96,12 +97,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
-    let idS = "";
-    for (const key in screenIds) {
-      if (screenIds[key] === true) {
-        idS += `${key},`;
-      }
-    }
+
+    const trueKeys = getTrueKeys(screenIds);
+    let idS = (trueKeys.join(','));
+
+    // let idS = "";
+    // for (const key in screenIds) {
+    //   if (screenIds[key] === true) {
+    //     idS += `${key},`;
+    //   }
+    // }
 
     let config = {
       method: "get",
@@ -128,38 +133,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             setAddScreenModal(false);
             setLoadFist(true);
           }, 1000);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke("ScreenConnected", macids)
-          //         .then(() => {
-          //           console.log(" method invoked");
-          //           // setSelectScreenModal(false);
-          //           // setAddScreenModal(false);
-          //           // setLoadFist(true)
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke("ScreenConnected", macids)
-          //     .then(() => {
-          //       console.log(" method invoked");
-          //       // setSelectScreenModal(false);
-          //       // setAddScreenModal(false);
-          //       // setLoadFist(true)
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
         }
       })
       .catch((error) => {
@@ -291,7 +264,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const tabs = localStorage.getItem("tabs");
   const [loadFist, setLoadFist] = useState(true);
   const [activeTab, setActiveTab] = useState(tabs ? tabs : "ALL"); // Set the default active tab
-  const [tabsDelete, setTabsDelete] = useState(Array);
+  const [tabsDelete, setTabsDelete] = useState({
+    tabs: "",
+    selectedIds: [],
+  });
   const [folderElements, setFolderElements] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -300,6 +276,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     isSave: false,
     isView: false,
   });
+
   const [sidebarload, setSidebarLoad] = useState(true);
   const store = useSelector((state) => state.root.asset);
 
@@ -464,11 +441,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const handleWarning = async (assetId) => {
+  const handleWarning = async (item) => {
     try {
-      const checkImage = await checkFolderImage(assetId);
+      const checkImage = await checkFolderImage(item.assetID);
       const formData = new FormData();
-      formData.append("AssetID", assetId);
+      formData.append("AssetID", item.assetID);
       formData.append("Operation", "Delete");
       formData.append("IsActive", "true");
       formData.append("IsDelete", "true");
@@ -477,7 +454,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("AssetType", "Image");
       formData.append("IsDeleteFromALL", checkImage.data);
       formData.append("DeleteDate", new Date().toISOString().split("T")[0]);
-
       const config2 = {
         method: "post",
         maxBodyLength: Infinity,
@@ -505,7 +481,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           confirmButtonColor: "#ff0000",
         }).then(async (result) => {
           if (result.isConfirmed) {
-            await dispatch(handelDeletedataAssets(config2));
+            await dispatch(handelDeletedataAssets(config2)).then((res) => {
+              const Params = {
+                id: socket.id,
+                connection: socket.connected,
+                macId: item?.macids,
+              };
+              socket.emit("ScreenConnected", Params);
+            }).catch((err) => {
+              console.log('err', err)
+            });
           } else {
             setLoadFist(true);
           }
@@ -521,7 +506,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           },
           data: formData,
         };
-        await dispatch(handelDeletedataAssets(config2));
+        const data = await dispatch(handelDeletedataAssets(config2));
       }
     } catch (error) {
       console.error("Error in handleWarning:", error);
@@ -552,15 +537,39 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         ? { ...asset, isChecked: !asset.isChecked }
         : asset
     );
-    const allChecked = updatedAsset.every((asset) => asset.isChecked);
-    setSelectAll(allChecked);
+    if (tabsDelete?.selectedIds) {
+      let newArr = tabsDelete.selectedIds.includes(assetID)
+        ? tabsDelete.selectedIds.filter(item => item !== assetID)
+        : [...tabsDelete.selectedIds, assetID];
+
+      const payload = {
+        tabs: activeTab,
+        selectedIds: newArr,
+      };
+      if (newArr?.length === store?.data?.length) {
+        setSelectAll(true)
+      } else {
+        setSelectAll(false)
+      }
+      setTabsDelete(payload);
+    } else {
+      const payload = {
+        tabs: activeTab,
+        selectedIds: [assetID],
+      };
+      setTabsDelete(payload);
+    }
+
+    // const allChecked = updatedAsset.every((asset) => asset.isChecked);
+    // setSelectAll(allChecked);
   };
 
   const handleDeleteAll = () => {
+
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${DELETE_ALL_ASSET}?IsDeleteFromAll=true&AssetType=${activeTab}`,
+      url: `${DELETE_ALL_ASSET}?assetIDs=${tabsDelete?.selectedIds?.join(',')}`,
       headers: { Authorization: authToken },
     };
 
@@ -580,9 +589,17 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await dispatch(handelAllDelete(config));
+        setTabsDelete({
+          tabs: "",
+          selectedIds: [],
+        })
         setSelectAll(false);
       } else {
         setLoadFist(true);
+        setTabsDelete({
+          tabs: "",
+          selectedIds: [],
+        })
         setSelectAll(false);
       }
     });
@@ -678,7 +695,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               <Navbar />
             </div>
 
-            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-2 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -748,7 +765,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           onClick={handleDeleteAll}
-                          style={{ display: selectAll ? "block" : "none" }}
+                          style={{ display: tabsDelete?.selectedIds?.length > 0 ? "block" : "none" }}
                         >
                           <RiDeleteBin5Line className="text-lg" />
                         </button>
@@ -815,9 +832,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       }
                     >
                       {!loadFist &&
-                      store &&
-                      store.data &&
-                      store.data.length > 0 ? (
+                        store &&
+                        store.data &&
+                        store.data.length > 0 ? (
                         store.data.map((item, index) => (
                           <div
                             key={index}
@@ -1026,17 +1043,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               {/*End hover icon details */}
 
                               <div className="checkbox flex justify-between absolute top-5 px-4 w-full">
-                                <input
-                                  type="checkbox"
-                                  className="w-[20px] h-[20px] relative"
-                                  style={{
-                                    display: selectAll ? "block" : "none",
-                                  }}
-                                  checked={selectAll || false}
-                                  onChange={() =>
-                                    handleCheckboxChange(item.assetID)
-                                  }
-                                />
+                                {permissions.isDelete && (
+                                  <input
+                                    type="checkbox"
+                                    className="w-[20px] h-[20px] relative"
+                                    // style={{
+                                    //   display: selectAll ? "block" : "none",
+                                    // }}
+                                    checked={tabsDelete?.selectedIds?.includes(item.assetID)}
+                                    onChange={() =>
+                                      handleCheckboxChange(item.assetID)
+                                    }
+                                  />
+                                )}
 
                                 <div
                                   style={{
@@ -1045,15 +1064,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     textAlign: "right",
                                   }}
                                 >
-                                  {permissions.isSave &&
-                                    permissions.isDelete && (
-                                      <button
-                                        onClick={() => updateassetsdw(item)}
-                                        className="relative"
-                                      >
-                                        <BsThreeDots className="text-xl bg-SlateBlue rounded" />
-                                      </button>
-                                    )}
+
+                                  <button
+                                    onClick={() => updateassetsdw(item)}
+                                    className="relative"
+                                  >
+                                    <BsThreeDots className="text-xl bg-SlateBlue rounded" />
+                                  </button>
+
 
                                   {assetsdw === item && (
                                     <div
@@ -1079,23 +1097,27 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         )}
 
                                         {item.assetType !== "Folder" && (
-                                          <li className="flex text-sm items-center relative w-full">
-                                            {permissions.isSave && (
-                                              <div className="move-to-button relative">
-                                                <button
-                                                  className="flex relative w-full"
-                                                  onClick={() => {
-                                                    setAddScreenModal(true);
-                                                    setassetsdw(null);
-                                                    setSelectData(item);
-                                                  }}
-                                                >
-                                                  <FiUpload className="mr-2 text-lg" />
-                                                  Set to Screen
-                                                </button>
-                                              </div>
-                                            )}
-                                          </li>
+                                          <>
+                                            {
+                                              permissions.isSave && (
+                                                <li className="flex text-sm items-center relative w-full">
+                                                  <div className="move-to-button relative">
+                                                    <button
+                                                      className="flex relative w-full"
+                                                      onClick={() => {
+                                                        setAddScreenModal(true);
+                                                        setassetsdw(null);
+                                                        setSelectData(item);
+                                                      }}
+                                                    >
+                                                      <FiUpload className="mr-2 text-lg" />
+                                                      Set to Screen
+                                                    </button>
+                                                  </div>
+                                                </li>
+                                              )
+                                            }
+                                          </>
                                         )}
 
                                         <li className="flex text-sm items-center relative w-full">
@@ -1113,7 +1135,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                               <div className="move-to-dropdown">
                                                 <ul className="space-y-3">
                                                   {folderElements &&
-                                                  folderElements?.length > 0 ? (
+                                                    folderElements?.length > 0 ? (
                                                     folderElements?.map(
                                                       (folder) => {
                                                         return (
@@ -1169,7 +1191,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                             {permissions.isDelete && (
                                               <button
                                                 onClick={() => {
-                                                  handleWarning(item.assetID);
+                                                  handleWarning(item);
                                                 }}
                                                 className="flex text-sm items-center"
                                               >
@@ -1215,7 +1237,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     fill="#1C64F2"
                                   />
                                 </svg>
-                               
+
                               </div>
                             </>
                           )}
@@ -1315,7 +1337,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

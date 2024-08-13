@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./AdminNavbar";
+import React, { lazy, useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -13,26 +11,35 @@ import toast from "react-hot-toast";
 import { MdDeleteForever } from "react-icons/md";
 import Swal from "sweetalert2";
 import { BsEyeFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import ReactTooltip from "react-tooltip";
+
+import AdminSidebar from "./AdminSidebar";
+import AdminNavbar from "./AdminNavbar";
+import { FiEdit, FiPlusCircle } from "react-icons/fi";
+import AddAssociated from "./AddAssociated";
+import { PageNumber } from "../Components/Common/Common";
+
+// const AdminNavbar = lazy(() => import('./AdminNavbar'));
+// const AdminSidebar = lazy(() => import('./AdminSidebar'));
 
 const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.onBoding);
+  const navigate = useNavigate()
   const dispatch = useDispatch();
   const [loadFist, setLoadFist] = useState(true);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false)
+  const [selectedCustomer, setSelectedCustomer] = useState("")
+
 
   useEffect(() => {
-    if (loadFist) {
-      dispatch(getOnBodingData());
-      setLoadFist(false);
-    }
-
     if (store && store.status === "failed") {
       toast.error(store.error);
     }
@@ -45,7 +52,14 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
     if (store && store.status) {
       dispatch(resetStatus());
     }
-  }, [loadFist, store]);
+  }, [store]);
+
+  useEffect(() => {
+    if (loadFist) {
+      dispatch(getOnBodingData());
+      setLoadFist(false);
+    }
+  }, [loadFist])
 
   // Filter data based on search term
   const filteredData = Array.isArray(store?.data)
@@ -63,14 +77,18 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -182,10 +200,10 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
             <div className="mt-5">
-              <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
-                <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+              <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
+                <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
                   <table
-                    className="screeen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                    className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                     cellPadding={15}
                   >
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -208,31 +226,34 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                           </svg>
                         </th>
 
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Email
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Google Location
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           PhoneNo
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Organization Name
                         </th>
-                        <th scope="col" className="px-6 py-3">
-                          Trial Day
+                        <th scope="col" className="px-6 py-3 text-left">
+                          Total Screen
                         </th>
-                        <th scope="col" className="px-6 py-3">
-                          Screen
+                        <th scope="col" className="px-6 py-3 text-left">
+                          Ads Screen
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Storage Request
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
+                          Associated
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left">
                           Status
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 text-left">
                           Action
                         </th>
                       </tr>
@@ -247,7 +268,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                 scope="col"
                                 className="px-3.5 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize"
                               >
-                                {item.firstName + " " + item.lastName}
+                                {item.firstName !== null ? item.firstName : ""} {" "}  {item.lastName !== null ? item.lastName : ""}
                               </td>
                               <td scope="col" className="px-6 py-4">{item.email}</td>
                               <td scope="col" className="px-6 py-4">
@@ -260,7 +281,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
 
                               <td scope="col" className="px-6 py-4 capitalize">
-                                {item.trialDays}
+                                {item.totalScreen}
                               </td>
 
                               <td scope="col" className="px-6 py-4 capitalize">
@@ -273,42 +294,89 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                     onClick={() =>
                                       handleClick(item.organizationID)
                                     }
-                                    className="capitalize cursor-pointer text-xs bg-gray-300 hover:bg-gray-400 text-[#000] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                    className="cursor-pointer text-xs bg-gray-300 hover:bg-gray-400 text-[#000] font-semibold px-2 text-green-800 rounded dark:bg-green-900 dark:text-green-300"
                                   >
                                     {!item.increaseSize == 0 &&
-                                      `${item.increaseSize} GB`}{" "}
-                                    View Request
+                                      `${item.increaseSize} GB`}
+
                                   </span>
+                                  // <span
+                                  //   onClick={() =>
+                                  //     handleClick(item.organizationID)
+                                  //   }
+                                  //   className="capitalize cursor-pointer text-xs bg-gray-300 hover:bg-gray-400 text-[#000] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  // >
+                                  //   {!item.increaseSize == 0 &&
+                                  //     `${item.increaseSize} GB`}{" "}
+                                  //   View Request
+                                  // </span>
                                 )}
                               </td>
+                              <td scope="col" className="px-6 py-4 capitalize">
+                                {item?.salesMan}
+                              </td>
                               <td className="px-6 py-4 capitalize">
-                              <span>
-                                {item?.isActive ? (
-                                  <span
-                                    style={{ backgroundColor: "#cee9d6" }}
-                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                  >
-                                    Active
-                                  </span>
-                                ) : (
-                                  <span
-                                    style={{ backgroundColor: "#f1b2b2" }}
-                                    className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                  >
-                                    Inactive
-                                  </span>
-                                )}
-                              </span>
-                            </td>
+                                <span>
+                                  {item?.isActive ? (
+                                    <span
+                                      style={{ backgroundColor: "#cee9d6" }}
+                                      className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                    >
+                                      Active
+                                    </span>
+                                  ) : (
+                                    <span
+                                      style={{ backgroundColor: "#f1b2b2" }}
+                                      className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                    >
+                                      Inactive
+                                    </span>
+                                  )}
+                                </span>
+                              </td>
 
                               <td className="px-6 py-4">
                                 <div className="cursor-pointer text-xl flex gap-4 ">
-                                 <Link
-                                    to={`/onboarded/customer-details/${item.orgID}`}
+                                  <button
+                                    data-tip
+                                    data-for={`${item?.salesMan === null ? "Add" : "Update"} Associated`}
                                     type="button"
-                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    onClick={() => { setShowModal(true); setSelectedCustomer(item) }}
+                                  >
+
+                                    {item?.salesMan === null ? <FiPlusCircle /> : <FiEdit />}
+                                    <ReactTooltip
+                                      id={`${item?.salesMan === null ? "Add" : "Update"} Associated`}
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>{item?.salesMan === null ? "Add" : "Update"} Associated</span>
+                                    </ReactTooltip>
+                                  </button>
+                                  <button
+                                    data-tip
+                                    data-for="View"
+                                    type="button"
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    onClick={() => {
+                                      navigate(`/onboarded/customer-details/${item.organizationID}/${item?.email}`)
+                                    }}
+                                  >
                                     <BsEyeFill />
-                                  </Link>
+                                    <ReactTooltip
+                                      id="View"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>View</span>
+                                    </ReactTooltip>
+                                  </button>
+
+
+
                                   {/*<button
                                     type="button"
                                     className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-3"
@@ -325,7 +393,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                         })}
                       {store?.loading && (
                         <tr>
-                          <td colSpan={10}>
+                          <td colSpan={11}>
                             <div className="flex text-center m-5 justify-center">
                               <svg
                                 aria-hidden="true"
@@ -344,7 +412,18 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                                   fill="#1C64F2"
                                 />
                               </svg>
-                            
+
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                      {!store?.loading && sortedAndPaginatedData?.length === 0 && (
+                        <tr>
+                          <td colSpan={11}>
+                            <div className="flex text-center m-5 justify-center">
+                              <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                                No Data Available
+                              </span>
                             </div>
                           </td>
                         </tr>
@@ -354,9 +433,17 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                   <div className="flex items-center">
-                    <span className="text-gray-500">{`Total ${store?.data?.length} Customer`}</span>
+                    <span className="text-gray-500">{`Total ${filteredData?.length} Customer`}</span>
                   </div>
                   <div className="flex justify-end">
+                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(e.target.value)}
+                    >
+                      {PageNumber.map((x) => (
+                        <option value={x}>{x}</option>
+                      ))}
+                    </select>
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
@@ -384,7 +471,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={(currentPage === totalPages) || (store?.data?.length === 0)}
+                      disabled={(currentPage === totalPages) || (filteredData?.length === 0)}
                       className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                     >
                       {sidebarOpen ? "Next" : ""}
@@ -411,6 +498,10 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <AddAssociated showModal={showModal} setShowModal={setShowModal} selectedCustomer={selectedCustomer} setLoadFist={setLoadFist} />
+      )}
     </>
   );
 };

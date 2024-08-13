@@ -8,6 +8,7 @@ import { handleGetScreen } from "../Redux/Screenslice";
 import toast from "react-hot-toast";
 import moment from "moment";
 import { socket } from "../App";
+import { PageNumber } from "./Common/Common";
 const ScreenAssignModal = ({
   setAddScreenModal,
   setSelectScreenModal,
@@ -31,7 +32,7 @@ const ScreenAssignModal = ({
   const selectScreenRef = useRef(null);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [searchScreen, setSearchScreen] = useState("");
@@ -47,49 +48,6 @@ const ScreenAssignModal = ({
       macId: selectedScreenMacIdsString,
     };
     socket.emit("ScreenConnected", Params);
-    // try {
-    //   // Invoke ScreenConnected method
-    //   if (connection.state == "Disconnected") {
-    //     connection
-    //       .start()
-    //       .then((res) => {
-    //         console.log("signal connected");
-    //       })
-    //       .then(() => {
-    //         connection
-    //           .invoke("ScreenConnected", selectedScreenMacIdsString)
-    //           .then(() => {
-    //             console.log("func. invoked");
-    //             toast.remove();
-    //             handleUpdateScreenAssign(screenCheckboxes);
-    //             setSelectedScreens([]);
-    //           })
-    //           .catch((err) => {
-    //             toast.remove();
-    //             console.log("error from invoke", err);
-    //             toast.error("Something went wrong, try again");
-    //           });
-    //       });
-    //   } else {
-    //     connection
-    //       .invoke("ScreenConnected", selectedScreenMacIdsString)
-    //       .then(() => {
-    //         console.log("func. invoked");
-    //         toast.remove();
-    //         handleUpdateScreenAssign(screenCheckboxes);
-    //         setSelectedScreens([]);
-    //       })
-    //       .catch((err) => {
-    //         toast.remove();
-    //         console.log("error from invoke", err);
-    //         toast.error("Something went wrong, try again");
-    //       });
-    //   }
-    // } catch (error) {
-    //   console.error("Error during connection:", error);
-    //   toast.error("Something went wrong, try again");
-    //   toast.remove();
-    // }
   };
 
   const filteredData = Array.isArray(screenData)
@@ -103,14 +61,18 @@ const ScreenAssignModal = ({
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -276,7 +238,7 @@ const ScreenAssignModal = ({
   //   let config = {
   //     method: "get",
   //     maxBodyLength: Infinity,
-  //     // url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${selectedScreenIdsString}`,
+  //     // url: `https://disploystage.disploy.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${selectedScreenIdsString}`,
   //     // headers: {
   //     //   Authorization: authToken,
   //     // },
@@ -290,7 +252,6 @@ const ScreenAssignModal = ({
   //     selectedScreens: selectedScreenIdsString,
   //   };
 
-  //   console.log(" Merged Screens ---- ", { paylod });
   //   // ...
 
   //   // Clear screenName and validationError after updating
@@ -309,7 +270,7 @@ const ScreenAssignModal = ({
         ref={selectScreenRef}
         className="w-auto my-6 mx-auto lg:max-w-[50vw] lg:min-w-[50vw] max-w-[85vw] min-w-[85vw]"
       >
-        <div className="border-0 px-4 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none ">
+        <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none ">
           <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
             <div className="flex items-center">
               <div className=" mt-1.5">
@@ -342,7 +303,7 @@ const ScreenAssignModal = ({
               <AiOutlineCloseCircle className="text-3xl" />
             </button>
           </div>
-          <div className="w-full flex justify-end mt-4 mb-4">
+          <div className="w-full flex justify-end mt-4 mb-4 px-6">
             <div className="relative ">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <AiOutlineSearch className="w-5 h-5 text-gray " />
@@ -359,7 +320,7 @@ const ScreenAssignModal = ({
             </div>
           </div>
 
-          <div className="max-h-72 custom-scrollbar rounded-lg ">
+          <div className="max-h-72 px-6 custom-scrollbar rounded-lg ">
             <table className="screen-table w-full" cellPadding={15}>
               <thead>
                 <tr className="items-center table-head-bg">
@@ -434,8 +395,8 @@ const ScreenAssignModal = ({
                         <span
                           id={`changetvstatus${screen?.macid}`}
                           className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                              ? "bg-[#3AB700]"
-                              : "bg-[#FF0000]"
+                            ? "bg-[#3AB700]"
+                            : "bg-[#FF0000]"
                             }`}
                         >
                           {screen.screenStatus == 1 ? "Live" : "offline"}
@@ -482,7 +443,11 @@ const ScreenAssignModal = ({
                 ) : (
                   <tr>
                     <td colSpan={6}>
-                      <p className="text-center p-2">No Screen available.</p>
+                      <div className="flex text-center m-5 justify-center">
+                        <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                          No Data Available
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 )}
@@ -493,9 +458,17 @@ const ScreenAssignModal = ({
 
           <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
             <div className="flex items-center">
-              <span className="text-gray-500">{`Total ${screenData?.length} Screen`}</span>
+              <span className="text-gray-500">{`Total ${filteredData?.length} Screen`}</span>
             </div>
             <div className="flex justify-end">
+              <select className='px-1 mr-2 border border-gray rounded-lg'
+                value={itemsPerPage}
+                onChange={(e) => setItemsPerPage(e.target.value)}
+              >
+                {PageNumber.map((x) => (
+                  <option value={x}>{x}</option>
+                ))}
+              </select>
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -550,9 +523,9 @@ const ScreenAssignModal = ({
           </div>
 
 
-          <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
+          <div className="flex items-center justify-center p-4 border-t border-gray-200 rounded-b dark:border-gray-600 gap-2">
             <button
-              className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
+              className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
               onClick={() => {
                 handleUpdateScreenAssign(
                   screenCheckboxes,

@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { AiOutlineCloseCircle, AiOutlineCloudUpload } from 'react-icons/ai'
 import { HiUserGroup } from 'react-icons/hi2';
 import ReactTooltip from 'react-tooltip';
+import { PageNumber } from './Common';
 
 const DashboardScreen = ({ screenDialogOpen, setScreenDialogOpen, screen, sidebarOpen, from }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Adjust items per page as needed
+    const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
     const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
     const [sortedField, setSortedField] = useState(null);
 
@@ -19,14 +20,18 @@ const DashboardScreen = ({ screenDialogOpen, setScreenDialogOpen, screen, sideba
     // Function to sort the data based on a field and order
     const sortData = (data, field, order) => {
         const sortedData = [...data];
-        sortedData.sort((a, b) => {
-            if (order === "asc") {
-                return a[field] > b[field] ? 1 : -1;
-            } else {
-                return a[field] < b[field] ? 1 : -1;
-            }
-        });
-        return sortedData;
+        if (field !== null) {
+            sortedData.sort((a, b) => {
+                if (order === "asc") {
+                    return a[field] > b[field] ? 1 : -1;
+                } else {
+                    return a[field] < b[field] ? 1 : -1;
+                }
+            });
+            return sortedData;
+        } else {
+            return data
+        }
     };
 
     const sortedAndPaginatedData = sortData(
@@ -283,6 +288,14 @@ const DashboardScreen = ({ screenDialogOpen, setScreenDialogOpen, screen, sideba
                                         <span className="text-gray-500">{`Total ${screen?.length} Screens`}</span>
                                     </div>
                                     <div className="flex justify-end">
+                                        <select className='px-1 mr-2 border border-gray rounded-lg'
+                                            value={itemsPerPage}
+                                            onChange={(e) => setItemsPerPage(e.target.value)}
+                                        >
+                                            {PageNumber.map((x) => (
+                                                <option value={x}>{x}</option>
+                                            ))}
+                                        </select>
                                         <button
                                             onClick={() => handlePageChange(currentPage - 1)}
                                             disabled={currentPage === 1}

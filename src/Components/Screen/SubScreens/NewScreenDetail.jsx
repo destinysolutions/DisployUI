@@ -15,7 +15,7 @@ import {
   GET_ALL_SCREEN_ORIENTATION,
   GET_ALL_SCREEN_RESOLUTION,
   GET_ALL_TAGS,
-  GET_SCREEN_TIMEZONE,
+  GET_TIMEZONE,
   GET_SCREEN_TYPE,
   SIGNAL_R,
   UPDATE_NEW_SCREEN,
@@ -60,7 +60,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const { allAppsData } = useSelector((s) => s.root.apps);
 
@@ -132,7 +132,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const compositionRef = useRef(null);
   const appRef = useRef(null);
 
-  // console.log(otpData);
 
   // useEffect(() => {
   //   // get youtube data
@@ -160,7 +159,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTag("");
   };
 
-  const handleTagsUpdate = () => {};
+  const handleTagsUpdate = () => { };
 
   const handleSuggestionClick = (suggestedTag) => {
     const allTags = tags;
@@ -242,7 +241,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const signalROnConfirm = () => {
-    console.log("run signal r");
     const Params = {
       id: socket.id,
       connection: socket.connected,
@@ -255,135 +253,99 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedAsset(assetPreview);
       setShowAssestOptionsPopup(false);
     }, 1000);
-    // let config = {
-    //   method: 'put',
-    //   maxBodyLength: Infinity,
-    //   url: `https://disployapi.thedestinysolutions.com/api/NewScreen/SendTvStatus?status=${socket.connected === true ? true : false}&MacID=${otpData[0]?.MACID}`,
-    // };
-    // axios.request(config)
-    // .then((response) => {
-    //   console.log(JSON.stringify(response.data));
-    // })
-    // .catch((error) => {
-    //   console.log(error);
-    // });
-
-    // try {
-    //   if (connection.state == "Disconnected") {
-    //     connection
-    //       .start()
-    //       .then((res) => {
-    //         console.log("signal connected");
-    //       })
-    //       .then(() => {
-    //         connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {
-    //           console.log("invoked");
-    //           console.log("Message sent:", otpData[0]?.MACID);
-    //           // setShowAssetModal(false);
-    //           // setSearchAsset("");
-    //           // setSelectedAsset(assetPreview);
-    //           // setShowAssestOptionsPopup(false);
-    //         });
-    //       });
-    //   } else {
-    //     connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {
-    //       console.log("invoked");
-    //       console.log("Message sent:", otpData[0]?.MACID);
-    //       // setShowAssetModal(false);
-    //       // setSearchAsset("");
-    //       // setSelectedAsset(assetPreview);
-    //       // setShowAssestOptionsPopup(false);
-    //     });
-    //   }
-    // } catch (error) {
-    //   console.error("Error during connection:", error);
-    // }
   };
 
   const handleScreenDetail = () => {
+    let hasError = false;
     if (screenName.trim() === "") {
       setScreenNameError("Screen name is required");
+      hasError = true;
+    }
+    if (userDetails?.isRetailer === true) {
+      if ((screenRatePerSec === "" || screenRatePerSec < 1)) {
+        setScreenRatePerSecondError('Screen Rate is required')
+        hasError = true;
+      }
+      if ((screenMargin === "" || screenMargin < 1)) {
+        setScreenMarginError('Screen margin is required')
+        hasError = true;
+      }
+    }
+    if (hasError) {
       return;
     }
-    // else if (screenRatePerSec.trim() === "") {
-    //   setScreenRatePerSecondError('Screen Rate is required')
-    // } else if (screenMargin.trim() === "") {
-    //   setScreenMargin('Screen margin is required')
-    // }
-    else {
-      setScreenNameError("");
-      setScreenRatePerSecondError("");
-      setScreenMargin("");
-      // let mediaType = selectedDefaultAsset ? 0 : selectedScreenTypeOption || 0;
-      let mediaType = selectedAsset?.assetID
-        ? 1
-        : selectedTextScroll?.textScroll_Id !== null &&
-          selectedTextScroll?.textScroll_Id !== undefined
+
+    setScreenNameError("");
+    setScreenRatePerSecondError("");
+    setScreenMargin("");
+    // let mediaType = selectedDefaultAsset ? 0 : selectedScreenTypeOption || 0;
+    let mediaType = selectedAsset?.assetID
+      ? 1
+      : selectedTextScroll?.textScroll_Id !== null &&
+        selectedTextScroll?.textScroll_Id !== undefined
         ? 4
         : selectedYoutube?.youtubeId !== null &&
           selectedYoutube?.youtubeId !== undefined
-        ? 5
-        : selectedComposition?.compositionID !== null &&
-          selectedComposition?.compositionID !== undefined
-        ? 3
-        : selectedSchedule?.scheduleId !== null &&
-          selectedSchedule?.scheduleId !== undefined
-        ? 2
-        : selectedDefaultAsset
-        ? 0
-        : 0;
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : selectedSchedule?.scheduleId !== null &&
+              selectedSchedule?.scheduleId !== undefined
+              ? 2
+              : selectedDefaultAsset
+                ? 0
+                : 0;
 
-      let getScreenID = otpData.map((item) => item.ScreenID);
-      let screen_id = getScreenID[0];
-      let moduleID =
-        selectedAsset?.assetID ||
-        selectedSchedule?.scheduleId ||
-        selectedComposition?.compositionID ||
-        selectedYoutube?.youtubeId ||
-        selectedTextScroll?.textScroll_Id;
-      let data = JSON.stringify({
-        screenID: screen_id,
-        screenOrientation: selectScreenOrientation,
-        screenResolution: selectScreenResolution,
-        timeZone: selectedTimezoneName,
-        mediaType: mediaType,
-        tags: ScreenTags,
-        screenName: screenName,
-        ScreenRatePerSec: screenRatePerSec,
-        ScreenMargin: screenMargin,
-        mediaDetailID: moduleID || 0,
-        operation: "Update",
-        UpdatedDate: new Date().toISOString().split("T")[0],
+    let getScreenID = otpData.map((item) => item.ScreenID);
+    let screen_id = getScreenID[0];
+    let moduleID =
+      selectedAsset?.assetID ||
+      selectedSchedule?.scheduleId ||
+      selectedComposition?.compositionID ||
+      selectedYoutube?.youtubeId ||
+      selectedTextScroll?.textScroll_Id;
+    let data = JSON.stringify({
+      screenID: screen_id,
+      screenOrientation: selectScreenOrientation,
+      screenResolution: selectScreenResolution,
+      timeZone: selectedTimezoneName,
+      mediaType: mediaType,
+      tags: ScreenTags,
+      screenName: screenName,
+      ScreenRatePerSec: screenRatePerSec,
+      ScreenMargin: screenMargin,
+      mediaDetailID: moduleID || 0,
+      operation: "Update",
+      UpdatedDate: new Date().toISOString().split("T")[0],
+    });
+    toast.loading("Saving...");
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: UPDATE_NEW_SCREEN,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.status === 200) {
+          signalROnConfirm();
+          setTimeout(() => {
+            toast.remove();
+            history("/screens");
+          }, 1000);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.remove();
       });
-      // return console.log(data);
-      toast.loading("Saving...");
-      let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: UPDATE_NEW_SCREEN,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: authToken,
-        },
-        data: data,
-      };
-
-      axios
-        .request(config)
-        .then((response) => {
-          if (response.data.status === 200) {
-            signalROnConfirm();
-            setTimeout(() => {
-              toast.remove();
-              history("/screens");
-            }, 1000);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          toast.remove();
-        });
-    }
   };
 
   const handleOnSaveSchedule = () => {
@@ -454,7 +416,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       axios.get(GET_ALL_SCREEN_RESOLUTION, {
         headers: { Authorization: authToken },
       }),
-      axios.get(GET_SCREEN_TIMEZONE, { headers: { Authorization: authToken } }),
+      axios.get(GET_TIMEZONE, { headers: { Authorization: authToken } }),
       axios.get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } }),
       axios.get(GET_ALL_TAGS, { headers: { Authorization: authToken } }),
       axios.get(GET_ALL_COMPOSITIONS, {
@@ -508,7 +470,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         setTagsData(tagsResponse.data.data);
         setCompositionData(compositionResponse.data.data);
         setAllCompositionData(compositionResponse.data.data);
-        // console.log(tagsResponse);
       })
       .catch((error) => {
         console.error(error);
@@ -679,14 +640,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-      ? 4
-      : selectedYoutube?.youtubeId !== null &&
-        selectedYoutube?.youtubeId !== undefined
-      ? 5
-      : selectedComposition?.compositionID !== null &&
-        selectedComposition?.compositionID !== undefined
-      ? 3
-      : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -726,64 +687,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           console.log(error);
         });
     }, 1000);
-    // if (connection.state == "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke("ScreenConnected")
-    //         .then(() => {
-    //           console.log("SignalR method invoked after Asset update");
-    //           // const response = dispatch(
-    //           //   handleUpdateScreenAsset({
-    //           //     mediaName,
-    //           //     dataToUpdate: data,
-    //           //     token,
-    //           //   })
-    //           // );
-    //           // if (!response) return;
-    //           // response
-    //           //   .then((response) => {
-    //           //     toast.remove();
-    //           //     toast.success("Media Updated.");
-    //           //   })
-    //           //   .catch((error) => {
-    //           //     toast.remove();
-    //           //     console.log(error);
-    //           //   });
-    //         })
-    //         .catch((error) => {
-    //           toast.remove();
-    //           console.error("Error invoking SignalR method:", error);
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke("ScreenConnected")
-    //     .then(() => {
-    //       console.log("SignalR method invoked after Asset update");
-    //       // const response = dispatch(
-    //       //   handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
-    //       // );
-    //       // if (!response) return;
-    //       // response
-    //       //   .then((response) => {
-    //       //     toast.remove();
-    //       //     toast.success("Media Updated.");
-    //       //   })
-    //       //   .catch((error) => {
-    //       //     toast.remove();
-    //       //     console.log(error);
-    //       //   });
-    //     })
-    //     .catch((error) => {
-    //       toast.remove();
-    //       console.error("Error invoking SignalR method:", error);
-    //     });
-    // }
   };
 
   return (
@@ -837,7 +740,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       )}
 
-      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4">
@@ -902,7 +805,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               value={timezone.timeZoneID}
                               key={timezone.timeZoneID}
                             >
-                              {timezone.timeZoneName}
+                              {timezone.timeZoneLabel}
                             </option>
                           ))}
                         </select>
@@ -1051,7 +954,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                       <td
                         className="flex items-center gap-3"
-                        // onClick={() => setShowAssetModal(true)}
+                      // onClick={() => setShowAssetModal(true)}
                       >
                         <label
                           onClick={() => {
@@ -1130,20 +1033,20 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       selectedComposition ||
                       selectedTextScroll ||
                       selectedYoutube) && (
-                      <tr>
-                        <td>
-                          <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
-                            select type:
-                          </label>
-                        </td>
-                        <td className="border border-[#D5E3FF] rounded-lg">
-                          {selectedAsset?.assetName ||
-                            selectedComposition?.compositionName ||
-                            selectedTextScroll?.instanceName ||
-                            selectedYoutube?.youtubeId}
-                        </td>
-                      </tr>
-                    )}
+                        <tr>
+                          <td>
+                            <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
+                              select type:
+                            </label>
+                          </td>
+                          <td className="border border-[#D5E3FF] rounded-lg">
+                            {selectedAsset?.assetName ||
+                              selectedComposition?.compositionName ||
+                              selectedTextScroll?.instanceName ||
+                              selectedYoutube?.youtubeId}
+                          </td>
+                        </tr>
+                      )}
 
                     {selectedScreenTypeOption === "1" && (
                       <tr className={`display-none`}>
@@ -1577,12 +1480,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                         }
                                                       >
                                                         <tr
-                                                          className={`${
-                                                            selectedComposition?.compositionName ===
+                                                          className={`${selectedComposition?.compositionName ===
                                                             composition?.compositionName
-                                                              ? "bg-[#f3c953]"
-                                                              : ""
-                                                          } border-b border-[#eee] `}
+                                                            ? "bg-[#f3c953]"
+                                                            : ""
+                                                            } border-b border-[#eee] `}
                                                           onClick={() => {
                                                             handleCompositionsAdd(
                                                               composition
@@ -1610,7 +1512,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                             {moment
                                                               .utc(
                                                                 composition.duration *
-                                                                  1000
+                                                                1000
                                                               )
                                                               .format(
                                                                 "hh:mm:ss"
@@ -1665,9 +1567,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                                 value={
                                   selectedTextScroll !== "" ||
-                                  selectedYoutube !== ""
+                                    selectedYoutube !== ""
                                     ? selectedTextScroll?.instanceName ||
-                                      selectedYoutube?.instanceName
+                                    selectedYoutube?.instanceName
                                     : ""
                                 }
                                 placeholder="Set Apps"
@@ -1781,14 +1683,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                     (instance, index) => (
                                                       <tbody key={index}>
                                                         <tr
-                                                          className={`${
-                                                            selectedTextScroll ===
-                                                              instance ||
+                                                          className={`${selectedTextScroll ===
+                                                            instance ||
                                                             selectedYoutube ===
-                                                              instance
-                                                              ? "bg-[#f3c953]"
-                                                              : ""
-                                                          } border-b border-[#eee] `}
+                                                            instance
+                                                            ? "bg-[#f3c953]"
+                                                            : ""
+                                                            } border-b border-[#eee] `}
                                                           onClick={() => {
                                                             handleAppsAdd(
                                                               instance
@@ -1900,23 +1801,23 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           <p>
                             {ScreenTags !== null
                               ? ScreenTags.split(",")
-                                  .slice(
-                                    0,
-                                    ScreenTags.split(",").length > 2
-                                      ? 3
-                                      : ScreenTags.split(",").length
-                                  )
-                                  .map((text) => {
-                                    if (text.toString().length > 10) {
-                                      return text
-                                        .split("")
-                                        .slice(0, 10)
-                                        .concat("...")
-                                        .join("");
-                                    }
-                                    return text;
-                                  })
-                                  .join(",")
+                                .slice(
+                                  0,
+                                  ScreenTags.split(",").length > 2
+                                    ? 3
+                                    : ScreenTags.split(",").length
+                                )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
+                                .join(",")
                               : ""}
                           </p>
 
@@ -1994,7 +1895,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

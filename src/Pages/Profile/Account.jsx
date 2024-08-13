@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import "react-phone-input-2/lib/style.css";
 import { UpdateUserDetails, handleGetUserDetails } from "../../Redux/Authslice";
 import { useDispatch } from "react-redux";
+import { handleGetState } from "../../Redux/SettingUserSlice";
 
 const Account = () => {
   const [file, setFile] = useState(null);
@@ -81,8 +82,6 @@ const Account = () => {
   const onSubmit = (data) => {
     const { phone } = data;
 
-    // return console.log(!isPossiblePhoneNumber(phone) || !isValidPhoneNumber(phone));
-    // if (!isDirty) return;
     if (!isPossiblePhoneNumber(phone) || !isValidPhoneNumber(phone)) {
       toast.remove();
       toast.error("phone is invalid");
@@ -106,8 +105,7 @@ const Account = () => {
     if (response) {
       response.then((res) => {
         if (res?.type.includes("fulfilled")) {
-          toast.success("profile edited successfully.", { duration: 2000 });
-          setFile(null);
+          toast.success("Profile Edited Successfully.");
         }
       });
     }
@@ -115,10 +113,10 @@ const Account = () => {
 
   useEffect(() => {
     const axiosRequests = [
-      axios.get(GET_ALL_CURRENCIES),
-      axios.get(GET_ALL_LANGUAGES),
-      axios.get(GET_ALL_COUNTRY),
-      axios.get(GET_TIMEZONE),
+      axios.get(GET_ALL_CURRENCIES, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_LANGUAGES, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_COUNTRY, { headers: { Authorization: authToken } }),
+      axios.get(GET_TIMEZONE, { headers: { Authorization: authToken } }),
     ];
 
     // Use Promise.all to send all requests concurrently
@@ -143,14 +141,15 @@ const Account = () => {
 
   // Fetch states based on the selected country
   useEffect(() => {
-    fetch(`${GET_SELECT_BY_STATE}?CountryID=${parseInt(selectedCountry)}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setStates(data.data);
-      })
-      .catch((error) => {
-        console.log("Error fetching states data:", error);
-      });
+    if (selectedCountry !== "") {
+      dispatch(handleGetState(selectedCountry))
+        ?.then((res) => {
+          setStates(res?.payload?.data);
+        })
+        .catch((error) => {
+          console.log("Error fetching states data:", error);
+        });
+    }
   }, [watch("country"), selectedCountry]);
 
   useEffect(() => {
@@ -161,13 +160,12 @@ const Account = () => {
       setSelectedCountry(userDetails?.countryID);
     }
   }, [loading]);
-  // console.log(userDetails);
 
   return (
     <>
       {/* {loading ? toast.loading("Fetching details....") : toast.remove()} */}
       <div className="rounded-xl mt-5 shadow-lg bg-white">
-        <h4 className="text-xl font-bold p-5">Profile Details</h4>
+        <h4 className="text-xl font-semibold p-5 ">Profile Details</h4>
         <div className="flex items-center border-b border-b-[#E4E6FF] p-5">
           <div className="layout-img me-5">
             {file !== undefined && file !== null ? (
@@ -220,10 +218,10 @@ const Account = () => {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          // onSubmit={(e) => {
-          //   e.preventDefault();
-          //   updateUser();
-          // }}
+        // onSubmit={(e) => {
+        //   e.preventDefault();
+        //   updateUser();
+        // }}
         >
           <div className="p-5 pt-0 mb-5 flex flex-col">
             <div className="-mx-3 md:flex">
@@ -350,7 +348,7 @@ const Account = () => {
                         key={country.countryID}
                         selected={country?.countryID == getValues("countryID")}
                         value={country.countryID}
-                        // onChange={(e) => {}}
+                      // onChange={(e) => {}}
                       >
                         {country.countryName}
                       </option>
@@ -424,7 +422,7 @@ const Account = () => {
                           timezone?.timeZoneID == getValues("timeZoneId")
                         }
                       >
-                        {timezone.timeZoneName}
+                        {timezone.timeZoneLabel}
                       </option>
                     ))}
                   </select>

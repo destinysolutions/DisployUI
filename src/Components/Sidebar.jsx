@@ -18,7 +18,7 @@ import appsIcon from "../images/MenuIcons/apps_icon.svg";
 import compositionIcon from "../images/MenuIcons/playlist_icon.svg";
 import scheduleIcon from "../images/MenuIcons/schedule_icon.svg";
 import reportIcon from "../images/MenuIcons/reports_icon.svg";
-import logo from "../images/DisployImg/White-Logo2.png";
+import logo from "../images/DisployImg/logo.svg";
 import { useDispatch } from "react-redux";
 import { handleLogout } from "../Redux/Authslice";
 import merge_screen from "../images/MenuIcons/merge_screen.svg";
@@ -35,8 +35,9 @@ const Sidebar = ({ sidebarOpen }) => {
   };
   const navigation = useNavigate();
   const dispatch = useDispatch();
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { userDetails, user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
+
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(false);
   const [mobileSidebar, setMobileSidebar] = useState(false);
@@ -44,7 +45,7 @@ const Sidebar = ({ sidebarOpen }) => {
   const [screenLimit, setScreenLimit] = useState(false);
   const [menuData, setMenuData] = useState([]);
   const [menuDataBottummenu, setMenuDataBottummenu] = useState([]);
-
+  // console.table(menuData);
   const store = useSelector((state) => state.root.sidebarData);
 
 
@@ -57,7 +58,7 @@ const Sidebar = ({ sidebarOpen }) => {
       const formattedMenuData = store.data.menu
         .map((item) => ({
           title: item.pageName,
-          cName: (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? "nav-user-text link-items" : "nav-text link-items",
+          cName: (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? "nav-user-text link-items" : "nav-text link-items",
           path: item.path,
           isView: item.isView,
           icon: <img src={item.icon} alt={item.alt} className="w-6" />,
@@ -78,9 +79,11 @@ const Sidebar = ({ sidebarOpen }) => {
         .sort((a, b) => a.sortBy - b.sortBy || a.title.localeCompare(b.title)); // Sort by sortBy, then by title
 
       const currentPath = window.location.pathname;
+
       let foundActive = false;
 
       const updateIsActive = (menuItems) => {
+
         menuItems.forEach((menuItem) => {
           if (menuItem.path === currentPath) {
             menuItem.isActive = true;
@@ -111,7 +114,7 @@ const Sidebar = ({ sidebarOpen }) => {
       const bottummenuMenuData = store.data.bottummenu
         .map((item) => ({
           title: item.pageName,
-          cName: (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? "nav-user-text link-items" : "nav-text link-items",
+          cName: (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? "nav-user-text link-items" : "nav-text link-items",
           path: item.path,
           icon: <img src={item.icon} alt={item.alt} className="w-6" />,
           isView: item.isView,
@@ -381,7 +384,7 @@ const Sidebar = ({ sidebarOpen }) => {
                         className={`${item.cName} ${isActive ? "active" : ""}`}
                       >
                         <div className="flex items-center">
-                          {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
+                          {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
                             <>
                               <Link>
                                 <div>{item.icon}</div>
@@ -421,7 +424,7 @@ const Sidebar = ({ sidebarOpen }) => {
                                   key={subIndex}
                                   className="p-2 relative submenu"
                                 >
-                                  {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
+                                  {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
                                     <Link>
                                       <div>{submenu.icon}</div>
                                       {submenu.title === "New Screen" ? (
@@ -443,7 +446,11 @@ const Sidebar = ({ sidebarOpen }) => {
                                         <span
                                           className="ml-5"
                                           onClick={() => {
-                                            verifyScreenStorage()
+                                            if (userDetails?.isRetailer === true) {
+                                              setShowOTPModal(true)
+                                            } else {
+                                              verifyScreenStorage()
+                                            }
                                           }}
                                         >
                                           {submenu.title}
@@ -479,7 +486,7 @@ const Sidebar = ({ sidebarOpen }) => {
                         <div
                           className="flex"
                           onClick={() => {
-                            if ((user?.isTrial === false) && (user?.isActivePlan === false) && user?.userDetails?.isRetailer === false) {
+                            if ((userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && user?.userDetails?.isRetailer === false) {
                               setShowOTPModal(false)
                             } else {
                               handleChangeRoute(item.title, item.path);
@@ -533,7 +540,7 @@ const Sidebar = ({ sidebarOpen }) => {
                   return (
                     <li key={index} className={item.cName}>
                       <div className="flex items-center">
-                        {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
+                        {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
                           <Link>
                             <div>{item.icon}</div>
                             <span className="ml-5">{item.title}</span>
@@ -559,7 +566,7 @@ const Sidebar = ({ sidebarOpen }) => {
                         <ul className="ml-4 mt-3">
                           {item.subMenus.map((submenu, subIndex) => (
                             <li key={subIndex} className="p-2 relative submenu">
-                              {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
+                              {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) ? (
                                 <Link>
                                   <div>{submenu.icon}</div>
                                   {submenu.title === "New Screen" ? (
@@ -579,7 +586,11 @@ const Sidebar = ({ sidebarOpen }) => {
                                     <span
                                       className="ml-5"
                                       onClick={() => {
-                                        verifyScreenStorage()
+                                        if (userDetails?.isRetailer === true) {
+                                          setShowOTPModal(true)
+                                        } else {
+                                          verifyScreenStorage()
+                                        }
                                       }}
                                     >
                                       {submenu.title}
@@ -605,7 +616,7 @@ const Sidebar = ({ sidebarOpen }) => {
                       <div
                         className="flex"
                         onClick={() => {
-                          if ((user?.isTrial === false) && (user?.isActivePlan === false) && user?.userDetails?.isRetailer === false) {
+                          if ((userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && user?.userDetails?.isRetailer === false) {
                             setShowOTPModal(false)
                           } else {
                             handleChangeRoute(item.title, item.path);

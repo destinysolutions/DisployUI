@@ -13,12 +13,13 @@ import ShowUserScreen from "./ShowUserScreen";
 import AddEditUserRole from "./AddEditUserRole";
 import { ADD_UPDATE_ORGANIZATION_USER_ROLE } from "../../Pages/Api";
 import { useSelector } from "react-redux";
-import { combineUserroleObjects } from "../Common/Common";
+import { combineUserroleObjects, PageNumber } from "../Common/Common";
 import WarningDialog from "../Common/WarningDialog";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
+import AttentionDialog from "../Common/AttentionDialog";
 
 const Userrole = ({ searchValue, sidebarOpen }) => {
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const [userRoleData, setUserRoleData] = useState();
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
   const [showUsers, setShowUsers] = useState(false);
   const [userList, setUserList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [roleuserList, setRoleUserList] = useState([]);
@@ -57,14 +58,18 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -183,10 +188,10 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
             Roles List
           </h2>
           <button
-            className={`flex ${((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
-            disabled={user?.isTrial && !user?.isActivePlan}
+            className={`flex ${((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+            // disabled={userDetails?.isTrial && !userDetails?.isActivePlan}
             onClick={() => {
-              if (((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
+              if (((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
                 setUserDisable();
                 setShowModal(true);
                 setHeading("Add");
@@ -284,10 +289,10 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
                                 <button
                                   data-tip
                                   data-for="Edit"
-                                  className={`${((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
-                                  disabled={user?.isTrial && !user?.isActivePlan}
+                                  className={`${((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}
+                                  // disabled={userDetails?.isTrial && !userDetails?.isActivePlan}
                                   onClick={() => {
-                                    if (((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
+                                    if (((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
                                       setHeading("Update")
                                       handleSelectByID(item.orgUserRoleID);
                                     } else {
@@ -317,8 +322,8 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
                       <>
                         <tr>
                           <td colSpan={5}>
-                            <div className="flex text-center justify-center">
-                              <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
+                            <div className="flex text-center m-5 justify-center">
+                              <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                 No Data Available
                               </span>
                             </div>
@@ -331,9 +336,17 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
             </div>
             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
               <div className="flex items-center">
-                <span className="text-gray-500">{`Total ${allUserRoleData?.SearchData?.length} User Role`}</span>
+                <span className="text-gray-500">{`Total ${filteredData?.length} User Role`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -393,6 +406,7 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
           setShowUsers={setShowUsers}
           loading={userLoading}
           userList={userList}
+          sidebarOpen={sidebarOpen}
         />
       )}
       {showModal && (
@@ -416,10 +430,10 @@ const Userrole = ({ searchValue, sidebarOpen }) => {
       )}
 
       {warning && (
-        <WarningDialog warning={warning} setWarning={setWarning} />
+        <AttentionDialog warning={warning} setWarning={setWarning} />
       )}
-      
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

@@ -16,9 +16,11 @@ export const DynamicDesignComponent = ({
     setValue(`${name}_${index}`, selectedValue);
     const data = userDisable?.[`${name}`];
     if (data) {
+      data.splice((index - 1), 0, Number(selectedValue));
+      data.splice(index, 1);
       setUserDisable({
         ...userDisable,
-        [`${name}`]: [...data, Number(selectedValue)],
+        [`${name}`]: [...data],
       });
     } else {
       setUserDisable({
@@ -79,9 +81,9 @@ export function mapModuleTitlesToUserAccess(moduleTitle, watch) {
   const UserAccess = [];
 
   moduleTitle?.map((item) => {
-    let View = watch(`${item?.alt}_View`);
-    let Save = watch(`${item?.alt}_Edit`);
-    let Delete = watch(`${item?.alt}_Delete`);
+    let View = watch(`${item?.alt}_View`) ? watch(`${item?.alt}_View`) : false;
+    let Save = watch(`${item?.alt}_Edit`) ? watch(`${item?.alt}_Edit`) : false;
+    let Delete = watch(`${item?.alt}_Delete`) ? watch(`${item?.alt}_Delete`) : false;
     let Approve = watch(`${item?.alt}_Approve`);
     let LevelApprove = watch(`${item?.alt}_LevelApprove`);
     let Total_Approve = LevelApprove ? Number(LevelApprove) : 0;
@@ -153,7 +155,6 @@ export function combineUserroleObjects(selectedRole) {
   return combinedObj;
 }
 
-
 export const Pagination = (page, length) => {
   if (page === 1) {
     return 1;
@@ -209,7 +210,6 @@ export const getCurrentTime = () => {
   return `${hours}:${minutes}`;
 };
 
-
 // Function to convert time string (HH:MM:SS) to seconds
 function timeToSeconds(time) {
   const [hours, minutes, seconds] = time.split(':').map(Number);
@@ -229,9 +229,6 @@ export function secondsToHMS(seconds) {
   const remainingSeconds = seconds % 60;
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
-
-
-
 
 export const greenOptions = {
   color: "blue",
@@ -404,7 +401,6 @@ export const Theme = [
   { theme: "Dark Theme" },
 ];
 
-
 export function generateAllCategory(addCategory) {
   const allCategory = addCategory.map(category => {
     const items = category.allItem.map(item => ({
@@ -501,3 +497,195 @@ export function multiOptionsFeature(arr) {
     value: feature.name,
   }));
 }
+
+export function capitalizeFirstLetter(string) {
+  if (!string) return string; // Return the string as is if it is empty or falsy
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export const NotificationType = [{
+  Name: "Email",
+  Value: "Email"
+}, {
+  Name: "Phone",
+  Value: "Phone"
+}, {
+  Name: "Both",
+  Value: "Both"
+}, {
+  Name: "None",
+  Value: "None"
+}]
+
+export function mergeNotificationData(listNotification, res) {
+  return listNotification.map((listItem, index) => {
+    const correspondingArrItem = res?.payload?.data.find(item => item.index === index);
+
+    if (correspondingArrItem) {
+      const updatedUser = listItem.user.map(userItem => {
+        if (userItem.notificationFeatureId === correspondingArrItem.notificationFeatureID) {
+          return { ...userItem, ...correspondingArrItem };
+        }
+        return userItem;
+      });
+      return { ...listItem, user: updatedUser };
+    }
+
+    return listItem;
+  });
+}
+
+export function extractSubstring(str) {
+
+  let match = str?.match(/× (.*?) \(/);
+  if (match) {
+    return match[1];
+  } else {
+    return null; // or an appropriate error message
+  }
+
+}
+
+export function extractPrice(string) {
+  let match = string?.match(/\$(\d+)\.00/);
+  if (match) {
+    return match[1];
+  } else {
+    return null;
+  }
+}
+
+export function getDifferenceInDays(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  // Calculate the difference in milliseconds
+  const differenceInTime = endDate - startDate;
+
+  // Convert the difference from milliseconds to days
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+  return differenceInDays;
+}
+
+export function getRemainingDays(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  // Calculate the difference in milliseconds
+  const differenceInTime = endDate - startDate;
+
+  // Convert the difference from milliseconds to days
+  const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+
+  return differenceInDays;
+}
+
+export function getDaysPassed(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  // Calculate the difference in milliseconds
+  const differenceInTime = endDate - startDate;
+
+  // Convert the difference from milliseconds to days
+  const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+
+  return differenceInDays;
+}
+
+export const months = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+export function generateYearArray() {
+  // Get the current year
+  const currentYear = new Date().getFullYear();
+
+  // Create an array of years from 2000 to the current year
+  const years = [];
+  for (let year = 2000; year <= currentYear; year++) {
+    years.push(year);
+  }
+  return years;
+}
+
+export function getRandomTwoDigitNumber(Num, Num1) {
+  return Math.floor(Math.random() * Num) + 10;
+}
+
+export const monthNames = {
+  "January": 1,
+  "February": 2,
+  "March": 3,
+  "April": 4,
+  "May": 5,
+  "June": 6,
+  "July": 7,
+  "August": 8,
+  "September": 9,
+  "October": 10,
+  "November": 11,
+  "December": 12
+};
+
+export function getTrueKeys(obj) {
+  return Object.keys(obj).filter(key => obj[key] === true);
+}
+
+export function formatMonth(month) {
+  return month.toString().padStart(2, '0');
+}
+
+export const PerPage = [
+  "5",
+  "10",
+  "15",
+];
+
+export const preloadImage = (src) => {
+  return new Promise((resolve, reject) => {
+    if (!src) {
+      resolve(); // Resolve immediately if no src
+      return;
+    }
+    const img = new Image();
+    img.src = src;
+    img.onload = () => resolve(src); // Resolve with src for easier debugging
+    img.onerror = reject;
+  });
+};
+
+export const CustomLayout = [
+  {
+    id: 0,
+    value: "Landscape 1920 x 1080"
+  },
+  {
+    id: 1,
+    value: "Portrait 1080 x 1920"
+  }
+]
+
+
+export const ScrollList = [
+  {
+    id: 0,
+    value: "All"
+  },
+  {
+    id: 1,
+    value: "PDF Scroll"
+  },
+  {
+    id: 2,
+    value: "DOC Scroll"
+  },
+  {
+    id: 3,
+    value: "PPT Scroll"
+  },
+]
+
+export const PageNumber = [5, 10, 25]

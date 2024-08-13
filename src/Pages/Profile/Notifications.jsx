@@ -15,6 +15,7 @@ import moment from "moment/moment";
 import toast from "react-hot-toast";
 import { handleGetAllNotifications } from "../../Redux/NotificationSlice";
 import { GET_ALL_NOTIFICATIONS } from "../Api";
+import { PageNumber } from "../../Components/Common/Common";
 
 const Notifications = ({ sidebarOpen }) => {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const Notifications = ({ sidebarOpen }) => {
   const [loading, setLoading] = useState(true)
   const [notification, setNotification] = useState([])
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = notification.slice(indexOfFirstItem, indexOfLastItem);
@@ -55,7 +56,7 @@ const Notifications = ({ sidebarOpen }) => {
     <>
       <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
 
-   
+
         <div className="clear-both">
           <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
             <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
@@ -101,11 +102,12 @@ const Notifications = ({ sidebarOpen }) => {
                   )}
                   {!loading && currentItems.length === 0 && (
                     <tr>
-                      <td
-                        className="text-[#5E5E5E] font-semibold text-center text-2xl"
-                        colSpan={3}
-                      >
-                        Data Not found !
+                      <td colSpan={3}>
+                        <div className="flex text-center m-5 justify-center">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                            No Data Available
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -142,6 +144,14 @@ const Notifications = ({ sidebarOpen }) => {
                 <span className="text-gray-500">{`Total ${notification?.length} Notifications`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={currentPage === 1}

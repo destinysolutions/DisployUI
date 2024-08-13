@@ -7,11 +7,12 @@ import { Link } from "react-router-dom";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import { useState } from "react";
 import { useEffect } from "react";
-import { FaUserTimes } from "react-icons/fa";
+import { FaUserTie, FaUserTimes } from "react-icons/fa";
 import { FaUserAlt, FaUserCheck, FaUsers } from "react-icons/fa";
 import { SlOrganization } from "react-icons/sl";
-import logo from "../images/DisployImg/White-Logo2.png";
-import { FaUserGroup } from "react-icons/fa6";
+import logo from "../images/DisployImg/logo.svg";
+import { FaBuildingUser, FaUserGroup } from "react-icons/fa6";
+import { RiAdvertisementFill } from "react-icons/ri";
 import settingIcon from "../images/MenuIcons/setting_icon.svg"
 const AdminSidebar = ({ sidebarOpen }) => {
   AdminSidebar.propTypes = {
@@ -70,12 +71,17 @@ const AdminSidebar = ({ sidebarOpen }) => {
         {
           title: "Retailer",
           path: "/retailer",
-          icon: <FaUserCheck className="  text-xl  " />,
+          icon: <FaBuildingUser  className="  text-xl  " />,
         },
         {
           title: "Advertisement",
           path: "/advertisement",
-          icon: <FaUserCheck className="  text-xl  " />,
+          icon: <RiAdvertisementFill  className="  text-xl  " />,
+        },
+        {
+          title: "Sales Man",
+          path: "/salesMan",
+          icon: <FaUserTie  className="  text-xl  " />,
         },
       ],
     },

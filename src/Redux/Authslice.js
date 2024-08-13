@@ -54,11 +54,31 @@ export const handleLoginWithGoogle = createAsyncThunk(
   }
 );
 
+// export const handleGetUserDetails = createAsyncThunk(
+//   "auth/handleGetUserDetails",
+//   async ({ id, token }, { rejectWithValue }) => {
+//     try {
+//       const response = await getUrl(`Register/SelectByID/?ID=${id}`, {
+//         headers: { Authorization: token },
+//       });
+//       if (Object.values(response?.data?.data).length > 0) {
+//         return response.data?.data;
+//       } else {
+//         return rejectWithValue(response?.data);
+//       }
+//     } catch (error) {
+//       if (error?.response) {
+//         return rejectWithValue(error?.response?.data);
+//       }
+//     }
+//   }
+// );
+
 export const handleGetUserDetails = createAsyncThunk(
   "auth/handleGetUserDetails",
   async ({ id, token }, { rejectWithValue }) => {
     try {
-      const response = await getUrl(`Register/SelectByID/?ID=${id}`, {
+      const response = await getUrl(`Register/SelectProjectByID/?ID=${id}`, {
         headers: { Authorization: token },
       });
       if (Object.values(response?.data?.data).length > 0) {

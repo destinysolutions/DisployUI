@@ -1,37 +1,43 @@
 import { round } from 'lodash';
 import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
-import { VERIFY_COUPON } from '../../../Pages/Api';
+import { GET_ALL_PLANS, VERIFY_COUPON } from '../../../Pages/Api';
 import { useSelector } from 'react-redux';
 import { verifyDiscountCoupon } from '../../../Redux/AdminSettingSlice';
 import { useDispatch } from 'react-redux';
 import SubscriptionTerm from '../../Common/PurchasePlan/SubscriptionTerm';
+import { useEffect } from 'react';
+import { handleGetAllPlans } from '../../../Redux/CommonSlice';
 
 const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, handlePay, discountCoupon, setDiscountCoupon, showError, setShowError, setDiscount, discount }) => {
-    const { user, token } = useSelector((s) => s.root.auth);
+    const { user, token, userDetails } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
     const [showDiscount, setShowDiscount] = useState(false);
     const [disclaimer, setDisclaimer] = useState(false);
     const [isRead, setIsRead] = useState(false)
+    const [plan, setPlan] = useState({})
 
-    let planPrice;
 
-    if (user?.planID === 1) {
-        planPrice = 10
-    } else if (user?.planID === 2) {
-        planPrice = 17
-    } else if (user?.planID === 2) {
-        planPrice = 17
-    } else {
-        planPrice = 47
-    }
+    useEffect(() => {
+        const config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: `${GET_ALL_PLANS}?PlanID=${userDetails?.planID}`,
+            headers: {
+            },
+        }
+        dispatch(handleGetAllPlans({ config })).then((res) => {
+            setPlan(res?.payload?.data)
+        })
+    }, [])
+
     const handleVerify = () => {
         const Params = {
             "discountCode": discountCoupon,
             "featureKey": "Screen",
             "currentDate": new Date().toISOString().split('T')[0],
-            "amount": round((addScreen * planPrice), 2),
+            "amount": round((addScreen * plan?.planPrice), 2),
             "items": addScreen
         }
 
@@ -46,7 +52,6 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
             data: JSON.stringify(Params),
         };
         dispatch(verifyDiscountCoupon({ config })).then((res) => {
-            console.log('res', res)
             if (res?.payload?.status) {
                 setDiscount(res?.payload?.data)
                 setShowError(false)
@@ -95,11 +100,11 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                         <input type='number'
                                                             className="relative border border-black rounded-md p-2 w-24"
                                                             onChange={(e) => {
-                                                                if (e.target.value <= 0) {
-                                                                    setAddScreen(addScreen)
-                                                                } else {
-                                                                    setAddScreen(e.target.value)
-                                                                }
+                                                                // if (e.target.value <= 0) {
+                                                                //     setAddScreen(addScreen)
+                                                                // } else {
+                                                                setAddScreen(e.target.value)
+                                                                // }
                                                             }
                                                             }
                                                             value={addScreen}
@@ -109,7 +114,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                 <div className='flex items-center justify-between border-t border-gray-200 py-3'>
                                                     <p>Cost/Screen/Month:</p>
                                                     <div className='flex items-center gap-1'>
-                                                        <label>${round((addScreen * planPrice), 2)}</label>
+                                                        <label>${round((addScreen * plan?.planPrice), 2)}</label>
                                                     </div>
                                                 </div>
                                                 {discount && (
@@ -125,7 +130,7 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                         <label>Total Price:</label>
                                                     </div>
                                                     <div>
-                                                        <label>${round((addScreen * planPrice), 2) - discount}</label>
+                                                        <label>${round((addScreen * plan?.planPrice), 2) - discount}</label>
                                                     </div>
                                                 </div>
                                                 <div className='flex items-center justify-start border-t border-gray-200 py-3'>
@@ -160,9 +165,9 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
 
                                             </div>
                                             <div className="flex items-center justify-between py-3 border-t border-gray-200">
-                                                <div class="flex items-center space-x-3">
-                                                    <input type="checkbox" class="border-gray-300 rounded h-5 w-5 cursor-pointer" onChange={() => setDisclaimer(!disclaimer)} checked={disclaimer} />
-                                                    <p class="text-xs text-gray-500 leading-4"><b>Disclaimer: </b> Monthly Subscription Charges</p>
+                                                <div className="flex items-center space-x-3">
+                                                    <input type="checkbox" className="border-gray-300 rounded h-5 w-5 cursor-pointer" onChange={() => setDisclaimer(!disclaimer)} checked={disclaimer} />
+                                                    <p className="text-xs text-gray-500 leading-4"><b>Disclaimer: </b> Monthly Subscription Charges</p>
                                                 </div>
                                                 <a className='underline font-medium cursor-pointer' onClick={() => setIsRead(!isRead)}>Read More</a>
                                             </div>
@@ -176,9 +181,9 @@ const PurchaseScreen = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                     Cancel
                                                 </button>
                                                 <button
-                                                    className={`bg-primary ${disclaimer ? "cursor-pointer" : "cursor-not-allowed"} text-white text-base px-8 py-3 border border-primary shadow-md rounded-full`}
+                                                    className={`bg-primary ${(disclaimer && addScreen) ? "cursor-pointer" : "cursor-not-allowed"} text-white text-base px-8 py-3 border border-primary shadow-md rounded-full`}
                                                     type="button"
-                                                    disabled={!disclaimer}
+                                                    disabled={(!disclaimer || addScreen === "")}
                                                     onClick={() => handlePay()}
                                                 >
                                                     Pay

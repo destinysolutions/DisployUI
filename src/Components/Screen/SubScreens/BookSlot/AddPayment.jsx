@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { PaymentElement, CardElement, useElements, useStripe, CardCvcElement, CardExpiryElement, CardNumberElement } from "@stripe/react-stripe-js";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AddPayment = ({
   selectedScreens,
@@ -118,8 +119,12 @@ const AddPayment = ({
 
         if (error) {
           if (error.type === "card_error" || error.type === "validation_error") {
+            toast.error(error?.message)
+            setIsLoading(false);
             setMessage(error.message);
           } else {
+            toast.error("An unexpected error occurred.")
+            setIsLoading(false);
             setMessage("An unexpected error occurred.");
           }
         } else {

@@ -7,7 +7,7 @@ export const handleGetAllScheduleTimezone = createAsyncThunk(
   "asset/handleGetAllScheduleTimezone",
   async ({ token }, { rejectWithValue }) => {
     try {
-      const { data } = await getUrl("EventMaster/GetAllTimeZone", {
+      const { data } = await getUrl("NewScreen/GetAllTimeZone", {
         headers: {
           Authorization: token,
         },

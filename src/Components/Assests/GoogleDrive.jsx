@@ -36,7 +36,6 @@ const GoogleDrive = () => {
   };
 
   const handleOpenPicker = async (token) => {
-    console.log(token);
     openPicker({
       clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID, // Your client ID
       developerKey: process.env.REACT_APP_GOOGLE_DEVELOPER_KEY, // Your developer key
@@ -88,7 +87,6 @@ const GoogleDrive = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const authorizationCode = urlParams.get("code");
-    console.log("run");
     if (authorizationCode) {
       let data = JSON.stringify({
         userId: user?.userID,

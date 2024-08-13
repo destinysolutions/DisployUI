@@ -86,6 +86,10 @@ const Storagelimit = () => {
   }
 
   const handlePay = () => {
+    if (addStorage < 1) {
+      toast.error("Please Enter Proper Required Storage ")
+      return;
+    }
     const price = round((addStorage * 3), 2);
     const params = {
       "items": {
@@ -156,16 +160,18 @@ const Storagelimit = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td className="text-[#5E5E5E] text-center flex justify-center">
-                    <span
-                      style={{
-                        background: "#E4E6FF",
-                        padding: "10px 15px",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      {storageDegtails?.totalStorage} GB
-                    </span>
+                  <td className="text-[#5E5E5E] text-center">
+                    <div className="flex justify-center">
+                      <span
+                        style={{
+                          background: "#E4E6FF",
+                          padding: "10px 15px",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        {storageDegtails?.totalStorage} GB
+                      </span>
+                    </div>
                   </td>
                   <td className="text-[#5E5E5E] text-center">
                     <div className="flex justify-center">
@@ -181,16 +187,18 @@ const Storagelimit = () => {
 
                     </div>
                   </td>
-                  <td className="text-[#5E5E5E] text-center flex justify-center">
-                    <span
-                      style={{
-                        background: "#E4E6FF",
-                        padding: "10px 15px",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      {storageDegtails?.availableSpace} GB
-                    </span>
+                  <td className="text-[#5E5E5E] text-center">
+                    <div className="flex justify-center">
+                      <span
+                        style={{
+                          background: "#E4E6FF",
+                          padding: "10px 15px",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        {storageDegtails?.availableSpace} GB
+                      </span>
+                    </div>
                   </td>
                   <td className="text-center">
                     {storageDegtails?.usedInPercentage} %
@@ -270,7 +278,7 @@ const Storagelimit = () => {
 
       {openPayment && clientSecret && (
         <Elements options={options} stripe={stripePromise}>
-          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Storage" PaymentValue={addStorage} discountCoupon={discountCoupon}/>
+          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Storage" PaymentValue={addStorage} discountCoupon={discountCoupon} />
         </Elements>
       )}
     </>

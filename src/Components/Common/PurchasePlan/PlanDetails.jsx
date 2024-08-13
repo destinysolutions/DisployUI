@@ -22,7 +22,6 @@ const PlanDetails = ({ planDetails, setPlanDetails, selectPlan }) => {
     const [openPayment, setOpenPayment] = useState(false);
     const [discountCoupon, setDiscountCoupon] = useState("")
     const TotalPrice = totalScreen * selectPlan?.planPrice
-    console.log('TotalPrice', TotalPrice)
     const appearance = {
         theme: 'stripe',
     };

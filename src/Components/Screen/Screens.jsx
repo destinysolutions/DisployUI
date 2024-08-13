@@ -50,7 +50,7 @@ import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
 import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 import Loading from "../Loading";
-import { Pagination } from "../Common/Common";
+import { PageNumber, Pagination, PerPage } from "../Common/Common";
 import PurchaseScreen from "./SubScreens/PurchaseScreen";
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentDialog from "../Common/PaymentDialog";
@@ -60,6 +60,7 @@ import { handlePaymentIntegration } from "../../Redux/PaymentSlice";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import { handleScreenLimit } from "../../Redux/CommonSlice";
 import ScreenStorage from "../Common/ScreenStorage";
+import ScheduleListDialog from "../Common/ScheduleListDialog";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -105,7 +106,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   });
   const [searchScreen, setSearchScreen] = useState("");
 
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [groupName, setGroupName] = useState("");
@@ -142,7 +143,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [sidebarload, setSidebarLoad] = useState(true);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [permissions, setPermissions] = useState({
@@ -227,14 +228,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -353,32 +358,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           macId: allScreenMacids,
         };
         socket.emit("ScreenConnected", Params);
-        // if (connection.state == "Disconnected") {
-        //   connection
-        //     .start()
-        //     .then((res) => {
-        //       console.log("signal connected");
-        //     })
-        //     .then(() => {
-        //       connection
-        //         .invoke("ScreenConnected", allScreenMacids)
-        //         .then(() => {
-        //           console.log("SignalR method invoked after Asset update");
-        //         })
-        //         .catch((error) => {
-        //           console.error("Error invoking SignalR method:", error);
-        //         });
-        //     });
-        // } else {
-        //   connection
-        //     .invoke("ScreenConnected", allScreenMacids)
-        //     .then(() => {
-        //       console.log("SignalR method invoked after Asset update");
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error invoking SignalR method:", error);
-        //     });
-        // }
       }
     });
   };
@@ -409,62 +388,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           });
       }
     }, 1000);
-    // if (connection.state == "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke("ScreenConnected", MACID)
-    //         .then(() => {
-    //           // const response = dispatch(
-    //           //   handleDeleteScreenById({ screenID: screenId, token })
-    //           // );
-    //           // if (response) {
-    //           //   response
-    //           //     .then((res) => {
-    //           //       toast.remove();
-    //           //       toast.success("Deleted Successfully.");
-    //           //       console.log(MACID);
-    //           //     })
-    //           //     .catch((error) => {
-    //           //       toast.remove();
-    //           //       console.log(error);
-    //           //     });
-    //           // }
-    //           console.log("SignalR method invoked after Asset update");
-    //         })
-    //         .catch((error) => {
-    //           console.error("Error invoking SignalR method:", error);
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke("ScreenConnected", MACID)
-    //     .then(() => {
-    //       // const response = dispatch(
-    //       //   handleDeleteScreenById({ screenID: screenId, token })
-    //       // );
-    //       // if (response) {
-    //       //   response
-    //       //     .then((res) => {
-    //       //       toast.remove();
-    //       //       toast.success("Deleted Successfully.");
-    //       //       console.log(MACID);
-    //       //     })
-    //       //     .catch((error) => {
-    //       //       toast.remove();
-    //       //       console.log(error);
-    //       //     });
-    //       // }
-    //       console.log("SignalR method invoked after Asset update");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error invoking SignalR method:", error);
-    //     });
-    // }
   };
 
   const handleScheduleAdd = (schedule) => {
@@ -517,7 +440,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       selectedComposition?.compositionID ||
       selectedYoutube?.youtubeId ||
       selectedTextScroll?.textScroll_Id;
-    // return console.log(moduleID, selectedComposition);
     let mediaType = selectedAsset?.assetID
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
@@ -560,40 +482,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             macId: screenToUpdate?.macid.replace(/^\s+/g, ""),
           };
           socket.emit("ScreenConnected", Params);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke(
-          //           "ScreenConnected",
-          //           screenToUpdate?.macid.replace(/^\s+/g, "")
-          //         )
-          //         .then(() => {
-          //           toast.success("Media Updated.");
-          //           console.log("SignalR method invoked after Asset update");
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke(
-          //       "ScreenConnected",
-          //       screenToUpdate?.macid.replace(/^\s+/g, "")
-          //     )
-          //     .then(() => {
-          //       toast.success("Media Updated.");
-          //       console.log("SignalR method invoked after Asset update");
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
           setIsEditingScreen(false);
         })
         .catch((error) => {
@@ -644,38 +532,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             macId: screenToUpdate?.macid.replace(/^\s+/g, ""),
           };
           socket.emit("ScreenConnected", Params);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke(
-          //           "ScreenConnected",
-          //           screenToUpdate?.macid.replace(/^\s+/g, "")
-          //         )
-          //         .then(() => {
-          //           console.log("SignalR method invoked after Schedule update");
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke(
-          //       "ScreenConnected",
-          //       screenToUpdate?.macid.replace(/^\s+/g, "")
-          //     )
-          //     .then(() => {
-          //       console.log("SignalR method invoked after Schedule update");
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
           setIsEditingScreen(false);
         })
         .catch((error) => {
@@ -830,32 +686,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       macId: allScreenMacids,
     };
     socket.emit("ScreenConnected", Params);
-    // if (connection.state == "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke("ScreenConnected", allScreenMacids)
-    //         .then(() => {
-    //           console.log("SignalR method invoked after Asset update");
-    //         })
-    //         .catch((error) => {
-    //           console.error("Error invoking SignalR method:", error);
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke("ScreenConnected", allScreenMacids)
-    //     .then(() => {
-    //       console.log("SignalR method invoked after Asset update");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error invoking SignalR method:", error);
-    //     });
-    // }
   };
 
   const handleUpdateMenu = () => {
@@ -870,23 +700,29 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setMoreModal(false);
   };
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const isClosed = localStorage.getItem("isWindowClosed");
-      if (isClosed === "true") {
-        dispatch(handleGetAllSchedule({ token }));
-        localStorage.setItem("isWindowClosed", "false");
-        // window.location.reload();
-      }
-    };
+  // useEffect(() => {
+  //   const handleStorageChange = () => {
+  //     const isClosed = localStorage.getItem("isWindowClosed");
+  //     if (isClosed === "true") {
+  //       dispatch(handleGetAllSchedule({ token }));
+  //       localStorage.setItem("isWindowClosed", "false");
+  //       // window.location.reload();
+  //     }
+  //   };
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+  //   window.addEventListener("storage", handleStorageChange);
+  //   return () => {
+  //     window.removeEventListener("storage", handleStorageChange);
+  //   };
+  // }, []);
 
   const handlePay = () => {
+
+    if (addScreen < 1) {
+      toast.error("Please Enter Proper Required Screen ")
+      return;
+    }
+
     const price = round((addScreen * 10), 2) - discount;
     const params = {
       "items": {
@@ -952,7 +788,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               />
               <Navbar />
             </div>
-            <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -1000,8 +836,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           type="button"
                           className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                           onClick={() => {
-                            verifyScreenStorage()
-                            // setShowOTPModal(true)
+                            if (userDetails?.isRetailer === true) {
+                              setShowOTPModal(true)
+                            } else {
+                              verifyScreenStorage()
+                            }
                           }}
                         >
                           <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
@@ -1365,22 +1204,20 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       {screenContentVisible && (
                                         <td className="text-[#5E5E5E]">
                                           <div className="flex items-center">
-                                            <div>
-                                              {permissions.isDelete && (
-                                                <input
-                                                  type="checkbox"
-                                                  className="mr-2"
-                                                  onChange={() =>
-                                                    handleScreenCheckboxChange(
-                                                      screen.screenID
-                                                    )
-                                                  }
-                                                  checked={selectedItems.includes(
+                                            {permissions.isDelete && (
+                                              <input
+                                                type="checkbox"
+                                                className="mr-2 cursor-pointer"
+                                                onChange={() =>
+                                                  handleScreenCheckboxChange(
                                                     screen.screenID
-                                                  )}
-                                                />
-                                              )}
-                                            </div>
+                                                  )
+                                                }
+                                                checked={selectedItems.includes(
+                                                  screen.screenID
+                                                )}
+                                              />
+                                            )}
                                             {isEditingScreen &&
                                               editingScreenID ===
                                               screen.screenID ? (
@@ -1478,7 +1315,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                                       {nowPlayingContentVisible && (
                                         <td
-                                          className="text-center "
+                                          className="text-center cursor-pointer"
                                           style={{ wordBreak: "break-all" }}
                                         >
                                           <div
@@ -1704,9 +1541,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                   <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                     <div className="flex items-center">
-                      <span className="text-gray-500">{`Total ${screens?.length} Screens`}</span>
+                      <span className="text-gray-500">{`Total ${filteredData?.length} Screens`}</span>
                     </div>
                     <div className="flex justify-end">
+                      <select className='px-1 mr-2 border border-gray rounded-lg'
+                        value={itemsPerPage}
+                        onChange={(e) => setItemsPerPage(e.target.value)}
+                      >
+                        {PageNumber.map((x) => (
+                          <option value={x}>{x}</option>
+                        ))}
+                      </select>
                       <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
@@ -1766,163 +1611,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
       {showScheduleModal && (
-        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-          <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              <div className="flex items-center justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                <div>Select Schedule</div>
-
-                <div>
-                  <button
-                    className="p-1"
-                    onClick={() => setShowScheduleModal(false)}
-                  >
-                    <AiOutlineCloseCircle className="text-3xl" />
-                  </button>
-                </div>
-              </div>
-              <div className="flex items-center justify-end mt-3 mr-5">
-                <Link to="/addschedule" target="_blank">
-                  <button
-                    className="bg-SlateBlue text-white px-5 py-2 rounded-full ml-3"
-                    onClick={() => {
-                      localStorage.setItem("isWindowClosed", "false");
-                    }}
-                  >
-                    Set New Schedule
-                  </button>
-                </Link>
-              </div>
-              <div className=" overflow-x-scroll sc-scrollbar mt-5 px-5 min-h-[400px] max-h-[400px] ">
-                <table
-                  className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white shadow-2xl p-2 mb-3"
-                  cellPadding={15}
-                >
-                  <thead>
-                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Schedule Name
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Time Zones
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Date Added
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        start date
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        End date
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        screens Assigned
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Tags
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loading ? (
-                      <tr>
-                        <td
-                          colSpan={8}
-
-                        >
-                          <div className="flex text-center m-5 justify-center">
-                            <svg
-                              aria-hidden="true"
-                              role="status"
-                              className="inline w-10 h-10 me-3 text-black animate-spin dark:text-gray-600"
-                              viewBox="0 0 100 101"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                fill="currentColor"
-                              />
-                              <path
-                                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                fill="#1C64F2"
-                              />
-                            </svg>
-
-                          </div>
-                        </td>
-                      </tr>
-                    ) : (
-                      schedules.map((schedule) => (
-                        <tr
-                          className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                          key={schedule.scheduleId}
-                        >
-                          <td className="flex items-center">
-                            <input
-                              type="checkbox"
-                              className="mr-3"
-                              onChange={() => handleScheduleAdd(schedule)}
-                            />
-                            <div>
-                              <div>{schedule.scheduleName}</div>
-                            </div>
-                          </td>
-                          <td className="text-center">
-                            {schedule.timeZoneName}
-                          </td>
-                          <td className="text-center">
-                            {moment(schedule.createdDate).format(
-                              "YYYY-MM-DD hh:mm"
-                            )}
-                          </td>
-                          <td className="text-center">
-                            {moment(schedule.startDate).format(
-                              "YYYY-MM-DD hh:mm"
-                            )}
-                          </td>
-
-                          <td className="text-center">
-                            {moment(schedule.endDate).format(
-                              "YYYY-MM-DD hh:mm"
-                            )}
-                          </td>
-                          <td className="p-2 text-center">
-                            {schedule.screenAssigned}
-                          </td>
-                          <td className="p-2 text-center">{schedule.tags}</td>
-                          <td className="text-center">
-                            <Link
-                              to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
-                              target="_blank"
-                              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                            >
-                              <BiEdit />
-                            </Link>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="py-4 flex justify-center">
-                <button
-                  onClick={() => {
-                    handleScheduleUpdate(scheduleScreenID);
-                  }}
-                  className="border border-primary rounded-full px-6 py-2 not-italic font-medium text-lg"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ScheduleListDialog
+          setShowScheduleModal={setShowScheduleModal}
+          loading={loading}
+          schedules={schedules}
+          handleScheduleAdd={handleScheduleAdd}
+          handleScheduleUpdate={handleScheduleUpdate}
+          scheduleScreenID={scheduleScreenID}
+        />
       )}
       {showAssetModal && (
         <ShowAssetModal
@@ -1977,7 +1673,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         </Elements>
       )}
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
 

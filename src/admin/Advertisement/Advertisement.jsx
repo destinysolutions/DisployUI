@@ -1,14 +1,10 @@
-import React, { useRef, useState } from "react";
-import AdminSidebar from "../AdminSidebar";
-import AdminNavbar from "../AdminNavbar";
+import React, { lazy, useRef, useState } from "react";
 import { BiUserPlus } from "react-icons/bi";
 import { AiOutlineSearch } from "react-icons/ai";
 import * as Yup from "yup";
 import axios from "axios";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
-import AddEditAdvertisement from "./AddEditAdvertisement";
-import CustomerScreen from "./CustomerScreen";
 import { useEffect } from "react";
 import { ADDEDITADVERTISEMENT } from "../../Pages/Api";
 import { MdOutlineResetTv, MdPreview } from "react-icons/md";
@@ -19,10 +15,25 @@ import {
 } from "../../Redux/admin/AdvertisementSlice";
 import { useDispatch } from "react-redux";
 import { getOnBodingData } from "../../Redux/admin/OnBodingSlice";
-import AssetsPreview from "../../Components/Common/AssetsPreview";
 import { BsEyeFill } from "react-icons/bs";
+import { getTimeFromDate, PageNumber } from "../../Components/Common/Common";
+import ReactTooltip from "react-tooltip";
+
+import AssetsPreview from "../../Components/Common/AssetsPreview";
 import AdminMarginmodel from "./AdminMarginmodel";
-import { getTimeFromDate } from "../../Components/Common/Common";
+import AddEditAdvertisement from "./AddEditAdvertisement";
+import CustomerScreen from "./CustomerScreen";
+import AdminSidebar from "../AdminSidebar";
+import AdminNavbar from "../AdminNavbar";
+import { isValidPhoneNumber } from "react-phone-number-input";
+
+// const AssetsPreview = lazy(() => import('../../Components/Common/AssetsPreview'));
+// const AddEditAdvertisement = lazy(() => import('./AddEditAdvertisement'));
+// const CustomerScreen = lazy(() => import('./CustomerScreen'));
+// const AdminSidebar = lazy(() => import('../AdminSidebar'));
+// const AdminNavbar = lazy(() => import('../AdminNavbar'));
+// const AdminMarginmodel = lazy(() => import('./AdminMarginmodel'));
+
 
 const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const hiddenFileInput = useRef(null);
@@ -49,7 +60,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
 
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]); // Multipal check
@@ -94,14 +105,18 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -152,8 +167,8 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
     PhoneNumber: Yup.string()
-      .required("Phone Number is required")
-      .matches(phoneRegExp, "Phone number is not valid"),
+      .required('Phone number is required')
+      .test('is-valid-phone', 'Invalid phone number', value => isValidPhoneNumber(value)),
   });
 
   const formik = useFormik({
@@ -209,9 +224,10 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
   const fetchUserData = () => {
     dispatch(getOnBodingData())
       .then((response) => {
+        const AllCustomer = response?.payload?.data?.filter((item) => Number(item?.screen) > 0)
         setCustomerList({
-          allCustomer: response.payload.data,
-          searchCustomer: response.payload.data,
+          allCustomer: AllCustomer,
+          searchCustomer: AllCustomer,
         });
       })
       .catch((error) => {
@@ -352,57 +368,59 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
           </div>
-          <div className=" bg-white rounded-xl shadow screen-section">
-            <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+          <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
+            <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
               <table
-                className="screen-table w-full lg:table-fixed sm:table-fixed xs:table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 "
+                className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                 cellPadding={15}
               >
-                <thead className="table-head-bg screen-table-th">
-                  <tr className="text-left table-head-bg ">
-                    <th className="text-[#5A5881] text-base font-semibold w-200">
-                      <div className="flex">
-                        Name
-                        <svg
-                          className="w-3 h-3 ms-1.5 mt-2 cursor-pointer"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          onClick={() => handleSort("name")}
-                        >
-                          <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                        </svg>
-                      </div>
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr className="text-left table-head-bg capitalize">
+                    <th className=" sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
+                      UserName
+                      <svg
+                        className="w-3 h-3 ms-1.5 cursor-pointer"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        onClick={() => handleSort("name")}
+                      >
+                        <path
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                        />
+                      </svg>
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Email
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold  mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Google Location
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Phone Number
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Screen
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Start Date
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       End Date
                     </th>
-                    <th className="text-[#5A5881] text-base font-semibold mw-200">
+                    <th scope="col" className="px-6 py-3">
                       Action
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {load && (
-                    <tr className="text-left">
+                    <tr>
                       <td colSpan={8}>
-                        <div className="flex text-center justify-center m-5">
+                        <div className="flex text-center m-5 justify-center">
                           <svg
                             aria-hidden="true"
                             role="status"
@@ -428,7 +446,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                   {!load &&
                     allAdvertisement?.SearchData &&
                     sortedAndPaginatedAdsData?.length === 0 && (
-                      <tr className="text-left">
+                      <tr>
                         <td colSpan={8}>
                           <div className="flex text-center m-5 justify-center">
                             <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
@@ -474,7 +492,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                     {screen?.isRemove && (
                                       <button
                                         data-tip
-                                        data-for="Assign"
+                                        data-for="Add Margin"
                                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-1"
                                         onClick={() => {
                                           setShowSelectMarginModal(true);
@@ -482,6 +500,14 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                         }}
                                       >
                                         <BsEyeFill />
+                                        <ReactTooltip
+                                          id="Add Margin"
+                                          place="bottom"
+                                          type="warning"
+                                          effect="solid"
+                                        >
+                                          <span>Add Margin</span>
+                                        </ReactTooltip>
                                       </button>
                                     )}
                                     <button
@@ -494,6 +520,14 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                       }}
                                     >
                                       <MdOutlineResetTv />
+                                      <ReactTooltip
+                                        id="Assign"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="solid"
+                                      >
+                                        <span>Assign</span>
+                                      </ReactTooltip>
                                     </button>
                                     <button
                                       data-tip
@@ -505,6 +539,14 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                                       }}
                                     >
                                       <MdPreview />
+                                      <ReactTooltip
+                                        id="Preview"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="solid"
+                                      >
+                                        <span>Preview</span>
+                                      </ReactTooltip>
                                     </button>
                                   </div>
                                 </td>
@@ -518,9 +560,17 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
               <div className="flex items-center">
-                <span className="text-gray-500">{`Total ${allAdvertisement?.SearchData?.length} Advertisement`}</span>
+                <span className="text-gray-500">{`Total ${filteredData?.length} Advertisement`}</span>
               </div>
               <div className="flex justify-end">
+                <select className='px-1 mr-2 border border-gray rounded-lg'
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(e.target.value)}
+                >
+                  {PageNumber.map((x) => (
+                    <option value={x}>{x}</option>
+                  ))}
+                </select>
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -574,7 +624,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
-      
+
       {showModal && (
         <AddEditAdvertisement
           heading={heading}

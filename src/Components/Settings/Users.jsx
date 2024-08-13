@@ -44,6 +44,10 @@ import moment from "moment";
 import "../../Styles/Settings.css";
 import ReactTooltip from "react-tooltip";
 import WarningDialog from "../Common/WarningDialog";
+import AddEditUser from "./AddEditUser";
+import UserScreenAccess from "./UserScreenAccess";
+import AttentionDialog from "../Common/AttentionDialog";
+import { PageNumber } from "../Common/Common";
 
 const Users = ({ searchValue, permissions, sidebarOpen }) => {
   const [loadFist, setLoadFist] = useState(true);
@@ -83,7 +87,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [editProfile, setEditProfile] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
   const [screenAccessModal, setScreenAccessModal] = useState(false);
@@ -95,7 +99,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
     lastName: "",
     role: "",
   });
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const { Countries } = useSelector((s) => s.root.settingUser);
   const store = useSelector((state) => state.root.settingUser);
   const authToken = `Bearer ${token}`;
@@ -124,14 +128,18 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
     const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
+    if (field !== null) {
+      sortedData.sort((a, b) => {
+        if (order === "asc") {
+          return a[field] > b[field] ? 1 : -1;
+        } else {
+          return a[field] < b[field] ? 1 : -1;
+        }
+      });
+      return sortedData;
+    } else {
+      return data
+    }
   };
 
   const sortedAndPaginatedData = sortData(
@@ -656,516 +664,6 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
   };
   return (
     <>
-      {showuserModal && (
-        <div className="backdrop z-9990">
-          <div ref={modalRef} className="user-model">
-            <div className="hours-heading flex justify-between items-center p-5 border-b border-gray">
-              <h1 className="text-lg font-medium text-primary">{labelTitle}</h1>
-              <AiOutlineCloseCircle
-                className="text-4xl text-primary cursor-pointer"
-                onClick={() => {
-                  handleCancelPopup();
-                }}
-              />
-            </div>
-            <hr className="border-gray " />
-            <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2">
-              <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 max-h-96 vertical-scroll-inner text-left rounded-2xl">
-                <div className="grid grid-cols-12 gap-6">
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="relative">
-                      <label className="formLabel">First Name</label>
-                      <input
-                        type="text"
-                        placeholder="Enter User Name"
-                        name="fname"
-                        className="formInput user-Input"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                      />
-                      {errors?.firstName && (
-                        <p className="error">{errors?.firstName}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="relative">
-                      <label className="formLabel">Last Name </label>
-                      <input
-                        type="text"
-                        placeholder="Enter User Name"
-                        name="lname"
-                        className="formInput user-Input"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                      />
-                      {errors?.lastName && (
-                        <p className="error">{errors?.lastName}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {labelTitle !== "Update User" && (
-                    <>
-                      <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                        <div className="relative">
-                          <label className="formLabel">Email</label>
-                          <input
-                            type="email"
-                            placeholder="Enter Email Address"
-                            name="email"
-                            className="formInput user-Input"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                          />
-                          {errors?.email && (
-                            <p className="error">{errors?.email}</p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                        <div className="relative">
-                          <label className="formLabel">Password</label>
-                          <input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter User Password"
-                            name="fname"
-                            className="formInput user-Input"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                          />
-
-                          <div className="icon">
-                            {showPassword ? (
-                              <BsFillEyeFill
-                                onClick={() => setShowPassword(!showPassword)}
-                              />
-                            ) : (
-                              <BsFillEyeSlashFill
-                                onClick={() => setShowPassword(!showPassword)}
-                              />
-                            )}
-                          </div>
-                        </div>
-                        {errors?.password && (
-                          <p className="error">{errors?.password}</p>
-                        )}
-                      </div>
-                    </>
-                  )}
-
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="relative">
-                      <label className="formLabel">Phone No</label>
-                      <input
-                        type="number"
-                        placeholder="Enter Phone No"
-                        name="phoneno"
-                        className="formInput user-Input"
-                        value={phone}
-                        maxLength="10"
-                        onChange={(e) => {
-                          if (e.target.value.length <= 10) {
-                            setPhone(e.target.value);
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="relative">
-                      <label className="formLabel">Company</label>
-                      <input
-                        type="text"
-                        placeholder="Enter Company Name"
-                        name="cname"
-                        className="formInput user-Input"
-                        value={company}
-                        onChange={(e) => setCompany(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="relative">
-                      <label className="formLabel">Zip Code</label>
-                      <input
-                        type="number"
-                        placeholder="Enter zip code"
-                        name="zipcode"
-                        className="formInput user-Input"
-                        value={zipCode}
-                        maxLength="10"
-                        onChange={(e) => {
-                          if (e.target.value.length <= 10) {
-                            setZipCode(e.target.value);
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="relative">
-                      <label className="formLabel">Country</label>
-                      <select
-                        className="formInput user-Input bg-white"
-                        value={countryID}
-                        onChange={(e) => setCountryID(e.target.value)}
-                      >
-                        {labelTitle !== "Update User" && (
-                          <option label="Select Country"></option>
-                        )}
-                        {Countries.map((country) => (
-                          <option
-                            key={country.countryID}
-                            value={country.countryID}
-                          >
-                            {country.countryName}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="relative">
-                      <label className="formLabel">State</label>
-                      <select
-                        className="formInput user-Input bg-white"
-                        onChange={(e) => setSelectedState(e.target.value)}
-                        value={selectedState}
-                      >
-                        {labelTitle !== "Update User" && (
-                          <option label="Select State"></option>
-                        )}
-                        {countryID &&
-                          Array.isArray(states) &&
-                          states.map((state) => (
-                            <option key={state.stateId} value={state.stateId}>
-                              {state.stateName}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="relative">
-                      <label className="formLabel">Roles</label>
-                      <select
-                        className="formInput user-Input bg-white"
-                        value={selectRoleID}
-                        onChange={(e) => setSelectRoleID(e.target.value)}
-                      >
-                        {labelTitle !== "Update User" && (
-                          <option label="Select User Role"></option>
-                        )}
-                        {userRoleData && userRoleData?.length > 0 ? (
-                          userRoleData.map((userrole) => (
-                            <option
-                              key={userrole?.orgUserRoleID}
-                              value={userrole?.orgUserRoleID}
-                            >
-                              {userrole.orgUserRole}
-                            </option>
-                          ))
-                        ) : (
-                          <div>Data not here.</div>
-                        )}
-                      </select>
-                      {errors?.role && <p className="error">{errors?.role}</p>}
-                    </div>
-                  </div>
-
-                  <div className="lg:col-span-4 md:col-span-12 sm:col-span-12 xs:col-span-12">
-                    <div className="mt-3 flex items-center">
-                      <input
-                        className="border border-primary mr-3 rounded h-6 w-6"
-                        type="checkbox"
-                        checked={isActive === 1}
-                        onChange={(e) => setIsActive(e.target.checked ? 1 : 0)}
-                      />
-                      <label>isActive</label>
-                    </div>
-                  </div>
-                  <div className="lg:col-span-8 md:col-span-12 sm:col-span-12 xs:col-span-12">
-                    <div className="flex items-center justify-end lg:flex-row md:flex-row sm:flex-row flex-col gap-2 ">
-                      <div className="flex items-center justify-center">
-
-                        <div className="layout-img me-3">
-                          {file && editProfile !== 1 ? (
-                            <img
-                              src={URL.createObjectURL(file)}
-                              alt="Uploaded"
-                              className="w-10 rounded-lg"
-                            />
-                          ) : null}
-                          {editProfile === 1 && fileEdit !== null ? (
-                            <img
-                              src={fileEdit}
-                              alt="Uploaded"
-                              className="w-10 rounded-lg"
-                            />
-                          ) : null}
-                        </div>
-                        <div className="layout-detaills me-3">
-                          <button
-                            className="lg:px-5 md:px-5 px-2 bg-primary text-white rounded-full py-2 border border-primary "
-                            onClick={handleClick}
-                          >
-                            Profile photo
-                          </button>
-                          <input
-                            type="file"
-                            id="upload-button"
-                            style={{ display: "none" }}
-                            ref={hiddenFileInput}
-                            accept="image/*"
-                            onChange={(e) => handleFileChange(e)}
-                          />
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => setSelectScreenModal(true)}
-                        className="lg:px-5 md:px-5 px-2 bg-primary text-white rounded-full py-2 border border-primary me-3 "
-                      >
-                        Screen Access
-                      </button>
-                    </div>
-                  </div>
-                  {selectScreenModal && (
-                    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-                      <div
-                        ref={selectScreenRef}
-                        className="w-auto mx-auto lg:max-w-2xl md:max-w-sm sm:max-w-xs max-w-xs"
-                      >
-                        <div className="border-0 rounded-lg min-w-[20vw] overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none min-h-[350px] max-h-[550px]">
-                          <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                            <div className="flex items-center">
-                              <div className=" mt-1.5">
-                                <input
-                                  type="checkbox"
-                                  className="w-5 h-5"
-                                  onChange={handleSelectAllCheckboxChange}
-                                  checked={
-                                    selectAllChecked ||
-                                    (Object.values(screenCheckboxes)?.length >
-                                      0 &&
-                                      Object.values(screenCheckboxes).every(
-                                        (e) => {
-                                          return e == true;
-                                        }
-                                      ))
-                                  }
-                                />
-                              </div>
-                              <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
-                                All Select
-                              </h3>
-                            </div>
-                            <button
-                              className="p-1 text-xl"
-                              onClick={() => {
-                                setSelectScreenModal(false);
-                              }}
-                            >
-                              <AiOutlineCloseCircle className="text-3xl" />
-                            </button>
-                          </div>
-                          <div className="schedual-table bg-white rounded-xl mt-2 shadow p-3 w-full max-h-96 vertical-scroll-inner">
-                            <div className="overflow-x-scroll sc-scrollbar rounded-lg">
-                              <table
-                                className="screen-table w-full"
-                                cellPadding={15}
-                              >
-                                <thead>
-                                  <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                                    <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
-                                      Screen
-                                    </th>
-                                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                      Status
-                                    </th>
-                                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                      Google Location
-                                    </th>
-                                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                      Associated Schedule
-                                    </th>
-                                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                      Tags
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {loading ? (
-                                    <tr>
-                                      <td
-                                        colSpan={6}
-
-                                      >
-                                        <div className="flex text-center m-5 justify-center">
-                                          <svg
-                                            aria-hidden="true"
-                                            role="status"
-                                            className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
-                                            viewBox="0 0 100 101"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                          >
-                                            <path
-                                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                              fill="currentColor"
-                                            />
-                                            <path
-                                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                              fill="#1C64F2"
-                                            />
-                                          </svg>
-
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  ) : !loading && screenData?.length > 0 ? (
-                                    screenData.map((screen) => (
-                                      <tr
-                                        key={screen.screenID}
-                                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                      >
-                                        <td className="flex items-center">
-                                          <input
-                                            type="checkbox"
-                                            className="mr-3"
-                                            onChange={() =>
-                                              handleScreenCheckboxChange(
-                                                screen.screenID
-                                              )
-                                            }
-                                            checked={
-                                              screenCheckboxes[screen.screenID]
-                                            }
-                                          />
-
-                                          {screen.screenName}
-                                        </td>
-
-                                        <td className="text-center">
-                                          <span
-                                            id={`changetvstatus${screen.macid}`}
-                                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                              ? "bg-[#3AB700]"
-                                              : "bg-[#FF0000]"
-                                              }`}
-                                          >
-                                            {screen.screenStatus == 1
-                                              ? "Live"
-                                              : "offline"}
-                                          </span>
-                                        </td>
-                                        <td className="text-center break-words">
-                                          {screen.googleLocation}
-                                        </td>
-
-                                        <td className="text-center break-words">
-                                          {screen.scheduleName == ""
-                                            ? ""
-                                            : `${screen.scheduleName} Till
-                                    ${moment(screen.endDate).format(
-                                              "YYYY-MM-DD hh:mm"
-                                            )}`}
-                                        </td>
-                                        <td className="text-center break-words">
-                                          {screen?.tags !== null
-                                            ? screen?.tags
-                                              .split(",")
-                                              .slice(
-                                                0,
-                                                screen?.tags.split(",")
-                                                  .length > 2
-                                                  ? 3
-                                                  : screen?.tags.split(",")
-                                                    .length
-                                              )
-                                              .map((text) => {
-                                                if (
-                                                  text.toString().length > 10
-                                                ) {
-                                                  return text
-                                                    .split("")
-                                                    .slice(0, 10)
-                                                    .concat("...")
-                                                    .join("");
-                                                }
-                                                return text;
-                                              })
-                                              .join(",")
-                                            : ""}
-                                        </td>
-                                      </tr>
-                                    ))
-                                  ) : (
-                                    <tr>
-                                      <td colSpan={6}>
-                                        <p className="text-center p-2">
-                                          No Screen available.
-                                        </p>
-                                      </td>
-                                    </tr>
-                                  )}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                          <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
-                            <button
-                              className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
-                              onClick={() => {
-                                setSelectScreenModal(false);
-                              }}
-                            >
-                              Save
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="col-span-12 p-5 text-center">
-              <button
-                className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
-                onClick={() => {
-                  setshowuserModal(false);
-                  handleCancelPopup();
-                }}
-              >
-                Cancel
-              </button>
-              {labelTitle !== "Update User" ? (
-                <button
-                  onClick={() => {
-                    handleAddUser();
-                    setSelectedScreens([]);
-                  }}
-                  className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
-                >
-                  Save
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    handleUpdateUser();
-                  }}
-                  className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
-                >
-                  Update
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
       {showUserProfile ? (
         <>
           <div className="lg:p-4 md:p-4 sm:p-2 xs:p-2 mt-3">
@@ -2137,7 +1635,11 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                   ) : (
                     <tr>
                       <td colSpan={6}>
-                        <p className="text-center p-2">No Screen available.</p>
+                        <div className="flex text-center m-5 justify-center">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                            No Data Available
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -2152,10 +1654,10 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
             <div>
               {permissions.isSave && (
                 <button
-                  className={`flex align-middle ${((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 lg:mb-5 lg:mt-0 mt-3 mb-4 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
-                  disabled={user?.isTrial && !user?.isActivePlan}
+                  className={`flex align-middle ${((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true)) ? "cursor-pointer" : "cursor-not-allowed"} items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 lg:mb-5 lg:mt-0 mt-3 mb-4 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+                  // disabled={(userDetails?.isTrial && !userDetails?.isActivePlan || user?.userDetails?.isRetailer === false)}
                   onClick={() => {
-                    if (((user?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
+                    if (((userDetails?.isActivePlan === true) || (user?.userDetails?.isRetailer === true))) {
                       setUserDetailData([]);
                       setFirstName("");
                       setLastName("");
@@ -2257,11 +1759,11 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                               key={index}
                             >
                               <td className="text-[#5E5E5E] text-center flex">
-                                {item?.profilePhoto !== null ? (
+                                {(item?.profilePhoto !== null) ? (
                                   <img
                                     className="w-10 h-10 rounded-full"
                                     src={item?.profilePhoto}
-                                    alt="Jese image"
+                                    alt={item?.firstName}
                                   />
                                 ) : (
                                   <RiUser3Fill className="w-10 h-10" />
@@ -2366,7 +1868,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                     <div
                                       data-tip
                                       data-for="Delete"
-                                      className="cursor-pointer text-white bg-rose-500 hover:bg-rose-700 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      className="cursor-pointer text-white bg-[#FF0000] hover:bg-rose-700 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                       onClick={() =>
                                         handleDeleteUser(item.orgUserSpecificID)
                                       }
@@ -2381,7 +1883,6 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                         <span>Delete</span>
                                       </ReactTooltip>
                                     </div>
-                                    
                                   )}
                                 </div>
                               </td>
@@ -2406,156 +1907,20 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                     </tbody>
                   </table>
                 </div>
-                {screenAccessModal && (
-                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-                    <div
-                      ref={screenAccessModalRef}
-                      className="w-auto mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-                    >
-                      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                        <div className="relative w-full cursor-pointer z-40 rounded-full">
-                          <button
-                            className="text-xl absolute -right-3 -top-4 bg-black text-white rounded-full"
-                            onClick={() => {
-                              setScreenAccessModal(false);
-                            }}
-                          >
-                            <AiOutlineCloseCircle className="text-3xl" />
-                          </button>
-                        </div>
-                        <div className="schedual-table bg-white mt-8 shadow p-3 w-full overflow-x-scroll sc-scrollbar rounded-lg">
-                          <table
-                            className="screen-table w-full"
-                            cellPadding={15}
-                          >
-                            <thead>
-                              <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                                <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
-                                  Screen
-                                </th>
-                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                  Status
-                                </th>
-                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                  Google Location
-                                </th>
-                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                  Associated Schedule
-                                </th>
-                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                  Tags
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {loading ? (
-                                <tr>
-                                  <td
-                                    colSpan={6}
 
-                                  >
-                                    <div className="flex text-center m-5 justify-center">
-                                      <svg
-                                        aria-hidden="true"
-                                        role="status"
-                                        className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
-                                        viewBox="0 0 100 101"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                          fill="currentColor"
-                                        />
-                                        <path
-                                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                          fill="#1C64F2"
-                                        />
-                                      </svg>
-
-                                    </div>
-                                  </td>
-                                </tr>
-                              ) : !loading && userScreenData?.length > 0 ? (
-                                userScreenData.map((screen) => (
-                                  <tr
-                                    key={screen.screenID}
-                                    className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                  >
-                                    <td className="text-center">
-                                      {screen.screenName}
-                                    </td>
-
-                                    <td className="text-center">
-                                      <span
-                                        id={`changetvstatus${screen.macid}`}
-                                        className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                          ? "bg-[#3AB700]"
-                                          : "bg-[#FF0000]"
-                                          }`}
-                                      >
-                                        {screen.screenStatus == 1
-                                          ? "Live"
-                                          : "offline"}
-                                      </span>
-                                    </td>
-                                    <td className="text-center break-words">
-                                      {screen.googleLocation}
-                                    </td>
-                                    <td className="text-center break-words">
-                                      {screen.scheduleName == ""
-                                        ? ""
-                                        : `${screen.scheduleName} Till
-                                ${moment(screen.endDate).format(
-                                          "YYYY-MM-DD hh:mm"
-                                        )}`}
-                                    </td>
-                                    <td className="text-center break-words">
-                                      {screen?.tags !== null
-                                        ? screen?.tags
-                                          .split(",")
-                                          .slice(
-                                            0,
-                                            screen?.tags.split(",").length > 2
-                                              ? 3
-                                              : screen?.tags.split(",").length
-                                          )
-                                          .map((text) => {
-                                            if (text.toString().length > 10) {
-                                              return text
-                                                .split("")
-                                                .slice(0, 10)
-                                                .concat("...")
-                                                .join("");
-                                            }
-                                            return text;
-                                          })
-                                          .join(",")
-                                        : ""}
-                                    </td>
-                                  </tr>
-                                ))
-                              ) : (
-                                <tr>
-                                  <td colSpan={6}>
-                                    <p className="text-center p-2">
-                                      No Screen available.
-                                    </p>
-                                  </td>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
                 <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                   <div className="flex items-center">
-                    <span className="text-gray-500">{`Total ${userData?.length} Users`}</span>
+                    <span className="text-gray-500">{`Total ${filteredData?.length} Users`}</span>
                   </div>
                   <div className="flex justify-end">
+                    <select className='px-1 mr-2 border border-gray rounded-lg'
+                      value={itemsPerPage}
+                      onChange={(e) => setItemsPerPage(e.target.value)}
+                    >
+                      {PageNumber.map((x) => (
+                        <option value={x}>{x}</option>
+                      ))}
+                    </select>
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
@@ -2612,8 +1977,74 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
         </>
       )}
 
+      {screenAccessModal && (
+        <UserScreenAccess
+          screenAccessModalRef={screenAccessModalRef}
+          setScreenAccessModal={setScreenAccessModal}
+          loading={loading}
+          userScreenData={userScreenData}
+          sidebarOpen={sidebarOpen}
+        />
+      )}
+
+      {showuserModal && (
+        <AddEditUser
+          modalRef={modalRef}
+          labelTitle={labelTitle}
+          firstName={firstName}
+          setFirstName={setFirstName}
+          errors={errors}
+          lastName={lastName}
+          setLastName={setLastName}
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          setShowPassword={setShowPassword}
+          showPassword={showPassword}
+          phone={phone}
+          setPhone={setPhone}
+          company={company}
+          setCompany={setCompany}
+          zipCode={zipCode}
+          setZipCode={setZipCode}
+          countryID={countryID}
+          setCountryID={setCountryID}
+          Countries={Countries}
+          selectedState={selectedState}
+          setSelectedState={setSelectedState}
+          states={states}
+          selectRoleID={selectRoleID}
+          setSelectRoleID={setSelectRoleID}
+          userRoleData={userRoleData}
+          isActive={isActive}
+          setIsActive={setIsActive}
+          file={file}
+          editProfile={editProfile}
+          fileEdit={fileEdit}
+          handleClick={handleClick}
+          handleFileChange={handleFileChange}
+          hiddenFileInput={hiddenFileInput}
+          setSelectScreenModal={setSelectScreenModal}
+          selectScreenModal={selectScreenModal}
+          selectScreenRef={selectScreenRef}
+          handleSelectAllCheckboxChange={handleSelectAllCheckboxChange}
+          selectAllChecked={selectAllChecked}
+          screenCheckboxes={screenCheckboxes}
+          loading={loading}
+          screenData={screenData}
+          handleScreenCheckboxChange={handleScreenCheckboxChange}
+          setshowuserModal={setshowuserModal}
+          handleCancelPopup={handleCancelPopup}
+          handleAddUser={handleAddUser}
+          setSelectedScreens={setSelectedScreens}
+          handleUpdateUser={handleUpdateUser}
+          sidebarOpen={sidebarOpen}
+        />
+      )}
+
       {warning && (
-        <WarningDialog warning={warning} setWarning={setWarning} />
+        <AttentionDialog warning={warning} setWarning={setWarning} />
       )}
     </>
   );

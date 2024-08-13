@@ -5,6 +5,8 @@ import ForgotPassword from "../Pages/ForgotPassword";
 import EmailVerified from "../Pages/EmailVerified";
 import TermsConditions from "../Pages/TermsConditions";
 import PlanIntegration from "../Components/PlanIntegration";
+import AddSlot from "../Components/Screen/SubScreens/BookSlot/AddSlot";
+import BookingSlot from "../Components/Screen/SubScreens/BookSlot/BookingSlot";
 
 const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
@@ -58,8 +60,7 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
             <Route path="/eventedit" element={<Navigate to="/" />} />
             <Route path="/NewFolderDialog/:folderId" element={<Navigate to="/" />}/>
             <Route path="/trash" element={<Navigate to="/" />} />
-            <Route path="*" element={<Navigate to="/" />} />
-            <Route path="/" element={<Login />} />
+          
             <Route path="/register" element={<Registration />} />
 
             <Route
@@ -98,6 +99,26 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               }
             />
+
+            <Route
+              path="/bookslot"
+              element={
+                <AddSlot  
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}/>
+              }
+            />
+            <Route
+              path="/bookingslot"
+              element={
+                <BookingSlot
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route path="/" element={<Login />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Route>
 
         </Routes>

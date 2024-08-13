@@ -8,106 +8,17 @@ import {
   GET_ALL_COUNTRY,
   GET_SELECT_BY_CITY,
   GET_SELECT_BY_STATE,
-  USERDASHBOARD,
 } from "../../../Pages/Api";
 import RevenueTable from "../RevenueTable";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import mapImg from "../../../images/DisployImg/mapImg.png";
-import flagUmg from "../../../images/DisployImg/flag.png";
-import youtube from "../../../images/AppsImg/youtube.svg";
-import weather from "../../../images/AppsImg/weather.svg";
-import textscroll from "../../../images/AppsImg/text-scroll-icon.svg";
-import More from "../../../images/AppsImg/app4.png";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { handleGetAllApps } from "../../../Redux/AppsSlice";
-import axios from "axios";
 import { handleGetScreen } from "../../../Redux/Screenslice";
 import DashboardScreen from "../../Common/DashboardScreen";
-
-//for sales revenue chart options
-const SalesOptions = {
-  colors: ["#404f8b"],
-  chart: {
-    type: "basic-bar",
-  },
-
-  dataLabels: {
-    enabled: false,
-  },
-
-  xaxis: {
-    categories: [
-      "Jan",
-      "Feb",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-  },
-};
-
-const stateVlaue = {
-  series: [
-    {
-      name: "Sales",
-      data: [44, 55, 41, 67, 22, 43, 65, 25, 80, 60, 40, 15],
-    },
-  ],
-};
-
-//for Company Growth chart options
-const CompanyGrowthOption = {
-  series: [40],
-  chart: {
-    height: 150,
-    type: "radialBar",
-  },
-  plotOptions: {
-    radialBar: {
-      startAngle: -180,
-      endAngle: 180,
-      dataLabels: {
-        name: {
-          fontSize: "16px",
-          color: undefined,
-        },
-        value: {
-          offsetY: 16,
-          fontSize: "18px",
-          color: undefined,
-          formatter: function (val) {
-            return val + "%";
-          },
-        },
-      },
-    },
-  },
-  fill: {
-    type: "gradient",
-    gradient: {
-      shade: "dark",
-      shadeIntensity: 0.15,
-      inverseColors: false,
-      opacityFrom: 1,
-      opacityTo: 1,
-      stops: [0, 50, 65, 91],
-    },
-  },
-  stroke: {
-    dashArray: 10,
-  },
-  labels: ["Growth"],
-  colors: ["#41479b"],
-};
+import { handleGetState } from "../../../Redux/SettingUserSlice";
 
 //for Screen chart options
 const ScreenOption = {
@@ -165,7 +76,7 @@ var StoreOptions = {
 
 const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen}) => {
   const dispatch = useDispatch();
-  const { user, token } = useSelector((s) => s.root.auth);
+  const { user, token,userDetails } = useSelector((s) => s.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);
   const authToken = `Bearer ${token}`;
   //for map store icon
@@ -177,9 +88,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedScreen, setSelectedScreen] = useState("");
   const [screenList, setScreenList] = useState([]);
-  console.log('screenList', screenList)
   const [screen, setScreen] = useState([])
-  console.log('screen', screen)
   const [screenDialogOpen, setScreenDialogOpen] = useState(false)
   const [cities, setCities] = useState([]);
   const [showCityStores, setshowCityStores] = useState(false);
@@ -311,7 +220,8 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
   }, []);
 
   // Fetch country data from the API
-  useEffect(() => {
+
+  {/*  useEffect(() => {
     fetch(GET_ALL_COUNTRY)
       .then((response) => response.json())
       .then((data) => {
@@ -320,15 +230,14 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
       .catch((error) => {
         console.log("Error fetching country data:", error);
       });
-  }, []);
+  }, []);*/}
 
   // Fetch states based on the selected country
   useEffect(() => {
     if (selectedCountry !== "") {
-      fetch(`${GET_SELECT_BY_STATE}?CountryID=${selectedCountry?.countryID}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setStates(data.data);
+      dispatch(handleGetState(selectedCountry))
+        ?.then((res) => {
+          setStates(res?.payload?.data);
         })
         .catch((error) => {
           console.log("Error fetching states data:", error);
@@ -375,7 +284,6 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
   });
 
   const handleScreenClick = (screen) => {
-    console.log('screen', screen)
     setSelectedScreen(screen);
     const arr = screenList?.filter((item) => item?.longitude === screen?.longituted && item?.latitude === screen?.lattitude);
     setScreen(arr);
@@ -837,7 +745,7 @@ const Business = ({ setSidebarLoad, dashboardData, setDashboardData ,sidebarOpen
                     className="lg:col-span-3 md:col-span-6 sm:col-span-12 "
                     key={app.app_Id}
                   >
-                    {(user?.isTrial === false) && (user?.isActivePlan === false) ? (
+                    {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) ? (
                       <Link>
                         <div className="shadow-md  bg-white rounded-lg text-center py-10">
                           <img

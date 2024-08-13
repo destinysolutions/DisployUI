@@ -12,6 +12,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { GrScheduleNew } from "react-icons/gr";
 import {
   COMPOSITION_BY_ID,
+  GET_ALL_CARD,
   GET_ALL_COMPOSITIONS,
   GET_ALL_FILES,
   GET_ALL_SCHEDULE,
@@ -54,22 +55,33 @@ import {
   getCurrentTime,
   getTrueDays,
   extractTime,
-  Screen_Type
+  Screen_Type,
+  capitalizeFirstLetter,
+  ScrollList
 } from "../../Common/Common";
 import OperatingHourModal from "./OperatingHourModal";
 import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
+import { GetAllCardList } from "../../../Redux/CardSlice";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`;
-
+  const authToken = `Bearer ${token}`; 
+  const modalRef = useRef(null);
+  const scheduleRef = useRef(null);
+  const compositionRef = useRef(null);
+  const appRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const getScreenID = searchParams.get("screenID");
-  const [screenData, setScreenData] = useState([]);
 
+  const { timezones } = useSelector((s) => s.root.globalstates);
+  const { allAppsData } = useSelector((s) => s.root.apps);
+ 
+  const [screenData, setScreenData] = useState([]);
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
   const [getScreenOrientation, setScreenOrientation] = useState([]);
@@ -94,6 +106,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     myComposition: [],
   });
   const [screenName, setScreenName] = useState("");
+  const [scrollPerSec, setScrollPerSec] = useState("");
+  const [isScroll, setIsScroll] = useState(false)
   const [selectScreenResolution, setSelectScreenResolution] = useState();
   const [getScreenResolution, setScreenResolution] = useState([]);
   const [compositionData, setCompositionData] = useState([]);
@@ -125,8 +139,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedTextScroll, setSelectedTextScroll] = useState("");
   const [showAppsModal, setShowAppsModal] = useState(false);
   const [confirmForApps, setConfirmForApps] = useState(false);
-  const [previewModalData, setPreviewModalData] = useState([]);
-  const [screenType, setScreenType] = useState("");
   const [layotuDetails, setLayotuDetails] = useState(null);
   const [fetchLayoutLoading, setFetchLayoutLoading] = useState(false);
   const [selectedApps, setSelectedApps] = useState();
@@ -138,21 +150,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [isPlay, setIsPlay] = useState(true);
   const [startTime, setStartTime] = useState(getCurrentTime());
   const [endTime, setEndTime] = useState(getCurrentTime());
+  const [cardList, setCardList] = useState([])
+  const [selectedCard, setSelectedCard] = useState("");
 
-  console.log("isPlay", isPlay);
-  const dispatch = useDispatch();
   const [selectedDays, setSelectedDays] = useState(
     new Array(TotalDay.length).fill(false)
   );
-  const { timezones } = useSelector((s) => s.root.globalstates);
-  const { allAppsData } = useSelector((s) => s.root.apps);
 
-  const modalRef = useRef(null);
-  const scheduleRef = useRef(null);
-  const compositionRef = useRef(null);
-  const appRef = useRef(null);
-
-  const navigate = useNavigate();
 
   const toggleModal = () => {
     setSelectedOperatingHourModel(false);
@@ -207,6 +211,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           setSelectedTag(fetchedData[0].tags);
           setGoogleLoc(fetchedData[0].googleLocation);
           setScreenName(fetchedData[0].screenName);
+          setScrollPerSec(fetchedData[0].scrollPerSec)
+          setIsScroll(fetchedData[0].isScroll)
           setSelectedMediaDetailID(fetchedData[0].mediaDetailID);
           setSelectedMediaTypeID(fetchedData[0].mediaType);
           if (fetchedData[0].mediaType === 5) {
@@ -219,6 +225,27 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const fetchCards = async () => {
+    try {
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${GET_ALL_CARD}?Email=${user?.emailID}`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authToken
+        },
+      }
+      dispatch(GetAllCardList({ config })).then((res) => {
+        if (res?.payload?.status) {
+          setCardList(res?.payload?.data);
+        }
+      })
+    } catch (error) {
+      toast.error('Error fetching cards');
+    }
   };
 
   useEffect(() => {
@@ -302,7 +329,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       });
     // get screen by id
     getScreenByid();
-
+    fetchCards()
     // get all tags
     // axios
     //   .get(GET_ALL_TAGS, {
@@ -428,24 +455,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const handleAssetFilter = (event) => {
-    const searchQuery = event.target.value.toLowerCase();
-    setSearchAsset(searchQuery);
-
-    if (searchQuery === "") {
-      setAssetData(assetAllData);
-    } else {
-      // const filteredData = assetData.filter((item) => {
-      //   const itemName = item.assetName ? item.assetName.toLowerCase() : "";
-      //   return itemName.includes(searchQuery);
-      // });
-      const filteredData = assetAllData.filter((item) =>
-        item?.assetName.toLocaleLowerCase().includes(searchQuery)
-      );
-      setAssetData(filteredData);
-    }
-  };
-
   const handleAssetAdd = (asset) => {
     setSelectedAsset(asset);
     setAssetPreview(asset);
@@ -476,13 +485,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setSearchAsset("");
     setSelectedDefaultAsset("");
     if (selectedComposition !== "") setConfirmForComposition(true);
-  };
-
-  const handleConfirmOnApps = () => {
-    setShowAppsModal(false);
-    setSearchAsset("");
-    if (selectedTextScroll !== "" || selectedYoutube !== "")
-      setConfirmForApps(true);
   };
 
   let currentDate = new Date();
@@ -572,7 +574,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleChangePreviewScreen() {
     const { data, myComposition } = screenPreviewData;
-    // console.log(data,myComposition);
     const findCurrentSchedule = data?.find((item) => {
       // for schedule
       if (
@@ -710,6 +711,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       tags: screenData[0]?.tags,
       mediaDetailID: moduleID || 0,
       screenName: screenName,
+      scrollPerSec: scrollPerSec,
+      isScroll: isScroll,
       operation: "Update",
       screenOperatingHours: screenOperatingHours,
       screenType: selectedScreenType
@@ -737,45 +740,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
             macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
           };
           socket.emit("ScreenConnected", Params);
-          // if (connection.state == "Disconnected") {
-          //   connection
-          //     .start()
-          //     .then((res) => {
-          //       console.log("signal connected");
-          //     })
-          //     .then(() => {
-          //       connection
-          //         .invoke(
-          //           "ScreenConnected",
-          //           screenData[0]?.macid.replace(/^\s+/g, "")
-          //         )
-          //         .then(() => {
-          //           console.log(
-          //             "SignalR method invoked after screen detail update"
-          //           );
-          //         })
-          //         .catch((error) => {
-          //           console.error("Error invoking SignalR method:", error);
-          //         });
-          //     });
-          // } else {
-          //   connection
-          //     .invoke(
-          //       "ScreenConnected",
-          //       screenData[0]?.macid.replace(/^\s+/g, "")
-          //     )
-          //     .then(() => {
-          //       console.log(
-          //         "SignalR method invoked after screen detail update"
-          //       );
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error invoking SignalR method:", error);
-          //     });
-          // }
-
           navigate("/screens");
-
           toast.remove();
         }
       })
@@ -825,6 +790,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       tvScreenOrientation,
       tvScreenResolution,
       screenName: screenData[0]?.editedScreenName,
+      scrollPerSec,
+      isScroll,
       operation: "Update",
     });
 
@@ -949,20 +916,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }
 
-  const handleAppFilter = (event) => {
-    const searchQuery = event.target.value.toLowerCase();
-    setSearchAsset(searchQuery);
-
-    if (searchQuery === "") {
-      setAppDatas(allAppsData);
-    } else {
-      const filteredData = allAppsData.filter((item) =>
-        item?.instanceName.toLocaleLowerCase().includes(searchQuery)
-      );
-      setAppDatas(filteredData);
-    }
-  };
-
   const handleAssetUpdate = () => {
     let moduleID =
       selectedAsset?.assetID ||
@@ -1022,64 +975,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           console.log(error);
         });
     }, 1000);
-    // if (connection.state == "Disconnected") {
-    //   connection
-    //     .start()
-    //     .then((res) => {
-    //       console.log("signal connected");
-    //     })
-    //     .then(() => {
-    //       connection
-    //         .invoke(
-    //           "ScreenConnected",
-    //           screenData[0]?.macid.replace(/^\s+/g, "")
-    //         )
-    //         .then(() => {
-    //           console.log("SignalR method invoked after Asset update");
-    //           // const response = dispatch(
-    //           //   handleUpdateScreenAsset({
-    //           //     mediaName,
-    //           //     dataToUpdate: data,
-    //           //     token,
-    //           //   })
-    //           // );
-    //           // if (!response) return;
-    //           // response
-    //           //   .then((response) => {
-    //           //     toast.remove();
-    //           //     toast.success("Media Updated.");
-    //           //     getScreenByid()
-    //           //   })
-    //           //   .catch((error) => {
-    //           //     toast.remove();
-    //           //     console.log(error);
-    //           //   });
-    //         });
-    //     });
-    // } else {
-    //   connection
-    //     .invoke("ScreenConnected", screenData[0]?.macid.replace(/^\s+/g, ""))
-    //     .then(() => {
-    //       console.log("SignalR method invoked after Asset update");
-    //       // const response = dispatch(
-    //       //   handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
-    //       // );
-    //       // if (!response) return;
-    //       // response
-    //       //   .then((response) => {
-    //       //     toast.remove();
-    //       //     toast.success("Media Updated.");
-    //       //     getScreenByid()
-    //       //   })
-    //       //   .catch((error) => {
-    //       //     toast.remove();
-    //       //     console.log(error);
-    //       //   });
-    //     });
-    // }
-    // }) .catch((error) => {
-    //   console.error("Error invoking SignalR method:", error);
-    // });
   };
 
   const handleDayButtonClick = (index, item) => {
@@ -1128,7 +1023,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {
-        <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+        <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="justify-between flex items-center xs-block">
               <div className="section-title">
@@ -1197,20 +1092,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             return (
                               <div
                                 key={index}
-                                // style={{
-                                //   width:
-                                //     compositionData[index][index + 1][0]?.width +
-                                //     "px",
-                                //   height:
-                                //     compositionData[index][index + 1][0]?.height +
-                                //     "px",
-                                //   top:
-                                //     compositionData[index][index + 1][0]?.top +
-                                //     "px",
-                                //   left:
-                                //     compositionData[index][index + 1][0]?.left +
-                                //     "px",
-                                // }}
                                 style={{
                                   position: "absolute",
                                   left: data.leftside + "%",
@@ -1255,7 +1136,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           url={playerData?.fileType}
                           className="relative z-20 videoinner object-fill screenvideoinner"
                           controls={true}
-                          playing={true}
+                          playing={isPlay ? true : false}
                           loop={true}
                         />
                       </div>
@@ -1634,9 +1515,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         // setIsPlay(!isPlay);
                         setIsPlay(prevIsPlay => !prevIsPlay);
                         const Params = {
-                          play: isPlay,
+                          play: true,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
+                        console.log('Params', Params)
                         socket.emit('play_pause', Params);
                         // socket.emit('updateTime', time);
 
@@ -1663,9 +1545,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         // setIsPlay(!isPlay);
                         setIsPlay(prevIsPlay => !prevIsPlay);
                         const Params = {
-                          play: isPlay,
+                          play: false,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
+                        console.log('Params', Params)
                         socket.emit('play_pause', Params);
                         // socket.emit('updateTime', time);
                       }}
@@ -2001,7 +1884,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   value={timezone.timeZoneID}
                                   key={timezone.timeZoneID}
                                 >
-                                  {timezone.timeZoneName}
+                                  {timezone.timeZoneLabel}
                                 </option>
                               ))}
                           </select>
@@ -2205,6 +2088,91 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
 
+                      <tr className="border-b border-[#D5E3FF]">
+                        <td className="text-left lg:py-3 md:py-2 pb-0 ">
+                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base pb-0">
+                            Scrolling
+                          </p>
+                        </td>
+                        <td className="text-left lg:py-3 md:py-2 pt-0">
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4"
+                            onChange={(e) => {
+                              setIsScroll(e.target.checked);
+                            }}
+                            checked={isScroll}
+                          />
+                        </td>
+
+                        {/*<td className="text-left lg:py-3 md:py-2 pt-0">
+                          <select
+                            className="px-2 py-2 border border-[#D5E3FF] w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-full"
+                            value={selectedScreenType}
+                            onChange={(e) => {
+                              setSelectedScreenType(e.target.value);
+                            }}
+                          >
+                            {ScrollList &&
+                              ScrollList?.map((scroll) => (
+                                <option value={scroll?.value} key={scroll?.value}>
+                                  {scroll?.value}
+                                </option>
+                              ))}
+                          </select>
+                        </td>*/}
+                      </tr>
+                      {isScroll && (
+                        <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-left lg:py-3 md:py-2 pb-0 ">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base pb-0">
+                            </p>
+                          </td>
+
+                          <td className="text-left lg:py-3 md:py-2 pt-0">
+                            <input
+                              type="number"
+                              placeholder="Enter Scroll Per Second"
+                              className="border border-[#D5E3FF] rounded-full px-3 py-2.5 w-full "
+                              onChange={(e) => {
+                                setScrollPerSec(e.target.value);
+                              }}
+                              value={scrollPerSec}
+                            />
+                          </td>
+                        </tr>
+                      )}
+
+                      {/*<tr className="border-b border-[#D5E3FF]">
+                        <td className="text-left lg:py-3 md:py-2 pb-0">
+                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                            Payment Method:
+                          </p>
+                        </td>
+                        <td className="text-left lg:py-3 flex items-center gap-3 md:py-2 pt-0">
+                          <select
+                            className="px-2 py-2 border border-[#D5E3FF] w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-full"
+                            value={selectedCard}
+                            onChange={(e) => {
+                              setSelectedCard(e.target.value);
+                            }}
+                          >
+                            <option value="">
+                              Select Card
+                            </option>
+                            {cardList?.length > 0 &&
+                              cardList?.map((card) => (
+                                <option
+                                  value={card.paymentMethodID}
+                                  key={card.paymentMethodID}
+                                >
+                                  {capitalizeFirstLetter(card?.funding)} Card **** **** **** {card?.cardNumber}
+                                </option>
+                              ))}
+                          </select>
+                        </td>
+                              </tr>*/}
+
                       {/* <tr className="border-b border-[#D5E3FF]">
                         <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
@@ -2318,7 +2286,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       )}
       {/* <Footer /> */}
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

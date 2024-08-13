@@ -182,8 +182,8 @@ const OneDrive = ({ setFile }) => {
         .then((data) => {
           processSelectedFile(data);
         })
-        .catch((err) => {
-          console.log(" some error occured ", err);
+        .catch((error) => {
+          console.log(" some error occured ", error);
         });
     });
   };

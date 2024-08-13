@@ -291,6 +291,113 @@ export const handleOTPverify = createAsyncThunk(
   }
 );
 
+export const handleUserNotificationList = createAsyncThunk(
+  "UserMaster/handleUserNotificationList",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+export const SaveUserNotification = createAsyncThunk(
+  "UserMaster/SaveUserNotification",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+export const handleGetUserNotification = createAsyncThunk(
+  "UserMaster/handleGetUserNotification",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+export const AddEditBillingDetails = createAsyncThunk(
+  "Billing/AddEditBillingDetails",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+export const GetBillingDetails = createAsyncThunk(
+  "Billing/GetBillingDetails",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+export const GetUserBillingDetails = createAsyncThunk(
+  "common/GetUserBillingDetails",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
 const initialState = {
   Countries: [],
   error: null,
@@ -493,6 +600,72 @@ const SettingUserSlice = createSlice({
       state.status = false;
       state.error = action.payload.message;
       
+    });
+
+    builder.addCase(handleUserNotificationList.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(handleUserNotificationList.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(handleUserNotificationList.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+    });
+
+    builder.addCase(SaveUserNotification.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(SaveUserNotification.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(SaveUserNotification.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+    });
+
+    builder.addCase(handleGetUserNotification.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(handleGetUserNotification.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(handleGetUserNotification.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+    });
+
+    builder.addCase(AddEditBillingDetails.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(AddEditBillingDetails.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(AddEditBillingDetails.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+    });
+
+    builder.addCase(GetBillingDetails.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(GetBillingDetails.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(GetBillingDetails.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
+    });
+
+    builder.addCase(GetUserBillingDetails.pending, (state) => {
+      state.status = false;
+    });
+    builder.addCase(GetUserBillingDetails.fulfilled, (state, action) => {
+      state.status = true;
+    });
+    builder.addCase(GetUserBillingDetails.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.payload.message;
     });
   },
 });

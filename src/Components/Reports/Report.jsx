@@ -18,7 +18,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { user } = useSelector((state) => state.root.auth);
+  const { user, userDetails } = useSelector((state) => state.root.auth);
   const [selectedReport, setSelectedReport] = useState(null);
   const [modelVisible, setModelVisible] = useState(false);
   const handleReportClick = (report) => {
@@ -36,7 +36,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
@@ -46,7 +46,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
 
           <div className="grid grid-cols-12 gap-4 mt-5">
             <div
-              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56"
+              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56 cursor-pointer"
               onClick={() => handleReportClick("mediareport")}
             >
               <div className="reportbox text-center ">
@@ -67,7 +67,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
 
             <div
-              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56"
+              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56 cursor-pointer"
               onClick={() => handleReportClick("uptimereport")}
             >
               <div className="reportbox text-center ">
@@ -89,7 +89,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
 
             <div
-              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56"
+              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56 cursor-pointer"
               onClick={() => handleReportClick("auditlogreport")}
             >
               <div className="reportbox text-center ">
@@ -109,7 +109,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
             <div
-              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56"
+              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56 cursor-pointer"
               onClick={() => handleReportClick("salesreport")}
             >
               <div className="reportbox text-center ">
@@ -129,7 +129,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
             <div
-              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56"
+              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56 cursor-pointer"
               onClick={() => handleReportClick("cancelreport")}
             >
               <div className="reportbox text-center ">
@@ -149,7 +149,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
             <div
-              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56"
+              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56 cursor-pointer"
               onClick={() => handleReportClick("billingreport")}
             >
               <div className="reportbox text-center ">
@@ -181,8 +181,8 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
       )}
       <Footer />
 
-      
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

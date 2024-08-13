@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { lazy, useState } from 'react'
 import { useEffect } from 'react';
 import { AiOutlineCloseCircle, AiOutlineSearch } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
@@ -7,7 +7,11 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+
 import PreviewAssets from '../Common/PreviewAssets';
+
+// const PreviewAssets = lazy(() => import('../Common/PreviewAssets'));
+
 
 const DigitalMenuAssets = ({ openModal, setOpenModal,handleAssetAdd, selectedAsset,setAssetPreviewPopup,assetPreviewPopup,assetPreview ,HandleSubmitAsset}) => {
     const { user, token } = useSelector((state) => state.root.auth);

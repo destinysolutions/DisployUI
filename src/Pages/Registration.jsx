@@ -1,8 +1,11 @@
 import "../Styles/loginRegister.css";
 import {
+  BsApple,
   BsFillEyeFill,
   BsFillEyeSlashFill,
   BsFillInfoCircleFill,
+  BsGoogle,
+  BsMicrosoft,
 } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 // import {BsMicrosoft} from "react-icons/bs";
@@ -17,6 +20,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { ADD_REGISTER_URL } from "./Api";
 import video from "../images/DisployImg/iStock-1137481126.mp4";
 import {
+  Googleauthprovider,
   appleProvider,
   auth,
   facebookProvider,
@@ -25,24 +29,33 @@ import {
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { handleLoginWithGoogle, handleRegisterUser } from "../Redux/Authslice";
-// import logo from "../images/DisployImg/logo.svg";
-import logo from "../images/DisployImg/White-Logo2.png";
+import logo from "../images/DisployImg/logo.svg";
+// import logo from "../images/DisployImg/White-Logo2.png";
 import ReCAPTCHA from "react-google-recaptcha";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import { FaFacebookF } from "react-icons/fa";
+import { jwtDecode } from "jwt-decode";
+import { signInWithPopup } from "firebase/auth";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { loginRequest, msalConfig } from "../Components/Common/authconfig";
+import { MsalProvider, useMsal } from "@azure/msal-react";
+import MicrosoftBtn from "./MicrosoftBtn";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import PhoneInput from "react-phone-input-2";
+import { LoginSocialFacebook } from "reactjs-social-login";
 
 const Registration = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const modalRef = useRef(null);
+  const msalInstance = new PublicClientApplication(msalConfig);
+  const { instance } = useMsal();
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessge, setErrorMessge] = useState("");
   const [errorMessgeVisible, setErrorMessgeVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const modalRef = useRef(null);
-  // console.log("errorMessgeVisible:", errorMessgeVisible); // Check if it's true
-  // console.log("errorMessge:", errorMessge);
-  //using for routing
-  const navigate = useNavigate();
-
-  const dispatch = useDispatch();
 
   //using for validation and register api calling
   const phoneRegExp =
@@ -61,8 +74,8 @@ const Registration = () => {
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
     phoneNumber: Yup.string()
-      .required("Phone Number is required")
-      .matches(phoneRegExp, "Phone number is not valid"),
+      .required('Phone number is required')
+      .test('is-valid-phone', 'Invalid phone number', value => isValidPhoneNumber(value)),
     googleLocation: Yup.string().required("Google Location is required"),
     // terms: Yup.boolean()
     //   .oneOf([true], "You must accept the terms and conditions")
@@ -198,6 +211,9 @@ const Registration = () => {
       formData.append("Email", values.emailID);
       formData.append("GoogleLocation", values.googleLocation);
       formData.append("Phone", values.phoneNumber);
+      formData.append("IsRetailer", false);
+      formData.append("IsSalesMan", false);
+
       // formData.append("UserTokan", usertoken);   // used Firebase token
       formData.append("Operation", "Insert");
       setLoading(true);
@@ -217,11 +233,12 @@ const Registration = () => {
         response
           .then((res) => {
             if (res?.error?.message !== "Rejected") {
-              window.localStorage.setItem("timer", JSON.stringify(18_00));
+              // window.localStorage.setItem("timer", JSON.stringify(18_00));
               toast.success("Registration successfully.");
               navigate("/");
               setLoading(false);
             } else {
+              toast.error(res?.payload)
               setLoading(false);
             }
           })
@@ -246,6 +263,8 @@ const Registration = () => {
     formData.append("Phone", null);
     formData.append("Operation", "Insert");
     formData.append("googleID", data?.sub);
+    formData.append("IsRetailer", false);
+    formData.append("IsSalesMan", false);
 
     const config = {
       method: "post",
@@ -258,89 +277,200 @@ const Registration = () => {
 
     // setTimeout(async () => {
     try {
-      const response = await dispatch(handleLoginWithGoogle({ config }));
-      if (!response) return;
-      response
-        .then(() => {
+      const response = await dispatch(handleLoginWithGoogle({ config })).then((res) => {
+        if (res?.payload?.status === 200) {
           window.localStorage.setItem("timer", JSON.stringify(18_00));
           toast.success("Sign up successfully.");
-          // navigate("/screens");
-          console.log(data);
-        })
-        .catch((error) => {
-          console.log(error);
-          setErrorMessgeVisible(true);
-          setErrorMessge("Registration failed.");
-        });
-    } catch (err) {
-      console.log(err);
+        } else {
+          // setErrorMessgeVisible(true);
+          // setErrorMessge("Registration failed.");
+          toast.error("Registration failed.")
+        }
+      });
+      console.log('response', response)
+      if (!response) return;
+      // response
+      //   .then(() => {
+      //     window.localStorage.setItem("timer", JSON.stringify(18_00));
+      //     toast.success("Sign up successfully.");
+      //     // navigate("/screens");
+      //     console.log(data);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //     setErrorMessgeVisible(true);
+      //     setErrorMessge("Registration failed.");
+      //   });
+    } catch (error) {
+      console.log(error);
       setErrorMessgeVisible(true);
       setErrorMessge("Registration failed.");
     }
     // }, 1000);
   };
 
-  const SignInFaceBook = async () => {
-    try {
-      const res = await auth.signInWithPopup(facebookProvider);
-      const user = res.user;
-      // onclose();
-      axios
-        .post(ADD_REGISTER_URL, {
-          companyName: null,
-          password: null,
-          firstName: user.displayName,
-          emailID: user.email,
-          googleLocation: null,
-          phoneNumber: user.phoneNumber,
-          operation: "Insert",
-        })
-        .then(() => {
-          navigate("/", {
-            state: { message: "Registration successfull !!" },
+  const SignInWithGooglebtn = async () => {
+    setLoading(true)
+    const res = await signInWithPopup(auth, Googleauthprovider)
+      .then((result) => {
+        // Google sign-in successful, you can access user information via result.user
+        console.log('result', result.user)
+        const data = result.user;
+        const formData = new FormData();
+
+        formData.append("FirstName", result?.user?.displayName);
+        formData.append("Email", result?.user?.email);
+        formData.append("Phone", null);
+        formData.append("Operation", "Insert");
+        formData.append("googleID", result?.user?.uid);
+        formData.append("IsRetailer", false);
+        formData.append("IsSalesMan", false);
+
+        const config = {
+          method: "post",
+          url: ADD_REGISTER_URL,
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        };
+
+        // setTimeout(async () => {
+        try {
+          const response = dispatch(handleLoginWithGoogle({ config })).then((res) => {
+            if (res?.payload?.status) {
+              window.localStorage.setItem("timer", JSON.stringify(18_00));
+              toast.success("Sign up successfully.");
+              setLoading(false)
+            } else {
+              // setErrorMessgeVisible(true);
+              // setErrorMessge("Registration failed.");
+              toast.error(res?.payload?.message)
+              setLoading(false)
+            }
           });
-        })
-        .catch((error) => {
+          if (!response) return;
+          // response
+          //   .then(() => {
+          //     window.localStorage.setItem("timer", JSON.stringify(18_00));
+          //     toast.success("Sign up successfully.");
+          //     // navigate("/screens");
+          //     console.log(data);
+          //   })
+          //   .catch((error) => {
+          //     console.log(error);
+          //     setErrorMessgeVisible(true);
+          //     setErrorMessge("Registration failed.");
+          //   });
+        } catch (error) {
           console.log(error);
           setErrorMessgeVisible(true);
+          setLoading(false)
           setErrorMessge("Registration failed.");
+        }
+      })
+      .catch((error) => {
+        setLoading(false)
+        // Handle errors here
+        console.error(error);
+      });
+  };
+
+  const SignInFaceBook = async (data) => {
+    try {
+      setLoading(true)
+      const res = await signInWithPopup(auth, facebookProvider);
+
+      const formData = new FormData();
+      formData.append("FirstName", res?.user?.displayName);
+      formData.append("Email", res?.user?.email);
+      formData.append("Phone", null);
+      formData.append("Operation", "Insert");
+      formData.append("googleID", res?.user?.uid);
+      formData.append("IsRetailer", false);
+      formData.append("IsSalesMan", false);
+      // onclose();
+      const config = {
+        method: "post",
+        url: ADD_REGISTER_URL,
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      try {
+        const response = dispatch(handleLoginWithGoogle({ config })).then((res) => {
+          if (res?.payload?.status) {
+            window.localStorage.setItem("timer", JSON.stringify(18_00));
+            toast.success("Sign up successfully.");
+            setLoading(false)
+          } else {
+            // setErrorMessgeVisible(true);
+            // setErrorMessge("Registration failed.");
+            toast.error(res?.payload?.message)
+            setLoading(false)
+          }
         });
-    } catch (err) {
-      console.log(err);
+        if (!response) return;
+
+      } catch (error) {
+        console.log(error);
+        setErrorMessgeVisible(true);
+        setErrorMessge("Registration failed.");
+        setLoading(false)
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false)
     }
   };
 
   const SignInapple = async () => {
     try {
-      const res = await auth.signInWithPopup(appleProvider);
+      const res = await signInWithPopup(auth, appleProvider);
       const user = res.user;
       // onclose();
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const SignInMicroSoft = async () => {
-    microsoftProvider.setCustomParameters({
-      prompt: "consent",
-      tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
-    });
-    try {
-      const res = await auth.signInWithPopup(microsoftProvider);
-      const user = res.user;
-      // onclose();
-    } catch (err) {
-      console.log(err);
-    }
+    // microsoftProvider.setCustomParameters({
+    //   prompt: "consent",
+    //   tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+    // });
+    // try {
+    //   const res = await signInWithPopup(auth, microsoftProvider);
+    //   console.log('res', res)
+    //   const user = res.user;
+    //   console.log('user', user)
+    //   // onclose();
+    // } catch (error) {
+    //   console.log(error);
+    // }
+
+    const data = instance.loginPopup(loginRequest).then((res) => {
+      console.log('res', res)
+    }).
+      catch((e) => {
+        console.log(e);
+      });
   };
 
   const handleCheckboxChange = (e, formik) => {
     setIsCheckboxChecked(e.target.checked);
-    setShowModal(true);
+    // setShowModal(true);
   };
 
   const handleAcceptTerms = () => {
+    setIsCheckboxChecked(true);
     setShowModal(false);
+  };
+
+  const handlePhoneChange = value => {
+    formik.setFieldValue('phoneNumber', '+' + value); // Update the phoneNumber value with the correct format
   };
 
   return (
@@ -458,17 +588,27 @@ const Registration = () => {
                         <div className="error">{formik.errors.lastName}</div>
                       )}
                     </div>
-                    <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
-                      <input
-                        type="tel"
-                        name="phoneNumber"
-                        id="phoneNumber"
-                        placeholder="Enter Phone Number"
-                        className="formInput"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.phoneNumber}
-                        maxLength="12"
+                    <div className="relative register lg:w-64 md:w-64 sm:max-w-[376px]">
+                      <PhoneInput
+                        country={"in"}
+                        onChange={handlePhoneChange}
+                        value={formik.values.phoneNumber.replace('+', '')} // Remove the '+' for the PhoneInput
+                        autocompleteSearch={true}
+                        countryCodeEditable={false}
+                        enableSearch={true}
+                        inputStyle={{
+                          width: "100%",
+                          background: "white",
+                          padding: "25px 0 25px 3rem",
+                          borderRadius: "10px",
+                          fontSize: "1rem",
+                          border: "1px solid #000",
+                        }}
+                        dropdownStyle={{
+                          color: "#000",
+                          fontWeight: "600",
+                          padding: "0px 0px 0px 10px",
+                        }}
                       />
                       {formik.errors.phoneNumber &&
                         formik.touched.phoneNumber && (
@@ -505,7 +645,7 @@ const Registration = () => {
                           onBlur={formik.handleBlur}
                           value={formik.values.password}
                         />
-                        <div className="icon">
+                        <div className="register-icon">
                           {showPassword ? (
                             <BsFillEyeFill
                               onClick={() => setShowPassword(!showPassword)}
@@ -596,7 +736,7 @@ const Registration = () => {
                     </label>
                     <Link to="/">
                       <p className="lg:ml-1 not-italic text-white font-medium mb-3 hover:text-SlateBlue">
-                        Sign in here
+                        Sign up here
                       </p>
                     </Link>
                   </div>
@@ -604,7 +744,7 @@ const Registration = () => {
               </div>
             </div>
             {/* login with google  */}
-            {/* <div className="mt-4">
+            {/*  <div className="mt-4">
               <GoogleOAuthProvider
                 clientId={process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID}
               >
@@ -614,32 +754,46 @@ const Registration = () => {
                   onSuccess={(res) => {
                     SignInWithGoogle(jwtDecode(res.credential));
                   }}
-                  onError={(err) => console.log(err)}
+                  onError={(error) => console.log(error)}
                 ></GoogleLogin>
               </GoogleOAuthProvider>
-            </div> */}
-            {/* <div className="flex items-center justify-center mt-4">
-              <div className="socialIcon socialIcon1">
-                <button onClick={SignInWithGoogle}>
+                </div>*/}
+            <div className="flex items-center justify-center mt-4">
+              <button onClick={SignInWithGooglebtn}>
+                <div className="socialIcon socialIcon1">
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
+                </div>
+              </button>
+             {/* <LoginSocialFacebook
+                appId={process.env.REACT_APP_FACEBOOK_APK_SECRET_KEY}
+                onResolve={(response) => {
+                  console.log(response);
+                  SignInFaceBook(response.data);
+                }}
+                onReject={(error) => {
+                  console.log(error);
+                }}
+              >
+                <button>
+                  <div className="socialIcon socialIcon2">
+                    <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                  </div>
                 </button>
-              </div>
-              <div className="socialIcon socialIcon2">
-                <button onClick={SignInFaceBook}>
-                  <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+              </LoginSocialFacebook>*/}
+              <button onClick={SignInFaceBook}>
+                  <div className="socialIcon socialIcon2">
+                    <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                  </div>
                 </button>
-              </div>
-              <div className="socialIcon socialIcon3">
-                <button onClick={SignInapple}>
+              <button onClick={SignInapple}>
+                <div className="socialIcon socialIcon3">
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
-                </button>
-              </div>
-              <div className="socialIcon socialIcon4">
-                <button onClick={SignInMicroSoft}>
-                  <BsMicrosoft className="text-lg text-primary" />
-                </button>
-              </div>
-            </div> */}
+                </div>
+              </button>
+              <MsalProvider instance={msalInstance}>
+                <MicrosoftBtn register={true} setLoading={setLoading} />
+              </MsalProvider>
+            </div>
           </div>
         </div>
       </div>
@@ -658,7 +812,6 @@ const Registration = () => {
                   data-modal-hide="default-modal"
                   onClick={() => {
                     setShowModal(false);
-                    setIsCheckboxChecked();
                   }}
                 >
                   <svg

@@ -1,34 +1,45 @@
-import React, { useEffect, useState } from 'react'
+import React, { lazy, useEffect, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import Sidebar from '../Sidebar';
-import Navbar from '../Navbar';
 import { MdDeleteForever, MdOutlineModeEdit, MdSave } from 'react-icons/md';
 import { GoPencil } from 'react-icons/go';
-import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { AiOutlineClose } from 'react-icons/ai';
 import moment from 'moment';
 import toast from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import Footer from '../Footer';
-import digitalMenuLogo from "../../images/AppsImg/foods.svg";
 import { FaRegQuestionCircle } from 'react-icons/fa';
-import ReactTooltip from 'react-tooltip';
-import DigitalMenuCustomize from './DigitalMenuCustomize';
-import DigitalMenuPreview from './DigitalMenuPreview';
 import { useForm } from 'react-hook-form';
 import DigitalMenuAssets from './DigitalMenuAssets';
-import { ADD_EDIT_DIGITAL_MENU, GET_DIGITAL_MENU_BY_ID, POS_ITEM_LIST } from '../../Pages/Api';
+import { ADD_EDIT_DIGITAL_MENU, GET_DIGITAL_MENU_BY_ID, POS_ITEM_LIST, POS_THEME } from '../../Pages/Api';
 import Swal from 'sweetalert2';
 import { HiOutlineViewList } from 'react-icons/hi';
 import { chunkArray, generateAllCategory, generateCategorybyID } from '../Common/Common';
+import { handleAllPosTheme } from '../../Redux/CommonSlice';
+import { toPng } from 'html-to-image';
+import DigitalMenuCustomize from './DigitalMenuCustomize';
+import Footer from '../Footer';
+import digitalMenuLogo from "../../images/AppsImg/foods.svg";
+import DigitalMenuPreview from './DigitalMenuPreview';
 import Loading from '../Loading';
 import PurchasePlanWarning from '../Common/PurchasePlan/PurchasePlanWarning';
+import Sidebar from '../Sidebar';
+import Navbar from '../Navbar';
+
+
+// const Navbar = lazy(() => import('../Navbar'));
+// const Loading = lazy(() => import('../Loading'));
+// const Sidebar = lazy(() => import('../Sidebar'));
+// const PurchasePlanWarning = lazy(() => import('../Common/PurchasePlan/PurchasePlanWarning'));
+// const Footer = lazy(() => import('../Footer'));
+// const DigitalMenuPreview = lazy(() => import('./DigitalMenuPreview'));
+// const DigitalMenuCustomize = lazy(() => import('./DigitalMenuCustomize'));
+
+
 
 const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const { id } = useParams();
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { userDetails, user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
   const [customizeData, setCustomizeData] = useState({
     "EachPageTime": "30",
@@ -38,7 +49,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     "CurrencyShow": true,
     "ShowPrice": true,
     "FontSize": "Medium",
-    "Theme": "Light Theme",
+    "Theme": "",
     "Topfeature": false,
   })
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -46,7 +57,7 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   });
   const dispatch = useDispatch();
   const history = useNavigate();
-  const [currentSection, setcurrentSection] = useState(1);
+  const digitalMenuPreviewRef = useRef(null);
   const [saveLoading, setSaveLoading] = useState(false);
   const currentDate = new Date();
   const [instanceName, setInstanceName] = useState(
@@ -55,13 +66,11 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
   const [textColor, setTextColor] = useState("#455670");
   const [priceColor, setPriceColor] = useState("#1B1B1E");
-
   const [menuName, setMenuName] = useState("");
   const [subtitle, setSubTitle] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);
-  const [selectDrag, setSelectDrag] = useState(false)
   const [selectedAsset, setSelectedAsset] = useState("");
   const [assetPreview, setAssetPreview] = useState("");
   const [edited, setEdited] = useState(false);
@@ -71,8 +80,11 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showPreviewPopup, setShowPreviewPopup] = useState(false);
   const [firstCategory, setFirstCategory] = useState(0);
   const [showCustomizemodal, setShowCustomizemodal] = useState(false);
-  const [dragStartForDivToDiv, setDragStartForDivToDiv] = useState(false);
   const [PreviewData, setPreviewData] = useState([])
+  const [PosTheme, setPosTheme] = useState([])
+  const [theme, setTheme] = useState({})
+  const [selectedtheme, setSelectedTheme] = useState({})
+  const [generatedImages, setGeneratedImages] = useState([]);
   const [addCategory, setAddCategory] = useState([{
     categoryname: "UNNAMED CATEGORY",
     allItem: [{
@@ -125,6 +137,27 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   }, [addCategory, customizeData])
 
+  useEffect(() => {
+
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: POS_THEME,
+      headers: {
+        Authorization: authToken,
+      },
+    }
+
+    dispatch(handleAllPosTheme({ config }))
+      .then((res) => {
+        setPosTheme(res?.payload?.data)
+      })
+      .catch((error) => {
+        console.log('error', error)
+      })
+
+  }, [])
+
   const handleOnSaveInstanceName = (e) => {
     if (!instanceName.replace(/\s/g, "").length) {
       toast.remove();
@@ -133,67 +166,91 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setEdited(false);
   };
 
-  //Insert  API
-  const addDigitalMenuApp = () => {
-    toast.loading("Saving...")
-    let data = JSON.stringify({
-      "digitalMenuAppId": id ? id : 0,
-      "userID": 0,
-      "appName": instanceName,
-      "nameOfthisMenu": menuName,
-      "subTitle": subtitle,
-      "createdDate": "2024-03-14T04:16:33.588Z",
-      "createdBy": 0,
-      "updatedDate": "2024-03-14T04:16:33.588Z",
-      "updatedBy": 0,
-      "category": generateAllCategory(addCategory),
-      "customizeMaster": {
-        "customizeID": 0,
-        "digitalMenuAppId": id ? id : 0,
-        "timespent": customizeData?.EachPageTime,
-        "imagestodisplay": customizeData?.EachPage,
-        "switchTo": customizeData?.ImageLayout,
-        "currencyID": 0,
-        "currencyName": customizeData?.Currency,
-        "isShowcurrencysign": customizeData?.CurrencyShow,
-        "isShowprices": customizeData?.ShowPrice,
-        "isMovetop": customizeData?.Topfeature,
-        "fontSize": customizeData?.FontSize,
-        "color": selectedColor,
-        "textColor": textColor,
-        "priceColor": priceColor,
-        "logo": "string"
-      }
-    });
+  const fetchAllImages = () => {
+    if (digitalMenuPreviewRef.current) {
+      setTimeout(() => {
+        digitalMenuPreviewRef.current.generateImages();
+      }, 1000); // Short delay to ensure visibility
+      return 0
+    }
+  }
 
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: ADD_EDIT_DIGITAL_MENU,
-      headers: {
-        Authorization: authToken,
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-    setSaveLoading(true);
-    axios
-      .request(config)
-      .then((response) => {
-        toast.remove()
-        if (window.history.length === 1) {
-          localStorage.setItem("isWindowClosed", "true");
-          window.close();
-        } else {
-          history("/Digital-Menu-Board");
-        }
-        setSaveLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.remove()
-        setSaveLoading(false);
+  const handleImagesGenerated = (images) => {
+    setGeneratedImages(images);
+  };
+
+
+  useEffect(()=>{
+    if(generatedImages?.length > 0){
+      toast.loading("Saving...")
+      let data = JSON.stringify({
+        "digitalMenuAppId": id ? id : 0,
+        "userID": 0,
+        "appName": instanceName,
+        "nameOfthisMenu": menuName,
+        "subTitle": subtitle,
+        "createdDate": "2024-03-14T04:16:33.588Z",
+        "createdBy": 0,
+        "updatedDate": "2024-03-14T04:16:33.588Z",
+        "updatedBy": 0,
+        "category": generateAllCategory(addCategory),
+        "customizeMaster": {
+          "customizeID": 0,
+          "digitalMenuAppId": id ? id : 0,
+          "timespent": customizeData?.EachPageTime,
+          "imagestodisplay": customizeData?.EachPage,
+          "switchTo": customizeData?.ImageLayout,
+          "currencyID": 0,
+          "currencyName": customizeData?.Currency,
+          "isShowcurrencysign": customizeData?.CurrencyShow,
+          "isShowprices": customizeData?.ShowPrice,
+          "isMovetop": customizeData?.Topfeature,
+          "fontSize": customizeData?.FontSize,
+          "color": selectedColor,
+          "textColor": textColor,
+          "priceColor": priceColor,
+          "logo": "string",
+          "theme": selectedtheme
+        },
+        "Images": generatedImages
       });
+  
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: ADD_EDIT_DIGITAL_MENU,
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+      axios
+        .request(config)
+        .then((response) => {
+          toast.remove()
+          if (window.history.length === 1) {
+            localStorage.setItem("isWindowClosed", "true");
+            window.close();
+          } else {
+            history("/Digital-Menu-Board");
+          }
+          setSaveLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.remove()
+          setGeneratedImages([])
+          setSaveLoading(false);
+        });
+    }
+
+  },[generatedImages])
+
+  //Insert  API
+  const addDigitalMenuApp = async () => {
+    const res = await fetchAllImages()
+    setSaveLoading(true);
   };
 
   const fetchPosItem = () => {
@@ -243,41 +300,46 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   }
 
   useEffect(() => {
-    setLoader(true)
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${GET_DIGITAL_MENU_BY_ID}?DigitalMenuAppId=${id}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        let data = response?.data?.data;
-        setCustomizeData({
-          "EachPageTime": data?.customizeMaster?.timespent,
-          "EachPage": data?.customizeMaster?.imagestodisplay,
-          "ImageLayout": data?.customizeMaster?.switchTo,
-          "Currency": data?.customizeMaster?.currencyName,
-          "CurrencyShow": data?.customizeMaster?.isShowcurrencysign,
-          "ShowPrice": data?.customizeMaster?.isShowprices,
-          "FontSize": data?.customizeMaster?.fontSize,
-          "Theme": "Light Theme",
-          "Topfeature": data?.customizeMaster?.isMovetop,
+    if (id) {
+      setLoader(true)
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${GET_DIGITAL_MENU_BY_ID}?DigitalMenuAppId=${id}`,
+        headers: {
+          Authorization: authToken,
+        },
+      };
+      axios
+        .request(config)
+        .then((response) => {
+          let data = response?.data?.data;
+          setCustomizeData({
+            "EachPageTime": data?.customizeMaster?.timespent,
+            "EachPage": data?.customizeMaster?.imagestodisplay,
+            "ImageLayout": data?.customizeMaster?.switchTo,
+            "Currency": data?.customizeMaster?.currencyName,
+            "CurrencyShow": data?.customizeMaster?.isShowcurrencysign,
+            "ShowPrice": data?.customizeMaster?.isShowprices,
+            "FontSize": data?.customizeMaster?.fontSize,
+            "Theme": data?.customizeMaster?.theme,
+            "Topfeature": data?.customizeMaster?.isMovetop,
+          })
+          setSelectedTheme(data?.customizeMaster?.theme)
+          const matchedTheme = PosTheme.find(item => Number(item?.posThemeID) === Number(data?.customizeMaster?.theme));
+          setTheme(matchedTheme)
+          setSelectedColor(data?.customizeMaster?.color)
+          setInstanceName(data?.appName)
+          setSubTitle(data?.subTitle)
+          setMenuName(data?.nameOfthisMenu)
+          let allcategory = generateCategorybyID(data)
+          setAddCategory(allcategory)
+          setLoader(false)
+        }).catch((error) => {
+          setLoader(false)
+          console.log('error', error)
         })
-        setSelectedColor(data?.customizeMaster?.color)
-        setInstanceName(data?.appName)
-        setSubTitle(data?.subTitle)
-        setMenuName(data?.nameOfthisMenu)
-        let allcategory = generateCategorybyID(data)
-        setAddCategory(allcategory)
-        setLoader(false)
-      }).catch((error) => {
-        setLoader(false)
-        console.log('error', error)
-      })
+    }
   }, [id])
 
   const handleNameChange = (categoryIndex, itemIndex, value) => {
@@ -478,6 +540,10 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
   }
 
   const onSubmit = (data) => {
+    if (selectedtheme !== "") {
+      const matchedTheme = PosTheme.find(item => Number(item?.posThemeID) === Number(selectedtheme));
+      setTheme(matchedTheme)
+    }
     setCustomizeData(data)
     // Handle form submission here
     toggleModal()
@@ -557,13 +623,16 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  
+
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           {loader ? <Loading /> : (
             <div className="lg:flex lg:justify-between sm:block  items-center">
@@ -612,218 +681,6 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   {saveLoading ? "Saving..." : "Save"}
                 </button>
-                {/* <div className="relative sm:mt-2">
-                  <button
-                    onClick={() => setShowPopup(!showPopup)}
-                    className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full p-2 text-xl  hover:bg-SlateBlue hover:text-white  hover:shadow-lg hover:shadow-primary-500/50 hover:border-white"
-                  >
-                    <BiDotsHorizontalRounded />
-                  </button>
-                  {showPopup && (
-                    <div className="editdw z-30">
-                      <ul>
-                        <li
-                          className="flex text-sm items-center cursor-pointer"
-                          onClick={() => setShowSetScreenModal(true)}
-                        >
-                          <FiUpload className="mr-2 text-lg" />
-                          Set to Screen
-                        </li>
-                        <li className="flex text-sm items-center mt-2">
-                          <MdPlaylistPlay className="mr-2 text-lg" />
-                          Add to Playlist
-                        </li>
-                        <li className="flex text-sm items-center mt-2">
-                          <TbBoxMultiple className="mr-2 text-lg" />
-                          Duplicate
-                        </li>
-                        <li className="flex text-sm items-center mt-2">
-                          <TbCalendarTime className="mr-2 text-lg" />
-                          Set availability
-                        </li>
-                        <li
-                          className="flex text-sm items-center mt-2 cursor-pointer"
-                          onClick={() => setPlaylistDeleteModal(true)}
-                        >
-                          <RiDeleteBin5Line className="mr-2 text-lg" />
-                          Delete
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                  {showSetScreenModal && (
-                    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-                      <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                        <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                          <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                            <div className="flex items-center">
-                              <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                                Select Screens to Playlist Name
-                              </h3>
-                            </div>
-                            <button
-                              className="p-1 text-xl ml-8"
-                              onClick={() => setShowSetScreenModal(false)}
-                            >
-                              <AiOutlineCloseCircle className="text-2xl" />
-                            </button>
-                          </div>
-                          <div className="flex justify-between items-center p-4">
-                            <div className="text-right mr-5 flex items-end justify-end relative sm:mr-0">
-                              <AiOutlineSearch className="absolute top-[13px] right-[233px] z-10 text-gray searchicon" />
-                              <input
-                                type="text"
-                                placeholder=" Search Playlist"
-                                className="border border-primary rounded-full px-7 py-2 search-user"
-                              />
-                            </div>
-                            <div className="flex items-center">
-                              <button className="bg-lightgray rounded-full px-4 py-2 text-SlateBlue">
-                                Tags
-                              </button>
-                              <button className="flex items-center bg-lightgray rounded-full px-4 py-2 text-SlateBlue ml-3">
-                                <input type="checkbox" className="w-5 h-5 mr-2" />
-                                All Clear
-                              </button>
-                            </div>
-                          </div>
-                          <div className="px-9">
-                            <div className="overflow-x-auto p-4 shadow-xl bg-white rounded-lg ">
-                              <table className=" w-full ">
-                                <thead>
-                                  <tr className="flex justify-between items-center">
-                                    <th className="font-medium text-[14px]">
-                                      <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                                        Name
-                                      </button>
-                                    </th>
-                                    <th className="p-3 font-medium text-[14px]">
-                                      <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                                        Group
-                                      </button>
-                                    </th>
-                                    <th className="p-3 font-medium text-[14px]">
-                                      <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                                        Playing
-                                      </button>
-                                    </th>
-                                    <th className="p-3 font-medium text-[14px]">
-                                      <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
-                                        Status
-                                      </button>
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr className="mt-3 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                                    <td className="flex items-center ">
-                                      <input type="checkbox" className="mr-3" />
-                                      <div>
-                                        <div>Tv 1</div>
-                                      </div>
-                                    </td>
-                                    <td className="p-2">Marketing</td>
-                                    <td className="p-2">25 May 2023</td>
-                                    <td className="p-2">
-                                      <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
-                                        Live
-                                      </button>
-                                    </td>
-                                  </tr>
-                                  <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                                    <td className="flex items-center ">
-                                      <input type="checkbox" className="mr-3" />
-                                      <div>
-                                        <div>Tv 1</div>
-                                      </div>
-                                    </td>
-                                    <td className="p-2">Marketing</td>
-                                    <td className="p-2">25 May 2023</td>
-                                    <td className="p-2">
-                                      <button className="rounded-full px-6 py-1 text-white bg-[#D40000]">
-                                        Offline
-                                      </button>
-                                    </td>
-                                  </tr>
-                                  <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                                    <td className="flex items-center ">
-                                      <input type="checkbox" className="mr-3" />
-                                      <div>
-                                        <div>Tv 1</div>
-                                      </div>
-                                    </td>
-                                    <td className="p-2">Marketing</td>
-                                    <td className="p-2">25 May 2023</td>
-                                    <td className="p-2">
-                                      <button className="rounded-full px-6 py-1 text-white bg-[#D40000]">
-                                        Offline
-                                      </button>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                          <div className="flex justify-between p-6">
-                            <button className="border-2 border-primary px-4 py-2 rounded-full">
-                              Add new Playlist
-                            </button>
-                            <Link to="/composition">
-                              <button className="bg-primary text-white px-4 py-2 rounded-full">
-                                Save
-                              </button>
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {playlistDeleteModal && (
-                    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
-                      <div className="w-auto my-6 mx-auto lg:max-w-xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                        <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                          <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                            <div className="flex items-center">
-                              <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                                Delete Playlist Name?
-                              </h3>
-                            </div>
-                            <button
-                              className="p-1 text-xl ml-8"
-                              onClick={() => setPlaylistDeleteModal(false)}
-                            >
-                              <AiOutlineCloseCircle className="text-2xl" />
-                            </button>
-                          </div>
-                          <div className="p-5">
-                            <p>
-                              Playlist Name is being used elsewhere and will be
-                              removed when deleted. Please check before deleting.
-                            </p>
-                            <div className="flex mt-4">
-                              <label className="font-medium">Playlist : </label>
-                              <p className="ml-2">Ram Siya Ram</p>
-                            </div>
-                          </div>
-                          <div className="flex justify-center items-center pb-5">
-                            <button
-                              className="border-2 border-primary px-4 py-1.5 rounded-full"
-                              onClick={() => setPlaylistDeleteModal(false)}
-                            >
-                              Cencel
-                            </button>
-                            <Link to="/apps">
-                              <button className="bg-primary text-white ml-3 px-4 py-2 rounded-full">
-                                Delete
-                              </button>
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div> */}
-
                 <Link to="/Digital-Menu-Board">
                   <button className="sm:ml-2 xs:ml-1 sm:mt-2 border-primary items-center border-2  rounded-full text-xl  hover:text-white hover:bg-SlateBlue hover:border-white hover:shadow-lg hover:shadow-primary-500/50 p-2 ">
                     <AiOutlineClose />
@@ -1116,23 +973,40 @@ const DigitalMenuBoardDetail = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
           )}
-          {showPreviewPopup && (
-            <DigitalMenuPreview customizeData={customizeData} PreviewData={PreviewData} selectedColor={selectedColor} textColor={textColor} priceColor={priceColor} />
-          )}
-        </div>
+          <div className={`${showPreviewPopup ? "opacity-100" : "opacity-0"}`} >
+            <DigitalMenuPreview
+              ref={digitalMenuPreviewRef}
+              customizeData={customizeData}
+              PreviewData={PreviewData}
+              selectedColor={selectedColor}
+              textColor={textColor}
+              priceColor={priceColor}
+              theme={theme}
+              onImagesGenerated={handleImagesGenerated}
+            />
+          </div>
+          <div>
       </div>
+        </div>
+      </div >
       <Footer />
 
-      {showCustomizemodal && (
-        <DigitalMenuCustomize toggleModal={toggleModal} register={register} errors={errors} handleSubmit={handleSubmit} onSubmit={onSubmit} selectedColor={selectedColor} setSelectedColor={setSelectedColor} setTextColor={setTextColor} textColor={textColor} setPriceColor={setPriceColor} priceColor={priceColor} />
-      )}
-      {openModal && (
-        <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />
-      )}
+      {
+        showCustomizemodal && (
+          <DigitalMenuCustomize toggleModal={toggleModal} register={register} errors={errors} handleSubmit={handleSubmit} onSubmit={onSubmit} selectedColor={selectedColor} setSelectedColor={setSelectedColor} setTextColor={setTextColor} textColor={textColor} setPriceColor={setPriceColor} priceColor={priceColor} PosTheme={PosTheme} setSelectedTheme={setSelectedTheme} selectedtheme={selectedtheme} />
+        )
+      }
+      {
+        openModal && (
+          <DigitalMenuAssets openModal={openModal} setOpenModal={setOpenModal} setAssetPreviewPopup={setAssetPreviewPopup} selectedAsset={selectedAsset} handleAssetAdd={handleAssetAdd} assetPreviewPopup={assetPreviewPopup} assetPreview={assetPreview} HandleSubmitAsset={HandleSubmitAsset} />
+        )
+      }
 
-      {(user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
-        <PurchasePlanWarning />
-      )}
+      {
+        (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+          <PurchasePlanWarning />
+        )
+      }
     </>
   )
 }

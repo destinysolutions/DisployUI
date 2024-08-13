@@ -8,6 +8,8 @@ import { handleAllInvoice, handleInvoiceById } from "../../Redux/PaymentSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import moment from "moment";
+import ReactTooltip from "react-tooltip";
+import { PageNumber } from "../Common/Common";
 
 const Invoice = ({
   permissions,
@@ -16,26 +18,25 @@ const Invoice = ({
   InvoiceRef,
   DownloadInvoice,
   sidebarOpen,
-  setInvoiceID
 }) => {
   const dispatch = useDispatch()
   const { user, token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;
-  const [invoiceData, setInvoiceData] = useState([])
+  const [invoiceData, setInvoiceData] = useState([]);
   const [selectData, setSelectData] = useState(null)
   const [selectInvoiceId, setInvoiceId] = useState("")
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = invoiceData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = invoiceData?.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(invoiceData?.length / itemsPerPage);
   const fetchAllInvoice = () => {
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${GET_ALL_INVOICE}?Role=${user?.role === "1" ? "S" : "User"}`,
+      url: `${GET_ALL_INVOICE}?Email=${user?.role === "1" ? "" : user?.emailID}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken
@@ -51,7 +52,7 @@ const Invoice = ({
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${GET_INVOICE_BY_ID}?ID=${selectInvoiceId}&Role=${user?.role === "1" ? "S" : "User"}`,
+      url: `${GET_INVOICE_BY_ID}?invoiceNumber=${selectInvoiceId}&Role=${user?.role === "1" ? "S" : "User"}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken
@@ -77,15 +78,15 @@ const Invoice = ({
   return (
     <>
       {!showInvoice && (
-        <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-          <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
+        <>
+          <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2 mt-5">
             <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl mb-5">
               Invoice
             </h1>
           </div>
-          <div className="clear-both">
-            <div className="bg-white rounded-xl mt-8 shadow screen-section ">
-              <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
+          <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2 pb-5 mt-2 ">
+            <div className="bg-white rounded-xl lg:mt-6 md:mt-6 mt-4 shadow screen-section ">
+              <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
                 <table
                   className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                   cellPadding={15}
@@ -142,13 +143,13 @@ const Invoice = ({
                           <tr className="border-b border-gray-200 bg-white" key={index} >
                             <td className="px-5 py-3 text-lg">
                               <div className="flex items-center">
-                                <div className="flex-shrink-0 w-10 h-10">
+                                {/*<div className="flex-shrink-0 w-10 h-10">
                                   <img
                                     className="w-full h-full rounded-full"
                                     src={item?.profilePic}
                                     alt={item?.name}
                                   />
-                                </div>
+                        </div>*/}
                                 {/*                              <div className="ml-3">
                                 <p className="text-blue-900 whitespace-no-wrap">
                                   #5036
@@ -157,7 +158,7 @@ const Invoice = ({
 
                                 <div className="ml-3">
                                   <p className="text-blue-900 whitespace-no-wrap">
-                                    {item?.name}
+                                    {item?.customer_name}
                                   </p>
                                 </div>
                               </div>
@@ -168,27 +169,44 @@ const Invoice = ({
                             </p>
                     </td>*/}
                             <td className="px-5 py-3 text-lg text-center">
-                              <p className="text-gray-900 whitespace-no-wrap">${(item?.totalAmount)}</p>
+                              <p className="text-gray-900 whitespace-no-wrap">${(item?.amount) / 100}</p>
                             </td>
                             <td className="px-5 py-3 text-lg text-center">
                               <p className="text-gray-900 whitespace-no-wrap">
                                 {moment(
-                                  item?.issuedDate
+                                  item?.startDate
                                 ).format("LLL")}
 
                               </p>
                             </td>
                             <td className="px-5 py-3 text-lg text-center">
-                              {item?.status === "Completed" && (
-                                <span className="relative inline-block px-3 py-1 font-semibold bg-lime-300 text-green leading-tight rounded-full">
-                                  {item?.status}
-                                </span>
-                              )}
-                              {item?.status !== "Completed" && (
-                                <span className="relative inline-block px-3 py-1 font-semibold bg-orange-200 text-orange-400 leading-tight rounded-full">
-                                  {item?.status}
-                                </span>
-                              )}
+                              <>
+                                {item?.status === "paid" && (
+                                  <span className="bg-[#22C55E29] rounded-md p-1.5 text-[#118D57] font-semibold text-sm">
+                                    {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                  </span>
+                                )}
+                                {item?.status === "void" && (
+                                  <span className="bg-[#9e97c7e7] rounded-md p-1.5 text-[#5341bde7] font-semibold text-sm">
+                                    {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                  </span>
+                                )}
+                                {item?.status === "open" && (
+                                  <span className="bg-[#ebc3fd] rounded-md p-1.5 text-[#b72cdad7] font-semibold text-sm">
+                                    {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                  </span>
+                                )}
+                                {item?.status === "uncollectible" && (
+                                  <span className="bg-[#d89b99c9] rounded-md p-1.5 text-[#f02004e8] font-semibold text-sm">
+                                    {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                  </span>
+                                )}
+                                {item?.status === "draft" && (
+                                  <span className="bg-[#c4a361e0] rounded-md p-1.5 text-[#B76E00] font-semibold text-sm">
+                                    {item?.status?.charAt(0).toUpperCase() + item?.status.slice(1)}
+                                  </span>
+                                )}
+                              </>
                             </td>
                             <td className="px-5 py-3 text-lg text-center">
                               <div className="flex gap-4 justify-center">
@@ -197,18 +215,34 @@ const Invoice = ({
                                     data-tip
                                     data-for="View"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    onClick={() => { setShowInvoice(true); setInvoiceId(item?.id) }}
+                                    onClick={() => { setShowInvoice(true); setInvoiceId(item?.invoiceID) }}
                                   >
                                     <BsEyeFill />
+                                    <ReactTooltip
+                                      id="View"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>View</span>
+                                    </ReactTooltip>
                                   </div>
 
                                   <div
                                     data-tip
-                                    data-for="Edit"
+                                    data-for="Download"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    onClick={() => { DownloadInvoice(); setInvoiceId(item?.id); setInvoiceID(item?.id); }}
+                                    onClick={() => { DownloadInvoice(); setInvoiceId(item?.id); }}
                                   >
                                     <FaDownload />
+                                    <ReactTooltip
+                                      id="Download"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="solid"
+                                    >
+                                      <span>Download</span>
+                                    </ReactTooltip>
                                   </div>
                                 </>
                               </div>
@@ -222,8 +256,8 @@ const Invoice = ({
                         <>
                           <tr>
                             <td colSpan={5}>
-                              <div className="flex text-center justify-center">
-                                <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
+                              <div className="flex text-center m-5 justify-center">
+                                <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                   No Data Available
                                 </span>
                               </div>
@@ -241,6 +275,14 @@ const Invoice = ({
                   <span className="text-gray-500">{`Total ${invoiceData?.length} Invoice`}</span>
                 </div>
                 <div className="flex justify-end">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(e.target.value)}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -293,7 +335,7 @@ const Invoice = ({
               </div>
             </div>
           </div>
-        </div >
+        </>
       )}
       {
         showInvoice && (

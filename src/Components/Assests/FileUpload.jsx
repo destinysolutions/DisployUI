@@ -62,7 +62,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const [showVideo, setShowVideo] = useState(false);
   const [recordedVideos, setRecordedVideos] = useState([]);
 
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token,userDetails } = useSelector((state) => state.root.auth);
   const { session_token_apideck } = useSelector(
     (state) => state.root.globalstates
   );
@@ -203,7 +203,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 response.status === 200
               ) {
                 toast.success(`File uploaded successfully.`);
-                if (window.history.length == 1) {
+                if (window.history.length === 1) {
                   dispatch(handleNavigateFromComposition());
                   localStorage.setItem("isWindowClosed", "true");
                   window.close();
@@ -433,7 +433,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         mimeType,
       })
     );
-    if (window.history.length == 1) {
+    if (window.history.length === 1) {
       localStorage.setItem("isWindowClosed", "true");
       window.close();
     } else {
@@ -451,7 +451,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="grid grid-cols-3 gap-2">
             <h1 className="col-span-2 not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -754,7 +754,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       </div>
       <Footer />
 
-      {(user?.isTrial=== false) && (user?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>
