@@ -36,7 +36,6 @@ import { HiDocumentDuplicate } from "react-icons/hi2";
 import { IoArrowBackSharp } from "react-icons/io5";
 import { FcOpenedFolder } from "react-icons/fc";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
-import { FixedSizeList as List } from 'react-window';
 import VideoTable from "./VideoTable";
 
 const DEFAULT_IMAGE = "";
