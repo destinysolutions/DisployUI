@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { FaUserTie, FaUserTimes } from "react-icons/fa";
 import { FaUserAlt, FaUserCheck, FaUsers } from "react-icons/fa";
 import { SlOrganization } from "react-icons/sl";
-import logo from "../images/DisployImg/logo.svg";
+import logo from "../images/DisployImg/White-Logo2.png";
 import { FaBuildingUser, FaUserGroup } from "react-icons/fa6";
 import { RiAdvertisementFill } from "react-icons/ri";
 import settingIcon from "../images/MenuIcons/setting_icon.svg"

@@ -210,6 +210,15 @@ export const getCurrentTime = () => {
   return `${hours}:${minutes}`;
 };
 
+export const getCurrentTimewithSecound = () => {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  return `${hours}:${minutes}:${seconds}`;
+};
+
+
 // Function to convert time string (HH:MM:SS) to seconds
 function timeToSeconds(time) {
   const [hours, minutes, seconds] = time.split(':').map(Number);

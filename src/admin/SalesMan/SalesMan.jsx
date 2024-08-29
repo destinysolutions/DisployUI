@@ -274,6 +274,9 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                                                 Percentage Ratio
                                             </th>
                                             <th scope="col" className="px-6 py-3 text-left">
+                                                Commision
+                                            </th>
+                                            <th scope="col" className="px-6 py-3 text-left">
                                                 Status
                                             </th>
                                             <th scope="col" className="px-6 py-3 text-left">
@@ -298,6 +301,7 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                                                             {item.phone}
                                                         </td>
                                                         <td scope="col" className="px-6 py-4">{item.percentageRatio}</td>
+                                                        <td scope="col" className="px-6 py-4">{item.totalMargin}</td>
 
                                                         <td scope="col" className="px-6 py-4">
                                                             <span>

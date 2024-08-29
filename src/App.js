@@ -121,7 +121,7 @@ const App = () => {
     });
 
     socket.on('ScreenConnected', (data) => {
-      console.log('Received data from server:', data);
+      // console.log('Received data from server:', data);
       // var b = document.getElementById(`changetvstatus${data.macId}`);
       // b.setAttribute(
       //   "class",
@@ -132,7 +132,7 @@ const App = () => {
     });
 
     socket.on('SendTvStatus', (data) => {
-      console.log('Received TV status from server:', data);
+      // console.log('Received TV status from server:', data);
       // Handle TV status data if needed
       var b = document.getElementById(`changetvstatus${data?.macId}`);
       if (b !== null) {

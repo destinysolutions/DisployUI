@@ -729,7 +729,7 @@ const CustomerOnboding = ({ sidebarOpen, setSidebarOpen }) => {
             </>
           )}
         </div>
-      </div >
+      </div>
     </>
   );
 };
