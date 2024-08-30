@@ -101,7 +101,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <img
                                 src={store.data?.profilePhoto}
                                 alt="profile"
-                                className="profile rounded-full"
+                                className="profile rounded-full w-30 h-20"
                               />
                             )} 
                           </span>
@@ -116,11 +116,11 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <p>{store?.data?.totalScreens}</p>
                             </span>
                           </div>
-                          <div className="flex items-center justify-center">
+                          {/* <div className="flex items-center justify-center">
                             <button className="hover:text-#ffbebe px-8 py-3 border border-red shadow-md rounded-full text-red-600 text-1xl font-semibold bg-[#ffbebe] ">
                               Delete Retailer
                             </button>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
 
