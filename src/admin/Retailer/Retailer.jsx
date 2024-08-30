@@ -366,7 +366,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </ReactTooltip>
                                 </button>
 
-                                {/*<button
+                                <button
                                   data-tip
                                   data-for="View"
                                   type="button"
@@ -382,7 +382,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                                   >
                                     <span>View</span>
                                   </ReactTooltip>
-                                </button>*/}
+                                </button>
                               </div>
 
                             </td>

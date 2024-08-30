@@ -131,14 +131,10 @@ const ScreenAssignModal = ({
     } else {
       updatedSelectedScreens.push(screenID);
     }
-    const screenAssigned = screenData.filter((item) =>
-      updatedSelectedScreens.includes(item?.screenID)
-    );
-    setScreenMacID(screenAssigned.map((i) => i.macid));
-
+   
     // Update the selected screens state
     setSelectedScreens(updatedSelectedScreens);
-
+    
     // Check if any individual screen checkbox is unchecked
     const allChecked = Object.values(updatedCheckboxes).every(
       (isChecked) => isChecked
@@ -374,6 +370,7 @@ const ScreenAssignModal = ({
                   sortedAndPaginatedData.map((screen) => (
                     <tr
                       key={screen.screenID}
+                      onClick={() => handleScreenCheckboxChange(screen.screenID)}
                       className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                     >
                       <td className="items-center">
@@ -381,9 +378,7 @@ const ScreenAssignModal = ({
                           <input
                             type="checkbox"
                             className="mr-3"
-                            onChange={() =>
-                              handleScreenCheckboxChange(screen.screenID)
-                            }
+                            onChange={() => handleScreenCheckboxChange(screen.screenID)}
                             checked={screenCheckboxes[screen.screenID]}
                           />
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoChevronBack } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -8,6 +8,8 @@ import { createImageFromInitials } from "../../Components/Navbar";
 
 import AdminNavbar from '../AdminNavbar'
 import AdminSidebar from '../AdminSidebar'
+import { getAllCustomerDetails } from "../../Redux/admin/OnBodingSlice";
+import ReactPlayer from "react-player";
 
 const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
   const color = "#e4aa07";
@@ -16,9 +18,17 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
+  const store = useSelector((state) => state.root.onBoding.getCustomerItems);
   const [activeTab, setActiveTab] = useState("users");
   const [loadFist, setLoadFist] = useState(true);
   const [userPlan, setUserPlan] = useState({});
+
+  useEffect(() => {
+    if (loadFist) {
+      dispatch(getAllCustomerDetails({ Email: params?.email, OrgID: params?.id }))
+     
+    }
+  }, [loadFist]);
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
@@ -81,28 +91,29 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                       <div class="mb-3 text-gray-500 dark:text-gray-400">
                         <div className="user-details text-center mt-4">
                           <span className="user-img flex w-full items-center justify-center">
-                            {/* {!store.data?.profilePhoto ? ( */}
+                            {!store.data?.profilePhoto ? (
                             <img
-                              src={createImageFromInitials(500, 'Jignesh', color)}
+                              src={createImageFromInitials(500, store.data?.firstName, color)}
                               alt="profile"
                               className=" profile w-30 h-20 rounded"
                             />
-                            {/* ) : (
+                             ) : (
                               <img
                                 src={store.data?.profilePhoto}
                                 alt="profile"
                                 className="profile rounded-full"
                               />
-                            )} */}
+                            )} 
                           </span>
-                          <span className="user-name my-2">Jignesh Lakum</span>
+                          <span className="user-name my-2">{store.data?.firstName + " " + store.data?.lastName}</span>
                           <div className="total-screens-count mt-2 mb-4">
                             <span className="screen-icon mr-3">
                               <i className="fa fa-tv text-blue text-2xl"></i>
                             </span>
                             <span className="screen-count text-center">
                               <strong>Retailer</strong>
-                              <p>Total Screens : - 30</p>
+                              <p>Total Screens </p>
+                              <p>{store?.data?.totalScreens}</p>
                             </span>
                           </div>
                           <div className="flex items-center justify-center">
@@ -120,10 +131,11 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="formLabel">User ID</label>
                               <input
                                 type="text"
-                                placeholder="User ID"
+                                placeholder= {store.data?.userId}
                                 name="PlanName"
                                 className="formInput text-xs"
                                 disabled
+                                
                               />
                             </div>
                           </p>
@@ -133,7 +145,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="formLabel">User Name</label>
                               <input
                                 type="text"
-                                placeholder="User Name"
+                                placeholder={store.data?.firstName + " " + store.data?.lastName}
                                 name="PlanName"
                                 className="formInput text-xs"
                                 disabled
@@ -145,7 +157,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="formLabel">Company Name</label>
                               <input
                                 type="text"
-                                placeholder="Company Name"
+                                placeholder={store.data?.company}
                                 name="PlanName"
                                 className="formInput text-xs"
                                 disabled
@@ -161,7 +173,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="formLabel">Email</label>
                               <input
                                 type="text"
-                                placeholder="Email"
+                                placeholder={store.data?.email}
                                 name="PlanName"
                                 className="formInput text-xs"
                                 disabled
@@ -174,7 +186,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="formLabel">Status</label>
                               <input
                                 type="text"
-                                placeholder="Status"
+                                placeholder="Active"
                                 name="PlanName"
                                 className="formInput text-xs"
                                 disabled
@@ -186,7 +198,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="formLabel">Role</label>
                               <input
                                 type="text"
-                                placeholder="Role"
+                                placeholder= {store.data?.userRoleName}
                                 name="PlanName"
                                 className="formInput text-xs"
                                 disabled
@@ -202,7 +214,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="formLabel">Contact</label>
                               <input
                                 type="text"
-                                placeholder="Contact"
+                                placeholder= {store.data?.phone}
                                 name="PlanName"
                                 className="formInput text-xs"
                                 disabled
@@ -215,7 +227,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="formLabel">Language</label>
                               <input
                                 type="text"
-                                placeholder="Language"
+                                placeholder={store.data?.languageName}
                                 name="PlanName"
                                 className="formInput text-xs"
                                 disabled
@@ -227,7 +239,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="formLabel">Country</label>
                               <input
                                 type="text"
-                                placeholder="Country"
+                                placeholder={store.data?.countryName}
                                 name="PlanName"
                                 className="formInput text-xs"
                                 disabled
@@ -240,7 +252,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="formLabel">State</label>
                               <input
                                 type="text"
-                                placeholder="State"
+                                placeholder={store.data?.stateName}
                                 name="PlanName"
                                 className="formInput text-xs"
                                 disabled
@@ -293,7 +305,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                                         borderRadius: "5px",
                                       }}
                                     >
-                                      panding GB
+                                      {store?.storage?.totalStorage} GB
                                     </span>
                                   </td>
                                   <td className="text-[#5E5E5E] text-center">
@@ -305,7 +317,7 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                                           borderRadius: "5px",
                                         }}
                                       >
-                                        panding GB
+                                       {store?.storage?.consumedSpace} GB
                                       </span>
 
                                     </div>
@@ -318,11 +330,11 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                                         borderRadius: "5px",
                                       }}
                                     >
-                                      panding GB
+                                     {store?.storage?.availableSpace} GB
                                     </span>
                                   </td>
                                   <td className="text-center">
-                                    panding
+                                  {store?.storage?.usedInPercentage} %
                                   </td>
                                 </tr>
                               </tbody>
@@ -418,30 +430,60 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               </thead>
 
                               <tbody>
+                              {store && store.orgUserMaster && store.orgUserMaster.length > 0 ? (
+                                  store.orgUserMaster.map((item, index) => (
                                 <tr
                                   className="border-b border-b-[#E4E6FF]"
                                 >
                                   <td className="text-[#5E5E5E] text-center flex">
                                     <div className="ps-3 flex text-center">
                                       <div className="font-normal text-gray-500 mt-2">
-                                        panding
+                                      {item.firstName + " " + item.lastName}
                                       </div>
                                     </div>
                                   </td>
 
                                   <td className="text-[#5E5E5E] text-center">
-                                    panding
+                                  {item?.userRoleName}
                                   </td>
                                   <td className="text-[#5E5E5E] text-center">
                                     <button>
-                                      panding
+                                    {item?.count}
                                     </button>
                                   </td>
                                   <td className="text-[#5E5E5E] text-center">
-                                    panding
+                                  <span>
+                                          {item?.isActive === 1 ? (
+                                            <span
+                                              style={{ backgroundColor: "#cee9d6" }}
+                                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                            >
+                                              Active
+                                            </span>
+                                          ) : (
+                                            <span
+                                              style={{ backgroundColor: "#f1b2b2" }}
+                                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#FF0000] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                            >
+                                              Inactive
+                                            </span>
+                                          )}
+                                        </span>
+                                  
                                   </td>
                                 </tr>
-
+                                ))
+                              ) : (
+                                <tr>
+                                  <td colSpan={5}>
+                                    <div className="flex text-center m-5 justify-center">
+                                      <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                                        No Data Available
+                                      </span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
 
                               </tbody>
 
@@ -473,8 +515,35 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                               </thead>
 
                               <tbody>
-                                <td>panding</td>
-                                <td> panding</td>
+
+                              {store &&
+                                  store.roles?.length > 0 && (
+                                  store.roles.map((item, index) => (
+                                    <>
+                                <tr className="border-b border-b-[#E4E6FF]" key={index}>
+                                        <td className="text-[#5E5E5E] text-left">
+                                          {item?.text}
+                                        </td>
+                                        <td
+                                          className="text-[#5E5E5E] text-left cursor-pointer"
+                                        >
+                                          {item?.value}
+                                        </td>
+                                      </tr>
+                                </>
+                              ))
+                            )}
+                             {store.roles?.length === 0 && (
+                                  <tr>
+                                    <td colSpan={5}>
+                                      <div className="flex text-center m-5 justify-center">
+                                        <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                                          No Data Available
+                                        </span>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
                               </tbody>
 
                             </table>
@@ -497,7 +566,27 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                                   Media
                                 </button>
                                 <div className="w-full mt-4">
-                                  panding
+                                {store.default &&
+                                    (Object.values(store.default).includes("Video") ||
+                                      Object.values(store.default).includes("OnlineVideo")) && (
+                                      <ReactPlayer
+                                        url={store.default?.assetFolderPath}
+                                        className="relative w-full h-[300px] z-20 admin-media "
+                                        controls={true}
+                                        playing={true}
+                                        muted
+                                      />
+                                    )}
+                                    {store.default &&
+                                    (Object.values(store.default).includes("OnlineImage") ||
+                                      Object.values(store.default).includes("Image")) && (
+                                      <img
+                                        src={store.default?.assetFolderPath}
+                                        alt="Media"
+                                        className="w-[576px] h-[324px] mx-auto object-cover min-h-80"
+                                      />
+                                    )}
+                                  
                                 </div>
                               </div>
 
@@ -506,7 +595,26 @@ const RetailerDetails = ({ sidebarOpen, setSidebarOpen }) => {
                                   Emergency Media
                                 </button>
                                 <div className="w-full mt-4">
-                                  panding
+                                {store.emergency &&
+                                    (Object.values(store.emergency).includes("Video") ||
+                                      Object.values(store.emergency).includes("OnlineVideo")) && (
+                                      <ReactPlayer
+                                        url={store.emergency?.assetFolderPath}
+                                        className="relative w-full h-[300px] z-20 admin-media "
+                                        controls={true}
+                                        playing={true}
+                                        muted
+                                      />
+                                    )}
+                                    {store.emergency &&
+                                    (Object.values(store.emergency).includes("OnlineImage") ||
+                                      Object.values(store.emergency).includes("Image")) && (
+                                      <img
+                                        src={store.emergency?.assetFolderPath}
+                                        alt="Media"
+                                        className="w-[576px] h-[324px] mx-auto object-cover min-h-80"
+                                      />
+                                    )}
                                 </div>
 
                               </div>
