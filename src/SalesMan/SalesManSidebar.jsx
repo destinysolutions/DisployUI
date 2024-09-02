@@ -5,7 +5,7 @@ import { ImStack } from "react-icons/im";
 import PropTypes from "prop-types";
 import * as AiIcons from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../images/DisployImg/logo.svg";
+import logo from "../images/DisployImg/White-Logo2.png";
 import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { handleLogout } from '../Redux/Authslice';
 import { useDispatch } from 'react-redux';

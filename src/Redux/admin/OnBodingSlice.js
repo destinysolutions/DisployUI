@@ -104,7 +104,7 @@ const OnBodingSlice = createSlice({
       .addCase(handleRemoveUser.fulfilled, (state, action) => {    // handleRemoveUser
         state.status = "succeeded";
         state.data = action.payload?.data;
-        state.message = action.payload.message || 'Dalete data successFully';
+        state.message = action.payload.message || 'Delete data successFully';
       })
       .addCase(handleRemoveUser.rejected, (state, action) => {    // handleRemoveUser
         state.status = "failed";

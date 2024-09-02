@@ -15,6 +15,8 @@ import AdminSidebar from "../AdminSidebar";
 import AdminNavbar from "../AdminNavbar";
 import AddEditRetailer from "./AddEditRetailer";
 import { PageNumber } from "../../Components/Common/Common";
+import { BsEyeFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 // const AdminNavbar = lazy(() => import('../AdminNavbar'));
 // const AdminSidebar = lazy(() => import('../AdminSidebar'));
@@ -24,6 +26,8 @@ import { PageNumber } from "../../Components/Common/Common";
 const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.retailerData);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+
   const [loadFist, setLoadFist] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [heading, setHeading] = useState("Add");
@@ -280,6 +284,15 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                         GoogleLocation
                       </th>
                       <th scope="col" className="px-6 py-3">
+                        Total Screen
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Total Cost
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Ads Screen
+                      </th>
+                      <th scope="col" className="px-6 py-3">
                         Phone
                       </th>
                       <th scope="col" className="px-6 py-3">
@@ -329,6 +342,9 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                             </td>
                             <td className="px-6 py-4">{item.email}</td>
                             <td className="px-6 py-4">{item.googleLocation}</td>
+                            <td className="px-6 py-4">{item.totalScreen}</td>
+                            <td className="px-6 py-4">{item.totalCost}</td>
+                            <td className="px-6 py-4">{item.adsScreen}</td>
                             <td className="px-6 py-4">{item.phone}</td>
                             <td className="px-6 py-4">
                               <div className="cursor-pointer text-xl flex gap-4 ">
@@ -349,7 +365,26 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                                     <span>Edit</span>
                                   </ReactTooltip>
                                 </button>
+
+                                <button
+                                  data-tip
+                                  data-for="View"
+                                  type="button"
+                                  className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                  onClick={() => { navigate(`/retailer/detail-page/${item.organizationID}/${item?.email}`) }}
+                                >
+                                  <BsEyeFill />
+                                  <ReactTooltip
+                                    id="View"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="solid"
+                                  >
+                                    <span>View</span>
+                                  </ReactTooltip>
+                                </button>
                               </div>
+
                             </td>
                           </tr>
                         );

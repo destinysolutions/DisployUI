@@ -10,6 +10,7 @@ import UserList from "../admin/UserList/UserList";
 import AdminSetting from "../admin/AdminSetting";
 import CustomerOnboding from "../admin/CustomerOnboding";
 import SalesMan from "../admin/SalesMan/SalesMan";
+import RetailerDetails from "../admin/Retailer/RetailerDetails";
 
 const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
@@ -49,6 +50,15 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
             path="/retailer"
             element={
               <Retailer
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="retailer/detail-page/:id/:email"
+            element={
+              <RetailerDetails
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
               />
