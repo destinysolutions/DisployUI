@@ -1883,7 +1883,6 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                         <span>Delete</span>
                                       </ReactTooltip>
                                     </div>
-
                                   )}
                                 </div>
                               </td>

@@ -394,9 +394,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             }
         })
     }
-
-
-
+        
     const handleSubmit = async (event) => {
         // event.preventDefault();
         if (!stripe || !elements) {
