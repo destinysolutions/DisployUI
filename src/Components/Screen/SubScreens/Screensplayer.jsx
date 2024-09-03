@@ -68,7 +68,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`; 
+  const authToken = `Bearer ${token}`;
   const modalRef = useRef(null);
   const scheduleRef = useRef(null);
   const compositionRef = useRef(null);
@@ -80,7 +80,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   const { timezones } = useSelector((s) => s.root.globalstates);
   const { allAppsData } = useSelector((s) => s.root.apps);
- 
+
   const [screenData, setScreenData] = useState([]);
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
@@ -2024,7 +2024,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       </tr>
 
-                    {/*  <tr className="border-b border-[#D5E3FF]">
+                      {/*  <tr className="border-b border-[#D5E3FF]">
                         <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                             Payment Method:
@@ -2064,7 +2064,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                             </tr>*/}
 
-                      <tr className="border-b border-[#D5E3FF]">
+                      {/*  <tr className="border-b border-[#D5E3FF]">
                         <td className="text-left lg:py-3 md:py-2 pb-0">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                             Screen Type
@@ -2087,7 +2087,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           </select>
                         </td>
                       </tr>
-
+*/}
                       <tr className="border-b border-[#D5E3FF]">
                         <td className="text-left lg:py-3 md:py-2 pb-0 ">
                           <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base pb-0">

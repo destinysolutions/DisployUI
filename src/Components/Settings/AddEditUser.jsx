@@ -1,5 +1,5 @@
 import moment from 'moment';
-import React from 'react'
+import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
 import ScreenAccess from './ScreenAccess';
@@ -58,10 +58,31 @@ const AddEditUser = ({
     handleAddUser,
     setSelectedScreens,
     handleUpdateUser,
-    sidebarOpen
+    sidebarOpen,
+    isActiveUser, setIsActiveUser
 }) => {
 
-    const { control} = useForm();
+    const { control } = useForm();
+    const [passwordError, setPasswordError] = useState("");
+    console.log(isActive, 'isActive', isActiveUser);
+
+    const validatePassword = (password) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return regex.test(password);
+    };
+
+    const handlePasswordChange = (e) => {
+        const value = e.target.value;
+        setPassword(value);
+
+        if (!validatePassword(value)) {
+            setPasswordError(
+                "Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character."
+            );
+        } else {
+            setPasswordError("");
+        }
+    };
 
     return (
         <>
@@ -152,7 +173,7 @@ const AddEditUser = ({
                                                                 name="fname"
                                                                 className="formInput user-Input"
                                                                 value={password}
-                                                                onChange={(e) => setPassword(e.target.value)}
+                                                                onChange={handlePasswordChange}
                                                             />
 
                                                             <div className="icon">
@@ -167,8 +188,8 @@ const AddEditUser = ({
                                                                 )}
                                                             </div>
                                                         </div>
-                                                        {errors?.password && (
-                                                            <p className="error">{errors?.password}</p>
+                                                        {passwordError && (
+                                                            <p className="error">{passwordError}</p>
                                                         )}
                                                     </div>
                                                 </>
@@ -329,8 +350,8 @@ const AddEditUser = ({
                                                     <input
                                                         className="border border-primary mr-3 rounded h-6 w-6"
                                                         type="checkbox"
-                                                        checked={isActive === 1}
-                                                        onChange={(e) => setIsActive(e.target.checked ? 1 : 0)}
+                                                        checked={isActiveUser}
+                                                        onChange={(e) => setIsActiveUser(e.target.checked)}
                                                     />
                                                     <label>isActive</label>
                                                 </div>
