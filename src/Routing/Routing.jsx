@@ -67,6 +67,7 @@ import BookYourSlot from "../Components/BookYourSlot/BookYourSlot"
 // Advertising Screens
 
 import AdvertisementScreens from "../Components/Advertisement/AdvertisementScreens"
+import AddBookYourSlot from "../Components/BookYourSlot/AddBookYourSlot";
 
 
 const Routing = () => {
@@ -426,6 +427,15 @@ const Routing = () => {
               path="/book-your-slot"
               element={
                 <BookYourSlot
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+              <Route
+              path="/addbookyourslot"
+              element={
+                <AddBookYourSlot
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />

@@ -367,7 +367,7 @@ const UserList = ({ sidebarOpen, setSidebarOpen }) => {
               <UserApp
                 selectUser={selectUser}
                 allAppsData={allAppsData}
-                userloading={userloading}
+                userloading={userloading} 
                 sidebarOpen={sidebarOpen}
               />
             )}

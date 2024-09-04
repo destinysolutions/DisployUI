@@ -173,6 +173,15 @@ export const buttons = [
   "Saturday",
 ];
 
+export const DisployScreens = [
+  "Event Signage",
+  "Menu Boards",
+  "Emergency Messaging",
+  "Brand Promotion",
+  "Health & Safety Compliance",
+  "Others",
+];
+
 export function multiOptions(arr) {
   return arr.map(screen => ({
     label: screen.screenName,
@@ -695,6 +704,22 @@ export const ScrollList = [
     id: 3,
     value: "PPT Scroll"
   },
+]
+
+export const Frequent = [
+  {
+    id: 0,
+    value: "In every minute"
+  },
+  {
+    id: 1,
+    value: "In every hour"
+  },
+  {
+    id: 2,
+    value: "Custom"
+  },
+
 ]
 
 export const PageNumber = [5, 10, 25]

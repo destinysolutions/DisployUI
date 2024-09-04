@@ -569,7 +569,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${DELETE_ALL_ASSET}?assetIDs=${tabsDelete?.selectedIds?.join(',')}`,
+      url: `${DELETE_ALL_ASSET}?assetType=${activeTab}?assetIDs=${tabsDelete?.selectedIds?.join(',')}`,
       headers: { Authorization: authToken },
     };
 
@@ -1047,9 +1047,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   <input
                                     type="checkbox"
                                     className="w-[20px] h-[20px] relative"
-                                    // style={{
-                                    //   display: selectAll ? "block" : "none",
-                                    // }}
                                     checked={tabsDelete?.selectedIds?.includes(item.assetID)}
                                     onChange={() =>
                                       handleCheckboxChange(item.assetID)

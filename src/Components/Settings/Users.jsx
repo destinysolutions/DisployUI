@@ -63,6 +63,8 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [isActive, setIsActive] = useState(0);
+  const [isActiveUser, setIsActiveUser] = useState(true);
+
   const [countryID, setCountryID] = useState(0);
   const [company, setCompany] = useState("");
   const [userData, setUserData] = useState([]);
@@ -251,7 +253,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
     data.append("password", password);
     data.append("email", email);
     data.append("phone", phone);
-    data.append("isActive", isActive);
+    data.append("isActive", isActiveUser === true ? 1 : 0);
     data.append("orgUserID", 0);
     data.append("userRole", selectRoleID);
     data.append("countryID", countryID ? countryID : 0);
@@ -300,7 +302,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
     data.append("firstName", firstName);
     data.append("lastName", lastName);
     data.append("phone", phone);
-    data.append("isActive", isActive);
+    data.append("isActive", isActiveUser === true ? 1 : 0);
     data.append("orgUserID", 0);
     data.append("userRole", selectRoleID);
     data.append("countryID", countryID ? countryID : 0);
@@ -419,6 +421,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
       setSelectedState(fetchedData?.stateId);
       setSelectRoleID(fetchedData?.userRole);
       setIsActive(fetchedData?.isActive);
+      setIsActiveUser(fetchedData?.isActive);
       setZipCode(fetchedData?.zipCode);
       setEditProfile(1);
       const screenIdsArray = fetchedData?.screenIds
@@ -460,7 +463,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
     setCountryID("");
     setSelectedState("");
     setSelectRoleID("");
-    setIsActive(0);
+    setIsActiveUser(true);
     setLabelTitle("Add New User");
     getUsers();
     setSelectedScreens([]);
@@ -1670,6 +1673,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                       setSelectedState("");
                       setSelectRoleID("");
                       setIsActive(0);
+                      setIsActiveUser(true);
                       setZipCode("");
                       setEditProfile();
                       setshowuserModal(true);
@@ -1992,6 +1996,8 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
           modalRef={modalRef}
           labelTitle={labelTitle}
           firstName={firstName}
+          isActiveUser={isActiveUser}
+          setIsActiveUser={setIsActiveUser}
           setFirstName={setFirstName}
           errors={errors}
           lastName={lastName}

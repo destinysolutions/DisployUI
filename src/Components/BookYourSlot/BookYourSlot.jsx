@@ -28,7 +28,7 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
         isDelete: false,
         isSave: false,
         isView: false,
-      });
+    });
 
     const filteredData = bookslotData.filter((item) =>
         Object.values(item).some(
@@ -56,8 +56,8 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
-      };
-    
+    };
+
 
     const sortedAndPaginatedData = sortData(
         filteredData,
@@ -67,24 +67,24 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
 
     useEffect(() => {
         dispatch(getMenuAll()).then((item) => {
-          const findData = item.payload.data.menu.find(
-            (e) => e.pageName === "Book your slot"
-          );
-          if (findData) {
-            const ItemID = findData.moduleID;
-            const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
-            dispatch(getMenuPermission(payload)).then((permissionItem) => {
-              if (
-                Array.isArray(permissionItem.payload.data) &&
-                permissionItem.payload.data.length > 0
-              ) {
-                setPermissions(permissionItem.payload.data[0]);
-              }
-            });
-          }
-          setSidebarLoad(false);
+            const findData = item.payload.data.menu.find(
+                (e) => e.pageName === "Book your slot"
+            );
+            if (findData) {
+                const ItemID = findData.moduleID;
+                const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+                dispatch(getMenuPermission(payload)).then((permissionItem) => {
+                    if (
+                        Array.isArray(permissionItem.payload.data) &&
+                        permissionItem.payload.data.length > 0
+                    ) {
+                        setPermissions(permissionItem.payload.data[0]);
+                    }
+                });
+            }
+            setSidebarLoad(false);
         });
-      }, []);
+    }, []);
 
     return (
         <>
@@ -122,7 +122,7 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>*/}
                                         <div className="flex items-center justify-end">
                                             <button
-                                                onClick={() => navigation("/addcomposition")}
+                                                onClick={() => navigation("/addbookyourslot")}
                                                 className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                                             >
                                                 Book a New Slot
