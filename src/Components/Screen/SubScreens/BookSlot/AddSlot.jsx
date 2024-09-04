@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { MdArrowBackIosNew, MdCloudUpload } from "react-icons/md";
 import { FaPlusCircle, FaRegClock, FaRegQuestionCircle } from "react-icons/fa";
 import {
+  DisployScreens,
   IncludeExclude,
   buttons,
   constructTimeObjects,
@@ -81,13 +82,15 @@ const AddSlot = () => {
   const Email = watch("email");
   const PhoneNumber = watch("phone");
   const navigate = useNavigate();
+
+  const [selecteScreens, setSelecteScreens] = useState([]);
   const optionSelect = Array.from({ length: 60 }, (_, index) => index + 1); // Create an array of numbers from 1 to 60
   const [sidebarload, setSidebarLoad] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [day, setDay] = useState([]);
   const [selectedTimeZone, setSelectedTimeZone] = useState();
   const [repeat, setRepeat] = useState(false);
-  const [page, setPage] = useState(3);
+  const [page, setPage] = useState(1);
   const hiddenFileInput = useRef([]);
   const [screenData, setScreenData] = useState([]);
   const [screenArea, setScreenArea] = useState([]);
@@ -101,6 +104,7 @@ const AddSlot = () => {
   const [selectedDays, setSelectedDays] = useState(
     new Array(buttons.length).fill(false)
   );
+
   // const [searchArea, setSearchArea] = useState();
   const [totalDuration, setTotalDuration] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -472,7 +476,7 @@ const AddSlot = () => {
   };
 
   useEffect(() => {
-    if (page === 2 && fileLoading && savedFile?.length === getallTime?.length) {
+    if (page === 3 && fileLoading && savedFile?.length === getallTime?.length) {
       setFileLoading(false);
       setPage(page + 1);
     }
@@ -671,7 +675,7 @@ const AddSlot = () => {
   };
 
   useEffect(() => {
-    if (page === 2) {
+    if (page === 3) {
       TimeZone();
     }
   }, [page]);
@@ -791,6 +795,89 @@ const AddSlot = () => {
           </>
         )}
         {page === 2 && (
+          <div className="w-full h-full p-5 flex items-center justify-center">
+            <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+              <div className="text-2xl font-semibold">Book Slot</div>
+              <div className="grid grid-cols-4 gap-4 w-full ">
+                <div className="col-span-4">
+                  <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4 h-full">
+                    <div className="w-7/12 flex flex-col justify-center m-auto">
+                      <h3 className="text-center font-bold">Hi Anand,</h3>
+                      <p className="text-sm text-center"> Before we begin, please take a moment to share some details about your organization. This will help us tailor tha screen experience to perfectly suit your needs.</p>
+                    </div>
+                    <div className="grid grid-cols-4 gap-4 items-center">
+                      <div className="relative w-full col-span-2">
+                        <Select
+                          placeholder='Select Industry'
+                        // value={selectedScreens}
+                        // onChange={handleSelectChange}
+                        // options={Screenoptions}
+                        />
+                      </div>
+                      <div className="relative w-full col-span-2">
+                        <Select
+                          placeholder='Select Country'
+                          className='my-3'
+                        // value={selectedScreens}
+                        // onChange={handleSelectChange}
+                        // options={Screenoptions}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <p className="text-center">Purpose of using Disploy Screens</p>
+                      <div className="m-auto  flex justify-center flex-wrap my-3">
+                        {DisployScreens.map((label, index) => (
+                          <button
+                            className={`border m-0 border-primary px-3 py-1 mr-2 mb-2 rounded-full 
+                              ${selecteScreens.includes(label) && "bg-SlateBlue border-white"} 
+                              `}
+                            key={index}
+                            onClick={() => {
+                              setSelecteScreens((prev) => {
+                                const isSelected = prev.includes(label);
+
+                                return isSelected ? prev.filter((item) => item !== label) : [...prev, label];
+                              });
+                            }}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                      <label className="custom-label flex items-center justify-center">
+                        <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded w-4 h-4 flex items-center justify-center mr-2">
+                          <input type="checkbox" name="terms"
+                            {...register('terms',)}
+                          />
+                        </div>
+                        <p className="">I have read the terms and agreement of Disploy</p>
+                      </label>
+                    </div>
+
+                    <div className="w-full h-full">
+                      <div className="flex justify-end h-full items-end">
+                        <button
+                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          onClick={() => setPage(page - 1)}
+                        >
+                          Back
+                        </button>
+                        <button
+                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          onClick={() => setPage(page + 1)}
+                        >
+                          Next
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {page === 3 && (
           <div className="w-full h-full p-5 flex items-center justify-center">
             <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
               <div className="grid grid-cols-4 gap-4 w-full h-full">
@@ -1070,6 +1157,12 @@ const AddSlot = () => {
                       <div className="flex justify-end h-full items-end">
                         <button
                           className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          onClick={() => setPage(page - 1)}
+                        >
+                          Back
+                        </button>
+                        <button
+                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           onClick={() => handleBookSlot()}
                         >
                           Next
@@ -1082,7 +1175,7 @@ const AddSlot = () => {
             </div>
           </div>
         )}
-        {page === 3 && (
+        {page === 4 && (
           <>
             <div className="w-full h-full p-5 flex items-center justify-center ">
               <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg ">
@@ -1182,7 +1275,7 @@ const AddSlot = () => {
                           </div>
                         );
                       })}
-                      
+
                       {/* <div className="grid grid-cols-3 gap-4">
                         <select
                           className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
@@ -1333,7 +1426,7 @@ const AddSlot = () => {
           />
         )}
 
-        {page === 4 && clientSecret && (
+        {page === 5 && clientSecret && (
           <div className="w-full h-full p-5 flex items-center justify-center">
             <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
               <Elements options={options} stripe={stripePromise}>
@@ -1353,7 +1446,7 @@ const AddSlot = () => {
             </div>
           </div>
         )}
-        {page === 5 && <ThankYouPage navigate={navigate} />}
+        {page === 6 && <ThankYouPage navigate={navigate} />}
       </div>
     </>
   );
