@@ -105,7 +105,7 @@ const NavbarNotification = ({ setShowNotificationBox }) => {
     </div>*/}
                 {notification?.length === 0 && !loading && (
                     <div className='flex justify-center items-center p-8'>
-                        <p className='text-xl'>No Notification Avavilable</p>
+                        <p className='text-xl'>No Notification Available</p>
                     </div>
                 )}
                 {loading && (

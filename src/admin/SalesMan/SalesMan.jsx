@@ -144,9 +144,11 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
     };
 
     const handleEdit = (value) => {
+        
         setHeading("Update");
         setEditId(value.orgSingupID);
         setShowModal(true);
+
         const data = {
             percentageRatio: value.percentageRatio,
             firstName: value.firstName,
@@ -154,6 +156,7 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
             phoneNumber: value.phone,
             emailID: value.email,
             password: value.password,
+            orgUserID: value.orgUserID ? value.orgUserID : 0,
         };
         setEditData(data);
     };
@@ -229,6 +232,7 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                             setShowModal(true);
                                             setHeading("Add");
+
                                         }}
                                     >
                                         <BiUserPlus className="text-2xl mr-1" />
@@ -482,7 +486,8 @@ const SalesMan = ({ sidebarOpen, setSidebarOpen }) => {
                     editId={editId}
                     setEditId={setEditId}
                     fetchData={fetchData}
-
+                    
+                    setEditData={setEditData}
                 />
             )
             }

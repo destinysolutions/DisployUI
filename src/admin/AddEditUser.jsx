@@ -46,6 +46,9 @@ const AddEditUser = ({
     setUserTypeError,
     userTypeError
 }) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
     const { control } = useForm();
     return (
         <>
@@ -100,7 +103,7 @@ const AddEditUser = ({
                                             value={userName}
                                             onChange={(e) => setUserName(e.target.value)}
                                         />
-                                        {usernameError && (
+                                        {userName?.length <= 0 && usernameError && (
                                             <span className='error'>This field is required.</span>
                                         )}
 
@@ -111,7 +114,7 @@ const AddEditUser = ({
                                             value={firstName}
                                             onChange={(e) => setFirstName(e.target.value)}
                                         />
-                                        {firstError && (
+                                        {firstName?.length <= 0 && firstError && (
                                             <span className='error'>This field is required.</span>
                                         )}
                                         <input
@@ -121,7 +124,7 @@ const AddEditUser = ({
                                             value={lastName}
                                             onChange={(e) => setLastName(e.target.value)}
                                         />
-                                        {lastError && (
+                                        {lastName?.length <= 0 && lastError && (
                                             <span className='error'>This field is required.</span>
                                         )}
 
@@ -139,7 +142,7 @@ const AddEditUser = ({
                                                 rules={{
                                                     validate: (value) => isValidPhoneNumber(value),
                                                 }}
-                                                render={({ field: { onChange, value } }) => (
+                                                render={({ field: { onChange, value, country } }) => (
                                                     <PhoneInput
                                                         country={"in"}
                                                         onChange={(phoneNumber) => {
@@ -147,7 +150,7 @@ const AddEditUser = ({
                                                             onChange(formattedNumber); // Update the value directly
                                                             setPhoneNumber(formattedNumber); // Update the state to reflect the phone number
                                                         }}
-                                                        value={value}
+                                                        value={value || phoneNumber}
                                                         autocompleteSearch={true}
                                                         countryCodeEditable={false}
                                                         enableSearch={true}
@@ -170,6 +173,10 @@ const AddEditUser = ({
                                             {phoneError && (
                                                 <span className='error'>Invalid Phone Number.</span>
                                             )}
+                                            {/* {phoneError && (phoneNumber?.length <= 0 ?
+                                                <span className='error'>This field is required.</span> : phoneNumber?.length <= 12 &&
+                                                <span className='error'>Invalid Phone Number.</span>
+                                            )} */}
                                         </div>
 
                                         {!editMode && (
@@ -181,8 +188,10 @@ const AddEditUser = ({
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                 />
-                                                {emailError && (
-                                                    <span className='error'>Invalid Email Address.</span>
+                                                {emailError && (email?.length <= 0 ?
+                                                    <span span className='error'>This field is required.</span> :
+                                                    !(emailRegex?.test(email)) && <span className='error'>Invalid Email Address.</span>
+                                                    // <span className='error'>Invalid Email Address.</span>
                                                 )}
                                                 <div className="relative">
                                                     <input
@@ -204,10 +213,10 @@ const AddEditUser = ({
                                                         )}
                                                     </div>
                                                 </div>
-                                                {passError && (
-                                                    <span className='error'>This field is required.</span>
+                                                {passError && (password?.length <= 0 ?
+                                                    <span span className='error'>This field is required.</span> :
+                                                    !(passwordRegex?.test(password)) && <span className='error'>Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character</span>
                                                 )}
-
                                             </>
                                         )}
                                         <select
@@ -222,7 +231,7 @@ const AddEditUser = ({
                                                 </option>
                                             ))}
                                         </select>
-                                        {userTypeError && (
+                                        {!selectedUserType && userTypeError && (
                                             <span className='error'>This field is required.</span>
                                         )}
                                         <div className="mt-5 flex items-center">
@@ -276,7 +285,7 @@ const AddEditUser = ({
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }

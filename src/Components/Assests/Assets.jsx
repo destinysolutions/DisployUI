@@ -862,6 +862,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       navigateToFolder(item.assetID)
                                     }
                                   />
+                                  {item?.assetID}
                                   {editMode === item.assetID ? (
                                     <input
                                       type="text"
@@ -905,6 +906,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       setImageAssetModal(item);
                                     }}
                                   />
+                                  {item?.assetID}
                                 </div>
                               )}
 
@@ -919,6 +921,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       setImageAssetModal(item);
                                     }}
                                   />
+                                  {item?.assetID}
                                 </div>
                               )}
 
@@ -1179,7 +1182,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                 className="flex text-sm items-center"
                                               >
                                                 <RiDeleteBin5Line className="mr-2 text-lg" />
-                                                Move to Trash
+                                                Move to Trash folder
                                               </button>
                                             )}
                                           </li>

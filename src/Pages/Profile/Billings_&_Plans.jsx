@@ -445,11 +445,11 @@ const BillingsPlans = () => {
                     />
                   </div>
                   <div className="md:w-1/2 px-3">
-                    <label className="label_top text-sm">Billing billingAddress</label>
+                    <label className="label_top text-sm">Billing  Address</label>
                     <input
                       className="w-full bg-gray-200 bg-white text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                       type="text"
-                      placeholder="Enter Billing billingAddress"
+                      placeholder="Enter Billing Address"
                       onChange={(e) => setBillingDetails({ ...billingDetails, billingAddress: e.target.value })}
                       value={billingDetails.billingAddress}
                     />
