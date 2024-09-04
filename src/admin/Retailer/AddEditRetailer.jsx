@@ -16,7 +16,7 @@ const AddEditRetailer = ({
   editId,
   editData,
   setShowModal,
-  orgUserID
+  orgUserID, setEditData
 }) => {
   const dispatch = useDispatch()
   //using for validation and register api calling
@@ -24,6 +24,7 @@ const AddEditRetailer = ({
   const handleApiResponse = (promise) => {
     promise
       .then((res) => {
+
         if (res?.payload?.status) {
           formik.resetForm();
           setShowModal(false);
@@ -95,9 +96,20 @@ const AddEditRetailer = ({
         formData.append("OrgUserSpecificID", editId);
         formData.append("orgUserID", orgUserID);
         handleApiResponse(dispatch(updateRetailerData(formData)));
+        setEditData({})
       } else {
         formData.append("Operation", "Insert");
-        handleApiResponse(dispatch(addRetailerData(formData)));
+        dispatch(addRetailerData(formData))
+          .then((res) => {
+            if (res?.payload?.status === true) {
+              toast.success('Save data successFully')
+            } else {
+              toast.error(res?.payload?.message)
+            }
+            formik.resetForm();
+            setShowModal(false);
+            console.log('res :>> ', res);
+          })
       }
     },
   });
@@ -208,7 +220,7 @@ const AddEditRetailer = ({
                         <PhoneInput
                           country={"in"}
                           onChange={handlePhoneChange}
-                          value={formik.values.phoneNumber.replace('+', '')} // Remove the '+' for the PhoneInput
+                          value={formik?.values?.phoneNumber?.replace('+', '')} // Remove the '+' for the PhoneInput
                           autocompleteSearch={true}
                           countryCodeEditable={false}
                           enableSearch={true}

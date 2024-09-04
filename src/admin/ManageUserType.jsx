@@ -248,7 +248,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr className="items-center table-head-bg capitalize">
-                      <th className=" sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
+                      <th className=" sticky top-0th-bg-100  font-semibold flex items-center justify-left">
                         User Type
                         <svg
                           className="w-3 h-3 ms-1.5 cursor-pointer"
@@ -276,7 +276,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                   </thead>
                   <tbody>
                     {loadFist && (
-                      <tr>
+                      <tr >
                         <td colSpan={3}>
                           <div className="flex text-center m-5 justify-center">
                             <svg
@@ -388,7 +388,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
                       })}
 
                     {!loadFist && sortedAndPaginatedData?.length === 0 && (
-                      <tr>
+                      <tr className=" border-b dark:border-gray-700">
                         <td colSpan={3}>
                           <div className="flex text-center m-5 justify-center">
                             <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">

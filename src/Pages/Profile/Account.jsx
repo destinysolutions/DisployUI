@@ -327,6 +327,13 @@ const Account = () => {
                   type="text"
                   name="zipCode"
                   placeholder="100010"
+                  onInput={(e) => {
+                    let inputValue = e.target.value.replace(/\D/g, '');
+                    if (inputValue.length > 6) {
+                      inputValue = inputValue.slice(0, 6);
+                      setValue("zipCode", inputValue)
+                    }
+                  }}
                   {...register("zipCode")}
                 />
                 <span className="error">{errors?.zipCode?.message}</span>

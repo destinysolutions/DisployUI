@@ -83,7 +83,7 @@ const RetailersSlice = createSlice({
       .addCase(addRetailerData.fulfilled, (state, action) => {    // addRetailerData
         state.status = "succeeded";
         state.data = action.payload?.data;
-        state.message = action.message || 'Save data successFully';
+       
       })
       .addCase(addRetailerData.rejected, (state, action) => {    // addRetailerData
         state.status = "failed";
@@ -96,7 +96,7 @@ const RetailersSlice = createSlice({
       .addCase(updateRetailerData.fulfilled, (state, action) => {    // updateRetailerData
         state.status = "succeeded";
         state.data = action.payload?.data;
-        state.message = action.message || 'Save data successFully';
+        state.message = action.message || 'Update data successFully';
       })
       .addCase(updateRetailerData.rejected, (state, action) => {    // updateRetailerData
         state.status = "failed";

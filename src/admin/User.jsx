@@ -140,6 +140,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       userID: editMode ? editUserId : 0,
     });
 
+
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -212,7 +213,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     setUserName(user.userName);
     setFirstName(user.firstName);
     setLastName(user.lastName);
-    setPhoneNumber(user.phone);
+    setPhoneNumber(user?.phone);
     setEmail(user.email);
     setSelectedUserType(user.userType);
     setIsActive(user.isActive);
@@ -389,8 +390,8 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                   cellPadding={15}
                 >
                   <thead>
-                    <tr className="text-left table-head-bg">
-                      <th className="text-[#5A5881] text-base font-semibold ">
+                    <tr className="text-left table-head-bg text-xs">
+                      <th className="text-[#5A5881] font-semibold ">
                         <div className="flex w-full items-center">
                           User Name
                           <svg
@@ -405,25 +406,25 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                           </svg>
                         </div>
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold ">
+                      <th className="text-[#5A5881]  font-semibold ">
                         First Name
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold ">
+                      <th className="text-[#5A5881]  font-semibold ">
                         Last Name
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold ">
+                      <th className="text-[#5A5881]  font-semibold ">
                         Phone Number
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold ">
+                      <th className="text-[#5A5881]  font-semibold ">
                         User Type
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold ">
+                      <th className="text-[#5A5881]  font-semibold ">
                         Email
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold ">
-                        Active
+                      <th className="text-[#5A5881]  font-semibold ">
+                        Status
                       </th>
-                      <th className="text-[#5A5881] text-base font-semibold ">
+                      <th className="text-[#5A5881]  font-semibold ">
                         Action
                       </th>
                     </tr>
