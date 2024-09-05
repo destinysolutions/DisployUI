@@ -565,44 +565,48 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleDeleteAll = () => {
+    if (activeTab === "FOLDER") {
+      const dataPayload = tabsDelete?.selectedIds?.join(',');
+      deleteFolder(dataPayload)
+    } else {
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${DELETE_ALL_ASSET}?assetIDs=${tabsDelete?.selectedIds?.join(',')}`,
+        headers: { Authorization: authToken },
+      };
 
-    const config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${DELETE_ALL_ASSET}?assetType=${activeTab}?assetIDs=${tabsDelete?.selectedIds?.join(',')}`,
-      headers: { Authorization: authToken },
-    };
-
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      cancelButtonText: "Cancel",
-      confirmButtonText: "Yes, delete it!",
-      customClass: {
-        text: "swal-text-bold",
-        content: "swal-text-color",
-        confirmButton: "swal-confirm-button-color",
-      },
-      confirmButtonColor: "#ff0000",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await dispatch(handelAllDelete(config));
-        setTabsDelete({
-          tabs: "",
-          selectedIds: [],
-        })
-        setSelectAll(false);
-      } else {
-        setLoadFist(true);
-        setTabsDelete({
-          tabs: "",
-          selectedIds: [],
-        })
-        setSelectAll(false);
-      }
-    });
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        confirmButtonText: "Yes, delete it!",
+        customClass: {
+          text: "swal-text-bold",
+          content: "swal-text-color",
+          confirmButton: "swal-confirm-button-color",
+        },
+        confirmButtonColor: "#ff0000",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await dispatch(handelAllDelete(config));
+          setTabsDelete({
+            tabs: "",
+            selectedIds: [],
+          })
+          setSelectAll(false);
+        } else {
+          setLoadFist(true);
+          setTabsDelete({
+            tabs: "",
+            selectedIds: [],
+          })
+          setSelectAll(false);
+        }
+      });
+    }
   };
 
   const createFolder = async () => {
@@ -862,7 +866,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       navigateToFolder(item.assetID)
                                     }
                                   />
-                                  {item?.assetID}
                                   {editMode === item.assetID ? (
                                     <input
                                       type="text"
@@ -906,7 +909,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       setImageAssetModal(item);
                                     }}
                                   />
-                                  {item?.assetID}
                                 </div>
                               )}
 
@@ -921,7 +923,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       setImageAssetModal(item);
                                     }}
                                   />
-                                  {item?.assetID}
                                 </div>
                               )}
 

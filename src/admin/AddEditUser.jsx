@@ -277,7 +277,7 @@ const AddEditUser = ({
                                             type="button"
                                             onClick={handleInsertUser}
                                         >
-                                            {editMode ? "Edit" : "Save"}
+                                            {editMode ? "Update" : "Save"}
                                         </button>
                                     </div>
                                 </div>
