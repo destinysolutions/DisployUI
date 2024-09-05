@@ -16,7 +16,7 @@ import { BsCheckCircleFill } from 'react-icons/bs';
 import { Circle, LayerGroup, MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from "leaflet";
-import mapImg from "../../../../DisployUI/src/images/DisployImg/mapImg.png";
+import mapImg from "../../images/DisployImg/mapImg.png";
 import { PAYMENT_INTENT_CREATE_REQUEST, stripePromise } from '../../Pages/Api';
 import { handlePaymentIntegration } from '../../Redux/PaymentSlice';
 import { useDispatch } from 'react-redux';
