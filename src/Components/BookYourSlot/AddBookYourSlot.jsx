@@ -467,83 +467,83 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                                                         <label for='Repetition'>Repetition Days</label>
                                                     </div>
                                                 )} */}
-                                                    <div className="flex flex-col gap-3 mt-2">
-                                                        <div className=" text-black font-medium text-lg">
-                                                            {/* <label>Repeating {countAllDaysInRange()} Day(s)</label> */}
-                                                        </div>
-                                                        <div className="flex flex-row gap-3 items-center">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={selectAllDays}
-                                                                onChange={handleCheckboxChange}
-                                                                id="repeat_all_day"
-                                                                className='outline-none border-none h-4 w-4'
-                                                            />
-                                                            <label for='repeat_all_day'
-                                                                className="ml-3 select-none"
-                                                                htmlFor="repeat_all_day"
+                                                <div className="flex flex-col gap-3 mt-2">
+                                                    <div className=" text-black font-medium text-lg">
+                                                        {/* <label>Repeating {countAllDaysInRange()} Day(s)</label> */}
+                                                    </div>
+                                                    <div className="flex flex-row gap-3 items-center">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectAllDays}
+                                                            onChange={handleCheckboxChange}
+                                                            id="repeat_all_day"
+                                                            className='outline-none border-none h-4 w-4'
+                                                        />
+                                                        <label for='repeat_all_day'
+                                                            className="ml-3 select-none"
+                                                            htmlFor="repeat_all_day"
+                                                        >
+                                                            Repeat for All Day
+                                                        </label>
+                                                    </div>
+                                                    <div>
+                                                        {buttons.map((label, index) => (
+                                                            <button
+                                                                className={`border border-primary px-3 py-1 mr-2 mb-2 rounded-full ${selectedDays[index] && "bg-SlateBlue border-white"} `}
+                                                                key={index}
+                                                                onClick={() => handleDayButtonClick(index, label)}
                                                             >
-                                                                Repeat for All Day
-                                                            </label>
-                                                        </div>
-                                                        <div>
-                                                            {buttons.map((label, index) => (
-                                                                <button
-                                                                    className={`border border-primary px-3 py-1 mr-2 mb-2 rounded-full ${selectedDays[index] && "bg-SlateBlue border-white"} `}
-                                                                    key={index}
-                                                                    onClick={() => handleDayButtonClick(index, label)}
-                                                                >
-                                                                    {label}
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                        <label className="text-base font-medium">Repetition Duration</label>
-                                                        <div className="mt-3">
-                                                            <label className="text-base font-medium">
-                                                                After every :
-                                                            </label>
-                                                            <div className="grid grid-cols-4 gap-4">
-                                                                <div>
+                                                                {label}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                    <label className="text-base font-medium">Repetition Duration</label>
+                                                    <div className="mt-3">
+                                                        <label className="text-base font-medium">
+                                                            After every :
+                                                        </label>
+                                                        <div className="grid grid-cols-4 gap-4">
+                                                            <div>
+                                                                <input
+                                                                    className="block w-full p-2 text-gray-900 border border-gray-300  bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                                                    type="number"
+                                                                    value={temperature}
+                                                                    onChange={(e) => {
+                                                                        setTemprature(e.target.value);
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                            <div className="flex">
+                                                                <div className="ml-2 flex items-center">
                                                                     <input
-                                                                        className="block w-full p-2 text-gray-900 border border-gray-300  bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                                                                        type="number"
-                                                                        value={temperature}
-                                                                        onChange={(e) => {
-                                                                            setTemprature(e.target.value);
-                                                                        }}
+                                                                        type="radio"
+                                                                        value={temperatureUnit}
+                                                                        checked={temperatureUnit === "Hour"}
+                                                                        name="Cel"
+                                                                        id='Hour'
+                                                                        onChange={() => setTempratureUnit("Hour")}
                                                                     />
+                                                                    <label for='Hour' className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
+                                                                        Hour
+                                                                    </label>
                                                                 </div>
-                                                                <div className="flex">
-                                                                    <div className="ml-2 flex items-center">
-                                                                        <input
-                                                                            type="radio"
-                                                                            value={temperatureUnit}
-                                                                            checked={temperatureUnit === "Hour"}
-                                                                            name="Cel"
-                                                                            id='Hour'
-                                                                            onChange={() => setTempratureUnit("Hour")}
-                                                                        />
-                                                                        <label for='Hour' className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                                                            Hour
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="ml-3 flex items-center">
-                                                                        <input
-                                                                            id='Minute'
-                                                                            type="radio"
-                                                                            value={temperatureUnit}
-                                                                            checked={temperatureUnit === "Minute"}
-                                                                            name="Cel"
-                                                                            onChange={() => setTempratureUnit("Minute")}
-                                                                        />
-                                                                        <label for='Minute' className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                                                            Minute
-                                                                        </label>
-                                                                    </div>
+                                                                <div className="ml-3 flex items-center">
+                                                                    <input
+                                                                        id='Minute'
+                                                                        type="radio"
+                                                                        value={temperatureUnit}
+                                                                        checked={temperatureUnit === "Minute"}
+                                                                        name="Cel"
+                                                                        onChange={() => setTempratureUnit("Minute")}
+                                                                    />
+                                                                    <label for='Minute' className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
+                                                                        Minute
+                                                                    </label>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
                                                 {/* {repeat && (
                                                 )} */}
                                             </div>
