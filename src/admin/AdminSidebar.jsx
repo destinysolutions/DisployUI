@@ -71,17 +71,17 @@ const AdminSidebar = ({ sidebarOpen }) => {
         {
           title: "Retailer",
           path: "/retailer",
-          icon: <FaBuildingUser  className="  text-xl  " />,
+          icon: <FaBuildingUser className="  text-xl  " />,
         },
         {
           title: "Advertisement",
           path: "/advertisement",
-          icon: <RiAdvertisementFill  className="  text-xl  " />,
+          icon: <RiAdvertisementFill className="  text-xl  " />,
         },
         {
           title: "Sales Man",
           path: "/salesMan",
-          icon: <FaUserTie  className="  text-xl  " />,
+          icon: <FaUserTie className="  text-xl  " />,
         },
       ],
     },
@@ -90,6 +90,12 @@ const AdminSidebar = ({ sidebarOpen }) => {
       cName: "nav-text link-items",
       path: "/client",
       icon: <FaUserGroup className="text-2xl" />,
+    },
+    {
+      title: "Advertising Features",
+      cName: "nav-text link-items",
+      path: "/advertising",
+      icon: <RiAdvertisementFill className="text-2xl" />,
     },
     {
       title: "Settings",
@@ -118,56 +124,55 @@ const AdminSidebar = ({ sidebarOpen }) => {
                   className="cursor-pointer duration-500"
                 />
               </div>
-                <ul className="space-y-1 font-medium">
-                  {Menus.map((item, index) => {
-                    const submenuIsOpen = submenuStates[item.title] || false;
-                    const isActive = window.location.pathname === item.path;
-                    return (
-                      <li
-                        key={index}
-                        className={`${item.cName} ${isActive ? "active" : ""}`}
-                      >
-                        <div className="flex items-center">
-                          <Link to={item.path}>
-                            <div>{item.icon}</div>
-                            <span className="ml-5">{item.title}</span>
-                          </Link>
-                          {item.subMenus && (
-                            <div className="ml-5 absolute right-0">
-                              <FiIcons.FiChevronDown
-                                className={`${
-                                  submenuIsOpen ? "transform rotate-180" : ""
+              <ul className="space-y-1 font-medium">
+                {Menus.map((item, index) => {
+                  const submenuIsOpen = submenuStates[item.title] || false;
+                  const isActive = window.location.pathname === item.path;
+                  return (
+                    <li
+                      key={index}
+                      className={`${item.cName} ${isActive ? "active" : ""}`}
+                    >
+                      <div className="flex items-center">
+                        <Link to={item.path}>
+                          <div>{item.icon}</div>
+                          <span className="ml-5">{item.title}</span>
+                        </Link>
+                        {item.subMenus && (
+                          <div className="ml-5 absolute right-0">
+                            <FiIcons.FiChevronDown
+                              className={`${submenuIsOpen ? "transform rotate-180" : ""
                                 } transition-transform duration-300 text-white `}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  updateSubmenuState(
-                                    item.title,
-                                    !submenuIsOpen
-                                  );
-                                }}
-                              />
-                            </div>
-                          )}
-                        </div>
-                        {submenuIsOpen && item.subMenus && (
-                          <ul className="ml-4 mt-3">
-                            {item.subMenus.map((submenu, subIndex) => (
-                              <li
-                                key={subIndex}
-                                className="p-2 relative submenu"
-                              >
-                                <Link to={submenu.path}>
-                                  <div>{submenu.icon}</div>
-                                  <span className="ml-5">{submenu.title}</span>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
+                              onClick={(e) => {
+                                e.preventDefault();
+                                updateSubmenuState(
+                                  item.title,
+                                  !submenuIsOpen
+                                );
+                              }}
+                            />
+                          </div>
                         )}
-                      </li>
-                    );
-                  })}
-                </ul>
+                      </div>
+                      {submenuIsOpen && item.subMenus && (
+                        <ul className="ml-4 mt-3">
+                          {item.subMenus.map((submenu, subIndex) => (
+                            <li
+                              key={subIndex}
+                              className="p-2 relative submenu"
+                            >
+                              <Link to={submenu.path}>
+                                <div>{submenu.icon}</div>
+                                <span className="ml-5">{submenu.title}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           </div>
         </>
@@ -175,9 +180,8 @@ const AdminSidebar = ({ sidebarOpen }) => {
         <div className="menu-bars self-center">
           <HiOutlineMenuAlt2
             onClick={handleSidebarToggle}
-            className={` text-SlateBlue text-3xl ${mobileSidebar && "hidden"} ${
-              mobileSidebar ? "ml-0" : "ml-5"
-            }`}
+            className={` text-SlateBlue text-3xl ${mobileSidebar && "hidden"} ${mobileSidebar ? "ml-0" : "ml-5"
+              }`}
           />
         </div>
       )}
@@ -213,9 +217,8 @@ const AdminSidebar = ({ sidebarOpen }) => {
                         {item.subMenus && (
                           <div className="ml-5 absolute right-0">
                             <FiIcons.FiChevronDown
-                              className={`${
-                                activeSubmenu ? "transform rotate-180" : ""
-                              } transition-transform duration-300 text-white 
+                              className={`${activeSubmenu ? "transform rotate-180" : ""
+                                } transition-transform duration-300 text-white 
                           `}
                               onClick={() => setActiveSubmenu(!activeSubmenu)}
                             />

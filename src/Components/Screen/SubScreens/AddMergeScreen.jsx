@@ -119,18 +119,17 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSaveNew = async (payload) => {
+
     const { row, col } = selectedButton;
     const buttonText = `Row ${row}, Col ${col} - ${payload.screenName}`;
 
-    // Check if a button already exists in the selected row and column for the current screen
-    const existingButtonInRowAndCol = Object.values(DataRowAndCol).find(
-      (button) => button.row === row && button.col === col
-    );
+    const selectedScreen = Object.values(DataRowAndCol).find((button) => { return button?.screenId === payload?.screenID });
 
-    if (existingButtonInRowAndCol) {
-      toast.error(
-        "This screen already has a button in the selected row and column."
-      );
+    // Check if a button already exists in the selected row and column for the current screen
+    const existingButtonInRowAndCol = Object.values(DataRowAndCol).find((button) => button.row === row && button.col === col);
+
+    if (existingButtonInRowAndCol || selectedScreen) {
+      toast.error("This screen already has a button in the selected row and column.");
       return; // Exit the function if a button already exists
     }
 
@@ -141,7 +140,6 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       screenName: payload.screenName,
       macid: payload?.macid,
     };
-
     // Update DataRowAndCol to include the new button data
     setDataRowAndCol((prevState) => ({
       ...prevState,
@@ -192,6 +190,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   }
 
   const saveMergeScreen = () => {
+
     let hasError = false;
     if (name === "") {
       setNameError(true);
@@ -201,15 +200,18 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       setAssetError(true);
       hasError = true;
     }
+
     if (allScreen !== objectLength) {
       setScreenError(true);
       hasError = true;
     } else {
       setScreenError(false);
     }
+
     if (hasError) {
       return;
     }
+
     setLoading(true);
     const payload = {
       mergeScreenId: 0,
@@ -226,6 +228,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       updatedDate: "2024-01-23T13:27:46.404Z",
       mergeSubScreenDeatils: transformScreenObject(DataRowAndCol, user),
     };
+
     let Screenkeys = Object.keys(DataRowAndCol);
     let allmacId = Screenkeys?.join(",");
     dispatch(saveMergeData({ payload }))?.then((res) => {
@@ -254,7 +257,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       {loading && <Loading />}
       {!loading && (
-        <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+        <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="justify-between lg:flex md:flex items-center sm:block mb-5">
               <div className="section-title">
@@ -290,9 +293,9 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           className="border border-[#5E5E5E] rounded-lg px-2 py-2 search-user w-full"
                         />
                         {nameError && (
-                          <span className="error px-2">
-                            Screen Name Is Required.
-                          </span>
+                          <p className="text-red-600 text-sm font-semibold ">
+                            Screen Name is Required.
+                          </p>
                         )}
                       </div>
 
@@ -311,7 +314,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                         {assetError && (
-                          <span className="error px-2">Asset Is Required.</span>
+                          <p className="text-red-600 text-sm font-semibold ">Asset Is Required.</p>
                         )}
                       </div>
 
@@ -370,15 +373,15 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   </div>
                   <div className="flex justify-center">
-                    <div className="p-4 bg-white shadow max-h-96 w-full ">
-                      <div className="col-span-1 bg-green-500 screen-section">
-                        <div className="p-4 bg-white border-gray-200 shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 h-100 overflow-auto max-h-96">
+                    <div className="p-4 bg-white shadow  w-full ">
+                      <div className="col-span-1 bg-green-500 screen-section  max-h-96 border">
+                        <div className="p-4 bg-white border-gray-200 shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700  overflow-auto max-h-96   ">
                           <h1 className="not-italic font-medium text-2xl text-[#001737]">
                             Screens
                           </h1>
                           <hr />
-                          <table className="screen-table">
-                            <tbody>
+                          <table className="screen-table  ">
+                            <tbody >
                               {Array.from(
                                 { length: selectedRow.value },
                                 (_, rowIndex) => rowIndex + 1
@@ -398,9 +401,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                         ? "selected"
                                         : ""
                                         }`}
-                                      onClick={() =>
-                                        handleDisplayButtonClick(row, col)
-                                      }
+                                      onClick={() => handleDisplayButtonClick(row, col)}
                                       style={{
                                         margin: "5px",
                                         boxShadow:
@@ -427,7 +428,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           </table>
                         </div>
                         {screenError && (
-                          <span className="error px-2">This Is Required.</span>
+                          <p className=" text-red-600 text-sm font-semibold m-2 ">This  Row-Column  Required.</p>
                         )}
                       </div>
                     </div>

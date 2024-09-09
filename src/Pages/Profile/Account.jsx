@@ -302,7 +302,7 @@ const Account = () => {
                 <input
                   className="w-full  text-black border  rounded-lg py-3 px-4"
                   type="text"
-                  placeholder="132, My Street, Kingston, New York 12401."
+                  // placeholder="132, My Street, Kingston, New York 12401."
                   {...register("address")}
                 />
                 <span className="error">{errors?.address?.message}</span>

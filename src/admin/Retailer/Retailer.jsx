@@ -268,7 +268,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                         Ads Screen
                       </th>
                       <th scope="col" className="px-6 py-3">
-                      Phone No
+                      PhoneNo
                       </th>
                       <th scope="col" className="px-6 py-3">
                         Action

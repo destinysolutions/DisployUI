@@ -120,7 +120,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        if (response.data.status == 200) {
+        if (response.data.status === 200) {
           const Params = {
             id: socket.id,
             connection: socket.connected,
@@ -379,7 +379,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const checkFolder = async (assetId) => {
     try {
-      setLoadFist(true);
+      // setLoadFist(true);
       const config = {
         method: "get",
         maxBodyLength: Infinity,
@@ -387,6 +387,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         headers: { Authorization: authToken },
       };
       const response = await dispatch(handleCheckFolderImage({ config }));
+      console.log('response :>> ', response);
       return response.payload;
     } catch (error) {
       // Handle errors if needed
@@ -397,9 +398,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const deleteFolder = async (folderID) => {
     try {
-      setLoadFist(true); // Trigger your action on cancel
-      const dataPayload = { folderID: folderID, operation: "Delete" };
+      // setLoadFist(true); // Trigger your action on cancel
+      const dataPayload = { folderIDs: folderID?.toString(), operation: "Delete" };
       const checkImage = await checkFolder(folderID);
+      console.log('checkImage :>> ', checkImage);
       const config2 = {
         method: "post",
         maxBodyLength: Infinity,
@@ -410,7 +412,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         },
         data: dataPayload,
       };
-      if (checkImage.data) {
+      if (checkImage?.status) {
         Swal.fire({
           title: "Delete Confirmation",
           text: checkImage.message,
@@ -444,6 +446,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const handleWarning = async (item) => {
     try {
       const checkImage = await checkFolderImage(item.assetID);
+      console.log('checkImage :>> ', checkImage);
       const formData = new FormData();
       formData.append("AssetID", item.assetID);
       formData.append("Operation", "Delete");
@@ -564,48 +567,46 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     // setSelectAll(allChecked);
   };
 
-  const handleDeleteAll = () => {
-    if (activeTab === "FOLDER") {
-      const dataPayload = tabsDelete?.selectedIds?.join(',');
-      deleteFolder(dataPayload)
-    } else {
-      const config = {
-        method: "get",
-        maxBodyLength: Infinity,
-        url: `${DELETE_ALL_ASSET}?assetIDs=${tabsDelete?.selectedIds?.join(',')}`,
-        headers: { Authorization: authToken },
-      };
 
+  const handleDeleteAll = async () => {
+    try {
+      const dataPayload = { folderIDs: tabsDelete?.selectedIds?.join(','), operation: "Delete" };
+
+      const config2 = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: CREATE_NEW_FOLDER,
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "application/json",
+        },
+        data: dataPayload,
+      };
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
-        cancelButtonText: "Cancel",
-        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel",
+        confirmButtonText: "Yes, Im sure",
         customClass: {
           text: "swal-text-bold",
           content: "swal-text-color",
-          confirmButton: "swal-confirm-button-color",
+          confirmButton: "swal-confirm-button-color", // Apply custom color and style
         },
         confirmButtonColor: "#ff0000",
       }).then(async (result) => {
-        if (result.isConfirmed) {
-          await dispatch(handelAllDelete(config));
-          setTabsDelete({
-            tabs: "",
-            selectedIds: [],
-          })
-          setSelectAll(false);
+        if (result?.isConfirmed) {
+          await dispatch(handleDeleteFolder({ config2 }));
         } else {
-          setLoadFist(true);
-          setTabsDelete({
-            tabs: "",
-            selectedIds: [],
-          })
-          setSelectAll(false);
+          setLoadFist(true); // Trigger your action on cancel
         }
       });
+
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setLoadFist(true);
     }
   };
 
@@ -866,6 +867,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       navigateToFolder(item.assetID)
                                     }
                                   />
+                                  {/* {item?.assetID} */}
                                   {editMode === item.assetID ? (
                                     <input
                                       type="text"
@@ -1178,7 +1180,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                             {permissions.isDelete && (
                                               <button
                                                 onClick={() => {
-                                                  deleteFolder(item.assetID);
+                                                  deleteFolder(item?.assetID);
                                                 }}
                                                 className="flex text-sm items-center"
                                               >
@@ -1189,7 +1191,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                           </li>
                                         ) : (
                                           <li>
-                                            {permissions.isDelete && (
+                                            {permissions?.isDelete && (
                                               <button
                                                 onClick={() => {
                                                   handleWarning(item);

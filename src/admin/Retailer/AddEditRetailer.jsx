@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { addRetailerData, updateRetailerData } from "../../Redux/admin/RetailerSlice";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import PhoneInput from "react-phone-input-2";
+
 const AddEditRetailer = ({
   heading,
   toggleModal,
@@ -28,6 +29,7 @@ const AddEditRetailer = ({
         if (res?.payload?.status) {
           formik.resetForm();
           setShowModal(false);
+          setEditData({})
         } else {
           toast.error(res?.payload?.message);
           formik.resetForm();
@@ -96,20 +98,21 @@ const AddEditRetailer = ({
         formData.append("OrgUserSpecificID", editId);
         formData.append("orgUserID", orgUserID);
         handleApiResponse(dispatch(updateRetailerData(formData)));
-        setEditData({})
+
       } else {
+
         formData.append("Operation", "Insert");
-        dispatch(addRetailerData(formData))
-          .then((res) => {
-            if (res?.payload?.status === true) {
-              toast.success('Save data successFully')
-            } else {
-              toast.error(res?.payload?.message)
-            }
-            formik.resetForm();
-            setShowModal(false);
-            console.log('res :>> ', res);
-          })
+        dispatch(addRetailerData(formData)).then((res) => {
+          toast.remove()
+          if (res?.payload?.status === true) {
+            toast.success('Retailer Create successFully')
+          } else {
+            toast.error(res?.payload?.message)
+          }
+          setShowModal(false);
+          formik.resetForm();
+
+        })
       }
     },
   });

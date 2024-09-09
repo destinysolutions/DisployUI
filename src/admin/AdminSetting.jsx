@@ -43,6 +43,7 @@ const AdminSetting = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  
   const dispatch = useDispatch()
   const { token } = useSelector((s) => s.root.auth);
   const authToken = `Bearer ${token}`;

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { GET_INDUSTRY } from "../Pages/Api";
 
 
 export const handleGetAllPlans = createAsyncThunk(
@@ -103,6 +104,20 @@ export const handleAllPosTheme = createAsyncThunk(
 );
 
 
+
+export const getIndustry = createAsyncThunk("common/getIndustry", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.get(`${GET_INDUSTRY}`, { headers: { Authorization: `Bearer ${token}` } });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    toast.error('Failed to fetch data');
+    throw error;
+  }
+});
+
+
 const initialState = {
   loading: false,
   allPlans: [],
@@ -114,7 +129,8 @@ const initialState = {
   status: null,
   screenLimit: false,
   timeZoneList: [],
-  PosTheme: []
+  PosTheme: [],
+  Industry: [],
 };
 
 const CommonSlice = createSlice({
@@ -224,6 +240,26 @@ const CommonSlice = createSlice({
       state.status = "failed";
       state.error = action.payload.message;
       state.message = action.payload?.message;
+    });
+
+
+
+    builder.addCase(getIndustry.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+
+    builder.addCase(getIndustry.fulfilled, (state, action) => {
+      state.loading = false;
+      state.Industry = action.payload.data;
+      state.token = action?.data?.token;
+      state.data = action.payload?.data;
+    });
+
+    builder.addCase(getIndustry.rejected, (state, action) => {
+      state.loading = false;
+      state.Industry = null;
+      state.message = action.error.message || "Failed to data";
     });
   },
 });

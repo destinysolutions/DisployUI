@@ -1,55 +1,30 @@
+/* eslint-disable react/jsx-pascal-case */
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import Loading from "../../../Loading";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { MdArrowBackIosNew, MdCloudUpload } from "react-icons/md";
-import { FaPlusCircle, FaRegClock, FaRegQuestionCircle } from "react-icons/fa";
+import { FaPlusCircle, } from "react-icons/fa";
 import {
-  DisployScreens,
-  IncludeExclude,
   buttons,
   constructTimeObjects,
-  getCurrentTime,
   getCurrentTimewithSecound,
-  getTimeZoneName,
   getTodayDate,
-  greenOptions,
-  kilometersToMeters,
   multiOptions,
   removeDuplicates,
-  secondsToHMS,
-  timeDifferenceInSeconds,
 } from "../../../Common/Common";
-import L from "leaflet";
-import mapImg from "../../../../images/DisployImg/mapImg.png";
 import {
   ADDALLEVENT,
   ADDUPDATESLOT,
-  ALL_CITY,
   GET_ALL_COUNTRY,
-  GET_TIMEZONE,
   GET_TIMEZONE_TOKEN,
   PAYMENT_INTENT_CREATE_REQUEST,
   SCREEN_LIST,
   stripePromise,
 } from "../../../../Pages/Api";
-import { FiMapPin } from "react-icons/fi";
-import {
-  Circle,
-  LayerGroup,
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-} from "react-leaflet";
-import Select from "react-select";
 import axios from "axios";
-import { IoEarthSharp } from "react-icons/io5";
-import { BsCheckCircleFill } from "react-icons/bs";
 import moment from "moment";
 import toast from "react-hot-toast";
-import InputAuto from "../../../Common/InputAuto";
-import MarkerClusterGroup from "react-leaflet-cluster";
 import ThankYouPage from "./ThankYouPage";
 import AddPayment from "./AddPayment";
 import { Elements } from "@stripe/react-stripe-js";
@@ -58,32 +33,22 @@ import { useDispatch } from "react-redux";
 import { handleAllTimeZone } from "../../../../Redux/CommonSlice";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import ImageUploadPopup from "./ImageUploadPopup";
-import TimePicker from 'react-time-picker';
 import { customTimeOrhour } from "../../../Common/Util";
 import { handleGetState } from "../../../../Redux/SettingUserSlice";
 import 'react-time-picker/dist/TimePicker.css';
+import AddSoltPage_2 from "./AddSoltPage_2";
+import BookSlotMap from "./BookSlotMap";
 
 
 const AddSlot = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-  const customIcon = new L.Icon({
-    iconUrl: mapImg,
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -16],
-  });
+  const { register, handleSubmit, watch, formState: { errors }, } = useForm();
+
   const dispatch = useDispatch()
   const Name = watch("name");
   const Email = watch("email");
   const PhoneNumber = watch("phone");
   const navigate = useNavigate();
 
-  const [selecteScreens, setSelecteScreens] = useState([]);
   const optionSelect = Array.from({ length: 60 }, (_, index) => index + 1); // Create an array of numbers from 1 to 60
   const [sidebarload, setSidebarLoad] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
@@ -94,8 +59,6 @@ const AddSlot = () => {
   const hiddenFileInput = useRef([]);
   const [screenData, setScreenData] = useState([]);
   const [screenArea, setScreenArea] = useState([]);
-  const [allCity, setAllCity] = useState([]);
-  const [city, setCity] = useState([]);
   const [Open, setOpen] = useState(false);
   const [selectAllScreen, setSelectAllScreen] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
@@ -110,7 +73,6 @@ const AddSlot = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
 
-  const center = [20.5937, 78.9629];
   // const [rangeValue, setRangeValue] = useState(5);
   const [startDate, setStartDate] = useState(getTodayDate());
   const [endDate, setEndDate] = useState(getTodayDate());
@@ -135,6 +97,8 @@ const AddSlot = () => {
   const [selecteStates, setSelecteStates] = useState("");
   const [states, setStates] = useState([]);
 
+  const [allCity, setAllCity] = useState([]);
+
   const [getallTime, setGetAllTime] = useState([
     {
       startTime: getCurrentTimewithSecound(),
@@ -144,9 +108,19 @@ const AddSlot = () => {
       verticalImage: "",
       endTime: getCurrentTimewithSecound(),
       sequence: '',
+      afterevent: '',
+      aftereventType: '',
     },
   ]);
 
+  const [allSlateDetails, setallSlateDetails] = useState({
+    Industry: null,
+    country: null,
+    selecteScreens: [],
+    terms: false,
+    refCode: 'NO',
+    refVale: ''
+  });
   const appearance = {
     theme: 'stripe',
   };
@@ -164,28 +138,6 @@ const AddSlot = () => {
 
   const handleEndDateChange = (event) => {
     setEndDate(event.target.value);
-  };
-
-  const FetchAllCity = () => {
-    const config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: ALL_CITY,
-      headers: {},
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        setAllCity(response.data.data);
-        let arr = [];
-        response.data.data?.map((item) => {
-          arr.push(item?.text);
-        });
-        setCity(arr);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   const FetchScreen = (Params) => {
@@ -223,9 +175,7 @@ const AddSlot = () => {
       });
   };
 
-  useEffect(() => {
-    FetchAllCity();
-  }, []);
+
 
   useEffect(() => {
     fetch(GET_ALL_COUNTRY)
@@ -242,6 +192,7 @@ const AddSlot = () => {
     if (selectedCountry !== "") {
       dispatch(handleGetState(selectedCountry))
         ?.then((res) => {
+          console.log('res :>> ', res);
           setStates(res?.payload?.data);
         })
         .catch((error) => {
@@ -251,6 +202,7 @@ const AddSlot = () => {
   }, [selectedCountry]);
 
   const handleNext = () => {
+    console.log('selectedScreens :>> ', selectedScreens);
     let total = ""
     if (selectedScreens?.length === 0) {
       return toast.error("Please Select Screen");
@@ -269,6 +221,8 @@ const AddSlot = () => {
         "amount": String(total * 100)
       }
     }
+    console.log('params :>> ', params);
+
 
     const config = {
       method: "post",
@@ -289,6 +243,7 @@ const AddSlot = () => {
   };
 
   const onSubmit = (data) => {
+    console.log('data :>> ', data);
     setPage(page + 1);
   };
 
@@ -306,9 +261,9 @@ const AddSlot = () => {
             repeat,
             day,
             selectedTimeZone,
+            allTimeZone,
             selectedCountry,
             selecteStates,
-            allTimeZone
           ),
         };
 
@@ -401,6 +356,20 @@ const AddSlot = () => {
     const sequence = [...getallTime];
     sequence[index].sequence = value;
     setGetAllTime(sequence);
+  };
+
+  const handleaftereventChange = (e, index) => {
+    const { value } = e.target
+    const afterevent = [...getallTime];
+    afterevent[index].afterevent = value;
+    setGetAllTime(afterevent);
+  };
+
+  const handleAftereventTypeChange = (value, index) => {
+    // const { value } = e.target
+    const aftereventType = [...getallTime];
+    aftereventType[index].aftereventType = value;
+    setGetAllTime(aftereventType);
   };
 
   const FileUpload = (formData) => {
@@ -546,11 +515,10 @@ const AddSlot = () => {
     setSelectAllDays(newSelectAllDays);
   };
 
-  const handleChange = (event) => {
-    setSelectedValue(event.target.value); // Update the state with the selected value
-  };
+
 
   const getSelectedVal = (value) => {
+
     const foundItem = allCity.find((item) => item?.text?.includes(value));
     if (foundItem) {
       // setSearchArea(foundItem);
@@ -559,7 +527,6 @@ const AddSlot = () => {
         include: Number(selectedValue),
         area: 20,
       };
-
       let Params = {
         latitude: foundItem?.latitude,
         longitude: foundItem?.longitude,
@@ -571,9 +538,9 @@ const AddSlot = () => {
           repeat,
           day,
           selectedTimeZone,
+          allTimeZone,
           selectedCountry,
           selecteStates,
-          allTimeZone
         ),
       };
 
@@ -587,15 +554,12 @@ const AddSlot = () => {
     }
   };
 
-  const getChanges = (value) => {
-    console.log(value, "hello12345");
-  };
 
-  const handleScreenClick = (screen) => {
-    setSelectedScreen(screen);
-  };
+
+
 
   const handlebook = (paymentMethod) => {
+    console.log('allSlateDetails :>> ', allSlateDetails);
     let Params = JSON.stringify({
       PaymentDetails: {
         ...paymentMethod,
@@ -794,89 +758,8 @@ const AddSlot = () => {
             </div>
           </>
         )}
-        {page === 2 && (
-          <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
-              <div className="text-2xl font-semibold">Book Slot</div>
-              <div className="grid grid-cols-4 gap-4 w-full ">
-                <div className="col-span-4">
-                  <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4 h-full">
-                    <div className="w-7/12 flex flex-col justify-center m-auto">
-                      <h3 className="text-center font-bold">Hi Anand,</h3>
-                      <p className="text-sm text-center"> Before we begin, please take a moment to share some details about your organization. This will help us tailor tha screen experience to perfectly suit your needs.</p>
-                    </div>
-                    <div className="grid grid-cols-4 gap-4 items-center">
-                      <div className="relative w-full col-span-2">
-                        <Select
-                          placeholder='Select Industry'
-                        // value={selectedScreens}
-                        // onChange={handleSelectChange}
-                        // options={Screenoptions}
-                        />
-                      </div>
-                      <div className="relative w-full col-span-2">
-                        <Select
-                          placeholder='Select Country'
-                          className='my-3'
-                        // value={selectedScreens}
-                        // onChange={handleSelectChange}
-                        // options={Screenoptions}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col justify-center">
-                      <p className="text-center">Purpose of using Disploy Screens</p>
-                      <div className="m-auto  flex justify-center flex-wrap my-3">
-                        {DisployScreens.map((label, index) => (
-                          <button
-                            className={`border m-0 border-primary px-3 py-1 mr-2 mb-2 rounded-full 
-                              ${selecteScreens.includes(label) && "bg-SlateBlue border-white"} 
-                              `}
-                            key={index}
-                            onClick={() => {
-                              setSelecteScreens((prev) => {
-                                const isSelected = prev.includes(label);
+        {page === 2 && (<AddSoltPage_2 page={page} setPage={setPage} countries={countries} setallSlateDetails={setallSlateDetails} allSlateDetails={allSlateDetails} />)}
 
-                                return isSelected ? prev.filter((item) => item !== label) : [...prev, label];
-                              });
-                            }}
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
-                      <label className="custom-label flex items-center justify-center">
-                        <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded w-4 h-4 flex items-center justify-center mr-2">
-                          <input type="checkbox" name="terms"
-                            {...register('terms',)}
-                          />
-                        </div>
-                        <p className="">I have read the terms and agreement of Disploy</p>
-                      </label>
-                    </div>
-
-                    <div className="w-full h-full">
-                      <div className="flex justify-end h-full items-end">
-                        <button
-                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={() => setPage(page - 1)}
-                        >
-                          Back
-                        </button>
-                        <button
-                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={() => setPage(page + 1)}
-                        >
-                          Next
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
         {page === 3 && (
           <div className="w-full h-full p-5 flex items-center justify-center">
             <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
@@ -1011,19 +894,11 @@ const AddSlot = () => {
                         {getallTime?.map((item, index) => {
                           return (
                             <div
-                              className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-2 gap-4 mb-3"
+                              className="flex items-center justify-center gap-4 mb-3"
+                              // className="grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-2 gap-4 mb-3"
                               key={index}
                             >
-
                               <div className="relative w-full col-span-1">
-                                {/* <TimePicker
-                                  className="custom-time-picker"
-                                  value={item?.startTime}
-                                  disableClock={true}
-                                  format="hh:mm:ss"
-                                  onChange={(value) => handleStartTimeChange(index, value)}
-                                /> */}
-
                                 <input
                                   type="time"
                                   name={`startTime${index}`}
@@ -1034,18 +909,9 @@ const AddSlot = () => {
                                   required=""
                                   onChange={(e) => handleStartTimeChange(e, index)}
                                 />
-
                               </div>
 
                               <div className="relative w-full col-span-1">
-                                {/* <TimePicker
-                                  className="custom-time-picker"
-                                  disableClock={true}
-                                  value={item?.endTime}
-                                  format="hh:mm:ss"
-                                  onChange={(value) => handleEndTimeChange(index, value)}
-                                /> */}
-
                                 <input
                                   type="time"
                                   name={`endTime${index}`}
@@ -1056,14 +922,13 @@ const AddSlot = () => {
                                   required=""
                                   onChange={(e) => handleEndTimeChange(e, index)}
                                 />
-
                               </div>
 
 
-                              <div className="relative w-full col-span-1 flex gap-4 items-center">
-                                <div className="relative w-full col-span-1">
+                              <div className="relative  col-span-4 flex justify-center items-center gap-4">
+                                <div className="relative  col-span-1 " >
                                   <select
-                                    className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
+                                    className="border border-primary rounded-lg pl-2 py-2 w-40"
                                     id="selectOption"
                                     value={item.sequence}
                                     onChange={(e) => handleSequenceChange(index, e.target.value)}
@@ -1081,23 +946,67 @@ const AddSlot = () => {
                                     })}
                                   </select>
                                 </div>
-
-                                <button onClick={() => handleOpenImagePopup(index)}>
-                                  <MdCloudUpload size={30} />
-                                </button>
-
-                                <FaPlusCircle
-                                  className="cursor-pointer"
-                                  size={30}
-                                  onClick={handleAddItem}
-                                />
-                                {getallTime.length > 1 && (
-                                  <RiDeleteBin5Line
-                                    className="cursor-pointer"
-                                    size={30}
-                                    onClick={() => handleRemoveItem(index)}
-                                  />
+                                {item?.sequence === "Custom" && (
+                                  <div className="  flex items-center   justify-center ">
+                                    <label className="text-sm font-medium w-20 mr-2">After every:</label>
+                                    <div className="flex justify-center items-center  ">
+                                      <div>
+                                        <input
+                                          className="block w-20 p-2 text-gray-900 border border-gray-300  bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                          type="number"
+                                          value={item?.afterevent}
+                                          onChange={(e) => { handleaftereventChange(e, index) }}
+                                        />
+                                      </div>
+                                      <div className="flex">
+                                        <div className="ml-2 flex items-center">
+                                          <input
+                                            type="radio"
+                                            value={item?.aftereventType}
+                                            checked={item?.aftereventType === "Hour"}
+                                            name="Cel"
+                                            id='Hour'
+                                            onChange={() => handleAftereventTypeChange("Hour", index)}
+                                          />
+                                          <label for='Hour' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">
+                                            Hour
+                                          </label>
+                                        </div>
+                                        <div className="ml-3 flex items-center">
+                                          <input
+                                            id='Minute'
+                                            type="radio"
+                                            value={item?.aftereventType}
+                                            checked={item?.aftereventType === "Minute"}
+                                            name="Cel"
+                                            onChange={() => handleAftereventTypeChange("Minute", index)}
+                                          />
+                                          <label for='Minute' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">
+                                            Minute
+                                          </label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 )}
+                                <div className="flex items-center justify-center gap-2">
+                                  <button onClick={() => handleOpenImagePopup(index)}>
+                                    <MdCloudUpload size={20} />
+                                  </button>
+
+                                  <FaPlusCircle
+                                    className="cursor-pointer"
+                                    size={17}
+                                    onClick={handleAddItem}
+                                  />
+                                  {getallTime.length > 1 && (
+                                    <RiDeleteBin5Line
+                                      className="cursor-pointer"
+                                      size={17}
+                                      onClick={() => handleRemoveItem(index)}
+                                    />
+                                  )}
+                                </div>
                               </div>
                             </div>
                           );
@@ -1177,243 +1086,7 @@ const AddSlot = () => {
         )}
         {page === 4 && (
           <>
-            <div className="w-full h-full p-5 flex items-center justify-center ">
-              <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg ">
-                <div className="flex flex-row items-center gap-2">
-                  <div className="icons flex items-center">
-                    <div>
-                      <button
-                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                        onClick={() => handleBack()}
-                      >
-                        <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="text-2xl font-semibold">Find Your Screen</div>
-                </div>
-                <div className="grid grid-cols-3 gap-4 h-[93%] overflow-auto">
-                  <div className="col-span-2 rounded-lg shadow-md bg-white p-5">
-                    <div className="flex flex-col gap-2 h-full">
-                      {/* <div className="flex gap-2 items-center">
-                        <IoEarthSharp />
-                        <span className="">
-                          {getTimeZoneName(allTimeZone, selectedTimeZone)}
-                        </span>
-                      </div> */}
-
-                      {allArea?.map((item, index) => {
-                        return (
-                          <div
-                            className="flex flex-row gap-2 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full p-2 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            key={index}
-                          >
-                            <span className="flex items-center ">
-                              <FiMapPin className="w-5 h-5 text-black " />
-                            </span>
-                            <div className="text-base flex items-center">
-                              <h2>{item?.searchValue?.text}</h2>
-                            </div>
-
-                            <span className="flex items-center justify-end">
-                              <div className=" flex flex-row items-center border rounded-lg">
-                                <div
-                                  className="flex items-center"
-                                  onClick={() => {
-                                    setSelectedItem(item);
-                                    setOpen(true);
-                                  }}
-                                >
-                                  <div className="text-black p-1 px-2 no-underline hidden md:block lg:block cursor-pointer">
-                                    +{item?.area} km
-                                  </div>
-                                </div>
-                                {selectedItem === item && Open && (
-                                  <div
-                                    id="ProfileDropDown"
-                                    className={`rounded ${Open ? "none" : "hidden"
-                                      } shadow-md bg-white absolute mt-44 z-[9999] w-48`}
-                                  >
-                                    <div>
-                                      <div className="border-b flex justify-center">
-                                        <div className="p-2">
-                                          Current city only
-                                        </div>
-                                      </div>
-                                      <div className="p-2 flex gap-2 items-center">
-                                        <BsCheckCircleFill className="text-blue-6 00" />
-                                        Cities Within Radius
-                                      </div>
-                                      <div className="relative mb-8 mx-2">
-                                        <div>
-                                          <input
-                                            id="labels-range-input"
-                                            type="range"
-                                            min="0"
-                                            max="30"
-                                            step="5"
-                                            value={item?.area}
-                                            onChange={(e) =>
-                                              handleRangeChange(e, item)
-                                            }
-                                            className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                                          />
-                                          <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">
-                                            5
-                                          </span>
-
-                                          <span className="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">
-                                            30
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </span>
-                          </div>
-                        );
-                      })}
-
-                      {/* <div className="grid grid-cols-3 gap-4">
-                        <select
-                          className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
-                          value={selectedValue} // Set the selected value from state
-                          onChange={handleChange} // Handle change event
-                        >
-                          {IncludeExclude.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-
-                        <div className="col-span-2">
-                          <InputAuto
-                            pholder="Search"
-                            data={city}
-                            onSelected={getSelectedVal}
-                            onChange={getChanges}
-                            // handleKeyPress={handleKeyPress}
-                            setSelectedVal={setSelectedVal}
-                            selectedVal={selectedVal}
-                          />
-                        </div>
-                      </div> */}
-
-                      <div className="mt-5 h-full">
-                        <div className="h-full">
-                          <MapContainer
-                            center={center}
-                            zoom={4}
-                            maxZoom={18}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              zIndex: 0,
-                            }}
-                          >
-                            <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
-                            <LayerGroup>
-                              {screenArea?.map((item) => {
-                                return (
-                                  <Circle
-                                    center={[item?.let, item?.lon]}
-                                    pathOptions={greenOptions}
-                                    radius={kilometersToMeters(item?.dis)}
-                                  />
-                                );
-                              })}
-                            </LayerGroup>
-                            <MarkerClusterGroup>
-                              {screenData.map((screen, index) => {
-                                return (
-                                  <>
-                                    <Marker
-                                      key={index}
-                                      position={[
-                                        screen.latitude,
-                                        screen.longitude,
-                                      ]}
-                                      icon={customIcon}
-                                      eventHandlers={{
-                                        click: () =>
-                                          handleScreenClick &&
-                                          handleScreenClick(screen),
-                                      }}
-                                    >
-                                      <Popup>
-                                        <h3 className="flex flex-row gap-1">
-                                          <span>Location :</span>
-                                          <span>
-                                            {selectedScreen?.googleLocation}
-                                          </span>
-                                        </h3>
-                                      </Popup>
-                                    </Marker>
-                                  </>
-                                );
-                              })}
-                            </MarkerClusterGroup>
-                          </MapContainer>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">
-                    <div>Reach</div>
-                    <div className="text-2xl">
-                      {selectedScreens?.length} Screens
-                    </div>
-                    <div>
-                      Do you want to book your slot for all screens or any
-                      particular screen?
-                    </div>
-
-                    <div className="grid grid-cols-4 gap-4 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                      <div className="col-span-3">
-                        <h2>All Screen</h2>
-                      </div>
-
-                      <span className="col-span-1 flex items-center justify-end">
-                        <input
-                          type="checkbox"
-                          className="cursor-pointer"
-                          value={selectAllScreen}
-                          disabled={screenData?.length === 0}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectAllScreen(true);
-                              setSelectedScreens(Screenoptions);
-                            } else {
-                              setSelectAllScreen(false);
-                              setSelectedScreens([]);
-                            }
-                          }}
-                        />
-                      </span>
-                    </div>
-                    <Select
-                      value={selectedScreens}
-                      onChange={handleSelectChange}
-                      options={Screenoptions}
-                      isMulti
-                    />
-                    <div className="h-full w-full flex justify-center items-end">
-                      <div className="flex justify-center">
-                        <button
-                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={() => handleNext()}
-                        >
-                          Book Your Slot
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <BookSlotMap setSelectedValue={setSelectedValue} handleBack={handleBack} selectedVal={selectedVal} setSelectedVal={setSelectedVal} setOpen={setOpen} getSelectedVal={getSelectedVal} allArea={allArea} handleRangeChange={handleRangeChange} selectedItem={selectedItem} Open={Open} setSelectedItem={setSelectedItem} setSelectedScreens={setSelectedScreens} setSelectedScreen={setSelectedScreen} screenData={screenData} screenArea={screenArea} handleNext={handleNext} countries={countries} handleSelectChange={handleSelectChange} Screenoptions={Screenoptions} selectAllScreen={selectAllScreen} selectedScreen={selectedScreen} selectedScreens={selectedScreens} setSelectAllScreen={setSelectAllScreen} setAllCity={setAllCity} />
           </>
         )}
 

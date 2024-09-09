@@ -31,7 +31,7 @@ import { RiAppsFill, RiComputerLine } from "react-icons/ri";
 import moment from "moment";
 import { BsFillInfoCircleFill, BsTags } from "react-icons/bs";
 import { HiDotsVertical } from "react-icons/hi";
-import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
+import { TbBrandGoogleMaps, TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 import { VscCalendar } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import FileUpload from "../../Assests/FileUpload";
@@ -744,7 +744,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4">
-              Screen Details
+              Screens Details
             </h1>
           </div>
           <div className="shadow-md lg:p-5  md:p-5 sm:p:2 rounded-md bg-white flex items-center justify-between mt-7 w-full">
@@ -1862,7 +1862,28 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           )}
                         </div>
                       </td>
+
                     </tr>
+
+                    <tr>
+                      <td>
+                        <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
+                          Select Location:
+                        </label>
+                      </td>
+                      <td>
+                        <div className="md:w-full flex">
+                          <div className="border border-[#D5E3FF] rounded">
+                            <TbBrandGoogleMaps
+                              size={30}
+                              className="text-black p-[2px]"
+                              
+                            />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
                     <tr>
                       <td className=" lg:block md:block sm:hidden"></td>
                       <td>
