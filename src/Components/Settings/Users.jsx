@@ -223,9 +223,9 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
           ? "Please Enter Valid Email"
           : "";
 
-      newErrors.password = !password ? "Password is required" : "";
     }
 
+    newErrors.password = !password ? "Password is required" : "";
     newErrors.firstName = !firstName ? "First Name is required" : "";
     newErrors.lastName = !lastName ? "Last Name is required" : "";
     newErrors.role = !selectRoleID ? "Please select a role" : "";
@@ -1683,7 +1683,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                   }}
                 >
                   <BiUserPlus className="text-2xl mr-1" />
-                  Add New User
+                  New User
                 </button>
               )}
             </div>
@@ -1721,7 +1721,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                           Status
                         </th>
                         <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                          Action
+                          Actions
                         </th>
                       </tr>
                     </thead>

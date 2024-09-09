@@ -192,15 +192,11 @@ export function multiOptions(arr) {
 }
 
 export const IncludeExclude = [
-  {
-    label: "Include",
-    value: 1
-  },
-  {
-    label: "Exclude",
-    value: 2
-  },
+  { label: "Include", value: 1 },
+  { label: "Exclude", value: 2 },
 ]
+
+
 
 export const getTodayDate = () => {
   const today = new Date();
@@ -720,6 +716,14 @@ export const Frequent = [
     value: "Custom"
   },
 
+]
+
+export const Industry = [
+  { id: 0, title: "Educational" },
+  { id: 1, title: "Entertainment" },
+  { id: 2, title: "Healthcare" },
+  { id: 3, title: "Utilities" },
+  { id: 4, title: "IT Information" },
 ]
 
 export const PageNumber = [5, 10, 25]

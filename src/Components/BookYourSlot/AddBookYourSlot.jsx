@@ -16,7 +16,7 @@ import { BsCheckCircleFill } from 'react-icons/bs';
 import { Circle, LayerGroup, MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from "leaflet";
-import mapImg from "../../../../DisployUI/src/images/DisployImg/mapImg.png";
+import mapImg from "../../../src/images/DisployImg/mapImg.png";
 import { PAYMENT_INTENT_CREATE_REQUEST, stripePromise } from '../../Pages/Api';
 import { handlePaymentIntegration } from '../../Redux/PaymentSlice';
 import { useDispatch } from 'react-redux';
@@ -47,7 +47,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const [day, setDay] = useState([]);
     const [repeatDays, setRepeatDays] = useState([]);
     const [temperature, setTemprature] = useState("");
-    const [temperatureUnit, setTempratureUnit] = useState("C");
+    const [temperatureUnit, setTempratureUnit] = useState("Hour");
     const start = new Date(startDate);
     const end = new Date(endDate);
     const dayDifference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
@@ -211,9 +211,9 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                         repeat,
                         day,
                         selectedTimeZone,
+                        allTimeZone,
                         selectedCountry,
                         selecteStates,
-                        allTimeZone
                     ),
                 };
 

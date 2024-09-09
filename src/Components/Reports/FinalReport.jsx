@@ -21,7 +21,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
         sidebarOpen: PropTypes.bool.isRequired,
         setSidebarOpen: PropTypes.func.isRequired,
     };
-    const {user, token,userDetails } = useSelector((state) => state.root.auth);
+    const { user, token, userDetails } = useSelector((state) => state.root.auth);
     const authToken = `Bearer ${token}`;
     const { report, daily, date } = useParams();
     const [allReportData, setAllReportData] = useState({
@@ -39,7 +39,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
     function generateDataObject(daily, date, report) {
         let data;
         const defaultDate = "2024-01-16T07:07:30.051Z";
-    
+
         if (daily === "daily") {
             data = {
                 "dataType": daily,
@@ -74,7 +74,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
                 "endDate": convertDateFormat(end)
             };
         }
-    
+
         return { report, data };
     }
 
@@ -135,10 +135,10 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
             } else if (report === "cancelreport") {
                 const filterData = allReportData?.allData?.filter((item) => item?.customer?.toLowerCase().includes(searchQuery))
                 setAllReportData({ ...allReportData, SearchData: filterData })
-            } else if(report === "mediareport") {
+            } else if (report === "mediareport") {
                 const filterData = allReportData?.allData?.filter((item) => item?.screenName?.toLowerCase().includes(searchQuery))
                 setAllReportData({ ...allReportData, SearchData: filterData })
-            }else{
+            } else {
                 const filterData = allReportData?.allData?.filter((item) => item?.customer?.toLowerCase().includes(searchQuery))
                 setAllReportData({ ...allReportData, SearchData: filterData })
             }
@@ -165,31 +165,31 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className='pt-6'>
                 {report === "uptimereport" && (
-                    <Uptimereport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen}/>
+                    <Uptimereport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen} />
                 )}
                 {report === "auditlogreport" && (
-                    <Auditlogreport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen}/>
+                    <Auditlogreport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen} />
                 )}
                 {report === "salesreport" && (
-                    <SalesReport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen}/>
+                    <SalesReport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen} />
                 )}
                 {report === "cancelreport" && (
-                    <CancelReport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen}/>
+                    <CancelReport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen} />
                 )}
                 {report === "mediareport" && (
-                    <Mediareport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen}/>
+                    <Mediareport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen} />
                 )}
                 {report === "billingreport" && (
-                    <BillingReport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen}/>
+                    <BillingReport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen} />
                 )}
             </div>
 
             <Footer />
 
-            
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
-        <PurchasePlanWarning />
-      )}
+
+            {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+                <PurchasePlanWarning />
+            )}
         </>
     )
 }

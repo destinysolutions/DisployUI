@@ -63,7 +63,7 @@ const AddEditUser = ({
 }) => {
 
     const { control } = useForm();
-    const [passwordError, setPasswordError] = useState("");
+
     console.log(isActive, 'isActive', isActiveUser);
 
     const validatePassword = (password) => {
@@ -74,14 +74,6 @@ const AddEditUser = ({
     const handlePasswordChange = (e) => {
         const value = e.target.value;
         setPassword(value);
-
-        if (!validatePassword(value)) {
-            setPasswordError(
-                "Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character."
-            );
-        } else {
-            setPasswordError("");
-        }
     };
 
     return (
@@ -188,9 +180,11 @@ const AddEditUser = ({
                                                                 )}
                                                             </div>
                                                         </div>
-                                                        {passwordError && (
-                                                            <p className="error">{passwordError}</p>
+                                                        {errors && (password?.length <= 0 ?
+                                                            <span span className='error'>This field is required.</span> :
+                                                            !(validatePassword(password)) && <span className='error'>Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character</span>
                                                         )}
+
                                                     </div>
                                                 </>
                                             )}

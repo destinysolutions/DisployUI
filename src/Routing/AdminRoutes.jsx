@@ -11,6 +11,7 @@ import AdminSetting from "../admin/AdminSetting";
 import CustomerOnboding from "../admin/CustomerOnboding";
 import SalesMan from "../admin/SalesMan/SalesMan";
 import RetailerDetails from "../admin/Retailer/RetailerDetails";
+import Advertising from "../admin/AdvertisingFeatures/Advertising";
 
 const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
@@ -87,6 +88,15 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
             path="/client"
             element={
               <UserList
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/advertising"
+            element={
+              <Advertising
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
               />

@@ -444,7 +444,7 @@ const Routing = () => {
               <Route
                 path="/composition"
                 element={
-                  <AdvertisementScreens
+                  <Composition
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                   />

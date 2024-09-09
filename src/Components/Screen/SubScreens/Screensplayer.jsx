@@ -152,6 +152,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [endTime, setEndTime] = useState(getCurrentTime());
   const [cardList, setCardList] = useState([])
   const [selectedCard, setSelectedCard] = useState("");
+  // console.log('selectedTimezoneName :>> ', selectedTimezoneName);
+  // console.log('timezones :>> ', timezones);
 
   const [selectedDays, setSelectedDays] = useState(
     new Array(TotalDay.length).fill(false)
@@ -1034,8 +1036,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="icons flex  items-center">
                 <div>
                   <Link to="/screens">
-                    <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
-                      <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
+                    <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                      <MdArrowBackIosNew className="text-2xl mr-2 text-white rounded-full p-1" />
+                      Back
                     </button>
                   </Link>
                 </div>
@@ -1611,7 +1614,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       className={toggle === 2 ? "tabshow tabactive" : "tab"}
                       onClick={() => updatetoggle(2)}
                     >
-                      Setting
+                      Settings
                     </button>
                   </li>
                 </ul>

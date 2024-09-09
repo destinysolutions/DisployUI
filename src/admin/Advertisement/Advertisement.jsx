@@ -400,7 +400,7 @@ const Advertisement = ({ sidebarOpen, setSidebarOpen }) => {
                       Google Location
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Phone Number
+                      PhoneNo
                     </th>
                     <th scope="col" className="px-6 py-3">
                       Screen

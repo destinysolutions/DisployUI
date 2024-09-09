@@ -4,12 +4,10 @@ import { FiMapPin } from "react-icons/fi";
 const InputAuto = ({  pholder, data, onSelected, onChange,handleKeyPress,selectedVal,setSelectedVal }) => {
   const [suggestions, setSugesstions] = useState([]);
   const [isHideSuggs, setIsHideSuggs] = useState(false);
-
   const handler = (e) => {
     const inputValue = e.target.value.toLowerCase();
     setSugesstions(data.filter((i) => i.toLowerCase().includes(inputValue)));
   };
-
   const handleChange = (e) => {
     const input = e.target.value;
     setIsHideSuggs(false);

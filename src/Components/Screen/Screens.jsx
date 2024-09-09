@@ -61,12 +61,14 @@ import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import { handleScreenLimit } from "../../Redux/CommonSlice";
 import ScreenStorage from "../Common/ScreenStorage";
 import ScheduleListDialog from "../Common/ScheduleListDialog";
+import ConvertAdvertisingModal from "./SubScreens/model/ConvertAdvertisingModal";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+
 
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
@@ -77,8 +79,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [statusCheckboxClick, setStatusCheckboxClick] = useState(true);
   const [lastSeenCheckboxClick, setLastSeenCheckboxClick] = useState(true);
   const [nowPlayingCheckboxClick, setNowPlayingCheckboxClick] = useState(true);
-  const [currScheduleCheckboxClick, setCurrScheduleCheckboxClick] =
-    useState(true);
+  const [currScheduleCheckboxClick, setCurrScheduleCheckboxClick] = useState(true);
   const [tagsCheckboxClick, setTagsCheckboxClick] = useState(true);
   const [groupCheckboxClick, setGroupCheckboxClick] = useState(true);
   const [screenLimit, setScreenLimit] = useState(false);
@@ -161,6 +162,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const moreModalRef = useRef(null);
   const showActionModalRef = useRef(null);
+
+  // ConvertAdvertisingModal 
+  const [convertAdvertisingModal, setConvertAdvertisingModal] = useState(false);
 
   const appearance = {
     theme: 'stripe',
@@ -323,6 +327,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedItems(allIds);
     }
   };
+
+
 
   const handleDeleteAllscreen = () => {
     const allScreenMacids = screens.map((i) => i?.macid).join(",");
@@ -899,6 +905,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                         </div>
                       )}
+                      <button
+                        disabled={selectedItems?.length === 0}
+                        className={`sm:ml-2 mr-2  xs:ml-1 xs:mt-0 sm:mt-0 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm     text-white1 ${selectedItems?.length > 0 ? "bg-SlateBlue hover:text-white hover:bg-primary hover:blorder-white hover:shadow-primary-500/50 hover:shadow-lg " : 'bg-yellow-300'}`}
+                        onClick={() => { setConvertAdvertisingModal(true) }}
+                      >
+                        Convert to Advertising
+                      </button>
 
                       <button
                         data-tip
@@ -1607,79 +1620,94 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <Footer />
           </>
-        </Suspense>
+        </Suspense >
       )}
 
-      {showScheduleModal && (
-        <ScheduleListDialog
-          setShowScheduleModal={setShowScheduleModal}
-          loading={loading}
-          schedules={schedules}
-          handleScheduleAdd={handleScheduleAdd}
-          handleScheduleUpdate={handleScheduleUpdate}
-          scheduleScreenID={scheduleScreenID}
-        />
-      )}
-      {showAssetModal && (
-        <ShowAssetModal
-          handleAssetAdd={handleAssetAdd}
-          handleAssetUpdate={handleAssetUpdate}
-          setSelectedComposition={setSelectedComposition}
-          handleAppsAdd={handleAppsAdd}
-          popupActiveTab={popupActiveTab}
-          setAssetPreviewPopup={setAssetPreviewPopup}
-          setPopupActiveTab={setPopupActiveTab}
-          setShowAssetModal={setShowAssetModal}
-          assetPreviewPopup={assetPreviewPopup}
-          assetPreview={assetPreview}
-          selectedComposition={selectedComposition}
-          selectedTextScroll={selectedTextScroll}
-          selectedYoutube={selectedYoutube}
-          selectedAsset={selectedAsset}
-          setscreenMacID={setscreenMacID}
-          setSelectedAsset={setSelectedAsset}
-        />
-      )}
-      {openScreen && (
-        <PurchaseScreen
-          openScreen={openScreen}
-          setOpenScreen={setOpenScreen}
-          addScreen={addScreen}
-          setAddScreen={setAddScreen}
-          handlePay={handlePay}
-          setDiscountCoupon={setDiscountCoupon}
-          discountCoupon={discountCoupon}
-          showError={showError}
-          setShowError={setShowError}
-          setDiscount={setDiscount}
-          discount={discount}
-        />
-      )}
+      {
+        showScheduleModal && (
+          <ScheduleListDialog
+            setShowScheduleModal={setShowScheduleModal}
+            loading={loading}
+            schedules={schedules}
+            handleScheduleAdd={handleScheduleAdd}
+            handleScheduleUpdate={handleScheduleUpdate}
+            scheduleScreenID={scheduleScreenID}
+          />
+        )
+      }
+      {
+        showAssetModal && (
+          <ShowAssetModal
+            handleAssetAdd={handleAssetAdd}
+            handleAssetUpdate={handleAssetUpdate}
+            setSelectedComposition={setSelectedComposition}
+            handleAppsAdd={handleAppsAdd}
+            popupActiveTab={popupActiveTab}
+            setAssetPreviewPopup={setAssetPreviewPopup}
+            setPopupActiveTab={setPopupActiveTab}
+            setShowAssetModal={setShowAssetModal}
+            assetPreviewPopup={assetPreviewPopup}
+            assetPreview={assetPreview}
+            selectedComposition={selectedComposition}
+            selectedTextScroll={selectedTextScroll}
+            selectedYoutube={selectedYoutube}
+            selectedAsset={selectedAsset}
+            setscreenMacID={setscreenMacID}
+            setSelectedAsset={setSelectedAsset}
+          />
+        )
+      }
+      {
+        openScreen && (
+          <PurchaseScreen
+            openScreen={openScreen}
+            setOpenScreen={setOpenScreen}
+            addScreen={addScreen}
+            setAddScreen={setAddScreen}
+            handlePay={handlePay}
+            setDiscountCoupon={setDiscountCoupon}
+            discountCoupon={discountCoupon}
+            showError={showError}
+            setShowError={setShowError}
+            setDiscount={setDiscount}
+            discount={discount}
+          />
+        )
+      }
 
-      {showTagModal && (
-        <AddOrEditTagPopup
-          setShowTagModal={setShowTagModal}
-          tags={tags}
-          setTags={setTags}
-          handleTagsUpdate={handleTagsUpdate}
-          from="screen"
-          setTagUpdateScreeen={setTagUpdateScreeen}
-        />
-      )}
+      {
+        showTagModal && (
+          <AddOrEditTagPopup
+            setShowTagModal={setShowTagModal}
+            tags={tags}
+            setTags={setTags}
+            handleTagsUpdate={handleTagsUpdate}
+            from="screen"
+            setTagUpdateScreeen={setTagUpdateScreeen}
+          />
+        )
+      }
 
-      {openPayment && clientSecret && (
-        <Elements options={options} stripe={stripePromise}>
-          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Screen" PaymentValue={addScreen} discountCoupon={discountCoupon} />
-        </Elements>
-      )}
+      {
+        openPayment && clientSecret && (
+          <Elements options={options} stripe={stripePromise}>
+            <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Screen" PaymentValue={addScreen} discountCoupon={discountCoupon} />
+          </Elements>
+        )
+      }
 
-      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
-        <PurchasePlanWarning />
-      )}
+      {
+        (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+          <PurchasePlanWarning />
+        )
+      }
 
-      {screenLimit && (
-        <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit} />
-      )}
+      {
+        screenLimit && (
+          <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit} />
+        )
+      }
+      {convertAdvertisingModal && (<ConvertAdvertisingModal setConvertAdvertisingModal={setConvertAdvertisingModal} selectedItems={selectedItems} />)}
     </>
   );
 };

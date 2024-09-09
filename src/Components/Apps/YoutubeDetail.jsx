@@ -49,7 +49,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showPreviewPopup, setShowPreviewPopup] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
 
-  const { user, token,userDetails } = useSelector((state) => state.root.auth);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const { navigateFromComposition } = useSelector(
     (state) => state.root.globalstates
   );
@@ -177,7 +177,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       <>
-      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+        <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="lg:flex lg:justify-between sm:block  items-center">
               <div className="flex items-center">
@@ -478,7 +478,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         <tr className="mutebtn">
                           <td>
                             <span className="text-base font-normal">
-                              Mute videos:
+                              Mute audio:
                             </span>
                           </td>
                           <td className="text-right  items-end">

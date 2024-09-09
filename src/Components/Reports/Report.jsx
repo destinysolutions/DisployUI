@@ -55,12 +55,12 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div>
                   <h3 className="text-base font-medium  lg:mt-5 md:mt-5 sm:mt-3 xs:mt-3 mb-2">
-                    Asset Report
+                    Asset Reports
                   </h3>
                 </div>
                 <div>
                   <p className="text-sm font-normal max-w-[250px] mx-auto">
-                    Shoes for how make time asset file is playing.
+                    The report shows the number of times the asset file has been played.
                   </p>
                 </div>
               </div>
@@ -76,13 +76,12 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div>
                   <h3 className="text-base font-medium  lg:mt-5 md:mt-5 sm:mt-3 xs:mt-3 mb-2">
-                    Up-time Report
+                    Up-time Reports
                   </h3>
                 </div>
                 <div>
                   <p className="text-sm font-normal max-w-[250px] mx-auto">
-                    Shoes for how make shoes for how make time screen is
-                    displaying content
+                    The report shows how often content has appeared on the screen.
                   </p>
                 </div>
               </div>
@@ -103,7 +102,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div>
                   <p className="text-sm font-normal max-w-[250px] mx-auto">
-                    shows data about and their Action
+                    The report shows the system activities and events, and gives a history of actions.
                   </p>
                 </div>
               </div>
@@ -123,7 +122,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div>
                   <p className="text-sm font-normal max-w-[250px] mx-auto">
-                    shows data about and their Action
+                    The report shows data on what was sold, how much, and the revenue over a certain time.
                   </p>
                 </div>
               </div>
@@ -143,7 +142,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div>
                   <p className="text-sm font-normal max-w-[250px] mx-auto">
-                    shows data about and their Action
+                    The report shows all purchases that have been canceled.
                   </p>
                 </div>
               </div>
@@ -163,7 +162,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div>
                   <p className="text-sm font-normal max-w-[250px] mx-auto">
-                    shows data about and their Action
+                    The report shows the past charges and payments for a screen.
                   </p>
                 </div>
               </div>

@@ -39,7 +39,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { user, token,userDetails } = useSelector((state) => state.root.auth);
+  const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const history = useNavigate();
@@ -237,7 +237,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       ) : (
         <>
-          <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+          <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
             <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
               <div className="lg:flex lg:justify-between sm:block  items-center">
                 <div className="flex items-center">
@@ -538,9 +538,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
 
                           <tr className="mutebtn">
                             <td>
-                              <span className="text-base font-normal">
-                                Mute videos:
-                              </span>
+                              <span className="text-base font-normal">Mute audio:</span>
                             </td>
                             <td className="text-right  items-end">
                               <label className="inline-flex relative items-center cursor-pointer">
@@ -631,8 +629,8 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   </div>
 
-                
-                 
+
+
                 </div>
               </div>
             </div>
@@ -645,7 +643,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         <YoutubePreview setShowPreviewPopup={setShowPreviewPopup} showPreviewPopup={showPreviewPopup} isMuted={isMuted} YoutubeVideo={YoutubeVideo} />
       )}
 
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

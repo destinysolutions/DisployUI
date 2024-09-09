@@ -121,6 +121,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
+  const [groupNameError, setgroupNameError] = useState('');
 
   useEffect(() => {
     if (loadFirst) {
@@ -260,7 +261,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const updateGroupName = async (index) => {
-    // GroupNameUpdate
+    if (!newGroupName) return setgroupNameError('GroupName is Required')
     const payload = {
       ScreenGroupID: editGroupID,
       ScreenGroupName: newGroupName,
@@ -301,6 +302,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(screenGroupDelete(item.screenGroupID));
+        setCurrentPage(1)
         setSelectedItems([]);
         setSelectAll(false);
         // callSignalR();
@@ -335,6 +337,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(screenGroupDeleteAll(selectedItems));
+        setCurrentPage(1)
         let arrMacIDs = [];
         allGroupScreen?.forEach((items) => {
           if (selectedItems?.includes(items?.screenGroupID)) {
@@ -365,6 +368,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         ScreenGroupListID: screen.screenGroupListID,
       };
       dispatch(groupInScreenDelete(payload));
+
       const Params = {
         id: socket.id,
         connection: socket.connected,
@@ -589,7 +593,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className="justify-between lg:flex md:flex items-center sm:block lg:mb-0 mb-3">
                       <div className="section-title">
                         <h1 className="not-italic font-medium text-2xl text-[#001737]">
-                          Group Name
+                          Screen Groups
                         </h1>
                       </div>
                       <div className="flex items-center justify-end flex-wrap gap-1">
@@ -737,15 +741,19 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="flex gap-2 lg:mb-0 md:mb-0 sm:mb-0 mb-2 items-center">
                                   {editIndex === i ? (
                                     <>
-                                      <input
-                                        type="text"
-                                        name="name"
-                                        className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        value={newGroupName}
-                                        onChange={(e) =>
-                                          setNewGroupName(e.target.value)
-                                        }
-                                      />
+                                      <div>
+                                        <input
+                                          type="text"
+                                          name="name"
+                                          className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                          value={newGroupName}
+                                          onChange={(e) =>
+                                            setNewGroupName(e.target.value)
+                                          }
+                                        />
+                                        {!newGroupName && <p className='text-rose-600 text-sm font-semibold w-56' >{groupNameError}</p>}
+                                      </div>
+
                                       <div>
                                         <BiSave
                                           className="cursor-pointer text-xl text-[#0000FF]"
@@ -759,13 +767,14 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                           }}
                                         />
                                       </div>
+
                                     </>
                                   ) : (
                                     <>
                                       <h1 className="text-lg capitalize">
                                         {item?.screenGroupName}
                                       </h1>
-                                      {permissions.isSave && (
+                                      {permissions?.isSave && (
                                         <MdOutlineModeEdit
                                           className="cursor-pointer text-xl text-[#0000FF]"
                                           onClick={() => editGroupName(i)}
@@ -989,8 +998,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     <tbody>
                                       {isAccordionOpen &&
                                         item &&
-                                        item.screenGroupLists?.length > 0 &&
-                                        item.screenGroupLists.map(
+                                        item?.screenGroupLists?.length > 0 ?
+                                        item?.screenGroupLists?.map(
                                           (screen, index) => {
                                             return (
                                               <tr
@@ -1117,10 +1126,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                                     <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
                                                       <MdDeleteForever
                                                         onClick={() =>
-                                                          deleteGroupInScreen(
-                                                            screen,
-                                                            item
-                                                          )
+                                                          deleteGroupInScreen(screen, item)
                                                         }
                                                       />
                                                     </div>
@@ -1129,7 +1135,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                               </tr>
                                             );
                                           }
-                                        )}
+                                        ) : <td colSpan={6} className="">
+                                          <p className="text-center p-2">Not Found.</p>
+                                        </td>}
                                     </tbody>
                                   </table>
                                 </div>
@@ -1151,12 +1159,12 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                       {paginatedData && paginatedData.length > 0 && (
                         <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                           <div className="flex items-center">
-                            <span className="text-gray-500">{`Total ${allGroupScreen?.length} Screen Group`}</span>
+                            <span className="text-gray-500">{`Total ${allGroupScreen?.length} Screen Groups`}</span>
                           </div>
                           <div className="flex justify-end">
                             <select className='px-1 mr-2 border border-gray rounded-lg'
                               value={itemsPerPage}
-                              onChange={(e) => setItemsPerPage(e.target.value)}
+                              onChange={(e) => { setItemsPerPage(e.target.value); setCurrentPage(1) }}
                             >
                               {PageNumber.map((x) => (
                                 <option value={x}>{x}</option>

@@ -170,7 +170,7 @@ const AddEditUser = ({
                                                     />
                                                 )}
                                             />
-                                            {phoneError && (
+                                            {phoneError && !(isValidPhoneNumber(phoneNumber)) && (
                                                 <span className='error'>Invalid Phone Number.</span>
                                             )}
                                             {/* {phoneError && (phoneNumber?.length <= 0 ?
@@ -241,7 +241,7 @@ const AddEditUser = ({
                                                 checked={isActive}
                                                 onChange={handleCheckboxChange}
                                             />
-                                            <label>isActive </label>
+                                            <label>Is Active </label>
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-center p-4 md:p-4 border-t border-gray-200 rounded-b dark:border-gray-600 gap-2">
