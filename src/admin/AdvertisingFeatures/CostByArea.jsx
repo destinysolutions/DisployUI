@@ -34,7 +34,6 @@ export default function CostByArea({ sidebarOpen }) {
     const currentItems = store?.costbyArea?.length > 0 ? store?.costbyArea.slice(indexOfFirstItem, indexOfLastItem) : [];
 
     const DeleteProduct = async (id) => {
-        console.log('id :>> ', id);
         try {
             const result = await SweetAlert.confirm("Are you sure?", "Are you sure you want to delete this!");
             if (result?.isConfirmed) {
@@ -61,6 +60,9 @@ export default function CostByArea({ sidebarOpen }) {
         })
     }
 
+    const onclose = () =>{
+        setAreaModal(!AreaModal)
+    }
 
     return (
         <div>
@@ -85,7 +87,7 @@ export default function CostByArea({ sidebarOpen }) {
                             className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
                             onClick={() => {
                                 // setHeading("Add")
-                                setAreaModal(true)
+                                onclose(true)
                             }}
                         >
                             <MdAddLocation className="text-2xl mr-1" />
@@ -302,7 +304,7 @@ export default function CostByArea({ sidebarOpen }) {
                     </div>
                 </div>
             </div>
-            {AreaModal && <CostAreaModal setAreaModal={setAreaModal} setLoadFirst={setLoadFirst} setEditData={setEditData} EditData={EditData} />}
+            {AreaModal && <CostAreaModal setAreaModal={setAreaModal} setLoadFirst={setLoadFirst} setEditData={setEditData} EditData={EditData} onclose={onclose} />}
         </div>
     )
 }

@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import Select from "react-select";
 import { handleAddCostbyarea } from '../../Redux/admin/AdvertisementSlice';
 
-export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, setEditData }) {
+export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, setEditData,onclose }) {
     const dispatch = useDispatch()
 
     const autocompleteRef = useRef(null);
@@ -67,7 +67,6 @@ export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, se
         setdata('')
         setLoadFirst(true)
         setAreaModal(false)
-        console.log(payload)
     }
 
     if (!isLoaded) return <div>Loading...</div>;
@@ -75,11 +74,8 @@ export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, se
     return (
         <div>
             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-1000 outline-none focus:outline-none">
-                <div
-
-                    className="w-auto my-6   mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-                >
-                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-96 bg-white outline-none focus:outline-none">
+                <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-96 bg-white outline-none focus:outline-none modal lg:w-[1200px] md:w-[900px]">
                         <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                             <div className="flex items-center">
                                 <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
@@ -88,7 +84,7 @@ export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, se
                             </div>
                             <button
                                 className="p-1 text-xl ml-8"
-                                onClick={() => { setAreaModal(false); setLoadFirst(true); setEditData([]) }}
+                                onClick={onclose}
                             >
                                 <AiOutlineCloseCircle className="text-2xl" />
                             </button>
