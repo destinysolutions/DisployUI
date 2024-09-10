@@ -53,6 +53,7 @@ import { socket } from "../../../App";
 import { FaPercentage } from "react-icons/fa";
 import { BiSolidDollarCircle } from "react-icons/bi";
 import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
+import OpenGoogleMap from "./model/openGoogleMap";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -121,7 +122,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenRatePerSecondError, setScreenRatePerSecondError] = useState("");
   const [screenMarginError, setScreenMarginError] = useState("");
 
+  const [selectedAddress, setSelectedAddress] = useState();
+
   const { screens } = useSelector((s) => s.root.screen);
+
+  const [isOpenMap, setIOpenMap] = useState(false);
 
   const dispatch = useDispatch();
   const history = useNavigate();
@@ -307,6 +312,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       selectedTextScroll?.textScroll_Id;
     let data = JSON.stringify({
       screenID: screen_id,
+      googleLocation : selectedAddress,
       screenOrientation: selectScreenOrientation,
       screenResolution: selectScreenResolution,
       timeZone: selectedTimezoneName,
@@ -688,6 +694,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }, 1000);
   };
+
+  const openMap = () => {
+    setIOpenMap(!isOpenMap)
+  }
+
+  const getLocation = (address) => {
+    setSelectedAddress(address)
+  }
 
   return (
     <>
@@ -1872,12 +1886,18 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </label>
                       </td>
                       <td>
-                        <div className="md:w-full flex">
+                        <div className="flex items-center justify-center gap-4">
+                          <div
+                            className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
+                            type="number"
+                            placeholder="Select Location"
+                            maxLength="3"
+                          >{selectedAddress}</div>
                           <div className="border border-[#D5E3FF] rounded">
                             <TbBrandGoogleMaps
                               size={30}
                               className="text-black p-[2px]"
-                              
+                              onClick={openMap}
                             />
                           </div>
                         </div>
@@ -1919,6 +1939,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
+
+      {isOpenMap &&
+        <OpenGoogleMap openMap={openMap} getLocation={getLocation} />
+      }
+
     </>
   );
 };

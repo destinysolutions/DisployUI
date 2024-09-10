@@ -8,28 +8,25 @@ import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import {
   handleDeleteAllScreen,
-  handleGetScreen,
 } from "../../Redux/Screenslice";
 import { AiOutlineCloudUpload, AiOutlineSearch } from "react-icons/ai";
-import { PageNumber, Screen_Type } from "../Common/Common";
-import { HiUserGroup } from "react-icons/hi2";
+import { PageNumber } from "../Common/Common";
 import ReactTooltip from "react-tooltip";
-import { SCREEN_DELETE_ALL, UPDATE_NEW_SCREEN } from "../../Pages/Api";
-import axios from "axios";
-import toast, { CheckmarkIcon } from "react-hot-toast";
+import { SCREEN_DELETE_ALL } from "../../Pages/Api";
+import toast from "react-hot-toast";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { AdvertisementPopup } from "./AdvertisementPopup";
 import { socket } from "../../App";
+import { getAllAdvertisementScreenData } from "../../Redux/AdvertisentScreenSlice";
+
 const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-  const navigation = useNavigate();
   const dispatch = useDispatch();
   const { screens } = useSelector((s) => s.root.screen);
   const [sidebarload, setSidebarLoad] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [screenCheckboxClick, setScreenCheckboxClick] = useState(true);
   const [ScreenData, setScreenData] = useState([]);
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,20 +37,15 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
   const [searchScreen, setSearchScreen] = useState("");
   const [loadFist, setLoadFist] = useState(true);
   const [ispopup, setIsPopup] = useState(false);
-  const [permissions, setPermissions] = useState({
-    isDelete: true,
-    isSave: true,
-    isView: true,
-  });
 
   const filteredData = Array.isArray(ScreenData)
     ? ScreenData?.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value.toString().toLowerCase().includes(searchScreen.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value.toString().toLowerCase().includes(searchScreen.toLowerCase())
       )
+    )
     : [];
 
   useEffect(() => {
@@ -103,7 +95,7 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const fetchScreenData = async () => {
-    const data = await dispatch(handleGetScreen({ token }));
+    const data = await dispatch(getAllAdvertisementScreenData({ token }));
     if (data?.payload?.status === 200) {
       setScreenData(data?.payload?.data);
     }
@@ -118,67 +110,7 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFist]);
 
-  const handleChange = (datas, Values) => {
-    let data = JSON.stringify({
-      screenID: datas?.screenID,
-      timeZone: datas?.timeZone,
-      screenOrientation: datas?.screenOrientation,
-      screenResolution: datas?.screenResolution,
-      mediaType: datas?.mediaType,
-      tags: datas?.tags,
-      mediaDetailID: datas?.mediaDetailID,
-      screenName: datas?.screenName,
-      scrollPerSec: datas?.scrollPerSec,
-      isScroll: datas?.isScroll,
-      operation: "Update",
-      screenOperatingHours: datas?.screenOperatingHours,
-      screenType: Values,
-    });
-    toast.loading("Saving...");
 
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: UPDATE_NEW_SCREEN,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authToken,
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        if (response?.data?.status === 200) {
-          setLoading(false);
-          toast.remove();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.remove();
-      });
-  };
-  const handleCheckboxChange = (screenID) => {
-    
-    if (selectedItems.includes(screenID)) {
-      setSelectedItems(selectedItems.filter((id) => id !== screenID));
-    } else {
-      setSelectedItems([...selectedItems, screenID]);
-    }
-  };
-
-  // all select
-  const handleSelectAllCheckboxChange = (e) => {
-    setSelectAllChecked(!selectAllChecked);
-    if (selectedItems.length === screens.length) {
-      setSelectedItems([]);
-    } else {
-      const allIds = screens.map((item) => item.screenID);
-      setSelectedItems(allIds);
-    }
-  };
   const handleDeleteAllscreen = () => {
     const allScreenMacids = screens.map((i) => i?.macid).join(",");
     let config = {
@@ -198,18 +130,18 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(handleDeleteAllScreen({ config })); 
+        dispatch(handleDeleteAllScreen({ config }));
         setSelectAllChecked(false);
         toast.remove();
         setLoadFist(true);
         toast.success("Screen deleted Successfully!");
-            const Params = {
-              id: socket.id,
-              connection: socket.connected,
-              macId: allScreenMacids,
-            };
-            socket.emit("ScreenConnected", Params);
-       }
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: allScreenMacids,
+        };
+        socket.emit("ScreenConnected", Params);
+      }
     });
   };
 
@@ -231,8 +163,8 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
             <div
               className={
                 userDetails?.isTrial &&
-                user?.userDetails?.isRetailer === false &&
-                !userDetails?.isActivePlan
+                  user?.userDetails?.isRetailer === false &&
+                  !userDetails?.isActivePlan
                   ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain"
                   : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"
               }
@@ -255,68 +187,7 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                         onChange={handleSearch}
                       />
                     </div>
-
-                    {selectedItems?.length !== 0 && !selectAllChecked && (
-                      <button
-                        onClick={() => setIsPopup(true)}
-                        className="sm:ml-2 xs:ml-1 xs:mt-0 sm:mt-0 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm hover:text-white hover:bg-primary hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
-                      >
-                        Convert to Advertising
-                      </button>
-                    )}
-
-                    <button
-                      data-tip
-                      data-for="Delete"
-                      type="button"
-                      className=" ml-2 border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                      onClick={handleDeleteAllscreen}
-                      style={{ display: selectAllChecked ? "block" : "none" }}
-                    >
-                      <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
-                      <ReactTooltip
-                        id="Delete"
-                        place="bottom"
-                        type="warning"
-                        effect="solid"
-                      >
-                        <span>Delete</span>
-                      </ReactTooltip>
-                    </button>
-                    {/* multipal remove */}
-                    {selectedItems?.length !== 0 && !selectAllChecked && (
-                      <button
-                        className=" ml-2 border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                        onClick={handleDeleteAllscreen}
-                      >
-                        <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
-                      </button>
-                    )}
-
-                    {permissions.isDelete &&
-                      sortedAndPaginatedData?.length > 0 && (
-                        <button
-                          data-tip
-                          data-for="Select All"
-                          type="button"
-                          className="flex align-middle text-white items-center rounded-full p-2 text-base  "
-                        >
-                          <input
-                            type="checkbox"
-                            className="lg:w-7 lg:h-6 w-5 h-5"
-                            onChange={handleSelectAllCheckboxChange}
-                            checked={selectAllChecked}
-                          />
-                          <ReactTooltip
-                            id="Select All"
-                            place="bottom"
-                            type="warning"
-                            effect="solid"
-                          >
-                            <span>Select All</span>
-                          </ReactTooltip>
-                        </button>
-                      )}
+                   
                   </div>
                 </div>
 
@@ -351,9 +222,6 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                           </th>
                           <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                             Now Playing
-                          </th>
-                          <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
-                            Types
                           </th>
                         </tr>
                       </thead>
@@ -406,23 +274,6 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                     <td className="text-[#5E5E5E] mw-200">
                                       <div className="flex gap-1 items-center">
                                         <>
-                                          {permissions.isDelete && (
-                                            <>
-                                
-                                                <input
-                                                  type="checkbox"
-                                                  className="cursor-pointer"
-                                                  checked={selectedItems.includes(
-                                                    screen.screenID
-                                                  )}
-                                                  onChange={() =>
-                                                    handleCheckboxChange(
-                                                      screen.screenID
-                                                    )
-                                                  }
-                                                />
-                                            </>
-                                          )}
                                           {screen?.screenName}
                                         </>
                                       </div>
@@ -434,11 +285,10 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                       <td className="text-center w-full">
                                         <span
                                           id={`changetvstatus${screen?.macid}`}
-                                          className={`rounded-full px-6 py-2 text-white text-center ${
-                                            screen.screenStatus == 1
-                                              ? "bg-[#3AB700]"
-                                              : "bg-[#FF0000]"
-                                          }`}
+                                          className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                            ? "bg-[#3AB700]"
+                                            : "bg-[#FF0000]"
+                                            }`}
                                         >
                                           {screen?.screenStatus == 1
                                             ? "Live"
@@ -448,13 +298,21 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                     </td>
 
                                     <td
-                                      className="text-center"
+                                      className="text-center cursor-pointer"
                                       style={{ wordBreak: "break-all" }}
                                     >
-                                      NA
+                                      <div
+                                        title={screen?.assetName}
+                                        className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                      >
+                                        <p className="line-clamp-1">
+                                          {screen.assetName}
+                                        </p>
+                                        <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
+                                      </div>
                                     </td>
 
-                                    <td className="mw-200 text-[#5E5E5E] text-center">
+                                    {/* <td className="mw-200 text-[#5E5E5E] text-center">
                                       <select
                                         className="px-2 py-2 border border-[#D5E3FF] w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-full"
                                         value={screen?.screenType}
@@ -472,7 +330,8 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                             </option>
                                           ))}
                                       </select>
-                                    </td>
+                                    </td> */}
+
                                   </tr>
                                 );
                               })}
