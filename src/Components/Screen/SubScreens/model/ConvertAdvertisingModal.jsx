@@ -4,35 +4,61 @@ import { useDispatch } from 'react-redux';
 import Select from "react-select";
 import { getIndustry } from '../../../../Redux/CommonSlice';
 import { useSelector } from 'react-redux';
+import { getConvertToAdvertisement } from '../../../../Redux/Screenslice';
 
 
 export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, selectedItems }) {
+
     const dispatch = useDispatch()
     const store = useSelector((state) => state.root.common);
     const [Errors, setErrors] = useState(false);
     const [ConvertAdvertisment, setConvertAdvertisment] = useState({
         Industry: null,
+        IndustryId: null,
         Exclude: null
     });
+    const [submenuOptions, setSubmenuOptions] = useState([]);
 
     useEffect(() => {
         dispatch(getIndustry({}))
     }, [dispatch]);
 
+
+    const handleIndustryChange = (selectedOption) => {
+
+
+        if (selectedOption) {
+            const industry = store?.Industry.find(item => item?.industryID === selectedOption?.value);
+            if (industry) {
+
+                setConvertAdvertisment({ ...ConvertAdvertisment, Industry: selectedOption })
+            } else {
+
+                setConvertAdvertisment({ ...ConvertAdvertisment, IndustryId: selectedOption })
+            }
+            setSubmenuOptions(industry ? industry.subIndustry : submenuOptions);
+        } else {
+            setSubmenuOptions([]);
+        }
+    };
+
+
     const onSumbit = () => {
-        console.log('ConvertAdvertisment :>> ', ConvertAdvertisment);
-        if ((ConvertAdvertisment?.Exclude !== 'undefined') || (ConvertAdvertisment?.Industry !== 'undefined')) {
+        if ((!ConvertAdvertisment?.Exclude) || (!ConvertAdvertisment?.Industry)) {
             return setErrors(true)
         }
+
         const allScreenids = selectedItems.map((i) => i).join(",");
 
-        console.log('Errors :>> ', Errors);
         const Payload = {
             ScreenIds: allScreenids,
-            IndustryID: ConvertAdvertisment?.Industry?.value,
+            IndustryID: ConvertAdvertisment?.Industry,
             ExcludeID: ConvertAdvertisment?.Exclude?.value,
         }
-        console.log('Payload :>> ', Payload);
+
+        dispatch(getConvertToAdvertisement(Payload))
+        setConvertAdvertisingModal(false)
+
     }
 
     return (
@@ -61,20 +87,29 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
                                 <label for='Yes' className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
                                     Industry :
                                 </label>
-                                <Select
+
+                                <select name="Industry" id="Industry" className='border border-primary rounded-lg px-4 pl-2 py-2 w-full'
                                     value={ConvertAdvertisment?.Industry}
-                                    onChange={(options) => { setConvertAdvertisment({ ...ConvertAdvertisment, Industry: options }) }}
-                                    placeholder='Select Industry'
-                                    options={
-                                        store?.Industry.length > 0 && store?.Industry[0].subIndustry
-                                            ? store?.Industry[0].subIndustry.map((item) => ({
-                                                value: item?.industryID,
-                                                label: item?.industryName,
-                                            }))
-                                            : [{ value: "", label: "Not Found" }]
+                                    onChange={(e) => { setConvertAdvertisment({ ...ConvertAdvertisment, Industry: e.target.value }) }}
+                                >
+                                    <option className='hidden'>Select Industry</option>
+                                    {store?.Industry?.length > 0 ? store?.Industry?.map((item) => (
+                                        <optgroup key={item?.industryID} label={item?.industryName}>
+                                            {item?.subIndustry && item?.subIndustry?.length > 0 ? (
+                                                item?.subIndustry.map((subItem) => (
+                                                    <option key={subItem?.industryID} value={subItem?.industryID}>
+                                                        {subItem?.industryName}
+                                                    </option>
+                                                ))
+                                            ) : (
+                                                <option value="" disabled>No sub-items available</option>
+                                            )}
+                                        </optgroup>
+                                    )) : <optgroup>Not Found</optgroup>
                                     }
-                                    isClearable={true}
-                                />
+
+                                </select>
+
                                 {Errors && ConvertAdvertisment?.Industry === null && (
                                     <p className="text-red-600 text-sm font-semibold ">
                                         Industry Name is Required.
@@ -99,6 +134,8 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
                                     }
                                     isClearable={true}
                                 />
+
+
                                 {Errors && ConvertAdvertisment?.Exclude === null && (
                                     <p className="text-red-600 text-sm font-semibold ">
                                         Exclude Name is Required.

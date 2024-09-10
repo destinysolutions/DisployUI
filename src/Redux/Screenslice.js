@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
-import { SCREEN_DEACTIVATE_ACTIVATE, deleteUrl, getUrl, postUrl } from "../Pages/Api";
+import { GET_ALL_ADVERTISEMENT, GET_CONVERT_ADVERTISEMENT, SCREEN_DEACTIVATE_ACTIVATE, deleteUrl, getUrl, postUrl } from "../Pages/Api";
 import axios from "axios";
 
 export const handleGetScreen = createAsyncThunk("screen/handleGetScreen", async ({ id, token }, { rejectWithValue, signal }) => {
@@ -129,7 +129,7 @@ export const screenDeactivateActivate = createAsyncThunk("data/AddTagsAndUpdate"
     const token = thunkAPI.getState().root.auth.token;
     const queryParams = new URLSearchParams(payload).toString();
     const response = await axios.put(`${SCREEN_DEACTIVATE_ACTIVATE}?${queryParams}`, null, { headers: { Authorization: `Bearer ${token}` } });
-    
+
     if (response.data.status) {
       return {
         status: true,
@@ -162,6 +162,30 @@ export const handleGetAllScreenAdmin = createAsyncThunk("screen/handleGetAllScre
   }
 }
 );
+
+export const getConvertToAdvertisement = createAsyncThunk("ProductMaster/getVariations", async (payload, thunkAPI) => {
+  try {
+    const queryParams = new URLSearchParams(payload).toString();
+    const token = thunkAPI.getState().root.auth.token
+    const response = await axios.get(`${GET_CONVERT_ADVERTISEMENT}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data
+  } catch (error) {
+    console.log('error', error)
+    throw error;
+  }
+});
+
+export const getAdvertisement = createAsyncThunk("common/getAdvertisement", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.get(`${GET_ALL_ADVERTISEMENT}`, { headers: { Authorization: `Bearer ${token}` } });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    toast.error('Failed to fetch data');
+    throw error;
+  }
+});
 
 const initialState = {
   loading: true,
@@ -325,14 +349,45 @@ const Screenslice = createSlice({
       }
     );
     builder.addCase(
-      handleGetAllScreenAdmin.fulfilled,
-      (state, action) => {
+      handleGetAllScreenAdmin.fulfilled, (state, action) => {
         state.status = "succeeded";
       }
     );
     builder.addCase(handleGetAllScreenAdmin.rejected, (state, action) => {
       state.status = "failed";
     })
+
+    builder.addCase(getConvertToAdvertisement.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(getConvertToAdvertisement.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.data = payload?.data;
+      state.error = null;
+    });
+
+    builder.addCase(getConvertToAdvertisement.rejected, (state, { payload }) => {
+      state.loading = false;
+      state.data = null;
+      state.error = payload ?? null;
+    });
+
+    builder.addCase(getAdvertisement.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(getAdvertisement.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.data = payload?.data;
+      state.error = null;
+    });
+
+    builder.addCase(getAdvertisement.rejected, (state, { payload }) => {
+      state.loading = false;
+      state.data = null;
+      state.error = payload ?? null;
+    });
   },
 });
 

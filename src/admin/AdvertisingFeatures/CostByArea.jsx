@@ -1,17 +1,66 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { PageNumber } from '../../Components/Common/Common';
-import { MdAddLocation } from 'react-icons/md';
+import { MdAddLocation, MdDeleteForever, MdModeEditOutline } from 'react-icons/md';
+import CostAreaModal from './CostAreaModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteCostByArea, getCostByArea } from '../../Redux/admin/AdvertisementSlice';
+import ReactTooltip from 'react-tooltip';
+import SweetAlert from '../../Components/BookYourSlot/SweetAlert';
 
 export default function CostByArea({ sidebarOpen }) {
+    const dispatch = useDispatch()
+    const store = useSelector((state) => state.root.advertisementData);
+
+    const [loadFirst, setLoadFirst] = useState(true);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
-    const [areaData, setAreaData] = useState([]);
+    const [AreaModal, setAreaModal] = useState(false);
+    const [EditData, setEditData] = useState([]);
+
+    useEffect(() => {
+        if (loadFirst) {
+            setLoading(true)
+            dispatch(getCostByArea()).then((res) => {
+                setLoading(false)
+            })
+        }
+        setLoadFirst(false)
+    }, [loadFirst, dispatch]);
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = areaData?.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = store?.costbyArea?.length > 0 ? store?.costbyArea.slice(indexOfFirstItem, indexOfLastItem) : [];
+
+    const DeleteProduct = async (id) => {
+        console.log('id :>> ', id);
+        try {
+            const result = await SweetAlert.confirm("Are you sure?", "Are you sure you want to delete this!");
+            if (result?.isConfirmed) {
+                dispatch(deleteCostByArea(id)).then((res) => {
+                    console.log('res :>> ', res);
+                    if (res?.payload?.status === 200) {
+                        setLoadFirst(true)
+                        setCurrentPage(1);
+                    }
+                });
+
+                SweetAlert.success("Deleted successfully");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            SweetAlert.error("An error occurred");
+        }
+    };
+
+    const EditArea = (id) => {
+        dispatch(getCostByArea(id)).then((res) => {
+            setEditData(res?.payload?.data)
+            setAreaModal(true)
+        })
+    }
+
 
     return (
         <div>
@@ -36,7 +85,7 @@ export default function CostByArea({ sidebarOpen }) {
                             className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
                             onClick={() => {
                                 // setHeading("Add")
-                                // handleAddPlan()
+                                setAreaModal(true)
                             }}
                         >
                             <MdAddLocation className="text-2xl mr-1" />
@@ -55,7 +104,7 @@ export default function CostByArea({ sidebarOpen }) {
                             >
                                 <thead>
                                     <tr className="items-center table-head-bg">
-                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
+                                        <th className="text-[#5A5881] text-base font-semibold  text-center  ">
                                             Location
                                             {/*<svg
                           className="w-3 h-3 ms-1.5 cursor-pointer"
@@ -68,11 +117,11 @@ export default function CostByArea({ sidebarOpen }) {
                           <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
     </svg>*/}
                                         </th>
-                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                        <th className="text-[#5A5881] text-base font-semibold text-center">
                                             Cost
                                         </th>
 
-                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                        <th className="text-[#5A5881] text-base font-semibold  text-center">
                                             Actions
                                         </th>
                                     </tr>
@@ -82,20 +131,62 @@ export default function CostByArea({ sidebarOpen }) {
                                         currentItems.length > 0 &&
                                         currentItems.map((item, index) => (
                                             <tr className="border-b border-b-[#E4E6FF]" key={index}>
-                                                <td className="text-[#5E5E5E] text-center flex">
-
-                                                    <div className="ps-3 flex text-center">
-                                                        <div className="font-normal text-gray-500 mt-2">
-                                                            {item?.customer_name}
-                                                        </div>
+                                                <td className="text-[#5E5E5E] w-full ">
+                                                    <div className="font-normal  mx-auto text-gray-500 mt-2 w-80 truncate ">
+                                                        {item?.locationName}
                                                     </div>
+
                                                 </td>
-
-
-
                                                 <td className="text-[#5E5E5E] text-center">
                                                     <div className="flex justify-center gap-4">
+                                                        {item?.costPerSec}
+                                                    </div>
+                                                </td>
+                                                <td className="text-[#5E5E5E] text-center">
+                                                    <div className="flex gap-2 justify-center">
+                                                        <div className="cursor-pointer text-xl flex gap-4">
+                                                            <button
+                                                                data-tip
+                                                                data-for="Edit"
+                                                                type="button"
+                                                                className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                                onClick={() => {
+                                                                    EditArea(item?.costByAreaID);
+                                                                }}
+                                                            >
+                                                                <MdModeEditOutline />
+                                                                <ReactTooltip
+                                                                    id="Edit"
+                                                                    place="bottom"
+                                                                    type="warning"
+                                                                    effect="solid"
+                                                                >
+                                                                    <span>Edit</span>
+                                                                </ReactTooltip>
+                                                            </button>
+                                                        </div>
 
+                                                        <div className="cursor-pointer text-xl flex gap-4 ">
+                                                            <button
+                                                                data-tip
+                                                                data-for="Delete"
+                                                                type="button"
+                                                                className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
+                                                                onClick={() => {
+                                                                    DeleteProduct(item?.costByAreaID);
+                                                                }}
+                                                            >
+                                                                <MdDeleteForever />
+                                                                <ReactTooltip
+                                                                    id="Delete"
+                                                                    place="bottom"
+                                                                    type="warning"
+                                                                    effect="solid"
+                                                                >
+                                                                    <span>Delete</span>
+                                                                </ReactTooltip>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -142,7 +233,7 @@ export default function CostByArea({ sidebarOpen }) {
                         {currentItems?.length !== 0 && (
                             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                                 <div className="flex items-center">
-                                    <span className="text-gray-500">{`Total ${areaData?.length} Areas`}</span>
+                                    <span className="text-gray-500">{`Total ${store?.costbyArea?.length} Areas`}</span>
                                 </div>
                                 <div className="flex justify-end">
                                     <select className='px-1 mr-2 border border-gray rounded-lg'
@@ -177,14 +268,14 @@ export default function CostByArea({ sidebarOpen }) {
                                     </button>
                                     <div className="flex items-center me-3">
                                         <span className="text-gray-500">{`Page ${currentPage} of ${Math.ceil(
-                                            areaData?.length / itemsPerPage
+                                            store?.costbyArea?.length / itemsPerPage
                                         )}`}</span>
                                     </div>
                                     <button
                                         onClick={() => setCurrentPage(currentPage + 1)}
                                         disabled={
                                             currentPage ===
-                                            Math.ceil(areaData?.length / itemsPerPage)
+                                            Math.ceil(store?.costbyArea?.length / itemsPerPage)
                                         }
                                         className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                                     >
@@ -211,6 +302,7 @@ export default function CostByArea({ sidebarOpen }) {
                     </div>
                 </div>
             </div>
+            {AreaModal && <CostAreaModal setAreaModal={setAreaModal} setLoadFirst={setLoadFirst} setEditData={setEditData} EditData={EditData} />}
         </div>
     )
 }

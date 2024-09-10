@@ -726,4 +726,9 @@ export const Industry = [
   { id: 4, title: "IT Information" },
 ]
 
+export const Commission = [
+  { id: 0, title: "If we bring the ads" },
+  { id: 1, title: "If client bring the ads" },
+]
+
 export const PageNumber = [5, 10, 25]

@@ -1271,6 +1271,9 @@ table.screen-table {
 .z-9999 {
   z-index: 9999;
 }
+.z-1000 {
+  z-index: 1000;
+}
 
 .sugesstion-auto {
   display: block;
