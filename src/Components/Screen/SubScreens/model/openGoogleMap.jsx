@@ -29,6 +29,7 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
     const [markers, setMarkers] = useState([]);
     const [selected, setSelected] = useState(null);
     const [selectedAddress, setSelectedAddress] = useState("");
+    const [selectedLatLng, setSelectedLatLng] = useState({ lat: null, lng: null });
     const [currentCenter, setCurrentCenter] = useState({ lat: 43.6532, lng: -79.3832 });
     const mapRef = useRef();
 
@@ -66,9 +67,11 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
 
             const address = results.results[0]?.formatted_address || "No address found";
             setSelectedAddress(address);
+            setSelectedLatLng({ lat, lng });
         } catch (error) {
             console.log("Error: ", error);
             setSelectedAddress("Error fetching address");
+            setSelectedLatLng({ lat: null, lng: null });
         }
     }, []);
 
@@ -110,7 +113,7 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
                 const results = await getGeocode({ address });
                 const { lat, lng } = await getLatLng(results[0]);
                 panTo({ lat, lng });
-
+                setSelectedLatLng({ lat, lng });
                 // Fetch address for the selected place
                 const geocodeResults = await fetch(
                     `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk`
@@ -150,10 +153,15 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
     }
 
 
- const saveLocation = () =>{
-    getLocation(selectedAddress)
-    openMap(false)
- }
+    const saveLocation = () => {
+        const item = {
+            address: selectedAddress,
+            lat: selectedLatLng.lat,
+            lng: selectedLatLng.lng,
+        }
+        getLocation(item)
+        openMap(false)
+    }
 
     return (
         <div
@@ -234,7 +242,7 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
                                 onClick={saveLocation}
                                 style={{
                                     width: '150px', // Adjust width as needed
-                                    height: '50px'  
+                                    height: '50px'
                                 }}
                             >
                                 Save

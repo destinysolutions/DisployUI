@@ -122,7 +122,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenRatePerSecondError, setScreenRatePerSecondError] = useState("");
   const [screenMarginError, setScreenMarginError] = useState("");
 
-  const [selectedAddress, setSelectedAddress] = useState();
+  const [selectedAddress, setSelectedAddress] = useState({ lat: null, lng: null, address: '' });
 
   const { screens } = useSelector((s) => s.root.screen);
 
@@ -312,7 +312,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       selectedTextScroll?.textScroll_Id;
     let data = JSON.stringify({
       screenID: screen_id,
-      googleLocation : selectedAddress,
+      GoogleLocation: selectedAddress?.address,
+      Latitude: selectedAddress?.lat,
+      Longitude: selectedAddress?.lng,
       screenOrientation: selectScreenOrientation,
       screenResolution: selectScreenResolution,
       timeZone: selectedTimezoneName,
@@ -699,8 +701,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setIOpenMap(!isOpenMap)
   }
 
-  const getLocation = (address) => {
-    setSelectedAddress(address)
+  const getLocation = (items) => {
+    setSelectedAddress(items)
   }
 
   return (
@@ -1892,7 +1894,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             type="number"
                             placeholder="Select Location"
                             maxLength="3"
-                          >{selectedAddress}</div>
+                          >{selectedAddress?.address}</div>
                           <div className="border border-[#D5E3FF] rounded">
                             <TbBrandGoogleMaps
                               size={30}
