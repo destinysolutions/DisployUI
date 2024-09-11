@@ -313,3 +313,6 @@ export const GET_INDUSTRY = `${baseUrl}IndustryMaster/GetAllIndustry`
 
 // advertisentScreen
 export const GetAllAdvertisementScreen = `${baseUrl}NewScreen/GetAllAdvertisementScreen`
+
+export const GET_PENDING_SCREEN = `${baseUrl}NewScreen/GetAllPendingScreen`
+

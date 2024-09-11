@@ -14,6 +14,8 @@ import NavbarNotification from "./NavbarNotification";
 import toast from "react-hot-toast";
 import { handleGetAllPlans } from "../Redux/CommonSlice";
 import PurchaseUserPlan from "./Common/PurchaseUserPlan";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { handleGetAllNotifications } from "../Redux/NotificationSlice";
 
 const getInitials = (name) => {
   let initials;
@@ -54,6 +56,8 @@ const Navbar = () => {
   //show profile and notification box
   const dispatch = useDispatch();
   const { user, userDetails, token } = useSelector((state) => state.root.auth);
+  const { allNotifications } = useSelector((state) => state.root.notification);
+
   const authToken = `Bearer ${token}`;
   const history = useNavigate();
   const [showProfileBox, setShowProfileBox] = useState(false);
@@ -97,6 +101,11 @@ const Navbar = () => {
     })
   }
 
+
+  useEffect(() => {
+    dispatch(handleGetAllNotifications({}))
+  }, [dispatch])
+
   useEffect(() => {
     fetchAllPlan()
   }, [])
@@ -137,7 +146,7 @@ const Navbar = () => {
   }, []);
 
   //used for apply navigation
- 
+
 
   return (
     // navbar component start
@@ -174,13 +183,22 @@ const Navbar = () => {
                 className="m-1  bg-lightgray"
               /> */}
                 {/* Notification box start */}
-                <div className="relative">
-                  <img
+                <div className="relative ">
+                  <IoMdNotificationsOutline size={32} className=" cursor-pointer relative bg-lightgray p-1 rounded-lg text-indigo-500"
+                    onClick={handleNotificationClick}
+                  />
+                  {allNotifications?.data?.length > 0 && (
+                    <span class=" absolute flex h-1.5 w-1.5 z-30 right-0 top-2 bottom-0 left-5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 bg-red opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-700 bg-red"></span>
+                    </span>
+                  )}
+                  {/* <img
                     src={notificationIcon}
                     alt="notification"
                     className="m-1 cursor-pointer relative bg-lightgray"
                     onClick={handleNotificationClick}
-                  />
+                  /> */}
                   {showNotificationBox && (
                     <NavbarNotification setShowNotificationBox={setShowNotificationBox} />
                   )}
@@ -189,7 +207,7 @@ const Navbar = () => {
                 {/* profile box start */}
                 <div className="relative">
                   <div>
-                    {(userDetails?.profilePhoto === "" || userDetails?.profilePhoto === null)  ? (
+                    {(userDetails?.profilePhoto === "" || userDetails?.profilePhoto === null) ? (
                       <img
                         src={createImageFromInitials(
                           500,
@@ -213,7 +231,7 @@ const Navbar = () => {
                       <>
                         <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                           <div className="flex items-center space-x-3  p-2">
-                            {(userDetails?.profilePhoto === "" || userDetails?.profilePhoto === null ) ? (
+                            {(userDetails?.profilePhoto === "" || userDetails?.profilePhoto === null) ? (
                               <img
                                 src={createImageFromInitials(500, userDetails?.firstName, color)}
                                 alt="profile"

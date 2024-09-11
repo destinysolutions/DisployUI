@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { ADD_ADMIN_RATE, ADD_COST_AREA, ASSIGN_ADS, DELETE_COST_AREA, GETALLADS, GET_COST_AREA, GET_NOTIFICATIONS, UPDATE_ADS_RATE } from "../../Pages/Api";
+import { ADD_ADMIN_RATE, ADD_COMMISSION_RATE, ADD_COST_AREA, ASSIGN_ADS, DELETE_COST_AREA, GETALLADS, GET_COMMISSION_RATE, GET_COST_AREA, GET_NOTIFICATIONS, UPDATE_ADS_RATE } from "../../Pages/Api";
 
 
 const initialState = {
@@ -80,10 +80,10 @@ export const AddMarginRate = createAsyncThunk("data/AddMarginRate", async (paylo
 }
 );
 
-// GetAllCostByArea 
-export const getCostByArea = createAsyncThunk("AdsCustomer/getCostByArea", async (payload, thunkAPI) => {
+
+export const getCostByAreabyID = createAsyncThunk("AdsCustomer/getCostByAreabyID", async (payload, thunkAPI) => {
   try {
-    const queryParams = new URLSearchParams({ CostByAreaID: payload ? payload : 0 }).toString();
+    const queryParams = new URLSearchParams({ CostByAreaID: payload }).toString();
     const token = thunkAPI.getState().root.auth.token;
     const response = await axios.get(`${GET_COST_AREA}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
     return response.data;
@@ -91,6 +91,20 @@ export const getCostByArea = createAsyncThunk("AdsCustomer/getCostByArea", async
     console.log("error", error);
     toast.error('Failed to fetch data');
     throw error;
+  }
+});
+
+// GetAllCostByArea 
+export const getCostByArea = createAsyncThunk("AdsCustomer/getCostByArea", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.get(GET_COST_AREA, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    toast.error('Failed to fetch data');
+    throw error
+
   }
 });
 
@@ -111,6 +125,30 @@ export const handleAddCostbyarea = createAsyncThunk("data/handleAddCostbyarea", 
   try {
     const token = thunkAPI.getState().root.auth.token;
     const response = await axios.post(ADD_COST_AREA, payload, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+});
+
+// commissionRate
+export const getcommissionRate = createAsyncThunk("AdsCustomer/getcommissionRate", async (payload, thunkAPI) => {
+  try {
+    const queryParams = new URLSearchParams({ CommissionRateID: payload }).toString();
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.get(`${GET_COMMISSION_RATE}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    toast.error('Failed to fetch data');
+    throw error;
+  }
+});
+
+export const AddcommissionRate = createAsyncThunk("data/AddcommissionRate", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.post(ADD_COMMISSION_RATE, payload, { headers: { Authorization: `Bearer ${token}` }, });
     return response.data;
   } catch (error) {
     throw error;
@@ -200,12 +238,29 @@ const AdvertisementSlice = createSlice({
         state.loading = false;
         state.costbyArea = action.payload.data;
         state.token = action?.data?.token;
-        state.data = action.payload?.data;
       })
 
       .addCase(getCostByArea.rejected, (state, action) => {
         state.loading = false;
         state.costbyArea = null;
+        state.message = action.error.message || "Failed to data";
+      })
+
+      .addCase(getCostByAreabyID.pending, (state) => {
+        state.loading = true;
+
+      })
+
+      .addCase(getCostByAreabyID.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data;
+        state.token = action?.data?.token;
+
+      })
+
+      .addCase(getCostByAreabyID.rejected, (state, action) => {
+        state.loading = false;
+        state.data = null;
         state.message = action.error.message || "Failed to data";
       })
 
@@ -223,23 +278,56 @@ const AdvertisementSlice = createSlice({
         state.status = "failed";
         state.error = action.payload?.message;
         state.message = "Failed to delete Price";
-      });
+      })
 
-    builder.addCase(handleAddCostbyarea.pending, (state) => {
-      state.status = "loading";
-    });
+      .addCase(handleAddCostbyarea.pending, (state) => {
+        state.status = "loading";
+      })
 
-    builder.addCase(handleAddCostbyarea.fulfilled, (state, action) => {
-      state.status = "succeeded";
-      state.data = action.payload;
-      toast.success('Location Saved Successfully');
-    });
+      .addCase(handleAddCostbyarea.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.data = action.payload;
+        toast.success('Location Saved Successfully');
+      })
+      .addCase(handleAddCostbyarea.rejected, (state, action) => {
+        state.loading = false;
+        state.status = "failed";
+        toast.error(action.payload.message);
+      })
 
-    builder.addCase(handleAddCostbyarea.rejected, (state, action) => {
-      state.loading = false;
-      state.status = "failed";
-      toast.error(action.payload.message);
-    });
+      // get commissionRate
+      .addCase(getcommissionRate.pending, (state) => {
+        state.loading = true;
+
+      })
+
+      .addCase(getcommissionRate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data;
+        state.token = action?.data?.token;
+
+      })
+
+      .addCase(getcommissionRate.rejected, (state, action) => {
+        state.loading = false;
+        state.data = null;
+        state.message = action.error.message || "Failed to data";
+      })
+
+      .addCase(AddcommissionRate.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(AddcommissionRate.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.data = action.payload;
+        toast.success('CommissionRate Saved Successfully');
+      })
+      .addCase(AddcommissionRate.rejected, (state, action) => {
+        state.loading = false;
+        state.status = "failed";
+        toast.error(action.payload.message);
+      })
   },
 });
 

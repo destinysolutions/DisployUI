@@ -129,7 +129,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     const existingButtonInRowAndCol = Object.values(DataRowAndCol).find((button) => button.row === row && button.col === col);
 
     if (existingButtonInRowAndCol || selectedScreen) {
-      toast.error("This screen already has a button in the selected row and column.");
+      toast.error("The screens must be different in each view.");
       return; // Exit the function if a button already exists
     }
 

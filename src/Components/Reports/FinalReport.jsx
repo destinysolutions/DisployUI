@@ -102,6 +102,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
         };
         axios.request(config)
             .then((response) => {
+                console.log('response :>> ', response);
                 setAllReportData({
                     allData: response?.data?.data,
                     SearchData: response?.data?.data
@@ -127,7 +128,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
                 const filterData = allReportData?.allData?.filter((item) => item?.screenName?.toLowerCase().includes(searchQuery))
                 setAllReportData({ ...allReportData, SearchData: filterData })
             } else if (report === "auditlogreport") {
-                const filterData = allReportData?.allData?.filter((item) => item?.performedBy?.toLowerCase().includes(searchQuery))
+                const filterData = allReportData?.allData?.filter((item) => Object.values(item).some((value) => value && value?.toLowerCase().includes(searchQuery)))
                 setAllReportData({ ...allReportData, SearchData: filterData })
             } else if (report === "salesreport") {
                 const filterData = allReportData?.allData?.filter((item) => item?.customer?.toLowerCase().includes(searchQuery))

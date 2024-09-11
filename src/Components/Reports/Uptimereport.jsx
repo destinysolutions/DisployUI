@@ -39,7 +39,7 @@ const Uptimereport = ({
                 <MdKeyboardArrowLeft className="text-4xl text-primary" />
               </Link>
               <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
-                Up-time Report
+                Up-time Reports
               </h1>
             </div>
 

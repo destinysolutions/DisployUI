@@ -1,26 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io';
 import { Commission } from '../../Components/Common/Common';
+import { AddcommissionRate, getcommissionRate } from '../../Redux/admin/AdvertisementSlice';
+import { useDispatch } from 'react-redux';
+import { FaPercentage } from "react-icons/fa";
+import toast from 'react-hot-toast';
 
 export default function CommissionRate() {
-    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch()
+    const [loadFirst, setLoadFirst] = useState(true);
     const [openAccordionIndex, setOpenAccordionIndex] = useState(false);
-    const [commissionRate, setCommissionRate] = useState({
-        commissionRateID: 0,
+    const [buttonType, setbuttonType] = useState({
         uptoScreens: true,
         moreThanScreens: false,
-        upDisployBringDisploy: 0,
-        upDisployBringClient: 0,
-        upClientBringDisploy: 0,
-        upClientBringClient: 0,
-        moreDisployBringDisploy: 0,
-        moreDisployBringClient: 0,
-        moreClientBringDisploy: 0,
-        moreClientBringClient: 0
     });
 
+    const [commissionRate, setCommissionRate] = useState({
+        commissionRateID: 0,
+        uptoScreens: 20,
+        moreThanScreens: 20,
+        upDisployBringDisploy: '',
+        upDisployBringClient: '',
+        upClientBringDisploy: '',
+        upClientBringClient: '',
+        moreDisployBringDisploy: '',
+        moreDisployBringClient: '',
+        moreClientBringDisploy: '',
+        moreClientBringClient: ''
+    });
+
+    useEffect(() => {
+        if (loadFirst) {
+            dispatch(getcommissionRate(1)).then((result) => {
+                const res = result?.payload?.data
+                setCommissionRate({
+                    commissionRateID: res?.commissionRateID,
+                    uptoScreens: res?.uptoScreens,
+                    moreThanScreens: res?.moreThanScreens,
+                    upDisployBringDisploy: res?.upDisployBringDisploy,
+                    upDisployBringClient: res?.upDisployBringClient,
+                    upClientBringDisploy: res?.upClientBringDisploy,
+                    upClientBringClient: res?.upClientBringClient,
+                    moreDisployBringDisploy: res?.moreDisployBringDisploy,
+                    moreDisployBringClient: res?.moreDisployBringClient,
+                    moreClientBringDisploy: res?.moreClientBringDisploy,
+                    moreClientBringClient: res?.moreClientBringClient
+                })
+            })
+        }
+        setLoadFirst(false)
+    }, [loadFirst, dispatch]);
+
     const handleButtonClick = (buttonType) => {
-        setCommissionRate(prevState => ({
+        setbuttonType(prevState => ({
             ...prevState,
             uptoScreens: buttonType === 'uptoScreens',
             moreThanScreens: buttonType === 'moreThanScreens'
@@ -32,18 +64,24 @@ export default function CommissionRate() {
     };
 
     const handleInputChange = (field, value) => {
-        console.log('value :>> ', value);
-        console.log('field :>> ', field);
-
         setCommissionRate(prevState => {
             const newState = {
                 ...prevState,
                 [field]: value
             };
-            console.log('New commissionRate :>> ', newState);
             return newState;
         });
     };
+
+    const onSumbit = () => {
+        if (commissionRate?.moreThanScreens <= commissionRate?.uptoScreens) {
+            return toast.error('More than Screens must be greater than Up to Screens.');
+        }
+
+        dispatch(AddcommissionRate(commissionRate)).then((res) => {
+            setLoadFirst(true)
+        })
+    }
 
 
     return (
@@ -58,22 +96,35 @@ export default function CommissionRate() {
                         <div className="mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg h-96">
                             <div className='flex justify-center items-center gap-3'>
                                 <button
-                                    className={`relative group flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1 ${commissionRate.uptoScreens ? 'bg-primary text-white' : ''}`}
+                                    className={`relative group flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 ${buttonType.uptoScreens ? 'bg-primary text-white' : ''}`}
                                     onClick={() => handleButtonClick('uptoScreens')}
-                                >
+                                > Up
                                     <input
                                         type="number"
-                                        class="bg-transparent placeholder-transparent focus:outline-none focus:bg-transparent border-b-2 border-zinc-50 w-12 placeholder-gray-500"
-                                        placeholder=" "
+                                        className={`bg-transparent placeholder-slate-400 focus:text-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-10  px-2`}
+                                        onChange={(e) => {
+                                            handleInputChange('uptoScreens', e.target.value);
+                                        }}
+                                        value={commissionRate?.uptoScreens}
                                     />
-                                    Up 20 Screens
-                                    <div className="tooltip-arrow" data-popper-arrow></div>
+                                    Screens
                                 </button>
                                 <button
-                                    className={`relative group flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1 ${commissionRate.moreThanScreens ? 'bg-primary text-white' : ''}`}
+                                    className={`relative group flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 ${buttonType.moreThanScreens ? 'bg-primary text-white' : ''}`}
                                     onClick={() => handleButtonClick('moreThanScreens')}
+
                                 >
-                                    More than 20 Screens
+                                    More than
+                                    <input
+                                        type="number"
+                                        class="bg-transparent placeholder-slate-400 focus:text-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-10  px-2"
+                                        onChange={(e) => {
+                                            handleInputChange('moreThanScreens', e.target.value);
+                                        }}
+                                        value={commissionRate?.moreThanScreens}
+
+                                    />
+                                    Screens
                                     <div className="tooltip-arrow" data-popper-arrow></div>
                                 </button>
                             </div>
@@ -102,50 +153,73 @@ export default function CommissionRate() {
                                             <div className="overflow-x-scroll sc-scrollbar px-2 mt-2 bg-white">
                                                 <div className='flex items-center gap-1 my-2'>
                                                     <label className="text-sm font-medium w-20 mr-2">Disploy:</label>
-                                                    <div>
+                                                    <div className="flex items-center justify-center gap-3 ">
                                                         <input
-                                                            placeholder='80%'
-                                                            className="block w-20 p-1 text-gray-900 border border-gray-300 bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                                            className="w-20 py-0.5 appearance-none border border-[#D5E3FF] rounded  px-3"
                                                             type="number"
-                                                            value={commissionRate?.uptoScreens
+                                                            placeholder='80%'
+                                                            value={buttonType?.uptoScreens
                                                                 ? (index === 0 ? commissionRate.upDisployBringDisploy : commissionRate.upClientBringDisploy)
                                                                 : (index === 0 ? commissionRate.moreDisployBringDisploy : commissionRate.moreClientBringDisploy)}
                                                             onChange={(e) => {
                                                                 handleInputChange(
-                                                                    commissionRate?.uptoScreens
+                                                                    buttonType?.uptoScreens
                                                                         ? (index === 0 ? 'upDisployBringDisploy' : 'upClientBringDisploy')
                                                                         : (index === 0 ? 'moreDisployBringDisploy' : 'moreClientBringDisploy'),
                                                                     e.target.value
                                                                 );
                                                             }}
                                                         />
+                                                        <div className="border border-[#D5E3FF] rounded">
+                                                            <FaPercentage
+                                                                size={23}
+                                                                className="text-black p-[4px]"
+                                                            />
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                                 <div className='flex items-center gap-1'>
                                                     <label className="text-sm font-medium w-20 mr-2">Client:</label>
-                                                    <div>
+                                                    <div className="flex items-center justify-center gap-3 ">
                                                         <input
-                                                            placeholder='20%'
-                                                            className="block w-20 p-1 text-gray-900 border border-gray-300 bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                                            className="w-20 py-0.5 appearance-none border border-[#D5E3FF] rounded  px-3"
                                                             type="number"
-                                                            value={commissionRate?.uptoScreens
+                                                            placeholder='80%'
+                                                            value={buttonType?.uptoScreens
                                                                 ? (index === 1 ? commissionRate.upClientBringClient : commissionRate.upDisployBringClient)
                                                                 : (index === 1 ? commissionRate.moreClientBringClient : commissionRate.moreDisployBringClient)}
                                                             onChange={(e) => {
                                                                 handleInputChange(
-                                                                    commissionRate?.uptoScreens
+                                                                    buttonType?.uptoScreens
                                                                         ? (index === 1 ? 'upClientBringClient' : 'upDisployBringClient')
                                                                         : (index === 1 ? 'moreClientBringClient' : 'moreDisployBringClient'),
                                                                     e.target.value
                                                                 );
                                                             }}
                                                         />
+                                                        <div className="border border-[#D5E3FF] rounded">
+                                                            <FaPercentage
+                                                                size={23}
+                                                                className="text-black p-[4px]"
+                                                            />
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         )}
                                     </div>
                                 ))}
+                            </div>
+                            <div className='flex justify-center'>
+                                <button
+                                    type='button'
+                                    className={`  mx-auto border-primary  border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm bg-primary text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+                                    onClick={onSumbit}
+                                >
+                                    Save
+                                </button>
                             </div>
                         </div>
                     </div>

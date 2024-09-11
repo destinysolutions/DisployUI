@@ -687,7 +687,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             Tags
                           </th>
                           <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
-                            Action
+                            Actions
                           </th>
                         </tr>
                       </thead>
@@ -737,8 +737,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     className="border-b border-b-[#E4E6FF] "
                                     key={composition?.compositionID}
                                   >
-                                    <td className="text-[#5E5E5E] mw-200">
-                                      <div className="flex gap-1 items-center">
+                                    <td className="text-[#5E5E5E] mw-200 ">
+                                      <div className="flex gap-1 items-center ">
                                         {permissions.isDelete && (
                                           <input
                                             type="checkbox"
@@ -753,7 +753,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                             }
                                           />
                                         )}
-                                        {composition?.compositionName}
+                                        <p className="w-52 truncate">{composition?.compositionName}</p>
+
                                       </div>
                                     </td>
                                     <td className="mw-200 text-[#5E5E5E] text-center">
@@ -958,7 +959,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className="flex justify-end ">
                       <select className='px-1 mr-2 border border-gray rounded-lg'
                         value={pageSize}
-                        onChange={(e) => setPageSize(e.target.value)}
+                        onChange={(e) => { setPageSize(e.target.value); setCurrentPage(1) }}
                       >
                         {PageNumber.map((x) => (
                           <option value={x}>{x}</option>

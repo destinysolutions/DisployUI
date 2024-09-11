@@ -3,10 +3,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { BiSolidDollarCircle } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
-import Select from "react-select";
 import { handleAddCostbyarea } from '../../Redux/admin/AdvertisementSlice';
 
-export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, setEditData,onclose }) {
+export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
     const dispatch = useDispatch()
 
     const autocompleteRef = useRef(null);
@@ -14,28 +13,28 @@ export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, se
         googleMapsApiKey: 'AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk', // Replace with your API key
         libraries: ['places'], // Load Places library
     });
-    const [markerPosition, setMarkerPosition] = useState(null); // State for marker position
+    const [markerPosition, setMarkerPosition] = useState(null);
     const [data, setdata] = useState({
         location: '',
         cost: ''
     });
     const [Errors, setErrors] = useState(false);
-
+    
     useEffect(() => {
-        if (EditData) {
+        if (EditData?.locationName || EditData?.costPerSec) {
             setdata({
-                location: EditData?.[0]?.locationName,
-                cost: EditData?.[0]?.costPerSec,
-            })
-            setMarkerPosition({
-                lat: EditData?.[0]?.latitude,
-                lng: EditData?.[0]?.longitude,
+                location: EditData?.locationName,
+                cost: EditData?.costPerSec,
             })
         }
-    }, []);
+        setMarkerPosition({
+            lat: EditData?.latitude,
+            lng: EditData?.longitude,
+        })
+
+    }, [EditData]);
 
     const onPlaceChanged = () => {
-
         if (autocompleteRef.current) {
             const place = autocompleteRef.current.getPlace();
             if (place?.geometry) {
@@ -51,22 +50,25 @@ export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, se
     };
 
     const onSumbit = () => {
+
         if ((!data?.cost) && (!data?.location)) {
             return setErrors(true)
         }
         const payload = {
-            costByAreaID: EditData?.[0]?.costByAreaID ? EditData?.[0]?.costByAreaID : 0,
+            costByAreaID: EditData?.costByAreaID ? EditData?.costByAreaID : 0,
             locationName: data?.location,
             latitude: markerPosition?.lat,
             longitude: markerPosition?.lng,
             costPerSec: data?.cost,
-            currency: "string"
+            currency: ""
         }
-        dispatch(handleAddCostbyarea(payload))
-        setEditData([])
-        setdata('')
-        setLoadFirst(true)
-        setAreaModal(false)
+
+        dispatch(handleAddCostbyarea(payload)).then((result) => {
+            onclose()
+            setdata()
+            setLoadFirst(true)
+
+        })
     }
 
     if (!isLoaded) return <div>Loading...</div>;
@@ -74,12 +76,12 @@ export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, se
     return (
         <div>
             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-1000 outline-none focus:outline-none">
-                <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-96 bg-white outline-none focus:outline-none modal lg:w-[1200px] md:w-[900px]">
+                <div className="w-auto my-6 mx-auto lg:max-w-7xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-96 bg-white outline-none focus:outline-none modal lg:w-[800] md:w-[900px]">
                         <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                             <div className="flex items-center">
                                 <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                                    {EditData?.[0]?.costByAreaID ? 'Edit' : 'Add'}  New Location
+                                    {EditData?.costByAreaID ? 'Edit' : 'Add'}  New Location
                                 </h3>
                             </div>
                             <button
@@ -105,9 +107,7 @@ export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, se
 
 
                                 {Errors && data?.location <= 0 && (
-                                    <p className="text-red-600 text-sm font-semibold ">
-                                        Location is Required.
-                                    </p>
+                                    <p className="text-red-600 text-sm font-semibold ">Location is Required.</p>
                                 )}
                             </div>
                             <div className='w-full'>
@@ -129,13 +129,9 @@ export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, se
                                     </div>
                                 </div>
                                 {Errors && data?.cost <= 0 && (
-                                    <p className="text-red-600 text-sm font-semibold ">
-                                        Cost is Required.
-                                    </p>
+                                    <p className="text-red-600 text-sm font-semibold ">Cost is Required.</p>
                                 )}
-
                             </div>
-
                         </div>
                         <div className="pb-6 flex justify-center">
                             <button
@@ -143,12 +139,12 @@ export default function CostAreaModal({ setAreaModal, setLoadFirst, EditData, se
                                 className="bg-primary text-white px-8 py-2 rounded-full"
                                 onClick={onSumbit}
                             >
-                                {EditData?.[0]?.costByAreaID ? 'Update' : "Save"}
+                                {EditData?.costByAreaID ? 'Update' : "Save"}
                             </button>
 
                             <button
                                 className="bg-primary text-white px-4 py-2 rounded-full ml-3"
-                                onClick={() => { setAreaModal(false); setLoadFirst(true); setEditData([]) }}
+                                onClick={onclose}
                             >
                                 Cancel
                             </button>

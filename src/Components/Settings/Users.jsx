@@ -110,7 +110,6 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
   const modalRef = useRef(null);
   const selectScreenRef = useRef(null);
   const screenAccessModalRef = useRef(null);
-
   const dispatch = useDispatch();
 
   // Filter data based on search term
@@ -222,9 +221,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
         : !emailRegex.test(email)
           ? "Please Enter Valid Email"
           : "";
-
     }
-
     newErrors.password = !password ? "Password is required" : "";
     newErrors.firstName = !firstName ? "First Name is required" : "";
     newErrors.lastName = !lastName ? "Last Name is required" : "";
@@ -232,10 +229,8 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
 
     // Update errors state
     setErrors(newErrors);
-
     // Check if any errors exist
     const hasError = Object.values(newErrors).some((error) => error !== "");
-
     return hasError;
   };
 
@@ -291,7 +286,6 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
 
   const handleUpdateUser = () => {
     const hasError = validateForm();
-
     // If there are errors, prevent form submission
     if (hasError) {
       return;
@@ -398,6 +392,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await dispatch(handleUserDelete({ config }));
+        setCurrentPage(1)
       } else {
         // User clicked "No, cancel" button
         setLoadFist(true); // Trigger your action on cancel
@@ -412,7 +407,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
       setUserDetailData(fetchedData);
       setFirstName(fetchedData?.firstName);
       setLastName(fetchedData?.lastName);
-      setPassword("");
+      setPassword(fetchedData?.password);
       setFileEdit(fetchedData?.profilePhoto);
       setPhone(fetchedData?.phone);
       setEmail(fetchedData?.email);
@@ -665,6 +660,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
       setSelectedScreens([]);
     }
   };
+
   return (
     <>
       {showUserProfile ? (
@@ -676,6 +672,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                 setLoadFist(true);
                 setUserScreenData([]);
                 setUserID();
+                setUserDetailData([])
               }}
               className="font-medium flex cursor-pointer w-fit items-center lg:text-2xl md:text-2xl sm:text-xl mb-5"
             >
@@ -1677,6 +1674,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                       setZipCode("");
                       setEditProfile();
                       setshowuserModal(true);
+                      setLabelTitle('Add New User')
                     } else {
                       setWarning(true)
                     }
@@ -1820,6 +1818,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                                         data-for="View"
                                         className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                         onClick={() => {
+                                          formik.resetForm();
                                           setUserID(item.orgUserSpecificID);
                                           selectUserById(
                                             item.orgUserSpecificID
@@ -1919,7 +1918,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
                   <div className="flex justify-end">
                     <select className='px-1 mr-2 border border-gray rounded-lg'
                       value={itemsPerPage}
-                      onChange={(e) => setItemsPerPage(e.target.value)}
+                      onChange={(e) => { setItemsPerPage(e.target.value); setCurrentPage(1) }}
                     >
                       {PageNumber.map((x) => (
                         <option value={x}>{x}</option>

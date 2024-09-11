@@ -25,12 +25,9 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
 
 
     const handleIndustryChange = (selectedOption) => {
-
-
         if (selectedOption) {
             const industry = store?.Industry.find(item => item?.industryID === selectedOption?.value);
             if (industry) {
-
                 setConvertAdvertisment({ ...ConvertAdvertisment, Industry: selectedOption })
             } else {
 
@@ -58,7 +55,6 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
 
         dispatch(getConvertToAdvertisement(Payload))
         setConvertAdvertisingModal(false)
-
     }
 
     return (

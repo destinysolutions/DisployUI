@@ -27,30 +27,18 @@ const Notifications = ({ sidebarOpen }) => {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = notification.slice(indexOfFirstItem, indexOfLastItem);
-  const fetchNotifications = () => {
-    const config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: GET_ALL_NOTIFICATIONS,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authToken
-      },
-    }
+  const currentItems = notification?.length > 0 ? notification?.slice(indexOfFirstItem, indexOfLastItem) : [];
 
-    dispatch(handleGetAllNotifications({ config })).then((res) => {
+  useEffect(() => {
+    dispatch(handleGetAllNotifications({})).then((res) => {
       setNotification(res?.payload?.data)
       setLoading(false)
     }).catch((error) => {
-      console.log('error', error)
+      console.log('error :>> ', error);
       setLoading(false)
     })
-  }
+  }, [dispatch])
 
-  useEffect(() => {
-    fetchNotifications()
-  }, [])
 
   return (
     <>

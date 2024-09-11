@@ -730,5 +730,10 @@ export const Commission = [
   { id: 0, title: "If we bring the ads" },
   { id: 1, title: "If client bring the ads" },
 ]
+export const ApproveScreens = [
+  { id: 0, title: "You have got a new request from Pankaj." },
+  { id: 1, title: "You have got a new request from Rohan patel." },
+  { id: 2, title: "You have got a new request from Bhavesh Rajput." },
+]
 
 export const PageNumber = [5, 10, 25]

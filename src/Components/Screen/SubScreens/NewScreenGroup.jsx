@@ -771,7 +771,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     </>
                                   ) : (
                                     <>
-                                      <h1 className="text-lg capitalize">
+                                      <h1 className="text-lg capitalize w-40 truncate">
                                         {item?.screenGroupName}
                                       </h1>
                                       {permissions?.isSave && (
