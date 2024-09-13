@@ -175,10 +175,9 @@ const Auditlogreport = ({
                   )}
                 </tbody>
               </table>
-
             </div>
             {
-              sortedAndPaginatedData?.length !== 0 && (
+              sortedAndPaginatedData?.length > 5 && (
                 <div className="flex border-b border-gray lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                   <div className="flex items-center">
                     <span className="text-gray-500">{`Total ${allReportData?.allData?.length} Audit Log Reports`}</span>

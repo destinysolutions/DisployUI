@@ -1707,7 +1707,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit} />
         )
       }
-      {convertAdvertisingModal && (<ConvertAdvertisingModal setConvertAdvertisingModal={setConvertAdvertisingModal} selectedItems={selectedItems} />)}
+      {convertAdvertisingModal && (<ConvertAdvertisingModal setConvertAdvertisingModal={setConvertAdvertisingModal} selectedItems={selectedItems} setLoadFist={setLoadFist} />)}
     </>
   );
 };

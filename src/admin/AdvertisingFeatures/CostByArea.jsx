@@ -27,7 +27,7 @@ export default function CostByArea({ sidebarOpen }) {
     useEffect(() => {
         if (loadFirst) {
             setLoading(true)
-            dispatch(getCostByArea()).then((res) => {
+            dispatch(getCostByArea({})).then((res) => {
                 setLoading(false)
             })
         }

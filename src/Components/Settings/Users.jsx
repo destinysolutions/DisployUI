@@ -209,7 +209,6 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
       setLoading(false);
     });
   };
-
   const validateForm = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     let newErrors = {};
@@ -222,11 +221,13 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
           ? "Please Enter Valid Email"
           : "";
     }
-    newErrors.password = !password ? "Password is required" : "";
+    if (userDetailData?.length <= 0) {
+      newErrors.password = !password ? "Password is required" : "";
+    }
+
     newErrors.firstName = !firstName ? "First Name is required" : "";
     newErrors.lastName = !lastName ? "Last Name is required" : "";
     newErrors.role = !selectRoleID ? "Please select a role" : "";
-
     // Update errors state
     setErrors(newErrors);
     // Check if any errors exist
@@ -404,6 +405,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
     setLabelTitle("Update User");
     dispatch(handleSelectUserById(OrgUserSpecificID))?.then((res) => {
       const fetchedData = res?.payload?.data;
+
       setUserDetailData(fetchedData);
       setFirstName(fetchedData?.firstName);
       setLastName(fetchedData?.lastName);

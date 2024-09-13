@@ -19,7 +19,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
         cost: ''
     });
     const [Errors, setErrors] = useState(false);
-    
+
     useEffect(() => {
         if (EditData?.locationName || EditData?.costPerSec) {
             setdata({
@@ -50,9 +50,8 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
     };
 
     const onSumbit = () => {
-
-        if ((!data?.cost) && (!data?.location)) {
-            return setErrors(true)
+        if (!data?.cost || !data?.location) {
+            return setErrors(true);
         }
         const payload = {
             costByAreaID: EditData?.costByAreaID ? EditData?.costByAreaID : 0,
@@ -62,7 +61,6 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
             costPerSec: data?.cost,
             currency: ""
         }
-
         dispatch(handleAddCostbyarea(payload)).then((result) => {
             onclose()
             setdata()

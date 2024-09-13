@@ -31,7 +31,7 @@ export default function CommissionRate() {
 
     useEffect(() => {
         if (loadFirst) {
-            dispatch(getcommissionRate(1)).then((result) => {
+            dispatch(getcommissionRate({})).then((result) => {
                 const res = result?.payload?.data
                 setCommissionRate({
                     commissionRateID: res?.commissionRateID,
@@ -122,7 +122,6 @@ export default function CommissionRate() {
                                             handleInputChange('moreThanScreens', e.target.value);
                                         }}
                                         value={commissionRate?.moreThanScreens}
-
                                     />
                                     Screens
                                     <div className="tooltip-arrow" data-popper-arrow></div>
