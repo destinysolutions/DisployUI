@@ -4,7 +4,6 @@ import { Commission } from '../../Components/Common/Common';
 import { AddcommissionRate, getcommissionRate } from '../../Redux/admin/AdvertisementSlice';
 import { useDispatch } from 'react-redux';
 import { FaPercentage } from "react-icons/fa";
-import toast from 'react-hot-toast';
 
 export default function CommissionRate() {
     const dispatch = useDispatch()
@@ -14,6 +13,7 @@ export default function CommissionRate() {
         uptoScreens: true,
         moreThanScreens: false,
     });
+
 
     const [commissionRate, setCommissionRate] = useState({
         commissionRateID: 0,
@@ -31,7 +31,7 @@ export default function CommissionRate() {
 
     useEffect(() => {
         if (loadFirst) {
-            dispatch(getcommissionRate(1)).then((result) => {
+            dispatch(getcommissionRate({})).then((result) => {
                 const res = result?.payload?.data
                 setCommissionRate({
                     commissionRateID: res?.commissionRateID,
@@ -63,20 +63,40 @@ export default function CommissionRate() {
         setOpenAccordionIndex(prevState => prevState === index ? false : index);
     };
 
+
     const handleInputChange = (field, value) => {
         setCommissionRate(prevState => {
-            const newState = {
-                ...prevState,
-                [field]: value
-            };
+            const numValue = parseFloat(value) 
+            let newState = { ...prevState, };
+            // [field]: numValue 
+            if (field === 'upDisployBringDisploy') {
+                newState = { ...newState, upDisployBringDisploy: numValue, upDisployBringClient: 100 - numValue };
+            } else if (field === 'upDisployBringClient') {
+                newState = { ...newState, upDisployBringClient: numValue, upDisployBringDisploy: 100 - numValue };
+            } else if (field === 'upClientBringDisploy') {
+                newState = { ...newState, upClientBringDisploy: numValue, upClientBringClient: 100 - numValue };
+            } else if (field === 'upClientBringClient') {
+                newState = { ...newState, upClientBringClient: numValue, upClientBringDisploy: 100 - numValue };
+            } else if (field === 'moreDisployBringDisploy') {
+                newState = { ...newState, moreDisployBringDisploy: numValue, moreDisployBringClient: 100 - numValue };
+            } else if (field === 'moreDisployBringClient') {
+                newState = { ...newState, moreDisployBringClient: numValue, moreDisployBringDisploy: 100 - numValue };
+            } else if (field === 'moreClientBringDisploy') {
+                newState = { ...newState, moreClientBringDisploy: numValue, moreClientBringClient: 100 - numValue };
+            } else if (field === 'moreClientBringClient') {
+                newState = { ...newState, moreClientBringClient: numValue, moreClientBringDisploy: 100 - numValue };
+            }
+
+            if (field === 'uptoScreens') {
+                newState.uptoScreens = value;
+                newState.moreThanScreens = value; // Set both to the same value
+            }
             return newState;
         });
     };
 
+
     const onSumbit = () => {
-        if (commissionRate?.moreThanScreens <= commissionRate?.uptoScreens) {
-            return toast.error('More than Screens must be greater than Up to Screens.');
-        }
 
         dispatch(AddcommissionRate(commissionRate)).then((res) => {
             setLoadFirst(true)
@@ -119,10 +139,9 @@ export default function CommissionRate() {
                                         type="number"
                                         class="bg-transparent placeholder-slate-400 focus:text-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-10  px-2"
                                         onChange={(e) => {
-                                            handleInputChange('moreThanScreens', e.target.value);
+                                            handleInputChange('uptoScreens', e.target.value);
                                         }}
-                                        value={commissionRate?.moreThanScreens}
-
+                                        value={commissionRate?.uptoScreens}
                                     />
                                     Screens
                                     <div className="tooltip-arrow" data-popper-arrow></div>
@@ -159,8 +178,8 @@ export default function CommissionRate() {
                                                             type="number"
                                                             placeholder='80%'
                                                             value={buttonType?.uptoScreens
-                                                                ? (index === 0 ? commissionRate.upDisployBringDisploy : commissionRate.upClientBringDisploy)
-                                                                : (index === 0 ? commissionRate.moreDisployBringDisploy : commissionRate.moreClientBringDisploy)}
+                                                                ? (index === 0 ? commissionRate?.upDisployBringDisploy : commissionRate.upClientBringDisploy)
+                                                                : (index === 0 ? commissionRate?.moreDisployBringDisploy : commissionRate.moreClientBringDisploy)}
                                                             onChange={(e) => {
                                                                 handleInputChange(
                                                                     buttonType?.uptoScreens

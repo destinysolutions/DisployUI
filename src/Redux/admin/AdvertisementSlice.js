@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { ADD_ADMIN_RATE, ADD_COMMISSION_RATE, ADD_COST_AREA, ASSIGN_ADS, DELETE_COST_AREA, GETALLADS, GET_COMMISSION_RATE, GET_COST_AREA, GET_NOTIFICATIONS, UPDATE_ADS_RATE } from "../../Pages/Api";
+import { ADD_ADMIN_RATE, ADD_COMMISSION_RATE, ADD_COST_AREA, ASSIGN_ADS, CANCEL_PENDING_SCREEN, DELETE_COST_AREA, GETALLADS, GET_ALLUSER_SCREEN, GET_COMMISSION_RATE, GET_COST_AREA, GET_NOTIFICATIONS, GET_PENDING_SCREEN, UPDATE_ADS_RATE, UPDATE_PENDING_SCREEN } from "../../Pages/Api";
 
 
 const initialState = {
@@ -12,7 +12,8 @@ const initialState = {
   success: null,
   message: null,
   type: null,
-  costbyArea: []
+  costbyArea: [],
+  pendingScreens: []
 };
 
 // getAdvertisementData all
@@ -104,7 +105,6 @@ export const getCostByArea = createAsyncThunk("AdsCustomer/getCostByArea", async
     console.log(error);
     toast.error('Failed to fetch data');
     throw error
-
   }
 });
 
@@ -136,7 +136,7 @@ export const getcommissionRate = createAsyncThunk("AdsCustomer/getcommissionRate
   try {
     const queryParams = new URLSearchParams({ CommissionRateID: payload }).toString();
     const token = thunkAPI.getState().root.auth.token;
-    const response = await axios.get(`${GET_COMMISSION_RATE}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
+    const response = await axios.get(`${GET_COMMISSION_RATE}`, { headers: { Authorization: `Bearer ${token}` }, });
     return response.data;
   } catch (error) {
     console.log("error", error);
@@ -152,6 +152,58 @@ export const AddcommissionRate = createAsyncThunk("data/AddcommissionRate", asyn
     return response.data;
   } catch (error) {
     throw error;
+  }
+});
+
+// getPendingScreen 
+export const getPendingScreen = createAsyncThunk("AdsCustomer/getPendingScreen", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.get(GET_PENDING_SCREEN, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    toast.error('Failed to fetch data');
+    throw error
+  }
+});
+
+export const updatePendingScreen = createAsyncThunk("AdsCustomer/updatePendingScreen", async (payload, thunkAPI) => {
+  try {
+    const queryParams = new URLSearchParams(payload).toString();
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.get(`${UPDATE_PENDING_SCREEN}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    toast.error('Failed to fetch data');
+    throw error;
+  }
+});
+
+export const cancelPendingScreen = createAsyncThunk("AdsCustomer/cancelPendingScreen", async (payload, thunkAPI) => {
+  try {
+    const queryParams = new URLSearchParams(payload).toString();
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.get(`${CANCEL_PENDING_SCREEN}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    toast.error('Failed to fetch data');
+    throw error;
+  }
+});
+
+// GetAllUserAdScreen 
+export const getAllUserAdScreen = createAsyncThunk("AdsCustomer/getAllUserAdScreen", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.get(GET_ALLUSER_SCREEN, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    toast.error('Failed to fetch data');
+    throw error
   }
 });
 
@@ -328,6 +380,79 @@ const AdvertisementSlice = createSlice({
         state.status = "failed";
         toast.error(action.payload.message);
       })
+
+      // getPendingScreen
+      .addCase(getPendingScreen.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(getPendingScreen.fulfilled, (state, action) => {
+        state.loading = false;
+        state.pendingScreens = action.payload.data;
+        state.token = action?.data?.token;
+      })
+
+      .addCase(getPendingScreen.rejected, (state, action) => {
+        state.loading = false;
+        state.pendingScreens = null;
+        state.message = action.error.message || "Failed to data";
+      })
+
+      // updatePendingScreen
+      .addCase(updatePendingScreen.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(updatePendingScreen.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data;
+        state.token = action?.data?.token;
+      })
+
+      .addCase(updatePendingScreen.rejected, (state, action) => {
+        state.loading = false;
+        state.data = null;
+        state.message = action.error.message || "Failed to data";
+      })
+
+      // cancelPendingScreen
+      .addCase(cancelPendingScreen.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(cancelPendingScreen.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data;
+        state.token = action?.data?.token;
+      })
+
+      .addCase(cancelPendingScreen.rejected, (state, action) => {
+        state.loading = false;
+        state.data = null;
+        state.message = action.error.message || "Failed to data";
+      })
+
+      // getAllUserAdScreen
+      .addCase(getAllUserAdScreen.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(getAllUserAdScreen.fulfilled, (state, action) => {
+        state.loading = false;
+        state.pendingScreens = action.payload.data;
+        state.token = action?.data?.token;
+      })
+
+      .addCase(getAllUserAdScreen.rejected, (state, action) => {
+        state.loading = false;
+        state.pendingScreens = null;
+        state.message = action.error.message || "Failed to data";
+      })
+
   },
 });
 

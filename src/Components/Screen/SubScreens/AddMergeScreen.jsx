@@ -119,20 +119,30 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSaveNew = async (payload) => {
-
     const { row, col } = selectedButton;
     const buttonText = `Row ${row}, Col ${col} - ${payload.screenName}`;
 
     const selectedScreen = Object.values(DataRowAndCol).find((button) => { return button?.screenId === payload?.screenID });
-
-    // Check if a button already exists in the selected row and column for the current screen
     const existingButtonInRowAndCol = Object.values(DataRowAndCol).find((button) => button.row === row && button.col === col);
 
-    if (existingButtonInRowAndCol || selectedScreen) {
-      toast.error("The screens must be different in each view.");
-      return; // Exit the function if a button already exists
+    if (selectedScreen) {
+      return toast.error("The screens must be different in each view.");
+    }
+    
+    if (existingButtonInRowAndCol) {
+      setDataRowAndCol((prevState) => {
+        const newState = { ...prevState };
+        for (const key in newState) {
+          if (newState[key].row === row && newState[key].col === col) {
+            delete newState[key];
+            break;
+          }
+        }
+        return newState;
+      });
     }
 
+    // Add new button data
     const newButtonText = {
       row,
       col,
@@ -140,18 +150,21 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       screenName: payload.screenName,
       macid: payload?.macid,
     };
-    // Update DataRowAndCol to include the new button data
+
     setDataRowAndCol((prevState) => ({
       ...prevState,
       [payload?.macid]: newButtonText,
     }));
 
+    // Update button text
     setButtonTexts((prevState) => ({
       ...prevState,
       [`${row}-${col}`]: buttonText,
     }));
+
     closeModal();
   };
+
 
   useEffect(() => {
     if (allScreen === objectLength) {

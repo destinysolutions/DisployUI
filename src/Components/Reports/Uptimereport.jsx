@@ -94,16 +94,21 @@ const Uptimereport = ({
             >
               <thead>
                 <tr className="table-head-bg rounded-md">
-                  <th className="flex items-center font-medium p-3">
+                  <th className="flex items-center font-medium p-3 mt-3">
                     Screen Name
                     <CiFilter className="text-sm text-primary ml-2" />
                   </th>
-                  <th className=" font-medium text-center p-3">Total Up-Time</th>
                   <th className=" font-medium text-center p-3">
-                    Total Offline-Time
+                    Total Up-Time <br />
+                    <label for='Yes' className="ml-1 text-sm font-normal">(dd/hh/mm/ss)</label>
                   </th>
                   <th className=" font-medium text-center p-3">
-                    Daily Avg Up-Time
+                    Down-Time<br />
+                    <label for='Yes' className="ml-1 text-sm font-normal">(dd/hh/mm/ss)</label>
+                  </th>
+                  <th className=" font-medium text-center p-3">
+                    Daily Avg Up-Time<br />
+                    <label for='Yes' className="ml-1 text-sm font-normal">(dd/hh/mm/ss)</label>
                   </th>
                 </tr>
               </thead>

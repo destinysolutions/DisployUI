@@ -315,4 +315,6 @@ export const GET_INDUSTRY = `${baseUrl}IndustryMaster/GetAllIndustry`
 export const GetAllAdvertisementScreen = `${baseUrl}NewScreen/GetAllAdvertisementScreen`
 
 export const GET_PENDING_SCREEN = `${baseUrl}NewScreen/GetAllPendingScreen`
-
+export const UPDATE_PENDING_SCREEN = `${baseUrl}NewScreen/UpdateAddStatus`
+export const CANCEL_PENDING_SCREEN = `${baseUrl}NewScreen/CancelAddStatus`
+export const GET_ALLUSER_SCREEN = `${baseUrl}AdsCustomer/GetAllUserAdScreen`

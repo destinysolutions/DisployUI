@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { getConvertToAdvertisement } from '../../../../Redux/Screenslice';
 
 
-export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, selectedItems }) {
+export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, selectedItems, setLoadFist }) {
 
     const dispatch = useDispatch()
     const store = useSelector((state) => state.root.common);
@@ -53,8 +53,10 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
             ExcludeID: ConvertAdvertisment?.Exclude?.value,
         }
 
-        dispatch(getConvertToAdvertisement(Payload))
-        setConvertAdvertisingModal(false)
+        dispatch(getConvertToAdvertisement(Payload)).then((res) => {
+            setConvertAdvertisingModal(false)
+            setLoadFist(true)
+        })
     }
 
     return (

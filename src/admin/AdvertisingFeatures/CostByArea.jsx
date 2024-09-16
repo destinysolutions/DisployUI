@@ -27,7 +27,7 @@ export default function CostByArea({ sidebarOpen }) {
     useEffect(() => {
         if (loadFirst) {
             setLoading(true)
-            dispatch(getCostByArea()).then((res) => {
+            dispatch(getCostByArea({})).then((res) => {
                 setLoading(false)
             })
         }
@@ -72,8 +72,8 @@ export default function CostByArea({ sidebarOpen }) {
     return (
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-                <div>
-                    <div className="flex items-center justify-between gap-2 w-full  ">
+                <div className=' '>
+                    <div className="flex items-center justify-end gap-5 ">
                         <div className="relative">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <AiOutlineSearch className="w-5 h-5 text-gray" />

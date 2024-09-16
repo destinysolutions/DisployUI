@@ -1,20 +1,40 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { PageNumber } from '../../Components/Common/Common';
-import { MdAddLocation } from 'react-icons/md';
 import { PiCalendarPlusFill } from "react-icons/pi";
 import ReactTooltip from 'react-tooltip';
+import { useDispatch } from 'react-redux';
+import { getAllUserAdScreen } from '../../Redux/admin/AdvertisementSlice';
+import moment from 'moment';
 
 export default function AdScreens({ sidebarOpen }) {
+    const dispatch = useDispatch()
+    const [loadFirst, setLoadFirst] = useState(true);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
-    const [advertiserData, setAdvertiserData] = useState([]);
+    const [AdScreens, setAdScreens] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const filteredData = AdScreens?.length > 0 ? AdScreens?.filter((item) => item?.screenName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = advertiserData?.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
 
+    useEffect(() => {
+        if (loadFirst) {
+            setLoading(true)
+            dispatch(getAllUserAdScreen({})).then((res) => {
+                setAdScreens(res?.payload?.data)
+                setLoading(false)
+            })
+            setLoadFirst(false)
+        }
+    }, [loadFirst, dispatch]);
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [searchTerm]);
     return (
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
@@ -28,8 +48,8 @@ export default function AdScreens({ sidebarOpen }) {
                                 type="text"
                                 placeholder="Searching.."
                                 className="border border-primary rounded-lg pl-10 py-1.5 search-user"
-                            // value={searchTerm}
-                            // onChange={handleSearchChange}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
                         <button
@@ -65,11 +85,9 @@ export default function AdScreens({ sidebarOpen }) {
                                 <thead>
                                     <tr className="items-center table-head-bg">
                                         <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
-                                            Client Name
+                                            Screen Name
                                         </th>
-                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                            Screens
-                                        </th>
+
                                         <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                                             Location
                                         </th>
@@ -92,30 +110,44 @@ export default function AdScreens({ sidebarOpen }) {
                                 </thead>
                                 <tbody>
                                     {!loading &&
-                                        currentItems.length > 0 &&
-                                        currentItems.map((item, index) => (
-                                            <tr className="border-b border-b-[#E4E6FF]" key={index}>
-                                                <td className="text-[#5E5E5E] text-center flex">
-
-                                                    <div className="ps-3 flex text-center">
-                                                        <div className="font-normal text-gray-500 mt-2">
-                                                            {item?.customer_name}
-                                                        </div>
-                                                    </div>
+                                        currentItems?.length > 0 &&
+                                        currentItems?.map((item, index) => (
+                                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
+                                                <td className="px-6 py-4">{item?.screenName}</td>
+                                                <td className="px-6 py-4">{item?.googleLocation}</td>
+                                                <td className="px-6 py-4 text-green-600">
+                                                    <span
+                                                        id={`changetvstatus${item?.macID}`}
+                                                        className={`rounded-full px-6 py-2 text-white text-center
+                                                                            ${item?.screenStatus === 1 ? "bg-[#3AB700]" : "bg-[#FF0000]"}`}
+                                                    >
+                                                        {item?.screenStatus === 1 ? "Live" : "offline"}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <label className="inline-flex items-center me-5 cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            value=""
+                                                            className="sr-only peer"
+                                                            checked
+                                                        />
+                                                        <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                                    </label>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {item?.lastSeen ? moment(item?.lastSeen).format("LLL") : null}
                                                 </td>
 
 
+                                                <td className="px-6 py-4">{item?.receivedPayment}</td>
+                                                <td className="px-6 py-4">{item?.payout}</td>
 
-                                                <td className="text-[#5E5E5E] text-center">
-                                                    <div className="flex justify-center gap-4">
-
-                                                    </div>
-                                                </td>
                                             </tr>
                                         ))}
                                     {!loading && currentItems?.length === 0 && (
                                         <tr>
-                                            <td colSpan={8}>
+                                            <td colSpan={15}>
                                                 <div className="flex text-center m-5 justify-center">
                                                     <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                                         No Data Available
@@ -127,7 +159,7 @@ export default function AdScreens({ sidebarOpen }) {
                                 </tbody>
                                 {loading && (
                                     <tr>
-                                        <td colSpan={5}>
+                                        <td colSpan={15}>
                                             <div className="flex text-center m-5 justify-center items-center">
                                                 <svg
                                                     aria-hidden="true"
@@ -155,12 +187,12 @@ export default function AdScreens({ sidebarOpen }) {
                         {currentItems?.length !== 0 && (
                             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                                 <div className="flex items-center">
-                                    <span className="text-gray-500">{`Total ${advertiserData?.length} Advertiser`}</span>
+                                    <span className="text-gray-500">{`Total ${AdScreens?.length} Advertiser`}</span>
                                 </div>
                                 <div className="flex justify-end">
                                     <select className='px-1 mr-2 border border-gray rounded-lg'
                                         value={itemsPerPage}
-                                        onChange={(e) => setItemsPerPage(e.target.value)}
+                                        onChange={(e) => { setItemsPerPage(e.target.value); setCurrentPage(1) }}
                                     >
                                         {PageNumber.map((x) => (
                                             <option value={x}>{x}</option>
@@ -190,14 +222,14 @@ export default function AdScreens({ sidebarOpen }) {
                                     </button>
                                     <div className="flex items-center me-3">
                                         <span className="text-gray-500">{`Page ${currentPage} of ${Math.ceil(
-                                            advertiserData?.length / itemsPerPage
+                                            AdScreens?.length / itemsPerPage
                                         )}`}</span>
                                     </div>
                                     <button
                                         onClick={() => setCurrentPage(currentPage + 1)}
                                         disabled={
                                             currentPage ===
-                                            Math.ceil(advertiserData?.length / itemsPerPage)
+                                            Math.ceil(AdScreens?.length / itemsPerPage)
                                         }
                                         className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                                     >

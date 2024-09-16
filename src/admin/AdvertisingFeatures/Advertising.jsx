@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import AdminSidebar from '../AdminSidebar'
 import AdminNavbar from '../AdminNavbar'
 import Footer from '../../Components/Footer'
-import { IoLocation } from 'react-icons/io5';
+import { IoBusiness, IoBusinessOutline, IoLocation } from 'react-icons/io5';
 import { FaHandHoldingDollar } from 'react-icons/fa6';
 import { TbTopologyStar3 } from 'react-icons/tb';
 import approvalIcon from "../../images/MenuIcons/approval_icon.svg";
@@ -12,6 +12,8 @@ import Advertiser from './Advertiser';
 import CommissionRate from './CommissionRate';
 import AdScreens from './AdScreens';
 import Approve from './Approve';
+import IndustryInformation from './IndustryInformation';
+
 
 export default function Advertising({ sidebarOpen, setSidebarOpen }) {
     const [STabs, setSTabs] = useState(1);
@@ -78,7 +80,7 @@ export default function Advertising({ sidebarOpen, setSidebarOpen }) {
                                         className={
                                             STabs === 4 ? "stabshow settingtabactive" : "settingtab"
                                         }
-                                    onClick={() => handleTab(4)}
+                                        onClick={() => handleTab(4)}
                                     >
                                         <TbTopologyStar3 className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                                         <span className="text-base text-primary">Advertiser</span>
@@ -98,6 +100,18 @@ export default function Advertising({ sidebarOpen, setSidebarOpen }) {
                                         <span className="text-base text-primary">Approve</span>
                                     </button>
                                 </li>
+                                <li>
+                                    <button
+                                        className={
+                                            STabs === 6 ? "stabshow settingtabactive" : "settingtab"
+                                        }
+                                        onClick={() => handleTab(6)}
+                                    >
+                                        <IoBusinessOutline className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+
+                                        <span className="text-base text-primary">Industry information</span>
+                                    </button>
+                                </li>
 
 
                             </ul>
@@ -109,10 +123,10 @@ export default function Advertising({ sidebarOpen, setSidebarOpen }) {
                                 <div><CostByArea sidebarOpen={sidebarOpen} /></div>
                             )}
                             {STabs === 2 && (
-                                <div><CommissionRate  /></div>
+                                <div><CommissionRate /></div>
                             )}
                             {STabs === 3 && (
-                                <div><AdScreens  /></div>
+                                <div><AdScreens /></div>
                             )}
                             {STabs === 4 && (
                                 <div><Advertiser sidebarOpen={sidebarOpen} /></div>
@@ -120,16 +134,15 @@ export default function Advertising({ sidebarOpen, setSidebarOpen }) {
                             {STabs === 5 && (
                                 <div><Approve sidebarOpen={sidebarOpen} /></div>
                             )}
-
-
+                            {STabs === 6 && (
+                                <div><IndustryInformation sidebarOpen={sidebarOpen} /></div>
+                            )}
 
                             {/*Default Media*/}
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* <Footer /> */}
         </div>
     )
 }
