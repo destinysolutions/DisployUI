@@ -30,7 +30,6 @@ export default function Approve() {
     const [loadFirst, setLoadFirst] = useState(true);
     const [filteredScreens, setFilteredScreens] = useState([]);
     const [cost, setcost] = useState('');
-
     useEffect(() => {
         if (loadFirst) {
             setLoading(true);

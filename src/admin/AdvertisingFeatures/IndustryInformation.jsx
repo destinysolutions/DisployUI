@@ -51,7 +51,7 @@ export default function IndustryInformation({ sidebarOpen }) {
 
     const handleOpenModal = (index) => {
         setCurrentRowIndex(index);
-        setModalData(rows[index]); 
+        setModalData(rows[index]);
         setShowIndustryModal(true);
     };
 
