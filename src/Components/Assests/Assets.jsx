@@ -597,6 +597,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         confirmButtonColor: "#ff0000",
       }).then(async (result) => {
         if (result?.isConfirmed) {
+          setTabsDelete({ ...tabsDelete, selectedIds: [] })
           await dispatch(handleDeleteFolder({ config2 }));
         } else {
           setLoadFist(true); // Trigger your action on cancel
@@ -764,26 +765,30 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </li>
                     </ul>
-
+                    {console.log('tabsDelete :>> ', tabsDelete)}
                     {store.data?.length !== 0 && (
                       <>
-                        <button
-                          className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={handleDeleteAll}
-                          style={{ display: tabsDelete?.selectedIds?.length > 0 ? "block" : "none" }}
-                        >
-                          <RiDeleteBin5Line className="text-lg" />
-                        </button>
-                        <button className="flex align-middle   text-white items-center  rounded-full p-2 text-base">
-                          {permissions.isDelete && (
-                            <input
-                              type="checkbox"
-                              className="w-7 h-6"
-                              checked={selectAll}
-                              onChange={handleSelectAll}
-                            />
-                          )}
-                        </button>
+                        {tabsDelete?.selectedIds?.length > 0 && (
+                          <>
+                            <button
+                              className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                              onClick={handleDeleteAll}
+                              style={{ display: tabsDelete?.selectedIds?.length > 0 ? "block" : "none" }}
+                            >
+                              <RiDeleteBin5Line className="text-lg" />
+                            </button>
+                            <button className="flex align-middle   text-white items-center  rounded-full p-2 text-base">
+                              {permissions.isDelete && (
+                                <input
+                                  type="checkbox"
+                                  className="w-7 h-6"
+                                  checked={selectAll}
+                                  onChange={handleSelectAll}
+                                />
+                              )}
+                            </button>
+                          </>
+                        )}
                       </>
                     )}
                   </div>

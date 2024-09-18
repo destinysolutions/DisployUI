@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import toast from 'react-hot-toast';
 import { AiOutlineClose, AiOutlineCloseCircle } from 'react-icons/ai'
 
-export default function AddIndustry({ setShowIndustryModal, setindustryCategory, industryCategory, addIndustry, onClose, setIndustry, Editindustry }) {
+export default function AddIndustry({ setShowIndustryModal, setindustryCategory, industryCategory, addIndustry, onClose, }) {
     const inputRef = useRef(null);
     const [value, setvalue] = useState('');
 
@@ -16,14 +16,16 @@ export default function AddIndustry({ setShowIndustryModal, setindustryCategory,
 
 
         setindustryCategory(prevState => [...prevState, { category: value }]);
+        const includes = [...industryCategory, { category: value }]
 
-        const payload = {
-            "industryID": Editindustry?.industryID,
-            "industryName": Editindustry?.industryName,
-            "industryInclude": [...industryCategory, { category: value }]
-        }
-        addIndustry(payload)
+        addIndustry(includes)
         setvalue("");
+    };
+
+    const handleDeleteTag = (val) => {
+        const newTags = industryCategory?.filter((tag) => tag?.category !== val);
+        setindustryCategory(newTags)
+        addIndustry(newTags)
     };
 
     return (
@@ -50,7 +52,7 @@ export default function AddIndustry({ setShowIndustryModal, setindustryCategory,
                                     <AiOutlineClose
                                         size={10}
                                         className=" cursor-pointer text-black w-5 h-5 bg-lightgray p-1"
-                                    // onClick={() => handleDeleteTag(tag)}
+                                        onClick={() => handleDeleteTag(tag?.category)}
                                     />
                                 </li>
                             ))}

@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { PageNumber } from '../../Components/Common/Common';
-import { PiCalendarPlusFill } from "react-icons/pi";
-import ReactTooltip from 'react-tooltip';
 import { useDispatch } from 'react-redux';
 import { getAllUserAdScreen } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
+import { FaCalendarAlt } from 'react-icons/fa';
 
 export default function AdScreens({ sidebarOpen }) {
     const dispatch = useDispatch()
+
     const [loadFirst, setLoadFirst] = useState(true);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [AdScreens, setAdScreens] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [SelectedDate, setSelectedDate] = useState('');
     const filteredData = AdScreens?.length > 0 ? AdScreens?.filter((item) => item?.screenName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -25,13 +26,13 @@ export default function AdScreens({ sidebarOpen }) {
     useEffect(() => {
         if (loadFirst) {
             setLoading(true)
-            dispatch(getAllUserAdScreen({})).then((res) => {
+            dispatch(getAllUserAdScreen(SelectedDate)).then((res) => {
                 setAdScreens(res?.payload?.data)
                 setLoading(false)
             })
             setLoadFirst(false)
         }
-    }, [loadFirst, dispatch]);
+    }, [loadFirst, dispatch, SelectedDate]);
 
     useEffect(() => {
         setCurrentPage(1)
@@ -43,8 +44,9 @@ export default function AdScreens({ sidebarOpen }) {
             UserID: item?.userID,
             AssetManagement: !item?.assetManagement,
         };
-        // return
+
         dispatch(updateAssteScreen(payload)).then((res) => {
+            // dispatch(getAllUserAdScreen({}))
             if (res) {
                 setLoadFirst(true)
             }
@@ -54,7 +56,7 @@ export default function AdScreens({ sidebarOpen }) {
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
                 <div>
-                    <div className="flex items-center justify-between gap-2 w-full  ">
+                    <div className="flex items-center justify-between gap-2 w-full ">
                         <div className="relative">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <AiOutlineSearch className="w-5 h-5 text-gray" />
@@ -67,26 +69,27 @@ export default function AdScreens({ sidebarOpen }) {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <button
-                            data-tip
-                            data-for="New MergeScreen"
-                            type="button"
-                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                        // onClick={() => newAddMergeScreen()}
-                        >
-                            <PiCalendarPlusFill className="p-1 px-2 text-4xl text-white hover:text-white" />
-                            <ReactTooltip
-                                id="New MergeScreen"
-                                place="bottom"
-                                type="warning"
-                                effect="solid"
+                        <div className='p-0'>
+                            <button
+                                data-tip
+                                data-for="New MergeScreen"
+                                type="button"
+                                className="border rounded-full bg-SlateBlue text-white mr-2 p-0 hover:shadow-xl border-white shadow-lg flex items-center relative"
                             >
-                                <span>Add New Advertiser</span>
-                            </ReactTooltip>
-                        </button>
-
-
-
+                                <input
+                                    type='date'
+                                    id='Date-picker'
+                                    style={{ filter: 'brightness(0) invert(1)', width: "100%", opacity: 0, position: 'absolute', zIndex: 1 }}
+                                    onChange={(e) => {
+                                        const date = e.target.value;
+                                        setSelectedDate(date);
+                                        setLoadFirst(true);
+                                    }}
+                                    className="text-4xl text-white hover:text-white bg-SlateBlue p-0 border-0 rounded-lg"
+                                />
+                                <span className="text-white text-2xl p-2"><FaCalendarAlt /></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -138,8 +141,17 @@ export default function AdScreens({ sidebarOpen }) {
                                                     >
                                                         {item?.screenStatus === 1 ? "Live" : "offline"}
                                                     </span>
+
                                                 </td>
                                                 <td className="px-6 py-4">
+                                                    {/* {item?.assetManagement ? 'yes' : 'no'} */}
+
+
+                                                    {/* <label class="inline-flex items-center cursor-pointer">
+                                                        <input type="checkbox" value="" class="sr-only peer" />
+                                                        <div class={`relative w-11 h-6 bg-[#adb1b8] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300  after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#008000]`}></div>
+                                                    </label> */}
+
                                                     <label class="inline-flex items-center cursor-pointer">
                                                         <input
                                                             type="checkbox"
@@ -151,7 +163,7 @@ export default function AdScreens({ sidebarOpen }) {
                                                             }}
                                                         />
                                                         <div
-                                                            style={{ background: `${item?.assetManagement === true ? 'green' : 'gray'}`, transform: `${item?.assetManagement === true ? 'translateX(5px)' : 'translateX(0)'}` }}
+                                                            style={{ background: `${item?.assetManagement === true ? 'green' : 'gray'}`, transform: `${item?.assetManagement === true ? 'translateX(5px,10%)' : 'translateX(0)'}` }}
                                                             class={`relative w-11 h-6 rounded-full peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 transition-colors duration-200 
                                                                       ${item?.assetManagement ? 'bg-green-500' : 'bg-red-500'}
                                                                       peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full

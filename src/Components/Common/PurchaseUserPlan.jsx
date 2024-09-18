@@ -13,6 +13,7 @@ import UpgradePlan from '../Screen/UpgradePlan';
 
 const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanType, myplan, setSelectPlan }) => {
     const dispatch = useDispatch();
+    const timeZoneName = new Date().toLocaleDateString(undefined, { day: "2-digit", timeZoneName: "long", }).substring(4)
     const { token, user, userDetails } = useSelector((state) => state.root.auth);
     const [Screen, setScreen] = useState(1);
     const [showDiscount, setShowDiscount] = useState(false);
@@ -98,6 +99,8 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
             Other: buttonType === 'Other'
         }));
     };
+
+
     // console.log('myplan :>> ', myplan);
     return (
         <>
@@ -237,7 +240,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                     onClick={() => setPurchasePlan(!purchasePlan)}
                                 />
                             </div>
-                            <div className='flex justify-center items-center gap-3 mt-4'>
+                            {/* <div className='flex justify-center items-center gap-3 mt-4'>
                                 <button
                                     className={`relative group text-base font-semibold flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 
                                         ${CountryType.India ? 'bg-primary text-white' : ''}
@@ -255,7 +258,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                     Other
                                     <div className="tooltip-arrow" data-popper-arrow></div>
                                 </button>
-                            </div>
+                            </div> */}
                             <div className="  max-h-[700px] p-5 ">
                                 <div className=' border border-gray-300 rounded-lg p-2 '>
                                     <div className="flex justify-center my-2">
@@ -293,7 +296,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                     <div className='flex flex-wrap vertical-scroll-inner max-h-[570px]'>
                                         {myplan
                                             ?.filter((item) => item?.isAnnually ? Monthlyplan === 'Annually' : Monthlyplan === 'Monthly')
-                                            ?.filter((item) => item?.isIndian ? CountryType?.India : CountryType?.Other)
+                                            ?.filter((item) => timeZoneName === 'India Standard Time' ? item?.isIndian === true : item?.isIndian === false)
                                             ?.map((item) => {
                                                 return (
                                                     <div className='w-full md:w-1/2 lg:w-1/4 xl:w-1/4 px-3 mb-4'>
@@ -306,7 +309,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                 <div className="pricing-amount bg-indigo-100 p-4 h-24">
                                                                     <p className="text-left">From</p>
                                                                     <div className="flex items-center justify-start">
-                                                                        <span className="text-2xl font-semibold mr-2 mr-2">{item?.isIndian ? "₹" : '$'} {item?.planPrice}</span>
+                                                                        <span className="text-2xl font-semibold mr-2 mr-2">{timeZoneName === 'India Standard Time' ? "₹" : '$'} {item?.planPrice}</span>
                                                                         <span className="text-left leading-5">per screen /mo <br />+ VAT</span>
                                                                     </div>
                                                                 </div>
@@ -391,7 +394,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                                     {userDetails?.isActivePlan && userDetails?.planID === item?.listOfPlansID && (
                                                                         <button className="bg-blue-700 cursor-not-allowed hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300">Subscribed</button>
                                                                     )}
-                                                                    {userDetails?.isActivePlan && userDetails?.planID !== item?.listOfPlansID && item?.listOfPlansID !== 4 && (
+                                                                    {userDetails?.isActivePlan && userDetails?.planID !== item?.listOfPlansID && !(item?.listOfPlansID === 4 || item?.listOfPlansID === 15 || item?.listOfPlansID === 19 || item?.listOfPlansID === 11) && (
                                                                         <button
                                                                             className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
                                                                             onClick={() => {

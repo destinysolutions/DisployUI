@@ -20,7 +20,7 @@ const center = {
     lng: -79.3832,
 };
 
-const OpenGoogleMap = ({ openMap, getLocation }) => {
+const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurrentCenter, currentCenter }) => {
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: "AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk",
         libraries,
@@ -28,10 +28,7 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
 
     const [markers, setMarkers] = useState([]);
     const [selected, setSelected] = useState(null);
-    const [selectedAddress, setSelectedAddress] = useState("");
-    const [currentCenter, setCurrentCenter] = useState({ lat: 43.6532, lng: -79.3832 });
     const mapRef = useRef();
-
 
     useEffect(() => {
         // Get the user's current location
@@ -151,7 +148,7 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
 
 
     const saveLocation = () => {
-        getLocation(selectedAddress, currentCenter)
+        // getLocation(selectedAddress, currentCenter)
         openMap(false)
     }
 

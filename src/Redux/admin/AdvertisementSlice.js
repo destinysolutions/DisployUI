@@ -199,7 +199,9 @@ export const cancelPendingScreen = createAsyncThunk("AdsCustomer/cancelPendingSc
 export const getAllUserAdScreen = createAsyncThunk("AdsCustomer/getAllUserAdScreen", async (payload, thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
-    const response = await axios.get(GET_ALLUSER_SCREEN, { headers: { Authorization: `Bearer ${token}` }, });
+    const queryParams = new URLSearchParams({ CreatedDate: payload }).toString();
+
+    const response = await axios.get(`${GET_ALLUSER_SCREEN}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
     return response.data;
   } catch (error) {
     console.log(error);
@@ -212,7 +214,9 @@ export const getAllUserAdScreen = createAsyncThunk("AdsCustomer/getAllUserAdScre
 export const getAllUserAdvertiser = createAsyncThunk("AdsCustomer/getAllUserAdvertiser", async (payload, thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
-    const response = await axios.get(GET_ADVERTISER_SCREEN, { headers: { Authorization: `Bearer ${token}` }, });
+    const queryParams = new URLSearchParams({ CreatedDate: payload }).toString();
+
+    const response = await axios.get(`${GET_ADVERTISER_SCREEN}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
     return response.data;
   } catch (error) {
     console.log(error);

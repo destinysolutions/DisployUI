@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { PageNumber } from '../../Components/Common/Common';
-import { PiCalendarPlusFill } from "react-icons/pi";
-import ReactTooltip from 'react-tooltip';
 import { useDispatch } from 'react-redux';
-import { getAllUserAdScreen, getAllUserAdvertiser } from '../../Redux/admin/AdvertisementSlice';
+import { getAllUserAdvertiser } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
+import { FaCalendarAlt } from 'react-icons/fa';
 
 export default function Advertiser({ sidebarOpen }) {
     const dispatch = useDispatch()
@@ -15,6 +14,8 @@ export default function Advertiser({ sidebarOpen }) {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [advertiserData, setAdvertiserData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [SelectedDate, setSelectedDate] = useState('');
+
     const filteredData = advertiserData?.length > 0 ? advertiserData?.filter((item) => item?.clientName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -24,18 +25,18 @@ export default function Advertiser({ sidebarOpen }) {
     useEffect(() => {
         if (loadFirst) {
             setLoading(true)
-            dispatch(getAllUserAdvertiser({})).then((res) => {
+            dispatch(getAllUserAdvertiser(SelectedDate)).then((res) => {
                 setAdvertiserData(res?.payload?.data)
                 setLoading(false)
             })
             setLoadFirst(false)
         }
-    }, [loadFirst, dispatch]);
+    }, [loadFirst, dispatch, SelectedDate]);
 
     useEffect(() => {
         setCurrentPage(1)
     }, [searchTerm]);
-    
+
     return (
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
@@ -53,23 +54,28 @@ export default function Advertiser({ sidebarOpen }) {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <button
-                            data-tip
-                            data-for="New MergeScreen"
-                            type="button"
-                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                        // onClick={() => newAddMergeScreen()}
-                        >
-                            <PiCalendarPlusFill className="p-1 px-2 text-4xl text-white hover:text-white" />
-                            <ReactTooltip
-                                id="New MergeScreen"
-                                place="bottom"
-                                type="warning"
-                                effect="solid"
+                        <div className='p-0'>
+                            <button
+                                data-tip
+                                data-for="New MergeScreen"
+                                type="button"
+                                className="border rounded-full bg-SlateBlue text-white mr-2 p-0 hover:shadow-xl border-white shadow-lg flex items-center relative"
                             >
-                                <span>Add New Advertiser</span>
-                            </ReactTooltip>
-                        </button>
+                                <input
+                                    type='date'
+                                    id='Date-picker'
+                                    style={{ filter: 'brightness(0) invert(1)', width: "100%", opacity: 0, position: 'absolute', zIndex: 1 }}
+                                    onChange={(e) => {
+                                        const date = e.target.value;
+                                        setSelectedDate(date);
+                                        setLoadFirst(true);
+                                    }}
+                                    className="text-4xl text-white hover:text-white bg-SlateBlue p-0 border-0 rounded-lg"
+                                />
+                                <span className="text-white text-2xl p-2"><FaCalendarAlt /></span>
+                            </button>
+                        </div>
+
 
 
 
