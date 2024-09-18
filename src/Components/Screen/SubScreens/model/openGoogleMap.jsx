@@ -28,9 +28,9 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
 
     const [markers, setMarkers] = useState([]);
     const [selected, setSelected] = useState(null);
-    const [selectedAddress, setSelectedAddress] = useState("");
+    // const [selectedAddress, setSelectedAddress] = useState("");
     const [selectedLatLng, setSelectedLatLng] = useState({ lat: null, lng: null });
-    const [currentCenter, setCurrentCenter] = useState({ lat: 43.6532, lng: -79.3832 });
+    // const [currentCenter, setCurrentCenter] = useState({ lat: 43.6532, lng: -79.3832 });
     const mapRef = useRef();
 
     useEffect(() => {
