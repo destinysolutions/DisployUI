@@ -96,24 +96,26 @@ const Mediareport = ({
               >
                 <thead>
                   <tr className="table-head-bg rounded-md">
-                    <th className="flex items-center font-medium p-3">
+                    <th className="flex items-center font-medium p-3 mt-3">
                       Screen Name
                       <CiFilter className="text-sm text-primary ml-2" />
                     </th>
                     <th className=" font-medium text-center p-3">
-                      Google Location
+                      Google Location <br />
                     </th>
                     <th className=" font-medium text-center p-3">
-                      Assets Name
+                      Assets Name <br />
                     </th>
                     <th className=" font-medium text-center p-3">
-                      Streaming Hours
+                      Streaming Hours <br />
+                      <label for='Yes' className=" text-sm font-normal">(dd/hh/mm/ss)</label>
                     </th>
                     <th className=" font-medium text-center p-3">
-                      Loop Counter
+                      Loop Counter <br />
                     </th>
                   </tr>
                 </thead>
+                
                 <tbody>
                   {loading && (
                     <tr className="text-center col-span-full font-semibold text-xl">

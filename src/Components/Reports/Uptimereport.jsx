@@ -94,7 +94,7 @@ const Uptimereport = ({
             >
               <thead>
                 <tr className="table-head-bg rounded-md">
-                  <th className="flex items-center font-medium p-3 mt-3">
+                  <th className="flex items-center font-medium p-3 mt-3 justify-center">
                     Screen Name
                     <CiFilter className="text-sm text-primary ml-2" />
                   </th>
@@ -148,7 +148,7 @@ const Uptimereport = ({
                         className=" align-middle border-b border-[#E4E6FF]"
                         key={index}
                       >
-                        <td>
+                        <td className="text-center">
                           <p>{item?.screenName}</p>
                         </td>
                         <td className="text-center">

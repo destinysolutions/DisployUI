@@ -16,7 +16,7 @@ const NavbarPurchase = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
     const [disclaimer, setDisclaimer] = useState(false);
     const [isRead, setIsRead] = useState(false)
     const [plan, setPlan] = useState({})
-
+   
     useEffect(() => {
         const config = {
             method: "get",
@@ -109,9 +109,11 @@ const NavbarPurchase = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                     </div>
                                                 </div>
                                                 <div className='flex items-center justify-between border-t border-gray-200 py-3'>
-                                                    <p>Cost/Screen/Month:</p>
+                                                    <p>Cost/Screen/Month: </p>
                                                     <div className='flex items-center gap-1'>
-                                                        <label>${round((addScreen * plan?.planPrice), 2)}</label>
+                                                        <label> 
+                                                            {plan?.isIndian ? "₹" : '$'}
+                                                            {round((addScreen * plan?.planPrice), 2)}</label>
                                                     </div>
                                                 </div>
                                                 {discount && (
@@ -127,7 +129,7 @@ const NavbarPurchase = ({ openScreen, setOpenScreen, setAddScreen, addScreen, ha
                                                         <label>Total Price:</label>
                                                     </div>
                                                     <div>
-                                                        <label>${round((addScreen * plan?.planPrice), 2) - discount}</label>
+                                                        <label> {plan?.isIndian ? "₹" : '$'} {round((addScreen * plan?.planPrice), 2) - discount}</label>
                                                     </div>
                                                 </div>
                                                 <div className='flex items-center justify-start border-t border-gray-200 py-3'>

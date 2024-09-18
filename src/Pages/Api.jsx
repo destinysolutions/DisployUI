@@ -309,6 +309,8 @@ export const ADD_ASSOCIATED_SALESMAN = `${baseUrl}SalesMan/AddEditSalesMan`
 
 // IndustryMaster
 export const GET_INDUSTRY = `${baseUrl}IndustryMaster/GetAllIndustry`
+export const ADD_EDIT_INDUSTRY = `${baseUrl}IndustryMaster/AddORUpdateIndustry`
+export const DELETE_INDUSTRY = `${baseUrl}IndustryMaster/DeleteIndustry`
 
 
 // advertisentScreen
@@ -318,3 +320,6 @@ export const GET_PENDING_SCREEN = `${baseUrl}NewScreen/GetAllPendingScreen`
 export const UPDATE_PENDING_SCREEN = `${baseUrl}NewScreen/UpdateAddStatus`
 export const CANCEL_PENDING_SCREEN = `${baseUrl}NewScreen/CancelAddStatus`
 export const GET_ALLUSER_SCREEN = `${baseUrl}AdsCustomer/GetAllUserAdScreen`
+export const GET_ADVERTISER_SCREEN = `${baseUrl}AdsCustomer/GetAllUserAdvertiser`
+export const UPDATE_ASSET_SCREEN = `${baseUrl}NewScreen/UpdateAssetByScreenID`
+export const UPDATE_ASSET_ADSCREEN = `${baseUrl}NewScreen/UpdateAssetForAdScreen`

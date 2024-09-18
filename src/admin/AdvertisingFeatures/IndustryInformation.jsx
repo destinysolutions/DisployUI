@@ -1,27 +1,46 @@
-import React, { useRef, useState } from 'react';
-import { AiFillPlusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
+import React, { useEffect, useRef, useState } from 'react';
+import { AiFillPlusCircle, AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai';
 import { PageNumber } from '../../Components/Common/Common';
 import AddIndustry from './AddIndustry';
 import toast from 'react-hot-toast';
-import { MdDeleteForever } from 'react-icons/md';
+import { MdDeleteForever, MdOutlineModeEdit } from 'react-icons/md';
 import { FaPlus } from 'react-icons/fa6';
+import { useDispatch } from 'react-redux';
+import { deleteIndustry, getIndustry, handleAddIndustry } from '../../Redux/CommonSlice';
+import SweetAlert from '../../Components/BookYourSlot/SweetAlert';
 
 export default function IndustryInformation({ sidebarOpen }) {
+    const dispatch = useDispatch()
 
+    const [loadFirst, setLoadFirst] = useState(true);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
-    const [advertiserData, setAdvertiserData] = useState([]);
+    const [industry, setIndustry] = useState([]);
+    const [Editindustry, setEditIndustry] = useState(null);
     const [ShowIndustryModal, setShowIndustryModal] = useState(false);
     const [categorymodal, setCategoryModal] = useState([]);
     const [rows, setRows] = useState([]);
-
     const [currentRowIndex, setCurrentRowIndex] = useState(null);
-    const [modalData, setModalData] = useState({ category: '', includes: [] });
-
+    const [modalData, setModalData] = useState({ industryName: '', includes: [] });
+    console.log('Editindustry :>> ', Editindustry);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = advertiserData?.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = industry?.length > 0 ? industry?.slice(indexOfFirstItem, indexOfLastItem) : [];
+    const [industryCategory, setindustryCategory] = useState([
+        // { category: '', industryIncludeID: "" }
+    ]);
+    console.log('industry :>> ', industry);
+    useEffect(() => {
+        if (loadFirst) {
+            setLoading(true)
+            dispatch(getIndustry({})).then((res) => {
+                setIndustry(res?.payload?.data)
+                setLoading(false)
+            })
+            setLoadFirst(false)
+        }
+    }, [loadFirst, dispatch]);
 
     const toggleCategoryModal = (index) => {
         setCategoryModal(prev => {
@@ -32,7 +51,7 @@ export default function IndustryInformation({ sidebarOpen }) {
     };
     const handleAddInformation = (e) => {
         e.preventDefault();
-        if (!rows.some(row => row.category.trim().length > 0)) {
+        if (!rows.some(row => row.industryName.trim().length > 0)) {
             return toast.error("Please enter some text.");
         }
     };
@@ -40,18 +59,21 @@ export default function IndustryInformation({ sidebarOpen }) {
     const handleKeyDown = (e, index) => {
         if (e.key === "Enter" || e.type === "click") {
             const updatedRows = [...rows];
-            updatedRows[index].category = e.target.value;
+            updatedRows[index].industryName = e.target.value;
+            console.log('updatedRows :>> ', updatedRows);
             setRows(updatedRows);
         }
     };
 
     const addRow = () => {
-        setRows([...rows, { category: '', includes: [] }]);
+        setIndustry([...industry, { industryName: '', industryInclude: [] }]);
+
     };
 
     const handleOpenModal = (index) => {
-        setCurrentRowIndex(index);
-        setModalData(rows[index]);
+        // setCurrentRowIndex(index);
+        // setIndustry(industry[index]);
+        // console.log(industry[index].industryInclude)
         setShowIndustryModal(true);
     };
 
@@ -65,9 +87,9 @@ export default function IndustryInformation({ sidebarOpen }) {
 
     const handleModalSubmit = (data) => {
         if (currentRowIndex !== null) {
-            const updatedRows = [...rows];
+            const updatedRows = [...industryCategory];
             updatedRows[currentRowIndex] = data;
-            setRows(updatedRows);
+            setindustryCategory(updatedRows);
         }
     };
 
@@ -77,11 +99,45 @@ export default function IndustryInformation({ sidebarOpen }) {
         setShowIndustryModal(true);
     };
 
+    const addIndustry = (data) => {
+        dispatch(handleAddIndustry(data))
+    }
+
+    const onClose = (params) => {
+        setShowIndustryModal(false)
+        setLoadFirst(true)
+    }
+
+    const toggleAccordion = (index) => {
+        setCategoryModal(prevState => prevState === index ? false : index);
+    };
+
+    const handleDeleteIndustry = async (id) => {
+        try {
+            const result = await SweetAlert.confirm("Are you sure?", "Are you sure you want to delete this!");
+            if (result?.isConfirmed) {
+                dispatch(deleteIndustry(id)).then((res) => {
+                    if (res?.payload?.status === 200) {
+                        setLoadFirst(true)
+                        setCurrentPage(1);
+                    }
+                });
+
+                SweetAlert.success("Deleted successfully");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            SweetAlert.error("An error occurred");
+        }
+    };
+
+
+
     return (
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
                 <div className='border-b border-gray pb-3'>
-                    <h2 className='font-semibold'>Approve Request</h2>
+                    <h2 className='font-semibold'>Industry Information</h2>
                 </div>
 
                 <div className="clear-both">
@@ -96,69 +152,87 @@ export default function IndustryInformation({ sidebarOpen }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {rows.map((row, index) => (
+
+                                    {!loading && currentItems?.length > 0 && currentItems?.map((row, index) => (
                                         <tr key={index} className="border-b border-b-[#E4E6FF]">
                                             <td className="text-[#5E5E5E] text-center">
                                                 <div className='p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]'>
-                                                    {!row.category && !categorymodal[index] && (
+
+                                                    {!row.industryName && categorymodal !== index && (
                                                         <span>
                                                             <AiOutlinePlusCircle
-                                                                size={30}
+                                                                size={25}
                                                                 className="m-auto cursor-pointer"
                                                                 onClick={() => {
-                                                                    toggleCategoryModal(index)
+                                                                    toggleAccordion(index);
                                                                 }}
                                                             />
                                                         </span>
                                                     )}
-                                                    {categorymodal[index] && (
-                                                        <form onSubmit={(e) => handleAddInformation(e)} className="flex-initial w-fit">
-                                                            <input
-                                                                type="text"
-                                                                placeholder='Enter Category'
-                                                                className="bg-transparent placeholder-slate-400 focus:text-black focus:border-0 focus:bg-black focus:ring-0 text-base focus:outline-none w-40 p-2"
-                                                                onChange={(e) => {
-                                                                    const updatedRows = [...rows];
-                                                                    updatedRows[index].category = e.target.value;
-                                                                    setRows(updatedRows);
-                                                                }}
-                                                                onKeyDown={(e) => handleKeyDown(e, index)}
-                                                                value={row.category}
-                                                            />
-                                                        </form>
+                                                    {row.industryName !== null && (
+                                                        <>
+                                                            {categorymodal === index ? (
+                                                                <div className="flex w-fit items-center gap-3">
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder='Enter Category'
+                                                                        className="border border-primary rounded-md  text-sm  w-40 p-2"
+                                                                        onChange={(e) => {
+                                                                            const value = e.target.value
+                                                                            setEditIndustry({ ...Editindustry, industryName: value })
+                                                                        }}
+                                                                        value={Editindustry?.industryName}
+                                                                    />
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            addIndustry(Editindustry)
+                                                                            setLoadFirst(true)
+                                                                            toggleAccordion(index);
+                                                                        }}
+                                                                    >
+                                                                        <AiOutlineSave className="text-xl ml-1 hover:text-primary" />
+                                                                    </button>
+                                                                </div>
+                                                            ) : row?.industryName && (
+                                                                <div className='flex items-center gap-3'>
+                                                                    {row?.industryName}
+                                                                    <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" onClick={() => { toggleAccordion(index); setEditIndustry(row) }} />
+                                                                </div>
+                                                            )}
+                                                        </>
                                                     )}
+
 
                                                 </div>
                                             </td>
                                             <td className="text-center text-[#5E5E5E]">
                                                 <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
-                                                    {row.includes.length <= 0 && (
+                                                    {row?.industryInclude?.length <= 0 && (
                                                         <span>
                                                             <AiOutlinePlusCircle
-                                                                size={30}
+                                                                size={25}
                                                                 className="mx-auto cursor-pointer"
-                                                                onClick={() => openModalForRow(index)}
+                                                                onClick={() => { handleOpenModal(index); setindustryCategory(row?.industryInclude); setEditIndustry(row); }}
                                                             />
                                                         </span>
                                                     )}
-                                                    {row.includes.length > 0 && (
-                                                        row.includes
-                                                            .map((text) => {
-                                                                if (text.length > 10) {
-                                                                    return text.slice(0, 10) + "...";
-                                                                }
-                                                                return text;
-                                                            })
+                                                    {row?.industryInclude?.length > 0 && (
+                                                        row?.industryInclude.map((text) => {
+                                                            if (text?.category?.length > 10) {
+                                                                return text?.category?.slice(0, 10) + "...";
+                                                            }
+                                                            return text?.category;
+                                                        })
                                                             .join(", ")
                                                     )}
-                                                    {row?.includes?.length > 0 &&
+                                                    {row?.industryInclude?.length > 0 &&
                                                         <AiOutlinePlusCircle
-                                                            onClick={() => handleOpenModal(index)}
+                                                            onClick={() => { handleOpenModal(index); setEditIndustry(row); console.log('row :>> ', row); setindustryCategory(row?.industryInclude) }}
                                                             className="w-5 h-5 cursor-pointer"
                                                         />}
                                                 </div>
                                             </td>
-                                            {row?.includes?.length > 0 && (
+                                            {!loading && row?.industryInclude?.length > 0 && (
                                                 <td className="text-center text-[#5E5E5E]">
                                                     <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
                                                         <div className="cursor-pointer text-xl flex gap-4">
@@ -179,7 +253,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                                 type="button"
                                                                 className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
                                                                 onClick={() => {
-                                                                    // Delete logic here
+                                                                    handleDeleteIndustry(row?.industryID)
                                                                 }}
                                                             >
                                                                 <MdDeleteForever />
@@ -190,7 +264,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                                             )}
                                         </tr>
                                     ))}
-                                    {!loading && rows.length === 0 && (
+                                    {!loading && industry?.length === 0 && (
                                         <tr className=' h-96'>
                                             <td colSpan={3}>
                                                 <button
@@ -234,7 +308,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                         {currentItems?.length !== 0 && (
                             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                                 <div className="flex items-center">
-                                    <span className="text-gray-500">{`Total ${advertiserData?.length} Advertiser`}</span>
+                                    <span className="text-gray-500">{`Total ${industry?.length} Industries`}</span>
                                 </div>
                                 <div className="flex justify-end">
                                     <select className='px-1 mr-2 border border-gray rounded-lg'
@@ -268,11 +342,11 @@ export default function IndustryInformation({ sidebarOpen }) {
                                         {sidebarOpen ? "Previous" : ""}
                                     </button>
                                     <div className="flex items-center me-3">
-                                        <span className="text-gray-500">{`Page ${currentPage} of ${Math.ceil(advertiserData?.length / itemsPerPage)}`}</span>
+                                        <span className="text-gray-500">{`Page ${currentPage} of ${Math.ceil(industry?.length / itemsPerPage)}`}</span>
                                     </div>
                                     <button
                                         onClick={() => setCurrentPage(currentPage + 1)}
-                                        disabled={currentPage === Math.ceil(advertiserData?.length / itemsPerPage)}
+                                        disabled={currentPage === Math.ceil(industry?.length / itemsPerPage)}
                                         className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                                     >
                                         {sidebarOpen ? "Next" : ""}
@@ -301,10 +375,17 @@ export default function IndustryInformation({ sidebarOpen }) {
             {ShowIndustryModal && (
                 <AddIndustry
                     setShowIndustryModal={setShowIndustryModal}
-                    information={modalData}
+
                     handleModalDataChange={handleModalDataChange}
                     handleModalSubmit={handleModalSubmit}
-                    setinformation={setModalData}
+
+                    industryCategory={industryCategory}
+                    setindustryCategory={setindustryCategory}
+                    addIndustry={addIndustry}
+                    setIndustry={setIndustry}
+                    industry={industry}
+                    Editindustry={Editindustry}
+                    onClose={onClose}
                 />
             )}
         </div>

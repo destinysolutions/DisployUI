@@ -18,7 +18,6 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
         Exclude: null
     });
     const [submenuOptions, setSubmenuOptions] = useState([]);
-
     useEffect(() => {
         dispatch(getIndustry({}))
     }, [dispatch]);
@@ -41,20 +40,21 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
 
 
     const onSumbit = () => {
-        if ((!ConvertAdvertisment?.Exclude) || (!ConvertAdvertisment?.Industry)) {
+        // (!ConvertAdvertisment?.Exclude) ||
+        if ((!ConvertAdvertisment?.Industry)) {
             return setErrors(true)
         }
 
         const allScreenids = selectedItems.map((i) => i).join(",");
-
+        console.log('ConvertAdvertisment?.Exclude?.value :>> ', ConvertAdvertisment?.Exclude?.value);
         const Payload = {
             ScreenIds: allScreenids,
             IndustryID: ConvertAdvertisment?.Industry,
-            ExcludeID: ConvertAdvertisment?.Exclude?.value,
+            ExcludeID: ConvertAdvertisment?.Exclude ? ConvertAdvertisment?.Exclude?.value : 0,
         }
 
+        setConvertAdvertisingModal(false)
         dispatch(getConvertToAdvertisement(Payload)).then((res) => {
-            setConvertAdvertisingModal(false)
             setLoadFist(true)
         })
     }
@@ -93,10 +93,10 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
                                     <option className='hidden'>Select Industry</option>
                                     {store?.Industry?.length > 0 ? store?.Industry?.map((item) => (
                                         <optgroup key={item?.industryID} label={item?.industryName}>
-                                            {item?.subIndustry && item?.subIndustry?.length > 0 ? (
-                                                item?.subIndustry.map((subItem) => (
+                                            {item?.industryInclude && item?.industryInclude?.length > 0 ? (
+                                                item?.industryInclude.map((subItem) => (
                                                     <option key={subItem?.industryID} value={subItem?.industryID}>
-                                                        {subItem?.industryName}
+                                                        {subItem?.category}
                                                     </option>
                                                 ))
                                             ) : (

@@ -19,6 +19,7 @@ import PurchaseUserPlan from '../Common/PurchaseUserPlan';
 import ReactTooltip from 'react-tooltip';
 import { handleGetUserDetails } from '../../Redux/Authslice';
 import toast from 'react-hot-toast';
+import TalkToSaleDialog from '../Common/TalkToSaleDialog';
 
 const Myplan = () => {
     const { token, user, userDetails } = useSelector((state) => state.root.auth);
@@ -43,6 +44,18 @@ const Myplan = () => {
         trialDays: 14,
         isActive: true
     })
+    const [TalkToSale, setTalkToSale] = useState(false)
+    const [Monthlyplan, setMonthlyplan] = useState('Annually');
+    const [CountryType, setCountryType] = useState({
+        India: true, Other: false
+    });
+    const handleButtonClick = (buttonType) => {
+        setCountryType(prevState => ({
+            ...prevState,
+            India: buttonType === 'India',
+            Other: buttonType === 'Other'
+        }));
+    };
     const GetFeatureList = () => {
         let config = {
             method: "get",
@@ -66,7 +79,6 @@ const Myplan = () => {
         updatedPlans[index].statusEnabled = !updatedPlans[index].statusEnabled;
         setmyPlan(updatedPlans);
     };
-    { /* Add new discount Model */ }
 
     const fetchAllPlan = () => {
         const config = {
@@ -160,8 +172,8 @@ const Myplan = () => {
     return (
         <>
             <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full h-full'>
-                <div className="flex items-center justify-between mx-2 mb-5">
-                    <div className='w-full border-b border-b-[#E4E6FF] pb-3'>
+                <div className="flex items-center justify-between mx-2 mb-5 border-b border-b-[#E4E6FF] pb-3">
+                    <div className='w-full '>
                         <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl">
                             Pricing Plans
                         </h1>
@@ -193,6 +205,57 @@ const Myplan = () => {
                         </div>
                     )}
                 </div>
+                <div className='flex justify-center items-center gap-3 my-4'>
+                    <button
+                        className={`relative group text-base font-semibold flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 
+                                        ${CountryType.India ? 'bg-primary text-white' : ''}
+                                            `}
+                        onClick={() => handleButtonClick('India')}
+                    >India
+                    </button>
+                    <button
+                        className={`relative group text-base font-semibold flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 
+                                        ${CountryType.Other ? 'bg-primary text-white' : ''}
+                                            `}
+                        onClick={() => handleButtonClick('Other')}
+
+                    >
+                        Other
+                        <div className="tooltip-arrow" data-popper-arrow></div>
+                    </button>
+                </div>
+                <div className="flex justify-center my-2">
+                    <div className="ml-2 flex items-center">
+                        <input
+                            type="radio"
+                            value={Monthlyplan === 'Monthly'}
+                            checked={Monthlyplan === 'Monthly'}
+                            name="Cel"
+                            id='Monthly'
+                            onChange={() => {
+                                setMonthlyplan('Monthly');
+                            }}
+                        />
+                        <label for='Monthly' className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs font-semibold">
+                            Monthly
+                        </label>
+                    </div>
+                    <div className="ml-3 flex items-center">
+                        <input
+                            id='Annually'
+                            type="radio"
+                            value={Monthlyplan === 'Annually'}
+                            checked={Monthlyplan === 'Annually'}
+                            name="Cel"
+                            onChange={() => {
+                                setMonthlyplan('Annually');
+                            }}
+                        />
+                        <label for='Annually' className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs font-semibold">
+                            Annually
+                        </label>
+                    </div>
+                </div>
                 {loading && (
                     <div className="flex text-center m-5 justify-center items-center">
                         <svg
@@ -218,229 +281,226 @@ const Myplan = () => {
                 {!loading && (
                     <>
                         <div className="flex flex-wrap mb-8 pl-10">
-                            {myplan?.map((item) => {
-                                return (
-                                    <>
-                                        {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
-                                            <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/2 px-3 ml-5 mb-2">
-                                                <div className="p-4 rounded-lg h-full">
-                                                    <div className="flex justify-between mb-4">
-                                                        <div className="role-name">
-                                                            {/*{user?.role === "1" && (
+                            {myplan
+                                ?.filter((item) => item?.isAnnually ? Monthlyplan === 'Annually' : Monthlyplan === 'Monthly')
+                                ?.filter((item) => item?.isIndian ? CountryType?.India : CountryType?.Other)
+                                ?.map((item) => {
+                                    return (
+                                        <>
+                                            {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
+                                                <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/2 px-3 ml-5 mb-2">
+                                                    <div className="p-4 rounded-lg h-full">
+                                                        <div className="flex justify-between mb-4">
+                                                            <div className="role-name">
+                                                                {/*{user?.role === "1" && (
                                                                 <p>Total 5 Users</p>
                                                             )}*/}
-                                                            <h3 className="text-2xl font-semibold my-2">
-                                                                {item?.planName}
-                                                            </h3>
-                                                            <p>{item?.planDetailss}</p>
+                                                                <h3 className="text-2xl font-semibold my-2">
+                                                                    {item?.planName}
 
-                                                        </div>
-                                                        <div>
-                                                            <div className="role-user flex justify-center items-end my-2">
-                                                                ${item?.planPrice} per screen /mo
-                                                                + VAT
+                                                                </h3>
+                                                                <p>{item?.planDetailss}</p>
+
                                                             </div>
-                                                            {/*{user?.role === "1" && (
-                                                        <div className="role-user flex justify-center">
-                                                            <span>
-                                                                <img src="./dist/images/1user-img.png" />
-                                                            </span>
-                                                            <span>
-                                                                <img src="./dist/images/2user-img.png" />
-                                                            </span>
-                                                            <span className="pulus-user text-2xl text-white">
-                                                                +3
-                                                            </span>
-                                                        </div>
-                                                    )}*/}
+                                                            <div>
+                                                                <div className="role-user flex justify-center items-end my-2">
+                                                                    ${item?.planPrice} per screen /mo
+                                                                    + VAT
+                                                                </div>
 
-                                                            <div className="flex justify-center mt-3 gap-2">
-                                                                {user?.role === "1" && (
+
+                                                                <div className="flex justify-center mt-3 gap-2">
+                                                                    {user?.role === "1" && (
+                                                                        <div
+                                                                            data-tip
+                                                                            data-for="Edit"
+                                                                            className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                                            onClick={() => {
+                                                                                setSelectPlan(item)
+                                                                                setHeading("Update")
+                                                                                handleAddPlan()
+                                                                            }}
+                                                                        >
+                                                                            <MdOutlineEdit />
+                                                                            <ReactTooltip
+                                                                                id="Edit"
+                                                                                place="bottom"
+                                                                                type="warning"
+                                                                                effect="solid"
+                                                                            >
+                                                                                <span>Edit</span>
+                                                                            </ReactTooltip>
+                                                                        </div>
+                                                                    )}
                                                                     <div
                                                                         data-tip
-                                                                        data-for="Edit"
+                                                                        data-for="View"
                                                                         className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                                        onClick={() => {
-                                                                            setSelectPlan(item)
-                                                                            setHeading("Update")
-                                                                            handleAddPlan()
-                                                                        }}
+                                                                        onClick={() => { setOpenView(true); setSelectPlan(item) }}
                                                                     >
-                                                                        <MdOutlineEdit />
+                                                                        <BsEyeFill />
                                                                         <ReactTooltip
-                                                                            id="Edit"
+                                                                            id="View"
                                                                             place="bottom"
                                                                             type="warning"
                                                                             effect="solid"
                                                                         >
-                                                                            <span>Edit</span>
+                                                                            <span>View</span>
                                                                         </ReactTooltip>
                                                                     </div>
-                                                                )}
-                                                                <div
-                                                                    data-tip
-                                                                    data-for="View"
-                                                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                                    onClick={() => { setOpenView(true); setSelectPlan(item) }}
-                                                                >
-                                                                    <BsEyeFill />
-                                                                    <ReactTooltip
-                                                                        id="View"
-                                                                        place="bottom"
-                                                                        type="warning"
-                                                                        effect="solid"
-                                                                    >
-                                                                        <span>View</span>
-                                                                    </ReactTooltip>
                                                                 </div>
                                                             </div>
                                                         </div>
+
+                                                        {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
+                                                            <div className='w-full'>
+                                                                <button
+                                                                    type="button"
+                                                                    className="flex items-center cursor-pointer text-primary text-base hover:text-SlateBlue underline"
+                                                                    onClick={() => {
+                                                                        setSelectPlan(item)
+                                                                        setPurchasePlan(true)
+                                                                    }}
+                                                                >
+                                                                    <span>Upgrade Plan</span>
+                                                                    <i className='ml-2'>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                                                        </svg>
+                                                                    </i>
+                                                                </button>
+                                                            </div>
+                                                        )}
                                                     </div>
-
-                                                    {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
-                                                        <div className='w-full'>
-                                                            <button
-                                                                type="button"
-                                                                className="flex items-center cursor-pointer text-primary text-base hover:text-SlateBlue underline"
-                                                                onClick={() => {
-                                                                    setSelectPlan(item)
-                                                                    setPurchasePlan(true)
-                                                                }}
-                                                            >
-                                                                <span>Upgrade Plan</span>
-                                                                <i className='ml-2'>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                                                                    </svg>
-                                                                </i>
-                                                            </button>
-                                                        </div>
-                                                    )}
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
 
-                                        {(user?.role === "1" || userDetails?.planID === 0) && (
-                                            <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/3 px-3 mb-4">
-                                                <div className="p-4 bg-[#ECF0F1] rounded-lg h-full">
-                                                    <div className="flex justify-between mb-4">
-                                                        <div className="role-name">
-                                                            {/*{user?.role === "1" && (
+                                            {(user?.role === "1" || userDetails?.planID === 0) && (
+                                                <div className="w-full md:w-1/2 lg:w-1/2 xl:w-1/3 px-3 mb-4">
+                                                    <div className="p-4 bg-[#ECF0F1] rounded-lg h-full">
+                                                        <div className="flex justify-between mb-4">
+                                                            <div className="role-name">
+                                                                {/*{user?.role === "1" && (
                                                                 <p>Total 5 Users</p>
                                                             )}*/}
-                                                            <h3 className="text-2xl font-semibold my-2">
-                                                                {item?.planName}
-                                                            </h3>
-                                                            <p>{item?.planDetailss}</p>
-
-                                                        </div>
-                                                        <div>
-                                                            <div className="role-user flex justify-center items-end my-2">
-                                                                ${item?.planPrice} per screen /mo
-                                                                + VAT
+                                                                <h3 className="text-2xl font-semibold my-2 ">
+                                                                    {item?.planName}
+                                                                 
+                                                                    {/* <span className='font-medium text-lg text-gray-600 ml-2'>{item?.isAnnually ? "(Annually)" : "(Monthly)"}</span> */}
+                                                                </h3>
+                                                                {item?.listOfPlansID !== 4 && (
+                                                                    <div className="role-user flex justify-start items-end my-2">
+                                                                        {item?.isIndian ? "₹" : '$'} {item?.planPrice} per screen /mo + VAT
+                                                                    </div>
+                                                                )}
+                                                                <p>{item?.planDetailss}</p>
+                                                                {item?.listOfPlansID === 4 && (
+                                                                    <div className="pricing-amount font-semibold flex items-center justify-start flex-wrap mt-2">
+                                                                        <p>Call us at:</p>
+                                                                        <p>+1 224 244 9969</p>
+                                                                    </div>
+                                                                )}
                                                             </div>
-                                                            {/*{user?.role === "1" && (
-                                                        <div className="role-user flex justify-center">
-                                                            <span>
-                                                                <img src="./dist/images/1user-img.png" />
-                                                            </span>
-                                                            <span>
-                                                                <img src="./dist/images/2user-img.png" />
-                                                            </span>
-                                                            <span className="pulus-user text-2xl text-white">
-                                                                +3
-                                                            </span>
-                                                        </div>
-                                                    )}*/}
-
-                                                            <div className="flex justify-center mt-3 gap-2">
-                                                                {user?.role === "1" && (
+                                                            <div>
+                                                                <div className="flex justify-center  gap-2">
+                                                                    {user?.role === "1" && (
+                                                                        <div
+                                                                            data-tip
+                                                                            data-for="Edit"
+                                                                            className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                                            onClick={() => {
+                                                                                setSelectPlan(item)
+                                                                                setHeading("Update")
+                                                                                handleAddPlan()
+                                                                            }}
+                                                                        >
+                                                                            <MdOutlineEdit />
+                                                                            <ReactTooltip
+                                                                                id="Edit"
+                                                                                place="bottom"
+                                                                                type="warning"
+                                                                                effect="solid"
+                                                                            >
+                                                                                <span>Edit</span>
+                                                                            </ReactTooltip>
+                                                                        </div>
+                                                                    )}
                                                                     <div
                                                                         data-tip
-                                                                        data-for="Edit"
-                                                                        className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                                        onClick={() => {
-                                                                            setSelectPlan(item)
-                                                                            setHeading("Update")
-                                                                            handleAddPlan()
-                                                                        }}
+                                                                        data-for="View"
+                                                                        className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                                        onClick={() => { setOpenView(true); setSelectPlan(item) }}
                                                                     >
-                                                                        <MdOutlineEdit />
+                                                                        <BsEyeFill />
                                                                         <ReactTooltip
-                                                                            id="Edit"
+                                                                            id="View"
                                                                             place="bottom"
                                                                             type="warning"
                                                                             effect="solid"
                                                                         >
-                                                                            <span>Edit</span>
+                                                                            <span>View</span>
                                                                         </ReactTooltip>
                                                                     </div>
-                                                                )}
-                                                                <div
-                                                                    data-tip
-                                                                    data-for="View"
-                                                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                                    onClick={() => { setOpenView(true); setSelectPlan(item) }}
-                                                                >
-                                                                    <BsEyeFill />
-                                                                    <ReactTooltip
-                                                                        id="View"
-                                                                        place="bottom"
-                                                                        type="warning"
-                                                                        effect="solid"
-                                                                    >
-                                                                        <span>View</span>
-                                                                    </ReactTooltip>
                                                                 </div>
                                                             </div>
                                                         </div>
+
+                                                        {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
+                                                            <div className='w-full'>
+                                                                <button
+                                                                    type="button"
+                                                                    className="flex items-center cursor-pointer text-primary text-base hover:text-SlateBlue underline"
+                                                                    onClick={() => {
+                                                                        setSelectPlan(item)
+                                                                        setPurchasePlan(true)
+                                                                    }}
+                                                                >
+                                                                    <span>Upgrade Plan</span>
+                                                                    <i className='ml-2'>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                                                        </svg>
+                                                                    </i>
+                                                                </button>
+                                                            </div>
+                                                        )}
+
+                                                        {user?.role !== "1" && userDetails?.planID !== item?.listOfPlansID && !(item?.listOfPlansID === 4 || item?.listOfPlansID === 15 || item?.listOfPlansID === 19 || item?.listOfPlansID === 11) && (
+                                                            <div className='w-full'>
+                                                                <button
+                                                                    className={`relative bg-primary text-white text-base font-semibold flex  border-primary items-center float-left border rounded-full lg:px-3 py-1 text-base sm:text-sm  hover:shadow-lg mb-3  `}
+                                                                    onClick={() => {
+                                                                        setSelectPlan(item)
+                                                                        setPurchasePlan(true)
+                                                                    }}
+                                                                >
+                                                                    Buy Plan
+                                                                </button>
+
+                                                            </div>
+                                                        )}
+                                                        {user?.role !== "1" && userDetails?.planID !== item?.listOfPlansID && (item?.listOfPlansID === 4 || item?.listOfPlansID === 15 || item?.listOfPlansID === 19 || item?.listOfPlansID === 11) && (
+                                                            <div className='w-full'>
+                                                                <button
+                                                                    className={`relative bg-primary text-white text-base font-semibold flex  border-primary items-center float-left border rounded-full lg:px-3 py-1 text-base sm:text-sm  hover:shadow-lg mb-3  `}
+                                                                    onClick={() => {
+                                                                        setSelectPlan(item)
+                                                                        setTalkToSale(true)
+
+                                                                    }}
+                                                                >
+                                                                    Talk to Sale
+                                                                </button>
+
+                                                            </div>
+                                                        )}
+                                                       
                                                     </div>
-
-                                                    {user?.role !== "1" && userDetails?.planID === item?.listOfPlansID && (
-                                                        <div className='w-full'>
-                                                            <button
-                                                                type="button"
-                                                                className="flex items-center cursor-pointer text-primary text-base hover:text-SlateBlue underline"
-                                                                onClick={() => {
-                                                                    setSelectPlan(item)
-                                                                    setPurchasePlan(true)
-                                                                }}
-                                                            >
-                                                                <span>Upgrade Plan</span>
-                                                                <i className='ml-2'>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                                                                    </svg>
-                                                                </i>
-                                                            </button>
-                                                        </div>
-                                                    )}
-
-                                                    {user?.role !== "1" && userDetails?.planID !== item?.listOfPlansID && (
-                                                        <div className='w-full'>
-                                                            <button
-                                                                type="button"
-                                                                className="flex items-center cursor-pointer text-primary text-base hover:text-SlateBlue underline"
-                                                                onClick={() => {
-                                                                    setSelectPlan(item)
-                                                                    setPurchasePlan(true)
-                                                                }}
-                                                            >
-                                                                <span>Buy Plan</span>
-                                                                <i className='ml-2'>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                                                                    </svg>
-                                                                </i>
-                                                            </button>
-                                                        </div>
-                                                    )}
                                                 </div>
-                                            </div>
-                                        )}
-                                    </>
-                                )
-                            })}
+                                            )}
+                                        </>
+                                    )
+                                })}
 
                         </div>
                         {user?.role === "1" && (
@@ -471,7 +531,7 @@ const Myplan = () => {
                 )}
             </div>
             {planModel && (
-                <AddEditPlan showPlanModal={showPlanModal} featureList={featureList} selectPlan={selectPlan} setSelectPlan={setSelectPlan} heading={heading} fetchAllPlan={fetchAllPlan}/>
+                <AddEditPlan showPlanModal={showPlanModal} featureList={featureList} selectPlan={selectPlan} setSelectPlan={setSelectPlan} heading={heading} fetchAllPlan={fetchAllPlan} />
             )}
             {openView && (
                 <ViewPlan toggleModal={toggleModal} selectPlan={selectPlan} />
@@ -481,6 +541,9 @@ const Myplan = () => {
             )}
             {purchasePlan && (
                 <PurchaseUserPlan setPurchasePlan={setPurchasePlan} purchasePlan={purchasePlan} selectPlan={selectPlan} setSelectPlan={setSelectPlan} userPlanType="" myplan={myplan} />
+            )}
+            {TalkToSale && (
+                <TalkToSaleDialog setTalkToSale={setTalkToSale} TalkToSale={TalkToSale} />
             )}
         </>
     )

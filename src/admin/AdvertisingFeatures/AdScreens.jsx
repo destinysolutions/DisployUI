@@ -6,6 +6,7 @@ import ReactTooltip from 'react-tooltip';
 import { useDispatch } from 'react-redux';
 import { getAllUserAdScreen } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
+import { updateAssteScreen } from '../../Redux/CommonSlice';
 
 export default function AdScreens({ sidebarOpen }) {
     const dispatch = useDispatch()
@@ -35,6 +36,20 @@ export default function AdScreens({ sidebarOpen }) {
     useEffect(() => {
         setCurrentPage(1)
     }, [searchTerm]);
+
+    const DeactiveAsste = (item) => {
+        const payload = {
+            ScreenID: item?.screenID,
+            UserID: item?.userID,
+            AssetManagement: !item?.assetManagement,
+        };
+        // return
+        dispatch(updateAssteScreen(payload)).then((res) => {
+            if (res) {
+                setLoadFirst(true)
+            }
+        })
+    }
     return (
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
@@ -112,7 +127,7 @@ export default function AdScreens({ sidebarOpen }) {
                                     {!loading &&
                                         currentItems?.length > 0 &&
                                         currentItems?.map((item, index) => (
-                                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
+                                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 text-center" key={index}>
                                                 <td className="px-6 py-4">{item?.screenName}</td>
                                                 <td className="px-6 py-4">{item?.googleLocation}</td>
                                                 <td className="px-6 py-4 text-green-600">
@@ -125,14 +140,27 @@ export default function AdScreens({ sidebarOpen }) {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <label className="inline-flex items-center me-5 cursor-pointer">
+                                                    <label class="inline-flex items-center cursor-pointer">
                                                         <input
                                                             type="checkbox"
-                                                            value=""
-                                                            className="sr-only peer"
-                                                            checked
+                                                            class="sr-only peer"
+                                                            checked={item?.assetManagement}
+                                                            id={`Active_${item?.ScreenID}`}
+                                                            onChange={() => {
+                                                                DeactiveAsste(item);
+                                                            }}
                                                         />
-                                                        <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                                        <div
+                                                            style={{ background: `${item?.assetManagement === true ? 'green' : 'gray'}`, transform: `${item?.assetManagement === true ? 'translateX(5px)' : 'translateX(0)'}` }}
+                                                            class={`relative w-11 h-6 rounded-full peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 transition-colors duration-200 
+                                                                      ${item?.assetManagement ? 'bg-green-500' : 'bg-red-500'}
+                                                                      peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full
+                                                                      peer-checked:bg-green-500 dark:bg-gray-700 peer-checked:after:border-white
+                                                                      after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300
+                                                                      after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                                                                      dark:border-gray-600
+                                                                      `}
+                                                        ></div>
                                                     </label>
                                                 </td>
                                                 <td className="px-6 py-4">
@@ -187,7 +215,7 @@ export default function AdScreens({ sidebarOpen }) {
                         {currentItems?.length !== 0 && (
                             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                                 <div className="flex items-center">
-                                    <span className="text-gray-500">{`Total ${AdScreens?.length} Advertiser`}</span>
+                                    <span className="text-gray-500">{`Total ${AdScreens?.length} Screens`}</span>
                                 </div>
                                 <div className="flex justify-end">
                                     <select className='px-1 mr-2 border border-gray rounded-lg'
@@ -256,7 +284,7 @@ export default function AdScreens({ sidebarOpen }) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

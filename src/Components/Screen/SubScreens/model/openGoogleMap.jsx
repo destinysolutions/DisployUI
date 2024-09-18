@@ -49,8 +49,8 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
     }, []);
 
     const onMapClick = useCallback(async (e) => {
-        const lat = e.latLng.lat();
-        const lng = e.latLng.lng();
+        const lat = e?.latLng?.lat();
+        const lng = e?.latLng?.lng();
 
         setMarkers([
             {
@@ -154,12 +154,7 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
 
 
     const saveLocation = () => {
-        const item = {
-            address: selectedAddress,
-            lat: selectedLatLng.lat,
-            lng: selectedLatLng.lng,
-        }
-        getLocation(item)
+        getLocation(selectedAddress, currentCenter)
         openMap(false)
     }
 
@@ -199,8 +194,8 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
                                 >
                                     {markers.map((marker) => (
                                         <Marker
-                                            key={`${marker.lat}-${marker.lng}`}
-                                            position={{ lat: marker.lat, lng: marker.lng }}
+                                            key={`${marker?.lat}-${marker?.lng}`}
+                                            position={{ lat: marker?.lat, lng: marker?.lng }}
                                             onClick={() => {
                                                 setSelected(marker);
                                             }}
@@ -209,13 +204,13 @@ const OpenGoogleMap = ({ openMap, getLocation }) => {
 
                                     {selected ? (
                                         <InfoWindow
-                                            position={{ lat: selected.lat, lng: selected.lng }}
+                                            position={{ lat: selected?.lat, lng: selected?.lng }}
                                             onCloseClick={() => {
                                                 setSelected(null);
                                             }}
                                         >
                                             <div>
-                                                <p>Marker at {selected.lat}, {selected.lng}</p>
+                                                <p>Marker at {selected?.lat}, {selected?.lng}</p>
                                             </div>
                                         </InfoWindow>
                                     ) : null}

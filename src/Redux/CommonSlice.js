@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { GET_INDUSTRY } from "../Pages/Api";
+import { ADD_EDIT_INDUSTRY, DELETE_INDUSTRY, GET_INDUSTRY, UPDATE_ASSET_SCREEN } from "../Pages/Api";
 
 
 export const handleGetAllPlans = createAsyncThunk(
@@ -113,6 +113,39 @@ export const getIndustry = createAsyncThunk("common/getIndustry", async (payload
   } catch (error) {
     console.log("error", error);
     toast.error('Failed to fetch data');
+    throw error;
+  }
+});
+
+export const handleAddIndustry = createAsyncThunk("IndustryMaster/handleAddIndustry", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.post(ADD_EDIT_INDUSTRY, payload, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const deleteIndustry = createAsyncThunk("IndustryMaster/deleteIndustry", async (id) => {
+  try {
+    const queryParams = new URLSearchParams({ IndustryID: id, }).toString();
+    const response = await axios.get(`${DELETE_INDUSTRY}?${queryParams}`);
+    return response.data
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+});
+
+export const updateAssteScreen = createAsyncThunk("IndustryMaster/updateAssteScreen", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const queryParams = new URLSearchParams(payload).toString();
+    const response = await axios.get(`${UPDATE_ASSET_SCREEN}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    toast.error("Failed to fetch data");
     throw error;
   }
 });
@@ -243,7 +276,7 @@ const CommonSlice = createSlice({
     });
 
 
-
+    //IndustryMaster
     builder.addCase(getIndustry.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -261,6 +294,47 @@ const CommonSlice = createSlice({
       state.Industry = null;
       state.message = action.error.message || "Failed to data";
     });
+
+    builder.addCase(handleAddIndustry.pending, (state) => {
+      state.status = "loading";
+    });
+    builder.addCase(handleAddIndustry.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.data = action.payload;
+      toast.success(action.payload.message);
+
+    });
+    builder.addCase(handleAddIndustry.rejected, (state, action) => {
+      state.status = "failed";
+      toast.error = (action.payload.message);
+    });
+
+    builder.addCase(deleteIndustry.pending, (state) => {
+      state.status = "loading";
+    });
+    builder.addCase(deleteIndustry.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.data = action.payload;
+      state.message = action.payload?.message;
+    });
+    builder.addCase(deleteIndustry.rejected, (state, action) => {
+      state.status = "failed";
+      state.message = "Failed to delete Industry";
+    });
+
+    builder.addCase(updateAssteScreen.pending, (state) => {
+      state.loading = true;
+    })
+    builder.addCase(updateAssteScreen.fulfilled, (state, action) => {
+      state.loading = false;
+      state.success = action.payload.message;
+
+    })
+    builder.addCase(updateAssteScreen.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+      toast.error(action.error.message);
+    })
   },
 });
 

@@ -94,7 +94,7 @@ const BillingReport = ({
               >
                 <thead>
                   <tr className="table-head-bg rounded-md">
-                    <th className="flex items-center font-medium p-3">
+                    <th className=" items-center font-medium p-3">
                       Customer
                     </th>
                     <th className=" font-medium p-3 text-center">Email</th>
@@ -149,7 +149,7 @@ const BillingReport = ({
                           className="align-middle border-b border-[#E4E6FF]"
                           key={index}
                         >
-                          <td className="text-left">
+                          <td className="text-center">
                             <p>{item?.customer}</p>
                           </td>
                           <td className="text-center">
