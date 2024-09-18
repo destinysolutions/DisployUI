@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { ADD_ADMIN_RATE, ADD_COMMISSION_RATE, ADD_COST_AREA, ASSIGN_ADS, CANCEL_PENDING_SCREEN, DELETE_COST_AREA, GETALLADS, GET_ALLUSER_SCREEN, GET_COMMISSION_RATE, GET_COST_AREA, GET_NOTIFICATIONS, GET_PENDING_SCREEN, UPDATE_ADS_RATE, UPDATE_PENDING_SCREEN } from "../../Pages/Api";
+import { ADD_ADMIN_RATE, ADD_COMMISSION_RATE, ADD_COST_AREA, ASSIGN_ADS, CANCEL_PENDING_SCREEN, DELETE_COST_AREA, GETALLADS, GET_ADVERTISER_SCREEN, GET_ALLUSER_SCREEN, GET_COMMISSION_RATE, GET_COST_AREA, GET_NOTIFICATIONS, GET_PENDING_SCREEN, UPDATE_ADS_RATE, UPDATE_PENDING_SCREEN } from "../../Pages/Api";
 
 
 const initialState = {
@@ -13,7 +13,8 @@ const initialState = {
   message: null,
   type: null,
   costbyArea: [],
-  pendingScreens: []
+  pendingScreens: [],
+  Advertise: []
 };
 
 // getAdvertisementData all
@@ -199,6 +200,19 @@ export const getAllUserAdScreen = createAsyncThunk("AdsCustomer/getAllUserAdScre
   try {
     const token = thunkAPI.getState().root.auth.token;
     const response = await axios.get(GET_ALLUSER_SCREEN, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    toast.error('Failed to fetch data');
+    throw error
+  }
+});
+
+// GetAllUserAdvertiser
+export const getAllUserAdvertiser = createAsyncThunk("AdsCustomer/getAllUserAdvertiser", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.get(GET_ADVERTISER_SCREEN, { headers: { Authorization: `Bearer ${token}` }, });
     return response.data;
   } catch (error) {
     console.log(error);
@@ -452,6 +466,24 @@ const AdvertisementSlice = createSlice({
         state.pendingScreens = null;
         state.message = action.error.message || "Failed to data";
       })
+
+      // getAllUserAdvertiser
+      .addCase(getAllUserAdvertiser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(getAllUserAdvertiser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Advertise = action.payload.data;
+        state.token = action?.data?.token;
+      })
+
+      .addCase(getAllUserAdvertiser.rejected, (state, action) => {
+        state.loading = false;
+        state.Advertise = null;
+        state.message = action.error.message || "Failed to data";
+      });
 
   },
 });

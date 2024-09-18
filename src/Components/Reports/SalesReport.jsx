@@ -94,7 +94,7 @@ const SalesReport = ({
                 cellPadding={15}
               >
                 <thead>
-                  <tr className="table-head-bg rounded-md text-left">
+                  <tr className="table-head-bg rounded-md text-center">
                     <th className=" font-medium p-3">Date</th>
                     <th className=" font-medium p-3">Plan</th>
                     <th className=" font-medium  p-3">Total Screens</th>
@@ -132,7 +132,7 @@ const SalesReport = ({
                     !loading &&
                     sortedAndPaginatedData?.map((item, index) => {
                       return (
-                        <tr className=" border-b border-[#E4E6FF]" key={index}>
+                        <tr className="text-center border-b border-[#E4E6FF]" key={index}>
                           <td>
                             <p>{moment(item?.date).format(
                               "LLL"

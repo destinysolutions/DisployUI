@@ -38,7 +38,7 @@ export default function CostByArea({ sidebarOpen }) {
         setCurrentPage(1)
     }, [searchTerm]);
 
-    const DeleteProduct = async (id) => {
+    const DeleteLocation = async (id) => {
         try {
             const result = await SweetAlert.confirm("Are you sure?", "Are you sure you want to delete this!");
             if (result?.isConfirmed) {
@@ -155,7 +155,7 @@ export default function CostByArea({ sidebarOpen }) {
                                                                     type="button"
                                                                     className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
                                                                     onClick={() => {
-                                                                        DeleteProduct(item?.costByAreaID);
+                                                                        DeleteLocation(item?.costByAreaID);
                                                                     }}
                                                                 >
                                                                     <MdDeleteForever />

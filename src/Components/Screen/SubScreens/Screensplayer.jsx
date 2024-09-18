@@ -954,7 +954,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     const Params = {
       id: socket.id,
       connection: socket.connected,
-      macId: screenData[0]?.macid.replace(/^\s+/g, ""),
+      macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
     };
     socket.emit("ScreenConnected", Params);
     setTimeout(() => {

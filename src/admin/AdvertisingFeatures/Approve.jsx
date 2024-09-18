@@ -30,6 +30,8 @@ export default function Approve() {
     const [loadFirst, setLoadFirst] = useState(true);
     const [filteredScreens, setFilteredScreens] = useState([]);
     const [cost, setcost] = useState('');
+    const [Error, setError] = useState(false);
+    
     useEffect(() => {
         if (loadFirst) {
             setLoading(true);
@@ -80,7 +82,11 @@ export default function Approve() {
         setLoadFirst(true)
     }
     const handleUpdateScreen = (item) => {
+        if (!item?.screenRatePerSec) {
+            return setError(true)
+        }
         const query = { ScreenID: item?.screenID, UserID: item?.userID, ScreenRatePerSec: item?.screenRatePerSec ? item?.screenRatePerSec : cost }
+       
         dispatch(updatePendingScreen(query))
         setLoadFirst(true)
     }
@@ -184,17 +190,24 @@ export default function Approve() {
                                                                     </label>
                                                                 </td>
                                                                 <td className="px-6 py-4">{item?.userName}</td>
-                                                                <td className="px-6 py-4">₹
-                                                                    {item?.screenRatePerSec ? item?.screenRatePerSec :
-                                                                        (<input
-                                                                            type="number"
-                                                                            class="bg-transparent placeholder-slate-400 focus:text-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-10  px-2"
-                                                                            onChange={(e) => {
-                                                                                setcost(e.target.value)
-                                                                            }}
-                                                                            value={cost}
-                                                                        />)
-                                                                    }
+                                                                <td className="px-6 py-4 flex flex-col items-center">
+                                                                    <div className=' gap-2'>
+                                                                        ₹
+                                                                        {item?.screenRatePerSec ? item?.screenRatePerSec :
+                                                                            (<input
+                                                                                type="number"
+                                                                                class="bg-transparent placeholder-slate-400 focus:text-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-10  px-2 ms-2"
+                                                                                onChange={(e) => {
+                                                                                    setcost(e.target.value)
+                                                                                }}
+                                                                                value={cost}
+                                                                            />)
+                                                                        }
+
+                                                                    </div>
+                                                                    {cost?.length <= 0 && Error && (
+                                                                        <span className='error'>Cost Value is required.</span>
+                                                                    )}
                                                                 </td>
                                                                 <td className="px-6 py-4">
                                                                     <div className="flex gap-1 items-center">

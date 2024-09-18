@@ -123,7 +123,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenMarginError, setScreenMarginError] = useState("");
 
   const [selectedAddress, setSelectedAddress] = useState();
-
+  const [selecteLocLog, setSelecteLocLog] = useState();
   const { screens } = useSelector((s) => s.root.screen);
 
   const [isOpenMap, setIOpenMap] = useState(false);
@@ -312,7 +312,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       selectedTextScroll?.textScroll_Id;
     let data = JSON.stringify({
       screenID: screen_id,
-      googleLocation : selectedAddress,
+      googleLocation: selectedAddress,
+      latitude: selecteLocLog?.lat,
+      longitude: selecteLocLog?.lng,
       screenOrientation: selectScreenOrientation,
       screenResolution: selectScreenResolution,
       timeZone: selectedTimezoneName,
@@ -699,8 +701,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setIOpenMap(!isOpenMap)
   }
 
-  const getLocation = (address) => {
+  const getLocation = (address, currentCenter) => {
     setSelectedAddress(address)
+    setSelecteLocLog(currentCenter)
   }
 
   return (

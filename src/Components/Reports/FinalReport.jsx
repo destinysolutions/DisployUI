@@ -102,7 +102,6 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
         };
         axios.request(config)
             .then((response) => {
-                console.log('response :>> ', response);
                 setAllReportData({
                     allData: response?.data?.data,
                     SearchData: response?.data?.data
