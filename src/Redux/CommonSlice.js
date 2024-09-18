@@ -301,7 +301,8 @@ const CommonSlice = createSlice({
     builder.addCase(handleAddIndustry.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.data = action.payload;
-      toast.success(action.payload.message);
+    
+      // toast.success(action.payload.message);
 
     });
     builder.addCase(handleAddIndustry.rejected, (state, action) => {

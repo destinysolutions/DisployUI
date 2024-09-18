@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiFillPlusCircle, AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai';
 import { PageNumber } from '../../Components/Common/Common';
 import AddIndustry from './AddIndustry';
@@ -20,17 +20,13 @@ export default function IndustryInformation({ sidebarOpen }) {
     const [Editindustry, setEditIndustry] = useState(null);
     const [ShowIndustryModal, setShowIndustryModal] = useState(false);
     const [categorymodal, setCategoryModal] = useState([]);
-    const [rows, setRows] = useState([]);
-    const [currentRowIndex, setCurrentRowIndex] = useState(null);
-    const [modalData, setModalData] = useState({ industryName: '', includes: [] });
-    console.log('Editindustry :>> ', Editindustry);
+    const [error, seterror] = useState(false);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = industry?.length > 0 ? industry?.slice(indexOfFirstItem, indexOfLastItem) : [];
-    const [industryCategory, setindustryCategory] = useState([
-        // { category: '', industryIncludeID: "" }
-    ]);
-    console.log('industry :>> ', industry);
+    const [industryCategory, setindustryCategory] = useState([]);
+
+
     useEffect(() => {
         if (loadFirst) {
             setLoading(true)
@@ -42,6 +38,21 @@ export default function IndustryInformation({ sidebarOpen }) {
         }
     }, [loadFirst, dispatch]);
 
+    useEffect(() => {
+        const handleEscKey = (event) => {
+            if (event.key === 'Escape') {
+                setCategoryModal(false);
+                setEditIndustry()
+                // setInputValue(row.industryName || ''); // Reset input value
+            }
+        };
+
+        window.addEventListener('keydown', handleEscKey);
+        return () => {
+            window.removeEventListener('keydown', handleEscKey);
+        };
+    }, [Editindustry?.industryName]);
+
     const toggleCategoryModal = (index) => {
         setCategoryModal(prev => {
             const newModalState = [...prev];
@@ -49,61 +60,40 @@ export default function IndustryInformation({ sidebarOpen }) {
             return newModalState;
         });
     };
-    const handleAddInformation = (e) => {
-        e.preventDefault();
-        if (!rows.some(row => row.industryName.trim().length > 0)) {
-            return toast.error("Please enter some text.");
-        }
-    };
-
-    const handleKeyDown = (e, index) => {
-        if (e.key === "Enter" || e.type === "click") {
-            const updatedRows = [...rows];
-            updatedRows[index].industryName = e.target.value;
-            console.log('updatedRows :>> ', updatedRows);
-            setRows(updatedRows);
-        }
-    };
 
     const addRow = () => {
         setIndustry([...industry, { industryName: '', industryInclude: [] }]);
-
     };
 
-    const handleOpenModal = (index) => {
-        // setCurrentRowIndex(index);
-        // setIndustry(industry[index]);
-        // console.log(industry[index].industryInclude)
-        setShowIndustryModal(true);
-    };
-
-    const handleModalDataChange = (e) => {
-        const { name, value } = e.target;
-        setModalData((prevData) => ({
-            ...prevData,
-            [name]: value
-        }));
-    };
-
-    const handleModalSubmit = (data) => {
-        if (currentRowIndex !== null) {
-            const updatedRows = [...industryCategory];
-            updatedRows[currentRowIndex] = data;
-            setindustryCategory(updatedRows);
-        }
-    };
-
-    const openModalForRow = (index) => {
-        setCurrentRowIndex(index);
-        setModalData(rows[index]);
-        setShowIndustryModal(true);
-    };
 
     const addIndustry = (data) => {
-        dispatch(handleAddIndustry(data))
+        try {
+            const payload = {
+                ...Editindustry,
+                "industryInclude": data
+            }
+            dispatch(handleAddIndustry(payload))
+
+        } catch (error) {
+            console.log('error :>> ', error);
+        }
     }
 
-    const onClose = (params) => {
+    const updateIndustryName = (index) => {
+
+        if (!Editindustry?.industryName.trim().length > 0) {
+            return toast.error("Please enter some text.");
+        }
+        dispatch(handleAddIndustry(Editindustry)).then((res) => {
+            toast.success("Industry Saved Successfully!");
+            setEditIndustry()
+            setLoadFirst(true); toggleAccordion(index);
+        })
+
+    }
+
+
+    const onClose = () => {
         setShowIndustryModal(false)
         setLoadFirst(true)
     }
@@ -139,7 +129,6 @@ export default function IndustryInformation({ sidebarOpen }) {
                 <div className='border-b border-gray pb-3'>
                     <h2 className='font-semibold'>Industry Information</h2>
                 </div>
-
                 <div className="clear-both">
                     <div className="bg-white rounded-xl mt-8 shadow screen-section ">
                         <div className=" mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
@@ -171,6 +160,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                     )}
                                                     {row.industryName !== null && (
                                                         <>
+                                                            {console.log('Editindustry :>> ', Editindustry)}
                                                             {categorymodal === index ? (
                                                                 <div className="flex w-fit items-center gap-3">
                                                                     <input
@@ -184,11 +174,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                                         value={Editindustry?.industryName}
                                                                     />
                                                                     <button
-                                                                        onClick={() => {
-                                                                            addIndustry(Editindustry)
-                                                                            setLoadFirst(true)
-                                                                            toggleAccordion(index);
-                                                                        }}
+                                                                        onClick={() => { updateIndustryName(index) }}
                                                                     >
                                                                         <AiOutlineSave className="text-xl ml-1 hover:text-primary" />
                                                                     </button>
@@ -196,7 +182,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                             ) : row?.industryName && (
                                                                 <div className='flex items-center gap-3'>
                                                                     {row?.industryName}
-                                                                    <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" onClick={() => { toggleAccordion(index); setEditIndustry(row) }} />
+                                                                    <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" onClick={() => { toggleAccordion(index); setEditIndustry(row); }} />
                                                                 </div>
                                                             )}
                                                         </>
@@ -212,22 +198,28 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                             <AiOutlinePlusCircle
                                                                 size={25}
                                                                 className="mx-auto cursor-pointer"
-                                                                onClick={() => { handleOpenModal(index); setindustryCategory(row?.industryInclude); setEditIndustry(row); }}
+                                                                onClick={() => { setShowIndustryModal(true); setindustryCategory(row?.industryInclude); setEditIndustry(row); }}
                                                             />
                                                         </span>
                                                     )}
-                                                    {row?.industryInclude?.length > 0 && (
-                                                        row?.industryInclude.map((text) => {
-                                                            if (text?.category?.length > 10) {
-                                                                return text?.category?.slice(0, 10) + "...";
-                                                            }
-                                                            return text?.category;
-                                                        })
-                                                            .join(", ")
-                                                    )}
+
+                                                    {row?.industryInclude?.length > 0 &&
+                                                        row?.industryInclude?.map((tag, index) => (
+                                                            <li
+                                                                key={index}
+                                                                className="flex items-center gap-1 border border-black/40 rounded-lg p-1"
+                                                            >
+                                                                {tag?.category}
+                                                                {/* <AiOutlineClose
+                                                                    size={10}
+                                                                    className=" cursor-pointer text-black w-5 h-5 bg-lightgray p-1"
+                                                                    onClick={() => handleDeleteTag(row, tag?.category)}
+                                                                /> */}
+                                                            </li>
+                                                        ))}
                                                     {row?.industryInclude?.length > 0 &&
                                                         <AiOutlinePlusCircle
-                                                            onClick={() => { handleOpenModal(index); setEditIndustry(row); console.log('row :>> ', row); setindustryCategory(row?.industryInclude) }}
+                                                            onClick={() => { setShowIndustryModal(true); setEditIndustry(row); console.log('row :>> ', row); setindustryCategory(row?.industryInclude) }}
                                                             className="w-5 h-5 cursor-pointer"
                                                         />}
                                                 </div>
@@ -375,16 +367,9 @@ export default function IndustryInformation({ sidebarOpen }) {
             {ShowIndustryModal && (
                 <AddIndustry
                     setShowIndustryModal={setShowIndustryModal}
-
-                    handleModalDataChange={handleModalDataChange}
-                    handleModalSubmit={handleModalSubmit}
-
-                    industryCategory={industryCategory}
                     setindustryCategory={setindustryCategory}
+                    industryCategory={industryCategory}
                     addIndustry={addIndustry}
-                    setIndustry={setIndustry}
-                    industry={industry}
-                    Editindustry={Editindustry}
                     onClose={onClose}
                 />
             )}

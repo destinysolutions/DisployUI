@@ -83,7 +83,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showCompositionModal, setShowCompositionModal] = useState(false);
   const [showAppsModal, setShowAppsModal] = useState(false);
-  const { otpData, message } = useLocation().state;
+  const { otpData, message } = useLocation()?.state;
   const [otpMessageVisible, setOTPMessageVisible] = useState(false);
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
@@ -119,12 +119,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
 
   const [screenNameError, setScreenNameError] = useState("");
+  const [addressError, setaddressError] = useState("");
   const [screenRatePerSecondError, setScreenRatePerSecondError] = useState("");
   const [screenMarginError, setScreenMarginError] = useState("");
 
-  const [selectedAddress, setSelectedAddress] = useState();
+
   const [selecteLocLog, setSelecteLocLog] = useState();
   const { screens } = useSelector((s) => s.root.screen);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [currentCenter, setCurrentCenter] = useState({ lat: 43.6532, lng: -79.3832 });
 
   const [isOpenMap, setIOpenMap] = useState(false);
 
@@ -262,8 +265,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleScreenDetail = () => {
     let hasError = false;
+    console.log('selectedAddress :>> ', selectedAddress);
     if (screenName.trim() === "") {
       setScreenNameError("Screen name is required");
+      hasError = true;
+    }
+    if (selectedAddress === undefined || selectedAddress?.length <= 0) {
+      setaddressError("Location is required");
       hasError = true;
     }
     if (userDetails?.isRetailer === true) {
@@ -1890,12 +1898,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                       <td>
                         <div className="flex items-center justify-center gap-4">
+
                           <div
-                            className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
-                            type="number"
-                            placeholder="Select Location"
-                            maxLength="3"
-                          >{selectedAddress?.address}</div>
+                            className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3 min-h-48"
+                            style={{ minHeight: '40px' }}
+                          >{selectedAddress}</div>
                           <div className="border border-[#D5E3FF] rounded">
                             <TbBrandGoogleMaps
                               size={30}
@@ -1904,6 +1911,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             />
                           </div>
                         </div>
+                        {(selectedAddress?.length <= 0 || selectedAddress === undefined) && (
+                          <div className="text-red">{addressError}</div>
+                        )}
                       </td>
                     </tr>
 
@@ -1944,7 +1954,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
       {isOpenMap &&
-        <OpenGoogleMap openMap={openMap} getLocation={getLocation} />
+        <OpenGoogleMap openMap={openMap} selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} currentCenter={currentCenter} setCurrentCenter={setCurrentCenter} />
       }
 
     </>
