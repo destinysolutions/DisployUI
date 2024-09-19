@@ -192,7 +192,6 @@ const AddSlot = () => {
     if (selectedCountry !== "") {
       dispatch(handleGetState(selectedCountry))
         ?.then((res) => {
-          console.log('res :>> ', res);
           setStates(res?.payload?.data);
         })
         .catch((error) => {
@@ -202,7 +201,6 @@ const AddSlot = () => {
   }, [selectedCountry]);
 
   const handleNext = () => {
-    console.log('selectedScreens :>> ', selectedScreens);
     let total = ""
     if (selectedScreens?.length === 0) {
       return toast.error("Please Select Screen");
@@ -221,8 +219,6 @@ const AddSlot = () => {
         "amount": String(total * 100)
       }
     }
-    console.log('params :>> ', params);
-
 
     const config = {
       method: "post",
@@ -243,7 +239,6 @@ const AddSlot = () => {
   };
 
   const onSubmit = (data) => {
-    console.log('data :>> ', data);
     setPage(page + 1);
   };
 
@@ -440,7 +435,6 @@ const AddSlot = () => {
       return toast.error("Please upload valid Vertical and Horizontal images.");
     } else {
       setPage(page + 1);
-      console.log("getallTime", getallTime);
     }
   };
 
@@ -559,7 +553,6 @@ const AddSlot = () => {
 
 
   const handlebook = (paymentMethod) => {
-    console.log('allSlateDetails :>> ', allSlateDetails);
     let Params = JSON.stringify({
       PaymentDetails: {
         ...paymentMethod,

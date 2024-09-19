@@ -191,7 +191,6 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         if (hasMissingImages) {
             return toast.error("Please upload valid Vertical and Horizontal images.");
         } else {
-            console.log("getallTime", getallTime);
             setPage(page + 1);
         }
     };

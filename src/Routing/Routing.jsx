@@ -61,15 +61,6 @@ import SalesManRoutes from "./SalesManRoutes";
 import CustomComposition from "../Components/Composition/CustomComposition";
 import PlanIntegration from "../Components/PlanIntegration";
 
-// Book SLot
-import BookYourSlot from "../Components/BookYourSlot/BookYourSlot"
-
-// Advertising Screens
-
-import AdvertisementScreens from "../Components/Advertisement/AdvertisementScreens"
-import AddBookYourSlot from "../Components/BookYourSlot/AddBookYourSlot";
-
-
 const Routing = () => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -261,15 +252,6 @@ const Routing = () => {
                   />
                 }
               />
-              <Route
-              path="/advertisement-screens"
-              element={
-                <AdvertisementScreens
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
               {/* Assests component route */}
               <Route
                 path="/fileupload"
@@ -422,25 +404,6 @@ const Routing = () => {
                 }
               />
               {/* Playlist component route */}
-
-              <Route
-              path="/book-your-slot"
-              element={
-                <BookYourSlot
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
-              <Route
-              path="/addbookyourslot"
-              element={
-                <AddBookYourSlot
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
               <Route
                 path="/composition"
                 element={

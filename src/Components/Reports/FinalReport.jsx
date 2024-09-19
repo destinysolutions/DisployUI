@@ -28,6 +28,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
         allData: [],
         SearchData: []
     })
+
     const [loading, setLoading] = useState(false);
 
     function convertDateFormat(inputDate) {

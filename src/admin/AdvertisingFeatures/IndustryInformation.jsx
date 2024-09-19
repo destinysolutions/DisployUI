@@ -160,7 +160,6 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                     )}
                                                     {row.industryName !== null && (
                                                         <>
-                                                            {console.log('Editindustry :>> ', Editindustry)}
                                                             {categorymodal === index ? (
                                                                 <div className="flex w-fit items-center gap-3">
                                                                     <input
@@ -219,7 +218,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                         ))}
                                                     {row?.industryInclude?.length > 0 &&
                                                         <AiOutlinePlusCircle
-                                                            onClick={() => { setShowIndustryModal(true); setEditIndustry(row); console.log('row :>> ', row); setindustryCategory(row?.industryInclude) }}
+                                                            onClick={() => { setShowIndustryModal(true); setEditIndustry(row); setindustryCategory(row?.industryInclude) }}
                                                             className="w-5 h-5 cursor-pointer"
                                                         />}
                                                 </div>

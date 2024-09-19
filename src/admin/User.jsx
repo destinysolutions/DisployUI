@@ -78,7 +78,6 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleInsertUser = () => {
-    console.log('isActive :>> ', isActive);
     let hasError = false;
     if (userName === "") {
       setUsernameError(true)
@@ -100,7 +99,6 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     // }
 
     if (isValidPhoneNumber(phoneNumber)) {
-      console.log('phoneNumber :>> ', phoneNumber);
       setPhoneError(false);
     } else {
       setPhoneError(true)
@@ -133,7 +131,6 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       setUserTypeError(true);
       hasError = true
     }
-    console.log('hasError :>> ', hasError);
     if (hasError) {
       return;
     }
@@ -149,7 +146,6 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       operation: editMode ? "Update" : "Insert",
       userID: editMode ? editUserId : 0,
     });
-    console.log('data :>> ', data);
 
     let config = {
       method: "post",

@@ -28,6 +28,9 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
 
     const [markers, setMarkers] = useState([]);
     const [selected, setSelected] = useState(null);
+    // const [selectedAddress, setSelectedAddress] = useState("");
+    const [selectedLatLng, setSelectedLatLng] = useState({ lat: null, lng: null });
+    // const [currentCenter, setCurrentCenter] = useState({ lat: 43.6532, lng: -79.3832 });
     const mapRef = useRef();
 
     useEffect(() => {
@@ -63,9 +66,11 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
 
             const address = results.results[0]?.formatted_address || "No address found";
             setSelectedAddress(address);
+            setSelectedLatLng({ lat, lng });
         } catch (error) {
             console.log("Error: ", error);
             setSelectedAddress("Error fetching address");
+            setSelectedLatLng({ lat: null, lng: null });
         }
     }, []);
 
@@ -107,7 +112,7 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
                 const results = await getGeocode({ address });
                 const { lat, lng } = await getLatLng(results[0]);
                 panTo({ lat, lng });
-
+                setSelectedLatLng({ lat, lng });
                 // Fetch address for the selected place
                 const geocodeResults = await fetch(
                     `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk`

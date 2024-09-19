@@ -117,12 +117,21 @@ const ScreenAssignModal = ({
   };
 
   const handleScreenCheckboxChange = (screenID) => {
+    const findScreen = screenData?.find((item) => item?.screenID === screenID)
     const updatedCheckboxes = { ...screenCheckboxes };
     updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
     setScreenCheckboxes(updatedCheckboxes);
 
     // Create a copy of the selected screens array
     const updatedSelectedScreens = [...selectedScreens];
+    const updatedMacId = [...screenMacID]
+
+    if (updatedMacId?.includes(findScreen?.macid)) {
+      const index = updatedMacId.indexOf(findScreen?.macid);
+      updatedMacId.splice(index, 1);
+    } else {
+      updatedMacId.push(findScreen?.macid)
+    }
 
     // If the screenID is already in the array, remove it; otherwise, add it
     if (updatedSelectedScreens.includes(screenID)) {
@@ -131,7 +140,7 @@ const ScreenAssignModal = ({
     } else {
       updatedSelectedScreens.push(screenID);
     }
-
+    setScreenMacID(updatedMacId)
     // Update the selected screens state
     setSelectedScreens(updatedSelectedScreens);
 
