@@ -5,6 +5,8 @@ import { BiSolidDollarCircle } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
 import { handleAddCostbyarea } from '../../Redux/admin/AdvertisementSlice';
 import { FaEuroSign } from 'react-icons/fa';
+import { BsCurrencyDollar } from 'react-icons/bs';
+import { MdCurrencyRupee } from 'react-icons/md';
 
 export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
     const dispatch = useDispatch()
@@ -70,7 +72,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
         })
     }
 
-    if (!isLoaded) return <div>Loading...</div>;
+    if (!isLoaded) return;
 
     return (
         <div>
@@ -109,7 +111,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                                     <p className="text-red-600 text-sm font-semibold ">Location is Required.</p>
                                 )}
                             </div>
-                            <div className='w-full'>
+                            <div className='w-full mb-3'>
                                 <div className="flex items-center justify-center gap-3 w-full">
                                     <input
                                         className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
@@ -120,19 +122,31 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                                             setdata({ ...data, cost: e.target.value })
                                         }}
                                     />
-                                    <div className="border border-[#D5E3FF] rounded font-bold text-black text-3xl">
+                                    {/* <div className="border border-[#D5E3FF] rounded font-bold text-black text-3xl">
                                         ￠
-                                        {/* cent currency symbol */}
-                                        {/* <BiSolidDollarCircle
-                                            size={30}
-                                            className="text-black p-[2px]"
-                                        /> */}
-                                    </div>
+                                    </div> */}
                                 </div>
                                 {Errors && data?.cost <= 0 && (
                                     <p className="text-red-600 text-sm font-semibold ">Cost is Required.</p>
                                 )}
                             </div>
+                            <div className='w-full mb-3'>
+                                <div className="flex items-center justify-center gap-3 w-full">
+                                    <input
+                                        className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
+                                        type="number"
+                                        placeholder="Set Cost / sec."
+                                        value={data?.cost}
+                                        onChange={(e) => {
+                                            setdata({ ...data, cost: e.target.value })
+                                        }}
+                                    />
+                                </div>
+                                {Errors && data?.cost <= 0 && (
+                                    <p className="text-red-600 text-sm font-semibold ">Cost is Required.</p>
+                                )}
+                            </div>
+                           
                         </div>
                         <div className="pb-6 flex justify-center">
                             <button

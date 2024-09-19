@@ -6,9 +6,11 @@ import { getAllUserAdScreen } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
 import { FaCalendarAlt } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 export default function AdScreens({ sidebarOpen }) {
     const dispatch = useDispatch()
+    const store = useSelector((state) => state.root.advertisementData);
 
     const [loadFirst, setLoadFirst] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -17,7 +19,7 @@ export default function AdScreens({ sidebarOpen }) {
     const [AdScreens, setAdScreens] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [SelectedDate, setSelectedDate] = useState('');
-    const filteredData = AdScreens?.length > 0 ? AdScreens?.filter((item) => item?.screenName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
+    const filteredData = store?.pendingScreens?.length > 0 ? store?.pendingScreens?.filter((item) => item?.screenName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -46,8 +48,8 @@ export default function AdScreens({ sidebarOpen }) {
         };
 
         dispatch(updateAssteScreen(payload)).then((res) => {
-            // dispatch(getAllUserAdScreen({}))
             if (res) {
+                // dispatch(getAllUserAdScreen(SelectedDate))
                 setLoadFirst(true)
             }
         })
@@ -144,13 +146,7 @@ export default function AdScreens({ sidebarOpen }) {
 
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    {/* {item?.assetManagement ? 'yes' : 'no'} */}
-
-
-                                                    {/* <label class="inline-flex items-center cursor-pointer">
-                                                        <input type="checkbox" value="" class="sr-only peer" />
-                                                        <div class={`relative w-11 h-6 bg-[#adb1b8] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300  after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#008000]`}></div>
-                                                    </label> */}
+                                                   
 
                                                     <label class="inline-flex items-center cursor-pointer">
                                                         <input
@@ -163,16 +159,25 @@ export default function AdScreens({ sidebarOpen }) {
                                                             }}
                                                         />
                                                         <div
-                                                            style={{ background: `${item?.assetManagement === true ? 'green' : 'gray'}`, transform: `${item?.assetManagement === true ? 'translateX(5px,10%)' : 'translateX(0)'}` }}
-                                                            class={`relative w-11 h-6 rounded-full peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 transition-colors duration-200 
-                                                                      ${item?.assetManagement ? 'bg-green-500' : 'bg-red-500'}
-                                                                      peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full
-                                                                      peer-checked:bg-green-500 dark:bg-gray-700 peer-checked:after:border-white
-                                                                      after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300
-                                                                      after:border after:rounded-full after:h-5 after:w-5 after:transition-all
-                                                                      dark:border-gray-600
-                                                                      `}
-                                                        ></div>
+                                                            style={{
+                                                                background: item?.assetManagement ? 'green' : 'gray',
+                                                            }}
+                                                            className={`relative w-11 h-6 rounded-full transition-colors duration-200 
+        ${item?.assetManagement ? 'bg-green-500' : 'bg-red-500'}
+        peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 
+        dark:bg-gray-700`}
+                                                        >
+                                                            <div
+                                                                className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200 
+            dark:border-gray-600`}
+                                                                style={{
+                                                                    transform: item?.assetManagement ? 'translateX(20px)' : 'translateX(0)',
+                                                                    transition: 'transform 0.5s ease-in-out',
+                                                                }}
+
+                                                            ></div>
+                                                        </div>
+
                                                     </label>
                                                 </td>
                                                 <td className="px-6 py-4">

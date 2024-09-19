@@ -28,7 +28,6 @@ const ScreenAssignModal = ({
   const [screenData, setScreenData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [screenMacID, setScreenMacID] = useState("");
-
   const selectScreenRef = useRef(null);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -109,6 +108,7 @@ const ScreenAssignModal = ({
     if (checked) {
       const allScreenIds = screenData.map((screen) => screen.screenID);
       const allScreenmacIds = screenData.map((screen) => screen.macid);
+
       setSelectedScreens(allScreenIds);
       setScreenMacID(allScreenmacIds);
     } else {
@@ -131,10 +131,10 @@ const ScreenAssignModal = ({
     } else {
       updatedSelectedScreens.push(screenID);
     }
-   
+
     // Update the selected screens state
     setSelectedScreens(updatedSelectedScreens);
-    
+
     // Check if any individual screen checkbox is unchecked
     const allChecked = Object.values(updatedCheckboxes).every(
       (isChecked) => isChecked
@@ -148,7 +148,9 @@ const ScreenAssignModal = ({
     const screenAssigned = screenData.filter((item) =>
       selectedScreens.includes(item?.screenID)
     );
+
     const foundMacID = screenAssigned.map((i) => i.macid);
+
     setScreenMacID(foundMacID);
 
     if (user?.userID) {
@@ -161,6 +163,7 @@ const ScreenAssignModal = ({
         })
         .then((response) => {
           const fetchedData = response.data.data;
+
           setScreenData(fetchedData);
           setLoading(false);
           let initialCheckboxes = {};
@@ -174,6 +177,7 @@ const ScreenAssignModal = ({
                 initialCheckboxes[screen.screenID] = false;
               }
             });
+
             setScreenMacID(selectmacId);
             setScreenCheckboxes(initialCheckboxes);
           }
@@ -183,7 +187,7 @@ const ScreenAssignModal = ({
           console.log(error);
         });
     }
-  }, []);
+  }, [selectedScreens, user?.userID]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -522,10 +526,7 @@ const ScreenAssignModal = ({
             <button
               className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
               onClick={() => {
-                handleUpdateScreenAssign(
-                  screenCheckboxes,
-                  screenMacID.join(",").replace(/^\s+/g, "")
-                );
+                handleUpdateScreenAssign(screenCheckboxes, screenMacID.join(",").replace(/^\s+/g, ""));
                 setSelectedScreens([]);
               }}
             // disabled={selectedScreens?.length === 0}

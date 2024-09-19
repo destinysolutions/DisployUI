@@ -907,7 +907,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
                       <button
                         disabled={selectedItems?.length === 0}
-                        className={`sm:ml-2 mr-2  xs:ml-1 xs:mt-0 sm:mt-0 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm     text-white1 ${selectedItems?.length > 0 ? "bg-SlateBlue hover:text-white hover:bg-primary hover:blorder-white hover:shadow-primary-500/50 hover:shadow-lg " : 'bg-yellow-300'}`}
+                        className={`sm:ml-2 mr-2  xs:ml-1 xs:mt-0 sm:mt-0 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm     text-white1 ${selectedItems?.length > 0 ? "bg-SlateBlue hover:text-white hover:bg-primary hover:blorder-white hover:shadow-primary-500/50 hover:shadow-lg " : 'bg-[#efc652]'}`}
                         onClick={() => { setConvertAdvertisingModal(true) }}
                       >
                         Convert to Advertising

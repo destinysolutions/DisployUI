@@ -265,7 +265,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleScreenDetail = () => {
     let hasError = false;
-    console.log('selectedAddress :>> ', selectedAddress);
     if (screenName.trim() === "") {
       setScreenNameError("Screen name is required");
       hasError = true;
@@ -274,20 +273,19 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       setaddressError("Location is required");
       hasError = true;
     }
-    if (userDetails?.isRetailer === true) {
-      if ((screenRatePerSec === "" || screenRatePerSec < 1)) {
-        setScreenRatePerSecondError('Screen Rate is required')
-        hasError = true;
-      }
-      if ((screenMargin === "" || screenMargin < 1)) {
-        setScreenMarginError('Screen margin is required')
-        hasError = true;
-      }
-    }
+    // if (userDetails?.isRetailer === true) {
+    //   if ((screenRatePerSec === "" || screenRatePerSec < 1)) {
+    //     setScreenRatePerSecondError('Screen Rate is required')
+    //     hasError = true;
+    //   }
+    //   if ((screenMargin === "" || screenMargin < 1)) {
+    //     setScreenMarginError('Screen margin is required')
+    //     hasError = true;
+    //   }
+    // }
     if (hasError) {
       return;
     }
-
     setScreenNameError("");
     setScreenRatePerSecondError("");
     setScreenMargin("");
@@ -900,7 +898,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                     </tr>
-                    {user?.userDetails?.isRetailer && (
+                    {/* {user?.userDetails?.isRetailer && (
                       <>
                         <tr>
                           <td>
@@ -970,7 +968,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           </td>
                         </tr>
                       </>
-                    )}
+                    )} */}
                     <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
@@ -1901,6 +1899,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
                           <div
                             className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3 min-h-48"
+                            onClick={openMap}
                             style={{ minHeight: '40px' }}
                           >{selectedAddress}</div>
                           <div className="border border-[#D5E3FF] rounded">

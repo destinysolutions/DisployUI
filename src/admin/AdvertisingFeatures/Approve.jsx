@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPendingScreen, getCostByArea, cancelPendingScreen, updatePendingScreen } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
 import { ApproveScreens } from '../../Components/Common/Common';
+import { updateAssteScreen } from '../../Redux/CommonSlice';
 
 // Haversine formula to calculate the distance between two geographical points
 
@@ -99,6 +100,21 @@ export default function Approve() {
         return acc;
     }, {});
 
+    const DeactiveAsste = (item) => {
+        const payload = {
+            ScreenID: item?.screenID,
+            UserID: item?.userID,
+            AssetManagement: !item?.assetManagement,
+        };
+
+        dispatch(updateAssteScreen(payload)).then((res) => {
+            if (res) {
+                // dispatch(getAllUserAdScreen(SelectedDate))
+                setLoadFirst(true)
+            }
+        })
+    }
+
     return (
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
@@ -189,14 +205,28 @@ export default function Approve() {
                                                                         </span>
                                                                     </td>
                                                                     <td className="px-6 py-4">
-                                                                        <label className="inline-flex items-center me-5 cursor-pointer">
+                                                                        <label class="inline-flex items-center cursor-pointer">
                                                                             <input
                                                                                 type="checkbox"
-                                                                                value=""
-                                                                                className="sr-only peer"
-                                                                                checked
+                                                                                class="sr-only peer"
+                                                                                checked={item?.assetManagement}
+                                                                                id={`Active_${item?.ScreenID}`}
+                                                                                onChange={() => {
+                                                                                    DeactiveAsste(item);
+                                                                                }}
                                                                             />
-                                                                            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                                                            <div
+                                                                                style={{ background: item?.assetManagement ? 'green' : 'gray', }}
+                                                                                className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${item?.assetManagement ? 'bg-green-500' : 'bg-red-500'}peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 dark:bg-gray-700`}
+                                                                            >
+                                                                                <div
+                                                                                    className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200  dark:border-gray-600`} 
+                                                                                    style={{
+                                                                                        transform: item?.assetManagement ? 'translateX(20px)' : 'translateX(0)',
+                                                                                        transition: 'transform 0.5s ease-in-out',
+                                                                                    }}
+                                                                                ></div>
+                                                                            </div>
                                                                         </label>
                                                                     </td>
                                                                     <td className="px-6 py-4">{item?.userName}</td>
