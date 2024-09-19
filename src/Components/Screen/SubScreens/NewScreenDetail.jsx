@@ -265,7 +265,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleScreenDetail = () => {
     let hasError = false;
-    console.log('selectedAddress :>> ', selectedAddress);
     if (screenName.trim() === "") {
       setScreenNameError("Screen name is required");
       hasError = true;

@@ -29,7 +29,6 @@ const AddEditPlan = ({
     isAnnually: false,
     isIndian: false,
   });
-  console.log('formData :>> ', formData);
   const [errorPlanName, setErrorPlanName] = useState(false);
   const [errorStorage, setErrorStorage] = useState(false);
   const [errorCost, setErrorCost] = useState(false);
@@ -108,7 +107,6 @@ const AddEditPlan = ({
     if (hasError) {
       return;
     }
-    console.log('formData :>> ', formData);
     const FeatureList = formData?.PlanDetails?.map((item) => {
       if (item?.listOfFeaturesID === 32) {
         return {
@@ -136,10 +134,8 @@ const AddEditPlan = ({
           value: formData[item.name],
         };
       }
-      console.log('item :>> ', item);
       return item;
     });
-    console.log('FeatureList :>> ', FeatureList);
     setLoading(true);
     toast.loading("Saving...");
 

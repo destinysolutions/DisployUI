@@ -152,8 +152,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [endTime, setEndTime] = useState(getCurrentTime());
   const [cardList, setCardList] = useState([])
   const [selectedCard, setSelectedCard] = useState("");
-  // console.log('selectedTimezoneName :>> ', selectedTimezoneName);
-  // console.log('timezones :>> ', timezones);
 
   const [selectedDays, setSelectedDays] = useState(
     new Array(TotalDay.length).fill(false)

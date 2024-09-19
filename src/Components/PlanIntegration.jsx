@@ -43,7 +43,6 @@ const PlanIntegration = () => {
         googleLocation: ""
     })
     const TotalPrice = Screen <= 1 ? selectedPlan?.planPrice : ((Screen * selectedPlan?.planPrice))
-    console.log('selectedPlan :>> ', selectedPlan);
     const appearance = {
         theme: 'stripe',
     };

@@ -51,7 +51,6 @@ export default function BookSlotMap({ setSelectedValue, setSelectAllScreen, setS
 
     const getChanges = (value) => {
         console.log('location', value);
-        // console.log(value, "hello12345");
     };
 
     const handleScreenClick = (screen) => {
