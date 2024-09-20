@@ -477,7 +477,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
-                    My Schedule
+                    My Schedule 
                   </h1>
                   <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
                     <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
@@ -614,7 +614,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             Tags
                           </th>
                           <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                            Action{" "}
+                            Actions
                           </th>
                         </tr>
                       </thead>

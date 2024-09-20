@@ -146,7 +146,7 @@ export default function AdScreens({ sidebarOpen }) {
 
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                   
+
 
                                                     <label class="inline-flex items-center cursor-pointer">
                                                         <input

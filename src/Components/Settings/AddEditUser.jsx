@@ -182,6 +182,7 @@ const AddEditUser = ({
                                                             </div>
                                                         </div>
 
+                                                       
                                                         {errors?.password && (password?.length <= 0 ?
                                                             <span span className='error'>This field is required.</span> :
                                                             !(validatePassword(password)) && <span className='error'>Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character</span>

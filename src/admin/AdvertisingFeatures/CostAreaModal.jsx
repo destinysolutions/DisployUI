@@ -1,10 +1,8 @@
 import { Autocomplete, useLoadScript } from '@react-google-maps/api';
 import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
-import { BiSolidDollarCircle } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
 import { handleAddCostbyarea } from '../../Redux/admin/AdvertisementSlice';
-import { FaEuroSign } from 'react-icons/fa';
 import { BsCurrencyDollar } from 'react-icons/bs';
 import { MdCurrencyRupee } from 'react-icons/md';
 
@@ -19,7 +17,8 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
     const [markerPosition, setMarkerPosition] = useState(null);
     const [data, setdata] = useState({
         location: '',
-        cost: ''
+        cost: '',
+        currency: 'Indian'
     });
     const [Errors, setErrors] = useState(false);
 
@@ -28,6 +27,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
             setdata({
                 location: EditData?.locationName,
                 cost: EditData?.costPerSec,
+                currency: EditData?.currency,
             })
         }
         setMarkerPosition({
@@ -62,7 +62,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
             latitude: markerPosition?.lat,
             longitude: markerPosition?.lng,
             costPerSec: data?.cost,
-            currency: ""
+            currency: data?.currency
         }
         dispatch(handleAddCostbyarea(payload)).then((result) => {
             onclose()
@@ -95,9 +95,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                         <div className=" p-5 ">
 
                             <div className='w-full my-3'>
-                                {/* <label for='Yes' className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                    Location :
-                                </label> */}
+
                                 <Autocomplete
 
                                     onLoad={(ref) => (autocompleteRef.current = ref)}
@@ -130,23 +128,55 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                                     <p className="text-red-600 text-sm font-semibold ">Cost is Required.</p>
                                 )}
                             </div>
-                            <div className='w-full mb-3'>
-                                <div className="flex items-center justify-center gap-3 w-full">
+                            {/* <div className='w-full mb-3'>
+                                <select
+                                    className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
+                                    id="selectOption"
+                                // value={item.sequence}
+                                // onChange={(e) => handleSequenceChange(index, e.target.value)}
+                                >
+                                    <option className='hidden'>Select Currency</option>
+                                    <option value="Indian">Indian (₹)</option>
+                                    <option value="Dollar">Dollar ($)</option>
+                                </select>
+                            </div> */}
+                            <div className="flex justify-start items-center gap-2 my-2">
+                                <label for='Yes' className="mr-3 lg:text-base md:text-base sm:text-xs xs:text-xs">
+                                    Currency :
+                                </label>
+                                <div className=" flex items-center">
                                     <input
-                                        className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
-                                        type="number"
-                                        placeholder="Set Cost / sec."
-                                        value={data?.cost}
+                                        type="radio"
+                                        value={data?.currency === 'Indian'}
+                                        checked={data?.currency === 'Indian'}
+                                        name="Monthly"
+                                        id='Monthly'
                                         onChange={(e) => {
-                                            setdata({ ...data, cost: e.target.value })
+                                            setdata({ ...data, currency: 'Indian' })
                                         }}
                                     />
+                                    <label for='Monthly' className="border border-[#D5E3FF] rounded font-bold text-black text-3xl p-[2px] ml-2">
+                                        <MdCurrencyRupee />
+                                    </label>
                                 </div>
-                                {Errors && data?.cost <= 0 && (
-                                    <p className="text-red-600 text-sm font-semibold ">Cost is Required.</p>
-                                )}
+                                <div className="ml-3 flex items-center">
+                                    <input
+                                        id='Annually'
+                                        type="radio"
+                                        value={data?.currency === 'Dollar'}
+                                        checked={data?.currency === 'Dollar'}
+                                        name="Annually"
+                                        onChange={(e) => {
+                                            setdata({ ...data, currency: 'Dollar' })
+                                        }}
+
+                                    />
+                                    <label for='Annually' className="border border-[#D5E3FF] rounded font-bold text-black text-3xl p-[2px] ml-2">
+                                        <BsCurrencyDollar />
+                                    </label>
+
+                                </div>
                             </div>
-                           
                         </div>
                         <div className="pb-6 flex justify-center">
                             <button

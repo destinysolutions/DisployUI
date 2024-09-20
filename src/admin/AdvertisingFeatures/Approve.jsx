@@ -7,6 +7,7 @@ import { getPendingScreen, getCostByArea, cancelPendingScreen, updatePendingScre
 import moment from 'moment';
 import { ApproveScreens } from '../../Components/Common/Common';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
+import toast from 'react-hot-toast';
 
 // Haversine formula to calculate the distance between two geographical points
 
@@ -23,7 +24,7 @@ const haversineDistance = (lat1, lon1, lat2, lon2) => {
     return R * c; // Distance in km
 };
 
-export default function Approve() {
+export default function Approve({ handleTab }) {
     const dispatch = useDispatch();
     const store = useSelector((state) => state?.root?.advertisementData);
     const [loading, setLoading] = useState(false);
@@ -86,7 +87,8 @@ export default function Approve() {
     }
     const handleUpdateScreen = (item) => {
         if (!item?.screenRatePerSec) {
-            return setError(true)
+            return handleTab(1)
+            // return setError(true)
         }
         const query = { ScreenID: item?.screenID, UserID: item?.userID, ScreenRatePerSec: item?.screenRatePerSec ? item?.screenRatePerSec : cost }
         dispatch(updatePendingScreen(query)).then((res) => setLoadFirst(true))
@@ -106,10 +108,8 @@ export default function Approve() {
             UserID: item?.userID,
             AssetManagement: !item?.assetManagement,
         };
-
         dispatch(updateAssteScreen(payload)).then((res) => {
             if (res) {
-                // dispatch(getAllUserAdScreen(SelectedDate))
                 setLoadFirst(true)
             }
         })
@@ -219,7 +219,7 @@ export default function Approve() {
                                                                                 className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${item?.assetManagement ? 'bg-green-500' : 'bg-red-500'}peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 dark:bg-gray-700`}
                                                                             >
                                                                                 <div
-                                                                                    className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200  dark:border-gray-600`} 
+                                                                                    className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200  dark:border-gray-600`}
                                                                                     style={{
                                                                                         transform: item?.assetManagement ? 'translateX(20px)' : 'translateX(0)',
                                                                                         transition: 'transform 0.5s ease-in-out',
@@ -242,7 +242,6 @@ export default function Approve() {
                                                                                     value={cost}
                                                                                 />)
                                                                             }
-
                                                                         </div>
                                                                         {cost?.length <= 0 && Error && (
                                                                             <span className='error'>Cost Value is required.</span>

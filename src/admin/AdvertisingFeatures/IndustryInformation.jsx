@@ -25,7 +25,7 @@ export default function IndustryInformation({ sidebarOpen }) {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = industry?.length > 0 ? industry?.slice(indexOfFirstItem, indexOfLastItem) : [];
     const [industryCategory, setindustryCategory] = useState([]);
-
+    const [indetyType, setindetyType] = useState('');
 
     useEffect(() => {
         if (loadFirst) {
@@ -66,11 +66,12 @@ export default function IndustryInformation({ sidebarOpen }) {
     };
 
 
-    const addIndustry = (data) => {
+    const addIndustry = (data, type) => {
         try {
             const payload = {
                 ...Editindustry,
-                "industryInclude": data
+                "industryInclude": type === 'Include' ? data : Editindustry?.industryInclude,
+                industryExclude: type === 'Exclude' ? data : Editindustry?.industryExclude
             }
             dispatch(handleAddIndustry(payload))
 
@@ -91,7 +92,6 @@ export default function IndustryInformation({ sidebarOpen }) {
         })
 
     }
-
 
     const onClose = () => {
         setShowIndustryModal(false)
@@ -137,11 +137,11 @@ export default function IndustryInformation({ sidebarOpen }) {
                                     <tr className="items-center table-head-bg">
                                         <th className="text-[#5A5881] text-sm font-semibold w-fit text-center">Business category</th>
                                         <th className="text-[#5A5881] text-sm font-semibold w-fit text-center">Includes</th>
+                                        <th className="text-[#5A5881] text-sm font-semibold w-fit text-center">Excludes</th>
                                         <th className="text-[#5A5881] text-sm font-semibold w-fit text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     {!loading && currentItems?.length > 0 && currentItems?.map((row, index) => (
                                         <tr key={index} className="border-b border-b-[#E4E6FF]">
                                             <td className="text-[#5E5E5E] text-center">
@@ -197,7 +197,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                             <AiOutlinePlusCircle
                                                                 size={25}
                                                                 className="mx-auto cursor-pointer"
-                                                                onClick={() => { setShowIndustryModal(true); setindustryCategory(row?.industryInclude); setEditIndustry(row); }}
+                                                                onClick={() => { setShowIndustryModal(true); setindustryCategory(row?.industryInclude); setEditIndustry(row); setindetyType('Include') }}
                                                             />
                                                         </span>
                                                     )}
@@ -209,16 +209,41 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                                 className="flex items-center gap-1 border border-black/40 rounded-lg p-1"
                                                             >
                                                                 {tag?.category}
-                                                                {/* <AiOutlineClose
-                                                                    size={10}
-                                                                    className=" cursor-pointer text-black w-5 h-5 bg-lightgray p-1"
-                                                                    onClick={() => handleDeleteTag(row, tag?.category)}
-                                                                /> */}
+
                                                             </li>
                                                         ))}
                                                     {row?.industryInclude?.length > 0 &&
                                                         <AiOutlinePlusCircle
-                                                            onClick={() => { setShowIndustryModal(true); setEditIndustry(row); setindustryCategory(row?.industryInclude) }}
+                                                            onClick={() => { setShowIndustryModal(true); setEditIndustry(row); setindustryCategory(row?.industryInclude); setindetyType('Include') }}
+                                                            className="w-5 h-5 cursor-pointer"
+                                                        />}
+                                                </div>
+                                            </td>
+                                            <td className="text-center text-[#5E5E5E]">
+                                                <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
+                                                    {row?.industryExclude?.length <= 0 && (
+                                                        <span>
+                                                            <AiOutlinePlusCircle
+                                                                size={25}
+                                                                className="mx-auto cursor-pointer"
+                                                                onClick={() => { setShowIndustryModal(true); setindustryCategory(row?.industryExclude); setEditIndustry(row); setindetyType('Exclude') }}
+                                                            />
+                                                        </span>
+                                                    )}
+
+                                                    {row?.industryExclude?.length > 0 &&
+                                                        row?.industryExclude?.map((tag, index) => (
+                                                            <li
+                                                                key={index}
+                                                                className="flex items-center gap-1 border border-black/40 rounded-lg p-1"
+                                                            >
+                                                                {tag?.excludeName}
+
+                                                            </li>
+                                                        ))}
+                                                    {row?.industryExclude?.length > 0 &&
+                                                        <AiOutlinePlusCircle
+                                                            onClick={() => { setShowIndustryModal(true); setEditIndustry(row); setindustryCategory(row?.industryExclude); setindetyType('Exclude') }}
                                                             className="w-5 h-5 cursor-pointer"
                                                         />}
                                                 </div>
@@ -370,6 +395,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                     industryCategory={industryCategory}
                     addIndustry={addIndustry}
                     onClose={onClose}
+                    indetyType={indetyType}
                 />
             )}
         </div>

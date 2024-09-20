@@ -132,13 +132,12 @@ export default function Advertising({ sidebarOpen, setSidebarOpen }) {
                                 <div><Advertiser sidebarOpen={sidebarOpen} /></div>
                             )}
                             {STabs === 5 && (
-                                <div><Approve sidebarOpen={sidebarOpen} /></div>
+                                <div><Approve sidebarOpen={sidebarOpen} handleTab={handleTab} /></div>
                             )}
                             {STabs === 6 && (
                                 <div><IndustryInformation sidebarOpen={sidebarOpen} /></div>
                             )}
 
-                            {/*Default Media*/}
                         </div>
                     </div>
                 </div>

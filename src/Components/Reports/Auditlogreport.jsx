@@ -15,14 +15,15 @@ const Auditlogreport = ({
   debouncedOnChange,
   exportDataToCSV,
   loading,
-  sidebarOpen,
+  sidebarOpen, setType, type
 }) => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
   const [pageSize, setPageSize] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(allReportData?.allData?.length / pageSize);
+  const totalPages = Math.ceil(allReportData?.SearchData?.length / pageSize);
   const sortedAndPaginatedData = allReportData?.SearchData?.length > 0 ? allReportData?.SearchData.slice((currentPage - 1) * pageSize, currentPage * pageSize) : [];
 
+  
   useEffect(() => {
     setCurrentPage(1)
   }, [allReportData?.SearchData]);
@@ -34,8 +35,8 @@ const Auditlogreport = ({
     <>
       <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
-            <div className="flex items-center lg:mb-0 md:mb-0 sm:mb-4">
+          <div className="lg:flex lg:justify-between sm:block xs:block  items-center ">
+            <div className="flex items-center lg:mb-0 md:mb-0 sm:mb-4 ">
               <Link to={"/reports"}>
                 <MdKeyboardArrowLeft className="text-4xl text-primary" />
               </Link>
@@ -44,8 +45,8 @@ const Auditlogreport = ({
               </h1>
             </div>
 
-            <div className="rightbtn flex items-center flex-wrap pr-4">
-              {/*<ul className="p-0 m-0 lg:flex md:flex sm:block xs:block items-center border rounded-md border-primary  lg:mr-3 md:mr-3 sm:mr-2 xs:mr-0 lg:w-auto md:w-auto sm:w-auto xs:w-full">
+            <div className=" flex items-center flex-wrap  gap-3">
+              {/* <ul className="p-0 m-0 lg:flex md:flex sm:block xs:block items-center border rounded-md border-primary  lg:mr-3 md:mr-3 sm:mr-2 xs:mr-0 lg:w-auto md:w-auto sm:w-auto xs:w-full">
                 <li className="bg-primary text-white py-1 px-4 font-light-[26px] rounded-tl-md rounded-tb-md">
                   <label className=" leading-8">Daily</label>
                 </li>
@@ -55,8 +56,25 @@ const Auditlogreport = ({
                     className=" date-formate px-2 py-1 bg-[transparent] text-base lg:w-auto md:w-auto sm:w-full xs:w-full"
                   />
                 </li>
-  </ul>*/}
+  </ul> */}
 
+              <div className=" flex items-end justify-end relative sm:mr-0">
+                <select
+                  className="border border-primary rounded-lg px-4 pl-2 py-2 "
+                  id="selectOption"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  <option className='hidden'>Select Type</option>
+                  <option value="">All</option>
+                  <option value="Asset">Asset</option>
+                  <option value="Folder">Folder</option>
+                  <option value="Apps">Apps</option>
+                  <option value="Composition">Composition</option>
+                  <option value="Schedule">Schedule</option>
+                  <option value="Weather Schedule">Weather Schedule</option>
+                </select>
+              </div>
               <div className=" flex items-end justify-end relative sm:mr-0">
                 <AiOutlineSearch className="absolute top-[13px] left-[10px] z-10 text-primary searchicon" />
                 <input
@@ -177,7 +195,7 @@ const Auditlogreport = ({
               </table>
             </div>
             {
-              sortedAndPaginatedData?.length > 5 && (
+              sortedAndPaginatedData?.length > 0 && (
                 <div className="flex border-b border-gray lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                   <div className="flex items-center">
                     <span className="text-gray-500">{`Total ${allReportData?.allData?.length} Audit Log Reports`}</span>

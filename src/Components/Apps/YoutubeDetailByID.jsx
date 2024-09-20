@@ -43,6 +43,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   const authToken = `Bearer ${token}`;
 
   const history = useNavigate();
+  const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|v\/|.+\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})$/;
   const [enabled, setEnabled] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [showSetScreenModal, setShowSetScreenModal] = useState(false);
@@ -93,13 +94,12 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   // }
 
   const handleUpdateYoutubeApp = async () => {
-    // if (!YoutubeVideo?.includes("youtube")) {
-    //   toast.remove();
-    //   return toast.error("Please Enter Vaild Youtube URL");
-    // } 
     if (instanceName === "" || YoutubeVideo === "") {
       toast.remove();
       return toast.error("Please fill all the details");
+    }
+    if (!youtubeRegex.test(YoutubeVideo)) {
+      return toast.error("Please Enter Vaild Youtube URL");
     }
     let data = JSON.stringify({
       youtubeId: id,

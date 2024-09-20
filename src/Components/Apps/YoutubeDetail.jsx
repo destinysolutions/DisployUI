@@ -34,6 +34,8 @@ import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import YoutubePreview from "./YoutubePreview";
 
 const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
+  const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|v\/|.+\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})$/;
+
   YoutubeDetail.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
@@ -67,9 +69,9 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const modalRef = useRef(null);
 
   const handleYoutubeChange = (e) => {
-    setYoutubeVideo(e.target.value);
+    const value = e.target.value;
+    setYoutubeVideo(value);
   };
-
   const handleMuteChange = () => {
     setIsMuted(!isMuted);
   };
@@ -98,14 +100,14 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   //Insert  API
   const addYoutubeApp = () => {
-    // if (!YoutubeVideo?.includes("youtube")) {
-    //   toast.remove();
-    //   return toast.error("Please Enter Vaild Youtube URL");
-    // }
     if (instanceName === "" || YoutubeVideo === "") {
       toast.remove();
       return toast.error("Please fill all the details");
     }
+    if (!youtubeRegex.test(YoutubeVideo)) {
+      return toast.error("Please Enter Vaild Youtube URL");
+    }
+
     let data = JSON.stringify({
       instanceName: instanceName,
       youTubeURL: YoutubeVideo,
@@ -114,6 +116,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
       youTubePlaylist: maxVideos,
       operation: "Insert",
     });
+
 
     let config = {
       method: "post",
@@ -462,12 +465,12 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         <tr>
                           <td>
                             <label className="text-base font-normal">
-                              YouTube URL:
+                              YouTube URL: 
                             </label>
                           </td>
                           <td>
                             <input
-                              type="text"
+                              type="url"
                               placeholder="e.g. https://youtu.be/dQw4w9WgXcQ"
                               onChange={handleYoutubeChange}
                               value={YoutubeVideo}

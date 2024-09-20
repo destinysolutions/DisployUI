@@ -237,7 +237,7 @@ const AddEventScheduleEditors = ({
     // if (editedStartDate < currentDate.format("YYYY-MM-DD")) {
     if (editedStartDate < today) {
       toast.remove();
-      toast.error("Please Change Start Date.");
+      toast.error("Please select a start date that is after today's date.");
       return;
     } else if (showRepeatSettings) {
       // if (editedEndDate < currentDate.format("YYYY-MM-DD")) {

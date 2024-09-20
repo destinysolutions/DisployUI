@@ -272,7 +272,7 @@ const Routing = () => {
                 }
               />
 
-              <Route
+              {/* <Route
                 path="/assets-grid"
                 element={
                   <GridAssets
@@ -280,7 +280,7 @@ const Routing = () => {
                     setSidebarOpen={setSidebarOpen}
                   />
                 }
-              />
+              /> */}
 
               {/* Apps component route */}
               <Route

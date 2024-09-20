@@ -211,18 +211,16 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
   };
   const validateForm = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
     let newErrors = {};
 
     if (labelTitle !== "Update User") {
       //newErrors.email = !emailRegex.test(email) ? "Not a valid email" || !email ? "Email is required" : "";
-      newErrors.email = !email
-        ? "Email is required"
-        : !emailRegex.test(email)
-          ? "Please Enter Valid Email"
-          : "";
+      newErrors.email = !email ? "Email is required" : !emailRegex.test(email) ? "Please Enter Valid Email" : "";
     }
     if (userDetailData?.length <= 0) {
-      newErrors.password = !password ? "Password is required" : "";
+      newErrors.password = !password ? "Password is required" : !passwordRegex.test(password) ? 'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character' : '';
     }
 
     newErrors.firstName = !firstName ? "First Name is required" : "";
@@ -238,7 +236,6 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
   const handleAddUser = () => {
     let data = new FormData();
     const hasError = validateForm();
-
     // If there are errors, prevent form submission
     if (hasError) {
       return;
@@ -274,6 +271,7 @@ const Users = ({ searchValue, permissions, sidebarOpen }) => {
       },
       data: data,
     };
+
 
     try {
       dispatch(handleAddNewUser({ config }));

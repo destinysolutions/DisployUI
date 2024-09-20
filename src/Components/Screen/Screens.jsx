@@ -17,7 +17,7 @@ import PropTypes from "prop-types";
 import ScreenOTPModal from "./ScreenOTPModal";
 import { RiArrowDownSLine, RiDeleteBin5Line } from "react-icons/ri";
 import Footer from "../Footer";
-
+import { SiConvertio } from "react-icons/si";
 import { PAYMENT_INTENT_CREATE_REQUEST, SCREEN_DELETE_ALL, SCREEN_GROUP, SCREEN_STORAGE, stripePromise } from "../../Pages/Api";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -905,14 +905,25 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                         </div>
                       )}
-                      <button
-                        disabled={selectedItems?.length === 0}
-                        className={`sm:ml-2 mr-2  xs:ml-1 xs:mt-0 sm:mt-0 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm     text-white1 ${selectedItems?.length > 0 ? "bg-SlateBlue hover:text-white hover:bg-primary hover:blorder-white hover:shadow-primary-500/50 hover:shadow-lg " : 'bg-[#efc652]'}`}
-                        onClick={() => { setConvertAdvertisingModal(true) }}
-                      >
-                        Convert to Advertising
-                      </button>
 
+                      <button
+                        data-tip
+                        data-for="Delete"
+                        type="button"
+                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                        onClick={() => { setConvertAdvertisingModal(true) }}
+                        style={{ display: selectedItems?.length > 0 ? "block" : "none" }}
+                      >
+                        <SiConvertio className="p-1 px-2 text-4xl text-white hover:text-white" />
+                        <ReactTooltip
+                          id="Delete"
+                          place="bottom"
+                          type="warning"
+                          effect="solid"
+                        >
+                          <span>  Convert to Advertising</span>
+                        </ReactTooltip>
+                      </button>
                       <button
                         data-tip
                         data-for="Delete"

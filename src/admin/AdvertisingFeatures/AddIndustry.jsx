@@ -2,30 +2,39 @@ import React, { useRef, useState } from 'react'
 import toast from 'react-hot-toast';
 import { AiOutlineClose, AiOutlineCloseCircle } from 'react-icons/ai'
 
-export default function AddIndustry({ setShowIndustryModal, setindustryCategory, industryCategory, addIndustry, onClose, }) {
+export default function AddIndustry({ setShowIndustryModal, setindustryCategory, industryCategory, addIndustry, onClose, indetyType }) {
     const inputRef = useRef(null);
     const [value, setvalue] = useState('');
 
     const handleAddTag = (e) => {
         e.preventDefault();
-
         if (!value.replace(/\s/g, "").length) {
             toast.remove();
             return toast.error("Please enter some text.");
         }
-
-
-        setindustryCategory(prevState => [...prevState, { category: value }]);
-        const includes = [...industryCategory, { category: value }]
-
-        addIndustry(includes)
+        if (indetyType === 'Include') {
+            setindustryCategory(prevState => [...prevState, { category: value }]);
+            const includes = [...industryCategory, { category: value }]
+            addIndustry(includes, indetyType)
+        } else {
+            setindustryCategory(prevState => [...prevState, { excludeName: value }]);
+            const includes = [...industryCategory, { excludeName: value }]
+            addIndustry(includes, indetyType)
+        }
         setvalue("");
     };
 
     const handleDeleteTag = (val) => {
-        const newTags = industryCategory?.filter((tag) => tag?.category !== val);
-        setindustryCategory(newTags)
-        addIndustry(newTags)
+        if (indetyType === 'Include') {
+            const newTags = industryCategory?.filter((tag) => tag?.category !== val?.category);
+            setindustryCategory(newTags)
+            addIndustry(newTags, indetyType)
+        } else {
+            const newTags = industryCategory?.filter((tag) => tag?.excludeName !== val?.excludeName);
+            setindustryCategory(newTags)
+            addIndustry(newTags,indetyType)
+
+        }
     };
 
     return (
@@ -34,7 +43,7 @@ export default function AddIndustry({ setShowIndustryModal, setindustryCategory,
             <div className=" bg-white z-9999 space-y-3 overflow-y-scroll hide_scrollbar fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 min-w-80vw max-h-[50vh] max-w-[50vw] min-h-[50vh] min-w-[50vw] p-5 rounded-lg">
                 <div className="flex items-center justify-between w-full bg-white sticky -top-6 p-2">
                     <h3 className="text-left font-semibold text-base sticky top-0 bg-white w-full">
-                        Add Includes
+                        Add {indetyType}
                     </h3>
                     <button onClick={() => onClose()}>
                         <AiOutlineCloseCircle className="text-2xl" />
@@ -48,11 +57,11 @@ export default function AddIndustry({ setShowIndustryModal, setindustryCategory,
                                     key={index}
                                     className="flex items-center gap-1 border border-black/40 rounded-lg p-1"
                                 >
-                                    {tag?.category}
+                                    {tag?.category || tag?.excludeName}
                                     <AiOutlineClose
                                         size={10}
                                         className=" cursor-pointer text-black w-5 h-5 bg-lightgray p-1"
-                                        onClick={() => handleDeleteTag(tag?.category)}
+                                        onClick={() => handleDeleteTag(tag)}
                                     />
                                 </li>
                             ))}

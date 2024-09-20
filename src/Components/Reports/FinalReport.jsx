@@ -28,7 +28,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
         allData: [],
         SearchData: []
     })
-
+    const [type, setType] = useState('');
     const [loading, setLoading] = useState(false);
 
     function convertDateFormat(inputDate) {
@@ -94,7 +94,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: reportURLs[report] || reportURLs["default"],
+            url: `${reportURLs[report]}?Type=${type}` || reportURLs["default"],
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: authToken,
@@ -117,7 +117,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
 
     useEffect(() => {
         fetchData()
-    }, [])
+    }, [type])
 
     const handleChange = (e) => {
         const searchQuery = e.target.value.toLowerCase();
@@ -169,7 +169,7 @@ const FinalReport = ({ sidebarOpen, setSidebarOpen }) => {
                     <Uptimereport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen} />
                 )}
                 {report === "auditlogreport" && (
-                    <Auditlogreport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen} />
+                    <Auditlogreport setType={setType} type={type} allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen} />
                 )}
                 {report === "salesreport" && (
                     <SalesReport allReportData={allReportData} debouncedOnChange={debouncedOnChange} exportDataToCSV={exportDataToCSV} loading={loading} sidebarOpen={sidebarOpen} />
