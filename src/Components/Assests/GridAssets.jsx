@@ -1,114 +1,51 @@
-import React, { Suspense, useRef } from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
-import Sidebar from "../Sidebar";
-import Navbar from "../Navbar";
-import { TiFolderOpen } from "react-icons/ti";
-import {
-  AiOutlineCloseCircle,
-  AiOutlineCloudUpload,
-  AiOutlineUnorderedList,
-  AiOutlineSearch,
-} from "react-icons/ai";
-import { RxDashboard } from "react-icons/rx";
 import "../../Styles/assest.css";
 import { FiDownload, FiUpload } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { CgMoveRight } from "react-icons/cg";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import Footer from "../Footer";
 import { HiDocumentDuplicate, HiDotsVertical } from "react-icons/hi";
 import {
   ALL_FILES_UPLOAD,
-  ASSIGN_ASSET_TO_SCREEN,
   CREATE_NEW_FOLDER,
-  DELETE_ALL_ASSET,
-  GET_ASSET_DETAILS,
   MOVE_TO_FOLDER,
   SELECT_BY_ASSET_ID,
 } from "../../Pages/Api";
 import { FcOpenedFolder } from "react-icons/fc";
 import toast from "react-hot-toast";
-import ShowAssetImageModal from "./ShowAssetImageModal";
-import ScreenAssignModal from "../ScreenAssignModal";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  handelAllDelete,
-  handelCreateFolder,
   handelDeletedataAssets,
   handelMoveDataToFolder,
   handleCheckFolderImage,
   handleDeleteFolder,
-  handleGetAllAssetsTypeBase,
   resetStatus,
 } from "../../Redux/Assetslice";
-import { debounce } from "lodash";
-// import { connection } from "../../SignalR";
-import { handleGetStorageDetails } from "../../Redux/SettingSlice";
-import PreviewDoc from "./PreviewDoc";
-import { socket } from "../../App";
-import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
-import Loading from "../Loading";
-import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
-import { getTrueKeys } from "../Common/Common";
 
-
-const Assets = ({ sidebarOpen, setSidebarOpen }) => {
-  Assets.propTypes = {
+const GridAssets = ({ activeTab, setScreenAssetID, folderElements, tabsDelete, handleCheckboxChange, selectAll, handleSelectAll, sidebarOpen, store, loadFist, setLoadFist, permissions, setAddScreenModal, setShowImageAssetModal, setImageAssetModal, setSelectScreenModal, setFolderDisable, setPreviewDoc, setSelectDoc }) => {
+  GridAssets.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  // move to data in folder
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const store = useSelector((state) => state.root.asset);
-
   const history = useNavigate();
-
   const videoRef = useRef(null);
+  const actionBoxRef = useRef(null);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const [isInView, setIsInView] = useState(false);
-
-
-
-
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
-  const [asstab, setTogglebtn] = useState(2);
   const [assetsdw2, setassetsdw2] = useState(null);
   const [selectedItems, setSelectedItems] = useState();
   const [folderName, setFolderName] = useState("");
   const [editMode, setEditMode] = useState(null);
-  const [showImageAssetModal, setShowImageAssetModal] = useState(false);
-  const [imageAssetModal, setImageAssetModal] = useState(null);
-  const [addScreenModal, setAddScreenModal] = useState(false);
-  const [selectScreenModal, setSelectScreenModal] = useState(false);
-  const [selectedScreens, setSelectedScreens] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
-  const [FolderDisable, setFolderDisable] = useState(false);
-  const [searchAsset, setSearchAsset] = useState("");
-  const [selectdata, setSelectData] = useState({});
-  const [previewDoc, setPreviewDoc] = useState(false);
-  const [selectDoc, setSelectDoc] = useState(null);
-  const actionBoxRef = useRef(null);
-  const addScreenRef = useRef(null);
-  const { token, user, userDetails } = useSelector((state) => state.root.auth);
-  const [permissions, setPermissions] = useState({
-    isDelete: false,
-    isSave: false,
-    isView: false,
-  });
-  const [sidebarload, setSidebarLoad] = useState(true);
-  const [screenAssetID, setScreenAssetID] = useState();
-  const authToken = `Bearer ${token}`;
-  const tabs = localStorage.getItem("tabs");
-  const [loadFist, setLoadFist] = useState(true);
-  const [activeTab, setActiveTab] = useState(tabs ? tabs : "ALL"); // Set the default active tab
-  const [folderElements, setFolderElements] = useState([]);
-  const [selectAssets, setSelectAssets] = useState([]);
-
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -132,71 +69,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     };
   }, [videoRef]);
 
-  useEffect(() => {
-    dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.menu.find(
-        (e) => e.pageName === "Assets"
-      );
-
-      if (findData) {
-        const ItemID = findData.moduleID;
-        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
-        dispatch(getMenuPermission(payload)).then((permissionItem) => {
-
-          if (
-            Array.isArray(permissionItem.payload.data) &&
-            permissionItem.payload.data.length > 0
-          ) {
-            setPermissions(permissionItem.payload.data[0]);
-          }
-        });
-      }
-      setSidebarLoad(false);
-    });
-  }, []);
-
-  const handleUpdateScreenAssign = (screenIds, macids) => {
-    // let idS = "";
-    // for (const key in screenIds) {
-    //   if (screenIds[key] === true) {
-    //     idS += `${key},`;
-    //   }
-    // }
-
-    const trueKeys = getTrueKeys(screenIds);
-    let idS = (trueKeys.join(','));
-
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${ASSIGN_ASSET_TO_SCREEN}?AssetId=${screenAssetID}&ScreenID=${idS}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-    toast.loading("Saving...");
-    axios
-      .request(config)
-      .then((response) => {
-        if (response.data.status == 200) {
-          const Params = {
-            id: socket.id,
-            connection: socket.connected,
-            macId: macids,
-          };
-          socket.emit("ScreenConnected", Params);
-          setTimeout(() => {
-            toast.remove();
-            setSelectScreenModal(false);
-            setAddScreenModal(false);
-          }, 1000);
-        }
-      })
-      .catch((error) => {
-        toast.remove();
-        console.log(error);
-      });
-  };
 
   const updateassetsdw2 = (item) => {
     setScreenAssetID(item.assetID);
@@ -304,31 +176,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setassetsdw2(null);
   }
 
-  // Start
-  // get tabs New change
-
-
-  useEffect(() => {
-    const query = `ScreenType=${activeTab}&searchAsset=${searchAsset}`;
-
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${GET_ASSET_DETAILS}?${query}`,
-      headers: { "Content-Type": "application/json", Authorization: authToken },
-      data: query,
-    };
-    if (loadFist) {
-      dispatch(handleGetAllAssetsTypeBase({ config })).then(() => {
-        setFolderDisable(false);
-        setLoadFist(false);
-      });
-    }
-  }, [loadFist, activeTab, searchAsset.store, store.data, store.folders]);
 
   useEffect(() => {
     if (store && store.status === "succeeded") {
-      toast.success(store.message);
+      // toast.success(store.message);
       setLoadFist(true);
       setFolderDisable(false);
       dispatch(resetStatus());
@@ -339,38 +190,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [store]);
 
-  useEffect(() => {
-    if (store.folders && store.folders.length > 0) {
-      const filteredFolders = store.folders.filter(
-        (folder) => selectedItems?.assetID !== folder.assetID
-      );
-      setFolderElements(filteredFolders);
-    } else {
-      console.log("No folders, create a new folder.");
-    }
-  }, [store.folders, selectedItems]);
-
-  const cardTableDisplay = () => {
-    navigate("/assets");
-  };
-
-  const handleTabClick = (tab) => {
-    localStorage.setItem("tabs", tab);
-    setActiveTab(tab);
-    setLoadFist(true);
-  };
-
-  const handleSearchAsset = (event) => {
-    if (store?.data?.length > 0) {
-      toast.loading("Searching...");
-    }
-    const searchQuery = event.target.value;
-    setSearchAsset(searchQuery);
-    setLoadFist(true);
-    setTimeout(() => {
-      toast.remove();
-    }, 1000);
-  };
 
   const checkFolderImage = async (assetId) => {
     try {
@@ -400,18 +219,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         headers: { Authorization: authToken },
       };
       const response = await dispatch(handleCheckFolderImage({ config }));
+
       return response.payload;
     } catch (error) {
-      // Handle errors if needed
       console.error("Error in checkFolderImage:", error);
       throw error; // Rethrow the error to handle it outside this function
     }
   };
 
+
   const deleteFolder = async (folderID) => {
     try {
-      const dataPayload = { folderID: folderID, operation: "Delete" };
       const checkImage = await checkFolder(folderID);
+      const dataPayload = { folderID: folderID, operation: "Delete" };
       const config2 = {
         method: "post",
         maxBodyLength: Infinity,
@@ -423,7 +243,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         data: dataPayload,
       };
       toast.loading("please wait....");
-      if (checkImage.data) {
+      if (checkImage.status) {
         Swal.fire({
           title: "Delete Confirmation",
           text: checkImage.message,
@@ -518,80 +338,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const handleSelectAll = () => {
-    const updatedAsset = store.data.map((asset) => ({
-      ...asset,
-      isChecked: !selectAll,
-    }));
-
-    // Get the IDs of all selected assets
-    const selectedIds = updatedAsset
-      .filter((asset) => asset.isChecked)
-      .map((asset) => asset.assetID);
-    const payload = {
-      tabs: activeTab,
-      selectedIds: selectedIds,
-    };
-    setSelectAssets(selectedIds)
-    setSelectAll(!selectAll);
-  };
-
-  const handleDeleteAll = () => {
-    const config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${DELETE_ALL_ASSET}?assetIDs=${selectAssets?.join(',')}`,
-      headers: { Authorization: authToken },
-    };
-
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      cancelButtonText: "Cancel",
-      confirmButtonText: "Yes, delete it!",
-      customClass: {
-        text: "swal-text-bold",
-        content: "swal-text-color",
-        confirmButton: "swal-confirm-button-color",
-      },
-      confirmButtonColor: "#ff0000",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await dispatch(handelAllDelete(config));
-      
-        setSelectAll(false);
-        setLoadFist(true); // Trigger your action on cancel
-      } else {
-        setLoadFist(true); // Trigger your action on cancel
-        setSelectAll(false);
-      }
-    });
-  };
-
-  const createFolder = async () => {
-    let folderNameToCheck = "New Folder";
-
-    const formData = new FormData();
-    formData.append("operation", "Insert");
-    formData.append("folderName", folderNameToCheck);
-    // formData.append("folderNumber", Number(folderNumber));
-
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: CREATE_NEW_FOLDER,
-      headers: { "Content-Type": "application/json", Authorization: authToken },
-      data: formData,
-    };
-    try {
-      await dispatch(handelCreateFolder(config));
-    } catch (error) {
-      console.error(" -- createFolder -- Error creating folder:", error);
-    }
-  };
-
   const moveTo = (item) => {
     toggleMoveTo();
     setSelectedItems(item);
@@ -623,722 +369,429 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const openFileUpload = () => {
-    const response = dispatch(handleGetStorageDetails({ token }));
-    response.then(async (res) => {
-      if (res?.payload?.data?.usedInPercentage >= 100) {
-        // Storage limit reached, maximum 3GB allowed.
-        Swal.fire({
-          icon: "error",
-          title: "Storage Limit Reached",
-          text: "Maximum 3GB allowed. Please free up space before uploading more files.",
-        });
-        return;
-      } else {
-        navigate("/FileUpload");
-      }
-    });
-  };
-
-  const debouncedOnChange = debounce(handleSearchAsset, 1000);
-
-  const HandleClose = () => {
-    setPreviewDoc(false);
-  };
-
-  const handleCheckboxChange = (assetID) => {
-    if (selectAssets?.length > 0) {
-      let newArr = selectAssets.includes(assetID)
-        ? selectAssets.filter(item => item !== assetID)
-        : [...selectAssets, assetID];
-
-      if (newArr?.length === store?.data?.length) {
-        setSelectAll(true)
-      } else {
-        setSelectAll(false)
-      }
-      setSelectAssets(newArr);
-    } else {
-      setSelectAssets([assetID]);
-    }
-  }
-
   return (
     <>
-      {sidebarload && <Loading />}
-      {showImageAssetModal && (
-        <ShowAssetImageModal
-          setImageAssetModal={setImageAssetModal}
-          setShowImageAssetModal={setShowImageAssetModal}
-          showImageAssetModal={showImageAssetModal}
-          imageAssetModal={imageAssetModal}
-        />
-      )}
-      {!sidebarload && (
-        <Suspense fallback={<Loading />}>
-          <>
-            <div className="flex border-b border-gray">
-              <Sidebar
-                sidebarOpen={sidebarOpen}
-                setSidebarOpen={setSidebarOpen}
-              />
-              <Navbar />
-            </div>
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
-              <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                <div className="grid lg:grid-cols-2 gap-2 lg:mt-5 mt-3">
-                  <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
-                    Assets
-                  </h1>
-                  <div className="lg:flex items-center md:mt-0 lg:mt-0 md:justify-end flex-wrap">
-                    <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 ">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <AiOutlineSearch className="w-5 h-5 text-gray " />
-                      </span>
-                      <input
-                        type="text"
-                        placeholder="Search Asset"
-                        className="border border-primary rounded-full pl-10 py-2 search-user"
-                        onChange={debouncedOnChange}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="lg:mt-5 mt-3 lg:flex items-center lg:justify-end justify-center ">
-                  {permissions.isSave && (
-                    <div className="flex items-center justify-center lg:mb-0 mb-3">
-                      <button
-                        className=" dashboard-btn flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        onClick={createFolder}
-                        disabled={FolderDisable}
-                      >
-                        <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
-                        New Folder
-                      </button>
-                      <button
-                        onClick={() => openFileUpload()}
-                        className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                      >
-                        <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
-                        Upload
-                      </button>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-center">
-                    <ul className="flex items-center xs:mr-1 mr-3 rounded-full border-2 border-SlateBlue">
-                      <li className="flex items-center ">
-                        <button
-                          className={
-                            asstab === 1 ? "tabshow tabassactive " : "asstab"
-                          }
-                          onClick={() => cardTableDisplay()}
-                        >
-                          <RxDashboard className="text-primary text-lg" />
-                        </button>
-                      </li>
-                      <li className="flex items-center ">
-                        <button
-                          className={
-                            asstab === 2
-                              ? "tabshow tabassactive right "
-                              : "asstab "
-                          }
-                        >
-                          <AiOutlineUnorderedList className="text-primary text-lg" />
-                        </button>
-                      </li>
-                    </ul>
-                    {store.data?.length !== 0 && (
-                      <>
-                        <button
-                          className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={handleDeleteAll}
-                          style={{ display: selectAssets?.length > 0 ? "block" : "none" }}
-                        >
-                          <RiDeleteBin5Line className="text-lg" />
-                        </button>
-                        <button className="flex align-middle   text-white items-center  rounded-full p-2 text-base">
-                          {permissions.isDelete && (
-                            <input
-                              type="checkbox"
-                              className="w-7 h-6"
-                              checked={selectAll}
-                              onChange={handleSelectAll}
-                            />
-                          )}
-                        </button>
-                      </>
+      <div className={`mt-10 `}>
+        <div className="relative shadow-md sm:rounded-lg p-4 overflow-x-scroll sc-scrollbar">
+          <table
+            cellPadding={15}
+            className="screen-table w-full text-sm lg:table-auto text-left rtl:text-right text-gray-500 dark:text-gray-400"
+          >
+            <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr className="items-center border-b border-b-[#E4E6FF] bg-gray-50 table-head-bg">
+                {store.data?.length > 0 && (
+                  <>
+                    {permissions.isDelete && (
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4"
+                          checked={selectAll}
+                          onChange={handleSelectAll}
+                        />
+                      </th>
                     )}
-                  </div>
-                </div>
+                  </>
+                )}
+                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                  Preview
+                </th>
+                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                  Name
+                </th>
 
-                <div className="tabs lg:mt-5 md:mt-5  sm:mt-5 xs:mt-0">
-                  <button
-                    className={activeTab === "ALL" ? "tabactivebtn " : "tabbtn"}
-                    onClick={() => handleTabClick("ALL")}
-                  >
-                    All
-                  </button>
-                  <button
-                    className={
-                      activeTab === "IMAGE" ? "tabactivebtn " : "tabbtn"
-                    }
-                    onClick={() => handleTabClick("IMAGE")}
-                  >
-                    Images
-                  </button>
-                  <button
-                    className={
-                      activeTab === "VIDEO" ? "tabactivebtn " : "tabbtn"
-                    }
-                    onClick={() => handleTabClick("VIDEO")}
-                  >
-                    Video
-                  </button>
-                  <button
-                    className={
-                      activeTab === "DOCUMENT" ? "tabactivebtn " : "tabbtn"
-                    }
-                    onClick={() => handleTabClick("DOCUMENT")}
-                  >
-                    Doc
-                  </button>
-                  <button
-                    className={
-                      activeTab === "FOLDER" ? "tabactivebtn " : "tabbtn"
-                    }
-                    onClick={() => handleTabClick("FOLDER")}
-                  >
-                    Folder
-                  </button>
+                {activeTab === "ALL" && (
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Duration
+                  </th>
+                )}
 
-                  {/* start grid view  */}
-                  <div
-                    className={
-                      asstab === 2
-                        ? "show-togglecontent active w-full tab-details mt-10"
-                        : "togglecontent"
+                {activeTab === "VIDEO" && (
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Duration
+                  </th>
+                )}
+
+                {activeTab !== "FOLDER" && (
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Resolution
+                  </th>
+                )}
+
+                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                  Type
+                </th>
+                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                  Size
+                </th>
+                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            {!loadFist && store && store.data && store.data.length > 0 ? (
+              <tbody>
+                {store.data.map((item, index) => (
+                  <tr
+                    key={index}
+                    className="mt-7 hover:bg-gray-50 dark:hover:bg-gray-600 bg-white rounded-lg border border-gray-200 dark:border-gray-700 shadow font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                    draggable
+                    onDragStart={(event) =>
+                      handleDragStart(event, item.assetID, item)
                     }
                   >
-                    {/*<div className="page-content grid  gap-8 mb-5 assets-section ">
-              <div className="relative list-none assetsbox ">*/}
-                    <div className="relative shadow-md sm:rounded-lg p-4 overflow-x-scroll sc-scrollbar">
-                      <table
-                        cellPadding={15}
-                        className="screen-table w-full text-sm lg:table-auto text-left rtl:text-right text-gray-500 dark:text-gray-400"
-                      >
-                        <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                          <tr className="items-center border-b border-b-[#E4E6FF] bg-gray-50 table-head-bg">
-                            {permissions.isDelete && (
-                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                <input
-                                  type="checkbox"
-                                  className="w-4 h-4"
-                                  checked={selectAll}
-                                  onChange={handleSelectAll}
-                                />
-                              </th>
-                            )}
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                              Preview
-                            </th>
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                              Name
-                            </th>
-
-                            {activeTab === "ALL" && (
-                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                Duration
-                              </th>
-                            )}
-
-                            {activeTab === "VIDEO" && (
-                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                Duration
-                              </th>
-                            )}
-
-                            {activeTab !== "FOLDER" && (
-                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                Resolution
-                              </th>
-                            )}
-
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                              Type
-                            </th>
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                              Size
-                            </th>
-                            <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                              Action
-                            </th>
-                          </tr>
-                        </thead>
-                        {store && store.data && store.data.length > 0 ? (
-                          <tbody>
-                            {store.data.map((item, index) => (
-                              <tr
-                                key={index}
-                                className="mt-7 hover:bg-gray-50 dark:hover:bg-gray-600 bg-white rounded-lg border border-gray-200 dark:border-gray-700 shadow font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                draggable
-                                onDragStart={(event) =>
-                                  handleDragStart(event, item.assetID, item)
-                                }
-                              >
-                                {permissions.isDelete && (
-                                  <td className="text-left gap-4">
-                                    <div className="flex items-center justify-center">
-                                      <input
-                                        type="checkbox"
-                                        checked={selectAssets?.includes(item.assetID)}
-                                        onChange={() => {
-                                          handleCheckboxChange(item?.assetID)
-                                        }}
-                                      />
-                                    </div>
-                                  </td>
-                                )}
-                                <td className="text-left">
-                                  {item.assetType === "Folder" && (
-                                    <div
-                                      onDragOver={(event) =>
-                                        handleDragOver(event)
-                                      }
-                                      onDrop={(event) =>
-                                        handleDrop(event, item.assetID)
-                                      }
-                                      className="text-center relative list-none rounded-md flex justify-center items-center flex-col h-full "
-                                    >
-                                      <FcOpenedFolder
-                                        className="text-8xl text-center mx-auto"
-                                        onClick={() =>
-                                          navigateToFolder(item.assetID)
-                                        }
-                                      />
-                                      {editMode === item.assetID ? (
-                                        <input
-                                          type="text"
-                                          value={folderName}
-                                          className="w-full"
-                                          onChange={(e) =>
-                                            setFolderName(e.target.value)
-                                          }
-                                          onBlur={() => {
-                                            setEditMode(null);
-                                          }}
-                                          onKeyDown={(e) =>
-                                            handleKeyDown(
-                                              e,
-                                              item.assetID,
-                                              index
-                                            )
-                                          }
-                                          autoFocus
-                                        />
-                                      ) : (
-                                        <span
-                                          onClick={() => {
-                                            setEditMode(item?.assetID);
-                                            setFolderName(item?.assetName);
-                                          }}
-                                          className="cursor-pointer w-full flex-wrap break-all inline-flex justify-center"
-                                        >
-                                          {item.assetName}
-                                        </span>
-                                      )}
-                                    </div>
-                                  )}
-
-                                  {item.assetType === "Image" && (
-                                    <div className="img-cover ivratio img-cover-ratio text-center">
-                                      <div>
-                                        <img
-                                          src={item.assetFolderPath}
-                                          alt={item.assetName}
-                                          onClick={() => {
-                                            setShowImageAssetModal(true);
-                                            setImageAssetModal(item);
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                  )}
-                                  {item.assetType === "Video" && (
-                                    <div className="img-cover ivratio img-cover-ratio">
-                                      <div>
-                                        <video
-                                          ref={videoRef}
-                                          controls
-                                          autoPlay={isInView}
-
-                                          onClick={() => {
-                                            setShowImageAssetModal(true);
-                                            setImageAssetModal(item);
-                                          }}
-                                        >
-                                          <source
-                                            src={item.assetFolderPath}
-                                            type="video/mp4"
-                                          />
-
-                                          Your browser does not support the video tag.
-                                        </video>
-                                      </div>
-                                    </div>
-                                  )}
-
-                                  {item.assetType === "OnlineImage" && (
-                                    <div className="img-cover ivratio img-cover-ratio text-center">
-                                      <div>
-                                        <img
-                                          src={item.assetFolderPath}
-                                          onClick={() => {
-                                            setShowImageAssetModal(true);
-                                            setImageAssetModal(item);
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                  )}
-
-                                  {item.assetType === "OnlineVideo" && (
-                                    <div className="img-cover ivratio img-cover-ratio">
-                                      <div>
-                                        <video
-                                          controls
-                                          onClick={() => {
-                                            setShowImageAssetModal(true);
-                                            setImageAssetModal(item);
-                                          }}
-                                        >
-                                          <source
-                                            src={item.assetFolderPath}
-                                            type="video/mp4"
-                                          />
-                                          Your browser does not support the
-                                          video tag.
-                                        </video>
-                                      </div>
-                                    </div>
-                                  )}
-
-                                  {item.assetType === "DOC" && (
-                                    <div
-                                      className="items-center flex justify-center cursor-pointer"
-                                      onClick={() => {
-                                        setPreviewDoc(true);
-                                        setSelectDoc(item);
-                                      }}
-                                    >
-                                      <HiDocumentDuplicate className=" text-primary text-4xl my-5 " />
-                                    </div>
-                                  )}
-                                </td>
-
-                                <td className="text-center break-words">
-                                  {item.assetName}
-                                </td>
-
-                                {activeTab === "ALL" && (
-                                  <td className="text-center">
-                                    {item.durations}
-                                  </td>
-                                )}
-
-                                {activeTab === "VIDEO" && (
-                                  <td className="text-center">
-                                    {item.durations}
-                                  </td>
-                                )}
-                                {activeTab !== "FOLDER" && (
-                                  <td className="text-center">
-                                    {item.resolutions}
-                                  </td>
-                                )}
-
-                                <td className=" break-all max-w-sm text-center">
-                                  {item.assetType}
-                                </td>
-                                <td className="text-center">{item.fileSize}</td>
-
-                                <td className="text-center relative">
-                                  <div className="relative">
-                                    {permissions.isSave &&
-                                      permissions.isDelete && (
-                                        <button
-                                          onClick={() => updateassetsdw2(item)}
-                                          className="ml-3 relative"
-                                        >
-                                          <HiDotsVertical />
-                                        </button>
-                                      )}
-                                    {assetsdw2 === item && (
-                                      <div
-                                        ref={actionBoxRef}
-                                        className="scheduleAction z-10"
-                                      >
-                                        <ul className="space-y-2">
-                                          {item.assetType !== "Folder" && (
-                                            <div>
-                                              {permissions.isView && (
-                                                <li className="flex text-sm items-center">
-                                                  <FiDownload className="mr-2 text-lg" />
-                                                  <a
-                                                    href={item.assetFolderPath}
-                                                    target="_blank"
-                                                    download
-                                                  >
-                                                    Download
-                                                  </a>
-                                                </li>
-                                              )}
-                                            </div>
-                                          )}
-                                          {item.assetType !== "Folder" && (
-                                            <li className="flex text-sm items-center">
-                                              {permissions.isSave && (
-                                                <div className="move-to-button relative">
-                                                  <button
-                                                    className="flex relative w-full"
-                                                    onClick={() => {
-                                                      setAddScreenModal(true);
-                                                    }}
-                                                  >
-                                                    <FiUpload className="mr-2 text-lg" />
-                                                    Set to Screen
-                                                  </button>
-                                                </div>
-                                              )}
-                                            </li>
-                                          )}
-
-                                          <li className="flex text-sm items-center relative">
-                                            <div className="move-to-button relative">
-                                              {permissions.isSave && (
-                                                <button
-                                                  onClick={() => moveTo(item)}
-                                                  className="flex relative w-full"
-                                                >
-                                                  <CgMoveRight className="mr-2 text-lg" />
-                                                  Move to
-                                                </button>
-                                              )}
-                                              {isMoveToOpen && (
-                                                <div className="move-to-dropdown">
-                                                  <ul className="space-y-3">
-                                                    {folderElements &&
-                                                      folderElements?.length >
-                                                      0 ? (
-                                                      folderElements?.map(
-                                                        (folder) => {
-                                                          return (
-                                                            <li
-                                                              key={
-                                                                folder.assetID
-                                                              }
-                                                              className="hover:bg-black hover:text-white text-left"
-                                                            >
-                                                              <>
-                                                                <button
-                                                                  className="break-words w-32"
-                                                                  onClick={() =>
-                                                                    handleMoveTo(
-                                                                      folder.assetID
-                                                                    )
-                                                                  }
-                                                                >
-                                                                  {
-                                                                    folder.assetName
-                                                                  }
-                                                                </button>
-                                                              </>
-                                                            </li>
-                                                          );
-                                                        }
-                                                      )
-                                                    ) : (
-                                                      <li className="w-full">
-                                                        No folders, create a new
-                                                        folder.
-                                                      </li>
-                                                    )}
-                                                  </ul>
-                                                </div>
-                                              )}
-                                            </div>
-                                          </li>
-                                          {item.assetType === "Folder" ? (
-                                            <li>
-                                              {permissions.isDelete && (
-                                                <button
-                                                  onClick={() => {
-                                                    deleteFolder(item.assetID);
-                                                  }}
-                                                  className="flex text-sm items-center"
-                                                >
-                                                  <RiDeleteBin5Line className="mr-2 text-lg" />
-                                                  Move to Trash
-                                                </button>
-                                              )}
-                                            </li>
-                                          ) : (
-                                            <li>
-                                              {permissions.isDelete && (
-                                                <button
-                                                  onClick={() => {
-                                                    handleWarning(item.assetID);
-                                                  }}
-                                                  className="flex text-sm items-center"
-                                                >
-                                                  <RiDeleteBin5Line className="mr-2 text-lg" />
-                                                  Move to Trash
-                                                </button>
-                                              )}
-                                            </li>
-                                          )}
-                                        </ul>
-                                      </div>
-                                    )}
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        ) : (
-                          <tr>
-                            <td colSpan={8} className="text-center">
-                              {/* <div className="text-center font-semibold text-2xl col-span-full p-5 "> */}
-                              {store?.data?.length === 0 ? (
-                                <div className="flex text-center m-5 justify-center">
-                                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
-                                    No Data Available
-                                  </span>
-                                </div>
-                              ) : (
-                                <>
-                                  <div>
-                                    <svg
-                                      aria-hidden="true"
-                                      role="status"
-                                      className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
-                                      viewBox="0 0 100 101"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                                        fill="currentColor"
-                                      />
-                                      <path
-                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                                        fill="#1C64F2"
-                                      />
-                                    </svg>
-
-                                  </div>
-                                </>
-                              )}
-                              {/* </div> */}
-                            </td>
-                          </tr>
-                        )}
-                      </table>
-                    </div>
-                    {/* </div>
-                              </div>*/}
-
-                    {/* Model */}
-                    {selectScreenModal && (
-                      <ScreenAssignModal
-                        setAddScreenModal={setAddScreenModal}
-                        setSelectScreenModal={setSelectScreenModal}
-                        handleUpdateScreenAssign={handleUpdateScreenAssign}
-                        selectedScreens={selectedScreens}
-                        setSelectedScreens={setSelectedScreens}
-                        sidebarOpen={sidebarOpen}
-                      />
+                    {permissions.isDelete && (
+                      <td className="text-left gap-4">
+                        <div className="flex items-center justify-center">
+                          <input
+                            type="checkbox"
+                            className="w-[15px] h-[15px] relative"
+                            checked={tabsDelete?.selectedIds?.includes(item.assetID)}
+                            onChange={() =>
+                              handleCheckboxChange(item.assetID)
+                            }
+                          />
+                        </div>
+                      </td>
                     )}
-
-                    {addScreenModal && (
-                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-9990 outline-none focus:outline-none">
+                    <td className="text-left">
+                      {item.assetType === "Folder" && (
                         <div
-                          ref={addScreenRef}
-                          className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                          onDragOver={(event) =>
+                            handleDragOver(event)
+                          }
+                          onDrop={(event) =>
+                            handleDrop(event, item.assetID)
+                          }
+                          className="text-center relative list-none rounded-md flex justify-center items-center flex-col h-full "
                         >
-                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                            <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                              <div className="flex items-center">
-                                <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                                  Select the screen to set the Asset
-                                </h3>
-                              </div>
-                              <button
-                                className="p-1 text-xl ml-8"
-                                onClick={() => setAddScreenModal(false)}
-                              >
-                                <AiOutlineCloseCircle className="text-2xl" />
-                              </button>
-                            </div>
-                            <div className="flex justify-center p-9 ">
-                              <p className="break-words w-[280px] text-base text-black text-center">
-                                New Asset would be applied. Do you want to
-                                proceed?
-                              </p>
-                            </div>
-                            <div className="pb-6 flex justify-center">
-                              <button
-                                className="bg-primary text-white px-8 py-2 rounded-full"
-                                onClick={() => {
-                                  if (selectdata?.screenIDs) {
-                                    let arr = [selectdata?.screenIDs];
-                                    let newArr = arr[0]
-                                      .split(",")
-                                      .map((item) => parseInt(item.trim()));
-                                    setSelectedScreens(newArr);
-                                  }
-                                  setSelectScreenModal(true);
-                                  setAddScreenModal(false);
-                                }}
-                              >
-                                OK
-                              </button>
+                          <FcOpenedFolder
+                            className="text-8xl text-center mx-auto"
+                            onClick={() =>
+                              navigateToFolder(item.assetID)
+                            }
+                          />
+                          {editMode === item.assetID ? (
+                            <input
+                              type="text"
+                              value={folderName}
+                              className="w-full"
+                              onChange={(e) =>
+                                setFolderName(e.target.value)
+                              }
+                              onBlur={() => {
+                                setEditMode(null);
+                              }}
+                              onKeyDown={(e) =>
+                                handleKeyDown(
+                                  e,
+                                  item.assetID,
+                                  index
+                                )
+                              }
+                              autoFocus
+                            />
+                          ) : (
+                            <span
+                              onClick={() => {
+                                setEditMode(item?.assetID);
+                                setFolderName(item?.assetName);
+                              }}
+                              className="cursor-pointer w-full flex-wrap break-all inline-flex justify-center"
+                            >
+                              {item.assetName}
+                            </span>
+                          )}
+                        </div>
+                      )}
 
-                              <button
-                                className="bg-primary text-white px-4 py-2 rounded-full ml-3"
-                                onClick={() => setAddScreenModal(false)}
-                              >
-                                Cancel
-                              </button>
-                            </div>
+                      {item.assetType === "Image" && (
+                        <div className="img-cover ivratio img-cover-ratio text-center">
+                          <div>
+                            <img
+                              src={item.assetFolderPath}
+                              alt={item.assetName}
+                              onClick={() => {
+                                setShowImageAssetModal(true);
+                                setImageAssetModal(item);
+                              }}
+                            />
                           </div>
                         </div>
-                      </div>
+                      )}
+                      {item.assetType === "Video" && (
+                        <div className="img-cover ivratio img-cover-ratio">
+                          <div>
+                            <video
+                              ref={videoRef}
+                              controls
+                              autoPlay={isInView}
+
+                              onClick={() => {
+                                setShowImageAssetModal(true);
+                                setImageAssetModal(item);
+                              }}
+                            >
+                              <source
+                                src={item.assetFolderPath}
+                                type="video/mp4"
+                              />
+
+                              Your browser does not support the video tag.
+                            </video>
+                          </div>
+                        </div>
+                      )}
+
+                      {item.assetType === "OnlineImage" && (
+                        <div className="img-cover ivratio img-cover-ratio text-center">
+                          <div>
+                            <img
+                              src={item.assetFolderPath}
+                              onClick={() => {
+                                setShowImageAssetModal(true);
+                                setImageAssetModal(item);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {item.assetType === "OnlineVideo" && (
+                        <div className="img-cover ivratio img-cover-ratio">
+                          <div>
+                            <video
+                              controls
+                              onClick={() => {
+                                setShowImageAssetModal(true);
+                                setImageAssetModal(item);
+                              }}
+                            >
+                              <source
+                                src={item.assetFolderPath}
+                                type="video/mp4"
+                              />
+                              Your browser does not support the
+                              video tag.
+                            </video>
+                          </div>
+                        </div>
+                      )}
+
+                      {item.assetType === "DOC" && (
+                        <div
+                          className="items-center flex justify-center cursor-pointer"
+                          onClick={() => {
+                            setPreviewDoc(true);
+                            setSelectDoc(item);
+                          }}
+                        >
+                          <HiDocumentDuplicate className=" text-primary text-4xl my-5 " />
+                        </div>
+                      )}
+                    </td>
+
+                    <td className="text-center break-words">
+                      {item.assetName}
+                    </td>
+
+                    {activeTab === "ALL" && (
+                      <td className="text-center">
+                        {item.durations}
+                      </td>
                     )}
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <Footer />
-          </>
-        </Suspense>
-      )}
+                    {activeTab === "VIDEO" && (
+                      <td className="text-center">
+                        {item.durations}
+                      </td>
+                    )}
+                    {activeTab !== "FOLDER" && (
+                      <td className="text-center">
+                        {item.resolutions}
+                      </td>
+                    )}
 
-      {previewDoc && (
-        <PreviewDoc
-          HandleClose={HandleClose}
-          fileType={selectDoc?.fileExtention}
-          assetFolderPath={selectDoc?.assetFolderPath}
-        />
-      )}
+                    <td className=" break-all max-w-sm text-center">
+                      {item.assetType}
+                    </td>
+                    <td className="text-center">{item.fileSize}</td>
 
-      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
-        <PurchasePlanWarning />
-      )}
+                    <td className="text-center relative">
+                      <div className="relative">
+                        {permissions.isSave &&
+                          permissions.isDelete && (
+                            <button
+                              onClick={() => updateassetsdw2(item)}
+                              className="ml-3 relative"
+                            >
+                              <HiDotsVertical />
+                            </button>
+                          )}
+                        {assetsdw2 === item && (
+                          <div
+                            ref={actionBoxRef}
+                            className="scheduleAction z-[9999]  "
+                          >
+                            <ul className="space-y-2">
+                              {item.assetType !== "Folder" && (
+                                <div>
+                                  {permissions.isView && (
+                                    <li className="flex text-sm items-center">
+                                      <FiDownload className="mr-2 text-lg" />
+                                      <a
+                                        href={item.assetFolderPath}
+                                        target="_blank"
+                                        download
+                                      >
+                                        Download
+                                      </a>
+                                    </li>
+                                  )}
+                                </div>
+                              )}
+                              {item.assetType !== "Folder" && (
+                                <li className="flex text-sm items-center">
+                                  {permissions.isSave && (
+                                    <div className="move-to-button relative">
+                                      <button
+                                        className="flex relative w-full"
+                                        onClick={() => {
+                                          setAddScreenModal(true);
+                                        }}
+                                      >
+                                        <FiUpload className="mr-2 text-lg" />
+                                        Set to Screen
+                                      </button>
+                                    </div>
+                                  )}
+                                </li>
+                              )}
+
+                              <li className="flex text-sm items-center relative">
+                                <div className="move-to-button relative">
+                                  {permissions.isSave && (
+                                    <button
+                                      onClick={() => moveTo(item)}
+                                      className="flex relative w-full"
+                                    >
+                                      <CgMoveRight className="mr-2 text-lg" />
+                                      Move to
+                                    </button>
+                                  )}
+                                  {isMoveToOpen && (
+                                    <div className="move-to-dropdown">
+                                      <ul className="space-y-3">
+                                        {folderElements &&
+                                          folderElements?.length >
+                                          0 ? (
+                                          folderElements?.map(
+                                            (folder) => {
+                                              return (
+                                                <li
+                                                  key={
+                                                    folder.assetID
+                                                  }
+                                                  className="hover:bg-black hover:text-white text-left"
+                                                >
+                                                  <>
+                                                    <button
+                                                      className="break-words w-32"
+                                                      onClick={() =>
+                                                        handleMoveTo(folder.assetID)
+                                                      }
+                                                    >
+                                                      {folder.assetName}
+                                                    </button>
+                                                  </>
+                                                </li>
+                                              );
+                                            }
+                                          )
+                                        ) : (
+                                          <li className="w-full">No folders, create a new  folder.</li>
+                                        )}
+                                      </ul>
+                                    </div>
+                                  )}
+                                </div>
+                              </li>
+                              {item.assetType === "Folder" ? (
+                                <li>
+                                  {permissions?.isDelete && (
+                                    <button
+                                      onClick={() => {
+                                        deleteFolder(item.assetID);
+                                      }}
+                                      className="flex text-sm items-center"
+                                    >
+                                      <RiDeleteBin5Line className="mr-2 text-lg" />
+                                      Move to Trash
+                                    </button>
+                                  )}
+                                </li>
+                              ) : (
+                                <li>
+                                  {permissions?.isDelete && (
+                                    <button
+                                      onClick={() => {
+                                        handleWarning(item.assetID);
+                                      }}
+                                      className="flex text-sm items-center"
+                                    >
+                                      <RiDeleteBin5Line className="mr-2 text-lg" />
+                                      Move to Trash
+                                    </button>
+                                  )}
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            ) : (
+              <tr className="text-center font-semibold text-2xl col-span-full">
+                <td colSpan={8} className="text-center">
+                  {!loadFist && store?.data?.length === 0 && (
+                    <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                      No Data Available
+                    </span>
+                  )}
+                  {loadFist && (
+                    <>
+                      <div className="flex text-center m-5 justify-center">
+                        <svg
+                          aria-hidden="true"
+                          role="status"
+                          className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="#1C64F2"
+                          />
+                        </svg>
+                      </div>
+                    </>
+                  )}
+                </td>
+              </tr>
+            )}
+          </table>
+        </div>
+      </div>
     </>
   );
 };
 
-export default Assets;
+export default GridAssets;

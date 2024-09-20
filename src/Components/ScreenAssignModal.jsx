@@ -196,7 +196,7 @@ const ScreenAssignModal = ({
           console.log(error);
         });
     }
-  }, [selectedScreens, user?.userID]);
+  }, [ user?.userID]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

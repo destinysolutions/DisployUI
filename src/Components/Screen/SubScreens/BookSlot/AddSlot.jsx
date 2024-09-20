@@ -12,6 +12,7 @@ import {
   getTodayDate,
   multiOptions,
   removeDuplicates,
+  timeDifferenceInSeconds,
 } from "../../../Common/Common";
 import {
   ADDALLEVENT,
@@ -67,7 +68,8 @@ const AddSlot = () => {
   const [selectedDays, setSelectedDays] = useState(
     new Array(buttons.length).fill(false)
   );
-
+  console.log('screenArea :>> ', screenArea);
+  console.log('screenData :>> ', screenData);
   // const [searchArea, setSearchArea] = useState();
   const [totalDuration, setTotalDuration] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -112,7 +114,6 @@ const AddSlot = () => {
       aftereventType: '',
     },
   ]);
-
   const [allSlateDetails, setallSlateDetails] = useState({
     Industry: null,
     country: null,
@@ -327,6 +328,8 @@ const AddSlot = () => {
   };
 
   const handlePopupSubmit = (index, verticalImage, horizontalImage) => {
+    console.log('horizontalImage :>> ', horizontalImage);
+    console.log('verticalImage :>> ', verticalImage);
     const updatedItems = [...getallTime];
     updatedItems[index] = { ...updatedItems[index], verticalImage: verticalImage, horizontalImage: horizontalImage };
     setGetAllTime(updatedItems);
@@ -367,73 +370,16 @@ const AddSlot = () => {
     setGetAllTime(aftereventType);
   };
 
-  const FileUpload = (formData) => {
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${ADDALLEVENT}`,
-      headers: {},
-      data: formData,
-    };
-    axios.request(config).then((response) => {
-      let data = response?.data?.data;
-      setSavedFile((prevSavedFiles) => [...prevSavedFiles, data]);
-    })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
-  // const handleBookSlot = () => {
-  //   const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
-  //   if (hasMissingImages) {
-  //     return toast.error("Please upload valid Vertical and Horizontal images.");
-  //   } else {
-  //     setFileLoading(true);
-  //     let arr = [];
-  //     let count = 0;
-  //     getallTime?.map((item) => {
 
-  //       let start = `${item?.startTime}:${item?.startTimeSecond}`;
-  //       let end = `${item?.endTime}:${item?.endTimeSecond}`;
-  //       let horizontalfileType = item?.horizontalImage?.type || null;
-  //       let verticalImagefileType = item?.verticalImage?.type || null;
 
-  //       horizontalfileType = horizontalfileType?.split("/");
-  //       verticalImagefileType = verticalImagefileType?.split("/");
-  //       let obj = { ...item, Duration: timeDifferenceInSeconds(start, end) };
-
-  //       count = count + timeDifferenceInSeconds(start, end);
-  //       arr.push(obj);
-  //       const formData = new FormData();
-  //       formData.append("BookingSlotCustomerEventID", "0");
-  //       formData.append("StartTime", start);
-  //       formData.append("EndTime", end);
-  //       formData.append("FilePath", "true");
-  //       formData.append("horizontalfileType", horizontalfileType);
-  //       formData.append("verticalImagefileType", verticalImagefileType);
-  //       formData.append("File", item?.file);
-  //       formData.append("horizontalFile", item?.horizontalImage || null);
-  //       formData.append("verticalFile", item?.verticalImage || null);
-  //       FileUpload(formData);
-  //     });
-
-  //     if (!repeat) {
-  //       setTotalDuration(count);
-  //     } else {
-  //       const total = countAllDaysInRange();
-  //       setTotalDuration(total * count);
-  //     }
-  //     setGetAllTime(arr);
-  //     setPage(page + 1);
-  //   }
-  // };
 
   const handleBookSlot = () => {
     const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
     if (hasMissingImages) {
       return toast.error("Please upload valid Vertical and Horizontal images.");
     } else {
+      console.log('getallTime :>> ', getallTime);
       setPage(page + 1);
     }
   };
@@ -549,9 +495,6 @@ const AddSlot = () => {
   };
 
 
-
-
-
   const handlebook = (paymentMethod) => {
     let Params = JSON.stringify({
       PaymentDetails: {
@@ -649,6 +592,73 @@ const AddSlot = () => {
     setSelecteStates(event?.target.value);
   };
 
+  const FileUpload = (formData) => {
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${ADDALLEVENT}`,
+      headers: {},
+      data: formData,
+    };
+    axios.request(config).then((response) => {
+      let data = response?.data?.data;
+      setSavedFile((prevSavedFiles) => [...prevSavedFiles, data]);
+    })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleScreen = (option) => {
+    setallSlateDetails({ ...allSlateDetails, country: option })
+    console.log('allSlateDetails?.country :>> ', allSlateDetails?.country);
+    const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
+    if (hasMissingImages) {
+      return toast.error("Please upload valid Vertical and Horizontal images.");
+    } else {
+      setFileLoading(true);
+      let arr = [];
+      let count = 0;
+      getallTime?.map((item) => {
+        console.log('item :>> ', item);
+        let start = `${item?.startTime}:${item?.startTimeSecond}`;
+
+        let end = `${item?.endTime}:${item?.endTimeSecond}`;
+
+        let horizontalfileType = item?.horizontalImage?.type || null;
+        let verticalImagefileType = item?.verticalImage?.type || null;
+
+
+        horizontalfileType = horizontalfileType?.split("/");
+        verticalImagefileType = verticalImagefileType?.split("/");
+        let obj = { ...item, Duration: timeDifferenceInSeconds(start, end) };
+
+        count = count + timeDifferenceInSeconds(start, end);
+        arr.push(obj);
+        const formData = new FormData();
+        formData.append("BookingSlotCustomerEventID", "0");
+        formData.append("StartTime", start);
+        formData.append("EndTime", end);
+        formData.append("FilePath", "true");
+        formData.append("horizontalfileType", horizontalfileType);
+        formData.append("verticalImagefileType", verticalImagefileType);
+        formData.append("File", item?.verticalImage || item?.horizontalImage);
+        formData.append("horizontalFile", item?.horizontalImage || null);
+        formData.append("verticalFile", item?.verticalImage || null);
+        FileUpload(formData);
+      });
+
+      if (!repeat) {
+        setTotalDuration(count);
+      } else {
+        const total = countAllDaysInRange();
+        setTotalDuration(total * count);
+      }
+      console.log('arr :>> ', arr);
+      setGetAllTime(arr);
+      // setPage(page + 1);
+    }
+  };
 
 
   return (
@@ -781,7 +791,7 @@ const AddSlot = () => {
                       </select>
                     </div>
                     {/* Country start */}
-                    {!repeat && (
+                    {/* {!repeat && (
                       <div>
                         <div className="grid grid-cols-4 gap-4">
                           <div className="relative w-full col-span-2">
@@ -824,7 +834,7 @@ const AddSlot = () => {
                           </div>
                         </div>
                       </div>
-                    )}
+                    )} */}
                     {/* Country end */}
 
 
@@ -982,7 +992,9 @@ const AddSlot = () => {
                                     </div>
                                   </div>
                                 )}
+
                                 <div className="flex items-center justify-center gap-2">
+                                  <p className="w-20 truncate"> {item?.verticalImage?.name || item?.horizontalImage?.name}</p>
                                   <button onClick={() => handleOpenImagePopup(index)}>
                                     <MdCloudUpload size={20} />
                                   </button>
@@ -1079,7 +1091,7 @@ const AddSlot = () => {
         )}
         {page === 4 && (
           <>
-            <BookSlotMap setSelectedValue={setSelectedValue} handleBack={handleBack} selectedVal={selectedVal} setSelectedVal={setSelectedVal} setOpen={setOpen} getSelectedVal={getSelectedVal} allArea={allArea} handleRangeChange={handleRangeChange} selectedItem={selectedItem} Open={Open} setSelectedItem={setSelectedItem} setSelectedScreens={setSelectedScreens} setSelectedScreen={setSelectedScreen} screenData={screenData} screenArea={screenArea} handleNext={handleNext} countries={countries} handleSelectChange={handleSelectChange} Screenoptions={Screenoptions} selectAllScreen={selectAllScreen} selectedScreen={selectedScreen} selectedScreens={selectedScreens} setSelectAllScreen={setSelectAllScreen} setAllCity={setAllCity} />
+            <BookSlotMap handleScreen={handleScreen} allSlateDetails={allSlateDetails} setSelectedValue={setSelectedValue} handleBack={handleBack} selectedVal={selectedVal} setSelectedVal={setSelectedVal} setOpen={setOpen} getSelectedVal={getSelectedVal} allArea={allArea} handleRangeChange={handleRangeChange} selectedItem={selectedItem} Open={Open} setSelectedItem={setSelectedItem} setSelectedScreens={setSelectedScreens} setSelectedScreen={setSelectedScreen} screenData={screenData} screenArea={screenArea} handleNext={handleNext} countries={countries} handleSelectChange={handleSelectChange} Screenoptions={Screenoptions} selectAllScreen={selectAllScreen} selectedScreen={selectedScreen} selectedScreens={selectedScreens} setSelectAllScreen={setSelectAllScreen} setAllCity={setAllCity} />
           </>
         )}
 

@@ -800,13 +800,28 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
-                          Google Location:
+                          Select Location:
                         </label>
                       </td>
                       <td>
-                        <h4 className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3">
-                          {otpData.GoogleLocation}
-                        </h4>
+                        <div className="flex items-center justify-center gap-4">
+
+                          <div
+                            className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3 min-h-48"
+                            onClick={openMap}
+                            style={{ minHeight: '40px' }}
+                          >{selectedAddress}</div>
+                          <div className="border border-[#D5E3FF] rounded">
+                            <TbBrandGoogleMaps
+                              size={30}
+                              className="text-black p-[2px]"
+                              onClick={openMap}
+                            />
+                          </div>
+                        </div>
+                        {(selectedAddress?.length <= 0 || selectedAddress === undefined) && (
+                          <div className="text-red">{addressError}</div>
+                        )}
                       </td>
                     </tr>
                     <tr>
@@ -1888,33 +1903,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
                     </tr>
 
-                    <tr>
-                      <td>
-                        <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
-                          Select Location:
-                        </label>
-                      </td>
-                      <td>
-                        <div className="flex items-center justify-center gap-4">
 
-                          <div
-                            className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3 min-h-48"
-                            onClick={openMap}
-                            style={{ minHeight: '40px' }}
-                          >{selectedAddress}</div>
-                          <div className="border border-[#D5E3FF] rounded">
-                            <TbBrandGoogleMaps
-                              size={30}
-                              className="text-black p-[2px]"
-                              onClick={openMap}
-                            />
-                          </div>
-                        </div>
-                        {(selectedAddress?.length <= 0 || selectedAddress === undefined) && (
-                          <div className="text-red">{addressError}</div>
-                        )}
-                      </td>
-                    </tr>
 
                     <tr>
                       <td className=" lg:block md:block sm:hidden"></td>

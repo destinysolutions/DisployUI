@@ -7,9 +7,6 @@ import { getPendingScreen, getCostByArea, cancelPendingScreen, updatePendingScre
 import moment from 'moment';
 import { ApproveScreens } from '../../Components/Common/Common';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
-import toast from 'react-hot-toast';
-
-// Haversine formula to calculate the distance between two geographical points
 
 const haversineDistance = (lat1, lon1, lat2, lon2) => {
     const toRad = (value) => (value * Math.PI) / 180;
@@ -40,7 +37,6 @@ export default function Approve({ handleTab }) {
             setLoading(true);
             dispatch(getPendingScreen({})).then((res) => {
                 const screens = res?.payload?.data || [];
-
                 dispatch(getCostByArea({})).then((locationRes) => {
                     const locationData = locationRes?.payload?.data || [];
                     filterScreens(screens, locationData);
@@ -228,9 +224,9 @@ export default function Approve({ handleTab }) {
                                                                             </div>
                                                                         </label>
                                                                     </td>
-                                                                    <td className="px-6 py-4">{item?.userName}</td>
-                                                                    <td className="px-6 py-4 flex flex-col items-center">
-                                                                        <div className=' gap-2'>
+                                                                    <td className="px-6 py-4 ">{item?.userName}</td>
+                                                                    <td className="px-6 py-4 ">
+                                                                        <div>
                                                                             $
                                                                             {item?.screenRatePerSec ? item?.screenRatePerSec :
                                                                                 (<input
@@ -242,7 +238,9 @@ export default function Approve({ handleTab }) {
                                                                                     value={cost}
                                                                                 />)
                                                                             }
+
                                                                         </div>
+
                                                                         {cost?.length <= 0 && Error && (
                                                                             <span className='error'>Cost Value is required.</span>
                                                                         )}

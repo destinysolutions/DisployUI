@@ -17,14 +17,16 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
     const [industryOptions, setIndustryOptions] = useState([]);
 
     useEffect(() => {
-        dispatch(getIndustry({})).then(() => {
-            const formattedOptions = store?.Industry?.map(industry => ({
+        dispatch(getIndustry({})).then((res) => {
+            const response = res?.payload?.data
+            const formattedOptions = response?.map(industry => ({
                 value: industry?.industryID,
                 label: `${industry?.industryName} ${industry?.industryInclude?.length > 0 ? `(${industry?.industryInclude?.map(item => item.category).join(", ")})` : ''}`
             }));
+
             setIndustryOptions(formattedOptions);
         });
-    }, [dispatch]);
+    }, [dispatch,]);
 
     useEffect(() => {
         if (ConvertAdvertisment?.Industry) {
@@ -83,11 +85,11 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
                                     value={ConvertAdvertisment.Industry}
                                     onChange={(options) => setConvertAdvertisment({ ...ConvertAdvertisment, Industry: options, Exclude: null })}
                                     placeholder="Select Industry"
-                                    options={industryOptions.length > 0 ? industryOptions : [{ value: "", label: "Not Found" }]}
+                                    options={industryOptions?.length > 0 ? industryOptions : [{ value: "", label: "Not Found" }]}
                                     isClearable={true}
 
                                 />
-                                {Errors && !ConvertAdvertisment.Industry && (
+                                {Errors && !ConvertAdvertisment?.Industry && (
                                     <p className="text-red-600 text-sm font-semibold">Industry Name is Required.</p>
                                 )}
                             </div>

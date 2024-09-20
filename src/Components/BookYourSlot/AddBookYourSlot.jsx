@@ -290,14 +290,15 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
 
             <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain ">
                 <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-                    <div className="grid grid-cols-12 lg:mt-5">
-                        <div className="lg:col-span-9 md:col-span-12 sm:col-span-12 xs:col-span-12 flex flex-col gap-2 items-start mb-3">
-                            <p className="text-xl font-semibold ">Book your slot</p>
-                        </div>
-                    </div>
+                    {/* <div className=" flex items-start mb-3 border">
+                        <p className="text-xl font-semibold text-center">Book your slot</p>
+                    </div> */}
+
                     {page === 1 && (
                         <div className="w-full h-full p-5 flex items-center justify-center">
                             <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+                                <div className="text-2xl font-semibold">Book Slot</div>
+
                                 <div className="grid grid-cols-4 gap-4 w-full h-full">
                                     <div className="col-span-4">
                                         <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4 h-full">
