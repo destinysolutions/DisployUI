@@ -60,6 +60,7 @@ import RetailerRoutes from "./RetailerRoutes";
 import SalesManRoutes from "./SalesManRoutes";
 import CustomComposition from "../Components/Composition/CustomComposition";
 import PlanIntegration from "../Components/PlanIntegration";
+import AdvertisementScreens from "../Components/Advertisement/AdvertisementScreens";
 
 const Routing = () => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
@@ -219,6 +220,15 @@ const Routing = () => {
                   />
                 }
               />
+              <Route
+                path="/advertisement-screens"
+                element={
+                  <AdvertisementScreens
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
               {/* <Route
                 path="/bookslot"
                 element={
@@ -272,7 +282,7 @@ const Routing = () => {
                 }
               />
 
-              {/* <Route
+              <Route
                 path="/assets-grid"
                 element={
                   <GridAssets
@@ -280,7 +290,7 @@ const Routing = () => {
                     setSidebarOpen={setSidebarOpen}
                   />
                 }
-              /> */}
+              />
 
               {/* Apps component route */}
               <Route

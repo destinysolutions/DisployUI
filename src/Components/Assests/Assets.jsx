@@ -1190,7 +1190,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                 className="flex text-sm items-center"
                                               >
                                                 <RiDeleteBin5Line className="mr-2 text-lg" />
-                                                Move to Trash folder
+                                                Move to Trash 
                                               </button>
                                             )}
                                           </li>
