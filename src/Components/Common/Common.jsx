@@ -277,8 +277,8 @@ export function constructTimeObjects(getallTime, startDate, endDate, repeat, day
     let data = {
       startDate: `${startDate} 00:00:00`,
       endDate: `${endDate} 00:00:00`,
-      startTime: `${item?.startTime}:${item?.startTimeSecond}`,
-      endTime: `${item?.endTime}:${item?.endTimeSecond}`,
+      startTime: `${item?.startTime}`,
+      endTime: `${item?.endTime}`,
       isRepeat: repeat,
       repeatDays: day.join(", "),
       systemTimeZone: getTimeZoneName(allTimeZone, selectedTimeZone),
@@ -730,10 +730,18 @@ export const Commission = [
   { id: 0, title: "If we bring the ads" },
   { id: 1, title: "If client bring the ads" },
 ]
-export const ApproveScreens = [
-  { id: 0, title: "You have got a new request from Pankaj." },
-  { id: 1, title: "You have got a new request from Rohan patel." },
-  { id: 2, title: "You have got a new request from Bhavesh Rajput." },
-]
+
+export const haversineDistance = (lat1, lon1, lat2, lon2) => {
+  const toRad = (value) => (value * Math.PI) / 180;
+  const R = 6371; // Radius of Earth in km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+};
 
 export const PageNumber = [5, 10, 25]

@@ -128,6 +128,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const { screens } = useSelector((s) => s.root.screen);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [currentCenter, setCurrentCenter] = useState({ lat: 43.6532, lng: -79.3832 });
+  const [markers, setMarkers] = useState([]);
 
   const [isOpenMap, setIOpenMap] = useState(false);
 
@@ -1942,7 +1943,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
       {isOpenMap &&
-        <OpenGoogleMap openMap={openMap} selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} currentCenter={currentCenter} setCurrentCenter={setCurrentCenter} />
+        <OpenGoogleMap openMap={openMap} selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} currentCenter={currentCenter} setCurrentCenter={setCurrentCenter} setMarkers={setMarkers} markers={markers} />
       }
 
     </>

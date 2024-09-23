@@ -23,6 +23,7 @@ import { BsPlayCircleFill } from "react-icons/bs";
 
 const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user, userDetails } = useSelector((state) => state.root.auth);
+
   const authToken = `Bearer ${token}`;
   const dispatch = useDispatch();
   const { screens } = useSelector((s) => s.root.screen);
@@ -38,7 +39,6 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
   const [searchScreen, setSearchScreen] = useState("");
   const [loadFist, setLoadFist] = useState(true);
   const [ispopup, setIsPopup] = useState(false);
-  console.log('ScreenData :>> ', ScreenData);
 
   const filteredData = Array.isArray(ScreenData)
     ? ScreenData?.filter((item) =>
@@ -197,9 +197,7 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                 ) : (
                   <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                     <div className="grid lg:grid-cols-3 gap-2">
-                      <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
-                        Advertising Screen
-                      </h1>
+                      <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">Reference Code : {userDetails?.myReferenceNumber}</h1>
                       <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
                         <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
                           <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">

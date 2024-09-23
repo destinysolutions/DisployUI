@@ -54,8 +54,8 @@ export const setSession = (accessToken) => {
 
 
 export const customTimeOrhour = [
-  { id: "One Miniute", name: "One Miniute" },
-  { id: "One Hour", name: "One Hour" },
-  { id: "Quarterly", name: "Quarterly" },
+  { id: "In every Miniute", name: "In every Miniute" },
+  { id: "In every Hour", name: "In every Hour" },
+  // { id: "Quarterly", name: "Quarterly" },
   { id: "Custom", name: "Custom" },
 ]

@@ -294,9 +294,11 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
+    handleSubmit()
     let idS = "";
     let count = 0;
 
+    console.log('macids :>> ', macids);
     for (const key in screenIds) {
       if (screenIds[key] === true) {
         if (count > 0) {
@@ -331,6 +333,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   connection: socket.connected,
                   macId: item,
                 };
+                console.log('Params 1 :>> ', Params);
                 socket.emit("ScreenConnected", Params);
               });
             } else {
@@ -339,6 +342,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 connection: socket.connected,
                 macId: macids,
               };
+              console.log('Params :>> ', Params);
               socket.emit("ScreenConnected", Params);
             }
             setTimeout(() => {
@@ -704,7 +708,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             onChange={() => setIsAbove(true)}
                           />
                           <label className="ml-3 lg:text-base md:text-base sm:text-xs xs:text-xs font-medium">
-                            play When temp goes above:
+                            play When temp goes above: 123
                           </label>
                         </div>
                         <div className="flex">

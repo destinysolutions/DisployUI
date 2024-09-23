@@ -20,32 +20,30 @@ const center = {
     lng: -79.3832,
 };
 
-const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurrentCenter, currentCenter }) => {
+const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurrentCenter, currentCenter, setMarkers, markers }) => {
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: "AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk",
         libraries,
     });
-
-    const [markers, setMarkers] = useState([]);
     const [selected, setSelected] = useState(null);
-    // const [selectedAddress, setSelectedAddress] = useState("");
     const [selectedLatLng, setSelectedLatLng] = useState({ lat: null, lng: null });
-    // const [currentCenter, setCurrentCenter] = useState({ lat: 43.6532, lng: -79.3832 });
     const mapRef = useRef();
 
-    useEffect(() => {
-        // Get the user's current location
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                setCurrentCenter({ lat: latitude, lng: longitude });
-            },
-            () => {
-                // Handle error if location access is denied
-                console.error("Error fetching location.");
-            }
-        );
-    }, []);
+    // useEffect(() => {
+    //     // Get the user's current location
+    //     navigator.geolocation.getCurrentPosition(
+    //         (position) => {
+    //             const { latitude, longitude } = position.coords;
+    //             setCurrentCenter({ lat: latitude, lng: longitude });
+    //         },
+    //         () => {
+    //             // Handle error if location access is denied
+    //             console.error("Error fetching location.");
+    //         }
+    //     );
+    // }, []);
+
+
 
     const onMapClick = useCallback(async (e) => {
         const lat = e?.latLng?.lat();
@@ -67,6 +65,7 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
             const address = results.results[0]?.formatted_address || "No address found";
             setSelectedAddress(address);
             setSelectedLatLng({ lat, lng });
+            setCurrentCenter({ lat, lng });
         } catch (error) {
             console.log("Error: ", error);
             setSelectedAddress("Error fetching address");
@@ -76,7 +75,11 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
 
     const onMapLoad = useCallback((map) => {
         mapRef.current = map;
-    }, []);
+        if (currentCenter) {
+            map.panTo(currentCenter);
+            map.setZoom(14);
+        }
+    }, [currentCenter]);
 
     const panTo = useCallback(({ lat, lng }) => {
         mapRef.current.panTo({ lat, lng });
@@ -113,13 +116,17 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
                 const { lat, lng } = await getLatLng(results[0]);
                 panTo({ lat, lng });
                 setSelectedLatLng({ lat, lng });
+                setCurrentCenter({ lat, lng });
+
                 // Fetch address for the selected place
                 const geocodeResults = await fetch(
                     `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk`
                 ).then((response) => response.json());
-
                 const fullAddress = geocodeResults.results[0]?.formatted_address || "No address found";
                 setSelectedAddress(fullAddress);
+
+                setMarkers([{ lat, lng, time: new Date() }]);
+
             } catch (error) {
                 console.log("Error: ", error);
                 setSelectedAddress("Error fetching address");

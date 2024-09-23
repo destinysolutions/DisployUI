@@ -68,14 +68,12 @@ const AddSlot = () => {
   const [selectedDays, setSelectedDays] = useState(
     new Array(buttons.length).fill(false)
   );
-  console.log('screenArea :>> ', screenArea);
-  console.log('screenData :>> ', screenData);
+
   // const [searchArea, setSearchArea] = useState();
   const [totalDuration, setTotalDuration] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
 
-  // const [rangeValue, setRangeValue] = useState(5);
   const [startDate, setStartDate] = useState(getTodayDate());
   const [endDate, setEndDate] = useState(getTodayDate());
   const [selectAllDays, setSelectAllDays] = useState(false);
@@ -98,9 +96,7 @@ const AddSlot = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selecteStates, setSelecteStates] = useState("");
   const [states, setStates] = useState([]);
-
   const [allCity, setAllCity] = useState([]);
-
   const [getallTime, setGetAllTime] = useState([
     {
       startTime: getCurrentTimewithSecound(),
@@ -122,61 +118,21 @@ const AddSlot = () => {
     refCode: 'NO',
     refVale: ''
   });
-  const appearance = {
-    theme: 'stripe',
-  };
+  const appearance = { theme: 'stripe', };
   const options = {
     clientSecret,
     appearance,
   };
 
-  const handleStartDateChange = (event) => {
-    if (!repeat) {
-      setEndDate(event.target.value);
-    }
-    setStartDate(event.target.value);
-  };
+  useEffect(() => {
+    let Price = 0;
+    selectedScreens?.map((item) => {
+      console.log('item :>> ', item);
+      Price = Price + item?.Price;
+    });
+    setTotalPrice(Price);
 
-  const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
-  };
-
-  const FetchScreen = (Params) => {
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${SCREEN_LIST}`,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify(Params),
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        if (response.data.data?.length > 0) {
-          let arr = [...screenData];
-          let combinedArray = arr.concat(response?.data?.data);
-          let arr1 = [];
-          combinedArray?.map((item) => {
-            let obj = {
-              let: item?.latitude,
-              lon: item?.longitude,
-              dis: Params?.distance,
-            };
-            arr1?.push(obj);
-          });
-          let uniqueArr = removeDuplicates(arr1);
-          setScreenArea(uniqueArr);
-          setScreenData(combinedArray);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-
+  }, [selectedScreens]);
 
   useEffect(() => {
     fetch(GET_ALL_COUNTRY)
@@ -199,8 +155,121 @@ const AddSlot = () => {
           console.log("Error fetching states data:", error);
         });
     }
-  }, [selectedCountry]);
+  }, [dispatch, selectedCountry]);
 
+  useEffect(() => {
+    if (selectedScreens?.length === screenData?.length) {
+      setSelectAllScreen(true);
+    } else {
+      setSelectAllScreen(false);
+    }
+  }, [selectedScreens]);
+
+  useEffect(() => {
+    if (page === 3 && fileLoading && savedFile?.length === getallTime?.length) {
+      setFileLoading(false);
+      setPage(page + 1);
+    }
+  }, [fileLoading, savedFile]);
+
+  useEffect(() => {
+    if (repeat) {
+      handleCheckboxChange();
+    }
+  }, [endDate, startDate]);
+
+
+  const TimeZone = () => {
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: GET_TIMEZONE_TOKEN,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+
+    dispatch(handleAllTimeZone({ config }))
+      .then((response) => {
+        const CurrentTimeZone = new Date()
+          .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+          })
+          .substring(4);
+        response?.payload?.data?.map((item) => {
+          if (item?.timeZoneName === CurrentTimeZone) {
+            setSelectedTimeZone(item?.timeZoneID);
+          }
+        });
+        setAllTimeZone(response?.payload?.data);
+      })
+      .catch((error) => {
+        console.log('error', error)
+      })
+  };
+
+  useEffect(() => {
+    if (page === 3) {
+      TimeZone();
+    }
+  }, [page]);
+
+  const handleSelectTimeZoneChange = (event) => { setSelectedTimeZone(event?.target.value); };
+  const handleEndDateChange = (event) => { setEndDate(event.target.value); };
+  const handleSelectStatesChange = (event) => { setSelecteStates(event?.target.value); };
+  const handleBack = () => { setPage(page - 1); };
+  const handleClick = (index) => { hiddenFileInput.current[index].click(); };
+
+  const handleStartDateChange = (event) => {
+    if (!repeat) {
+      setEndDate(event.target.value);
+    }
+    setStartDate(event.target.value);
+  };
+
+  const FetchScreen = (Params) => {
+    toast.loading('Loading ...')
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${SCREEN_LIST}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify(Params),
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.data?.length > 0) {
+          let arr = [...screenData];
+          console.log('arr :>> ', arr);
+          const existingIds = new Set(arr.map(item => (item.screenID)));
+          console.log('existingIds :>> ', existingIds);
+          const newData = response.data.data.filter(item => !existingIds.has(item.screenID));
+          console.log('newData :>> ', newData);
+          let combinedArray = arr.concat(newData);
+          console.log('combinedArray :>> ', combinedArray);
+          let arr1 = [];
+          combinedArray?.map((item) => {
+            let obj = {
+              let: item?.latitude,
+              lon: item?.longitude,
+              dis: Params?.distance,
+            };
+            arr1?.push(obj);
+          });
+          let uniqueArr = removeDuplicates(arr1);
+          setScreenArea(uniqueArr);
+          setScreenData(combinedArray);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  ///  page 4 handleNext
   const handleNext = () => {
     let total = ""
     if (selectedScreens?.length === 0) {
@@ -208,19 +277,24 @@ const AddSlot = () => {
     } else {
       let Price = 0;
       selectedScreens?.map((item) => {
+        console.log('item :>> ', item);
         Price = Price + item?.Price;
       });
+      console.log('Price :>> ', Price);
       setTotalPrice(Price);
       setTotalCost(totalDuration * Price);
       total = totalDuration * Price
     }
+
+    console.log('total :>> ', total);
     const params = {
       "items": {
         "id": "0",
-        "amount": String(total * 100)
+        "amount": 5000
+        // "amount": String(total * 100)
       }
     }
-
+    console.log('params :>> ', params);
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -233,52 +307,18 @@ const AddSlot = () => {
 
     dispatch(handlePaymentIntegration({ config })).then((res) => {
       setClientSecret(res?.payload?.clientSecret)
-      setPage(page + 1);
+      // setPage(page + 1);
     }).catch((error) => {
       console.log('error', error)
     })
   };
 
-  const onSubmit = (data) => {
-    setPage(page + 1);
-  };
 
-  const handleRangeChange = (e, item) => {
-    let arr = allArea.map((item1) => {
-      if (item1?.searchValue?.value === item?.searchValue?.value) {
-        let Params = {
-          latitude: item?.searchValue?.latitude,
-          longitude: item?.searchValue?.longitude,
-          distance: parseInt(e.target.value),
-          dates: constructTimeObjects(
-            getallTime,
-            startDate,
-            endDate,
-            repeat,
-            day,
-            selectedTimeZone,
-            allTimeZone,
-            selectedCountry,
-            selecteStates,
-          ),
-        };
 
-        FetchScreen(Params);
-        return {
-          searchValue: item?.searchValue,
-          include: Number(item?.include),
-          area: parseInt(e.target.value), // Assuming you want to modify the 'area' property of the matched item
-        };
-      } else {
-        return item1;
-      }
-    });
-    setAllArea(arr);
-    setOpen(false);
-    // setRangeValue(parseInt(e.target.value));
-  };
 
+  // page 4 handleSelectChange
   const handleSelectChange = (selected) => {
+    console.log('selected :>> ', selected);
     setSelectedScreens(selected);
     if (selected?.length === screenData?.length) {
       setSelectAllScreen(true);
@@ -287,18 +327,7 @@ const AddSlot = () => {
     }
   };
 
-  useEffect(() => {
-    if (selectedScreens?.length === screenData?.length) {
-      setSelectAllScreen(true);
-    } else {
-      setSelectAllScreen(false);
-    }
-  }, [selectedScreens]);
-
-  const handleBack = () => {
-    setPage(page - 1);
-  };
-
+  // page 3  start
   const handleAddItem = () => {
     setGetAllTime([
       ...getallTime,
@@ -323,13 +352,7 @@ const AddSlot = () => {
     setPopupVisible(true);
   }
 
-  const handleClick = (index) => {
-    hiddenFileInput.current[index].click();
-  };
-
   const handlePopupSubmit = (index, verticalImage, horizontalImage) => {
-    console.log('horizontalImage :>> ', horizontalImage);
-    console.log('verticalImage :>> ', verticalImage);
     const updatedItems = [...getallTime];
     updatedItems[index] = { ...updatedItems[index], verticalImage: verticalImage, horizontalImage: horizontalImage };
     setGetAllTime(updatedItems);
@@ -364,16 +387,12 @@ const AddSlot = () => {
   };
 
   const handleAftereventTypeChange = (value, index) => {
-    // const { value } = e.target
     const aftereventType = [...getallTime];
     aftereventType[index].aftereventType = value;
     setGetAllTime(aftereventType);
   };
 
-
-
-
-
+  // page 3 handleBookSlot
   const handleBookSlot = () => {
     const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
     if (hasMissingImages) {
@@ -383,13 +402,6 @@ const AddSlot = () => {
       setPage(page + 1);
     }
   };
-
-  useEffect(() => {
-    if (page === 3 && fileLoading && savedFile?.length === getallTime?.length) {
-      setFileLoading(false);
-      setPage(page + 1);
-    }
-  }, [fileLoading, savedFile]);
 
   // for select all days to repeat day
   function handleCheckboxChange() {
@@ -435,12 +447,6 @@ const AddSlot = () => {
     }
   };
 
-  useEffect(() => {
-    if (repeat) {
-      handleCheckboxChange();
-    }
-  }, [endDate, startDate]);
-
   // for select repeat day
   const handleDayButtonClick = (index, label) => {
     if (!repeatDays[index]) {
@@ -455,46 +461,92 @@ const AddSlot = () => {
     setSelectAllDays(newSelectAllDays);
   };
 
+  // page 3  end 
 
-
+  // page4 location search  
   const getSelectedVal = (value) => {
 
     const foundItem = allCity.find((item) => item?.text?.includes(value));
-    if (foundItem) {
-      // setSearchArea(foundItem);
-      let obj = {
-        searchValue: foundItem,
-        include: Number(selectedValue),
-        area: 20,
-      };
-      let Params = {
-        latitude: foundItem?.latitude,
-        longitude: foundItem?.longitude,
-        distance: 20,
-        dates: constructTimeObjects(
-          getallTime,
-          startDate,
-          endDate,
-          repeat,
-          day,
-          selectedTimeZone,
-          allTimeZone,
-          selectedCountry,
-          selecteStates,
-        ),
-      };
+    // if (foundItem) {
+    //   // setSearchArea(foundItem);
+    // }
+    console.log('selectedValue :>> ', selectedValue);
+    let obj = {
+      searchValue: value?.searchValue,
+      include: Number(selectedValue),
+      area: 20,
+      latitude: value?.latitude,
+      longitude: value?.longitude,
+    };
+    let Params = {
+      latitude: value?.latitude,
+      longitude: value?.longitude,
+      distance: 20,
+      dates: constructTimeObjects(
+        getallTime,
+        startDate,
+        endDate,
+        repeat,
+        day,
+        selectedTimeZone,
+        allTimeZone,
+        selectedCountry,
+        selecteStates,
+      ),
+    };
 
-      FetchScreen(Params);
-      let arr = [...allArea];
-      arr.push(obj);
-      setAllArea(arr);
-      setSelectedVal("");
-      // setSearchArea("");
-      setSelectedValue("");
-    }
+
+    FetchScreen(Params);
+    let arr = [...allArea];
+    arr.push(obj);
+    setAllArea(arr);
+    setSelectedVal("");
+    // setSearchArea("");
+    setSelectedValue("");
   };
 
 
+  // page 4 handleRangeChange
+  const handleRangeChange = (e, item) => {
+    console.log('item :>> ', item);
+    let arr = allArea.map((item1) => {
+      console.log('item1 :>> ', item1);
+      if (item1?.searchValue === item?.searchValue) {
+        let Params = {
+          latitude: item?.latitude,
+          longitude: item?.longitude,
+          distance: parseInt(e.target.value),
+          dates: constructTimeObjects(
+            getallTime,
+            startDate,
+            endDate,
+            repeat,
+            day,
+            selectedTimeZone,
+            allTimeZone,
+            selectedCountry,
+            selecteStates,
+          ),
+        };
+
+        FetchScreen(Params);
+        return {
+          searchValue: item?.searchValue,
+          include: Number(item?.include),
+          area: parseInt(e.target.value), // Assuming you want to modify the 'area' property of the matched item
+          latitude: item?.latitude,
+          longitude: item?.longitude,
+        };
+      } else {
+        return item1;
+      }
+    });
+    setAllArea(arr);
+    setOpen(false);
+    // setRangeValue(parseInt(e.target.value));
+  };
+
+  // page 5 
   const handlebook = (paymentMethod) => {
     let Params = JSON.stringify({
       PaymentDetails: {
@@ -533,6 +585,7 @@ const AddSlot = () => {
       },
       data: Params,
     };
+
     axios
       .request(config)
       .then((response) => {
@@ -543,54 +596,6 @@ const AddSlot = () => {
       });
   };
 
-  const TimeZone = () => {
-
-    const config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: GET_TIMEZONE_TOKEN,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-
-    dispatch(handleAllTimeZone({ config }))
-      .then((response) => {
-        const CurrentTimeZone = new Date()
-          .toLocaleDateString(undefined, {
-            day: "2-digit",
-            timeZoneName: "long",
-          })
-          .substring(4);
-        response?.payload?.data?.map((item) => {
-          if (item?.timeZoneName === CurrentTimeZone) {
-            setSelectedTimeZone(item?.timeZoneID);
-          }
-        });
-        setAllTimeZone(response?.payload?.data);
-      })
-      .catch((error) => {
-        console.log('error', error)
-      })
-  };
-
-  useEffect(() => {
-    if (page === 3) {
-      TimeZone();
-    }
-  }, [page]);
-
-  const handleSelectTimeZoneChange = (event) => {
-    setSelectedTimeZone(event?.target.value);
-  };
-
-  const handleSelectCountries = (event) => {
-    setSelectedCountry(event?.target.value);
-  };
-
-  const handleSelectStatesChange = (event) => {
-    setSelecteStates(event?.target.value);
-  };
 
   const FileUpload = (formData) => {
     const config = {
@@ -609,8 +614,8 @@ const AddSlot = () => {
       });
   };
 
-  const handleScreen = (option) => {
-    setallSlateDetails({ ...allSlateDetails, country: option })
+  const handleScreen = () => {
+
     console.log('allSlateDetails?.country :>> ', allSlateDetails?.country);
     const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
     if (hasMissingImages) {
@@ -654,11 +659,49 @@ const AddSlot = () => {
         const total = countAllDaysInRange();
         setTotalDuration(total * count);
       }
+      console.log('count :>> ', count);
       console.log('arr :>> ', arr);
       setGetAllTime(arr);
       // setPage(page + 1);
     }
   };
+
+  const handleSelectCountries = (event) => {
+    console.log('event?.target.value :>> ', event?.target.value);
+    setSelectedCountry(event?.target.value);
+    console.log('startDate :>> ', startDate);
+    console.log('endDate :>> ', endDate);
+    console.log('selectedCountry :>> ', selectedCountry);
+    let Params = {
+      latitude: 0,
+      longitude: 0,
+      distance: 0,
+      // startDate: startDate,
+      // endDate: endDate,
+      // country: selectedCountry,
+      // systemTimeZone: selectedTimeZone,
+      // isRepeat: repeat,
+      // repeatDays: day,
+      dates: constructTimeObjects(
+        getallTime,
+        startDate,
+        endDate,
+        repeat,
+        day,
+        selectedTimeZone,
+        allTimeZone,
+        selectedCountry,
+        selecteStates,
+      ),
+    };
+    console.log('Params :>> ', Params);
+    FetchScreen(Params);
+
+  };
+
+  const onSubmit = () => {
+    setPage(page + 1)
+  }
 
 
   return (
@@ -765,8 +808,9 @@ const AddSlot = () => {
 
         {page === 3 && (
           <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
-              <div className="grid grid-cols-4 gap-4 w-full h-full">
+            <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto sc-scrollbar ">
+              <div className="text-2xl font-semibold">Book Slot</div>
+              <div className="grid grid-cols-4 gap-4 w-full ">
                 <div className="col-span-4">
                   <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4 h-full">
                     <div>TimeZone</div>
@@ -893,7 +937,7 @@ const AddSlot = () => {
                     )}
 
                     <div>
-                      <div className="overflow-auto max-h-80">
+                      <div className="overflow-auto  ">
                         {getallTime?.map((item, index) => {
                           return (
                             <div
@@ -906,7 +950,7 @@ const AddSlot = () => {
                                   type="time"
                                   name={`startTime${index}`}
                                   id="name"
-                                  value={item.startTime}
+                                  value={item?.startTime}
                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                   placeholder="Time"
                                   required=""
@@ -936,7 +980,7 @@ const AddSlot = () => {
                                     value={item.sequence}
                                     onChange={(e) => handleSequenceChange(index, e.target.value)}
                                   >
-                                    <option value="">Select</option>
+                                    <option value="" className="hidden">Select</option>
                                     {customTimeOrhour?.map((item) => {
                                       return (
                                         <option
@@ -992,9 +1036,10 @@ const AddSlot = () => {
                                     </div>
                                   </div>
                                 )}
-
                                 <div className="flex items-center justify-center gap-2">
-                                  <p className="w-20 truncate"> {item?.verticalImage?.name || item?.horizontalImage?.name}</p>
+                                  {(item?.verticalImage?.name || item?.horizontalImage?.name) &&
+                                    <p className="w-20 truncate"> {item?.verticalImage?.name || item?.horizontalImage?.name}</p>
+                                  }
                                   <button onClick={() => handleOpenImagePopup(index)}>
                                     <MdCloudUpload size={20} />
                                   </button>
@@ -1091,7 +1136,21 @@ const AddSlot = () => {
         )}
         {page === 4 && (
           <>
-            <BookSlotMap handleScreen={handleScreen} allSlateDetails={allSlateDetails} setSelectedValue={setSelectedValue} handleBack={handleBack} selectedVal={selectedVal} setSelectedVal={setSelectedVal} setOpen={setOpen} getSelectedVal={getSelectedVal} allArea={allArea} handleRangeChange={handleRangeChange} selectedItem={selectedItem} Open={Open} setSelectedItem={setSelectedItem} setSelectedScreens={setSelectedScreens} setSelectedScreen={setSelectedScreen} screenData={screenData} screenArea={screenArea} handleNext={handleNext} countries={countries} handleSelectChange={handleSelectChange} Screenoptions={Screenoptions} selectAllScreen={selectAllScreen} selectedScreen={selectedScreen} selectedScreens={selectedScreens} setSelectAllScreen={setSelectAllScreen} setAllCity={setAllCity} />
+            <BookSlotMap totalPrice={totalPrice}
+              selectedCountry={selectedCountry}
+              handleSelectCountries={handleSelectCountries}
+              allSlateDetails={allSlateDetails}
+              setSelectedValue={setSelectedValue} handleBack={handleBack}
+              selectedVal={selectedVal} setSelectedVal={setSelectedVal}
+              setOpen={setOpen} getSelectedVal={getSelectedVal}
+              allArea={allArea} handleRangeChange={handleRangeChange}
+              selectedItem={selectedItem} Open={Open} setSelectedItem={setSelectedItem}
+              setSelectedScreens={setSelectedScreens} setSelectedScreen={setSelectedScreen}
+              screenData={screenData} screenArea={screenArea} handleNext={handleNext}
+              countries={countries} handleSelectChange={handleSelectChange}
+              Screenoptions={Screenoptions} selectAllScreen={selectAllScreen}
+              selectedScreen={selectedScreen} selectedScreens={selectedScreens}
+              setSelectAllScreen={setSelectAllScreen} setAllCity={setAllCity} />
           </>
         )}
 
@@ -1103,7 +1162,7 @@ const AddSlot = () => {
             onSubmit={handlePopupSubmit}
           />
         )}
-
+        {/* clientSecret */}
         {page === 5 && clientSecret && (
           <div className="w-full h-full p-5 flex items-center justify-center">
             <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">

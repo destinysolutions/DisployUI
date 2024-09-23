@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { BsCheckCircleFill } from 'react-icons/bs';
 import { FiMapPin } from 'react-icons/fi';
 import { MdArrowBackIosNew } from 'react-icons/md';
@@ -12,10 +12,11 @@ import { Circle, LayerGroup, MapContainer, Marker, Popup, TileLayer } from 'reac
 import MarkerClusterGroup from "react-leaflet-cluster";
 import L from "leaflet";
 import mapImg from "../../../../images/DisployImg/mapImg.png";
+import { Autocomplete, useLoadScript } from '@react-google-maps/api';
 
 
-export default function BookSlotMap({ setallSlateDetails, handleScreen,
-    allSlateDetails, setSelectedValue,
+export default function BookSlotMap({ handleSelectCountries, selectedCountry, totalPrice,
+    setSelectedValue,
     setSelectAllScreen, setSelectedScreens,
     handleSelectChange, Screenoptions,
     selectAllScreen, selectedScreen, selectedScreens,
@@ -23,7 +24,12 @@ export default function BookSlotMap({ setallSlateDetails, handleScreen,
     handleNext, countries, handleBack, allArea,
     setSelectedItem, selectedItem, Open, setOpen, handleRangeChange,
     getSelectedVal, setSelectedVal, selectedVal, setAllCity }) {
-
+    const autocompleteRef = useRef(null);
+    const { isLoaded } = useLoadScript({
+        googleMapsApiKey: 'AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk', // Replace with your API key
+        libraries: ['places'], // Load Places library
+    });
+    console.log('screenArea :>> ', screenArea);
     const [city, setCity] = useState([]);
     const center = [20.5937, 78.9629];
     const customIcon = new L.Icon({
@@ -32,6 +38,7 @@ export default function BookSlotMap({ setallSlateDetails, handleScreen,
         iconAnchor: [16, 16],
         popupAnchor: [0, -16],
     });
+
     const FetchAllCity = () => {
         const config = {
             method: "get",
@@ -70,9 +77,29 @@ export default function BookSlotMap({ setallSlateDetails, handleScreen,
         setSelectedValue(event.target.value); // Update the state with the selected value
     };
 
+    const onPlaceChanged = () => {
+        if (autocompleteRef.current) {
+            const place = autocompleteRef.current.getPlace();
+            if (place?.geometry) {
+                const location = place?.geometry?.location;
+                const latlog = { latitude: location?.lat(), longitude: location?.lng(), searchValue: place?.formatted_address }
+                setSelectedVal(place?.formatted_address)
+                getSelectedVal(latlog)
+                // setdata({ ...data, location: place?.formatted_address })
+                // setMarkerPosition({
+                //   lat: location?.lat(),
+                //   lng: location?.lng(),
+                // });
+
+            }
+        }
+    };
+    if (!isLoaded) return;
+
+    console.log('screenData :>> ', screenData);
     return (
-        <div className="w-full h-full p-5 flex items-center justify-center ">
-            <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg ">
+        <div className="w-full h-full p-5 flex items-center justify-center border ">
+            <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg   ">
                 <div className="flex flex-row items-center gap-2">
                     <div className="icons flex items-center">
                         <div>
@@ -86,9 +113,29 @@ export default function BookSlotMap({ setallSlateDetails, handleScreen,
                     </div>
                     <div className="text-2xl font-semibold">Find Your Screen</div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 h-[93%] overflow-auto">
+                <div className="grid grid-cols-3 gap-4 h-[93%] overflow-auto sc-scrollbar ">
                     <div className="col-span-2 rounded-lg shadow-md bg-white p-5">
                         <div className="flex flex-col gap-2 h-full">
+                            <div className="w-full mb-3">
+                                <select
+                                    className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
+                                    id="selectOption"
+                                    value={selectedCountry}
+                                    onChange={handleSelectCountries}
+                                >
+                                    <option className="hidden" value=''>Select Country </option>
+                                    {countries?.map((country) => {
+                                        return (
+                                            <option
+                                                value={country}
+                                                key={country.countryID}
+                                            >
+                                                {country?.countryName}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            </div>
                             {/* <div className="flex gap-2 items-center">
                         <IoEarthSharp />
                         <span className="">
@@ -106,7 +153,7 @@ export default function BookSlotMap({ setallSlateDetails, handleScreen,
                                             <FiMapPin className="w-5 h-5 text-black " />
                                         </span>
                                         <div className="text-base flex items-center">
-                                            <h2>{item?.searchValue?.text}</h2>
+                                            <h2>{item?.searchValue}</h2>
                                         </div>
 
                                         <span className="flex items-center justify-end">
@@ -170,49 +217,6 @@ export default function BookSlotMap({ setallSlateDetails, handleScreen,
                                 );
                             })}
 
-                            <div className="">
-                                {/* <select
-                          className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
-                          value={selectedValue} // Set the selected value from state
-                          onChange={handleChange} // Handle change event
-                        >
-                          {IncludeExclude.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select> */}
-
-
-                                <div className="col-span-3">
-                                    <InputAuto
-                                        pholder="Search"
-                                        data={city}
-                                        onSelected={getSelectedVal}
-                                        onChange={getChanges}
-                                        // handleKeyPress={handleKeyPress}
-                                        setSelectedVal={setSelectedVal}
-                                        selectedVal={selectedVal}
-                                    />
-                                </div>
-                            </div>
-                            <div className="w-full mb-3">
-                                <Select
-                                    placeholder=' Country'
-                                    value={allSlateDetails?.country}
-                                    // onChange={(option) => { setallSlateDetails({ ...allSlateDetails, country: option }) }}
-                                    onChange={(option) => { handleScreen(option) }}
-                                    isClearable={true}
-                                    options={
-                                        countries && countries?.length > 0
-                                            ? countries.map((item) => ({
-                                                value: item?.countryID,
-                                                label: item?.countryName,
-                                            }))
-                                            : [{ value: "", label: "Not Found" }]
-                                    }
-                                />
-                            </div>
                             <div className="grid grid-cols-3 gap-4">
                                 <select
                                     className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
@@ -229,22 +233,29 @@ export default function BookSlotMap({ setallSlateDetails, handleScreen,
 
                                 <div className="col-span-2">
                                     <div className="relative col-span-2">
-                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                            <CgSearch className="w-5 h-5 text-black " />
-                                        </span>
-                                        <input
-                                            placeholder='Search ...'
-                                            type="search"
-                                            // value={selectedVal}
-                                            // onChange={handleChange}
+                                        <div className="col-span-3">
+                                            <Autocomplete
 
-                                            className="border border-primary rounded-lg px-7 pl-10 py-2 w-full"
-                                        />
+                                                onLoad={(ref) => (autocompleteRef.current = ref)}
+                                                onPlaceChanged={onPlaceChanged}
+                                            >
+                                                <input value={selectedVal} type="text" placeholder="Search for an area" className='appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3' onChange={(e) => setSelectedVal(e.target.value)} />
+                                            </Autocomplete>
+                                            {/* <InputAuto
+                                                pholder="Search"
+                                                data={city}
+                                                onSelected={getSelectedVal}
+                                                onChange={getChanges}
+                                                // handleKeyPress={handleKeyPress}
+                                                setSelectedVal={setSelectedVal}
+                                                selectedVal={selectedVal}
+                                            /> */}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="mt-5 h-full">
+                            <div className="mt-5 h-96">
                                 <div className="h-full">
                                     <MapContainer
                                         center={center}
@@ -343,17 +354,17 @@ export default function BookSlotMap({ setallSlateDetails, handleScreen,
                             isMulti
                         />
                         <div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 my-2">
                                 <label className="text-sm font-medium">Repetition Duration:</label>
                                 <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">hh:mm:ss</label>
                             </div>
-                            <div className="flex items-center gap-3">
+                            {/* <div className="flex items-center gap-3">
                                 <label className="text-sm font-medium">Total balance credit:</label>
                                 <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">$0.00</label>
-                            </div>
+                            </div> */}
                             <div className="flex items-center gap-3">
                                 <label className="text-sm font-medium">Total Payable Amount:</label>
-                                <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">$00.00</label>
+                                <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">${totalPrice}</label>
                             </div>
 
                         </div>

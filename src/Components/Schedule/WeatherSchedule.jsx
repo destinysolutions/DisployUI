@@ -208,7 +208,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
     let count = 0;
-
+    
     for (const key in screenIds) {
       if (screenIds[key] === true) {
         if (count > 0) {
@@ -363,7 +363,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
-              Weather Schedule 
+              Weather Schedule
             </h1>
             <div className=" items-center flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn ">
               <div className="relative">

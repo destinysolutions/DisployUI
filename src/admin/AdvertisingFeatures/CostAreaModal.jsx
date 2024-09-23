@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { useDispatch } from 'react-redux';
 import { handleAddCostbyarea } from '../../Redux/admin/AdvertisementSlice';
-import { BsCurrencyDollar } from 'react-icons/bs';
+import { BsCheckCircleFill, BsCurrencyDollar } from 'react-icons/bs';
 import { MdCurrencyRupee } from 'react-icons/md';
 
 export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
@@ -18,6 +18,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
     const [data, setdata] = useState({
         location: '',
         cost: '',
+        range: '',
         currency: 'Indian'
     });
     const [Errors, setErrors] = useState(false);
@@ -28,6 +29,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                 location: EditData?.locationName,
                 cost: EditData?.costPerSec,
                 currency: EditData?.currency,
+                range: EditData?.range,
             })
         }
         setMarkerPosition({
@@ -40,8 +42,10 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
     const onPlaceChanged = () => {
         if (autocompleteRef.current) {
             const place = autocompleteRef.current.getPlace();
+            console.log('place :>> ', place);
             if (place?.geometry) {
                 const location = place?.geometry?.location;
+                console.log('location :>> ', location);
                 setdata({ ...data, location: place?.formatted_address })
                 setMarkerPosition({
                     lat: location?.lat(),
@@ -62,8 +66,11 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
             latitude: markerPosition?.lat,
             longitude: markerPosition?.lng,
             costPerSec: data?.cost,
-            currency: data?.currency
+            currency: data?.currency,
+            range: data?.range
         }
+        console.log('payload :>> ', payload);
+
         dispatch(handleAddCostbyarea(payload)).then((result) => {
             onclose()
             setdata()
@@ -169,12 +176,28 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                                         onChange={(e) => {
                                             setdata({ ...data, currency: 'Dollar' })
                                         }}
-
                                     />
                                     <label for='Annually' className="border border-[#D5E3FF] rounded font-bold text-black text-3xl p-[2px] ml-2">
                                         <BsCurrencyDollar />
                                     </label>
 
+                                </div>
+                            </div>
+                            <div className='flex justify-start items-center gap-2'>
+                                <label for='Yes' className="mr-3 lg:text-base md:text-base sm:text-xs xs:text-xs">Range :</label>
+                                <div className='relative mb-2'>
+                                    <input
+                                        id="labels-range-input"
+                                        type="range"
+                                        min="0"
+                                        max="30"
+                                        step="5"
+                                        value={data?.range}
+                                        onChange={(e) => setdata({ ...data, range: parseInt(e.target.value) })}
+                                        className="w-40 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                                    />
+                                    <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">5</span>
+                                    <span className="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">30</span>
                                 </div>
                             </div>
                         </div>
