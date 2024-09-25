@@ -31,10 +31,7 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
     });
 
     const filteredData = bookslotData.filter((item) =>
-        Object.values(item).some(
-            (value) =>
-                value
-        )
+        Object.values(item).some((value) => value)
     );
     const totalPages = Math.ceil(filteredData.length / pageSize);
 

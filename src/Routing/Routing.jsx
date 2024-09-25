@@ -63,6 +63,7 @@ import PlanIntegration from "../Components/PlanIntegration";
 import AdvertisementScreens from "../Components/Advertisement/AdvertisementScreens";
 import BookYourSlot from "../Components/BookYourSlot/BookYourSlot";
 import AddBookYourSlot from "../Components/BookYourSlot/AddBookYourSlot";
+import AdvertismentRoute from "./AdvertismentRoute";
 
 const Routing = () => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
@@ -139,6 +140,14 @@ const Routing = () => {
     if (accessDetails === "SALESMAN")
       return (
         <SalesManRoutes
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
+      )
+
+    if (accessDetails === "ADVERTISMENT")
+      return (
+        <AdvertismentRoute
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

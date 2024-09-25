@@ -391,7 +391,7 @@ const AdvertisementSlice = createSlice({
       .addCase(AddcommissionRate.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.data = action.payload;
-        toast.success('CommissionRate Saved Successfully');
+        toast.success('Commission rate Saved Successfully');
       })
       .addCase(AddcommissionRate.rejected, (state, action) => {
         state.loading = false;

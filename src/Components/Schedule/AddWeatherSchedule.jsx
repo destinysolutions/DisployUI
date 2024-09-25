@@ -202,11 +202,16 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Model Function
   const handleAssetAdd = (asset) => {
+    console.log('asset :>> ', asset);
     setSelectedAsset(asset);
     setAssetPreview(asset);
   };
 
+
   const handleSave = () => {
+    if (!selectedAsset?.assetName) {
+      return toast.error("Please select Asset");
+    }
     setUrlParth({
       assetID: selectedAsset.assetID,
       assetFolderPath: selectedAsset.assetFolderPath,
@@ -293,12 +298,11 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }, 1000);
   };
 
-  const handleUpdateScreenAssign = (screenIds, macids) => {
-    handleSubmit()
+  const handleUpdateScreenAssign = async (screenIds, macids) => {
+
     let idS = "";
     let count = 0;
 
-    console.log('macids :>> ', macids);
     for (const key in screenIds) {
       if (screenIds[key] === true) {
         if (count > 0) {
@@ -308,7 +312,11 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         count++;
       }
     }
-
+    console.log('idS :>> ', idS);
+    if (idS === "") {
+      return toast.error("Please Select Screen.");
+    }
+    await handleSubmit()
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -554,7 +562,12 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             data-for="Start Date"
                             type="date"
                             value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
+                            onChange={(e) => {
+                              const newStartDate = e.target.value;
+                              setStartDate(newStartDate);
+                              const MatchDates = newStartDate === endDate
+                              setEndDate(MatchDates ? endDate : newStartDate > endDate ? newStartDate : endDate)
+                            }}
                             className="border border-[#D5E3FF] px-3 py-2 w-full"
                           />
                         </div>
@@ -564,6 +577,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             data-tip
                             data-for="End Date"
                             type="date"
+                            min={startDate}
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
                             className="border border-[#D5E3FF] px-3 py-2 w-full"
@@ -708,7 +722,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             onChange={() => setIsAbove(true)}
                           />
                           <label className="ml-3 lg:text-base md:text-base sm:text-xs xs:text-xs font-medium">
-                            play When temp goes above: 123
+                            play When temp goes above:
                           </label>
                         </div>
                         <div className="flex">
@@ -751,20 +765,21 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative md:h-[324px] sm:h-[216px] lg:h-[540px] w-full h-72">
                     <div className="videoplayer relative bg-white w-full h-full">
                       {urlParth.assetType === 'OnlineImage' && (
-                        <div className="flex items-center justify-center h-full">
-                          <img src={urlParth.assetFolderPath} className="m-auto" alt="Not found" />
+                        <div className="thumbnail-container">
+                          <img src={urlParth.assetFolderPath} className="" alt="Not found" />
                         </div>
                       )}
 
                       {urlParth.assetType === "Image" && (
-                        <div className="flex items-center justify-center h-full">
-                          <img src={urlParth.assetFolderPath} className="m-auto" alt="Not found" />
+                        <div className="thumbnail-container ">
+                          <img src={urlParth.assetFolderPath} className="thumbnail" alt="Not found" />
                         </div>
                       )}
 
+
                       {urlParth.assetType === "Video" && (
                         <ReactPlayer
-                          url={urlParth.assetFolderPath}
+                          url={urlParth?.assetFolderPath}
                           width={"100%"}
                           height={"100%"}
                           className="w-full relative z-20 videoinner"
@@ -774,7 +789,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
                       {urlParth.assetType === "OnlineVideo" && (
                         <ReactPlayer
-                          url={urlParth.assetFolderPath}
+                          url={urlParth?.assetFolderPath}
                           width={"100%"}
                           height={"100%"}
                           className="w-full relative z-20 videoinner"

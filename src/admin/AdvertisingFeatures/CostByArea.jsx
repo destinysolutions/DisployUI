@@ -123,7 +123,7 @@ export default function CostByArea({ sidebarOpen }) {
                                                     <td className="mw-200 text-[#5E5E5E] mx-auto text-center  ">
                                                         <div className='w-80 truncate text-center  mx-auto'>{item?.locationName}</div>
                                                     </td>
-                                                    <td className="mw-200 text-[#5E5E5E] ">{item?.costPerSec}</td>
+                                                    <td className="mw-200 text-[#5E5E5E] ">{item?.currency === 'Dollar' ? '$' : '₹'} {item?.costPerSec}</td>
                                                     <td className="mw-200 px-6 py-4">
                                                         <div className="flex gap-2 justify-center">
                                                             <div className="cursor-pointer text-xl flex gap-4">

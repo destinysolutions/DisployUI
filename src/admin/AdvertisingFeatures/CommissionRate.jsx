@@ -4,6 +4,7 @@ import { Commission } from '../../Components/Common/Common';
 import { AddcommissionRate, getcommissionRate } from '../../Redux/admin/AdvertisementSlice';
 import { useDispatch } from 'react-redux';
 import { FaPercentage } from "react-icons/fa";
+import toast from 'react-hot-toast';
 
 export default function CommissionRate() {
     const dispatch = useDispatch()
@@ -14,23 +15,24 @@ export default function CommissionRate() {
         moreThanScreens: false,
     });
 
-
     const [commissionRate, setCommissionRate] = useState({
         commissionRateID: 0,
         uptoScreens: 20,
         moreThanScreens: 20,
-        upDisployBringDisploy: '',
-        upDisployBringClient: '',
-        upClientBringDisploy: '',
-        upClientBringClient: '',
-        moreDisployBringDisploy: '',
-        moreDisployBringClient: '',
-        moreClientBringDisploy: '',
-        moreClientBringClient: ''
+        upDisployBringDisploy: 0,
+        upDisployBringClient: 0,
+        upClientBringDisploy: 0,
+        upClientBringClient: 0,
+        moreDisployBringDisploy: 0,
+        moreDisployBringClient: 0,
+        moreClientBringDisploy: 0,
+        moreClientBringClient: 0
     });
 
     useEffect(() => {
+
         if (loadFirst) {
+            toast.loading('Loading ...')
             dispatch(getcommissionRate({})).then((result) => {
                 const res = result?.payload?.data
                 setCommissionRate({
@@ -66,25 +68,25 @@ export default function CommissionRate() {
 
     const handleInputChange = (field, value) => {
         setCommissionRate(prevState => {
-            const numValue = parseFloat(value) 
+            const numValue = parseFloat(value || 0)
             let newState = { ...prevState, };
             // [field]: numValue 
             if (field === 'upDisployBringDisploy') {
-                newState = { ...newState, upDisployBringDisploy: numValue, upDisployBringClient: 100 - numValue };
+                newState = { ...newState, upDisployBringDisploy: numValue, upDisployBringClient: (100 - numValue || 100) };
             } else if (field === 'upDisployBringClient') {
-                newState = { ...newState, upDisployBringClient: numValue, upDisployBringDisploy: 100 - numValue };
+                newState = { ...newState, upDisployBringClient: numValue, upDisployBringDisploy: (100 - numValue || 100) };
             } else if (field === 'upClientBringDisploy') {
-                newState = { ...newState, upClientBringDisploy: numValue, upClientBringClient: 100 - numValue };
+                newState = { ...newState, upClientBringDisploy: numValue, upClientBringClient: (100 - numValue || 100) };
             } else if (field === 'upClientBringClient') {
-                newState = { ...newState, upClientBringClient: numValue, upClientBringDisploy: 100 - numValue };
+                newState = { ...newState, upClientBringClient: numValue, upClientBringDisploy: (100 - numValue || 100) };
             } else if (field === 'moreDisployBringDisploy') {
-                newState = { ...newState, moreDisployBringDisploy: numValue, moreDisployBringClient: 100 - numValue };
+                newState = { ...newState, moreDisployBringDisploy: numValue, moreDisployBringClient: (100 - numValue || 100) };
             } else if (field === 'moreDisployBringClient') {
-                newState = { ...newState, moreDisployBringClient: numValue, moreDisployBringDisploy: 100 - numValue };
+                newState = { ...newState, moreDisployBringClient: numValue, moreDisployBringDisploy: (100 - numValue || 100) };
             } else if (field === 'moreClientBringDisploy') {
-                newState = { ...newState, moreClientBringDisploy: numValue, moreClientBringClient: 100 - numValue };
+                newState = { ...newState, moreClientBringDisploy: numValue, moreClientBringClient: (100 - numValue || 100) };
             } else if (field === 'moreClientBringClient') {
-                newState = { ...newState, moreClientBringClient: numValue, moreClientBringDisploy: 100 - numValue };
+                newState = { ...newState, moreClientBringClient: numValue, moreClientBringDisploy: (100 - numValue || 100) };
             }
 
             if (field === 'uptoScreens') {
@@ -97,12 +99,10 @@ export default function CommissionRate() {
 
 
     const onSumbit = () => {
-
         dispatch(AddcommissionRate(commissionRate)).then((res) => {
             setLoadFirst(true)
         })
     }
-
 
     return (
         <div>
@@ -121,7 +121,7 @@ export default function CommissionRate() {
                                 > Up
                                     <input
                                         type="number"
-                                        className={`bg-transparent placeholder-slate-400 focus:text-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-10  px-2`}
+                                        className={`bg-transparent placeholder-slate-400 focus:text-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-10  mx-2`}
                                         onChange={(e) => {
                                             handleInputChange('uptoScreens', e.target.value);
                                         }}
@@ -130,21 +130,19 @@ export default function CommissionRate() {
                                     Screens
                                 </button>
                                 <button
-                                    className={`relative group flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 ${buttonType.moreThanScreens ? 'bg-primary text-white' : ''}`}
+                                    className={` relative group  flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 ${buttonType.moreThanScreens ? 'bg-primary text-white' : ''}`}
                                     onClick={() => handleButtonClick('moreThanScreens')}
-
                                 >
                                     More than
-                                    <input
-                                        type="number"
-                                        class="bg-transparent placeholder-slate-400 focus:text-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-10  px-2"
-                                        onChange={(e) => {
-                                            handleInputChange('uptoScreens', e.target.value);
-                                        }}
-                                        value={commissionRate?.uptoScreens}
-                                    />
+                                        <input
+                                            type="number"
+                                            // style={{ minWidth: '100%', width: '10px', boxSizing: 'border-box' }}
+                                            class="bg-transparent placeholder-slate-400 focus:text-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-10  mx-2 "
+                                            onChange={(e) => { handleInputChange('uptoScreens', e.target.value); }}
+                                            value={commissionRate?.uptoScreens}
+                                        />
+                                 
                                     Screens
-                                    <div className="tooltip-arrow" data-popper-arrow></div>
                                 </button>
                             </div>
 
@@ -176,7 +174,7 @@ export default function CommissionRate() {
                                                         <input
                                                             className="w-20 py-0.5 appearance-none border border-[#D5E3FF] rounded  px-3"
                                                             type="number"
-                                                            placeholder='80%'
+                                                            // placeholder='80%'
                                                             value={buttonType?.uptoScreens
                                                                 ? (index === 0 ? commissionRate?.upDisployBringDisploy : commissionRate.upClientBringDisploy)
                                                                 : (index === 0 ? commissionRate?.moreDisployBringDisploy : commissionRate.moreClientBringDisploy)}
@@ -204,7 +202,7 @@ export default function CommissionRate() {
                                                         <input
                                                             className="w-20 py-0.5 appearance-none border border-[#D5E3FF] rounded  px-3"
                                                             type="number"
-                                                            placeholder='80%'
+                                                            // placeholder='80%'
                                                             value={buttonType?.uptoScreens
                                                                 ? (index === 1 ? commissionRate.upClientBringClient : commissionRate.upDisployBringClient)
                                                                 : (index === 1 ? commissionRate.moreClientBringClient : commissionRate.moreDisployBringClient)}
@@ -224,7 +222,6 @@ export default function CommissionRate() {
                                                             />
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         )}

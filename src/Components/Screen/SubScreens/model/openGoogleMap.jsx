@@ -15,18 +15,12 @@ const options = {
     zoomControl: true,
 };
 
-const center = {
-    lat: 43.6532,
-    lng: -79.3832,
-};
-
 const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurrentCenter, currentCenter, setMarkers, markers }) => {
     const { isLoaded, loadError } = useLoadScript({
         googleMapsApiKey: "AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk",
         libraries,
     });
     const [selected, setSelected] = useState(null);
-    const [selectedLatLng, setSelectedLatLng] = useState({ lat: null, lng: null });
     const mapRef = useRef();
 
     // useEffect(() => {
@@ -42,7 +36,6 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
     //         }
     //     );
     // }, []);
-
 
 
     const onMapClick = useCallback(async (e) => {
@@ -64,12 +57,12 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
 
             const address = results.results[0]?.formatted_address || "No address found";
             setSelectedAddress(address);
-            setSelectedLatLng({ lat, lng });
+
             setCurrentCenter({ lat, lng });
         } catch (error) {
             console.log("Error: ", error);
             setSelectedAddress("Error fetching address");
-            setSelectedLatLng({ lat: null, lng: null });
+            setCurrentCenter({ lat: null, lng: null });
         }
     }, []);
 
@@ -115,7 +108,7 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
                 const results = await getGeocode({ address });
                 const { lat, lng } = await getLatLng(results[0]);
                 panTo({ lat, lng });
-                setSelectedLatLng({ lat, lng });
+              
                 setCurrentCenter({ lat, lng });
 
                 // Fetch address for the selected place
@@ -157,7 +150,6 @@ const OpenGoogleMap = ({ openMap, selectedAddress, setSelectedAddress, setCurren
             </div>
         );
     }
-
 
     const saveLocation = () => {
         // getLocation(selectedAddress, currentCenter)

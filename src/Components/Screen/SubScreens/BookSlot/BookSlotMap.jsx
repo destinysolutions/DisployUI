@@ -29,7 +29,6 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
         googleMapsApiKey: 'AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk', // Replace with your API key
         libraries: ['places'], // Load Places library
     });
-    console.log('screenArea :>> ', screenArea);
     const [city, setCity] = useState([]);
     const center = [20.5937, 78.9629];
     const customIcon = new L.Icon({
@@ -96,7 +95,6 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
     };
     if (!isLoaded) return;
 
-    console.log('screenData :>> ', screenData);
     return (
         <div className="w-full h-full p-5 flex items-center justify-center border ">
             <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg   ">

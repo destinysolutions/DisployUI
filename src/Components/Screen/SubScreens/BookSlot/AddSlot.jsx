@@ -276,22 +276,24 @@ const AddSlot = () => {
       return toast.error("Please Select Screen");
     } else {
       let Price = 0;
-      selectedScreens?.map((item) => {
-        console.log('item :>> ', item);
-        Price = Price + item?.Price;
-      });
-      console.log('Price :>> ', Price);
-      setTotalPrice(Price);
-      setTotalCost(totalDuration * Price);
-      total = totalDuration * Price
-    }
 
+      // Calculate the total Price
+      selectedScreens.forEach((item) => {
+        Price += item?.Price || 0; // Safely add Price, defaulting to 0 if undefined
+      });
+
+      setTotalPrice(Price);
+      setTotalCost(totalDuration * Price); // Assuming totalDuration is defined
+      console.log('totalPrice :>> ', Price); // Log the correct totalPrice
+
+      // Calculate the total based on totalDuration and Price
+      total = Number(totalDuration) * Number(Price); // Update total based on your logic
+    }
     console.log('total :>> ', total);
     const params = {
       "items": {
         "id": "0",
-        "amount": 5000
-        // "amount": String(total * 100)
+        "amount": String(totalPrice * 100)
       }
     }
     console.log('params :>> ', params);
@@ -306,8 +308,9 @@ const AddSlot = () => {
     }
 
     dispatch(handlePaymentIntegration({ config })).then((res) => {
+      console.log('res :>> ', res);
       setClientSecret(res?.payload?.clientSecret)
-      // setPage(page + 1);
+      setPage(page + 1);
     }).catch((error) => {
       console.log('error', error)
     })
@@ -318,7 +321,6 @@ const AddSlot = () => {
 
   // page 4 handleSelectChange
   const handleSelectChange = (selected) => {
-    console.log('selected :>> ', selected);
     setSelectedScreens(selected);
     if (selected?.length === screenData?.length) {
       setSelectAllScreen(true);
@@ -392,16 +394,7 @@ const AddSlot = () => {
     setGetAllTime(aftereventType);
   };
 
-  // page 3 handleBookSlot
-  const handleBookSlot = () => {
-    const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
-    if (hasMissingImages) {
-      return toast.error("Please upload valid Vertical and Horizontal images.");
-    } else {
-      console.log('getallTime :>> ', getallTime);
-      setPage(page + 1);
-    }
-  };
+
 
   // for select all days to repeat day
   function handleCheckboxChange() {
@@ -470,7 +463,6 @@ const AddSlot = () => {
     // if (foundItem) {
     //   // setSearchArea(foundItem);
     // }
-    console.log('selectedValue :>> ', selectedValue);
     let obj = {
       searchValue: value?.searchValue,
       include: Number(selectedValue),
@@ -575,7 +567,7 @@ const AddSlot = () => {
         })
         .substring(4),
     });
-
+    console.log('Params :>> ', Params);
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -614,10 +606,11 @@ const AddSlot = () => {
       });
   };
 
-  const handleScreen = () => {
+  // page 3 handleBookSlot
 
-    console.log('allSlateDetails?.country :>> ', allSlateDetails?.country);
+  const handleBookSlot = () => {
     const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
+
     if (hasMissingImages) {
       return toast.error("Please upload valid Vertical and Horizontal images.");
     } else {
@@ -626,9 +619,11 @@ const AddSlot = () => {
       let count = 0;
       getallTime?.map((item) => {
         console.log('item :>> ', item);
-        let start = `${item?.startTime}:${item?.startTimeSecond}`;
+        let start = `${item?.startTime}`;
+        // let start = `${item?.startTime}:${item?.startTimeSecond}`;
 
-        let end = `${item?.endTime}:${item?.endTimeSecond}`;
+        let end = `${item?.endTime}`;
+        // let end = `${item?.endTime}:${item?.endTimeSecond}`;
 
         let horizontalfileType = item?.horizontalImage?.type || null;
         let verticalImagefileType = item?.verticalImage?.type || null;
@@ -667,11 +662,9 @@ const AddSlot = () => {
   };
 
   const handleSelectCountries = (event) => {
-    console.log('event?.target.value :>> ', event?.target.value);
+
     setSelectedCountry(event?.target.value);
-    console.log('startDate :>> ', startDate);
-    console.log('endDate :>> ', endDate);
-    console.log('selectedCountry :>> ', selectedCountry);
+
     let Params = {
       latitude: 0,
       longitude: 0,
@@ -895,6 +888,7 @@ const AddSlot = () => {
                         <div className="relative w-full col-span-2">
                           <input
                             type="date"
+                            min={startDate}
                             value={endDate}
                             className="formInput"
                             disabled={!repeat}
@@ -994,7 +988,7 @@ const AddSlot = () => {
                                   </select>
                                 </div>
                                 {item?.sequence === "Custom" && (
-                                  <div className="  flex items-center   justify-center ">
+                                  <div className=" flex items-center   justify-center ">
                                     <label className="text-sm font-medium w-20 mr-2">After every:</label>
                                     <div className="flex justify-center items-center  ">
                                       <div>

@@ -37,7 +37,7 @@ const AddPayment = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const [autoPay, setAutoPay] = useState(false)
-
+console.log('autoPay :>> ', autoPay);
   useEffect(() => {
     if (!stripe) {
       return;

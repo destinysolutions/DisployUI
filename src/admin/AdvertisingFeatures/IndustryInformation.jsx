@@ -60,9 +60,8 @@ export default function IndustryInformation({ sidebarOpen }) {
             return newModalState;
         });
     };
-
     const addRow = () => {
-        setIndustry([...industry, { industryName: '', industryInclude: [] }]);
+        setIndustry([{ industryName: '', industryInclude: [] }, ...industry]);
     };
 
 
@@ -329,7 +328,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                                 <div className="flex justify-end">
                                     <select className='px-1 mr-2 border border-gray rounded-lg'
                                         value={itemsPerPage}
-                                        onChange={(e) => setItemsPerPage(e.target.value)}
+                                        onChange={(e) => { setItemsPerPage(e.target.value); setCurrentPage(1) }}
                                     >
                                         {PageNumber.map((x) => (
                                             <option key={x} value={x}>{x}</option>

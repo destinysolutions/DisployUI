@@ -79,7 +79,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const currentMinute = selectedCurrentTime.getMinutes();
   const interval =
     currentMinute < 20 ? 1 : currentMinute >= 20 && currentMinute <= 40 ? 2 : 3;
-  const { user, token,userDetails } = useSelector((s) => s.root.auth);
+  const { user, token, userDetails } = useSelector((s) => s.root.auth);
   const { assets } = useSelector((s) => s.root.asset);
 
   const authToken = `Bearer ${token}`;
@@ -275,16 +275,16 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
+
     let idS = "";
     for (const key in screenIds) {
       if (screenIds[key] === true) {
         idS += `${key},`;
       }
     }
-    // if (idS === "") {
-    //   toast.remove();
-    //   return toast.error("Please Select Screen.");
-    // }
+    if (idS === "") {
+      return toast.error("Please Select Screen.");
+    }
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -959,8 +959,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
-      
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

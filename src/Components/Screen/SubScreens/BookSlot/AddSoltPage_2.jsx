@@ -27,14 +27,12 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
     };
 
     const onsumbitPage2 = () => {
-        if (allSlateDetails?.Industry === null  || allSlateDetails?.terms === false || allSlateDetails?.refCode === 'NO' || (!allSlateDetails?.refVale)) {
+        if (allSlateDetails?.Industry === null || allSlateDetails?.terms === false || (allSlateDetails?.refCode === 'Yes' && !allSlateDetails?.refVale)) {
             return setError(true)
         }
-
         console.log('allSlateDetails :>> ', allSlateDetails);
-        setPage(page     + 1)
+        setPage(page + 1)
     }
-
 
     return (
         <div className="w-full h-full p-5 flex items-center justify-center">
@@ -45,27 +43,27 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                         <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4 h-full">
                             <div className="w-7/12 flex flex-col justify-center m-auto">
                                 <h3 className="text-center font-bold">Hi Anand,</h3>
-                                <p className="text-sm text-center"> Before we begin, please take a moment to share some details about your organization. This will help us tailor tha screen experience to perfectly suit your needs.</p>
+                                <p className="text-sm text-center"> Before we begin, please take a moment to share some details about your organization. This will help us tailor the screen experience to perfectly suit your needs.</p>
                             </div>
-                                <div className="relative w-full col-span-2">
-                                    <Select
-                                        placeholder='Select Industry'
-                                        value={allSlateDetails?.Industry}
-                                        onChange={(option) => { setallSlateDetails({ ...allSlateDetails, Industry: option }) }}
-                                        options={
-                                            store?.Industry && store?.Industry?.length > 0
-                                                ? store?.Industry.map((item) => ({
-                                                    value: item?.industryID,
-                                                    label: item?.industryName,
-                                                }))
-                                                : [{ value: "", label: "Not Found" }]
-                                        }
-                                        isClearable={true}
-                                    />
-                                    {Error && !allSlateDetails?.Industry && (
-                                        <p className="text-red-600 text-sm font-semibold">This field is Required.</p>
-                                    )}
-                                </div>
+                            <div className="relative w-full col-span-2">
+                                <Select
+                                    placeholder='Select Industry'
+                                    value={allSlateDetails?.Industry}
+                                    onChange={(option) => { setallSlateDetails({ ...allSlateDetails, Industry: option }) }}
+                                    options={
+                                        store?.Industry && store?.Industry?.length > 0
+                                            ? store?.Industry.map((item) => ({
+                                                value: item?.industryID,
+                                                label: item?.industryName,
+                                            }))
+                                            : [{ value: "", label: "Not Found" }]
+                                    }
+                                    isClearable={true}
+                                />
+                                {Error && !allSlateDetails?.Industry && (
+                                    <p className="text-red-600 text-sm font-semibold">This field is Required.</p>
+                                )}
+                            </div>
                             <div className="grid grid-cols-4 gap-4 items-center">
                                 {/* <div className="relative w-full col-span-2">
                                     <Select
@@ -169,9 +167,7 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                                 </div>
 
                                             </div>
-                                            {Error && allSlateDetails?.refCode === 'NO' && (
-                                                <p className="text-red-600 text-sm font-semibold text-center ">This field is Required.</p>
-                                            )}
+
                                         </div>
                                     </div>
                                 </div>

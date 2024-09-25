@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { useDispatch } from 'react-redux';
 import { handleAddCostbyarea } from '../../Redux/admin/AdvertisementSlice';
-import { BsCheckCircleFill, BsCurrencyDollar } from 'react-icons/bs';
+import { BsCurrencyDollar } from 'react-icons/bs';
 import { MdCurrencyRupee } from 'react-icons/md';
 
 export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
@@ -22,6 +22,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
         currency: 'Indian'
     });
     const [Errors, setErrors] = useState(false);
+    const [locationError, setLocationError] = useState(null);
 
     useEffect(() => {
         if (EditData?.locationName || EditData?.costPerSec) {
@@ -42,14 +43,14 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
     const onPlaceChanged = () => {
         if (autocompleteRef.current) {
             const place = autocompleteRef.current.getPlace();
-            console.log('place :>> ', place);
             if (place?.geometry) {
-                const location = place?.geometry?.location;
-                console.log('location :>> ', location);
-                setdata({ ...data, location: place?.formatted_address })
+                const location = place.geometry.location;
+                setLocationError(place.formatted_address)
+
+                setdata({ ...data, location: place.formatted_address });
                 setMarkerPosition({
-                    lat: location?.lat(),
-                    lng: location?.lng(),
+                    lat: location.lat(),
+                    lng: location.lng(),
                 });
 
             }
@@ -57,9 +58,10 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
     };
 
     const onSumbit = () => {
-        if (!data?.cost || !data?.location) {
+        if (!data?.cost || !data?.location || !locationError) {
             return setErrors(true);
         }
+
         const payload = {
             costByAreaID: EditData?.costByAreaID ? EditData?.costByAreaID : 0,
             locationName: data?.location,
@@ -67,7 +69,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
             longitude: markerPosition?.lng,
             costPerSec: data?.cost,
             currency: data?.currency,
-            range: data?.range
+            range: data?.range ? data?.range : 5
         }
         console.log('payload :>> ', payload);
 
@@ -88,8 +90,8 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                     <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none modal lg:w-[800] md:w-[600px]">
                         <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                             <div className="flex items-center">
-                                <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                                    {EditData?.costByAreaID ? 'Edit' : 'Add'}  New Location
+                                <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium ">
+                                    {EditData?.costByAreaID ? 'Edit' : 'Add New'}   Location
                                 </h3>
                             </div>
                             <button
@@ -100,21 +102,22 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                             </button>
                         </div>
                         <div className=" p-5 ">
-
                             <div className='w-full my-3'>
-
                                 <Autocomplete
-
+                                    className='border'
                                     onLoad={(ref) => (autocompleteRef.current = ref)}
                                     onPlaceChanged={onPlaceChanged}
+                                    renderMenu={item => (
+                                        <div className="dropdown">
+                                            {item}
+                                        </div>
+                                    )}
                                 >
-                                    <input value={data?.location} type="text" placeholder="Search for an area" className='appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3' onChange={(e) => setdata({ ...data, location: e.target.value })} />
+                                    <input value={data?.location} type="text" placeholder="Search for an area" className='appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3'
+                                        onChange={(e) => setdata({ ...data, location: e.target.value })}
+                                    />
                                 </Autocomplete>
-
-
-                                {Errors && data?.location <= 0 && (
-                                    <p className="text-red-600 text-sm font-semibold ">Location is Required.</p>
-                                )}
+                                {Errors && data?.location <= 0 ? (<p className="text-red-600 text-sm font-semibold ">Location is Required.</p>) : Errors && locationError <= 0 && <p className="text-red-600 text-sm font-semibold ">Please select the correct location</p>}
                             </div>
                             <div className='w-full mb-3'>
                                 <div className="flex items-center justify-center gap-3 w-full">
@@ -191,7 +194,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                                         type="range"
                                         min="0"
                                         max="30"
-                                        step="5"
+                                        step="0"
                                         value={data?.range}
                                         onChange={(e) => setdata({ ...data, range: parseInt(e.target.value) })}
                                         className="w-40 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"

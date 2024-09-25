@@ -215,7 +215,7 @@ const DigitalMenuAssets = ({ openModal, setOpenModal,handleAssetAdd, selectedAss
                               onClick={() => HandleSubmitAsset()}  
                         >
                             <p className="text-black mb-3 text-left">
-                                Content will always be playing Confirm
+                                Content will always be playing Confirm 
                             </p>
                             <p className="text-right">
                                 <button

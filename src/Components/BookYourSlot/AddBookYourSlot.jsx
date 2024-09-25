@@ -73,7 +73,6 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const [selectedTimeZone, setSelectedTimeZone] = useState();
     const [selectedCountry, setSelectedCountry] = useState("");
     const [selecteStates, setSelecteStates] = useState("");
-    const [states, setStates] = useState([]);
     const [allTimeZone, setAllTimeZone] = useState([]);
     const [screenArea, setScreenArea] = useState([]);
     const [screenData, setScreenData] = useState([]);
@@ -329,14 +328,11 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
 
                     {page === 1 && (
                         <div className="w-full h-full p-5 flex items-center justify-center">
-                            <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto sc-scrollbar ">
+                            <div className="lg:w-[1000px] md:w-[700px] w-full bg-white lg:p-6 p-3 rounded-lg ">
                                 <div className="text-2xl font-semibold">Book Slot</div>
                                 <div className="grid grid-cols-4 gap-4 w-full ">
                                     <div className="col-span-4">
-                                        <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4 h-full">
-
-
-
+                                        <div className="rounded-lg   p-5 flex flex-col gap-4 shadow-lg overflow-auto sc-scrollbar   h-[55vh]">
                                             {!repeat && (
                                                 <div className="grid grid-cols-4 gap-4">
                                                     <div className="relative w-full col-span-2">
@@ -390,7 +386,6 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                                                     </div>
                                                 </div>
                                             )}
-
                                             <div>
                                                 <div className="overflow-auto  ">
                                                     {getallTime?.map((item, index) => {
@@ -449,7 +444,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                                                                         </select>
                                                                     </div>
                                                                     {item?.sequence === "Custom" && (
-                                                                        <div className="  flex items-center   justify-center ">
+                                                                        <div className="flex items-center   justify-center ">
                                                                             <label className="text-sm font-medium w-20 mr-2">After every:</label>
                                                                             <div className="flex justify-center items-center  ">
                                                                                 <div>
@@ -552,9 +547,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                                                             {buttons.map((label, index) => (
                                                                 <button
                                                                     className={`border border-primary px-3 py-1 mr-2 mb-2 rounded-full ${selectedDays[index] &&
-                                                                        "bg-SlateBlue border-white"
-                                                                        } 
-                                      `}
+                                                                        "bg-SlateBlue border-white"} `}
                                                                     key={index}
                                                                     onClick={() =>
                                                                         handleDayButtonClick(index, label)
@@ -567,22 +560,20 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className="w-full h-full">
-                                                <div className="flex justify-end h-full items-end">
-                                                    <button
-                                                        className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                                        onClick={() => setPage(page - 1)}
-                                                    >
-                                                        Back
-                                                    </button>
-                                                    <button
-                                                        className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                                        onClick={() => handleBookSlot()}
-                                                    >
-                                                        Next
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        </div>
+                                        <div className="flex justify-end items-end  mt-3">
+                                            <button
+                                                className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                                onClick={() => navigate('/book-your-slot')}
+                                            >
+                                                Back
+                                            </button>
+                                            <button
+                                                className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                                onClick={() => handleBookSlot()}
+                                            >
+                                                Next
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

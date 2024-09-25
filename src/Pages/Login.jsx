@@ -136,12 +136,17 @@ const Login = () => {
             if (response.status == 200) {
               window.localStorage.setItem("timer", JSON.stringify(18_00));
               const userRole = response.role;
+              console.log('userRole :>> ', userRole);
               if (userRole == 1) {
                 localStorage.setItem("role_access", "ADMIN");
                 toast.success("Login successfully.");
                 window.location.href = "/";
               } else if (userRole == 2) {
-                if (response?.isSalesMan) {
+                if (response?.isSalesMan === true && response?.isActivePlan === false) {
+                  localStorage.setItem("role_access", "ADVERTISMENT");
+                  toast.success("Login successfully.");
+                }
+                else if (response?.isSalesMan) {
                   localStorage.setItem("role_access", "SALESMAN");
                   toast.success("Login successfully.");
                 } else {
@@ -659,10 +664,10 @@ const Login = () => {
                 </button>
               </LoginSocialFacebook>*/}
               <button onClick={SignInFaceBook}>
-                  <div className="socialIcon socialIcon2">
-                    <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
-                  </div>
-                </button>
+                <div className="socialIcon socialIcon2">
+                  <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                </div>
+              </button>
               <button onClick={SignInapple}>
                 <div className="socialIcon socialIcon3">
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />

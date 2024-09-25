@@ -77,7 +77,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [getScreenOrientation, setScreenOrientation] = useState([]);
   const [getScreenResolution, setScreenResolution] = useState([]);
   const [selectedScreenTypeOption, setSelectedScreenTypeOption] = useState("");
-  const [selectScreenOrientation, setSelectScreenOrientation] = useState();
+  const [selectScreenOrientation, setSelectScreenOrientation] = useState('0');
   const [selectScreenResolution, setSelectScreenResolution] = useState();
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
@@ -124,7 +124,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenMarginError, setScreenMarginError] = useState("");
 
 
-  const [selecteLocLog, setSelecteLocLog] = useState();
+
   const { screens } = useSelector((s) => s.root.screen);
   const [selectedAddress, setSelectedAddress] = useState("");
   const [currentCenter, setCurrentCenter] = useState({ lat: 43.6532, lng: -79.3832 });
@@ -320,8 +320,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     let data = JSON.stringify({
       screenID: screen_id,
       googleLocation: selectedAddress,
-      latitude: selecteLocLog?.lat,
-      longitude: selecteLocLog?.lng,
+      latitude: currentCenter?.lat,
+      longitude: currentCenter?.lng,
       screenOrientation: selectScreenOrientation,
       screenResolution: selectScreenResolution,
       timeZone: selectedTimezoneName,
@@ -362,7 +362,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         toast.remove();
       });
   };
-
   const handleOnSaveSchedule = () => {
     setShowScheduleModal(false);
     if (selectedSchedule !== "") {
@@ -710,7 +709,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const getLocation = (address, currentCenter) => {
     setSelectedAddress(address)
-    setSelecteLocLog(currentCenter)
   }
 
   return (
