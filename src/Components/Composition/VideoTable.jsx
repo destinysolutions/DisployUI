@@ -15,12 +15,11 @@ const VideoTable = ({
   addSeletedAsset,
   handleDragStartForDivToDiv
 }) => {
-
   const renderVideoPlayer = (data) => {
     if ((data.assetType === "Video" ||
-        data.assetType === "OnlineVideo" ||
-        data.assetType === "Youtube" ||
-        data.youTubeURL) &&
+      data.assetType === "OnlineVideo" ||
+      data.assetType === "Youtube" ||
+      data.youTubeURL) &&
       (data.youTubeURL || data.assetFolderPath)) {
       return (
         <>
@@ -38,8 +37,9 @@ const VideoTable = ({
     return null;
   };
 
+
   const renderRow = ({ index, style }) => {
-    const data = !openFolder ? assetData[index] : folderData[index];
+    const data = !openFolder ? filteredData[index] : folderData[index];
 
     if (!loading && data) {
       return (
@@ -108,14 +108,15 @@ const VideoTable = ({
 
   const filteredData = !openFolder
     ? assetData.filter((item) => {
-        if (activeTab === "asset") {
-          return item.hasOwnProperty("assetID");
-        } else if (activeTab === "apps") {
-          return !item.hasOwnProperty("assetID");
-        }
-        return false;
-      })
+      if (activeTab === "asset") {
+        return item.hasOwnProperty("assetID");
+      } else if (activeTab === "apps") {
+        return !item.hasOwnProperty("assetID");
+      }
+      return false;
+    })
     : folderData;
+
 
   return (
     <div>

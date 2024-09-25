@@ -98,7 +98,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
       const findData = item.payload.data.menu.find(
-        (e) => e.pageName === "My Schedule"
+        (e) => e.pageName === "My Schedules"
       );
       if (findData) {
         const ItemID = findData.moduleID;

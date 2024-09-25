@@ -22,8 +22,8 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
         currency: 'Indian'
     });
     const [Errors, setErrors] = useState(false);
-    const [locationError, setLocationError] = useState(null);
 
+;
     useEffect(() => {
         if (EditData?.locationName || EditData?.costPerSec) {
             setdata({
@@ -32,6 +32,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                 currency: EditData?.currency,
                 range: EditData?.range,
             })
+
         }
         setMarkerPosition({
             lat: EditData?.latitude,
@@ -45,7 +46,6 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
             const place = autocompleteRef.current.getPlace();
             if (place?.geometry) {
                 const location = place.geometry.location;
-                setLocationError(place.formatted_address)
 
                 setdata({ ...data, location: place.formatted_address });
                 setMarkerPosition({
@@ -58,7 +58,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
     };
 
     const onSumbit = () => {
-        if (!data?.cost || !data?.location || !locationError) {
+        if (!data?.cost || !data?.location || markerPosition === null || !data?.range) {
             return setErrors(true);
         }
 
@@ -69,15 +69,12 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
             longitude: markerPosition?.lng,
             costPerSec: data?.cost,
             currency: data?.currency,
-            range: data?.range ? data?.range : 5
+            range: data?.range
         }
-        console.log('payload :>> ', payload);
-
         dispatch(handleAddCostbyarea(payload)).then((result) => {
             onclose()
             setdata()
             setLoadFirst(true)
-
         })
     }
 
@@ -114,10 +111,10 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                                     )}
                                 >
                                     <input value={data?.location} type="text" placeholder="Search for an area" className='appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3'
-                                        onChange={(e) => setdata({ ...data, location: e.target.value })}
+                                        onChange={(e) => { setdata({ ...data, location: e.target.value }); setMarkerPosition(null) }}
                                     />
                                 </Autocomplete>
-                                {Errors && data?.location <= 0 ? (<p className="text-red-600 text-sm font-semibold ">Location is Required.</p>) : Errors && locationError <= 0 && <p className="text-red-600 text-sm font-semibold ">Please select the correct location</p>}
+                                {Errors && data?.location <= 0 ? (<p className="text-red-600 text-sm font-semibold ">Location is Required.</p>) : Errors && markerPosition === null && <p className="text-red-600 text-sm font-semibold ">Please select the correct location</p>}
                             </div>
                             <div className='w-full mb-3'>
                                 <div className="flex items-center justify-center gap-3 w-full">
@@ -188,23 +185,37 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                             </div>
                             <div className='flex justify-start items-center gap-2'>
                                 <label for='Yes' className="mr-3 lg:text-base md:text-base sm:text-xs xs:text-xs">Range :</label>
-                                <div className='relative mb-2'>
-                                    <input
-                                        id="labels-range-input"
-                                        type="range"
-                                        min="0"
-                                        max="30"
-                                        step="0"
-                                        value={data?.range}
-                                        onChange={(e) => setdata({ ...data, range: parseInt(e.target.value) })}
-                                        className="w-40 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                                    />
-                                    <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">5</span>
-                                    <span className="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">30</span>
+                                <div className='relative mt-1.5'>
+                                    <div className="relative">
+                                        <input
+                                            id="labels-range-input"
+                                            type="range"
+                                            min="5"
+                                            max="30"
+                                            step="1" // Changed to step="1" for integer values
+                                            value={data?.range}
+                                            onChange={(e) => setdata({ ...data, range: parseInt(e.target.value) })}
+                                            className="w-40 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                                        />
+                                        <span
+                                            className="text-sm text-gray-500 dark:text-gray-400 absolute"
+                                            style={{
+                                                left: `${((data?.range || 0) / 30) * 100}%`,
+                                                transform: 'translateX(-50%)',
+                                                top: '-10px',
+                                            }}
+                                        >
+                                            {data?.range}
+                                        </span>                                    </div>
+                                    {/* <span className="text-sm text-gray-500 dark:text-gray-400 absolute top-4 start-0 ">5</span>
+                                    <span className="text-sm text-gray-500 dark:text-gray-400 absolute top-4 end-0 ">30</span> */}
+                                    {Errors && data?.range <= 0 && (
+                                        <p className="text-red-600 text-sm font-semibold absolute top-5 start-0 ">Range is Required.</p>
+                                    )}
                                 </div>
                             </div>
                         </div>
-                        <div className="pb-6 flex justify-center">
+                        <div className="pb-6 flex justify-center mt-3">
                             <button
                                 type='button'
                                 className="bg-primary text-white px-8 py-2 rounded-full"

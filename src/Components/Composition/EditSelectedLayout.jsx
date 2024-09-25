@@ -664,6 +664,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data;
+        console.log('fetchedData :>> ', fetchedData);
         setNestedNewFolder(fetchedData);
         const allAssets = [
           ...(fetchedData.image ? fetchedData.image : []),

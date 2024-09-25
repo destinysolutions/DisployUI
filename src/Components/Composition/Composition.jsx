@@ -132,7 +132,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
       const findData = item.payload.data.menu.find(
-        (e) => e.pageName === "My Composition"
+        (e) => e.pageName === "My Compositions"
       );
       if (findData) {
         const ItemID = findData.moduleID;
@@ -732,6 +732,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             {compositionData &&
                               sortedAndPaginatedData.length > 0 &&
                               sortedAndPaginatedData?.map((composition) => {
+                                const tag = composition?.tags?.split(",")
                                 return (
                                   <tr
                                     className="border-b border-b-[#E4E6FF] "
@@ -804,7 +805,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               />
                                             </span>
                                           )}
-                                        {composition?.tags !== null
+                                        {tag?.length > 0 && (
+                                          tag?.map((x) => (
+                                            <li key={x} className="flex items-center gap-1 border border-black/40 rounded-lg p-1">{x}</li>
+                                          ))
+                                        )}
+                                        {/* {composition?.tags !== null
                                           ? composition?.tags
                                             ?.split(",")
                                             ?.slice(
@@ -829,7 +835,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               return text;
                                             })
                                             .join(",")
-                                          : ""}
+                                          : ""} */}
                                         {composition?.tags !== "" &&
                                           composition?.tags !== null && (
                                             <AiOutlinePlusCircle
@@ -851,7 +857,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               className="w-5 h-5 cursor-pointer"
                                             />
                                           )}
-                                        {/* add or edit tag modal */}
 
                                       </div>
                                     </td>

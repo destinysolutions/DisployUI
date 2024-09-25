@@ -9,7 +9,7 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
     const dispatch = useDispatch()
     const store = useSelector((state) => state.root.common);
     const [Error, setError] = useState(false);
-
+    console.log('allSlateDetails :>> ', allSlateDetails);
     useEffect(() => {
         dispatch(getIndustry({}))
     }, []);
@@ -33,10 +33,9 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
         console.log('allSlateDetails :>> ', allSlateDetails);
         setPage(page + 1)
     }
-
     return (
         <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+            <div className="lg:w-[1000px] md:w-[700px] w-full h-[75vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
                 <div className="text-2xl font-semibold">Book Slot</div>
                 <div className="grid grid-cols-4 gap-4 w-full ">
                     <div className="col-span-4">
@@ -50,42 +49,38 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                     placeholder='Select Industry'
                                     value={allSlateDetails?.Industry}
                                     onChange={(option) => { setallSlateDetails({ ...allSlateDetails, Industry: option }) }}
-                                    options={
-                                        store?.Industry && store?.Industry?.length > 0
-                                            ? store?.Industry.map((item) => ({
-                                                value: item?.industryID,
-                                                label: item?.industryName,
-                                            }))
-                                            : [{ value: "", label: "Not Found" }]
-                                    }
+                                    options={[
+                                        ...(
+                                            store?.Industry && store?.Industry?.length > 0
+                                                ? store?.Industry.map((item) => ({
+                                                    value: item?.industryID,
+                                                    label: item?.industryName,
+                                                }))
+                                                : [{ value: "", label: "Not Found" }]
+                                        ),
+                                        { value: "others", label: "Others" }
+                                    ]}
                                     isClearable={true}
                                 />
+
                                 {Error && !allSlateDetails?.Industry && (
                                     <p className="text-red-600 text-sm font-semibold">This field is Required.</p>
                                 )}
                             </div>
-                            <div className="grid grid-cols-4 gap-4 items-center">
-                                {/* <div className="relative w-full col-span-2">
-                                    <Select
-                                        placeholder='Select Country'
-                                        className='my-3'
-                                        isClearable={true}
-                                        options={
-                                            countries && countries?.length > 0
-                                                ? countries.map((item) => ({
-                                                    value: item?.countryID,
-                                                    label: item?.countryName,
-                                                }))
-                                                : [{ value: "", label: "Not Found" }]
-                                        }
-                                        value={allSlateDetails?.country}
-                                        onChange={(option) => { setallSlateDetails({ ...allSlateDetails, country: option }) }}
+                            {allSlateDetails?.Industry?.value === 'Others' && (
+                                <div className='p-0 m-auto my-2'>
+                                    <input
+                                        type="text"
+                                        placeholder='Enter Text'
+                                        className={`bg-transparent placeholder-slate-400 focus:text-black border-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-72 p-2`}
+                                        onChange={(e) => {
+                                            // handleInputChange('uptoScreens', e.target.value);
+                                        }}
+                                    // value={commissionRate?.uptoScreens}
                                     />
-                                    {Error && !allSlateDetails?.country && (
-                                        <p className="text-red-600 text-sm font-semibold">This field is Required.</p>
-                                    )}
-                                </div> */}
-                            </div>
+                                </div>
+                            )}
+
                             <div className="flex flex-col justify-center">
                                 <p className="text-center mb-3">Purpose of using Disploy Screens</p>
                                 <div className="m-auto  flex justify-center flex-wrap my-3">
@@ -99,18 +94,20 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                         </button>
                                     ))}
                                 </div>
-                                <div className='p-0 m-auto my-3'>
-                                    <input
-                                        type="text"
-                                        placeholder='Enter Text'
-                                        className={`bg-transparent placeholder-slate-400 focus:text-black border-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-72 p-2`}
-                                        // style={{ outline: 'none', }}
-                                        onChange={(e) => {
-                                            // handleInputChange('uptoScreens', e.target.value);
-                                        }}
-                                    // value={commissionRate?.uptoScreens}
-                                    />
-                                </div>
+                                {allSlateDetails?.selecteScreens?.some((x) => x === "Others") && (
+                                    <div className='p-0 m-auto my-2'>
+                                        <input
+                                            type="text"
+                                            placeholder='Enter Text'
+                                            className={`bg-transparent placeholder-slate-400 focus:text-black border-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-72 p-2`}
+                                            // style={{ outline: 'none', }}
+                                            onChange={(e) => {
+                                                // handleInputChange('uptoScreens', e.target.value);
+                                            }}
+                                        // value={commissionRate?.uptoScreens}
+                                        />
+                                    </div>
+                                )}
 
                                 <div className="my-5  flex items-center gap-3  m-auto ">
                                     <label className="text-base font-medium">Referral Code:</label>

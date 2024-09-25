@@ -317,6 +317,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       return toast.error("Please Select Screen.");
     }
     await handleSubmit()
+    toast.remove()
     let config = {
       method: "get",
       maxBodyLength: Infinity,

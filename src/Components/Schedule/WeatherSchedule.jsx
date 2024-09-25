@@ -716,7 +716,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="flex justify-end">
                 <select className='px-1 mr-2 border border-gray rounded-lg'
                   value={itemsPerPage}
-                  onChange={(e) => setItemsPerPage(e.target.value)}
+                  onChange={(e) => { setItemsPerPage(e.target.value); setCurrentPage(1) }}
                 >
                   {PageNumber.map((x) => (
                     <option value={x}>{x}</option>

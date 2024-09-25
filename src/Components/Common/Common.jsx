@@ -728,7 +728,7 @@ export const Industry = [
 
 export const Commission = [
   { id: 0, title: "If we bring the ads" },
-  { id: 1, title: "If client bring the ads" },
+  { id: 1, title: "If the client brings the ads" },
 ]
 
 export const haversineDistance = (lat1, lon1, lat2, lon2) => {

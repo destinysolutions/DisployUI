@@ -387,7 +387,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                   <div className="flex justify-center">
                     <div className="p-4 bg-white shadow  w-full ">
-                      <div className="col-span-1 bg-green-500 screen-section  max-h-96 border">
+                      <div className="col-span-1 bg-green-500 screen-section  max-h-96 ">
                         <div className="p-4 bg-white border-gray-200 shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700  overflow-auto max-h-96   ">
                           <h1 className="not-italic font-medium text-2xl text-[#001737]">
                             Screens

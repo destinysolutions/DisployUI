@@ -72,8 +72,10 @@ export default function CostByArea({ sidebarOpen }) {
     return (
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-                <div className=' '>
+                <div className='flex justify-between items-center '>
+                    <h2 className='font-semibold'>Cost by Area</h2>
                     <div className="flex items-center justify-end gap-5 ">
+
                         <div className="relative">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <AiOutlineSearch className="w-5 h-5 text-gray" />
@@ -153,7 +155,7 @@ export default function CostByArea({ sidebarOpen }) {
                                                                     data-tip
                                                                     data-for="Delete"
                                                                     type="button"
-                                                                    className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
+                                                                    className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] "
                                                                     onClick={() => {
                                                                         DeleteLocation(item?.costByAreaID);
                                                                     }}
@@ -217,7 +219,7 @@ export default function CostByArea({ sidebarOpen }) {
                         {currentItems?.length !== 0 && (
                             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                                 <div className="flex items-center">
-                                    <span className="text-gray-500">{`Total ${store?.costbyArea?.length} Areas`}</span>
+                                    <span className="text-gray-500">{`Total ${currentItems?.length} Areas`}</span>
                                 </div>
                                 <div className="flex justify-end">
                                     <select className='px-1 mr-2 border border-gray rounded-lg'

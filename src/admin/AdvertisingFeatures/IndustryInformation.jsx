@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AiFillPlusCircle, AiOutlinePlusCircle, AiOutlineSave } from 'react-icons/ai';
+import { AiFillPlusCircle, AiOutlinePlusCircle, AiOutlineSave, AiOutlineSearch } from 'react-icons/ai';
 import { PageNumber } from '../../Components/Common/Common';
 import AddIndustry from './AddIndustry';
 import toast from 'react-hot-toast';
@@ -11,7 +11,7 @@ import SweetAlert from '../../Components/BookYourSlot/SweetAlert';
 
 export default function IndustryInformation({ sidebarOpen }) {
     const dispatch = useDispatch()
-
+    const [searchTerm, setSearchTerm] = useState("");
     const [loadFirst, setLoadFirst] = useState(true);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -20,10 +20,11 @@ export default function IndustryInformation({ sidebarOpen }) {
     const [Editindustry, setEditIndustry] = useState(null);
     const [ShowIndustryModal, setShowIndustryModal] = useState(false);
     const [categorymodal, setCategoryModal] = useState([]);
-    const [error, seterror] = useState(false);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = industry?.length > 0 ? industry?.slice(indexOfFirstItem, indexOfLastItem) : [];
+    const filteredData = industry ? industry?.filter((item) => item?.industryName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
+
+    const currentItems = filteredData?.length > 0 ? filteredData?.slice(indexOfFirstItem, indexOfLastItem) : [];
     const [industryCategory, setindustryCategory] = useState([]);
     const [indetyType, setindetyType] = useState('');
 
@@ -126,7 +127,22 @@ export default function IndustryInformation({ sidebarOpen }) {
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
                 <div className='border-b border-gray pb-3'>
-                    <h2 className='font-semibold'>Industry Information</h2>
+                    <div className='flex justify-between items-center'>
+                        <h2 className='font-semibold'>Industry Information</h2>
+
+                        <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <AiOutlineSearch className="w-5 h-5 text-gray" />
+                            </span>
+                            <input
+                                type="text"
+                                placeholder="Searching.."
+                                className="border border-primary rounded-lg pl-10 py-1.5 search-user"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                    </div>
                 </div>
                 <div className="clear-both">
                     <div className="bg-white rounded-xl mt-8 shadow screen-section ">
@@ -247,33 +263,31 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                         />}
                                                 </div>
                                             </td>
-                                            {!loading && row?.industryInclude?.length > 0 && (
+                                            {!loading && row?.industryName && (
                                                 <td className="text-center text-[#5E5E5E]">
-                                                    <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
-                                                        <div className="cursor-pointer text-xl flex gap-4">
-                                                            <button
-                                                                data-tip
-                                                                data-for="Edit"
-                                                                type="button"
-                                                                className="cursor-pointer text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                                onClick={() => addRow()}
-                                                            >
-                                                                <FaPlus />
-                                                            </button>
-                                                        </div>
-                                                        <div className="cursor-pointer text-xl flex gap-4 ">
-                                                            <button
-                                                                data-tip
-                                                                data-for="Delete"
-                                                                type="button"
-                                                                className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
-                                                                onClick={() => {
-                                                                    handleDeleteIndustry(row?.industryID)
-                                                                }}
-                                                            >
-                                                                <MdDeleteForever />
-                                                            </button>
-                                                        </div>
+                                                    <div className="p-2 text-center flex  items-center justify-center gap-2 break-all text-[#5E5E5E]">
+
+                                                        <button
+                                                            data-tip
+                                                            data-for="Edit"
+                                                            type="button"
+                                                            className="cursor-pointer text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                            onClick={() => addRow()}
+                                                        >
+                                                            <FaPlus />
+                                                        </button>
+
+                                                        <button
+                                                            data-tip
+                                                            data-for="Delete"
+                                                            type="button"
+                                                            className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] text-xl"
+                                                            onClick={() => {
+                                                                handleDeleteIndustry(row?.industryID)
+                                                            }}
+                                                        >
+                                                            <MdDeleteForever />
+                                                        </button>
                                                     </div>
                                                 </td>
                                             )}
@@ -323,7 +337,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                         {currentItems?.length !== 0 && (
                             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                                 <div className="flex items-center">
-                                    <span className="text-gray-500">{`Total ${industry?.length} Industries`}</span>
+                                    <span className="text-gray-500">{`Total ${currentItems?.length} Industries`}</span>
                                 </div>
                                 <div className="flex justify-end">
                                     <select className='px-1 mr-2 border border-gray rounded-lg'
