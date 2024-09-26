@@ -531,6 +531,8 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       {!isLoading && weatherList &&
                         sortedAndPaginatedData.length > 0 &&
                         sortedAndPaginatedData.map((schedule, index) => {
+                          const tag = schedule?.tags?.split(",")
+
                           return (
                             <tr
                               className="border-b-[#E4E6FF] border-b"
@@ -604,7 +606,12 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         />
                                       </span>
                                     )}
-                                  {schedule.tags !== null
+                                  {tag?.length > 0 && (
+                                    tag?.map((x) => (
+                                      <li key={x} className="flex items-center  gap-1 border border-black/40 rounded-lg p-1">{x}</li>
+                                    ))
+                                  )}
+                                  {/* {schedule.tags !== null
                                     ? schedule.tags
                                       ?.split(",")
                                       .slice(
@@ -624,7 +631,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         return text;
                                       })
                                       .join(",")
-                                    : ""}
+                                    : ""} */}
                                   {schedule?.tags !== "" &&
                                     schedule?.tags !== null && (
                                       <AiOutlinePlusCircle

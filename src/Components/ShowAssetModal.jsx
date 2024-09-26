@@ -166,6 +166,12 @@ const ShowAssetModal = ({
     socket.emit("ScreenConnected", Params);
   };
   const handleOnConfirm = (setscreenMacID) => {
+    // console.log('selectedComposition :>> ', selectedComposition);
+    // console.log('selectedAsset :>> ', selectedAsset);
+    // if (!selectedAsset?.assetName) {
+    //   return toast.error("Please select Asset");
+    // }
+
     setShowAssetModal(false);
     setSearchAssest("");
     setSelectedAsset(assetPreview);
@@ -888,7 +894,7 @@ const ShowAssetModal = ({
                       } lg:flex justify-between items-center pl-5 pr-5 pb-4`}
                   >
                     <p className="text-black mb-3 text-left">
-                      Content will always be playing Confirm
+                      Content will always be playing after confirming it.
                     </p>
                     <p className="text-right">
                       <button
@@ -915,7 +921,7 @@ const ShowAssetModal = ({
         />
       )}
       {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
-      
+
     </>
   );
 };

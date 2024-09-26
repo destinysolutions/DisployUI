@@ -20,7 +20,7 @@ const SweetAlert = {
         });
     },
     confirm: async (title, text, Yes) => {
-
+      
         return Swal.fire({
             title: title,
             text: text,
@@ -28,7 +28,7 @@ const SweetAlert = {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: `Yes, ${Yes || 'delete'} it!`,
+            confirmButtonText: `Yes ${Yes === null ? '' : ', delete it!'} `,
         });
     },
 };

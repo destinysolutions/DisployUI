@@ -572,7 +572,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                               </>
                             ) : (
                               <>
-                                <h1 className="text-lg capitalize">
+                                <h1 className="text-lg capitalize capitalize w-40 truncate">
                                   {item.screeName}
                                 </h1>
                                 <MdOutlineModeEdit

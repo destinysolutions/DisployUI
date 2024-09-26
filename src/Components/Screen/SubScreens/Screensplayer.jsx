@@ -147,7 +147,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedmediaTypeID, setSelectedMediaTypeID] = useState();
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [setscreenMacID, setSetscreenMacID] = useState(null);
-  const [isPlay, setIsPlay] = useState(true);
+  const [isPlay, setIsPlay] = useState(false);
   const [startTime, setStartTime] = useState(getCurrentTime());
   const [endTime, setEndTime] = useState(getCurrentTime());
   const [cardList, setCardList] = useState([])
@@ -156,7 +156,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedDays, setSelectedDays] = useState(
     new Array(TotalDay.length).fill(false)
   );
-
 
   const toggleModal = () => {
     setSelectedOperatingHourModel(false);
@@ -1103,8 +1102,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 }}
                               >
                                 <Carousel
-                                  from="screen"
                                   items={compositionData[index][index + 1]}
+                                  from="screen"
                                   isPlay={isPlay}
                                 />
                               </div>
@@ -1239,7 +1238,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   <th className="text-[#444] text-sm font-semibold p-2">
                                     <div className="flex  items-center justify-center mx-auto">
                                       <BsTags className="mr-2 text-xl" />
-                                      Tags
                                     </div>
                                   </th>
                                   <th className="w-[100px]"></th>
@@ -1466,7 +1464,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                           <div className="flex justify-between items-center p-5">
                             <p className="text-black text-left">
-                              Content will always be playing Confirm
+                              Content will always be playing after confirming it.
                             </p>
                             <p className="text-right">
                               {" "}
@@ -1569,7 +1567,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   <button
                     data-tip
                     id="toggleButton"
-                    data-for="Play"
+                    data-for="Select Asse"
                     type="button"
                     onClick={() => {
                       setShowAssetModal(true);
@@ -1577,7 +1575,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       setSetscreenMacID(screenData[0]?.macid);
                     }}
                   >
-                    <IoCloudUploadOutline
+                    <IoCloudUploadOutline 
                       className="cursor-pointer"
                       size={24}
 

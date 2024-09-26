@@ -191,7 +191,7 @@ const DefaultMediaAsset = ({ setShowAssetModal, handleOnConfirm, setAssetPreview
                                     </div>
                                     <div className="lg:flex justify-between items-center p-3 w-full">
                                         <p className="text-black text-left">
-                                            Content will always be playing Confirm
+                                            Content will always be playing after confirming it.
                                         </p>
                                         <p className="text-right">
                                             <button

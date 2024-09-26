@@ -36,6 +36,7 @@ import { FcOpenedFolder } from "react-icons/fc";
 import { IoArrowBackSharp } from "react-icons/io5";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import VideoTable from "./VideoTable";
+import SweetAlert from "../BookYourSlot/SweetAlert";
 
 const DEFAULT_IMAGE = "";
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -474,10 +475,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleClickOnCancel = () => {
+
     if (!addAsset.map((e, index) => e[index + 1].length).every((i) => i == 0)) {
-      if (window.confirm("Changes are unsaved, Are you sure?")) {
+      const result = SweetAlert.confirm("Are you sure?", "Changes are unsaved!", null);
+      if (result?.isConfirmed) {
         navigate("/composition");
+        // SweetAlert.success("Deleted successfully");
       }
+      // if (window.confirm("Changes are unsaved, Are you sure?")) {
+      //   navigate("/composition");
+      // }
     } else {
       navigate("/composition");
     }

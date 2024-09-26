@@ -1121,7 +1121,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <tr className="items-center table-head-bg ">
                           {screenContentVisible && (
                             <th className="text-[#5A5881] text-base text-center font-semibold w-200">
-                              <div className="flex">
+                              <div className="flex justify-center">
                                 Screen
                                 <svg
                                   className="w-3 h-3 ms-1.5 mt-2 cursor-pointer"
@@ -1274,8 +1274,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                 {permissions.isSave ? (
                                                   <div className="flex gap-1">
                                                     <Link
+                                                    className=" capitalize w-32 truncate ml-2"
                                                       to={`/screensplayer?screenID=${screen.screenID}`}
                                                     >
+                                                      
                                                       {screen.screenName}
                                                     </Link>
                                                     <button

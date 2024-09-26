@@ -609,6 +609,8 @@ const AddSlot = () => {
   // page 3 handleBookSlot
 
   const handleBookSlot = () => {
+    // setPage(page + 1)
+    // return
     const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
 
     if (hasMissingImages) {
@@ -617,6 +619,7 @@ const AddSlot = () => {
       setFileLoading(true);
       let arr = [];
       let count = 0;
+      console.log('getallTime :>> ', getallTime);
       getallTime?.map((item) => {
         console.log('item :>> ', item);
         let start = `${item?.startTime}`;
@@ -642,10 +645,10 @@ const AddSlot = () => {
         formData.append("FilePath", "true");
         formData.append("horizontalfileType", horizontalfileType);
         formData.append("verticalImagefileType", verticalImagefileType);
-        formData.append("File", item?.verticalImage || item?.horizontalImage);
+        formData.append("File", getallTime);
         formData.append("horizontalFile", item?.horizontalImage || null);
         formData.append("verticalFile", item?.verticalImage || null);
-        FileUpload(formData);
+        // FileUpload(formData);
       });
 
       if (!repeat) {
@@ -1115,6 +1118,7 @@ const AddSlot = () => {
                           Back
                         </button>
                         <button
+                          type="button"
                           className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           onClick={() => handleBookSlot()}
                         >

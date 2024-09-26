@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactPlayer from "react-player";
 
 const Carousel = ({ items, compositonData, from, isPlay }) => {
-
+  // console.log('items :>> ', items);
   const [currentIndex, setCurrentIndex] = useState(0);
   const marqueeRef = useRef(null);
   useEffect(() => {
@@ -28,7 +28,7 @@ const Carousel = ({ items, compositonData, from, isPlay }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [items, currentIndex, isPlay]);
+  }, [currentIndex, isPlay]);
 
   return (
     <>
