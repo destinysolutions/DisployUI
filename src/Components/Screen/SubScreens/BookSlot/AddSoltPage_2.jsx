@@ -4,14 +4,16 @@ import { DisployScreens, Industry } from '../../../Common/Common';
 import { useDispatch } from 'react-redux';
 import { getIndustry } from '../../../../Redux/CommonSlice';
 import { useSelector } from 'react-redux';
+import { getPurposeScreens } from '../../../../Redux/admin/AdvertisementSlice';
 
 export default function AddSoltPage_2({ setPage, countries, page, setallSlateDetails, allSlateDetails }) {
     const dispatch = useDispatch()
     const store = useSelector((state) => state.root.common);
+    const Purpose = useSelector((state) => state.root.advertisementData);
     const [Error, setError] = useState(false);
-    console.log('allSlateDetails :>> ', allSlateDetails);
     useEffect(() => {
         dispatch(getIndustry({}))
+        dispatch(getPurposeScreens({}))
     }, []);
 
     const handleClick = (label) => {
@@ -30,7 +32,6 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
         if (allSlateDetails?.Industry === null || allSlateDetails?.terms === false || (allSlateDetails?.refCode === 'Yes' && !allSlateDetails?.refVale)) {
             return setError(true)
         }
-        console.log('allSlateDetails :>> ', allSlateDetails);
         setPage(page + 1)
     }
     return (
@@ -67,16 +68,16 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                     <p className="text-red-600 text-sm font-semibold">This field is Required.</p>
                                 )}
                             </div>
-                            {allSlateDetails?.Industry?.value === 'Others' && (
+                            {allSlateDetails?.Industry?.label === 'Others' && (
                                 <div className='p-0 m-auto my-2'>
                                     <input
                                         type="text"
                                         placeholder='Enter Text'
                                         className={`bg-transparent placeholder-slate-400 focus:text-black border-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-72 p-2`}
                                         onChange={(e) => {
-                                            // handleInputChange('uptoScreens', e.target.value);
+                                            setallSlateDetails({ ...allSlateDetails, otherIndustry: e.target.value })
                                         }}
-                                    // value={commissionRate?.uptoScreens}
+                                        value={allSlateDetails?.otherIndustry}
                                     />
                                 </div>
                             )}
@@ -84,17 +85,24 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                             <div className="flex flex-col justify-center">
                                 <p className="text-center mb-3">Purpose of using Disploy Screens</p>
                                 <div className="m-auto  flex justify-center flex-wrap my-3">
-                                    {DisployScreens.map((label, index) => (
+                                    {Purpose?.data?.length > 0 && Purpose?.data?.map((label, index) => (
                                         <button
-                                            className={`border m-0 border-primary px-3 py-1 mr-2 mb-2 rounded-full ${allSlateDetails?.selecteScreens?.includes(label) && "bg-SlateBlue border-white"} `}
+                                            className={`border m-0 border-primary px-3 py-1 mr-2 mb-2 rounded-full ${allSlateDetails?.selecteScreens?.includes(label?.purposeID) && "bg-SlateBlue border-white"} `}
                                             key={index}
-                                            onClick={() => handleClick(label)}
+                                            onClick={() => handleClick(label?.purposeID)}
                                         >
-                                            {label}
+                                            {label?.purposeName}
                                         </button>
                                     ))}
+                                    <button
+                                        className={`border m-0 border-primary px-3 py-1 mr-2 mb-2 rounded-full ${allSlateDetails?.selecteScreens?.includes('others') && "bg-SlateBlue border-white"} `}
+
+                                        onClick={() => handleClick('others')}
+                                    >
+                                        Others
+                                    </button>
                                 </div>
-                                {allSlateDetails?.selecteScreens?.some((x) => x === "Others") && (
+                                {allSlateDetails?.selecteScreens?.some((x) => x === "others") && (
                                     <div className='p-0 m-auto my-2'>
                                         <input
                                             type="text"
@@ -102,9 +110,10 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                             className={`bg-transparent placeholder-slate-400 focus:text-black border-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-72 p-2`}
                                             // style={{ outline: 'none', }}
                                             onChange={(e) => {
-                                                // handleInputChange('uptoScreens', e.target.value);
+                                                setallSlateDetails({ ...allSlateDetails, purposeText: e.target.value })
                                             }}
-                                        // value={commissionRate?.uptoScreens}
+                                            value={allSlateDetails?.purposeText}
+
                                         />
                                     </div>
                                 )}

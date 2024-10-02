@@ -79,6 +79,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [day, setDay] = useState([]);
   const [selectAllDays, setSelectAllDays] = useState(false);
   const dayDifference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+  const [Error, setError] = useState(false);
 
   const countRepeatedDaysInRange = () => {
     let count = 0;
@@ -90,7 +91,6 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
     return count;
   };
-
 
   function getTimeFromDate(date) {
     const hours = String(date.getHours()).padStart(2, "0"); // Ensure two digits
@@ -202,7 +202,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Model Function
   const handleAssetAdd = (asset) => {
-    console.log('asset :>> ', asset);
+
     setSelectedAsset(asset);
     setAssetPreview(asset);
   };
@@ -230,6 +230,10 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       setAssetError(true)
       setDisableBtn(false)
       return;
+    }
+
+    if (!startDate || !endDate || !endTime || !startTime) {
+      return setError(true)
     }
 
     const selectedDaysInNumber = selectedDays
@@ -312,7 +316,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         count++;
       }
     }
-    console.log('idS :>> ', idS);
+
     if (idS === "") {
       return toast.error("Please Select Screen.");
     }
@@ -332,7 +336,8 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        if (response.data.status == 200) {
+      
+        if (response.data.status === true) {
           try {
             if (macids?.includes(",")) {
               let allMacIDs = macids?.split(",");
@@ -342,7 +347,6 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   connection: socket.connected,
                   macId: item,
                 };
-                console.log('Params 1 :>> ', Params);
                 socket.emit("ScreenConnected", Params);
               });
             } else {
@@ -351,7 +355,6 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 connection: socket.connected,
                 macId: macids,
               };
-              console.log('Params :>> ', Params);
               socket.emit("ScreenConnected", Params);
             }
             setTimeout(() => {
@@ -364,6 +367,9 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             toast.error("Something went wrong, try again");
             toast.remove();
           }
+        } else {
+          toast.remove();
+          toast.error(response?.data?.message)
         }
       })
       .catch((error) => {
@@ -392,6 +398,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   function handleCheckboxChange() {
     const start = new Date(startDate);
     const end = new Date(endDate);
+
     const daysDiff = moment(end).diff(start, "days");
     if (daysDiff >= 6 && !selectAllDays) {
       setSelectAllDays(true);
@@ -544,7 +551,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                         </div>
                       </div>
-                      {assetError && (
+                      {assetError && !selectedAsset.assetName && (
                         <span className="error">Please Select Asset</span>
                       )}
                     </div>
@@ -562,6 +569,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             data-tip
                             data-for="Start Date"
                             type="date"
+                            min={currentDate}
                             value={startDate}
                             onChange={(e) => {
                               const newStartDate = e.target.value;
@@ -571,6 +579,10 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             }}
                             className="border border-[#D5E3FF] px-3 py-2 w-full"
                           />
+                          {Error && !startDate && (
+                            <span className="error">Start Date is Required</span>
+                          )}
+
                         </div>
                         <div>
                           <label className="text-base font-medium">End Date:</label>
@@ -583,6 +595,9 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             onChange={(e) => setEndDate(e.target.value)}
                             className="border border-[#D5E3FF] px-3 py-2 w-full"
                           />
+                          {Error && !endDate && (
+                            <span className="error">End Date is Required</span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -600,10 +615,14 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             data-tip
                             data-for="Start Time"
                             type="time"
+                            min={currentTime}
                             value={startTime}
                             onChange={(e) => setStartTime(e.target.value)}
                             className="border border-[#D5E3FF] px-3 py-2 w-full"
                           />
+                          {Error && !startTime && (
+                            <span className="error">Start Time is Required</span>
+                          )}
                         </div>
                         <div>
                           <label className="text-base font-medium">End Time:</label>
@@ -615,6 +634,9 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             onChange={(e) => setEndTime(e.target.value)}
                             className="border border-[#D5E3FF] px-3 py-2 w-full"
                           />
+                          {Error && !endTime && (
+                            <span className="error">End Time is Required</span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -644,6 +666,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               type="checkbox"
                               checked={selectAllDays}
                               onChange={handleCheckboxChange}
+                              // onChange={(e) => handleCheckboxChange(e)}
                               id="repeat_all_day"
                             />
                             <label

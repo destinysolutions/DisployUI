@@ -474,13 +474,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     setEdited(false);
   };
 
-  const handleClickOnCancel = () => {
+  const handleClickOnCancel = async () => {
 
     if (!addAsset.map((e, index) => e[index + 1].length).every((i) => i == 0)) {
-      const result = SweetAlert.confirm("Are you sure?", "Changes are unsaved!", null);
+      const result = await SweetAlert.confirm("Are you sure?", "Changes are unsaved!", null);
       if (result?.isConfirmed) {
         navigate("/composition");
-        // SweetAlert.success("Deleted successfully");
       }
       // if (window.confirm("Changes are unsaved, Are you sure?")) {
       //   navigate("/composition");

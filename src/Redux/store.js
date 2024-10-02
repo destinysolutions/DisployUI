@@ -25,6 +25,7 @@ import NotificationSlice from "./NotificationSlice";
 import PaymentSlice from "./PaymentSlice";
 import SalesManSlice from "./SalesMan/SalesManSlice";
 import AdvertisentScreenSlice from "./AdvertisentScreenSlice";
+import BookslotSlice from "./BookslotSlice";
 // const rootPersistConfig = {
 //   key: "root",
 //   storage,
@@ -67,7 +68,8 @@ const rootReducer = combineReducers({
   notification: NotificationSlice,
   payment: PaymentSlice,
   salesMan: SalesManSlice,
-  advertisentScreenItems: AdvertisentScreenSlice
+  advertisentScreenItems: AdvertisentScreenSlice,
+  BookSlot: BookslotSlice,
 });
 
 const persisteRoot = rootReducer;

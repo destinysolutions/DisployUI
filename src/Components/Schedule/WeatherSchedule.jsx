@@ -66,6 +66,10 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchSchedule]);
+
   // Filter data based on search term
   const filteredData = Array.isArray(weatherList)
     ? weatherList.filter((item) =>
@@ -231,7 +235,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        if (response.data.status === 200) {
+      
+        if (response.data.status === true) {
+          toast.remove()
           try {
 
             if (macids?.includes(",")) {
@@ -252,17 +258,20 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               };
               socket.emit("ScreenConnected", Params);
             }
-            setTimeout(() => {
-              toast.remove();
-              fetchAllData()
-              setSelectScreenModal(false);
-              setAddScreenModal(false);
-            }, 2000);
+            toast.success(response?.data?.message)
           } catch (error) {
             toast.error("Something went wrong, try again");
             toast.remove();
           }
+        } else {
+          toast.remove();
+          toast.error(response?.data?.message)
         }
+        setTimeout(() => {
+          fetchAllData()
+          setSelectScreenModal(false);
+          setAddScreenModal(false);
+        }, 2000);
       })
       .catch((error) => {
         toast.remove();

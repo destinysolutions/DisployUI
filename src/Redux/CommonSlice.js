@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { ADD_EDIT_INDUSTRY, DELETE_INDUSTRY, GET_INDUSTRY, UPDATE_ASSET_SCREEN } from "../Pages/Api";
+import { ADD_EDIT_INDUSTRY, DELETE_INDUSTRY, GET_INDUSTRY, UPDATE_ADVERTISER_SCREEN, UPDATE_ASSET_SCREEN } from "../Pages/Api";
 
 
 export const handleGetAllPlans = createAsyncThunk(
@@ -138,11 +138,22 @@ export const deleteIndustry = createAsyncThunk("IndustryMaster/deleteIndustry", 
   }
 });
 
-export const updateAssteScreen = createAsyncThunk("IndustryMaster/updateAssteScreen", async (payload, thunkAPI) => {
+export const updateAssteScreen = createAsyncThunk("NewScreen/updateAssteScreen", async (payload, thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
     const queryParams = new URLSearchParams(payload).toString();
     const response = await axios.get(`${UPDATE_ASSET_SCREEN}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    toast.error("Failed to fetch data");
+    throw error;
+  }
+});
+export const updateAdvScreen = createAsyncThunk("NewScreen/updateAdvScreen", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const queryParams = new URLSearchParams(payload).toString();
+    const response = await axios.get(`${UPDATE_ADVERTISER_SCREEN}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
     return response.data;
   } catch (error) {
     toast.error("Failed to fetch data");
@@ -301,7 +312,7 @@ const CommonSlice = createSlice({
     builder.addCase(handleAddIndustry.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.data = action.payload;
-    
+
       // toast.success(action.payload.message);
 
     });
@@ -332,6 +343,20 @@ const CommonSlice = createSlice({
 
     })
     builder.addCase(updateAssteScreen.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+      toast.error(action.error.message);
+    })
+
+    builder.addCase(updateAdvScreen.pending, (state) => {
+      state.loading = true;
+    })
+    builder.addCase(updateAdvScreen.fulfilled, (state, action) => {
+      state.loading = false;
+      state.success = action.payload.message;
+
+    })
+    builder.addCase(updateAdvScreen.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
       toast.error(action.error.message);

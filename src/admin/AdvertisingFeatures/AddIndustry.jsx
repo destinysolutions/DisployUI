@@ -1,10 +1,13 @@
 import React, { useRef, useState } from 'react'
 import toast from 'react-hot-toast';
 import { AiOutlineClose, AiOutlineCloseCircle } from 'react-icons/ai'
+import { useDispatch } from 'react-redux';
+import { deletePurpose } from '../../Redux/admin/AdvertisementSlice';
 
 export default function AddIndustry({ setShowIndustryModal, setindustryCategory, industryCategory, addIndustry, onClose, indetyType }) {
     const inputRef = useRef(null);
     const [value, setvalue] = useState('');
+    const dispatch = useDispatch()
 
     const handleAddTag = (e) => {
         e.preventDefault();
@@ -16,10 +19,14 @@ export default function AddIndustry({ setShowIndustryModal, setindustryCategory,
             setindustryCategory(prevState => [...prevState, { category: value }]);
             const includes = [...industryCategory, { category: value }]
             addIndustry(includes, indetyType)
-        } else {
+        } else if (indetyType === 'Exclude') {
             setindustryCategory(prevState => [...prevState, { excludeName: value }]);
             const includes = [...industryCategory, { excludeName: value }]
             addIndustry(includes, indetyType)
+        } else if (indetyType === 'Purpose') {
+            setindustryCategory([...industryCategory, { purposeName: value }]);
+            const includes = { purposeName: value }
+            addIndustry(includes)
         }
         setvalue("");
     };
@@ -29,10 +36,14 @@ export default function AddIndustry({ setShowIndustryModal, setindustryCategory,
             const newTags = industryCategory?.filter((tag) => tag?.category !== val?.category);
             setindustryCategory(newTags)
             addIndustry(newTags, indetyType)
-        } else {
+        } else if (indetyType === 'Exclude') {
             const newTags = industryCategory?.filter((tag) => tag?.excludeName !== val?.excludeName);
             setindustryCategory(newTags)
-            addIndustry(newTags,indetyType)
+            addIndustry(newTags, indetyType)
+        } else if (indetyType === 'Purpose') {
+            const newTags = industryCategory?.filter((tag) => tag?.purposeName !== val?.purposeName);
+            setindustryCategory(newTags)
+            dispatch(deletePurpose(val?.purposeID))
 
         }
     };
@@ -57,7 +68,7 @@ export default function AddIndustry({ setShowIndustryModal, setindustryCategory,
                                     key={index}
                                     className="flex items-center gap-1 border border-black/40 rounded-lg p-1"
                                 >
-                                    {tag?.category || tag?.excludeName}
+                                    {tag?.category || tag?.excludeName || tag?.purposeName}
                                     <AiOutlineClose
                                         size={10}
                                         className=" cursor-pointer text-black w-5 h-5 bg-lightgray p-1"

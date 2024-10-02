@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { getAllUserAdvertiser } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
 import { FaCalendarAlt } from 'react-icons/fa';
+import { updateAdvScreen } from '../../Redux/CommonSlice';
 
 export default function Advertiser({ sidebarOpen }) {
     const dispatch = useDispatch()
@@ -15,6 +16,7 @@ export default function Advertiser({ sidebarOpen }) {
     const [advertiserData, setAdvertiserData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [SelectedDate, setSelectedDate] = useState('');
+    const [assetManagement, setAssetManagement] = useState({});
 
     const filteredData = advertiserData?.length > 0 ? advertiserData?.filter((item) => item?.clientName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
 
@@ -26,7 +28,14 @@ export default function Advertiser({ sidebarOpen }) {
         if (loadFirst) {
             setLoading(true)
             dispatch(getAllUserAdvertiser(SelectedDate)).then((res) => {
-                setAdvertiserData(res?.payload?.data)
+
+                const screens = res?.payload?.data || [];
+                const initialAssetManagement = {};
+                screens.forEach(screen => {
+                    initialAssetManagement[screen.userID] = screen?.assetManagement; // Default to false or your desired initial state
+                });
+                setAssetManagement(initialAssetManagement);
+                setAdvertiserData(screens)
                 setLoading(false)
             })
             setLoadFirst(false)
@@ -37,11 +46,37 @@ export default function Advertiser({ sidebarOpen }) {
         setCurrentPage(1)
     }, [searchTerm]);
 
+
+
+    const DeactiveAsste = async (item) => {
+        setAssetManagement(prev => {
+            const newModalState = { ...prev };
+            const index = item?.userID;
+            newModalState[index] = !prev[index];
+
+            const payload = {
+                UserID: item?.userID,
+                AssetManagement: newModalState[item?.userID],
+            };
+            try {
+                const res = dispatch(updateAdvScreen(payload));
+                dispatch(getAllUserAdvertiser(SelectedDate));
+
+            } catch (error) {
+                console.error("Error updating asset management:", error);
+            }
+            return newModalState;
+        });
+    }
+
     return (
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-                <div>
-                    <div className="flex items-center justify-between gap-2 w-full  ">
+                <div className='flex items-center justify-between '>
+                    <div className='flex justify-between items-center'>
+                        <h2 className='font-semibold'>Advertiser</h2>
+                    </div>
+                    <div className="flex items-center justify-end gap-2 w-full  ">
                         <div className="relative">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <AiOutlineSearch className="w-5 h-5 text-gray" />
@@ -75,10 +110,6 @@ export default function Advertiser({ sidebarOpen }) {
                                 <span className="text-white text-2xl p-2"><FaCalendarAlt /></span>
                             </button>
                         </div>
-
-
-
-
                     </div>
                 </div>
 
@@ -104,9 +135,9 @@ export default function Advertiser({ sidebarOpen }) {
                                         <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                                             Status
                                         </th>
-                                        {/* <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                                             Asset management
-                                        </th> */}
+                                        </th>
                                         <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                                             Booked Slot
                                         </th>
@@ -135,17 +166,29 @@ export default function Advertiser({ sidebarOpen }) {
                                                         {item?.status === 1 ? "Live" : "offline"}
                                                     </span>
                                                 </td>
-                                                {/* <td className="px-6 py-4">
-                                                    <label className="inline-flex items-center me-5 cursor-pointer">
+                                                <td className="px-6 py-4">
+                                                    <label className="inline-flex items-center cursor-pointer">
                                                         <input
                                                             type="checkbox"
-                                                            value=""
                                                             className="sr-only peer"
-                                                            checked
+                                                            checked={assetManagement[item?.userID]}
+                                                            id={`Active_${item?.userID}`} // Ensure consistent casing
+                                                            onChange={() => DeactiveAsste(item)} // Directly pass the item
                                                         />
-                                                        <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                                                        <div
+                                                            style={{ background: (assetManagement[item?.userID]) ? 'green' : 'gray' }}
+                                                            className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${(assetManagement[item?.userID]) ? 'bg-green-500' : 'bg-red-500'} peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 dark:bg-gray-700`}
+                                                        >
+                                                            <div
+                                                                className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200 dark:border-gray-600`}
+                                                                style={{
+                                                                    transform: (assetManagement[item?.userID]) ? 'translateX(20px)' : 'translateX(0)',
+                                                                    transition: 'transform 0.5s ease-in-out',
+                                                                }}
+                                                            ></div>
+                                                        </div>
                                                     </label>
-                                                </td> */}
+                                                </td>
                                                 <td className="px-6 py-4">
                                                     {item?.bookedSlot ? moment(item?.bookedSlot).format("LLL") : null}
                                                 </td>
@@ -198,7 +241,7 @@ export default function Advertiser({ sidebarOpen }) {
                         {currentItems?.length !== 0 && (
                             <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                                 <div className="flex items-center">
-                                    <span className="text-gray-500">{`Total ${advertiserData?.length} Advertiser`}</span>
+                                    <span className="text-gray-500">{`Total ${currentItems?.length} Advertiser`}</span>
                                 </div>
                                 <div className="flex justify-end">
                                     <select className='px-1 mr-2 border border-gray rounded-lg'

@@ -81,6 +81,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const allScreen = selectedRow?.value * selectedColumn?.value;
   const objectLength = Object.keys(DataRowAndCol).length;
 
+
   useEffect(() => {
     let config = {
       method: "get",
@@ -128,7 +129,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     if (selectedScreen) {
       return toast.error("The screens must be different in each view.");
     }
-    
+
     if (existingButtonInRowAndCol) {
       setDataRowAndCol((prevState) => {
         const newState = { ...prevState };
@@ -409,7 +410,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                   ).map((col) => (
                                     <div
                                       key={col}
-                                      className={`shadow btn-display rounded-lg text-black ${selectedButton.row === row &&
+                                      className={`shadow btn-display rounded-lg text-black inline-block ${selectedButton.row === row &&
                                         selectedButton.col === col
                                         ? "selected"
                                         : ""
@@ -429,6 +430,9 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                             selectedButton.col === col
                                             ? "#FFD700"
                                             : "#f0f8ff",
+                                        overflow: "hidden",
+                                        textOverflow: 'ellipsis',
+                                        // whiteSpace:"nowrap"
                                       }}
                                     >
                                       {buttonTexts[`${row}-${col}`] ||

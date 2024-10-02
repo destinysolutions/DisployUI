@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { ADD_ADMIN_RATE, ADD_COMMISSION_RATE, ADD_COST_AREA, ASSIGN_ADS, CANCEL_PENDING_SCREEN, DELETE_COST_AREA, GETALLADS, GET_ADVERTISER_SCREEN, GET_ALLUSER_SCREEN, GET_COMMISSION_RATE, GET_COST_AREA, GET_NOTIFICATIONS, GET_PENDING_SCREEN, UPDATE_ADS_RATE, UPDATE_PENDING_SCREEN } from "../../Pages/Api";
+import { ADD_ADMIN_RATE, ADD_COMMISSION_RATE, ADD_COST_AREA, ADD_PERPOSE_SCREEN, ASSIGN_ADS, CANCEL_PENDING_SCREEN, DELETE_COST_AREA, DELETE_PERPOSE_SCREEN, GETALLADS, GET_ADVERTISER_SCREEN, GET_ALLUSER_SCREEN, GET_COMMISSION_RATE, GET_COST_AREA, GET_NOTIFICATIONS, GET_PENDING_SCREEN, GET_PERPOSE_SCREEN, UPDATE_ADS_RATE, UPDATE_PENDING_SCREEN } from "../../Pages/Api";
 
 
 const initialState = {
@@ -225,6 +225,40 @@ export const getAllUserAdvertiser = createAsyncThunk("AdsCustomer/getAllUserAdve
   }
 });
 
+// Purpose Screen
+export const getPurposeScreens = createAsyncThunk("AdsCustomer/getPurposeScreens", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.get(`${GET_PERPOSE_SCREEN}`, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    toast.error('Failed to fetch data');
+    throw error;
+  }
+});
+
+export const AddPurposeScreen = createAsyncThunk("data/AddPurposeScreen", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.post(ADD_PERPOSE_SCREEN, payload, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const deletePurpose = createAsyncThunk("data/deletePurpose", async (id) => {
+  try {
+    const queryParams = new URLSearchParams({ PurposeID: id, }).toString();
+    const response = await axios.get(`${DELETE_PERPOSE_SCREEN}?${queryParams}`);
+    return response.data
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+});
+
 const AdvertisementSlice = createSlice({
   name: "advertisementData",
   initialState,
@@ -357,7 +391,6 @@ const AdvertisementSlice = createSlice({
       .addCase(handleAddCostbyarea.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.data = action.payload;
-        toast.success('Location Saved Successfully');
       })
       .addCase(handleAddCostbyarea.rejected, (state, action) => {
         state.loading = false;
@@ -487,6 +520,52 @@ const AdvertisementSlice = createSlice({
         state.loading = false;
         state.Advertise = null;
         state.message = action.error.message || "Failed to data";
+      })
+
+      // getPURPOSEsCREEN
+      .addCase(getPurposeScreens.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(getPurposeScreens.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload.data;
+        state.token = action?.data?.token;
+      })
+
+      .addCase(getPurposeScreens.rejected, (state, action) => {
+        state.loading = false;
+        state.data = null;
+        state.message = action.error.message || "Failed to data";
+      })
+
+      .addCase(AddPurposeScreen.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(AddPurposeScreen.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.data = action.payload;
+        // toast.success('Commission rate Saved Successfully');
+      })
+      .addCase(AddPurposeScreen.rejected, (state, action) => {
+        state.loading = false;
+        state.status = "failed";
+        toast.error(action.payload.message);
+      })
+
+      .addCase(deletePurpose.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deletePurpose.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.data = action.payload;
+        state.message = action.payload?.message;
+      })
+      .addCase(deletePurpose.rejected, (state, action) => {
+        state.status = "failed";
+        state.message = "Failed to delete Industry";
       });
 
   },

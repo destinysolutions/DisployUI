@@ -4,7 +4,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { TbCloudUpload } from 'react-icons/tb';
 
 
-const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit }) => {
+const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setVerticalFileName, setHorizontalFileName, verticalFileName, horizontalFileName }) => {
 
     const [ImageType, setImageType] = useState('Horizontal');
 
@@ -13,8 +13,7 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit }) => {
     const [verticalImage, setVerticalImage] = useState(null);
     const [horizontalImage, setHorizontalImage] = useState(null);
 
-    const [verticalFileName, setVerticalFileName] = useState('');
-    const [horizontalFileName, setHorizontalFileName] = useState('');
+
 
 
 
@@ -49,8 +48,6 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit }) => {
     };
 
     const handleFileUpload = (file) => {
-
-        // const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
 
@@ -64,16 +61,20 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit }) => {
                     setProgress(percentCompleted);
                 }
             };
-           
+
             reader.onloadend = () => {
+                // Get the Base64 string
+                const base64String = reader.result.split(',')[1];
+                // Check the image type and update the appropriate state
                 if (ImageType === 'Horizontal') {
-                    setHorizontalImage(file);
+                    setHorizontalImage(base64String);
                     setHorizontalFileName(file.name);
                 } else {
-                    setVerticalImage(file);
+                    setVerticalImage(base64String);
                     setVerticalFileName(file.name);
                 }
             };
+
             reader.readAsDataURL(file);
         }
     };

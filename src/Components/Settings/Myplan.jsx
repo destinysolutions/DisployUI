@@ -385,7 +385,7 @@ const Myplan = () => {
                                                             )}*/}
                                                                 <h3 className="text-2xl font-semibold my-2 ">
                                                                     {item?.planName}
-                                                                 
+
                                                                     {/* <span className='font-medium text-lg text-gray-600 ml-2'>{item?.isAnnually ? "(Annually)" : "(Monthly)"}</span> */}
                                                                 </h3>
                                                                 {item?.listOfPlansID !== 4 && (
@@ -494,7 +494,7 @@ const Myplan = () => {
 
                                                             </div>
                                                         )}
-                                                       
+
                                                     </div>
                                                 </div>
                                             )}

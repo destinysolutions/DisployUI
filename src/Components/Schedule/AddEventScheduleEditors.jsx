@@ -68,6 +68,7 @@ const AddEventScheduleEditors = ({
 
   const modalRef = useRef(null);
 
+
   // useEffect(() => {
   //   const handleDocumentClick = () => {
   //     onClose();
@@ -92,10 +93,12 @@ const AddEventScheduleEditors = ({
 
   const currentDate = moment();
   // const today = moment().format("YYYY-MM-DD");
+  const currentTime = moment().format('HH:mm');
 
   let currTimestamp = Date.now();
   const todaydate = (new Date(currTimestamp)).toUTCString();
   const today = CurrentDateFormat(todaydate)
+
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
     if (!showRepeatSettings) {
@@ -234,6 +237,12 @@ const AddEventScheduleEditors = ({
       toast.error("Please select Asset");
       return;
     }
+    if (!isEditMode && editedStartTime < currentTime) {
+      toast.remove();
+      toast.error("Please select Current Time");
+      return;
+    }
+
     // if (editedStartDate < currentDate.format("YYYY-MM-DD")) {
     if (editedStartDate < today) {
       toast.remove();

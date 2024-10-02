@@ -53,7 +53,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [allAssets, setAllAssets] = useState([]);
   const current_date = new Date();
   const [createdScheduleId, setCreatedScheduleId] = useState("");
-
   const [searchParams] = useSearchParams();
   const getScheduleId = searchParams.get("scheduleId");
   const isEditingSchedule = !!getScheduleId;
@@ -76,6 +75,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const addedTimezoneName = searchParams.get("timeZoneName");
   const selectedScreenIdsString = selectedScreens.join(",");
   const currentHour = selectedCurrentTime.getHours();
+
   const currentMinute = selectedCurrentTime.getMinutes();
   const interval =
     currentMinute < 20 ? 1 : currentMinute >= 20 && currentMinute <= 40 ? 2 : 3;
@@ -150,7 +150,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleTimezoneSelect = (e) => {
     if (e.target.value != selectedTimezoneName && isEditingSchedule) {
-      if (!window.confirm("Are you sure?")) return;
+      // if (!window.confirm("Are you sure?")) return;
       axios
         .get(`${GET_TIME_ZONE}?TimeZone=${e.target.value}`, {
           headers: {

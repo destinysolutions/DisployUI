@@ -92,7 +92,8 @@ const AddSlot = () => {
 
   const [popupVisible, setPopupVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(null);
-
+  const [verticalFileName, setVerticalFileName] = useState('');
+  const [horizontalFileName, setHorizontalFileName] = useState('');
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selecteStates, setSelecteStates] = useState("");
   const [states, setStates] = useState([]);
@@ -116,7 +117,9 @@ const AddSlot = () => {
     selecteScreens: [],
     terms: false,
     refCode: 'NO',
-    refVale: ''
+    refVale: '',
+    purposeText: '',
+    otherIndustry: '',
   });
   const appearance = { theme: 'stripe', };
   const options = {
@@ -127,11 +130,9 @@ const AddSlot = () => {
   useEffect(() => {
     let Price = 0;
     selectedScreens?.map((item) => {
-      console.log('item :>> ', item);
       Price = Price + item?.Price;
     });
     setTotalPrice(Price);
-
   }, [selectedScreens]);
 
   useEffect(() => {
@@ -244,13 +245,13 @@ const AddSlot = () => {
       .then((response) => {
         if (response.data.data?.length > 0) {
           let arr = [...screenData];
-          console.log('arr :>> ', arr);
+
           const existingIds = new Set(arr.map(item => (item.screenID)));
-          console.log('existingIds :>> ', existingIds);
+
           const newData = response.data.data.filter(item => !existingIds.has(item.screenID));
-          console.log('newData :>> ', newData);
+
           let combinedArray = arr.concat(newData);
-          console.log('combinedArray :>> ', combinedArray);
+
           let arr1 = [];
           combinedArray?.map((item) => {
             let obj = {
@@ -269,6 +270,7 @@ const AddSlot = () => {
         console.log(error);
       });
   };
+
   ///  page 4 handleNext
   const handleNext = () => {
     let total = ""
@@ -276,27 +278,20 @@ const AddSlot = () => {
       return toast.error("Please Select Screen");
     } else {
       let Price = 0;
-
-      // Calculate the total Price
-      selectedScreens.forEach((item) => {
-        Price += item?.Price || 0; // Safely add Price, defaulting to 0 if undefined
-      });
+      selectedScreens.forEach((item) => { Price += item?.Price || 0; });
 
       setTotalPrice(Price);
-      setTotalCost(totalDuration * Price); // Assuming totalDuration is defined
-      console.log('totalPrice :>> ', Price); // Log the correct totalPrice
+      setTotalCost(totalDuration * Price);
 
-      // Calculate the total based on totalDuration and Price
-      total = Number(totalDuration) * Number(Price); // Update total based on your logic
+      total = Number(totalDuration) * Number(Price);
     }
-    console.log('total :>> ', total);
     const params = {
       "items": {
         "id": "0",
-        "amount": String(totalPrice * 100)
+        "amount": Number(totalPrice * 100)
       }
     }
-    console.log('params :>> ', params);
+
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -308,7 +303,6 @@ const AddSlot = () => {
     }
 
     dispatch(handlePaymentIntegration({ config })).then((res) => {
-      console.log('res :>> ', res);
       setClientSecret(res?.payload?.clientSecret)
       setPage(page + 1);
     }).catch((error) => {
@@ -500,9 +494,9 @@ const AddSlot = () => {
 
   // page 4 handleRangeChange
   const handleRangeChange = (e, item) => {
-    console.log('item :>> ', item);
+
     let arr = allArea.map((item1) => {
-      console.log('item1 :>> ', item1);
+
       if (item1?.searchValue === item?.searchValue) {
         let Params = {
           latitude: item?.latitude,
@@ -540,6 +534,23 @@ const AddSlot = () => {
 
   // page 5 
   const handlebook = (paymentMethod) => {
+   
+    let EventDetails = [];
+
+    getallTime?.map((item) => {
+      let obj = {
+        bookingSlotCustomerEventID: 0,
+        startTime: item?.startTime,
+        endTime: item?.endTime,
+        filePath: item?.horizontalImage,
+        sequence: item?.sequence,
+        customSequence: item?.afterevent || 0,
+        isHour: item?.aftereventType === "Hour" ? true : false,
+        isHorizontal: item?.horizontalImage ? true : false,
+        assetType: '',
+      };
+      EventDetails?.push(obj);
+    })
     let Params = JSON.stringify({
       PaymentDetails: {
         ...paymentMethod,
@@ -552,14 +563,21 @@ const AddSlot = () => {
       phoneNumber: PhoneNumber,
       startDate: startDate,
       endDate: endDate,
-      event: savedFile,
+      event: EventDetails,
+      // event: savedFile,
       isRepeat: repeat,
       repeatDays: day.join(", "),
       screenIDs: Screenoptions.map((item) => item.output).join(", "),
       totalCost: totalCost,
       timezoneID: selectedTimeZone,
       CountryID: selectedCountry,
-      StatesID: selecteStates,
+      otherIndustry: allSlateDetails?.otherIndustry,
+      purpose: allSlateDetails?.selecteScreens?.map((item) => item).join(', '),
+      text: allSlateDetails?.purposeText,
+      referralCode: allSlateDetails?.refVale || 0,
+      totalDuration: totalDuration,
+      industryID: allSlateDetails?.Industry?.value,
+      // StatesID: selecteStates,
       systemTimeZone: new Date()
         .toLocaleDateString(undefined, {
           day: "2-digit",
@@ -567,7 +585,7 @@ const AddSlot = () => {
         })
         .substring(4),
     });
-    console.log('Params :>> ', Params);
+    // return
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -581,6 +599,7 @@ const AddSlot = () => {
     axios
       .request(config)
       .then((response) => {
+        console.log('response :>> ', response);
         setPage(page + 1);
       })
       .catch((error) => {
@@ -609,46 +628,28 @@ const AddSlot = () => {
   // page 3 handleBookSlot
 
   const handleBookSlot = () => {
+    console.log('getallTime :>> ', getallTime);
+
+
     // setPage(page + 1)
     // return
     const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
-
     if (hasMissingImages) {
       return toast.error("Please upload valid Vertical and Horizontal images.");
     } else {
-      setFileLoading(true);
+
       let arr = [];
       let count = 0;
-      console.log('getallTime :>> ', getallTime);
+
       getallTime?.map((item) => {
-        console.log('item :>> ', item);
+
         let start = `${item?.startTime}`;
-        // let start = `${item?.startTime}:${item?.startTimeSecond}`;
-
         let end = `${item?.endTime}`;
-        // let end = `${item?.endTime}:${item?.endTimeSecond}`;
-
-        let horizontalfileType = item?.horizontalImage?.type || null;
-        let verticalImagefileType = item?.verticalImage?.type || null;
-
-
-        horizontalfileType = horizontalfileType?.split("/");
-        verticalImagefileType = verticalImagefileType?.split("/");
         let obj = { ...item, Duration: timeDifferenceInSeconds(start, end) };
 
         count = count + timeDifferenceInSeconds(start, end);
         arr.push(obj);
-        const formData = new FormData();
-        formData.append("BookingSlotCustomerEventID", "0");
-        formData.append("StartTime", start);
-        formData.append("EndTime", end);
-        formData.append("FilePath", "true");
-        formData.append("horizontalfileType", horizontalfileType);
-        formData.append("verticalImagefileType", verticalImagefileType);
-        formData.append("File", getallTime);
-        formData.append("horizontalFile", item?.horizontalImage || null);
-        formData.append("verticalFile", item?.verticalImage || null);
-        // FileUpload(formData);
+
       });
 
       if (!repeat) {
@@ -657,10 +658,9 @@ const AddSlot = () => {
         const total = countAllDaysInRange();
         setTotalDuration(total * count);
       }
-      console.log('count :>> ', count);
-      console.log('arr :>> ', arr);
+
       setGetAllTime(arr);
-      // setPage(page + 1);
+      setPage(page + 1);
     }
   };
 
@@ -698,7 +698,6 @@ const AddSlot = () => {
   const onSubmit = () => {
     setPage(page + 1)
   }
-
 
   return (
     <>
@@ -1134,10 +1133,10 @@ const AddSlot = () => {
         )}
         {page === 4 && (
           <>
-            <BookSlotMap totalPrice={totalPrice}
+            <BookSlotMap totalPrice={totalPrice} totalDuration={totalDuration}
               selectedCountry={selectedCountry}
               handleSelectCountries={handleSelectCountries}
-              allSlateDetails={allSlateDetails}
+
               setSelectedValue={setSelectedValue} handleBack={handleBack}
               selectedVal={selectedVal} setSelectedVal={setSelectedVal}
               setOpen={setOpen} getSelectedVal={getSelectedVal}
@@ -1158,12 +1157,16 @@ const AddSlot = () => {
             index={currentIndex}
             onClose={() => setPopupVisible(false)}
             onSubmit={handlePopupSubmit}
+            horizontalFileName={horizontalFileName}
+            verticalFileName={verticalFileName}
+            setVerticalFileName={setVerticalFileName}
+            setHorizontalFileName={setHorizontalFileName}
           />
         )}
         {/* clientSecret */}
         {page === 5 && clientSecret && (
           <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+            <div className="lg:w-[700px] md:w-[500px] w-full h-[60vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
               <Elements options={options} stripe={stripePromise}>
                 <AddPayment
                   selectedScreens={selectedScreens}

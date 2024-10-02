@@ -37,6 +37,7 @@ export default function CommissionRate() {
             dispatch(getcommissionRate({})).then((result) => {
                 setLoading(false)
                 const res = result?.payload?.data
+
                 setCommissionRate({
                     commissionRateID: res?.commissionRateID,
                     uptoScreens: res?.uptoScreens,

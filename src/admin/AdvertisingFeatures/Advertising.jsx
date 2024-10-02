@@ -13,7 +13,8 @@ import CommissionRate from './CommissionRate';
 import AdScreens from './AdScreens';
 import Approve from './Approve';
 import IndustryInformation from './IndustryInformation';
-
+import { GiRadarSweep } from "react-icons/gi";
+import PurposeScreens from './PurposeScreens';
 
 export default function Advertising({ sidebarOpen, setSidebarOpen }) {
     const [STabs, setSTabs] = useState(1);
@@ -112,6 +113,17 @@ export default function Advertising({ sidebarOpen, setSidebarOpen }) {
                                         <span className="text-base text-primary">Industry information</span>
                                     </button>
                                 </li>
+                                <li>
+                                    <button
+                                        className={
+                                            STabs === 7 ? "stabshow settingtabactive" : "settingtab"
+                                        }
+                                        onClick={() => handleTab(7)}
+                                    >
+                                        <GiRadarSweep className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                                        <span className="text-base text-primary">Purpose of <br />Disploy screens</span>
+                                    </button>
+                                </li>
 
 
                             </ul>
@@ -136,6 +148,9 @@ export default function Advertising({ sidebarOpen, setSidebarOpen }) {
                             )}
                             {STabs === 6 && (
                                 <div><IndustryInformation sidebarOpen={sidebarOpen} /></div>
+                            )}
+                            {STabs === 7 && (
+                                <div><PurposeScreens sidebarOpen={sidebarOpen} /></div>
                             )}
 
                         </div>

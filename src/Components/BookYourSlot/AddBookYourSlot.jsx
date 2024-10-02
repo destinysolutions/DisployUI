@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Loading from '../Loading'
 import Sidebar from '../Sidebar'
 import Navbar from '../Navbar'
 import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { buttons, constructTimeObjects, Frequent, greenOptions, kilometersToMeters, multiOptions } from '../Common/Common';
+import { buttons, constructTimeObjects, Frequent, greenOptions, kilometersToMeters, multiOptions, removeDuplicates, timeDifferenceInSeconds } from '../Common/Common';
 import moment from 'moment';
 import { MdArrowBackIosNew, MdCloudUpload } from 'react-icons/md';
 import { FaPlusCircle } from 'react-icons/fa';
@@ -17,7 +17,7 @@ import { Circle, LayerGroup, MapContainer, Marker, Popup, TileLayer } from 'reac
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from "leaflet";
 import mapImg from "../../../src/images/DisployImg/mapImg.png";
-import { PAYMENT_INTENT_CREATE_REQUEST, stripePromise } from '../../Pages/Api';
+import { GET_ALL_COUNTRY, PAYMENT_INTENT_CREATE_REQUEST, SCREEN_LIST, stripePromise } from '../../Pages/Api';
 import { handlePaymentIntegration } from '../../Redux/PaymentSlice';
 import { useDispatch } from 'react-redux';
 import { Elements } from "@stripe/react-stripe-js";
@@ -25,6 +25,8 @@ import AddPayment from '../Screen/SubScreens/BookSlot/AddPayment';
 import ThankYouPage from '../Screen/SubScreens/BookSlot/ThankYouPage';
 import ImageUploadPopup from '../Screen/SubScreens/BookSlot/ImageUploadPopup';
 import { customTimeOrhour } from '../Common/Util';
+import BookSlotMap from '../Screen/SubScreens/BookSlot/BookSlotMap';
+import axios from 'axios';
 // import mapImg from "../../../../images/DisployImg/mapImg.png";
 export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const navigate = useNavigate()
@@ -47,8 +49,12 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const [currentIndex, setCurrentIndex] = useState(null);
     const [day, setDay] = useState([]);
     const [repeatDays, setRepeatDays] = useState([]);
+    const [verticalFileName, setVerticalFileName] = useState('');
+    const [horizontalFileName, setHorizontalFileName] = useState('');
     const [temperature, setTemprature] = useState("");
     const [temperatureUnit, setTempratureUnit] = useState("Hour");
+    const [selectedVal, setSelectedVal] = useState("");
+
     const start = new Date(startDate);
     const end = new Date(endDate);
     const dayDifference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
@@ -85,6 +91,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const [totalCost, setTotalCost] = useState(0);
     const [clientSecret, setClientSecret] = useState("");
     const [totalDuration, setTotalDuration] = useState(0);
+    const [countries, setCountries] = useState([]);
 
     const appearance = {
         theme: 'stripe',
@@ -93,6 +100,27 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         clientSecret,
         appearance,
     };
+
+    useEffect(() => {
+        let Price = 0;
+        selectedScreens?.map((item) => {
+
+            Price = Price + item?.Price;
+        });
+        setTotalPrice(Price);
+
+    }, [selectedScreens]);
+
+    useEffect(() => {
+        fetch(GET_ALL_COUNTRY)
+            .then((response) => response.json())
+            .then((data) => {
+                setCountries(data.data);
+            })
+            .catch((error) => {
+                console.log("Error fetching countryID data:", error);
+            });
+    }, []);
     const handleBack = () => {
         setPage(page - 1);
     };
@@ -184,18 +212,95 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         setSelectAllDays(newSelectAllDays);
     };
 
+    // const handleBookSlot = () => {
+    //     // setPage(page + 1);
+
+    //     const hasMissingImages = getallTime.some((item) => { console.log('item :>> ', item); return !item.verticalImage && !item.horizontalImage });
+    //     if (hasMissingImages) {
+    //         return toast.error("Please upload valid Vertical and Horizontal images.");
+    //     } else {
+    //         setPage(page + 1);
+    //     }
+    // };
+
     const handleBookSlot = () => {
-        // setPage(page + 1);
+        console.log('getallTime :>> ', getallTime);
 
         const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
         if (hasMissingImages) {
             return toast.error("Please upload valid Vertical and Horizontal images.");
         } else {
+
+            let arr = [];
+            let count = 0;
+
+            getallTime?.map((item) => {
+
+                let start = `${item?.startTime}`;
+                let end = `${item?.endTime}`;
+                let obj = { ...item, Duration: timeDifferenceInSeconds(start, end) };
+
+                count = count + timeDifferenceInSeconds(start, end);
+                arr.push(obj);
+
+            });
+
+            if (!repeat) {
+                setTotalDuration(count);
+            } else {
+                const total = countAllDaysInRange();
+                setTotalDuration(total * count);
+            }
+
+            setGetAllTime(arr);
             setPage(page + 1);
         }
     };
 
+
     // page 2
+
+    const FetchScreen = (Params) => {
+        toast.loading('Loading ...')
+        const config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: `${SCREEN_LIST}`,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            data: JSON.stringify(Params),
+        };
+        axios
+            .request(config)
+            .then((response) => {
+                if (response.data.data?.length > 0) {
+                    let arr = [...screenData];
+
+                    const existingIds = new Set(arr.map(item => (item.screenID)));
+
+                    const newData = response.data.data.filter(item => !existingIds.has(item.screenID));
+
+                    let combinedArray = arr.concat(newData);
+
+                    let arr1 = [];
+                    combinedArray?.map((item) => {
+                        let obj = {
+                            let: item?.latitude,
+                            lon: item?.longitude,
+                            dis: Params?.distance,
+                        };
+                        arr1?.push(obj);
+                    });
+                    let uniqueArr = removeDuplicates(arr1);
+                    setScreenArea(uniqueArr);
+                    setScreenData(combinedArray);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
     const handleRangeChange = (e, item) => {
         let arr = allArea.map((item1) => {
             if (item1?.searchValue?.value === item?.searchValue?.value) {
@@ -216,7 +321,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                     ),
                 };
 
-                // FetchScreen(Params);
+                FetchScreen(Params);
                 return {
                     searchValue: item?.searchValue,
                     include: Number(item?.include),
@@ -228,7 +333,6 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         });
         setAllArea(arr);
         setOpen(false);
-        // setRangeValue(parseInt(e.target.value));
     };
 
     const handleScreenClick = (screen) => {
@@ -236,24 +340,22 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     };
 
     const handleNext = () => {
-        setPage(page + 1);
-        return
         let total = ""
         if (selectedScreens?.length === 0) {
             return toast.error("Please Select Screen");
         } else {
             let Price = 0;
-            selectedScreens?.map((item) => {
-                Price = Price + item?.Price;
-            });
+            selectedScreens.forEach((item) => { Price += item?.Price || 0; });
+
             setTotalPrice(Price);
-            // setTotalCost(totalDuration * Price);
-            // total = totalDuration * Price
+            setTotalCost(totalDuration * Price);
+
+            total = Number(totalDuration) * Number(Price);
         }
         const params = {
             "items": {
                 "id": "0",
-                "amount": String(total * 100)
+                "amount": Number(totalPrice * 100)
             }
         }
 
@@ -273,6 +375,15 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         }).catch((error) => {
             console.log('error', error)
         })
+    };
+
+    const handleSelectChange = (selected) => {
+        setSelectedScreens(selected);
+        if (selected?.length === screenData?.length) {
+            setSelectAllScreen(true);
+        } else {
+            setSelectAllScreen(false);
+        }
     };
 
     const handlePopupSubmit = (index, verticalImage, horizontalImage) => {
@@ -311,6 +422,43 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                 endTime: moment().format("hh:mm:ss")
             },
         ]);
+    };
+
+    const getSelectedVal = (value) => {
+
+
+        let obj = {
+            searchValue: value?.searchValue,
+            // include: Number(selectedValue),
+            area: 20,
+            latitude: value?.latitude,
+            longitude: value?.longitude,
+        };
+        let Params = {
+            latitude: value?.latitude,
+            longitude: value?.longitude,
+            distance: 20,
+            dates: constructTimeObjects(
+                getallTime,
+                startDate,
+                endDate,
+                repeat,
+                day,
+                selectedTimeZone,
+                allTimeZone,
+                selectedCountry,
+                selecteStates,
+            ),
+        };
+
+
+        FetchScreen(Params);
+        let arr = [...allArea];
+        arr.push(obj);
+        setAllArea(arr);
+        setSelectedVal("");
+        // setSearchArea("");
+        // setSelectedValue("");
     };
 
     return (
@@ -582,7 +730,23 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                     )}
                     {page === 2 && (
                         <>
-                            <div className="w-full h-full p-5 flex items-center justify-center ">
+                            <BookSlotMap
+                                totalPrice={totalPrice} totalDuration={totalDuration}
+                                selectedCountry={selectedCountry}
+                                // handleSelectCountries={handleSelectCountries}
+                                handleBack={handleBack}
+                                selectedVal={selectedVal} setSelectedVal={setSelectedVal}
+                                setOpen={setOpen} getSelectedVal={getSelectedVal}
+                                allArea={allArea} handleRangeChange={handleRangeChange}
+                                selectedItem={selectedItem} Open={Open} setSelectedItem={setSelectedItem}
+                                setSelectedScreens={setSelectedScreens} setSelectedScreen={setSelectedScreen}
+                                screenData={screenData} screenArea={screenArea} handleNext={handleNext}
+                                countries={countries} handleSelectChange={handleSelectChange}
+                                Screenoptions={Screenoptions} selectAllScreen={selectAllScreen}
+                                selectedScreen={selectedScreen} selectedScreens={selectedScreens}
+                                setSelectAllScreen={setSelectAllScreen}
+                            />
+                            {/* <div className="w-full h-full p-5 flex items-center justify-center ">
                                 <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg ">
                                     <div className="flex flex-row items-center gap-2">
                                         <div className="icons flex items-center">
@@ -819,7 +983,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </>
                     )}
                     {/* clientSecret && */}
@@ -853,6 +1017,10 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                             index={currentIndex}
                             onClose={() => setPopupVisible(false)}
                             onSubmit={handlePopupSubmit}
+                            setHorizontalFileName={setHorizontalFileName}
+                            setVerticalFileName={setVerticalFileName}
+                            verticalFileName={verticalFileName}
+                            horizontalFileName={horizontalFileName}
                         />
                     )}
                 </div>

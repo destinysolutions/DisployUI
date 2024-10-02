@@ -62,6 +62,8 @@ import {
 import OperatingHourModal from "./OperatingHourModal";
 import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
 import { GetAllCardList } from "../../../Redux/CardSlice";
+
+
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -72,6 +74,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const modalRef = useRef(null);
   const scheduleRef = useRef(null);
   const compositionRef = useRef(null);
+
   const appRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -104,7 +107,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenPreviewData, setScreenPreviewData] = useState({
     data: [],
     myComposition: [],
+    myWeatherSchedule: [],
   });
+
   const [screenName, setScreenName] = useState("");
   const [scrollPerSec, setScrollPerSec] = useState("");
   const [isScroll, setIsScroll] = useState(false)
@@ -133,6 +138,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isloading, setisLoading] = useState(true);
+
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedYoutube, setSelectedYoutube] = useState("");
@@ -152,6 +159,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [endTime, setEndTime] = useState(getCurrentTime());
   const [cardList, setCardList] = useState([])
   const [selectedCard, setSelectedCard] = useState("");
+  const [ScreenPreviewtime, setScreenPreviewtime] = useState(false)
 
   const [selectedDays, setSelectedDays] = useState(
     new Array(TotalDay.length).fill(false)
@@ -177,6 +185,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
+
         if (response.data?.data !== "Data Is Not Found") {
           let arr = fetchedData[0]?.screenOperatingHours?.dayName.split(",");
           const daysOfWeek = [
@@ -189,6 +198,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
             "Saturday",
           ];
           const boolArr = daysOfWeek.map((day) => arr.includes(day));
+
           setOperatingHour(fetchedData[0]?.screenOperatingHours)
           setSelectedOperatingHour(
             fetchedData[0]?.screenOperatingHours?.operatingType
@@ -314,6 +324,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
+
         setAssetData(allAssets);
         setAssetAllData(allAssets);
         setScreenOrientation(screenOrientationResponse.data.data);
@@ -512,7 +523,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        if (response?.data?.status == 200) {
+        if (response?.data?.status === 200) {
           setLayotuDetails(response.data?.data[0]);
           // setScreenType(response?.data?.data[0]?.screenType);
           setFetchLayoutLoading(false);
@@ -547,14 +558,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       data,
     };
     setLoading(true);
-    toast.loading("Fetching data...")
+    // toast.loading("Fetching data...")
     await axios
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          const { data, myComposition } = response?.data;
+          const { data, myComposition, myWeatherSchedule, myScreenOperatingHours } = response?.data;
           setCompositionData([]);
-          setScreenPreviewData({ data, myComposition });
+          setScreenPreviewData({ data, myComposition, myWeatherSchedule, myScreenOperatingHours });
           if (myComposition.length > 0) {
             setFetchLayoutLoading(true);
             handleFetchLayoutById(myComposition[0]?.layoutID);
@@ -569,17 +580,30 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         setLoading(false);
         toast.remove()
       });
+    setisLoading(false)
+  };
+
+  const isCurrentTimeWithinOperatingHours = (operatingHours) => {
+    const now = new Date();
+    const currentHours = now.getHours();
+    const currentMinutes = now.getMinutes();
+
+    const [startHour, startMinute] = operatingHours?.startTime?.split(':').map(Number);
+    const [endHour, endMinute] = operatingHours?.endTime?.split(':').map(Number);
+
+    const startTime = startHour * 60 + startMinute;
+    const endTime = endHour * 60 + endMinute;
+    const currentTime = currentHours * 60 + currentMinutes;
+
+    return currentTime >= startTime && currentTime < endTime;
   };
 
   function handleChangePreviewScreen() {
-    const { data, myComposition } = screenPreviewData;
+    const currentMoment = moment();
+    const { data, myComposition, myWeatherSchedule } = screenPreviewData;
     const findCurrentSchedule = data?.find((item) => {
-      // for schedule
-      if (
-        moment(moment().format("LLL")).isBetween(
-          moment(item?.cStartDate).format("LLL"),
-          moment(item?.cEndDate).format("LLL")
-        ) ||
+
+      if (moment(moment().format("LLL")).isBetween(moment(item?.cStartDate).format("LLL"), moment(item?.cEndDate).format("LLL")) ||
         (moment(moment().format("LLL")).isSameOrAfter(
           moment(item?.cStartDate).format("LLL")
         ) &&
@@ -590,66 +614,84 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         return item;
       }
     });
-    // for schedule set
-    if (findCurrentSchedule !== undefined && findCurrentSchedule !== null) {
-      setPlayerData(findCurrentSchedule);
-      setSelectedDefaultAsset("");
+
+    const currentWeatherSchedule = myWeatherSchedule?.find(item => {
+      return currentMoment.isBetween(moment(item.cStartDate), moment(item.cEndDate), null, '[]');
+    });
+
+    const screentimeZone = OperatingHour?.operatingType === "Custom" && isCurrentTimeWithinOperatingHours(OperatingHour)
+    setScreenPreviewtime(screentimeZone)
+
+    if (OperatingHour?.operatingType === "Custom" && !ScreenPreviewtime) {
+      setPlayerData(null);
       setCompositionData([]);
-      return true;
-    } else if (
-      // for composition set
-      (findCurrentSchedule === null || findCurrentSchedule === undefined) &&
-      myComposition[0]?.compositionPossition?.length > 0
-    ) {
-      let obj = {};
-      // if (previewModalData.length === 0) {
-      //   handleFetchCompositionById(myComposition?.layoutID);
-      // }
-      for (const [
-        key,
-        value,
-      ] of myComposition[0]?.compositionPossition?.entries()) {
-        const arr = value?.schedules?.map((item) => {
-          return {
-            ...item,
-            width: value?.width,
-            height: value?.height,
-            top: value?.top,
-            left: value?.left,
-          };
-        });
-        obj[key + 1] = [...arr];
+
+      setLoading(false);
+      return;
+    }
+
+
+    if ((OperatingHour?.operatingType === "Custom" && ScreenPreviewtime) || OperatingHour?.operatingType === "Always on") {
+      if (currentWeatherSchedule !== undefined && currentWeatherSchedule !== null) {
+        setPlayerData(myWeatherSchedule[0]);
+        setSelectedDefaultAsset("");
+        setCompositionData([]);
       }
-      const newdd = Object.entries(obj)?.map(([k, i]) => ({ [k]: i }));
-      if (compositionData?.length === 0) {
-        setCompositionData(newdd);
-        setAllCompositionData(newdd);
-        setPlayerData(null);
-        // setSelectedDefaultAsset("");
-        // setSelectedAsset("");
-        // setSelectedComposition("");
-        // setSelectedApps("");
-        // setSelectedSchedule("");
+      else if (findCurrentSchedule !== undefined && findCurrentSchedule !== null) {
+        setPlayerData(findCurrentSchedule);
+        setSelectedDefaultAsset("");
+        setCompositionData([]);
+        return true;
       }
-      // else{
-      //   setCompositionData(newdd);
-      // }
-      return true;
-    } else {
-      // for default media set
-      const findDefaultAsset = data?.find(
-        (item) => item?.isdefaultAsset == "true"
-      );
-      setPlayerData(findDefaultAsset);
-      // setSelectedDefaultAsset("Default Asset");
-      // setSelectedAsset("");
-      // setSelectedComposition("");
-      // setSelectedApps("");
-      // setSelectedSchedule("");
-      setCompositionData([]);
-      return true;
+      else if ((findCurrentSchedule === null || findCurrentSchedule === undefined) && myComposition[0]?.compositionPossition?.length > 0) {
+        let obj = {};
+        // if (previewModalData.length === 0) {
+        //   handleFetchCompositionById(myComposition?.layoutID);
+        // }
+        for (const [key, value,] of myComposition[0]?.compositionPossition?.entries()) {
+
+          const arr = value?.schedules?.map((item) => {
+
+            return {
+              ...item,
+              width: value?.width,
+              height: value?.height,
+              top: value?.top,
+              left: value?.left,
+            };
+          });
+          obj[key + 1] = [...arr];
+        }
+
+        const newdd = Object.entries(obj)?.map(([k, i]) => ({ [k]: i }));
+
+        if (compositionData?.length === 0) {
+          setCompositionData(newdd);
+          setAllCompositionData(newdd);
+          setPlayerData(null);
+          // setSelectedDefaultAsset("");
+          // setSelectedAsset("");
+          // setSelectedComposition("");
+          // setSelectedApps("");
+          // setSelectedSchedule("");
+        }
+
+        return true;
+      } else {
+        // for default media set
+        const findDefaultAsset = data?.find(
+          (item) => item?.isdefaultAsset === "true"
+        );
+        setPlayerData(findDefaultAsset)
+        setCompositionData([]);
+        return true;
+      }
     }
   }
+
+
+
+
   var interval;
 
   function runFunEverySecForPreview() {
@@ -664,7 +706,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [screenPreviewData, playerData]);
+  }, [screenPreviewData, playerData, ScreenPreviewtime]);
 
   const handleScreenDetail = () => {
     let mediaType = selectedAsset?.assetID
@@ -716,6 +758,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       screenOperatingHours: screenOperatingHours,
       screenType: selectedScreenType
     });
+
     toast.loading("Saving...");
 
     let config = {
@@ -980,7 +1023,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     const newSelectedDays = [...selectedDays];
     newSelectedDays[index] = !selectedDays[index];
     const newSelectAllDays = newSelectedDays.every((day) => day === true);
-
     setSelectedDays(newSelectedDays);
   };
 
@@ -992,6 +1034,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedDays(selectedDays);
     setSelectedOperatingHourModel(false);
   };
+
+
 
   return (
     <>
@@ -1044,7 +1088,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
             <div className="relative screenplayer-section mx-auto">
               <div className="w-full h-full pb-5 mx-auto">
-                {loading ? (
+
+                {loading && isloading && (
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="flex text-center m-5 justify-center">
                       <svg
@@ -1067,9 +1112,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
                     </div>
                   </div>
-                ) : (
-                  compositionData?.length > 0 &&
-                  !loading && (
+                )}
+
+                {
+                  !loading && !isloading && compositionData?.length > 0 &&
+                  !loading && !isloading && (
                     <div
                       className={`relative z-0 mx-auto rounded-lg p-4
                     ${(orientation === 1 &&
@@ -1084,7 +1131,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     `}
                     >
                       {!fetchLayoutLoading &&
-                        !loading &&
+                        !loading && !isloading &&
                         layotuDetails !== null &&
                         layotuDetails?.lstLayloutModelList.length > 0 &&
                         layotuDetails?.lstLayloutModelList?.map(
@@ -1111,10 +1158,15 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           }
                         )}
                     </div>
-                    // null
-                  )
-                )}
-                {!loading &&
+
+                  )}
+                {(
+                  !loading && !isloading && (compositionData === null || compositionData === undefined || compositionData?.length === 0) && playerData === null) && (
+                    <div className="h-[500px] w-[700px] p-1 bg-black border m-auto" >
+                    </div>
+                  )}
+
+                {!loading && !isloading &&
                   compositionData?.length === 0 &&
                   playerData !== null &&
                   playerData !== undefined &&
@@ -1143,7 +1195,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   )}
 
-                {!loading &&
+                {!loading && !isloading &&
                   compositionData?.length === 0 &&
                   playerData !== null &&
                   playerData !== undefined &&
@@ -1494,9 +1546,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     {compositionData?.length > 0 &&
                       playerData === null &&
                       "Composition"}
-                    {screenPreviewData?.data?.length > 1 &&
-                      playerData !== null &&
-                      "Schedule"}
+                    {screenPreviewData?.myWeatherSchedule?.length > 0 &&
+                      playerData !== null ? "Weather Schedule" :
+                      screenPreviewData?.data?.length > 1 && playerData !== null && "Schedule"
+                    }
                     {screenPreviewData?.data?.length === 1 &&
                       compositionData?.length === 0 &&
                       "Default Media"}
@@ -1567,7 +1620,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   <button
                     data-tip
                     id="toggleButton"
-                    data-for="Select Asse"
+                    data-for="Select Asset"
                     type="button"
                     onClick={() => {
                       setShowAssetModal(true);
@@ -1575,13 +1628,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       setSetscreenMacID(screenData[0]?.macid);
                     }}
                   >
-                    <IoCloudUploadOutline 
+                    <IoCloudUploadOutline
                       className="cursor-pointer"
                       size={24}
 
                     />
                     <ReactTooltip
-                      id="Play"
+                      id="Select Asset"
                       place="bottom"
                       type="warning"
                       effect="solid"

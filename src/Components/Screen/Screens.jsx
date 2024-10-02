@@ -353,7 +353,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         dispatch(handleDeleteAllScreen({ config }));
         dispatch(handleChangeScreens([]));
         setSelectedItems([]);
-        setSelectAllChecked(false);
+        // setSelectAllChecked(false);
         setScreenCheckboxes({});
         toast.remove();
         setLoadFist(true);
@@ -487,6 +487,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             connection: socket.connected,
             macId: screenToUpdate?.macid.replace(/^\s+/g, ""),
           };
+          console.log('Params :>> ', Params);
           socket.emit("ScreenConnected", Params);
           setIsEditingScreen(false);
         })
@@ -979,6 +980,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 <input
                                   type="checkbox"
                                   className="mr-2 text-lg"
+                                  disabled
                                   checked={screenCheckboxClick}
                                   onChange={() =>
                                     setScreenCheckboxClick(!screenCheckboxClick)
@@ -988,6 +990,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               </li>
                               <li className="flex text-sm items-center mt-2 ">
                                 <input
+                                  disabled
                                   type="checkbox"
                                   className="mr-2 text-lg"
                                   checked={locCheckboxClick}
@@ -999,6 +1002,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               </li>
                               <li className="flex text-sm items-center mt-2">
                                 <input
+                                  disabled
                                   type="checkbox"
                                   className="mr-2 text-lg"
                                   checked={statusCheckboxClick}
@@ -1248,7 +1252,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                               <div className="flex items-center gap-2">
                                                 <input
                                                   type="text"
-                                                  className="border border-primary rounded-md w-full"
+                                                  style={{ width: '150px' }}
+                                                  className="formInput border border-primary rounded-md w-[150px]"
                                                   value={editedScreenName}
                                                   onChange={(e) => {
                                                     setEditedScreenName(
@@ -1274,10 +1279,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                 {permissions.isSave ? (
                                                   <div className="flex gap-1">
                                                     <Link
-                                                    className=" capitalize w-32 truncate ml-2"
+                                                      className=" capitalize w-32 truncate ml-2"
                                                       to={`/screensplayer?screenID=${screen.screenID}`}
                                                     >
-                                                      
+
                                                       {screen.screenName}
                                                     </Link>
                                                     <button

@@ -15,7 +15,7 @@ import mapImg from "../../../../images/DisployImg/mapImg.png";
 import { Autocomplete, useLoadScript } from '@react-google-maps/api';
 
 
-export default function BookSlotMap({ handleSelectCountries, selectedCountry, totalPrice,
+export default function BookSlotMap({ handleSelectCountries, selectedCountry, totalPrice, totalDuration,
     setSelectedValue,
     setSelectAllScreen, setSelectedScreens,
     handleSelectChange, Screenoptions,
@@ -60,8 +60,9 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
             });
     };
 
+
     useEffect(() => {
-        FetchAllCity();
+        // FetchAllCity();
     }, []);
 
     const getChanges = (value) => {
@@ -96,7 +97,7 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
     if (!isLoaded) return;
 
     return (
-        <div className="w-full h-full p-5 flex items-center justify-center border ">
+        <div className="w-full h-full p-5 flex items-center justify-center  ">
             <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg   ">
                 <div className="flex flex-row items-center gap-2">
                     <div className="icons flex items-center">
@@ -354,7 +355,7 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
                         <div>
                             <div className="flex items-center gap-3 my-2">
                                 <label className="text-sm font-medium">Repetition Duration:</label>
-                                <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">hh:mm:ss</label>
+                                <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">{totalDuration}</label>
                             </div>
                             {/* <div className="flex items-center gap-3">
                                 <label className="text-sm font-medium">Total balance credit:</label>

@@ -1,20 +1,37 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PageNumber } from '../Components/Common/Common';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import AdvertismentSidebar from './AdvertismentSidebar';
 import AdvertismentNavbar from './AdvertismentNavbar';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { getAllBookingSlotCustomer } from '../Redux/BookslotSlice';
+import moment from 'moment';
 
 
 const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
     const dispatch = useDispatch()
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
+    const [loadFirst, setLoadFirst] = useState(true);
 
     const [BookingData, setBookingData] = useState([]);
     const [loading, setLoading] = useState(false);
+
+
+
+    useEffect(() => {
+        if (loadFirst) {
+            setLoading(true)
+            dispatch(getAllBookingSlotCustomer({})).then((res) => {
+                setBookingData(res?.payload?.data)
+                setLoading(false)
+            })
+        }
+        setLoadFirst(false)
+    }, [loadFirst, dispatch]);
+
 
     const sortedAndPaginatedData = BookingData
 
@@ -33,7 +50,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
 
                         <div className="grid lg:grid-cols-3 gap-2 ">
                             <h1 className="not-italic font-medium text-2xl text-[#001737]  mt-2">
-                               Current Booking
+                                Current Booking
                             </h1>
                             <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap ">
                                 <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
@@ -137,24 +154,26 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
                                                                 className="border-b border-b-[#E4E6FF] "
                                                                 key={index}
                                                             >
-                                                                <td className="text-[#5E5E5E] mw-200">
-                                                                    <div className="flex gap-1 items-center">
-
-                                                                        25
-                                                                    </div>
+                                                                <td className="text-[#5E5E5E] mw-200 text-center">
+                                                                    {composition?.totalScreen}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    dd:mm:yyyy
+                                                                    {composition?.googleLocation}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    dd:mm:yyyy
-
+                                                                    {composition?.status}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    hh:mm:ss
+                                                                    {moment(composition.startDate).format("YYYY-MM-DD hh:mm")}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    $2000
+                                                                    {moment(composition.endDate).format("YYYY-MM-DD hh:mm")}
+                                                                </td>
+                                                                <td className="mw-200 text-[#5E5E5E] text-center">
+                                                                    {composition?.bookedDuration}
+                                                                </td>
+                                                                <td className="mw-200 text-[#5E5E5E] text-center">
+                                                                    {composition?.paidAmount}
                                                                 </td>
                                                             </tr>
                                                         );

@@ -1,15 +1,32 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AdvertismentSidebar from './AdvertismentSidebar';
 import AdvertismentNavbar from './AdvertismentNavbar';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { PageNumber } from '../Components/Common/Common';
 import { LuDownload } from 'react-icons/lu';
 import ReactTooltip from 'react-tooltip';
+import { useDispatch } from 'react-redux';
+import { getAllSlotReport } from '../Redux/BookslotSlice';
+import moment from 'moment';
 
 export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
-    const [BookingData, setBookingData] = useState([]);
+    const dispatch = useDispatch()
+    const [reportsData, setReportsData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const sortedAndPaginatedData = BookingData
+    const sortedAndPaginatedData = reportsData
+    const [loadFirst, setLoadFirst] = useState(true);
+
+
+    useEffect(() => {
+        if (loadFirst) {
+            setLoading(true)
+            dispatch(getAllSlotReport({})).then((res) => {
+                setReportsData(res?.payload?.data)
+                setLoading(false)
+            })
+        }
+        setLoadFirst(false)
+    }, [loadFirst, dispatch]);
 
     return (
         <>
@@ -122,7 +139,7 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                                     </div>
                                                 </td>
                                             </tr>
-                                        ) : BookingData &&
+                                        ) : reportsData &&
                                             sortedAndPaginatedData?.length === 0 ? (
                                             <tr>
                                                 <td colSpan={7}>
@@ -135,7 +152,7 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                             </tr>
                                         ) : (
                                             <>
-                                                {BookingData &&
+                                                {reportsData &&
                                                     sortedAndPaginatedData.length > 0 &&
                                                     sortedAndPaginatedData?.map((composition, index) => {
                                                         return (
@@ -144,23 +161,25 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                                                 key={index}
                                                             >
                                                                 <td className="text-[#5E5E5E] mw-200">
-                                                                    <div className="flex gap-1 items-center">
-
-                                                                        25
-                                                                    </div>
+                                                                    {composition?.screenIDs}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    dd:mm:yyyy
+                                                                    {composition?.googleLocation}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    dd:mm:yyyy
-
+                                                                    {moment(composition.startDate).format("YYYY-MM-DD hh:mm")}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    hh:mm:ss
+                                                                    {moment(composition.endDate).format("YYYY-MM-DD hh:mm")}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    $2000
+                                                                    {composition?.bookedDuration}
+                                                                </td>
+                                                                <td className="mw-200 text-[#5E5E5E] text-center">
+                                                                    {composition?.streamingDuration}
+                                                                </td>
+                                                                <td className="mw-200 text-[#5E5E5E] text-center">
+                                                                    {composition?.credits}
                                                                 </td>
                                                             </tr>
                                                         );

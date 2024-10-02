@@ -2,30 +2,38 @@ import React, { useEffect, useState } from 'react';
 import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io';
 import { FaCheckCircle } from 'react-icons/fa';
 import { AiFillCloseCircle } from 'react-icons/ai';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, } from 'react-redux';
 import { getPendingScreen, getCostByArea, cancelPendingScreen, updatePendingScreen } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
-import { ApproveScreens, haversineDistance } from '../../Components/Common/Common';
+import { haversineDistance } from '../../Components/Common/Common';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
+import ReactTooltip from 'react-tooltip';
 
 
 
 export default function Approve({ handleTab }) {
     const dispatch = useDispatch();
-    const store = useSelector((state) => state?.root?.advertisementData);
+    // const store = useSelector((state) => state?.root?.advertisementData);
     const [loading, setLoading] = useState(false);
     const [openAccordionIndex, setOpenAccordionIndex] = useState(false);
     const [loadFirst, setLoadFirst] = useState(true);
     const [filteredScreens, setFilteredScreens] = useState([]);
     const [cost, setcost] = useState('');
     const [Error, setError] = useState(false);
+    const [assetManagement, setAssetManagement] = useState({});
 
     useEffect(() => {
-        // setLoading(true);
+
         if (loadFirst) {
             setLoading(true);
             dispatch(getPendingScreen({})).then((res) => {
                 const screens = res?.payload?.data || [];
+                const initialAssetManagement = {};
+                screens.forEach(screen => {
+                    initialAssetManagement[screen.screenID] = screen?.assetManagement; // Default to false or your desired initial state
+                });
+                setAssetManagement(initialAssetManagement);
+
                 dispatch(getCostByArea({})).then((locationRes) => {
                     const locationData = locationRes?.payload?.data || [];
                     filterScreens(screens, locationData);
@@ -87,18 +95,31 @@ export default function Approve({ handleTab }) {
         return acc;
     }, {});
 
-    const DeactiveAsste = (item) => {
-        const payload = {
-            ScreenID: item?.screenID,
-            UserID: item?.userID,
-            AssetManagement: !item?.assetManagement,
-        };
-        dispatch(updateAssteScreen(payload)).then((res) => {
-            if (res) {
-                setLoadFirst(true)
+
+    const DeactiveAsste = async (item) => {
+
+        setAssetManagement(prev => {
+            const newModalState = { ...prev };
+            const index = item?.screenID;
+            newModalState[index] = !prev[index];
+
+            const payload = {
+                ScreenID: item?.screenID,
+                UserID: item?.userID,
+                AssetManagement: newModalState[item?.screenID],
+            };
+            try {
+                const res = dispatch(updateAssteScreen(payload));
+                if (res) {
+                    dispatch(getPendingScreen({}));
+                }
+            } catch (error) {
+                console.error("Error updating asset management:", error);
             }
-        })
+            return newModalState;
+        });
     }
+
 
     return (
         <div>
@@ -107,7 +128,7 @@ export default function Approve({ handleTab }) {
                     <h2 className='font-semibold'>Approve Request</h2>
                 </div>
                 {loading && (
-                    <div className='flex justify-center'>
+                    <div className='flex justify-center items-center'>
                         <div className="flex text-center m-5 justify-center items-center">
                             <svg
                                 aria-hidden="true"
@@ -130,13 +151,13 @@ export default function Approve({ handleTab }) {
 
                     </div>
                 )}
-                {!loading && Object.keys(groupedScreens)?.map((orgId, index) => {
-                    const screens = groupedScreens[orgId];
-                    const userName = screens[0]?.userName;
-                    return (
-                        <div key={index} className="clear-both">
-                            <div className="bg-white rounded-xl mt-8 shadow screen-section">
-                                <div className="mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg h-full">
+                <div className="clear-both">
+                    <div className="bg-white rounded-xl mt-8 shadow screen-section">
+                        {!loading && Object.keys(groupedScreens)?.map((orgId, index) => {
+                            const screens = groupedScreens[orgId];
+                            const userName = screens[0]?.userName;
+                            return (
+                                <div className="mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg h-full" key={index}>
                                     <div className="accordions shadow-md p-5 bg-blue-100 border border-blue-400 rounded-lg m-4">
                                         <div className="section lg:flex md:flex sm:block items-center justify-between">
                                             <div className="flex gap-2 items-center">
@@ -170,11 +191,11 @@ export default function Approve({ handleTab }) {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-
                                                         {!loading && screens?.length > 0 ?
                                                             screens?.map((item, index) => (
+
                                                                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
-                                                                    <td className="px-6 py-4">{item?.screenName}</td>
+                                                                    <td className="px-6 py-4">{item?.screenName}  </td>
                                                                     <td className="px-6 py-4">{item?.googleLocation}</td>
                                                                     <td className="px-6 py-4">
                                                                         {item?.lastSeen ? moment(item?.lastSeen).format("LLL") : null}
@@ -189,24 +210,22 @@ export default function Approve({ handleTab }) {
                                                                         </span>
                                                                     </td>
                                                                     <td className="px-6 py-4">
-                                                                        <label class="inline-flex items-center cursor-pointer">
+                                                                        <label className="inline-flex items-center cursor-pointer">
                                                                             <input
                                                                                 type="checkbox"
-                                                                                class="sr-only peer"
-                                                                                checked={item?.assetManagement}
-                                                                                id={`Active_${item?.ScreenID}`}
-                                                                                onChange={() => {
-                                                                                    DeactiveAsste(item);
-                                                                                }}
+                                                                                className="sr-only peer"
+                                                                                checked={assetManagement[item?.screenID]} // Default to false if not defined
+                                                                                id={`Active_${item?.screenID}`} // Ensure consistent casing
+                                                                                onChange={() => DeactiveAsste(item)} // Directly pass the item
                                                                             />
                                                                             <div
-                                                                                style={{ background: item?.assetManagement ? 'green' : 'gray', }}
-                                                                                className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${item?.assetManagement ? 'bg-green-500' : 'bg-red-500'}peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 dark:bg-gray-700`}
+                                                                                style={{ background: (assetManagement[item?.screenID] ? 'green' : 'gray') }}
+                                                                                className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${(assetManagement[item?.screenID] ? 'bg-green-500' : 'bg-red-500')} peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 dark:bg-gray-700`}
                                                                             >
                                                                                 <div
-                                                                                    className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200  dark:border-gray-600`}
+                                                                                    className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200 dark:border-gray-600`}
                                                                                     style={{
-                                                                                        transform: item?.assetManagement ? 'translateX(20px)' : 'translateX(0)',
+                                                                                        transform: (assetManagement[item?.screenID] ? 'translateX(20px)' : 'translateX(0)'),
                                                                                         transition: 'transform 0.5s ease-in-out',
                                                                                     }}
                                                                                 ></div>
@@ -216,8 +235,9 @@ export default function Approve({ handleTab }) {
                                                                     <td className="px-6 py-4 ">{item?.userName}</td>
                                                                     <td className="px-6 py-4 ">
                                                                         <div>
-                                                                            $
-                                                                            {item?.screenRatePerSec ? item?.screenRatePerSec :
+                                                                            {item?.screenRatePerSec ? `$ ${item?.screenRatePerSec}` : ''}
+
+                                                                            {/* {item?.screenRatePerSec ? item?.screenRatePerSec :
                                                                                 (<input
                                                                                     type="number"
                                                                                     class="bg-transparent placeholder-slate-400 focus:text-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-10  px-2 ms-2"
@@ -226,7 +246,7 @@ export default function Approve({ handleTab }) {
                                                                                     }}
                                                                                     value={cost}
                                                                                 />)
-                                                                            }
+                                                                            } */}
 
                                                                         </div>
 
@@ -235,18 +255,52 @@ export default function Approve({ handleTab }) {
                                                                         )}
                                                                     </td>
                                                                     <td className="px-6 py-4">
-                                                                        <div className="flex gap-1 items-center">
-                                                                            <FaCheckCircle size={20} className='text-green'
-                                                                                onClick={() => {
-                                                                                    handleUpdateScreen(item)
-                                                                                }}
-                                                                            />
-                                                                            <AiFillCloseCircle size={22} className='text-[#FF0000]'
-                                                                                onClick={() => {
-                                                                                    handleCancelScreen(item)
-                                                                                }}
-                                                                            />
+                                                                        <div className="flex gap-1 justify-center">
+                                                                            <div className="cursor-pointer text-xl flex gap-4">
+                                                                                <button
+                                                                                    data-tip
+                                                                                    data-for="Approve"
+                                                                                    type="button"
+                                                                                    className="cursor-pointer  focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg  text-center inline-flex items-center "
+                                                                                    onClick={() => {
+                                                                                        handleUpdateScreen(item)
+                                                                                    }}
+                                                                                >
+                                                                                    <FaCheckCircle size={20} className='text-green' />
+                                                                                    <ReactTooltip
+                                                                                        id="Approve"
+                                                                                        place="bottom"
+                                                                                        type="warning"
+                                                                                        effect="solid"
+                                                                                    >
+                                                                                        <span>Approve</span>
+                                                                                    </ReactTooltip>
+                                                                                </button>
+                                                                            </div>
+
+                                                                            <div className="cursor-pointer text-xl flex  ">
+                                                                                <button
+                                                                                    data-tip
+                                                                                    data-for="Rejected"
+                                                                                    type="button"
+                                                                                    className="rounded-full  text-center "
+                                                                                    onClick={() => {
+                                                                                        handleCancelScreen(item)
+                                                                                    }}
+                                                                                >
+                                                                                    <AiFillCloseCircle size={22} className='text-[#FF0000]' />
+                                                                                    <ReactTooltip
+                                                                                        id="Rejected"
+                                                                                        place="bottom"
+                                                                                        type="warning"
+                                                                                        effect="solid"
+                                                                                    >
+                                                                                        <span>Rejected</span>
+                                                                                    </ReactTooltip>
+                                                                                </button>
+                                                                            </div>
                                                                         </div>
+
                                                                     </td>
                                                                 </tr>
                                                             ))
@@ -266,10 +320,10 @@ export default function Approve({ handleTab }) {
                                         )}
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    )
-                })}
+                            )
+                        })}
+                    </div>
+                </div>
             </div>
         </div>
     );

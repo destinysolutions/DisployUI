@@ -37,7 +37,7 @@ const AddPayment = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const [autoPay, setAutoPay] = useState(false)
-console.log('autoPay :>> ', autoPay);
+  console.log('autoPay :>> ', autoPay);
   useEffect(() => {
     if (!stripe) {
       return;
@@ -117,6 +117,9 @@ console.log('autoPay :>> ', autoPay);
           card: elements.getElement(CardNumberElement),
         });
 
+        handlebook(paymentMethod)
+        return
+
         if (error) {
           if (error.type === "card_error" || error.type === "validation_error") {
             toast.error(error?.message)
@@ -155,8 +158,8 @@ console.log('autoPay :>> ', autoPay);
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-5 gap-4 mt-5">
-        <div className="md:col-span-2 lg:col-span-2 rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-5">
+        {/* <div className="md:col-span-2 lg:col-span-2 rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">
           <div className="flex items-center gap-2 border-b border-black">
             <IoEarthSharp className="mb-2" />
             <div className="mb-2">
@@ -199,7 +202,7 @@ console.log('autoPay :>> ', autoPay);
               your scheduled time slot.
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="md:col-span-3 lg:col-span-3 flex flex-col gap-5">
           <div className="text-3xl font-semibold">Payment Method</div>
           {/*<div className="rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">

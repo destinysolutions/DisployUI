@@ -322,4 +322,12 @@ export const CANCEL_PENDING_SCREEN = `${baseUrl}NewScreen/CancelAddStatus`
 export const GET_ALLUSER_SCREEN = `${baseUrl}AdsCustomer/GetAllUserAdScreen`
 export const GET_ADVERTISER_SCREEN = `${baseUrl}AdsCustomer/GetAllUserAdvertiser`
 export const UPDATE_ASSET_SCREEN = `${baseUrl}NewScreen/UpdateAssetByScreenID`
-export const UPDATE_ASSET_ADSCREEN = `${baseUrl}NewScreen/UpdateAssetForAdScreen`
+export const GET_PERPOSE_SCREEN = `${baseUrl}AdsCustomer/GetAllPurposeMaster`
+export const ADD_PERPOSE_SCREEN = `${baseUrl}AdsCustomer/AddORUpdatePurposeMaster`
+export const DELETE_PERPOSE_SCREEN = `${baseUrl}AdsCustomer/DeletePurposeMaster`
+export const UPDATE_ADVERTISER_SCREEN = `${baseUrl}NewScreen/UpdateAssetForAdScreen`
+
+
+// bookslot
+export const GET_BOOKING_SLOT = `${baseUrl}AdsCustomer/GetAllBookingSlotCustomer`
+export const GET_BOOKSLOT_REPORT = `${baseUrl}AdsCustomer/GetBookedSlotReport`
