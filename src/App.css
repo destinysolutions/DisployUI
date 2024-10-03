@@ -2366,3 +2366,41 @@ input.Talk-formInput {
   padding-right: 30px; /* space for the close icon */
   width: 100%; /* adjust width as needed */
 }
+
+@font-face{
+  font-family: digital;
+  src: url("./Font/E1234.ttf")
+}
+
+/* Your custom countdown styles */
+.flip-countdown-container {
+  background-color: #f0f0f0;
+  font-family: 'Digital', sans-serif;
+  /* Add more styles here */
+}
+
+
+.flip-time {
+  display: flex;
+  font-size: 2em;
+  font-family: 'Arial', sans-serif;
+}
+
+.flip {
+  display: flex;
+}
+
+.number {
+  margin: 0 10px;
+  padding: 20px;
+  background: #333;
+  color: #fff;
+  border-radius: 5px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+/* Add flip animation on change */
+.number.flipped {
+  transform: rotateX(180deg);
+}

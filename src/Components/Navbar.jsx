@@ -81,7 +81,6 @@ const Navbar = () => {
   );
 
 
-
   const fetchAllPlan = () => {
     const config = {
       method: "get",
@@ -144,8 +143,6 @@ const Navbar = () => {
       document.removeEventListener("click", handleDocumentClick);
     };
   }, []);
-
-  //used for apply navigation
 
 
   return (

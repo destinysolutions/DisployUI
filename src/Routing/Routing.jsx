@@ -61,6 +61,8 @@ import SalesManRoutes from "./SalesManRoutes";
 import CustomComposition from "../Components/Composition/CustomComposition";
 import PlanIntegration from "../Components/PlanIntegration";
 import AdvertisementScreens from "../Components/Advertisement/AdvertisementScreens";
+import Clock from "../Components/Apps/Clock/Clock";
+import ClockDetail from "../Components/Apps/Clock/ClockDetail";
 
 const Routing = () => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
@@ -92,7 +94,7 @@ const Routing = () => {
       window.removeEventListener("load", handleResize);
     };
   }, [handleResize]);
-  
+
   if (currentUrl.includes("PaymentIntegration")) {
     return (
       <BrowserRouter>
@@ -642,6 +644,27 @@ const Routing = () => {
                   />
                 }
               />
+
+              <Route
+                path="/Clock"
+                element={
+                  <Clock
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+
+              <Route
+                path="/Clockdetail"
+                element={
+                  <ClockDetail
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+
             </Routes>
           </ErrorBoundary>
         </BrowserRouter>
