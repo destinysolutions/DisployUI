@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-pascal-case */
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import Loading from "../../../Loading";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { MdArrowBackIosNew, MdCloudUpload } from "react-icons/md";
 import { FaPlusCircle, } from "react-icons/fa";
@@ -39,10 +39,12 @@ import { handleGetState } from "../../../../Redux/SettingUserSlice";
 import 'react-time-picker/dist/TimePicker.css';
 import AddSoltPage_2 from "./AddSoltPage_2";
 import BookSlotMap from "./BookSlotMap";
+import PhoneInput from "react-phone-input-2";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 
 const AddSlot = () => {
-  const { register, handleSubmit, watch, formState: { errors }, } = useForm();
+  const { register, handleSubmit, watch, formState: { errors }, control } = useForm();
 
   const dispatch = useDispatch()
   const Name = watch("name");
@@ -89,7 +91,7 @@ const AddSlot = () => {
   const [clientSecret, setClientSecret] = useState("");
   const Screenoptions = multiOptions(screenData);
   const [countries, setCountries] = useState([]);
-
+  const [locationDis, setlocationDis] = useState(5);
   const [popupVisible, setPopupVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [verticalFileName, setVerticalFileName] = useState('');
@@ -230,6 +232,7 @@ const AddSlot = () => {
   };
 
   const FetchScreen = (Params) => {
+ 
     toast.loading('Loading ...')
     const config = {
       method: "post",
@@ -252,16 +255,17 @@ const AddSlot = () => {
 
           let combinedArray = arr.concat(newData);
 
+
           let arr1 = [];
-          combinedArray?.map((item) => {
-            let obj = {
-              let: item?.latitude,
-              lon: item?.longitude,
-              dis: Params?.distance,
-            };
-            arr1?.push(obj);
-          });
+          let obj = {
+            let: Params?.latitude,
+            lon: Params?.longitude,
+            dis: Params?.distance,
+          };
+          arr1?.push(obj);
+
           let uniqueArr = removeDuplicates(arr1);
+
           setScreenArea(uniqueArr);
           setScreenData(combinedArray);
         }
@@ -460,14 +464,14 @@ const AddSlot = () => {
     let obj = {
       searchValue: value?.searchValue,
       include: Number(selectedValue),
-      area: 20,
+      area: 5,
       latitude: value?.latitude,
       longitude: value?.longitude,
     };
     let Params = {
       latitude: value?.latitude,
       longitude: value?.longitude,
-      distance: 20,
+      distance: 5,
       dates: constructTimeObjects(
         getallTime,
         startDate,
@@ -494,14 +498,17 @@ const AddSlot = () => {
 
   // page 4 handleRangeChange
   const handleRangeChange = (e, item) => {
+    e.preventDefault();
+    const distance = e.target.value
 
     let arr = allArea.map((item1) => {
 
+      console.log('item1?.searchValue === item?.searchValue :>> ', item1?.searchValue === item?.searchValue);
       if (item1?.searchValue === item?.searchValue) {
         let Params = {
           latitude: item?.latitude,
           longitude: item?.longitude,
-          distance: parseInt(e.target.value),
+          distance: parseInt(item1?.area),
           dates: constructTimeObjects(
             getallTime,
             startDate,
@@ -514,12 +521,12 @@ const AddSlot = () => {
             selecteStates,
           ),
         };
-
+        console.log('Params :>> ', Params);
         FetchScreen(Params);
         return {
           searchValue: item?.searchValue,
           include: Number(item?.include),
-          area: parseInt(e.target.value), // Assuming you want to modify the 'area' property of the matched item
+          area: parseInt(item1?.area), // Assuming you want to modify the 'area' property of the matched item
           latitude: item?.latitude,
           longitude: item?.longitude,
         };
@@ -534,7 +541,7 @@ const AddSlot = () => {
 
   // page 5 
   const handlebook = (paymentMethod) => {
-   
+
     let EventDetails = [];
 
     getallTime?.map((item) => {
@@ -552,38 +559,40 @@ const AddSlot = () => {
       EventDetails?.push(obj);
     })
     let Params = JSON.stringify({
-      PaymentDetails: {
-        ...paymentMethod,
-        AutoPay: true,
-        type: "Book Slot",
-      },
-      bookingSlotCustomerID: 0,
+      advBookslotCustomerID: 0,
       name: Name,
       email: Email,
       phoneNumber: PhoneNumber,
-      startDate: startDate,
-      endDate: endDate,
-      event: EventDetails,
-      // event: savedFile,
-      isRepeat: repeat,
-      repeatDays: day.join(", "),
-      screenIDs: Screenoptions.map((item) => item.output).join(", "),
-      totalCost: totalCost,
-      timezoneID: selectedTimeZone,
-      CountryID: selectedCountry,
-      otherIndustry: allSlateDetails?.otherIndustry,
-      purpose: allSlateDetails?.selecteScreens?.map((item) => item).join(', '),
-      text: allSlateDetails?.purposeText,
-      referralCode: allSlateDetails?.refVale || 0,
-      totalDuration: totalDuration,
-      industryID: allSlateDetails?.Industry?.value,
-      // StatesID: selecteStates,
-      systemTimeZone: new Date()
-        .toLocaleDateString(undefined, {
-          day: "2-digit",
-          timeZoneName: "long",
-        })
-        .substring(4),
+      bookSlot: {
+        bookingSlotCustomerID: 0,
+        startDate: startDate,
+        endDate: endDate,
+        event: EventDetails,
+        PaymentDetails: {
+          ...paymentMethod,
+          AutoPay: true,
+          type: "Book Slot",
+        },
+        isRepeat: repeat,
+        repeatDays: day.join(", "),
+        screenIDs: Screenoptions.map((item) => item.output).join(", "),
+        totalCost: totalCost,
+        timezoneID: selectedTimeZone,
+        CountryID: selectedCountry,
+        otherIndustry: allSlateDetails?.otherIndustry,
+        purpose: allSlateDetails?.selecteScreens?.map((item) => item).join(', '),
+        text: allSlateDetails?.purposeText,
+        referralCode: allSlateDetails?.refVale || 0,
+        totalDuration: totalDuration,
+        industryID: allSlateDetails?.Industry?.value,
+        // StatesID: selecteStates,
+        systemTimeZone: new Date()
+          .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+          })
+          .substring(4),
+      },
     });
     // return
     const config = {
@@ -766,7 +775,73 @@ const AddSlot = () => {
                     >
                       Phone Number *
                     </label>
-                    <input
+                    {/* <Controller
+                      name="phone"
+                      control={control}
+                      rules={{
+                        validate: (value) => isValidPhoneNumber(value),
+                      }}
+                      render={({ field: { onChange, value, country } }) => (
+                        <PhoneInput
+                          country={"in"}
+                          onChange={(phoneNumber) => {
+                            const formattedNumber = "+" + phoneNumber;
+                            onChange(formattedNumber); // Update the value directly
+                            setPhoneNumber(formattedNumber); // Update the state to reflect the phone number
+                          }}
+                          value={value || phoneNumber}
+                          autocompleteSearch={true}
+                          countryCodeEditable={false}
+                          enableSearch={true}
+                          inputStyle={{
+                            width: "100%",
+                            background: "white",
+                            padding: "25px 0 25px 3rem",
+                            borderRadius: "10px",
+                            fontSize: "1rem",
+                            border: "1px solid #000",
+                          }}
+                          dropdownStyle={{
+                            color: "#000",
+                            fontWeight: "600",
+                            padding: "0px 0px 0px 10px",
+                          }}
+                        />
+                      )}
+                    /> */}
+
+                    <Controller
+                      name="phone"
+                      control={control}
+                      rules={{ required: 'Phone Number is required' }}
+                      // rules={{
+                      //   validate: (value) => isValidPhoneNumber(value),
+                      // }}
+                      render={({ field: { onChange, value } }) => (
+                        <PhoneInput
+                          autocompleteSearch={true}
+                          countryCodeEditable={false}
+                          enableSearch={true}
+                          value={value}
+                          onChange={onChange}
+                          id="phone"
+                          country={'in'}
+                          error={true}
+                          inputProps={{
+                            name: 'phone',
+                            country: 'in',
+                            required: true,
+                            autoFocus: true,
+                            style: { width: '100%', border: "1px solid #e4e4e7" },
+                          }}
+                        />
+                      )}
+                    />
+                    {/* {isValidPhoneNumber && (
+                      <span className="error">Invalid Phone Number.</span>
+                    )} */}
+                    {/* {errors?.phone && <p className="text-red-500 text-xs ">{errors?.phone?.message}</p>} */}
+                    {/* <input
                       type="number"
                       name="phone"
                       id="phone"
@@ -779,7 +854,7 @@ const AddSlot = () => {
                         },
                       })}
                       className="formInput"
-                    />
+                    /> */}
                     {errors.phone && (
                       <span className="error">{errors.phone.message}</span>
                     )}
@@ -1136,7 +1211,7 @@ const AddSlot = () => {
             <BookSlotMap totalPrice={totalPrice} totalDuration={totalDuration}
               selectedCountry={selectedCountry}
               handleSelectCountries={handleSelectCountries}
-
+              setAllArea={setAllArea}
               setSelectedValue={setSelectedValue} handleBack={handleBack}
               selectedVal={selectedVal} setSelectedVal={setSelectedVal}
               setOpen={setOpen} getSelectedVal={getSelectedVal}
@@ -1147,7 +1222,9 @@ const AddSlot = () => {
               countries={countries} handleSelectChange={handleSelectChange}
               Screenoptions={Screenoptions} selectAllScreen={selectAllScreen}
               selectedScreen={selectedScreen} selectedScreens={selectedScreens}
-              setSelectAllScreen={setSelectAllScreen} setAllCity={setAllCity} />
+              setSelectAllScreen={setSelectAllScreen} setAllCity={setAllCity}
+              locationDis={locationDis} setlocationDis={setlocationDis}
+            />
           </>
         )}
 

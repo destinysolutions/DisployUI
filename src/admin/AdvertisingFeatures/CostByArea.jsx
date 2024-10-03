@@ -110,7 +110,7 @@ export default function CostByArea({ sidebarOpen }) {
                                 <thead>
                                     <tr className="text-center table-head-bg text-sm">
                                         <th className="text-[#5A5881] font-semibold ">Location</th>
-                                        <th className="text-[#5A5881] font-semibold ">Cost</th>
+                                        <th className="text-[#5A5881] font-semibold ">Cost/sec/sc</th>
                                         <th className="text-[#5A5881]  font-semibold ">Action</th>
                                     </tr>
                                 </thead>

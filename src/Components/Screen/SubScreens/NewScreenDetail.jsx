@@ -670,7 +670,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       selectedTextScroll?.instanceName;
     let data = {
       ...otpData[0],
-      screenID: assetScreenID,
+      screenID: assetScreenID || 0,
       mediaType: mediaType,
       mediaDetailID: moduleID,
       operation: "Update",
@@ -1768,7 +1768,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                                 <div className="flex justify-between items-center pl-5 pr-5 pb-4">
                                   <p className="text-black text-left">
-                                  Content will always be playing after confirming it.
+                                    Content will always be playing after confirming it.
                                   </p>
                                   <p className="text-right">
                                     <button

@@ -20,6 +20,7 @@ import { AdvertisementPopup } from "./AdvertisementPopup";
 import { socket } from "../../App";
 import { getAllAdvertisementScreenData } from "../../Redux/AdvertisentScreenSlice";
 import { BsPlayCircleFill } from "react-icons/bs";
+import moment from "moment";
 
 const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user, userDetails } = useSelector((state) => state.root.auth);
@@ -239,13 +240,25 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                               </th>
                               <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
-                                Google Location
+                                Location
                               </th>
                               <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                 Status
                               </th>
                               <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
+                                Start Date
+                              </th>
+                              <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
+                                End Date
+                              </th>
+                              <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
+                                Booked duration
+                              </th>
+                              <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                 Now Playing
+                              </th>
+                              <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
+                                Payout
                               </th>
                             </tr>
                           </thead>
@@ -320,20 +333,30 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                             </span>
                                           </td>
                                         </td>
-
+                                        <td className="text-[#5E5E5E] mw-200 text-center">
+                                          {moment(screen?.startDate).format("LL")}
+                                        </td>
+                                        <td className="text-[#5E5E5E] mw-200 text-center">
+                                          {moment(screen?.endDate).format("LL")}
+                                        </td>
+                                        <td className="text-[#5E5E5E] mw-200 text-center">
+                                          {screen?.payout}
+                                        </td>
                                         <td
                                           className="text-center cursor-pointer"
                                           style={{ wordBreak: "break-all" }}
                                         >
-                                          <div
-                                            title={screen?.assetName}
-                                            className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                          >
-                                            <p className="line-clamp-1">
-                                              {screen.assetName}
-                                            </p>
-                                            <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
-                                          </div>
+                                          {screen?.assetManagement && (
+                                            <div
+                                              title={screen?.assetName}
+                                              className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                            >
+                                              <p className="line-clamp-1">
+                                                {screen.assetName}
+                                              </p>
+                                              <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
+                                            </div>
+                                          )}
                                         </td>
 
                                         {/* <td className="mw-200 text-[#5E5E5E] text-center">
@@ -356,6 +379,9 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                       </select>
                                     </td> */}
 
+                                        <td className="text-[#5E5E5E] mw-200 text-center">
+                                          {screen?.payout}
+                                        </td>
                                       </tr>
                                     );
                                   })}

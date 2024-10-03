@@ -19,9 +19,24 @@ export default function AdScreens({ sidebarOpen }) {
     const [AdScreens, setAdScreens] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [SelectedDate, setSelectedDate] = useState('');
+    // const [EndDate, setEndDate] = useState('');
     const [assetManagement, setAssetManagement] = useState({});
     const filteredData = store?.pendingScreens?.length > 0 ? store?.pendingScreens?.filter((item) => item?.screenName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
 
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [showPicker, setShowPicker] = useState(false);
+
+    const handleStartDateChange = (e) => {
+        const date = e.target.value;
+        setStartDate(date);
+    };
+
+    const handleEndDateChange = (e) => {
+        const date = e.target.value;
+        setEndDate(date);
+        setShowPicker(!showPicker)
+    };
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
@@ -94,21 +109,32 @@ export default function AdScreens({ sidebarOpen }) {
                                 data-tip
                                 data-for="New MergeScreen"
                                 type="button"
+                                onClick={() => setShowPicker(!showPicker)}
                                 className="border rounded-full bg-SlateBlue text-white mr-2 p-0 hover:shadow-xl border-white shadow-lg flex items-center relative"
                             >
-                                <input
-                                    type='date'
-                                    id='Date-picker'
-                                    style={{ filter: 'brightness(0) invert(1)', width: "100%", opacity: 0, position: 'absolute', zIndex: 1 }}
-                                    onChange={(e) => {
-                                        const date = e.target.value;
-                                        setSelectedDate(date);
-                                        setLoadFirst(true);
-                                    }}
-                                    className="text-4xl text-white hover:text-white bg-SlateBlue p-0 border-0 rounded-lg"
-                                />
                                 <span className="text-white text-2xl p-2"><FaCalendarAlt /></span>
+                                {/* <span className="ml-2">
+                                    {startDate ? `From: ${startDate}` : 'Select Date Range'}
+                                    {endDate ? ` To: ${endDate}` : ''}
+                                </span> */}
                             </button>
+
+                            {showPicker && (
+                                <div className="absolute bg-white p-4 rounded-lg shadow-lg end-0 ">
+                                    <input
+                                        type='date'
+                                        id='start-date'
+                                        onChange={handleStartDateChange}
+                                        className="mb-2 border rounded-lg p-2"
+                                    /> <br/>
+                                    <input
+                                        type='date'
+                                        id='end-date'
+                                        onChange={handleEndDateChange}
+                                        className="mb-2 border rounded-lg p-2"
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

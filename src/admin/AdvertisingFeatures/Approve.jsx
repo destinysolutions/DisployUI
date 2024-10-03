@@ -8,6 +8,7 @@ import moment from 'moment';
 import { haversineDistance } from '../../Components/Common/Common';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
 import ReactTooltip from 'react-tooltip';
+import { MdOutlineAddLocationAlt } from 'react-icons/md';
 
 
 
@@ -255,52 +256,53 @@ export default function Approve({ handleTab }) {
                                                                         )}
                                                                     </td>
                                                                     <td className="px-6 py-4">
-                                                                        <div className="flex gap-1 justify-center">
-                                                                            <div className="cursor-pointer text-xl flex gap-4">
-                                                                                <button
-                                                                                    data-tip
-                                                                                    data-for="Approve"
-                                                                                    type="button"
-                                                                                    className="cursor-pointer  focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg  text-center inline-flex items-center "
-                                                                                    onClick={() => {
-                                                                                        handleUpdateScreen(item)
-                                                                                    }}
-                                                                                >
-                                                                                    <FaCheckCircle size={20} className='text-green' />
-                                                                                    <ReactTooltip
-                                                                                        id="Approve"
-                                                                                        place="bottom"
-                                                                                        type="warning"
-                                                                                        effect="solid"
+                                                                        {item?.screenRatePerSec ? (
+                                                                            <div className="flex gap-1 justify-center">
+                                                                                <div className="cursor-pointer text-xl flex gap-4">
+                                                                                    <button
+                                                                                        data-tip
+                                                                                        data-for="Approve"
+                                                                                        type="button"
+                                                                                        className="cursor-pointer  focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg  text-center inline-flex items-center "
+                                                                                        onClick={() => {
+                                                                                            handleUpdateScreen(item)
+                                                                                        }}
                                                                                     >
-                                                                                        <span>Approve</span>
-                                                                                    </ReactTooltip>
-                                                                                </button>
-                                                                            </div>
+                                                                                        <FaCheckCircle size={20} className='text-green' />
+                                                                                        <ReactTooltip
+                                                                                            id="Approve"
+                                                                                            place="bottom"
+                                                                                            type="warning"
+                                                                                            effect="solid"
+                                                                                        >
+                                                                                            <span>Approve</span>
+                                                                                        </ReactTooltip>
+                                                                                    </button>
+                                                                                </div>
 
-                                                                            <div className="cursor-pointer text-xl flex  ">
-                                                                                <button
-                                                                                    data-tip
-                                                                                    data-for="Rejected"
-                                                                                    type="button"
-                                                                                    className="rounded-full  text-center "
-                                                                                    onClick={() => {
-                                                                                        handleCancelScreen(item)
-                                                                                    }}
-                                                                                >
-                                                                                    <AiFillCloseCircle size={22} className='text-[#FF0000]' />
-                                                                                    <ReactTooltip
-                                                                                        id="Rejected"
-                                                                                        place="bottom"
-                                                                                        type="warning"
-                                                                                        effect="solid"
+                                                                                <div className="cursor-pointer text-xl flex  ">
+                                                                                    <button
+                                                                                        data-tip
+                                                                                        data-for="Rejected"
+                                                                                        type="button"
+                                                                                        className="rounded-full  text-center "
+                                                                                        onClick={() => {
+                                                                                            handleCancelScreen(item)
+                                                                                        }}
                                                                                     >
-                                                                                        <span>Rejected</span>
-                                                                                    </ReactTooltip>
-                                                                                </button>
+                                                                                        <AiFillCloseCircle size={22} className='text-[#FF0000]' />
+                                                                                        <ReactTooltip
+                                                                                            id="Rejected"
+                                                                                            place="bottom"
+                                                                                            type="warning"
+                                                                                            effect="solid"
+                                                                                        >
+                                                                                            <span>Rejected</span>
+                                                                                        </ReactTooltip>
+                                                                                    </button>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-
+                                                                        ) : <MdOutlineAddLocationAlt className='text-[black]' size={25} onClick={() => handleTab(1)} />}
                                                                     </td>
                                                                 </tr>
                                                             ))

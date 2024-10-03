@@ -15,7 +15,7 @@ import mapImg from "../../../../images/DisployImg/mapImg.png";
 import { Autocomplete, useLoadScript } from '@react-google-maps/api';
 
 
-export default function BookSlotMap({ handleSelectCountries, selectedCountry, totalPrice, totalDuration,
+export default function BookSlotMap({ handleSelectCountries, selectedCountry, totalPrice, totalDuration, setAllArea, setlocationDis, locationDis,
     setSelectedValue,
     setSelectAllScreen, setSelectedScreens,
     handleSelectChange, Screenoptions,
@@ -24,12 +24,14 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
     handleNext, countries, handleBack, allArea,
     setSelectedItem, selectedItem, Open, setOpen, handleRangeChange,
     getSelectedVal, setSelectedVal, selectedVal, setAllCity }) {
+
+
     const autocompleteRef = useRef(null);
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: 'AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk', // Replace with your API key
         libraries: ['places'], // Load Places library
     });
-    const [city, setCity] = useState([]);
+    const [zoom, setZoom] = useState(4);
     const center = [20.5937, 78.9629];
     const customIcon = new L.Icon({
         iconUrl: mapImg,
@@ -37,37 +39,15 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
         iconAnchor: [16, 16],
         popupAnchor: [0, -16],
     });
-
-    const FetchAllCity = () => {
-        const config = {
-            method: "get",
-            maxBodyLength: Infinity,
-            url: ALL_CITY,
-            headers: {},
-        };
-        axios
-            .request(config)
-            .then((response) => {
-                setAllCity(response.data.data);
-                let arr = [];
-                response.data.data?.map((item) => {
-                    arr.push(item?.text);
-                });
-                setCity(arr);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    console.log('screenArea :>> ', screenArea);
+    console.log('screenData :>> ', screenData);
+    const handleAreaChange = (e, index) => {
+        const { value } = e.target;
+        const updatedDis = [...allArea];
+        updatedDis[index].area = value;
+        setAllArea(updatedDis);
     };
 
-
-    useEffect(() => {
-        // FetchAllCity();
-    }, []);
-
-    const getChanges = (value) => {
-        console.log('location', value);
-    };
 
     const handleScreenClick = (screen) => {
         setSelectedScreen(screen);
@@ -84,6 +64,7 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
                 const location = place?.geometry?.location;
                 const latlog = { latitude: location?.lat(), longitude: location?.lng(), searchValue: place?.formatted_address }
                 setSelectedVal(place?.formatted_address)
+                setZoom(14);
                 getSelectedVal(latlog)
                 // setdata({ ...data, location: place?.formatted_address })
                 // setMarkerPosition({
@@ -112,113 +93,46 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
                     </div>
                     <div className="text-2xl font-semibold">Find Your Screen</div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 h-[93%] overflow-auto sc-scrollbar ">
+                <div className="grid grid-cols-3 gap-4 h-[90%] overflow-auto sc-scrollbar ">
                     <div className="col-span-2 rounded-lg shadow-md bg-white p-5">
                         <div className="flex flex-col gap-2 h-full">
-                            <div className="w-full mb-3">
-                                <select
-                                    className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
-                                    id="selectOption"
-                                    value={selectedCountry}
-                                    onChange={handleSelectCountries}
-                                >
-                                    <option className="hidden" value=''>Select Country </option>
-                                    {countries?.map((country) => {
-                                        return (
-                                            <option
-                                                value={country}
-                                                key={country.countryID}
-                                            >
-                                                {country?.countryName}
-                                            </option>
-                                        );
-                                    })}
-                                </select>
-                            </div>
-                            {/* <div className="flex gap-2 items-center">
-                        <IoEarthSharp />
-                        <span className="">
-                          {getTimeZoneName(allTimeZone, selectedTimeZone)}
-                        </span>
-                      </div> */}
 
                             {allArea?.map((item, index) => {
                                 return (
-                                    <div
-                                        className="flex flex-row gap-2 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full p-2 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        key={index}
-                                    >
-                                        <span className="flex items-center ">
-                                            <FiMapPin className="w-5 h-5 text-black " />
-                                        </span>
-                                        <div className="text-base flex items-center">
-                                            <h2>{item?.searchValue}</h2>
-                                        </div>
-
-                                        <span className="flex items-center justify-end">
-                                            <div className=" flex flex-row items-center border rounded-lg">
-                                                <div
-                                                    className="flex items-center"
-                                                    onClick={() => {
-                                                        setSelectedItem(item);
-                                                        setOpen(true);
-                                                    }}
-                                                >
-                                                    <div className="text-black p-1 px-2 no-underline hidden md:block lg:block cursor-pointer">
-                                                        +{item?.area} km
-                                                    </div>
-                                                </div>
-                                                {selectedItem === item && Open && (
-                                                    <div
-                                                        id="ProfileDropDown"
-                                                        className={`rounded ${Open ? "none" : "hidden"
-                                                            } shadow-md bg-white absolute mt-44 z-[9999] w-48`}
-                                                    >
-                                                        <div>
-                                                            <div className="border-b flex justify-center">
-                                                                <div className="p-2">
-                                                                    Current city only
-                                                                </div>
-                                                            </div>
-                                                            <div className="p-2 flex gap-2 items-center">
-                                                                <BsCheckCircleFill className="text-blue-6 00" />
-                                                                Cities Within Radius
-                                                            </div>
-                                                            <div className="relative mb-8 mx-2">
-                                                                <div>
-                                                                    <input
-                                                                        id="labels-range-input"
-                                                                        type="range"
-                                                                        min="0"
-                                                                        max="30"
-                                                                        step="5"
-                                                                        value={item?.area}
-                                                                        onChange={(e) =>
-                                                                            handleRangeChange(e, item)
-                                                                        }
-                                                                        className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                                                                    />
-                                                                    <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">
-                                                                        5
-                                                                    </span>
-
-                                                                    <span className="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">
-                                                                        30
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
+                                    <div className='flex flex-row gap-2'>
+                                        <div
+                                            className="flex flex-row gap-2 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-96 p-2 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            key={index}
+                                        >
+                                            <span className="flex items-center ">
+                                                <FiMapPin className="w-5 h-5 text-black " />
+                                            </span>
+                                            <div className="text-base flex items-center">
+                                                <h2>{item?.searchValue}</h2>
                                             </div>
-                                        </span>
+                                        </div>
+                                        <div className="text-base flex items-center">
+                                            <form
+                                                onSubmit={(e) => handleRangeChange(e, item)}
+                                                className="flex-initial w-fit"
+                                            >
+                                                <input
+                                                    type='number'
+                                                    min={0}
+                                                    value={item?.area}
+                                                    // onChange={(e) => setlocationDis(e.target.value)}
+                                                    onChange={(e) => handleAreaChange(e, index)}
+                                                    className='p-0 w-16 px-3 py-2  border border-primary rounded-md'
+                                                />
+                                            </form>
+                                        </div>
                                     </div>
                                 );
                             })}
 
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="flex justify-between items-center gap-4">
                                 <select
-                                    className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
+                                    className="border border-primary rounded-lg px-4 pl-2 py-2 w-28"
                                 // value={selectedValue} // Set the selected value from state
                                 // onChange={handleChange} // Handle change event
                                 >
@@ -230,35 +144,26 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
                                     ))}
                                 </select>
 
-                                <div className="col-span-2">
+                                <div className="w-full">
                                     <div className="relative col-span-2">
                                         <div className="col-span-3">
                                             <Autocomplete
-
                                                 onLoad={(ref) => (autocompleteRef.current = ref)}
                                                 onPlaceChanged={onPlaceChanged}
                                             >
                                                 <input value={selectedVal} type="text" placeholder="Search for an area" className='appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3' onChange={(e) => setSelectedVal(e.target.value)} />
                                             </Autocomplete>
-                                            {/* <InputAuto
-                                                pholder="Search"
-                                                data={city}
-                                                onSelected={getSelectedVal}
-                                                onChange={getChanges}
-                                                // handleKeyPress={handleKeyPress}
-                                                setSelectedVal={setSelectedVal}
-                                                selectedVal={selectedVal}
-                                            /> */}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
+
                             <div className="mt-5 h-96">
                                 <div className="h-full">
                                     <MapContainer
                                         center={center}
-                                        zoom={4}
+                                        zoom={zoom}
                                         maxZoom={18}
                                         style={{
                                             width: "100%",
@@ -268,18 +173,19 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
                                     >
                                         <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
                                         <LayerGroup>
-                                            {screenArea?.map((item) => {
+                                            {allArea?.map((item) => {
                                                 return (
                                                     <Circle
-                                                        center={[item?.let, item?.lon]}
+                                                        center={[item?.latitude, item?.longitude]}
                                                         pathOptions={greenOptions}
-                                                        radius={kilometersToMeters(item?.dis)}
+                                                        radius={kilometersToMeters(item?.area)}
                                                     />
                                                 );
                                             })}
+
                                         </LayerGroup>
                                         <MarkerClusterGroup>
-                                            {screenData.map((screen, index) => {
+                                            {screenData?.map((screen, index) => {
                                                 return (
                                                     <>
                                                         <Marker
@@ -352,34 +258,39 @@ export default function BookSlotMap({ handleSelectCountries, selectedCountry, to
                             options={Screenoptions}
                             isMulti
                         />
-                        <div>
-                            <div className="flex items-center gap-3 my-2">
-                                <label className="text-sm font-medium">Repetition Duration:</label>
-                                <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">{totalDuration}</label>
-                            </div>
-                            {/* <div className="flex items-center gap-3">
+                        <div className="h-full w-full flex justify items-end">
+                            <div>
+                                <div className='mb-5 '>
+                                    <div className="flex items-center gap-3 my-2">
+                                        <label className="text-sm font-medium">Repetition Duration:</label>
+                                        <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">{totalDuration}</label>
+                                    </div>
+                                    {/* <div className="flex items-center gap-3">
                                 <label className="text-sm font-medium">Total balance credit:</label>
                                 <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">$0.00</label>
                             </div> */}
-                            <div className="flex items-center gap-3">
-                                <label className="text-sm font-medium">Total Payable Amount:</label>
-                                <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">${totalPrice}</label>
-                            </div>
+                                    <div className="flex items-center gap-3">
+                                        <label className="text-sm font-medium">Total Payable Amount:</label>
+                                        <label for='Yes' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">${totalPrice}</label>
+                                    </div>
 
-                        </div>
-                        <div className="h-full w-full flex justify-center items-end">
-                            <div className="flex justify-center">
-                                <button
-                                    className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                    onClick={() => handleNext()}
-                                >
-                                    Book Your Slot
-                                </button>
+                                </div>
+
+                                <div className="flex justify-center mt-2">
+                                    <button
+                                        className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                        onClick={() => handleNext()}
+                                    >
+                                        Book Your Slot
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
+
         </div>
 
     )

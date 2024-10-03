@@ -18,13 +18,7 @@ const options = {
     zoomControl: true,
 };
 export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
-    // const greenOptions = {
-    //     fillColor: "green",
-    //     fillOpacity: 0.35,
-    //     strokeColor: "green",
-    //     strokeOpacity: 1,
-    //     strokeWeight: 1,
-    // };
+
 
     const dispatch = useDispatch();
     const { isLoaded } = useLoadScript({

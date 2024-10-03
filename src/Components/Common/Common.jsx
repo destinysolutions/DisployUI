@@ -244,9 +244,19 @@ export function secondsToHMS(seconds) {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
+// export const greenOptions = {
+//   color: "blue",
+//   fillColor: "blue",
+// };
+
 export const greenOptions = {
   color: "blue",
   fillColor: "blue",
+
+  fillOpacity: 0.35,
+  strokeColor: "blue",
+  strokeOpacity: 0,
+  strokeWeight: 0,
 };
 
 export function removeDuplicates(arr) {
