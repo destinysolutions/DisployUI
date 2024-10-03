@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import * as Yup from "yup";
@@ -19,7 +19,8 @@ const AddEditRetailer = ({
   setShowModal,
   orgUserID, setEditData
 }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const [disable, setDisable] = useState(false)
   //using for validation and register api calling
 
   const handleApiResponse = (promise) => {
@@ -84,6 +85,7 @@ const AddEditRetailer = ({
     enableReinitialize: editData,
     validationSchema: editId ? editValidationSchema : validationSchema,
     onSubmit: async (values) => {
+      setDisable(true)
       const formData = new FormData();
       formData.append("OrganizationName", values.companyName);
       formData.append("Password", values.password || ""); // Set a default value if null
@@ -98,9 +100,8 @@ const AddEditRetailer = ({
         formData.append("OrgUserSpecificID", editId);
         formData.append("orgUserID", orgUserID);
         handleApiResponse(dispatch(updateRetailerData(formData)));
-
+        setDisable(false)
       } else {
-
         formData.append("Operation", "Insert");
         dispatch(addRetailerData(formData)).then((res) => {
           toast.remove()
@@ -113,6 +114,7 @@ const AddEditRetailer = ({
           formik.resetForm();
 
         })
+        setDisable(false)
       }
     },
   });
@@ -310,6 +312,7 @@ const AddEditRetailer = ({
                       </button>
                       <button
                         type="submit"
+                        disabled={disable}
                         className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                       >
                         {heading === "Add" ? "Save" : heading}
