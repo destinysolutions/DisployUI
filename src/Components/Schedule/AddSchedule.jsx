@@ -53,7 +53,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [allAssets, setAllAssets] = useState([]);
   const current_date = new Date();
   const [createdScheduleId, setCreatedScheduleId] = useState("");
-
   const [searchParams] = useSearchParams();
   const getScheduleId = searchParams.get("scheduleId");
   const isEditingSchedule = !!getScheduleId;
@@ -76,10 +75,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const addedTimezoneName = searchParams.get("timeZoneName");
   const selectedScreenIdsString = selectedScreens.join(",");
   const currentHour = selectedCurrentTime.getHours();
+
   const currentMinute = selectedCurrentTime.getMinutes();
   const interval =
     currentMinute < 20 ? 1 : currentMinute >= 20 && currentMinute <= 40 ? 2 : 3;
-  const { user, token,userDetails } = useSelector((s) => s.root.auth);
+  const { user, token, userDetails } = useSelector((s) => s.root.auth);
   const { assets } = useSelector((s) => s.root.asset);
 
   const authToken = `Bearer ${token}`;
@@ -150,7 +150,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleTimezoneSelect = (e) => {
     if (e.target.value != selectedTimezoneName && isEditingSchedule) {
-      if (!window.confirm("Are you sure?")) return;
+      // if (!window.confirm("Are you sure?")) return;
       axios
         .get(`${GET_TIME_ZONE}?TimeZone=${e.target.value}`, {
           headers: {
@@ -275,16 +275,16 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
+
     let idS = "";
     for (const key in screenIds) {
       if (screenIds[key] === true) {
         idS += `${key},`;
       }
     }
-    // if (idS === "") {
-    //   toast.remove();
-    //   return toast.error("Please Select Screen.");
-    // }
+    if (idS === "") {
+      return toast.error("Please Select Screen.");
+    }
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -959,8 +959,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
 
-      
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>

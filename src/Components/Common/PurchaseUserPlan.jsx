@@ -13,6 +13,7 @@ import UpgradePlan from '../Screen/UpgradePlan';
 
 const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanType, myplan, setSelectPlan }) => {
     const dispatch = useDispatch();
+    const timeZoneName = new Date().toLocaleDateString(undefined, { day: "2-digit", timeZoneName: "long", }).substring(4)
     const { token, user, userDetails } = useSelector((state) => state.root.auth);
     const [Screen, setScreen] = useState(1);
     const [showDiscount, setShowDiscount] = useState(false);
@@ -24,7 +25,10 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
     const [purchaseType, setPurchaseType] = useState("")
     const [buyPlan, setBuyPlan] = useState(false)
     const [upgradePlan, setUpgradePlan] = useState(false)
-
+    const [CountryType, setCountryType] = useState({
+        India: true, Other: false
+    });
+    const [Monthlyplan, setMonthlyplan] = useState('Monthly');
     const TotalPrice = Screen <= 1 ? selectPlan?.planPrice : ((Screen * selectPlan?.planPrice))
 
     const appearance = {
@@ -88,6 +92,16 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
         })
     }
 
+    const handleButtonClick = (buttonType) => {
+        setCountryType(prevState => ({
+            ...prevState,
+            India: buttonType === 'India',
+            Other: buttonType === 'Other'
+        }));
+    };
+
+
+    // console.log('myplan :>> ', myplan);
     return (
         <>
             <div
@@ -226,35 +240,91 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                     onClick={() => setPurchasePlan(!purchasePlan)}
                                 />
                             </div>
-                            <div className="flex flex-wrap my-4 max-h-[550px] overflow-y-auto">
-                                {myplan?.map((item) => {
-                                    return (
-                                        <div className='w-full md:w-1/2 lg:w-1/4 xl:w-1/4 px-3 mb-4'>
-                                            <div className="h-full pricing-plan border-t-4 border-solid border-white bg-white text-center max-w-sm mx-auto hover:border-blue-700 transition-colors duration-300">
-                                                <div className="p-6">
-                                                    <h4 className="font-medium leading-tight text-2xl mb-3">{item?.planName}</h4>
-                                                    <p className="text-gray-600 text-sm">{item?.planDetailss}</p>
-                                                </div>
-                                                {item?.listOfPlansID !== 4 && (
-                                                    <div className="pricing-amount bg-indigo-100 p-4 h-24">
-                                                        <p className="text-left">From</p>
-                                                        <div className="flex items-center justify-start">
-                                                            <span className="text-5xl font-semibold mr-2 mr-2">${item?.planPrice}</span>
-                                                            <span className="text-left leading-5">per screen /mo <br />+ VAT</span>
-                                                        </div>
-                                                    </div>
-                                                )}
+                            {/* <div className='flex justify-center items-center gap-3 mt-4'>
+                                <button
+                                    className={`relative group text-base font-semibold flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 
+                                        ${CountryType.India ? 'bg-primary text-white' : ''}
+                                            `}
+                                    onClick={() => handleButtonClick('India')}
+                                >India
+                                </button>
+                                <button
+                                    className={`relative group text-base font-semibold flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 
+                                        ${CountryType.Other ? 'bg-primary text-white' : ''}
+                                            `}
+                                    onClick={() => handleButtonClick('Other')}
+
+                                >
+                                    Other
+                                    <div className="tooltip-arrow" data-popper-arrow></div>
+                                </button>
+                            </div> */}
+                            <div className="  max-h-[700px] p-5 ">
+                                <div className=' border border-gray-300 rounded-lg p-2 '>
+                                    <div className="flex justify-center my-2">
+                                        <div className="ml-2 flex items-center">
+                                            <input
+                                                type="radio"
+                                                value={Monthlyplan === 'Monthly'}
+                                                checked={Monthlyplan === 'Monthly'}
+                                                name="Monthly"
+                                                id='Monthly'
+                                                onChange={() => {
+                                                    setMonthlyplan('Monthly');
+                                                }}
+                                            />
+                                            <label for='Monthly' className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs font-semibold">
+                                                Monthly
+                                            </label>
+                                        </div>
+                                        <div className="ml-3 flex items-center">
+                                            <input
+                                                id='Annually'
+                                                type="radio"
+                                                value={Monthlyplan === 'Annually'}
+                                                checked={Monthlyplan === 'Annually'}
+                                                name="Annually"
+                                                onChange={() => {
+                                                    setMonthlyplan('Annually');
+                                                }}
+                                            />
+                                            <label for='Annually' className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs font-semibold">
+                                                Annually
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-wrap vertical-scroll-inner max-h-[570px]'>
+                                        {myplan
+                                            ?.filter((item) => item?.isAnnually ? Monthlyplan === 'Annually' : Monthlyplan === 'Monthly')
+                                            ?.filter((item) => timeZoneName === 'India Standard Time' ? item?.isIndian === true : item?.isIndian === false)
+                                            ?.map((item) => {
+                                                return (
+                                                    <div className='w-full md:w-1/2 lg:w-1/4 xl:w-1/4 px-3 mb-4'>
+                                                        <div className="h-full pricing-plan border-t-4 border-solid border-white bg-white text-center max-w-sm mx-auto hover:border-blue-700 transition-colors duration-300">
+                                                            <div className="p-6">
+                                                                <h4 className="font-medium leading-tight text-2xl mb-3">{item?.planName}</h4>
+                                                                <p className="text-gray-600 text-sm">{item?.planDetailss}</p>
+                                                            </div>
+                                                            {!(item?.listOfPlansID === 4 || item?.listOfPlansID === 15 || item?.listOfPlansID === 19 || item?.listOfPlansID === 11) && (
+                                                                <div className="pricing-amount bg-indigo-100 p-4 h-24">
+                                                                    <p className="text-left">From</p>
+                                                                    <div className="flex items-center justify-start">
+                                                                        <span className="text-2xl font-semibold mr-2 mr-2">{timeZoneName === 'India Standard Time' ? "₹" : '$'} {item?.planPrice}</span>
+                                                                        <span className="text-left leading-5">per screen /mo <br />+ VAT</span>
+                                                                    </div>
+                                                                </div>
+                                                            )}
 
 
 
-                                                {item?.listOfPlansID === 4 && (
-                                                    <div className="pricing-amount bg-indigo-100 p-4 h-24 flex items-center justify-start flex-wrap">
-                                                        <p>Call us at:</p>
-                                                        <p>+1 224 244 9969</p>
-                                                    </div>
-                                                )}
+                                                            {(item?.listOfPlansID === 4 || item?.listOfPlansID === 15 || item?.listOfPlansID === 19 || item?.listOfPlansID === 11) && (
+                                                                <div className="pricing-amount bg-indigo-100 p-4 h-24 flex items-center justify-start flex-wrap">
+                                                                    <p>Call us at:</p>
+                                                                    <p>+1 224 244 9969</p>
+                                                                </div>
+                                                            )}
 
-                                                {/*<div className='w-full border-b border-gray-300 py-3'>
+                                                            {/* <div className='w-full border-b border-gray-300 py-3'>
                                                     <div className="flex items-center justify-center">
                                                         <span>Annual</span>
                                                         <label
@@ -282,89 +352,91 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
                                                         <span>Monthly</span>
                                                     </div>
                                                     <p>No minimum screens</p>
-                                                </div>*/}
-                                                <div className="p-4">
-                                                    {item?.listOfPlansID === 1 && (
-                                                        <ul className="leading-loose">
-                                                            <li>Total Storage :- 500 MB</li>
-                                                            <li>Advance Scheduling</li>
-                                                            <li>Screen Grouping</li>
-                                                            <li>Screen Management</li>
-                                                            <li>Support</li>
-                                                        </ul>
-                                                    )}
-                                                    {item?.listOfPlansID === 2 && (
-                                                        <ul className="leading-loose">
-                                                            <li>Total Storage :- 1 GB</li>
-                                                            <li>Apps (100+ app access)</li>
-                                                            <li>User Audit logs</li>
-                                                            <li>Merge Screen</li>
-                                                            <li>Multilevel Approval</li>
-                                                        </ul>
-                                                    )}
-                                                    {item?.listOfPlansID === 3 && (
-                                                        <ul className="leading-loose">
-                                                            <li>Total Storage :- 2 GB</li>
-                                                            <li>Weather Scheduling</li>
-                                                            <li>Ad Service</li>
-                                                            <li>CRM</li>
-                                                            <li>Report</li>
-                                                        </ul>
-                                                    )}
-                                                    {item?.listOfPlansID === 4 && (
-                                                        <ul className="leading-loose">
-                                                            {/* <li>Total Storage :- 5 GB</li>
+                                                </div> */}
+                                                            <div className="p-4">
+                                                                {(item?.listOfPlansID === 1 || item?.listOfPlansID === 12 || item?.listOfPlansID === 16 || item?.listOfPlansID === 8) && (
+                                                                    <ul className="leading-loose">
+                                                                        <li>Total Storage :- 500 MB</li>
+                                                                        <li>Advance Scheduling</li>
+                                                                        <li>Screen Grouping</li>
+                                                                        <li>Screen Management</li>
+                                                                        <li>Support</li>
+                                                                    </ul>
+                                                                )}
+                                                                {(item?.listOfPlansID === 2 || item?.listOfPlansID === 13 || item?.listOfPlansID === 17 || item?.listOfPlansID === 9) && (
+                                                                    <ul className="leading-loose">
+                                                                        <li>Total Storage :- 1 GB</li>
+                                                                        <li>Apps (100+ app access)</li>
+                                                                        <li>User Audit logs</li>
+                                                                        <li>Merge Screen</li>
+                                                                        <li>Multilevel Approval</li>
+                                                                    </ul>
+                                                                )}
+                                                                {(item?.listOfPlansID === 3 || item?.listOfPlansID === 14 || item?.listOfPlansID === 18 || item?.listOfPlansID === 10) && (
+                                                                    <ul className="leading-loose">
+                                                                        <li>Total Storage :- 2 GB</li>
+                                                                        <li>Weather Scheduling</li>
+                                                                        <li>Ad Service</li>
+                                                                        <li>CRM</li>
+                                                                        <li>Report</li>
+                                                                    </ul>
+                                                                )}
+                                                                {item?.listOfPlansID === 4 && (
+                                                                    <ul className="leading-loose">
+                                                                        {/* <li>Total Storage :- 5 GB</li>
                                                                 <li>Unlimited Users</li>
                                                                 <li>User ROLE Permissions</li>
                                                                 <li>Composition</li>
                                                                 <li>Multilevel Approval</li> */}
-                                                        </ul>
-                                                    )}
-                                                    <div className="pt-4">
-                                                        {userDetails?.isActivePlan && userDetails?.planID === item?.listOfPlansID && (
-                                                            <button className="bg-blue-700 cursor-not-allowed hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300">Subscribed</button>
-                                                        )}
-                                                        {userDetails?.isActivePlan && userDetails?.planID !== item?.listOfPlansID && item?.listOfPlansID !== 4 && (
-                                                            <button
-                                                                className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
-                                                                onClick={() => {
-                                                                    setSelectPlan(item)
-                                                                    setPurchaseType("Upgrade")
-                                                                    setUpgradePlan(true)
-                                                                    // handleCreate()
-                                                                }}
-                                                            >
-                                                                {userDetails?.planID < item?.listOfPlansID ? "Upgrade Plan" : "Downgrade Plan"}
-                                                            </button>
-                                                        )}
-                                                        {!userDetails?.isActivePlan && item?.listOfPlansID !== 4 && (
-                                                            <button
-                                                                className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
-                                                                onClick={() => {
-                                                                    setSelectPlan(item)
-                                                                    setBuyPlan(true)
-                                                                }}
-                                                            >
-                                                                Buy Plan
-                                                            </button>
-                                                        )}
-                                                        {userDetails?.planID !== item?.listOfPlansID && item?.listOfPlansID === 4 && (
-                                                            <button
-                                                                className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
-                                                                onClick={() => {
-                                                                    setSelectPlan(item)
-                                                                    setTalkToSale(true)
-                                                                }}
-                                                            >
-                                                                Talk to Sale
-                                                            </button>
-                                                        )}
+                                                                    </ul>
+                                                                )}
+                                                                <div className="pt-4">
+                                                                    {userDetails?.isActivePlan && userDetails?.planID === item?.listOfPlansID && (
+                                                                        <button className="bg-blue-700 cursor-not-allowed hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300">Subscribed</button>
+                                                                    )}
+                                                                    {userDetails?.isActivePlan && userDetails?.planID !== item?.listOfPlansID && !(item?.listOfPlansID === 4 || item?.listOfPlansID === 15 || item?.listOfPlansID === 19 || item?.listOfPlansID === 11) && (
+                                                                        <button
+                                                                            className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
+                                                                            onClick={() => {
+                                                                                setSelectPlan(item)
+                                                                                setPurchaseType("Upgrade")
+                                                                                setUpgradePlan(true)
+                                                                                // handleCreate()
+                                                                            }}
+                                                                        >
+                                                                            {userDetails?.planID < item?.listOfPlansID ? "Upgrade Plan" : "Downgrade Plan"}
+                                                                        </button>
+                                                                    )}
+                                                                    {!userDetails?.isActivePlan && !(item?.listOfPlansID === 4 || item?.listOfPlansID === 15 || item?.listOfPlansID === 19 || item?.listOfPlansID === 11) && (
+                                                                        <button
+                                                                            className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
+                                                                            onClick={() => {
+                                                                                setSelectPlan(item)
+                                                                                setBuyPlan(true)
+                                                                            }}
+                                                                        >
+                                                                            Buy Plan
+                                                                        </button>
+                                                                    )}
+                                                                    {userDetails?.planID !== item?.listOfPlansID && (item?.listOfPlansID === 4 || item?.listOfPlansID === 15 || item?.listOfPlansID === 19 || item?.listOfPlansID === 11) && (
+                                                                        <button
+                                                                            className="bg-blue-700 hover:bg-blue-800 text-xl text-white py-2 px-6 rounded-full transition-colors duration-300"
+                                                                            onClick={() => {
+                                                                                setSelectPlan(item)
+                                                                                setTalkToSale(true)
+                                                                            }}
+                                                                        >
+                                                                            Talk to Sale
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
+                                                )
+                                            })}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -387,7 +459,7 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
             )}
 
             {upgradePlan && (
-                <UpgradePlan upgradePlan={upgradePlan} setUpgradePlan={setUpgradePlan} selectPlan={selectPlan} userPlanType={userPlanType} purchaseType={purchaseType} Screen={Screen}/>
+                <UpgradePlan upgradePlan={upgradePlan} setUpgradePlan={setUpgradePlan} selectPlan={selectPlan} userPlanType={userPlanType} purchaseType={purchaseType} Screen={Screen} />
             )}
         </>
     )

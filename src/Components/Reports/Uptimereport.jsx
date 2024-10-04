@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../Styles/Report.css";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -7,6 +7,7 @@ import { CiFilter } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 import { useSelector } from "react-redux";
+import { PageNumber } from "../Common/Common";
 
 const Uptimereport = ({
   allReportData,
@@ -16,6 +17,18 @@ const Uptimereport = ({
   sidebarOpen,
 }) => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
+  const [pageSize, setPageSize] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(allReportData?.allData?.length / pageSize);
+  const sortedAndPaginatedData = allReportData?.SearchData?.length > 0 ? allReportData?.SearchData.slice((currentPage - 1) * pageSize, currentPage * pageSize) : [];
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [allReportData?.SearchData]);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   return (
     <>
       <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
@@ -26,7 +39,7 @@ const Uptimereport = ({
                 <MdKeyboardArrowLeft className="text-4xl text-primary" />
               </Link>
               <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
-                Up-time Report
+                Up-time Reports
               </h1>
             </div>
 
@@ -81,16 +94,21 @@ const Uptimereport = ({
             >
               <thead>
                 <tr className="table-head-bg rounded-md">
-                  <th className="flex items-center font-medium p-3">
+                  <th className="flex items-center font-medium p-3 mt-3 justify-center">
                     Screen Name
                     <CiFilter className="text-sm text-primary ml-2" />
                   </th>
-                  <th className=" font-medium text-left p-3">Total Up-time</th>
                   <th className=" font-medium text-center p-3">
-                    Total Offline Time
+                    Total Up-Time <br />
+                    <label for='Yes' className="ml-1 text-sm font-normal">(dd/hh/mm/ss)</label>
                   </th>
                   <th className=" font-medium text-center p-3">
-                    Daily Avg Up-time
+                    Down-Time<br />
+                    <label for='Yes' className="ml-1 text-sm font-normal">(dd/hh/mm/ss)</label>
+                  </th>
+                  <th className=" font-medium text-center p-3">
+                    Daily Avg Up-Time<br />
+                    <label for='Yes' className="ml-1 text-sm font-normal">(dd/hh/mm/ss)</label>
                   </th>
                 </tr>
               </thead>
@@ -122,15 +140,15 @@ const Uptimereport = ({
                     </td>
                   </tr>
                 )}
-                {allReportData?.SearchData?.length > 0 &&
+                {sortedAndPaginatedData?.length > 0 &&
                   !loading &&
-                  allReportData?.SearchData?.map((item, index) => {
+                  sortedAndPaginatedData?.map((item, index) => {
                     return (
                       <tr
                         className=" align-middle border-b border-[#E4E6FF]"
                         key={index}
                       >
-                        <td>
+                        <td className="text-center">
                           <p>{item?.screenName}</p>
                         </td>
                         <td className="text-center">
@@ -151,7 +169,7 @@ const Uptimereport = ({
                       </tr>
                     );
                   })}
-                {allReportData?.SearchData?.length === 0 && !loading && (
+                {sortedAndPaginatedData?.length === 0 && !loading && (
                   <tr>
                     <td colSpan={4}>
                       <div className="flex text-center m-5 justify-center">
@@ -162,11 +180,79 @@ const Uptimereport = ({
                     </td>
                   </tr>
                 )}
+
               </tbody>
             </table>
           </div>
+          {
+            sortedAndPaginatedData?.length !== 0 && (
+              <div className="flex border-b border-gray lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+                <div className="flex items-center">
+                  <span className="text-gray-500">{`Total ${allReportData?.allData?.length} Up-time Reports`}</span>
+                </div>
+                <div className="flex justify-end ">
+                  <select className='px-1 mr-2 border border-gray rounded-lg'
+                    value={pageSize}
+                    onChange={(e) => { setPageSize(e.target.value); setCurrentPage(1) }}
+                  >
+                    {PageNumber.map((x) => (
+                      <option value={x}>{x}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    <svg
+                      className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 5H1m0 0 4 4M1 5l4-4"
+                      />
+                    </svg>
+                    {sidebarOpen ? "Previous" : ""}
+                  </button>
+                  <div className="flex items-center me-3">
+                    <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                  </div>
+                  {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={(currentPage === totalPages)}
+                    className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    {sidebarOpen ? "Next" : ""}
+                    <svg
+                      className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            )
+          }
         </div>
-      </div>
+      </div >
     </>
   );
 };

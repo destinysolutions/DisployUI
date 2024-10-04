@@ -232,10 +232,14 @@ const Registration = () => {
       if (response) {
         response
           .then((res) => {
-            if (res?.error?.message !== "Rejected") {
+            if (res?.error?.messstatusage !== "Rejected") {
+              if (res?.payload?.status) {
+                toast.success("Registration successfully.");
+                navigate("/");
+              } else {
+                toast.error(res?.payload?.message);
+              }
               // window.localStorage.setItem("timer", JSON.stringify(18_00));
-              toast.success("Registration successfully.");
-              navigate("/");
               setLoading(false);
             } else {
               toast.error(res?.payload)
@@ -764,7 +768,7 @@ const Registration = () => {
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
                 </div>
               </button>
-             {/* <LoginSocialFacebook
+              {/* <LoginSocialFacebook
                 appId={process.env.REACT_APP_FACEBOOK_APK_SECRET_KEY}
                 onResolve={(response) => {
                   console.log(response);
@@ -781,10 +785,10 @@ const Registration = () => {
                 </button>
               </LoginSocialFacebook>*/}
               <button onClick={SignInFaceBook}>
-                  <div className="socialIcon socialIcon2">
-                    <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
-                  </div>
-                </button>
+                <div className="socialIcon socialIcon2">
+                  <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                </div>
+              </button>
               <button onClick={SignInapple}>
                 <div className="socialIcon socialIcon3">
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />

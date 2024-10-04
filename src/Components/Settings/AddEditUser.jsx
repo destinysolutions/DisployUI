@@ -61,10 +61,8 @@ const AddEditUser = ({
     sidebarOpen,
     isActiveUser, setIsActiveUser
 }) => {
-
     const { control } = useForm();
-    const [passwordError, setPasswordError] = useState("");
-    console.log(isActive, 'isActive', isActiveUser);
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     const validatePassword = (password) => {
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -74,14 +72,6 @@ const AddEditUser = ({
     const handlePasswordChange = (e) => {
         const value = e.target.value;
         setPassword(value);
-
-        if (!validatePassword(value)) {
-            setPasswordError(
-                "Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character."
-            );
-        } else {
-            setPasswordError("");
-        }
     };
 
     return (
@@ -123,7 +113,7 @@ const AddEditUser = ({
                                                         value={firstName}
                                                         onChange={(e) => setFirstName(e.target.value)}
                                                     />
-                                                    {errors?.firstName && (
+                                                    {!firstName && errors?.firstName && (
                                                         <p className="error">{errors?.firstName}</p>
                                                     )}
                                                 </div>
@@ -139,7 +129,7 @@ const AddEditUser = ({
                                                         value={lastName}
                                                         onChange={(e) => setLastName(e.target.value)}
                                                     />
-                                                    {errors?.lastName && (
+                                                    {!lastName && errors?.lastName && (
                                                         <p className="error">{errors?.lastName}</p>
                                                     )}
                                                 </div>
@@ -158,9 +148,12 @@ const AddEditUser = ({
                                                                 value={email}
                                                                 onChange={(e) => setEmail(e.target.value)}
                                                             />
-                                                            {errors?.email && (
-                                                                <p className="error">{errors?.email}</p>
+                                                            {errors?.email && (email?.length <= 0 ?
+                                                                <span span className='error'>Email is required.</span> :
+                                                                !(emailRegex?.test(email)) && <span className='error'>Invalid Email Address.</span>
+                                                                // <span className='error'>Invalid Email Address.</span>
                                                             )}
+
                                                         </div>
                                                     </div>
 
@@ -188,9 +181,13 @@ const AddEditUser = ({
                                                                 )}
                                                             </div>
                                                         </div>
-                                                        {passwordError && (
-                                                            <p className="error">{passwordError}</p>
+
+                                                       
+                                                        {errors?.password && (password?.length <= 0 ?
+                                                            <span span className='error'>This field is required.</span> :
+                                                            !(validatePassword(password)) && <span className='error'>Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character</span>
                                                         )}
+
                                                     </div>
                                                 </>
                                             )}
@@ -212,7 +209,7 @@ const AddEditUser = ({
                                                                     onChange(formattedNumber); // Update the value directly
                                                                     setPhone(formattedNumber); // Update the state to reflect the phone number
                                                                 }}
-                                                                value={value}
+                                                                value={value || phone}
                                                                 autocompleteSearch={true}
                                                                 countryCodeEditable={false}
                                                                 enableSearch={true}
@@ -323,10 +320,10 @@ const AddEditUser = ({
                                                         onChange={(e) => setSelectRoleID(e.target.value)}
                                                     >
                                                         {selectRoleID && labelTitle !== "Update User" && (
-                                                            <option label="Select User Role"></option>
+                                                            <option label="Select User Role" className='hidden'></option>
                                                         )}
                                                         {!selectRoleID && (
-                                                            <option label="Select User Role"></option>
+                                                            <option label="Select User Role" className='hidden'></option>
                                                         )}
                                                         {userRoleData && userRoleData?.length > 0 ? (
                                                             userRoleData.map((userrole) => (
@@ -341,7 +338,7 @@ const AddEditUser = ({
                                                             <div>Data not here.</div>
                                                         )}
                                                     </select>
-                                                    {errors?.role && <p className="error">{errors?.role}</p>}
+                                                    {!selectRoleID && errors?.role && <p className="error">{errors?.role}</p>}
                                                 </div>
                                             </div>
 

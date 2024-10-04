@@ -28,7 +28,7 @@ const App = () => {
 
   // console.log('socket', socket)
   // console.log('userDetails', userDetails)
-  // console.log('user', user)
+  console.log('user', user)
 
   useEffect(() => {
     dispatch(handleNavigateFromCompositionChannel());

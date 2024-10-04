@@ -340,7 +340,7 @@ const AssetModal = ({ setShowAssetModal }) => {
             </div>
             <div className="flex justify-between items-center p-5">
               <p className="text-black text-left">
-                Content will always be playing Confirm
+              Content will always be playing after confirming it.
               </p>
               <p className="text-right">
                 <button

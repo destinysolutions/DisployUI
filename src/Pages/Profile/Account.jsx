@@ -302,7 +302,7 @@ const Account = () => {
                 <input
                   className="w-full  text-black border  rounded-lg py-3 px-4"
                   type="text"
-                  placeholder="132, My Street, Kingston, New York 12401."
+                  // placeholder="132, My Street, Kingston, New York 12401."
                   {...register("address")}
                 />
                 <span className="error">{errors?.address?.message}</span>
@@ -327,6 +327,13 @@ const Account = () => {
                   type="text"
                   name="zipCode"
                   placeholder="100010"
+                  onInput={(e) => {
+                    let inputValue = e.target.value.replace(/\D/g, '');
+                    if (inputValue.length > 6) {
+                      inputValue = inputValue.slice(0, 6);
+                      setValue("zipCode", inputValue)
+                    }
+                  }}
                   {...register("zipCode")}
                 />
                 <span className="error">{errors?.zipCode?.message}</span>

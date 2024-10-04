@@ -31,7 +31,7 @@ import { RiAppsFill, RiComputerLine } from "react-icons/ri";
 import moment from "moment";
 import { BsFillInfoCircleFill, BsTags } from "react-icons/bs";
 import { HiDotsVertical } from "react-icons/hi";
-import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
+import { TbBrandGoogleMaps, TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 import { VscCalendar } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import FileUpload from "../../Assests/FileUpload";
@@ -53,6 +53,7 @@ import { socket } from "../../../App";
 import { FaPercentage } from "react-icons/fa";
 import { BiSolidDollarCircle } from "react-icons/bi";
 import PurchasePlanWarning from "../../Common/PurchasePlan/PurchasePlanWarning";
+import OpenGoogleMap from "./model/openGoogleMap";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -76,13 +77,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [getScreenOrientation, setScreenOrientation] = useState([]);
   const [getScreenResolution, setScreenResolution] = useState([]);
   const [selectedScreenTypeOption, setSelectedScreenTypeOption] = useState("");
-  const [selectScreenOrientation, setSelectScreenOrientation] = useState();
+  const [selectScreenOrientation, setSelectScreenOrientation] = useState('0');
   const [selectScreenResolution, setSelectScreenResolution] = useState();
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showCompositionModal, setShowCompositionModal] = useState(false);
   const [showAppsModal, setShowAppsModal] = useState(false);
-  const { otpData, message } = useLocation().state;
+  const { otpData, message } = useLocation()?.state;
   const [otpMessageVisible, setOTPMessageVisible] = useState(false);
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
@@ -118,10 +119,18 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
 
   const [screenNameError, setScreenNameError] = useState("");
+  const [addressError, setaddressError] = useState("");
   const [screenRatePerSecondError, setScreenRatePerSecondError] = useState("");
   const [screenMarginError, setScreenMarginError] = useState("");
 
+
+
   const { screens } = useSelector((s) => s.root.screen);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [currentCenter, setCurrentCenter] = useState({ lat: 43.6532, lng: -79.3832 });
+  const [markers, setMarkers] = useState([]);
+
+  const [isOpenMap, setIOpenMap] = useState(false);
 
   const dispatch = useDispatch();
   const history = useNavigate();
@@ -261,20 +270,23 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       setScreenNameError("Screen name is required");
       hasError = true;
     }
-    if (userDetails?.isRetailer === true) {
-      if ((screenRatePerSec === "" || screenRatePerSec < 1)) {
-        setScreenRatePerSecondError('Screen Rate is required')
-        hasError = true;
-      }
-      if ((screenMargin === "" || screenMargin < 1)) {
-        setScreenMarginError('Screen margin is required')
-        hasError = true;
-      }
+    if (selectedAddress === undefined || selectedAddress?.length <= 0) {
+      setaddressError("Location is required");
+      hasError = true;
     }
+    // if (userDetails?.isRetailer === true) {
+    //   if ((screenRatePerSec === "" || screenRatePerSec < 1)) {
+    //     setScreenRatePerSecondError('Screen Rate is required')
+    //     hasError = true;
+    //   }
+    //   if ((screenMargin === "" || screenMargin < 1)) {
+    //     setScreenMarginError('Screen margin is required')
+    //     hasError = true;
+    //   }
+    // }
     if (hasError) {
       return;
     }
-
     setScreenNameError("");
     setScreenRatePerSecondError("");
     setScreenMargin("");
@@ -307,6 +319,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       selectedTextScroll?.textScroll_Id;
     let data = JSON.stringify({
       screenID: screen_id,
+      googleLocation: selectedAddress,
+      latitude: currentCenter?.lat,
+      longitude: currentCenter?.lng,
       screenOrientation: selectScreenOrientation,
       screenResolution: selectScreenResolution,
       timeZone: selectedTimezoneName,
@@ -347,7 +362,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         toast.remove();
       });
   };
-
   const handleOnSaveSchedule = () => {
     setShowScheduleModal(false);
     if (selectedSchedule !== "") {
@@ -656,7 +670,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       selectedTextScroll?.instanceName;
     let data = {
       ...otpData[0],
-      screenID: assetScreenID,
+      screenID: assetScreenID || 0,
       mediaType: mediaType,
       mediaDetailID: moduleID,
       operation: "Update",
@@ -688,6 +702,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }, 1000);
   };
+
+  const openMap = () => {
+    setIOpenMap(!isOpenMap)
+  }
+
+  const getLocation = (address, currentCenter) => {
+    setSelectedAddress(address)
+  }
 
   return (
     <>
@@ -740,11 +762,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       )}
 
-      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
+      <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 sm:pt-20 xs:pt-20 px-5 page-contain" : "lg:pt-24 md:pt-24 pt-10 px-5 page-contain"}>
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4">
-              New Screens Details
+              Screens Details
             </h1>
           </div>
           <div className="shadow-md lg:p-5  md:p-5 sm:p:2 rounded-md bg-white flex items-center justify-between mt-7 w-full">
@@ -777,13 +799,28 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
-                          Google Location:
+                          Select Location:
                         </label>
                       </td>
                       <td>
-                        <h4 className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3">
-                          {otpData.GoogleLocation}
-                        </h4>
+                        <div className="flex items-center justify-center gap-4">
+
+                          <div
+                            className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3 min-h-48"
+                            onClick={openMap}
+                            style={{ minHeight: '40px' }}
+                          >{selectedAddress}</div>
+                          <div className="border border-[#D5E3FF] rounded">
+                            <TbBrandGoogleMaps
+                              size={30}
+                              className="text-black p-[2px]"
+                              onClick={openMap}
+                            />
+                          </div>
+                        </div>
+                        {(selectedAddress?.length <= 0 || selectedAddress === undefined) && (
+                          <div className="text-red">{addressError}</div>
+                        )}
                       </td>
                     </tr>
                     <tr>
@@ -875,7 +912,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                     </tr>
-                    {user?.userDetails?.isRetailer && (
+                    {/* {user?.userDetails?.isRetailer && (
                       <>
                         <tr>
                           <td>
@@ -945,7 +982,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           </td>
                         </tr>
                       </>
-                    )}
+                    )} */}
                     <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
@@ -1537,7 +1574,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                                 <div className="flex justify-between items-center pl-5 pr-5 pb-4">
                                   <p className="text-black text-left">
-                                    Content will always be playing Confirm
+                                    Content will always be playing after confirming it.
                                   </p>
                                   <p className="text-right">
                                     <button
@@ -1731,7 +1768,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                                 <div className="flex justify-between items-center pl-5 pr-5 pb-4">
                                   <p className="text-black text-left">
-                                    Content will always be playing Confirm
+                                    Content will always be playing after confirming it.
                                   </p>
                                   <p className="text-right">
                                     <button
@@ -1862,7 +1899,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           )}
                         </div>
                       </td>
+
                     </tr>
+
+
+
                     <tr>
                       <td className=" lg:block md:block sm:hidden"></td>
                       <td>
@@ -1898,6 +1939,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
+
+      {isOpenMap &&
+        <OpenGoogleMap openMap={openMap} selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} currentCenter={currentCenter} setCurrentCenter={setCurrentCenter} setMarkers={setMarkers} markers={markers} />
+      }
+
     </>
   );
 };

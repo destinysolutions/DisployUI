@@ -21,7 +21,7 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
     const [isRead, setIsRead] = useState(false)
     const [addScreen, setAddScreen] = useState(1)
     const [showError, setShowError] = useState(false)
-    const [trialDay,setTrialDay] = useState(false)
+    const [trialDay, setTrialDay] = useState(false)
     const [discount, setDiscount] = useState("")
     const [discountCoupon, setDiscountCoupon] = useState("")
     const [clientSecret, setClientSecret] = useState("");
@@ -71,29 +71,29 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
         if (addScreen < 1) {
             toast.error("Please Enter Proper Required Screen ")
             return;
-          }
-      
-          const price = round(((addScreen * selectPlan?.planPrice) + selectPlan?.planPrice ), 2) - discount;
-          const params = {
+        }
+
+        const price = round(((addScreen * selectPlan?.planPrice) + selectPlan?.planPrice), 2) - discount;
+        const params = {
             "items": {
-              "id": "0",
-              "amount": String(round(price * 100)),
+                "id": "0",
+                "amount": String(round(price * 100)),
             }
-          }
-          const config = {
+        }
+        const config = {
             method: "post",
             maxBodyLength: Infinity,
             url: PAYMENT_INTENT_CREATE_REQUEST,
             headers: {
-              "Content-Type": "application/json",
+                "Content-Type": "application/json",
             },
             data: JSON.stringify(params),
-          }
-      
-          dispatch(handlePaymentIntegration({ config })).then((res) => {
+        }
+
+        dispatch(handlePaymentIntegration({ config })).then((res) => {
             setClientSecret(res?.payload?.clientSecret)
             setOpenPayment(true)
-          })
+        })
     }
 
     return (
@@ -146,14 +146,18 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
                                                 <div className='flex items-center justify-between border-t border-gray-200 py-3'>
                                                     <p>Cost/Screen/Month:</p>
                                                     <div className='flex items-center gap-1'>
-                                                        <label>${round((addScreen * selectPlan?.planPrice), 2)}</label>
+                                                        <label>
+                                                            {selectPlan?.isIndian ? "₹" : '$'}
+                                                            {round((addScreen * selectPlan?.planPrice), 2)}</label>
                                                     </div>
                                                 </div>
                                                 {discount && (
                                                     <div className='flex items-center justify-between border-t border-gray-200 py-3'>
                                                         <p>Discount:</p>
                                                         <div className='flex items-center gap-1'>
-                                                            <label>${discount}</label>
+                                                            <label>
+                                                                {selectPlan?.isIndian ? "₹" : '$'}
+                                                                {discount}</label>
                                                         </div>
                                                     </div>
                                                 )}
@@ -162,7 +166,9 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
                                                         <label>Total Price:</label>
                                                     </div>
                                                     <div>
-                                                        <label>${round((addScreen * selectPlan?.planPrice), 2) - discount}</label>
+                                                        <label>
+                                                            {selectPlan?.isIndian ? "₹" : '$'}
+                                                            {round((addScreen * selectPlan?.planPrice), 2) - discount}</label>
                                                     </div>
                                                 </div>
                                                 <div className='flex items-center justify-start border-t border-gray-200 py-3'>
@@ -202,7 +208,7 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
 
                                                 <label for="toggleThree" className="flex items-center cursor-pointer select-none text-dark dark:text-white">
                                                     <div className="relative">
-                                                        <input type="checkbox" id="toggleThree" className="peer sr-only" onChange={()=> setTrialDay(!trialDay)} checked={trialDay} />
+                                                        <input type="checkbox" id="toggleThree" className="peer sr-only" onChange={() => setTrialDay(!trialDay)} checked={trialDay} />
                                                         <div className="block h-8 rounded-full bg-gray-300 w-14"></div>
                                                         <div className="absolute flex items-center justify-center w-6 h-6 transition bg-red-500 bg-[#FF0000] rounded-full dot left-1 top-1 peer-checked:translate-x-full peer-checked:bg-green"></div>
                                                     </div>
@@ -251,7 +257,7 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
                 <div className="lg:w-[600px] md:w-[600px] w-full h-[30vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg flex items-center justify-center">
                     <>
                         <Elements options={options} stripe={stripePromise}>
-                            <BuyNewPlan selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={addScreen} openPayment={openPayment} setOpenPayment={setOpenPayment} trialDay={trialDay}/>
+                            <BuyNewPlan selectPlan={selectPlan} discountCoupon={discountCoupon} clientSecret={clientSecret} Screen={addScreen} openPayment={openPayment} setOpenPayment={setOpenPayment} trialDay={trialDay} />
                         </Elements>
                     </>
                 </div>

@@ -17,7 +17,7 @@ import PropTypes from "prop-types";
 import ScreenOTPModal from "./ScreenOTPModal";
 import { RiArrowDownSLine, RiDeleteBin5Line } from "react-icons/ri";
 import Footer from "../Footer";
-
+import { SiConvertio } from "react-icons/si";
 import { PAYMENT_INTENT_CREATE_REQUEST, SCREEN_DELETE_ALL, SCREEN_GROUP, SCREEN_STORAGE, stripePromise } from "../../Pages/Api";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,12 +61,14 @@ import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import { handleScreenLimit } from "../../Redux/CommonSlice";
 import ScreenStorage from "../Common/ScreenStorage";
 import ScheduleListDialog from "../Common/ScheduleListDialog";
+import ConvertAdvertisingModal from "./SubScreens/model/ConvertAdvertisingModal";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+
 
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
@@ -77,8 +79,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [statusCheckboxClick, setStatusCheckboxClick] = useState(true);
   const [lastSeenCheckboxClick, setLastSeenCheckboxClick] = useState(true);
   const [nowPlayingCheckboxClick, setNowPlayingCheckboxClick] = useState(true);
-  const [currScheduleCheckboxClick, setCurrScheduleCheckboxClick] =
-    useState(true);
+  const [currScheduleCheckboxClick, setCurrScheduleCheckboxClick] = useState(true);
   const [tagsCheckboxClick, setTagsCheckboxClick] = useState(true);
   const [groupCheckboxClick, setGroupCheckboxClick] = useState(true);
   const [screenLimit, setScreenLimit] = useState(false);
@@ -161,6 +162,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const moreModalRef = useRef(null);
   const showActionModalRef = useRef(null);
+
+  // ConvertAdvertisingModal 
+  const [convertAdvertisingModal, setConvertAdvertisingModal] = useState(false);
 
   const appearance = {
     theme: 'stripe',
@@ -324,6 +328,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+
+
   const handleDeleteAllscreen = () => {
     const allScreenMacids = screens.map((i) => i?.macid).join(",");
 
@@ -347,7 +353,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         dispatch(handleDeleteAllScreen({ config }));
         dispatch(handleChangeScreens([]));
         setSelectedItems([]);
-        setSelectAllChecked(false);
+        // setSelectAllChecked(false);
         setScreenCheckboxes({});
         toast.remove();
         setLoadFist(true);
@@ -481,6 +487,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             connection: socket.connected,
             macId: screenToUpdate?.macid.replace(/^\s+/g, ""),
           };
+          console.log('Params :>> ', Params);
           socket.emit("ScreenConnected", Params);
           setIsEditingScreen(false);
         })
@@ -904,6 +911,24 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         data-tip
                         data-for="Delete"
                         type="button"
+                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                        onClick={() => { setConvertAdvertisingModal(true) }}
+                        style={{ display: selectedItems?.length > 0 ? "block" : "none" }}
+                      >
+                        <SiConvertio className="p-1 px-2 text-4xl text-white hover:text-white" />
+                        <ReactTooltip
+                          id="Delete"
+                          place="bottom"
+                          type="warning"
+                          effect="solid"
+                        >
+                          <span>  Convert to Advertising</span>
+                        </ReactTooltip>
+                      </button>
+                      <button
+                        data-tip
+                        data-for="Delete"
+                        type="button"
                         className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                         onClick={handleDeleteAllscreen}
                         style={{ display: selectAllChecked ? "block" : "none" }}
@@ -955,6 +980,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 <input
                                   type="checkbox"
                                   className="mr-2 text-lg"
+                                  disabled
                                   checked={screenCheckboxClick}
                                   onChange={() =>
                                     setScreenCheckboxClick(!screenCheckboxClick)
@@ -964,6 +990,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               </li>
                               <li className="flex text-sm items-center mt-2 ">
                                 <input
+                                  disabled
                                   type="checkbox"
                                   className="mr-2 text-lg"
                                   checked={locCheckboxClick}
@@ -975,6 +1002,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               </li>
                               <li className="flex text-sm items-center mt-2">
                                 <input
+                                  disabled
                                   type="checkbox"
                                   className="mr-2 text-lg"
                                   checked={statusCheckboxClick}
@@ -1097,7 +1125,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <tr className="items-center table-head-bg ">
                           {screenContentVisible && (
                             <th className="text-[#5A5881] text-base text-center font-semibold w-200">
-                              <div className="flex">
+                              <div className="flex justify-center">
                                 Screen
                                 <svg
                                   className="w-3 h-3 ms-1.5 mt-2 cursor-pointer"
@@ -1224,7 +1252,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                               <div className="flex items-center gap-2">
                                                 <input
                                                   type="text"
-                                                  className="border border-primary rounded-md w-full"
+                                                  style={{ width: '150px' }}
+                                                  className="formInput border border-primary rounded-md w-[150px]"
                                                   value={editedScreenName}
                                                   onChange={(e) => {
                                                     setEditedScreenName(
@@ -1250,8 +1279,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                 {permissions.isSave ? (
                                                   <div className="flex gap-1">
                                                     <Link
+                                                      className=" capitalize w-32 truncate ml-2"
                                                       to={`/screensplayer?screenID=${screen.screenID}`}
                                                     >
+
                                                       {screen.screenName}
                                                     </Link>
                                                     <button
@@ -1607,79 +1638,94 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <Footer />
           </>
-        </Suspense>
+        </Suspense >
       )}
 
-      {showScheduleModal && (
-        <ScheduleListDialog
-          setShowScheduleModal={setShowScheduleModal}
-          loading={loading}
-          schedules={schedules}
-          handleScheduleAdd={handleScheduleAdd}
-          handleScheduleUpdate={handleScheduleUpdate}
-          scheduleScreenID={scheduleScreenID}
-        />
-      )}
-      {showAssetModal && (
-        <ShowAssetModal
-          handleAssetAdd={handleAssetAdd}
-          handleAssetUpdate={handleAssetUpdate}
-          setSelectedComposition={setSelectedComposition}
-          handleAppsAdd={handleAppsAdd}
-          popupActiveTab={popupActiveTab}
-          setAssetPreviewPopup={setAssetPreviewPopup}
-          setPopupActiveTab={setPopupActiveTab}
-          setShowAssetModal={setShowAssetModal}
-          assetPreviewPopup={assetPreviewPopup}
-          assetPreview={assetPreview}
-          selectedComposition={selectedComposition}
-          selectedTextScroll={selectedTextScroll}
-          selectedYoutube={selectedYoutube}
-          selectedAsset={selectedAsset}
-          setscreenMacID={setscreenMacID}
-          setSelectedAsset={setSelectedAsset}
-        />
-      )}
-      {openScreen && (
-        <PurchaseScreen
-          openScreen={openScreen}
-          setOpenScreen={setOpenScreen}
-          addScreen={addScreen}
-          setAddScreen={setAddScreen}
-          handlePay={handlePay}
-          setDiscountCoupon={setDiscountCoupon}
-          discountCoupon={discountCoupon}
-          showError={showError}
-          setShowError={setShowError}
-          setDiscount={setDiscount}
-          discount={discount}
-        />
-      )}
+      {
+        showScheduleModal && (
+          <ScheduleListDialog
+            setShowScheduleModal={setShowScheduleModal}
+            loading={loading}
+            schedules={schedules}
+            handleScheduleAdd={handleScheduleAdd}
+            handleScheduleUpdate={handleScheduleUpdate}
+            scheduleScreenID={scheduleScreenID}
+          />
+        )
+      }
+      {
+        showAssetModal && (
+          <ShowAssetModal
+            handleAssetAdd={handleAssetAdd}
+            handleAssetUpdate={handleAssetUpdate}
+            setSelectedComposition={setSelectedComposition}
+            handleAppsAdd={handleAppsAdd}
+            popupActiveTab={popupActiveTab}
+            setAssetPreviewPopup={setAssetPreviewPopup}
+            setPopupActiveTab={setPopupActiveTab}
+            setShowAssetModal={setShowAssetModal}
+            assetPreviewPopup={assetPreviewPopup}
+            assetPreview={assetPreview}
+            selectedComposition={selectedComposition}
+            selectedTextScroll={selectedTextScroll}
+            selectedYoutube={selectedYoutube}
+            selectedAsset={selectedAsset}
+            setscreenMacID={setscreenMacID}
+            setSelectedAsset={setSelectedAsset}
+          />
+        )
+      }
+      {
+        openScreen && (
+          <PurchaseScreen
+            openScreen={openScreen}
+            setOpenScreen={setOpenScreen}
+            addScreen={addScreen}
+            setAddScreen={setAddScreen}
+            handlePay={handlePay}
+            setDiscountCoupon={setDiscountCoupon}
+            discountCoupon={discountCoupon}
+            showError={showError}
+            setShowError={setShowError}
+            setDiscount={setDiscount}
+            discount={discount}
+          />
+        )
+      }
 
-      {showTagModal && (
-        <AddOrEditTagPopup
-          setShowTagModal={setShowTagModal}
-          tags={tags}
-          setTags={setTags}
-          handleTagsUpdate={handleTagsUpdate}
-          from="screen"
-          setTagUpdateScreeen={setTagUpdateScreeen}
-        />
-      )}
+      {
+        showTagModal && (
+          <AddOrEditTagPopup
+            setShowTagModal={setShowTagModal}
+            tags={tags}
+            setTags={setTags}
+            handleTagsUpdate={handleTagsUpdate}
+            from="screen"
+            setTagUpdateScreeen={setTagUpdateScreeen}
+          />
+        )
+      }
 
-      {openPayment && clientSecret && (
-        <Elements options={options} stripe={stripePromise}>
-          <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Screen" PaymentValue={addScreen} discountCoupon={discountCoupon} />
-        </Elements>
-      )}
+      {
+        openPayment && clientSecret && (
+          <Elements options={options} stripe={stripePromise}>
+            <PaymentDialog openPayment={openPayment} setOpenPayment={setOpenPayment} togglePaymentModal={togglePaymentModal} clientSecret={clientSecret} type="Screen" PaymentValue={addScreen} discountCoupon={discountCoupon} />
+          </Elements>
+        )
+      }
 
-      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
-        <PurchasePlanWarning />
-      )}
+      {
+        (userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
+          <PurchasePlanWarning />
+        )
+      }
 
-      {screenLimit && (
-        <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit} />
-      )}
+      {
+        screenLimit && (
+          <ScreenStorage screenLimit={screenLimit} setScreenLimit={setScreenLimit} />
+        )
+      }
+      {convertAdvertisingModal && (<ConvertAdvertisingModal setConvertAdvertisingModal={setConvertAdvertisingModal} selectedItems={selectedItems} setLoadFist={setLoadFist} />)}
     </>
   );
 };

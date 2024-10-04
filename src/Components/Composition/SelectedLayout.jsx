@@ -36,6 +36,7 @@ import { FcOpenedFolder } from "react-icons/fc";
 import { IoArrowBackSharp } from "react-icons/io5";
 import PurchasePlanWarning from "../Common/PurchasePlan/PurchasePlanWarning";
 import VideoTable from "./VideoTable";
+import SweetAlert from "../BookYourSlot/SweetAlert";
 
 const DEFAULT_IMAGE = "";
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -473,11 +474,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     setEdited(false);
   };
 
-  const handleClickOnCancel = () => {
+  const handleClickOnCancel = async () => {
+
     if (!addAsset.map((e, index) => e[index + 1].length).every((i) => i == 0)) {
-      if (window.confirm("Changes are unsaved, Are you sure?")) {
+      const result = await SweetAlert.confirm("Are you sure?", "Changes are unsaved!", null);
+      if (result?.isConfirmed) {
         navigate("/composition");
       }
+      // if (window.confirm("Changes are unsaved, Are you sure?")) {
+      //   navigate("/composition");
+      // }
     } else {
       navigate("/composition");
     }
@@ -695,7 +701,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             ) : (
               <>
                 <div className="flex">
-                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737]">
+                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] w-64 truncate">
                     {compositionName}
                   </h1>
                   <button onClick={() => setEdited(true)}>
@@ -987,7 +993,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
               <div className="click-add">
                 <p className="text-filthy-brown">
-                  Add Assets And Apps have from Left side panel
+                  Add assets and apps from the side panel.
                 </p>
               </div>
             </div>

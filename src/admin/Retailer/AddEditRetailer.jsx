@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import * as Yup from "yup";
@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { addRetailerData, updateRetailerData } from "../../Redux/admin/RetailerSlice";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import PhoneInput from "react-phone-input-2";
+
 const AddEditRetailer = ({
   heading,
   toggleModal,
@@ -16,17 +17,20 @@ const AddEditRetailer = ({
   editId,
   editData,
   setShowModal,
-  orgUserID
+  orgUserID, setEditData
 }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const [disable, setDisable] = useState(false)
   //using for validation and register api calling
 
   const handleApiResponse = (promise) => {
     promise
       .then((res) => {
+
         if (res?.payload?.status) {
           formik.resetForm();
           setShowModal(false);
+          setEditData({})
         } else {
           toast.error(res?.payload?.message);
           formik.resetForm();
@@ -81,6 +85,7 @@ const AddEditRetailer = ({
     enableReinitialize: editData,
     validationSchema: editId ? editValidationSchema : validationSchema,
     onSubmit: async (values) => {
+      setDisable(true)
       const formData = new FormData();
       formData.append("OrganizationName", values.companyName);
       formData.append("Password", values.password || ""); // Set a default value if null
@@ -95,9 +100,21 @@ const AddEditRetailer = ({
         formData.append("OrgUserSpecificID", editId);
         formData.append("orgUserID", orgUserID);
         handleApiResponse(dispatch(updateRetailerData(formData)));
+        setDisable(false)
       } else {
         formData.append("Operation", "Insert");
-        handleApiResponse(dispatch(addRetailerData(formData)));
+        dispatch(addRetailerData(formData)).then((res) => {
+          toast.remove()
+          if (res?.payload?.status === true) {
+            toast.success('Retailer Create successFully')
+          } else {
+            toast.error(res?.payload?.message)
+          }
+          setShowModal(false);
+          formik.resetForm();
+
+        })
+        setDisable(false)
       }
     },
   });
@@ -208,7 +225,7 @@ const AddEditRetailer = ({
                         <PhoneInput
                           country={"in"}
                           onChange={handlePhoneChange}
-                          value={formik.values.phoneNumber.replace('+', '')} // Remove the '+' for the PhoneInput
+                          value={formik?.values?.phoneNumber?.replace('+', '')} // Remove the '+' for the PhoneInput
                           autocompleteSearch={true}
                           countryCodeEditable={false}
                           enableSearch={true}
@@ -295,6 +312,7 @@ const AddEditRetailer = ({
                       </button>
                       <button
                         type="submit"
+                        disabled={disable}
                         className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
                       >
                         {heading === "Add" ? "Save" : heading}

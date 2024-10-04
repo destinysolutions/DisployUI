@@ -192,15 +192,11 @@ export function multiOptions(arr) {
 }
 
 export const IncludeExclude = [
-  {
-    label: "Include",
-    value: 1
-  },
-  {
-    label: "Exclude",
-    value: 2
-  },
+  { label: "Include", value: 1 },
+  { label: "Exclude", value: 2 },
 ]
+
+
 
 export const getTodayDate = () => {
   const today = new Date();
@@ -248,9 +244,19 @@ export function secondsToHMS(seconds) {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
+// export const greenOptions = {
+//   color: "blue",
+//   fillColor: "blue",
+// };
+
 export const greenOptions = {
   color: "blue",
   fillColor: "blue",
+
+  fillOpacity: 0.35,
+  strokeColor: "blue",
+  strokeOpacity: 0,
+  strokeWeight: 0,
 };
 
 export function removeDuplicates(arr) {
@@ -281,8 +287,8 @@ export function constructTimeObjects(getallTime, startDate, endDate, repeat, day
     let data = {
       startDate: `${startDate} 00:00:00`,
       endDate: `${endDate} 00:00:00`,
-      startTime: `${item?.startTime}:${item?.startTimeSecond}`,
-      endTime: `${item?.endTime}:${item?.endTimeSecond}`,
+      startTime: `${item?.startTime}`,
+      endTime: `${item?.endTime}`,
       isRepeat: repeat,
       repeatDays: day.join(", "),
       systemTimeZone: getTimeZoneName(allTimeZone, selectedTimeZone),
@@ -721,5 +727,31 @@ export const Frequent = [
   },
 
 ]
+
+export const Industry = [
+  { id: 0, title: "Educational" },
+  { id: 1, title: "Entertainment" },
+  { id: 2, title: "Healthcare" },
+  { id: 3, title: "Utilities" },
+  { id: 4, title: "IT Information" },
+]
+
+export const Commission = [
+  { id: 0, title: "If we bring the ads" },
+  { id: 1, title: "If the client brings the ads" },
+]
+
+export const haversineDistance = (lat1, lon1, lat2, lon2) => {
+  const toRad = (value) => (value * Math.PI) / 180;
+  const R = 6371; // Radius of Earth in km
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+};
 
 export const PageNumber = [5, 10, 25]

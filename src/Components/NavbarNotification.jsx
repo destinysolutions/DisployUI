@@ -14,30 +14,17 @@ const NavbarNotification = ({ setShowNotificationBox }) => {
     const [notification, setNotification] = useState([])
     const [loading, setLoading] = useState(true)
 
-
-    const fetchNotifications = () => {
-        const config = {
-            method: "get",
-            maxBodyLength: Infinity,
-            url: GET_ALL_NOTIFICATIONS,
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: authToken
-            },
-        }
-
-        dispatch(handleGetAllNotifications({ config })).then((res) => {
+    useEffect(() => {
+        dispatch(handleGetAllNotifications({})).then((res) => {
             setNotification(res?.payload?.data)
             setLoading(false)
         }).catch((error) => {
-            console.log('error', error)
+            console.log('error :>> ', error);
             setLoading(false)
         })
-    }
+    }, [dispatch])
 
-    useEffect(() => {
-        fetchNotifications()
-    }, [])
+
 
     const handleRemoveNotification = () => {
         setLoading(true)
@@ -105,7 +92,7 @@ const NavbarNotification = ({ setShowNotificationBox }) => {
     </div>*/}
                 {notification?.length === 0 && !loading && (
                     <div className='flex justify-center items-center p-8'>
-                        <p className='text-xl'>No Notification Avavilable</p>
+                        <p className='text-xl'>No Notification Available</p>
                     </div>
                 )}
                 {loading && (

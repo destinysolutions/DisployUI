@@ -53,6 +53,10 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
     phoneNumber: "",
   });
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search]);
+
   // Filter data based on search term
   const filteredData = Array.isArray(retailerList)
     ? retailerList.filter((item) =>
@@ -133,35 +137,6 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFist, store]);
 
-  // const formik = useFormik({
-  //   initialValues: editData,
-  //   enableReinitialize: editData,
-  //   validationSchema: editId ? editValidationSchema : validationSchema,
-  //   onSubmit: async (values) => {
-  //     const formData = new FormData();
-  //     formData.append("OrganizationName", values.companyName);
-  //     formData.append("Password", values.password || ""); // Set a default value if null
-  //     formData.append("FirstName", values.firstName);
-  //     formData.append("LastName", values.lastName);
-  //     formData.append("Email", values.emailID);
-  //     formData.append("GoogleLocation", values.googleLocation);
-  //     formData.append("Phone", values.phoneNumber);
-  //     formData.append("IsRetailer", true);
-
-  //     if (editId) {
-  //       formData.append("OrgUserSpecificID", editId);
-  //       formData.append("orgUserID", orgUserID);
-  //       dispatch(updateRetailerData(formData));
-  //     } else {
-  //       formData.append("Operation", "Insert");
-  //       dispatch(addRetailerData(formData));
-  //     }
-
-  //     formik.resetForm();
-  //     setShowModal(false);
-  //   },
-  // });
-
   const toggleModal = () => {
     setShowModal(!showModal);
     setEditId(null);
@@ -183,7 +158,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleEdit = (value) => {
-    setHeading("Update");
+    setHeading("Edit");
     setEditId(value.orgSingupID);
     setOrgUserID(value.orgUserID);
     setShowModal(true);
@@ -275,13 +250,13 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                       </th>
 
                       <th scope="col" className="px-6 py-3">
-                        OrganizationName
+                        Organization Name
                       </th>
                       <th scope="col" className="px-6 py-3">
                         Email
                       </th>
                       <th scope="col" className="px-6 py-3">
-                        GoogleLocation
+                        Google Location
                       </th>
                       <th scope="col" className="px-6 py-3">
                         Total Screen
@@ -293,7 +268,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                         Ads Screen
                       </th>
                       <th scope="col" className="px-6 py-3">
-                        Phone
+                      PhoneNo
                       </th>
                       <th scope="col" className="px-6 py-3">
                         Action
@@ -390,10 +365,11 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                         );
                       })}
                     {!loading && sortedAndPaginatedData?.length === 0 && (
-                      <tr>
-                        <td colSpan={6}>
+
+                      <tr className="text-center">
+                        <td colSpan={9}>
                           <div className="flex text-center m-5 justify-center">
-                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black text-center">
                               No Data Available
                             </span>
                           </div>
@@ -481,6 +457,7 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
           editData={editData}
           setShowModal={setShowModal}
           orgUserID={orgUserID}
+          setEditData={setEditData}
         />
       )}
     </>

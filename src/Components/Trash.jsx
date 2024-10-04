@@ -375,8 +375,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative p-5">
                   <div>
                     <h4 className="text-1xl font-bold dark:text-white m-3 text-center">
-                      This data is stored upto 30 days after that it will get
-                      auto deleted.
+                      This data is stored for up to 30 days; after that, it will be auto-delete.
                     </h4>
                   </div>
 
@@ -606,7 +605,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                   <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                     <div className="flex items-center">
-                      <span className="text-gray-500">{`Total ${store?.deletedData?.length} Trash`}</span>
+                      <span className="text-gray-500">{`Total ${store?.deletedData?.length} Trashes`}</span>
                     </div>
                     <div className="flex justify-end">
                       <select className='px-1 mr-2 border border-gray rounded-lg'

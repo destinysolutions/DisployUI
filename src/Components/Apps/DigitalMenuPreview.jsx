@@ -28,7 +28,7 @@ const DigitalMenuPreview = forwardRef(({ customizeData, PreviewData, selectedCol
         for (let i = 0; i < swiperSlides.length; i++) {
             const slide = swiperSlides[i];
             try {
-                const dataUrl = await toPng(slide);
+                const dataUrl = await toPng(slide, { cacheBust: true, useCORS: true });
                 images.push(dataUrl);
             } catch (error) {
                 console.error('Error generating image:', error);

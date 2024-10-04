@@ -1,55 +1,31 @@
+/* eslint-disable react/jsx-pascal-case */
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import Loading from "../../../Loading";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { MdArrowBackIosNew, MdCloudUpload } from "react-icons/md";
-import { FaPlusCircle, FaRegClock, FaRegQuestionCircle } from "react-icons/fa";
+import { FaPlusCircle, } from "react-icons/fa";
 import {
-  DisployScreens,
-  IncludeExclude,
   buttons,
   constructTimeObjects,
-  getCurrentTime,
   getCurrentTimewithSecound,
-  getTimeZoneName,
   getTodayDate,
-  greenOptions,
-  kilometersToMeters,
   multiOptions,
   removeDuplicates,
-  secondsToHMS,
   timeDifferenceInSeconds,
 } from "../../../Common/Common";
-import L from "leaflet";
-import mapImg from "../../../../images/DisployImg/mapImg.png";
 import {
   ADDALLEVENT,
   ADDUPDATESLOT,
-  ALL_CITY,
   GET_ALL_COUNTRY,
-  GET_TIMEZONE,
   GET_TIMEZONE_TOKEN,
   PAYMENT_INTENT_CREATE_REQUEST,
   SCREEN_LIST,
   stripePromise,
 } from "../../../../Pages/Api";
-import { FiMapPin } from "react-icons/fi";
-import {
-  Circle,
-  LayerGroup,
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-} from "react-leaflet";
-import Select from "react-select";
 import axios from "axios";
-import { IoEarthSharp } from "react-icons/io5";
-import { BsCheckCircleFill } from "react-icons/bs";
 import moment from "moment";
 import toast from "react-hot-toast";
-import InputAuto from "../../../Common/InputAuto";
-import MarkerClusterGroup from "react-leaflet-cluster";
 import ThankYouPage from "./ThankYouPage";
 import AddPayment from "./AddPayment";
 import { Elements } from "@stripe/react-stripe-js";
@@ -58,32 +34,24 @@ import { useDispatch } from "react-redux";
 import { handleAllTimeZone } from "../../../../Redux/CommonSlice";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import ImageUploadPopup from "./ImageUploadPopup";
-import TimePicker from 'react-time-picker';
 import { customTimeOrhour } from "../../../Common/Util";
 import { handleGetState } from "../../../../Redux/SettingUserSlice";
 import 'react-time-picker/dist/TimePicker.css';
+import AddSoltPage_2 from "./AddSoltPage_2";
+import BookSlotMap from "./BookSlotMap";
+import PhoneInput from "react-phone-input-2";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 
 const AddSlot = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-  const customIcon = new L.Icon({
-    iconUrl: mapImg,
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -16],
-  });
+  const { register, handleSubmit, watch, formState: { errors }, control } = useForm();
+
   const dispatch = useDispatch()
   const Name = watch("name");
   const Email = watch("email");
   const PhoneNumber = watch("phone");
   const navigate = useNavigate();
 
-  const [selecteScreens, setSelecteScreens] = useState([]);
   const optionSelect = Array.from({ length: 60 }, (_, index) => index + 1); // Create an array of numbers from 1 to 60
   const [sidebarload, setSidebarLoad] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
@@ -94,8 +62,6 @@ const AddSlot = () => {
   const hiddenFileInput = useRef([]);
   const [screenData, setScreenData] = useState([]);
   const [screenArea, setScreenArea] = useState([]);
-  const [allCity, setAllCity] = useState([]);
-  const [city, setCity] = useState([]);
   const [Open, setOpen] = useState(false);
   const [selectAllScreen, setSelectAllScreen] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
@@ -110,8 +76,6 @@ const AddSlot = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
 
-  const center = [20.5937, 78.9629];
-  // const [rangeValue, setRangeValue] = useState(5);
   const [startDate, setStartDate] = useState(getTodayDate());
   const [endDate, setEndDate] = useState(getTodayDate());
   const [selectAllDays, setSelectAllDays] = useState(false);
@@ -127,14 +91,15 @@ const AddSlot = () => {
   const [clientSecret, setClientSecret] = useState("");
   const Screenoptions = multiOptions(screenData);
   const [countries, setCountries] = useState([]);
-
+  const [locationDis, setlocationDis] = useState(5);
   const [popupVisible, setPopupVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(null);
-
+  const [verticalFileName, setVerticalFileName] = useState('');
+  const [horizontalFileName, setHorizontalFileName] = useState('');
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selecteStates, setSelecteStates] = useState("");
   const [states, setStates] = useState([]);
-
+  const [allCity, setAllCity] = useState([]);
   const [getallTime, setGetAllTime] = useState([
     {
       startTime: getCurrentTimewithSecound(),
@@ -144,88 +109,33 @@ const AddSlot = () => {
       verticalImage: "",
       endTime: getCurrentTimewithSecound(),
       sequence: '',
+      afterevent: '',
+      aftereventType: '',
     },
   ]);
-
-  const appearance = {
-    theme: 'stripe',
-  };
+  const [allSlateDetails, setallSlateDetails] = useState({
+    Industry: null,
+    country: null,
+    selecteScreens: [],
+    terms: false,
+    refCode: 'NO',
+    refVale: '',
+    purposeText: '',
+    otherIndustry: '',
+  });
+  const appearance = { theme: 'stripe', };
   const options = {
     clientSecret,
     appearance,
   };
 
-  const handleStartDateChange = (event) => {
-    if (!repeat) {
-      setEndDate(event.target.value);
-    }
-    setStartDate(event.target.value);
-  };
-
-  const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
-  };
-
-  const FetchAllCity = () => {
-    const config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: ALL_CITY,
-      headers: {},
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        setAllCity(response.data.data);
-        let arr = [];
-        response.data.data?.map((item) => {
-          arr.push(item?.text);
-        });
-        setCity(arr);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const FetchScreen = (Params) => {
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${SCREEN_LIST}`,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: JSON.stringify(Params),
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        if (response.data.data?.length > 0) {
-          let arr = [...screenData];
-          let combinedArray = arr.concat(response?.data?.data);
-          let arr1 = [];
-          combinedArray?.map((item) => {
-            let obj = {
-              let: item?.latitude,
-              lon: item?.longitude,
-              dis: Params?.distance,
-            };
-            arr1?.push(obj);
-          });
-          let uniqueArr = removeDuplicates(arr1);
-          setScreenArea(uniqueArr);
-          setScreenData(combinedArray);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   useEffect(() => {
-    FetchAllCity();
-  }, []);
+    let Price = 0;
+    selectedScreens?.map((item) => {
+      Price = Price + item?.Price;
+    });
+    setTotalPrice(Price);
+  }, [selectedScreens]);
 
   useEffect(() => {
     fetch(GET_ALL_COUNTRY)
@@ -248,25 +158,141 @@ const AddSlot = () => {
           console.log("Error fetching states data:", error);
         });
     }
-  }, [selectedCountry]);
+  }, [dispatch, selectedCountry]);
 
+  useEffect(() => {
+    if (selectedScreens?.length === screenData?.length) {
+      setSelectAllScreen(true);
+    } else {
+      setSelectAllScreen(false);
+    }
+  }, [selectedScreens]);
+
+  useEffect(() => {
+    if (page === 3 && fileLoading && savedFile?.length === getallTime?.length) {
+      setFileLoading(false);
+      setPage(page + 1);
+    }
+  }, [fileLoading, savedFile]);
+
+  useEffect(() => {
+    if (repeat) {
+      handleCheckboxChange();
+    }
+  }, [endDate, startDate]);
+
+
+  const TimeZone = () => {
+    const config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: GET_TIMEZONE_TOKEN,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+
+    dispatch(handleAllTimeZone({ config }))
+      .then((response) => {
+        const CurrentTimeZone = new Date()
+          .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+          })
+          .substring(4);
+        response?.payload?.data?.map((item) => {
+          if (item?.timeZoneName === CurrentTimeZone) {
+            setSelectedTimeZone(item?.timeZoneID);
+          }
+        });
+        setAllTimeZone(response?.payload?.data);
+      })
+      .catch((error) => {
+        console.log('error', error)
+      })
+  };
+
+  useEffect(() => {
+    if (page === 3) {
+      TimeZone();
+    }
+  }, [page]);
+
+  const handleSelectTimeZoneChange = (event) => { setSelectedTimeZone(event?.target.value); };
+  const handleEndDateChange = (event) => { setEndDate(event.target.value); };
+  const handleSelectStatesChange = (event) => { setSelecteStates(event?.target.value); };
+  const handleBack = () => { setPage(page - 1); };
+  const handleClick = (index) => { hiddenFileInput.current[index].click(); };
+
+  const handleStartDateChange = (event) => {
+    if (!repeat) {
+      setEndDate(event.target.value);
+    }
+    setStartDate(event.target.value);
+  };
+
+  const FetchScreen = (Params) => {
+ 
+    toast.loading('Loading ...')
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${SCREEN_LIST}`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify(Params),
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.data?.length > 0) {
+          let arr = [...screenData];
+
+          const existingIds = new Set(arr.map(item => (item.screenID)));
+
+          const newData = response.data.data.filter(item => !existingIds.has(item.screenID));
+
+          let combinedArray = arr.concat(newData);
+
+
+          let arr1 = [];
+          let obj = {
+            let: Params?.latitude,
+            lon: Params?.longitude,
+            dis: Params?.distance,
+          };
+          arr1?.push(obj);
+
+          let uniqueArr = removeDuplicates(arr1);
+
+          setScreenArea(uniqueArr);
+          setScreenData(combinedArray);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  ///  page 4 handleNext
   const handleNext = () => {
     let total = ""
     if (selectedScreens?.length === 0) {
       return toast.error("Please Select Screen");
     } else {
       let Price = 0;
-      selectedScreens?.map((item) => {
-        Price = Price + item?.Price;
-      });
+      selectedScreens.forEach((item) => { Price += item?.Price || 0; });
+
       setTotalPrice(Price);
       setTotalCost(totalDuration * Price);
-      total = totalDuration * Price
+
+      total = Number(totalDuration) * Number(Price);
     }
     const params = {
       "items": {
         "id": "0",
-        "amount": String(total * 100)
+        "amount": Number(totalPrice * 100)
       }
     }
 
@@ -288,45 +314,10 @@ const AddSlot = () => {
     })
   };
 
-  const onSubmit = (data) => {
-    setPage(page + 1);
-  };
 
-  const handleRangeChange = (e, item) => {
-    let arr = allArea.map((item1) => {
-      if (item1?.searchValue?.value === item?.searchValue?.value) {
-        let Params = {
-          latitude: item?.searchValue?.latitude,
-          longitude: item?.searchValue?.longitude,
-          distance: parseInt(e.target.value),
-          dates: constructTimeObjects(
-            getallTime,
-            startDate,
-            endDate,
-            repeat,
-            day,
-            selectedTimeZone,
-            selectedCountry,
-            selecteStates,
-            allTimeZone
-          ),
-        };
 
-        FetchScreen(Params);
-        return {
-          searchValue: item?.searchValue,
-          include: Number(item?.include),
-          area: parseInt(e.target.value), // Assuming you want to modify the 'area' property of the matched item
-        };
-      } else {
-        return item1;
-      }
-    });
-    setAllArea(arr);
-    setOpen(false);
-    // setRangeValue(parseInt(e.target.value));
-  };
 
+  // page 4 handleSelectChange
   const handleSelectChange = (selected) => {
     setSelectedScreens(selected);
     if (selected?.length === screenData?.length) {
@@ -336,18 +327,7 @@ const AddSlot = () => {
     }
   };
 
-  useEffect(() => {
-    if (selectedScreens?.length === screenData?.length) {
-      setSelectAllScreen(true);
-    } else {
-      setSelectAllScreen(false);
-    }
-  }, [selectedScreens]);
-
-  const handleBack = () => {
-    setPage(page - 1);
-  };
-
+  // page 3  start
   const handleAddItem = () => {
     setGetAllTime([
       ...getallTime,
@@ -371,10 +351,6 @@ const AddSlot = () => {
     setCurrentIndex(index);
     setPopupVisible(true);
   }
-
-  const handleClick = (index) => {
-    hiddenFileInput.current[index].click();
-  };
 
   const handlePopupSubmit = (index, verticalImage, horizontalImage) => {
     const updatedItems = [...getallTime];
@@ -403,84 +379,20 @@ const AddSlot = () => {
     setGetAllTime(sequence);
   };
 
-  const FileUpload = (formData) => {
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${ADDALLEVENT}`,
-      headers: {},
-      data: formData,
-    };
-    axios.request(config).then((response) => {
-      let data = response?.data?.data;
-      setSavedFile((prevSavedFiles) => [...prevSavedFiles, data]);
-    })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handleaftereventChange = (e, index) => {
+    const { value } = e.target
+    const afterevent = [...getallTime];
+    afterevent[index].afterevent = value;
+    setGetAllTime(afterevent);
   };
 
-  // const handleBookSlot = () => {
-  //   const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
-  //   if (hasMissingImages) {
-  //     return toast.error("Please upload valid Vertical and Horizontal images.");
-  //   } else {
-  //     setFileLoading(true);
-  //     let arr = [];
-  //     let count = 0;
-  //     getallTime?.map((item) => {
-
-  //       let start = `${item?.startTime}:${item?.startTimeSecond}`;
-  //       let end = `${item?.endTime}:${item?.endTimeSecond}`;
-  //       let horizontalfileType = item?.horizontalImage?.type || null;
-  //       let verticalImagefileType = item?.verticalImage?.type || null;
-
-  //       horizontalfileType = horizontalfileType?.split("/");
-  //       verticalImagefileType = verticalImagefileType?.split("/");
-  //       let obj = { ...item, Duration: timeDifferenceInSeconds(start, end) };
-
-  //       count = count + timeDifferenceInSeconds(start, end);
-  //       arr.push(obj);
-  //       const formData = new FormData();
-  //       formData.append("BookingSlotCustomerEventID", "0");
-  //       formData.append("StartTime", start);
-  //       formData.append("EndTime", end);
-  //       formData.append("FilePath", "true");
-  //       formData.append("horizontalfileType", horizontalfileType);
-  //       formData.append("verticalImagefileType", verticalImagefileType);
-  //       formData.append("File", item?.file);
-  //       formData.append("horizontalFile", item?.horizontalImage || null);
-  //       formData.append("verticalFile", item?.verticalImage || null);
-  //       FileUpload(formData);
-  //     });
-
-  //     if (!repeat) {
-  //       setTotalDuration(count);
-  //     } else {
-  //       const total = countAllDaysInRange();
-  //       setTotalDuration(total * count);
-  //     }
-  //     setGetAllTime(arr);
-  //     setPage(page + 1);
-  //   }
-  // };
-
-  const handleBookSlot = () => {
-    const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
-    if (hasMissingImages) {
-      return toast.error("Please upload valid Vertical and Horizontal images.");
-    } else {
-      setPage(page + 1);
-      console.log("getallTime", getallTime);
-    }
+  const handleAftereventTypeChange = (value, index) => {
+    const aftereventType = [...getallTime];
+    aftereventType[index].aftereventType = value;
+    setGetAllTime(aftereventType);
   };
 
-  useEffect(() => {
-    if (page === 3 && fileLoading && savedFile?.length === getallTime?.length) {
-      setFileLoading(false);
-      setPage(page + 1);
-    }
-  }, [fileLoading, savedFile]);
+
 
   // for select all days to repeat day
   function handleCheckboxChange() {
@@ -526,12 +438,6 @@ const AddSlot = () => {
     }
   };
 
-  useEffect(() => {
-    if (repeat) {
-      handleCheckboxChange();
-    }
-  }, [endDate, startDate]);
-
   // for select repeat day
   const handleDayButtonClick = (index, label) => {
     if (!repeatDays[index]) {
@@ -546,84 +452,149 @@ const AddSlot = () => {
     setSelectAllDays(newSelectAllDays);
   };
 
-  const handleChange = (event) => {
-    setSelectedValue(event.target.value); // Update the state with the selected value
-  };
+  // page 3  end 
 
+  // page4 location search  
   const getSelectedVal = (value) => {
+
     const foundItem = allCity.find((item) => item?.text?.includes(value));
-    if (foundItem) {
-      // setSearchArea(foundItem);
-      let obj = {
-        searchValue: foundItem,
-        include: Number(selectedValue),
-        area: 20,
-      };
+    // if (foundItem) {
+    //   // setSearchArea(foundItem);
+    // }
+    let obj = {
+      searchValue: value?.searchValue,
+      include: Number(selectedValue),
+      area: 5,
+      latitude: value?.latitude,
+      longitude: value?.longitude,
+    };
+    let Params = {
+      latitude: value?.latitude,
+      longitude: value?.longitude,
+      distance: 5,
+      dates: constructTimeObjects(
+        getallTime,
+        startDate,
+        endDate,
+        repeat,
+        day,
+        selectedTimeZone,
+        allTimeZone,
+        selectedCountry,
+        selecteStates,
+      ),
+    };
 
-      let Params = {
-        latitude: foundItem?.latitude,
-        longitude: foundItem?.longitude,
-        distance: 20,
-        dates: constructTimeObjects(
-          getallTime,
-          startDate,
-          endDate,
-          repeat,
-          day,
-          selectedTimeZone,
-          selectedCountry,
-          selecteStates,
-          allTimeZone
-        ),
-      };
 
-      FetchScreen(Params);
-      let arr = [...allArea];
-      arr.push(obj);
-      setAllArea(arr);
-      setSelectedVal("");
-      // setSearchArea("");
-      setSelectedValue("");
-    }
+    FetchScreen(Params);
+    let arr = [...allArea];
+    arr.push(obj);
+    setAllArea(arr);
+    setSelectedVal("");
+    // setSearchArea("");
+    setSelectedValue("");
   };
 
-  const getChanges = (value) => {
-    console.log(value, "hello12345");
+
+  // page 4 handleRangeChange
+  const handleRangeChange = (e, item) => {
+    e.preventDefault();
+    const distance = e.target.value
+
+    let arr = allArea.map((item1) => {
+
+      console.log('item1?.searchValue === item?.searchValue :>> ', item1?.searchValue === item?.searchValue);
+      if (item1?.searchValue === item?.searchValue) {
+        let Params = {
+          latitude: item?.latitude,
+          longitude: item?.longitude,
+          distance: parseInt(item1?.area),
+          dates: constructTimeObjects(
+            getallTime,
+            startDate,
+            endDate,
+            repeat,
+            day,
+            selectedTimeZone,
+            allTimeZone,
+            selectedCountry,
+            selecteStates,
+          ),
+        };
+        console.log('Params :>> ', Params);
+        FetchScreen(Params);
+        return {
+          searchValue: item?.searchValue,
+          include: Number(item?.include),
+          area: parseInt(item1?.area), // Assuming you want to modify the 'area' property of the matched item
+          latitude: item?.latitude,
+          longitude: item?.longitude,
+        };
+      } else {
+        return item1;
+      }
+    });
+    setAllArea(arr);
+    setOpen(false);
+    // setRangeValue(parseInt(e.target.value));
   };
 
-  const handleScreenClick = (screen) => {
-    setSelectedScreen(screen);
-  };
-
+  // page 5 
   const handlebook = (paymentMethod) => {
+
+    let EventDetails = [];
+
+    getallTime?.map((item) => {
+      let obj = {
+        bookingSlotCustomerEventID: 0,
+        startTime: item?.startTime,
+        endTime: item?.endTime,
+        filePath: item?.horizontalImage,
+        sequence: item?.sequence,
+        customSequence: item?.afterevent || 0,
+        isHour: item?.aftereventType === "Hour" ? true : false,
+        isHorizontal: item?.horizontalImage ? true : false,
+        assetType: '',
+      };
+      EventDetails?.push(obj);
+    })
     let Params = JSON.stringify({
-      PaymentDetails: {
-        ...paymentMethod,
-        AutoPay: true,
-        type: "Book Slot",
-      },
-      bookingSlotCustomerID: 0,
+      advBookslotCustomerID: 0,
       name: Name,
       email: Email,
       phoneNumber: PhoneNumber,
-      startDate: startDate,
-      endDate: endDate,
-      event: savedFile,
-      isRepeat: repeat,
-      repeatDays: day.join(", "),
-      screenIDs: Screenoptions.map((item) => item.output).join(", "),
-      totalCost: totalCost,
-      timezoneID: selectedTimeZone,
-      CountryID: selectedCountry,
-      StatesID: selecteStates,
-      systemTimeZone: new Date()
-        .toLocaleDateString(undefined, {
-          day: "2-digit",
-          timeZoneName: "long",
-        })
-        .substring(4),
+      bookSlot: {
+        bookingSlotCustomerID: 0,
+        startDate: startDate,
+        endDate: endDate,
+        event: EventDetails,
+        PaymentDetails: {
+          ...paymentMethod,
+          AutoPay: true,
+          type: "Book Slot",
+        },
+        isRepeat: repeat,
+        repeatDays: day.join(", "),
+        screenIDs: Screenoptions.map((item) => item.output).join(", "),
+        totalCost: totalCost,
+        timezoneID: selectedTimeZone,
+        CountryID: selectedCountry,
+        otherIndustry: allSlateDetails?.otherIndustry,
+        purpose: allSlateDetails?.selecteScreens?.map((item) => item).join(', '),
+        text: allSlateDetails?.purposeText,
+        referralCode: allSlateDetails?.refVale || 0,
+        totalDuration: totalDuration,
+        industryID: allSlateDetails?.Industry?.value,
+        // StatesID: selecteStates,
+        systemTimeZone: new Date()
+          .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+          })
+          .substring(4),
+      },
     });
-
+    // return
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -633,9 +604,11 @@ const AddSlot = () => {
       },
       data: Params,
     };
+
     axios
       .request(config)
       .then((response) => {
+        console.log('response :>> ', response);
         setPage(page + 1);
       })
       .catch((error) => {
@@ -643,56 +616,97 @@ const AddSlot = () => {
       });
   };
 
-  const TimeZone = () => {
 
+  const FileUpload = (formData) => {
     const config = {
-      method: "get",
+      method: "post",
       maxBodyLength: Infinity,
-      url: GET_TIMEZONE_TOKEN,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-
-    dispatch(handleAllTimeZone({ config }))
-      .then((response) => {
-        const CurrentTimeZone = new Date()
-          .toLocaleDateString(undefined, {
-            day: "2-digit",
-            timeZoneName: "long",
-          })
-          .substring(4);
-        response?.payload?.data?.map((item) => {
-          if (item?.timeZoneName === CurrentTimeZone) {
-            setSelectedTimeZone(item?.timeZoneID);
-          }
-        });
-        setAllTimeZone(response?.payload?.data);
-      })
+      url: `${ADDALLEVENT}`,
+      headers: {},
+      data: formData,
+    };
+    axios.request(config).then((response) => {
+      let data = response?.data?.data;
+      setSavedFile((prevSavedFiles) => [...prevSavedFiles, data]);
+    })
       .catch((error) => {
-        console.log('error', error)
-      })
+        console.log(error);
+      });
   };
 
-  useEffect(() => {
-    if (page === 3) {
-      TimeZone();
-    }
-  }, [page]);
+  // page 3 handleBookSlot
 
-  const handleSelectTimeZoneChange = (event) => {
-    setSelectedTimeZone(event?.target.value);
+  const handleBookSlot = () => {
+    console.log('getallTime :>> ', getallTime);
+
+
+    // setPage(page + 1)
+    // return
+    const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
+    if (hasMissingImages) {
+      return toast.error("Please upload valid Vertical and Horizontal images.");
+    } else {
+
+      let arr = [];
+      let count = 0;
+
+      getallTime?.map((item) => {
+
+        let start = `${item?.startTime}`;
+        let end = `${item?.endTime}`;
+        let obj = { ...item, Duration: timeDifferenceInSeconds(start, end) };
+
+        count = count + timeDifferenceInSeconds(start, end);
+        arr.push(obj);
+
+      });
+
+      if (!repeat) {
+        setTotalDuration(count);
+      } else {
+        const total = countAllDaysInRange();
+        setTotalDuration(total * count);
+      }
+
+      setGetAllTime(arr);
+      setPage(page + 1);
+    }
   };
 
   const handleSelectCountries = (event) => {
+
     setSelectedCountry(event?.target.value);
+
+    let Params = {
+      latitude: 0,
+      longitude: 0,
+      distance: 0,
+      // startDate: startDate,
+      // endDate: endDate,
+      // country: selectedCountry,
+      // systemTimeZone: selectedTimeZone,
+      // isRepeat: repeat,
+      // repeatDays: day,
+      dates: constructTimeObjects(
+        getallTime,
+        startDate,
+        endDate,
+        repeat,
+        day,
+        selectedTimeZone,
+        allTimeZone,
+        selectedCountry,
+        selecteStates,
+      ),
+    };
+    console.log('Params :>> ', Params);
+    FetchScreen(Params);
+
   };
 
-  const handleSelectStatesChange = (event) => {
-    setSelecteStates(event?.target.value);
-  };
-
-
+  const onSubmit = () => {
+    setPage(page + 1)
+  }
 
   return (
     <>
@@ -761,7 +775,73 @@ const AddSlot = () => {
                     >
                       Phone Number *
                     </label>
-                    <input
+                    {/* <Controller
+                      name="phone"
+                      control={control}
+                      rules={{
+                        validate: (value) => isValidPhoneNumber(value),
+                      }}
+                      render={({ field: { onChange, value, country } }) => (
+                        <PhoneInput
+                          country={"in"}
+                          onChange={(phoneNumber) => {
+                            const formattedNumber = "+" + phoneNumber;
+                            onChange(formattedNumber); // Update the value directly
+                            setPhoneNumber(formattedNumber); // Update the state to reflect the phone number
+                          }}
+                          value={value || phoneNumber}
+                          autocompleteSearch={true}
+                          countryCodeEditable={false}
+                          enableSearch={true}
+                          inputStyle={{
+                            width: "100%",
+                            background: "white",
+                            padding: "25px 0 25px 3rem",
+                            borderRadius: "10px",
+                            fontSize: "1rem",
+                            border: "1px solid #000",
+                          }}
+                          dropdownStyle={{
+                            color: "#000",
+                            fontWeight: "600",
+                            padding: "0px 0px 0px 10px",
+                          }}
+                        />
+                      )}
+                    /> */}
+
+                    <Controller
+                      name="phone"
+                      control={control}
+                      rules={{ required: 'Phone Number is required' }}
+                      // rules={{
+                      //   validate: (value) => isValidPhoneNumber(value),
+                      // }}
+                      render={({ field: { onChange, value } }) => (
+                        <PhoneInput
+                          autocompleteSearch={true}
+                          countryCodeEditable={false}
+                          enableSearch={true}
+                          value={value}
+                          onChange={onChange}
+                          id="phone"
+                          country={'in'}
+                          error={true}
+                          inputProps={{
+                            name: 'phone',
+                            country: 'in',
+                            required: true,
+                            autoFocus: true,
+                            style: { width: '100%', border: "1px solid #e4e4e7" },
+                          }}
+                        />
+                      )}
+                    />
+                    {/* {isValidPhoneNumber && (
+                      <span className="error">Invalid Phone Number.</span>
+                    )} */}
+                    {/* {errors?.phone && <p className="text-red-500 text-xs ">{errors?.phone?.message}</p>} */}
+                    {/* <input
                       type="number"
                       name="phone"
                       id="phone"
@@ -774,7 +854,7 @@ const AddSlot = () => {
                         },
                       })}
                       className="formInput"
-                    />
+                    /> */}
                     {errors.phone && (
                       <span className="error">{errors.phone.message}</span>
                     )}
@@ -794,93 +874,13 @@ const AddSlot = () => {
             </div>
           </>
         )}
-        {page === 2 && (
-          <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
-              <div className="text-2xl font-semibold">Book Slot</div>
-              <div className="grid grid-cols-4 gap-4 w-full ">
-                <div className="col-span-4">
-                  <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4 h-full">
-                    <div className="w-7/12 flex flex-col justify-center m-auto">
-                      <h3 className="text-center font-bold">Hi Anand,</h3>
-                      <p className="text-sm text-center"> Before we begin, please take a moment to share some details about your organization. This will help us tailor tha screen experience to perfectly suit your needs.</p>
-                    </div>
-                    <div className="grid grid-cols-4 gap-4 items-center">
-                      <div className="relative w-full col-span-2">
-                        <Select
-                          placeholder='Select Industry'
-                        // value={selectedScreens}
-                        // onChange={handleSelectChange}
-                        // options={Screenoptions}
-                        />
-                      </div>
-                      <div className="relative w-full col-span-2">
-                        <Select
-                          placeholder='Select Country'
-                          className='my-3'
-                        // value={selectedScreens}
-                        // onChange={handleSelectChange}
-                        // options={Screenoptions}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col justify-center">
-                      <p className="text-center">Purpose of using Disploy Screens</p>
-                      <div className="m-auto  flex justify-center flex-wrap my-3">
-                        {DisployScreens.map((label, index) => (
-                          <button
-                            className={`border m-0 border-primary px-3 py-1 mr-2 mb-2 rounded-full 
-                              ${selecteScreens.includes(label) && "bg-SlateBlue border-white"} 
-                              `}
-                            key={index}
-                            onClick={() => {
-                              setSelecteScreens((prev) => {
-                                const isSelected = prev.includes(label);
+        {page === 2 && (<AddSoltPage_2 page={page} setPage={setPage} countries={countries} setallSlateDetails={setallSlateDetails} allSlateDetails={allSlateDetails} />)}
 
-                                return isSelected ? prev.filter((item) => item !== label) : [...prev, label];
-                              });
-                            }}
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
-                      <label className="custom-label flex items-center justify-center">
-                        <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded w-4 h-4 flex items-center justify-center mr-2">
-                          <input type="checkbox" name="terms"
-                            {...register('terms',)}
-                          />
-                        </div>
-                        <p className="">I have read the terms and agreement of Disploy</p>
-                      </label>
-                    </div>
-
-                    <div className="w-full h-full">
-                      <div className="flex justify-end h-full items-end">
-                        <button
-                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={() => setPage(page - 1)}
-                        >
-                          Back
-                        </button>
-                        <button
-                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={() => setPage(page + 1)}
-                        >
-                          Next
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
         {page === 3 && (
           <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
-              <div className="grid grid-cols-4 gap-4 w-full h-full">
+            <div className="lg:w-[1000px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto sc-scrollbar ">
+              <div className="text-2xl font-semibold">Book Slot</div>
+              <div className="grid grid-cols-4 gap-4 w-full ">
                 <div className="col-span-4">
                   <div className="rounded-lg shadow-md bg-white p-5 flex flex-col gap-4 h-full">
                     <div>TimeZone</div>
@@ -905,7 +905,7 @@ const AddSlot = () => {
                       </select>
                     </div>
                     {/* Country start */}
-                    {!repeat && (
+                    {/* {!repeat && (
                       <div>
                         <div className="grid grid-cols-4 gap-4">
                           <div className="relative w-full col-span-2">
@@ -948,7 +948,7 @@ const AddSlot = () => {
                           </div>
                         </div>
                       </div>
-                    )}
+                    )} */}
                     {/* Country end */}
 
 
@@ -965,6 +965,7 @@ const AddSlot = () => {
                         <div className="relative w-full col-span-2">
                           <input
                             type="date"
+                            min={startDate}
                             value={endDate}
                             className="formInput"
                             disabled={!repeat}
@@ -1007,45 +1008,28 @@ const AddSlot = () => {
                     )}
 
                     <div>
-                      <div className="overflow-auto max-h-80">
+                      <div className="overflow-auto  ">
                         {getallTime?.map((item, index) => {
                           return (
                             <div
-                              className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-2 gap-4 mb-3"
+                              className="flex items-center justify-center gap-4 mb-3"
+                              // className="grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-2 gap-4 mb-3"
                               key={index}
                             >
-
                               <div className="relative w-full col-span-1">
-                                {/* <TimePicker
-                                  className="custom-time-picker"
-                                  value={item?.startTime}
-                                  disableClock={true}
-                                  format="hh:mm:ss"
-                                  onChange={(value) => handleStartTimeChange(index, value)}
-                                /> */}
-
                                 <input
                                   type="time"
                                   name={`startTime${index}`}
                                   id="name"
-                                  value={item.startTime}
+                                  value={item?.startTime}
                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                   placeholder="Time"
                                   required=""
                                   onChange={(e) => handleStartTimeChange(e, index)}
                                 />
-
                               </div>
 
                               <div className="relative w-full col-span-1">
-                                {/* <TimePicker
-                                  className="custom-time-picker"
-                                  disableClock={true}
-                                  value={item?.endTime}
-                                  format="hh:mm:ss"
-                                  onChange={(value) => handleEndTimeChange(index, value)}
-                                /> */}
-
                                 <input
                                   type="time"
                                   name={`endTime${index}`}
@@ -1056,19 +1040,18 @@ const AddSlot = () => {
                                   required=""
                                   onChange={(e) => handleEndTimeChange(e, index)}
                                 />
-
                               </div>
 
 
-                              <div className="relative w-full col-span-1 flex gap-4 items-center">
-                                <div className="relative w-full col-span-1">
+                              <div className="relative  col-span-4 flex justify-center items-center gap-4">
+                                <div className="relative  col-span-1 " >
                                   <select
-                                    className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
+                                    className="border border-primary rounded-lg pl-2 py-2 w-40"
                                     id="selectOption"
                                     value={item.sequence}
                                     onChange={(e) => handleSequenceChange(index, e.target.value)}
                                   >
-                                    <option value="">Select</option>
+                                    <option value="" className="hidden">Select</option>
                                     {customTimeOrhour?.map((item) => {
                                       return (
                                         <option
@@ -1081,23 +1064,70 @@ const AddSlot = () => {
                                     })}
                                   </select>
                                 </div>
-
-                                <button onClick={() => handleOpenImagePopup(index)}>
-                                  <MdCloudUpload size={30} />
-                                </button>
-
-                                <FaPlusCircle
-                                  className="cursor-pointer"
-                                  size={30}
-                                  onClick={handleAddItem}
-                                />
-                                {getallTime.length > 1 && (
-                                  <RiDeleteBin5Line
-                                    className="cursor-pointer"
-                                    size={30}
-                                    onClick={() => handleRemoveItem(index)}
-                                  />
+                                {item?.sequence === "Custom" && (
+                                  <div className=" flex items-center   justify-center ">
+                                    <label className="text-sm font-medium w-20 mr-2">After every:</label>
+                                    <div className="flex justify-center items-center  ">
+                                      <div>
+                                        <input
+                                          className="block w-20 p-2 text-gray-900 border border-gray-300  bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                          type="number"
+                                          value={item?.afterevent}
+                                          onChange={(e) => { handleaftereventChange(e, index) }}
+                                        />
+                                      </div>
+                                      <div className="flex">
+                                        <div className="ml-2 flex items-center">
+                                          <input
+                                            type="radio"
+                                            value={item?.aftereventType}
+                                            checked={item?.aftereventType === "Hour"}
+                                            name="Cel"
+                                            id='Hour'
+                                            onChange={() => handleAftereventTypeChange("Hour", index)}
+                                          />
+                                          <label for='Hour' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">
+                                            Hour
+                                          </label>
+                                        </div>
+                                        <div className="ml-3 flex items-center">
+                                          <input
+                                            id='Minute'
+                                            type="radio"
+                                            value={item?.aftereventType}
+                                            checked={item?.aftereventType === "Minute"}
+                                            name="Cel"
+                                            onChange={() => handleAftereventTypeChange("Minute", index)}
+                                          />
+                                          <label for='Minute' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">
+                                            Minute
+                                          </label>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
                                 )}
+                                <div className="flex items-center justify-center gap-2">
+                                  {(item?.verticalImage?.name || item?.horizontalImage?.name) &&
+                                    <p className="w-20 truncate"> {item?.verticalImage?.name || item?.horizontalImage?.name}</p>
+                                  }
+                                  <button onClick={() => handleOpenImagePopup(index)}>
+                                    <MdCloudUpload size={20} />
+                                  </button>
+
+                                  <FaPlusCircle
+                                    className="cursor-pointer"
+                                    size={17}
+                                    onClick={handleAddItem}
+                                  />
+                                  {getallTime.length > 1 && (
+                                    <RiDeleteBin5Line
+                                      className="cursor-pointer"
+                                      size={17}
+                                      onClick={() => handleRemoveItem(index)}
+                                    />
+                                  )}
+                                </div>
                               </div>
                             </div>
                           );
@@ -1162,6 +1192,7 @@ const AddSlot = () => {
                           Back
                         </button>
                         <button
+                          type="button"
                           className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           onClick={() => handleBookSlot()}
                         >
@@ -1177,243 +1208,23 @@ const AddSlot = () => {
         )}
         {page === 4 && (
           <>
-            <div className="w-full h-full p-5 flex items-center justify-center ">
-              <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg ">
-                <div className="flex flex-row items-center gap-2">
-                  <div className="icons flex items-center">
-                    <div>
-                      <button
-                        className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                        onClick={() => handleBack()}
-                      >
-                        <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="text-2xl font-semibold">Find Your Screen</div>
-                </div>
-                <div className="grid grid-cols-3 gap-4 h-[93%] overflow-auto">
-                  <div className="col-span-2 rounded-lg shadow-md bg-white p-5">
-                    <div className="flex flex-col gap-2 h-full">
-                      {/* <div className="flex gap-2 items-center">
-                        <IoEarthSharp />
-                        <span className="">
-                          {getTimeZoneName(allTimeZone, selectedTimeZone)}
-                        </span>
-                      </div> */}
-
-                      {allArea?.map((item, index) => {
-                        return (
-                          <div
-                            className="flex flex-row gap-2 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full p-2 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            key={index}
-                          >
-                            <span className="flex items-center ">
-                              <FiMapPin className="w-5 h-5 text-black " />
-                            </span>
-                            <div className="text-base flex items-center">
-                              <h2>{item?.searchValue?.text}</h2>
-                            </div>
-
-                            <span className="flex items-center justify-end">
-                              <div className=" flex flex-row items-center border rounded-lg">
-                                <div
-                                  className="flex items-center"
-                                  onClick={() => {
-                                    setSelectedItem(item);
-                                    setOpen(true);
-                                  }}
-                                >
-                                  <div className="text-black p-1 px-2 no-underline hidden md:block lg:block cursor-pointer">
-                                    +{item?.area} km
-                                  </div>
-                                </div>
-                                {selectedItem === item && Open && (
-                                  <div
-                                    id="ProfileDropDown"
-                                    className={`rounded ${Open ? "none" : "hidden"
-                                      } shadow-md bg-white absolute mt-44 z-[9999] w-48`}
-                                  >
-                                    <div>
-                                      <div className="border-b flex justify-center">
-                                        <div className="p-2">
-                                          Current city only
-                                        </div>
-                                      </div>
-                                      <div className="p-2 flex gap-2 items-center">
-                                        <BsCheckCircleFill className="text-blue-6 00" />
-                                        Cities Within Radius
-                                      </div>
-                                      <div className="relative mb-8 mx-2">
-                                        <div>
-                                          <input
-                                            id="labels-range-input"
-                                            type="range"
-                                            min="0"
-                                            max="30"
-                                            step="5"
-                                            value={item?.area}
-                                            onChange={(e) =>
-                                              handleRangeChange(e, item)
-                                            }
-                                            className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                                          />
-                                          <span className="text-sm text-gray-500 dark:text-gray-400 absolute start-0 -bottom-6">
-                                            5
-                                          </span>
-
-                                          <span className="text-sm text-gray-500 dark:text-gray-400 absolute end-0 -bottom-6">
-                                            30
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </span>
-                          </div>
-                        );
-                      })}
-
-                      {/* <div className="grid grid-cols-3 gap-4">
-                        <select
-                          className="border border-primary rounded-lg px-4 pl-2 py-2 w-full"
-                          value={selectedValue} // Set the selected value from state
-                          onChange={handleChange} // Handle change event
-                        >
-                          {IncludeExclude.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-
-                        <div className="col-span-2">
-                          <InputAuto
-                            pholder="Search"
-                            data={city}
-                            onSelected={getSelectedVal}
-                            onChange={getChanges}
-                            // handleKeyPress={handleKeyPress}
-                            setSelectedVal={setSelectedVal}
-                            selectedVal={selectedVal}
-                          />
-                        </div>
-                      </div> */}
-
-                      <div className="mt-5 h-full">
-                        <div className="h-full">
-                          <MapContainer
-                            center={center}
-                            zoom={4}
-                            maxZoom={18}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              zIndex: 0,
-                            }}
-                          >
-                            <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
-                            <LayerGroup>
-                              {screenArea?.map((item) => {
-                                return (
-                                  <Circle
-                                    center={[item?.let, item?.lon]}
-                                    pathOptions={greenOptions}
-                                    radius={kilometersToMeters(item?.dis)}
-                                  />
-                                );
-                              })}
-                            </LayerGroup>
-                            <MarkerClusterGroup>
-                              {screenData.map((screen, index) => {
-                                return (
-                                  <>
-                                    <Marker
-                                      key={index}
-                                      position={[
-                                        screen.latitude,
-                                        screen.longitude,
-                                      ]}
-                                      icon={customIcon}
-                                      eventHandlers={{
-                                        click: () =>
-                                          handleScreenClick &&
-                                          handleScreenClick(screen),
-                                      }}
-                                    >
-                                      <Popup>
-                                        <h3 className="flex flex-row gap-1">
-                                          <span>Location :</span>
-                                          <span>
-                                            {selectedScreen?.googleLocation}
-                                          </span>
-                                        </h3>
-                                      </Popup>
-                                    </Marker>
-                                  </>
-                                );
-                              })}
-                            </MarkerClusterGroup>
-                          </MapContainer>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">
-                    <div>Reach</div>
-                    <div className="text-2xl">
-                      {selectedScreens?.length} Screens
-                    </div>
-                    <div>
-                      Do you want to book your slot for all screens or any
-                      particular screen?
-                    </div>
-
-                    <div className="grid grid-cols-4 gap-4 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                      <div className="col-span-3">
-                        <h2>All Screen</h2>
-                      </div>
-
-                      <span className="col-span-1 flex items-center justify-end">
-                        <input
-                          type="checkbox"
-                          className="cursor-pointer"
-                          value={selectAllScreen}
-                          disabled={screenData?.length === 0}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectAllScreen(true);
-                              setSelectedScreens(Screenoptions);
-                            } else {
-                              setSelectAllScreen(false);
-                              setSelectedScreens([]);
-                            }
-                          }}
-                        />
-                      </span>
-                    </div>
-                    <Select
-                      value={selectedScreens}
-                      onChange={handleSelectChange}
-                      options={Screenoptions}
-                      isMulti
-                    />
-                    <div className="h-full w-full flex justify-center items-end">
-                      <div className="flex justify-center">
-                        <button
-                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          onClick={() => handleNext()}
-                        >
-                          Book Your Slot
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <BookSlotMap totalPrice={totalPrice} totalDuration={totalDuration}
+              selectedCountry={selectedCountry}
+              handleSelectCountries={handleSelectCountries}
+              setAllArea={setAllArea}
+              setSelectedValue={setSelectedValue} handleBack={handleBack}
+              selectedVal={selectedVal} setSelectedVal={setSelectedVal}
+              setOpen={setOpen} getSelectedVal={getSelectedVal}
+              allArea={allArea} handleRangeChange={handleRangeChange}
+              selectedItem={selectedItem} Open={Open} setSelectedItem={setSelectedItem}
+              setSelectedScreens={setSelectedScreens} setSelectedScreen={setSelectedScreen}
+              screenData={screenData} screenArea={screenArea} handleNext={handleNext}
+              countries={countries} handleSelectChange={handleSelectChange}
+              Screenoptions={Screenoptions} selectAllScreen={selectAllScreen}
+              selectedScreen={selectedScreen} selectedScreens={selectedScreens}
+              setSelectAllScreen={setSelectAllScreen} setAllCity={setAllCity}
+              locationDis={locationDis} setlocationDis={setlocationDis}
+            />
           </>
         )}
 
@@ -1423,12 +1234,16 @@ const AddSlot = () => {
             index={currentIndex}
             onClose={() => setPopupVisible(false)}
             onSubmit={handlePopupSubmit}
+            horizontalFileName={horizontalFileName}
+            verticalFileName={verticalFileName}
+            setVerticalFileName={setVerticalFileName}
+            setHorizontalFileName={setHorizontalFileName}
           />
         )}
-
+        {/* clientSecret */}
         {page === 5 && clientSecret && (
           <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+            <div className="lg:w-[700px] md:w-[500px] w-full h-[60vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
               <Elements options={options} stripe={stripePromise}>
                 <AddPayment
                   selectedScreens={selectedScreens}

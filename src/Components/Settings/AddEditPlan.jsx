@@ -26,8 +26,9 @@ const AddEditPlan = ({
     Status: false,
     description: "",
     notification: 1,
+    isAnnually: false,
+    isIndian: false,
   });
-
   const [errorPlanName, setErrorPlanName] = useState(false);
   const [errorStorage, setErrorStorage] = useState(false);
   const [errorCost, setErrorCost] = useState(false);
@@ -37,8 +38,11 @@ const AddEditPlan = ({
 
   useEffect(() => {
     if (selectPlan) {
+
       let obj = {};
       obj.PlanName = selectPlan?.planName;
+      obj.isIndian = selectPlan?.isIndian;
+      obj.isAnnually = selectPlan?.isAnnually;
       obj.planPrice = selectPlan?.planPrice;
       obj.storage = parseInt(
         selectPlan?.planDetails?.[0]?.lstOfFeatures?.[2]?.value
@@ -103,7 +107,6 @@ const AddEditPlan = ({
     if (hasError) {
       return;
     }
-
     const FeatureList = formData?.PlanDetails?.map((item) => {
       if (item?.listOfFeaturesID === 32) {
         return {
@@ -145,7 +148,10 @@ const AddEditPlan = ({
       isdefault: true,
       planDetails: FeatureList,
       IsActive: formData?.Status,
+      isIndian: true,
+      isAnnually: true,
     };
+
 
     let config = {
       method: "post",
@@ -329,7 +335,11 @@ const AddEditPlan = ({
                           />
                           <label>Is Active</label>
                         </div>
+
                       </div>
+
+
+
                       {featureList?.map((item, index) => {
                         if (
                           item?.listOfFeaturesID !== 3 &&
@@ -384,6 +394,43 @@ const AddEditPlan = ({
                           );
                         }
                       })}
+                      <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 flex items-center">
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            name="Indian"
+                            id="Indian"
+                            className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink"
+                            checked={formData?.isIndian}
+                            onChange={(e) =>
+                              handleCheckboxChange(
+                                'isIndian',
+                                e.target.checked
+                              )
+                            }
+                          />
+                          <label for='Indian'>Indian</label>
+                        </div>
+                      </div>
+                      <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 flex items-center">
+                        <div className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            name="Annually"
+                            id='Annually'
+                            className="w-5 h-5 inline-block mr-2 rounded-full border border-grey flex-no-shrink"
+                            checked={formData?.isAnnually}
+                            onChange={(e) =>
+                              handleCheckboxChange(
+                                'isAnnually',
+                                e.target.checked
+                              )
+                            }
+                          />
+                          <label for='Annually'>Annually</label>
+                        </div>
+                      </div>
+
                     </div>
                   </div>
 

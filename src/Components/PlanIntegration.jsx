@@ -43,7 +43,6 @@ const PlanIntegration = () => {
         googleLocation: ""
     })
     const TotalPrice = Screen <= 1 ? selectedPlan?.planPrice : ((Screen * selectedPlan?.planPrice))
-
     const appearance = {
         theme: 'stripe',
     };
@@ -365,7 +364,7 @@ const PlanIntegration = () => {
                                                     {selectedPlan?.planName} - 1 Month Plan
                                                 </h2>
                                                 <span className='font-medium text-xl'>
-                                                    ${selectedPlan?.planPrice}
+                                                    {selectedPlan?.isIndian ? "₹" : '$'} {selectedPlan?.planPrice}
                                                 </span>
                                             </div>
                                             <div className='flex flex-row items-center justify-between mb-4'>
@@ -394,7 +393,7 @@ const PlanIntegration = () => {
                                                         <p>Purchase Screen Price</p>
                                                     </h2>
                                                     <span className='font-medium text-xl'>
-                                                        ${(Screen * selectedPlan?.planPrice) - selectedPlan?.planPrice}
+                                                        {selectedPlan?.isIndian ? "₹" : '$'} {(Screen * selectedPlan?.planPrice) - selectedPlan?.planPrice}
                                                     </span>
                                                 </div>
                                             )}
@@ -443,7 +442,7 @@ const PlanIntegration = () => {
                                                     Total
                                                 </h2>
                                                 <p className='font-semibold text-xl'>
-                                                    ${TotalPrice}
+                                                    {selectedPlan?.isIndian ? "₹" : '$'} {TotalPrice}
                                                 </p>
                                             </div>
                                         </div>
@@ -495,11 +494,11 @@ const PlanIntegration = () => {
                         </div>
                     )}
                     {page === 1 && clientSecret && (
-                            <>
-                                <Elements options={options} stripe={stripePromise}>
-                                    <PlanPurchase selectedPlan={selectedPlan} customerData={customerData} discountCoupon={discountCoupon} clientSecret={clientSecret} planId={planId} Screen={Screen} TotalPrice={TotalPrice}/>
-                                </Elements>
-                            </>
+                        <>
+                            <Elements options={options} stripe={stripePromise}>
+                                <PlanPurchase selectedPlan={selectedPlan} customerData={customerData} discountCoupon={discountCoupon} clientSecret={clientSecret} planId={planId} Screen={Screen} TotalPrice={TotalPrice} />
+                            </Elements>
+                        </>
                     )}
                 </div>
             </div>

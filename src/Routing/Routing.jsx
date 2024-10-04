@@ -60,15 +60,12 @@ import RetailerRoutes from "./RetailerRoutes";
 import SalesManRoutes from "./SalesManRoutes";
 import CustomComposition from "../Components/Composition/CustomComposition";
 import PlanIntegration from "../Components/PlanIntegration";
-
-// Book SLot
-import BookYourSlot from "../Components/BookYourSlot/BookYourSlot"
-
-// Advertising Screens
-
-import AdvertisementScreens from "../Components/Advertisement/AdvertisementScreens"
+import AdvertisementScreens from "../Components/Advertisement/AdvertisementScreens";
+import BookYourSlot from "../Components/BookYourSlot/BookYourSlot";
 import AddBookYourSlot from "../Components/BookYourSlot/AddBookYourSlot";
-
+import AdvertismentRoute from "./AdvertismentRoute";
+import Clock from "../Components/Apps/Clock/Clock";
+import ClockDetail from "../Components/Apps/Clock/ClockDetail";
 
 const Routing = () => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
@@ -100,7 +97,7 @@ const Routing = () => {
       window.removeEventListener("load", handleResize);
     };
   }, [handleResize]);
-  
+
   if (currentUrl.includes("PaymentIntegration")) {
     return (
       <BrowserRouter>
@@ -145,6 +142,14 @@ const Routing = () => {
     if (accessDetails === "SALESMAN")
       return (
         <SalesManRoutes
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
+      )
+
+    if (accessDetails === "ADVERTISMENT")
+      return (
+        <AdvertismentRoute
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
@@ -228,6 +233,33 @@ const Routing = () => {
                   />
                 }
               />
+              <Route
+                path="/advertisement-screens"
+                element={
+                  <AdvertisementScreens
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+              <Route
+                path="/book-your-slot"
+                element={
+                  <BookYourSlot
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+              <Route
+                path="/addbookyourslot"
+                element={
+                  <AddBookYourSlot
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
               {/* <Route
                 path="/bookslot"
                 element={
@@ -261,15 +293,6 @@ const Routing = () => {
                   />
                 }
               />
-              <Route
-              path="/advertisement-screens"
-              element={
-                <AdvertisementScreens
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
               {/* Assests component route */}
               <Route
                 path="/fileupload"
@@ -422,29 +445,10 @@ const Routing = () => {
                 }
               />
               {/* Playlist component route */}
-
-              <Route
-              path="/book-your-slot"
-              element={
-                <BookYourSlot
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
-              <Route
-              path="/addbookyourslot"
-              element={
-                <AddBookYourSlot
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
               <Route
                 path="/composition"
                 element={
-                  <AdvertisementScreens
+                  <Composition
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                   />
@@ -669,6 +673,27 @@ const Routing = () => {
                   />
                 }
               />
+
+              <Route
+                path="/Clock"
+                element={
+                  <Clock
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+
+              <Route
+                path="/Clockdetail"
+                element={
+                  <ClockDetail
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+
             </Routes>
           </ErrorBoundary>
         </BrowserRouter>

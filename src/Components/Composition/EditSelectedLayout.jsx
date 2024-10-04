@@ -664,6 +664,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data;
+        console.log('fetchedData :>> ', fetchedData);
         setNestedNewFolder(fetchedData);
         const allAssets = [
           ...(fetchedData.image ? fetchedData.image : []),
@@ -758,7 +759,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
             ) : (
               <>
                 <div className="flex">
-                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] ">
+                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] w-64 truncate">
                     {compositionName}
                   </h1>
                   <button onClick={() => setEdited(true)}>
@@ -1049,7 +1050,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
               <div className="click-add">
                 <p className="text-filthy-brown">
-                  Add Assets And Apps have from Left side panel
+                  Add assets and apps from the side panel.
                 </p>
               </div>
             </div>

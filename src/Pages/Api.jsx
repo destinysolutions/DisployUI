@@ -55,8 +55,11 @@ export const SELECT_BY_USER_SCREENDETAIL = `${baseUrl}NewScreen/SelectByUserScre
 export const SELECT_BY_SCREENID_SCREENDETAIL = `${baseUrl}NewScreen/SelectByScreen`;
 export const GET_ALL_SCREEN_RESOLUTION = `${baseUrl}NewScreen/GetAllScreenResolution`;
 export const GET_ALL_SCREEN_ORIENTATION = `${baseUrl}NewScreen/GetAllScreenOrientation`;
+export const GET_CONVERT_ADVERTISEMENT = `${baseUrl}NewScreen/ConvertToAdvertisementScreen`;
+export const GET_ALL_ADVERTISEMENT = `${baseUrl}NewScreen/GetAllAdvertisementScreen`;
 export const GET_TIMEZONE = `${baseUrl}NewScreen/GetAllTimeZone`;
 export const GET_TIMEZONE_TOKEN = `${baseUrl}EventMaster/GetAllTimeZone`;
+
 
 export const GET_ALL_FILES = `${baseUrl}AssetMaster/GetAll`;
 export const ALL_FILES_UPLOAD = `${baseUrl}AssetMaster/AssetUpload`;
@@ -207,6 +210,12 @@ export const UPDATE_ADS_RATE = `${baseUrl}AdsCustomer/UpdateAdsRate`
 export const ADD_ADMIN_RATE = `${baseUrl}AdsCustomer/AddAdminMargin`
 export const ADVERTISEMENT_SCREEN = `${baseUrl}Common/AdvertisementScreen`
 export const ADD_USER_LIST = `${baseUrl}AdsCustomer/GetAdsDatabyAdsID`
+export const GET_COST_AREA = `${baseUrl}AdsCustomer/GetAllCostByArea`
+export const DELETE_COST_AREA = `${baseUrl}AdsCustomer/DeleteCostByAreaID`
+export const ADD_COST_AREA = `${baseUrl}AdsCustomer/AddORUpdateCostByArea`
+export const GET_COMMISSION_RATE = `${baseUrl}AdsCustomer/GetAllCommissionRate`
+export const DELETE_COMMISSION_RATE = `${baseUrl}AdsCustomer/DeleteCommissionRateByID`
+export const ADD_COMMISSION_RATE = `${baseUrl}AdsCustomer/AddORUpdateCommissionRate`
 
 // Approval
 
@@ -297,3 +306,28 @@ export const All_SAELS_MAN_LIST = `${baseUrl}SalesMan/GetAllSalesMan`
 export const DEACTIVE_SAELS_MAN = `${baseUrl}UserMaster/ChangeCustomerStatus`
 export const SAELS_MAN_DASHBOARD = `${baseUrl}SalesMan/GetSalesManAllRecord`
 export const ADD_ASSOCIATED_SALESMAN = `${baseUrl}SalesMan/AddEditSalesMan`
+
+// IndustryMaster
+export const GET_INDUSTRY = `${baseUrl}IndustryMaster/GetAllIndustry`
+export const ADD_EDIT_INDUSTRY = `${baseUrl}IndustryMaster/AddORUpdateIndustry`
+export const DELETE_INDUSTRY = `${baseUrl}IndustryMaster/DeleteIndustry`
+
+
+// advertisentScreen
+export const GetAllAdvertisementScreen = `${baseUrl}NewScreen/GetAllAdvertisementScreen`
+
+export const GET_PENDING_SCREEN = `${baseUrl}NewScreen/GetAllPendingScreen`
+export const UPDATE_PENDING_SCREEN = `${baseUrl}NewScreen/UpdateAddStatus`
+export const CANCEL_PENDING_SCREEN = `${baseUrl}NewScreen/CancelAddStatus`
+export const GET_ALLUSER_SCREEN = `${baseUrl}AdsCustomer/GetAllUserAdScreen`
+export const GET_ADVERTISER_SCREEN = `${baseUrl}AdsCustomer/GetAllUserAdvertiser`
+export const UPDATE_ASSET_SCREEN = `${baseUrl}NewScreen/UpdateAssetByScreenID`
+export const GET_PERPOSE_SCREEN = `${baseUrl}AdsCustomer/GetAllPurposeMaster`
+export const ADD_PERPOSE_SCREEN = `${baseUrl}AdsCustomer/AddORUpdatePurposeMaster`
+export const DELETE_PERPOSE_SCREEN = `${baseUrl}AdsCustomer/DeletePurposeMaster`
+export const UPDATE_ADVERTISER_SCREEN = `${baseUrl}NewScreen/UpdateAssetForAdScreen`
+
+
+// bookslot
+export const GET_BOOKING_SLOT = `${baseUrl}AdsCustomer/GetAllBookingSlotCustomer`
+export const GET_BOOKSLOT_REPORT = `${baseUrl}AdsCustomer/GetBookedSlotReport`

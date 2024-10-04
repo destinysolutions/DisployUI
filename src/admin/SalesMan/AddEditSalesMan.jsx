@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { addSalesManData, updateSalesManData } from "../../Redux/SalesMan/SalesManSlice";
 import PhoneInput from "react-phone-input-2";
 import { isValidPhoneNumber } from "react-phone-number-input";
+
 const AddEditSalesMan = ({
     setShowModal,
     heading,
@@ -17,10 +18,12 @@ const AddEditSalesMan = ({
     editData,
     editId,
     fetchData,
-    setEditId
+    setEditId, setEditData
 }) => {
+
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(false)
+
 
     //using for validation and register api calling
     const phoneRegExp =
@@ -63,14 +66,13 @@ const AddEditSalesMan = ({
             .max(100, "Percentage Ratio must be at most 100"),
 
     });
-
     const formik = useFormik({
-        initialValues: editData,
-        enableReinitialize: editData,
+        initialValues: editData ? editData : '',
+        enableReinitialize: !!editData,
         validationSchema: editId ? editValidationSchema : validationSchema,
         onSubmit: async (values) => {
-            setLoading(true)
-            toast.loading("Saving...")
+            setLoading(true);
+
             const formData = new FormData();
             formData.append("Password", values.password || ""); // Set a default value if null
             formData.append("FirstName", values.firstName);
@@ -82,51 +84,53 @@ const AddEditSalesMan = ({
             formData.append("OrganizationName", "No Organization");
             formData.append("IsRetailer", false);
             formData.append("IsSalesMan", true);
+            formData.append("orgUserID", values.orgUserID ? values.orgUserID : 0);
 
-            if (editId) {
-                formData.append("OrgUserSpecificID", editId);
-                dispatch(updateSalesManData(formData)).then((res) => {
-                    if (res?.payload?.status) {
-                        toast.success("Sales Man Updated Successfully.")
-                        fetchData()
+            try {
+                let response;
+
+                if (editId) {
+                    formData.append("OrgUserSpecificID", editId);
+                    const response = await dispatch(updateSalesManData(formData));
+
+                    if (response?.payload?.status) {
+                        setEditData({});
                         formik.resetForm();
-                        setEditId(null)
-                        toast.remove()
+                        fetchData();
+                        toast.success("Sales Man Updated Successfully.");
                     } else {
-                        toast.error(res?.payload?.message)
+                        toast.error(response?.payload?.message);
                     }
-                    setEditId(null)
-                    setLoading(false)
-                    setShowModal(false);
-                }).catch((error) => {
-                    console.log('error', error)
-                });
-            } else {
-                formData.append("Operation", "Insert");
-                dispatch(addSalesManData(formData)).then((res) => {
-                    if (res?.payload?.status) {
-                        toast.success("Sales Man Created Successfully.")
-                        fetchData()
+                } else {
+                    formData.append("Operation", "Insert");
+                    response = await dispatch(addSalesManData(formData));
+
+                    if (response?.payload?.status) {
+                        toast.success("Sales Man Created Successfully.");
+                        fetchData();
                         formik.resetForm();
-                        setEditId(null)
-                        toast.remove()
                     } else {
-                        toast.error(res?.payload?.message)
+                        toast.error(response?.payload?.message);
                     }
-                    setEditId(null)
-                    setLoading(false)
-                    setShowModal(false);
-                }).catch((error) => {
-                    console.log('error', error)
-                });
+                }
+
+                setEditId(null);
+                setLoading(false);
+                setShowModal(false);
+            } catch (error) {
+                console.error('error', error);
+                toast.error("An error occurred. Please try again.");
+                setLoading(false);
+                setShowModal(false);
             }
         },
     });
 
 
+
     const handlePhoneChange = value => {
         formik.setFieldValue('phoneNumber', '+' + value); // Update the phoneNumber value with the correct format
-      };
+    };
 
     return (
         <>
@@ -195,7 +199,7 @@ const AddEditSalesMan = ({
                                                 <PhoneInput
                                                     country={"in"}
                                                     onChange={handlePhoneChange}
-                                                    value={formik.values.phoneNumber.replace('+', '')} // Remove the '+' for the PhoneInput
+                                                    value={formik?.values?.phoneNumber?.replace('+', '')} // Remove the '+' for the PhoneInput
                                                     autocompleteSearch={true}
                                                     countryCodeEditable={false}
                                                     enableSearch={true}

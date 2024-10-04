@@ -166,6 +166,12 @@ const ShowAssetModal = ({
     socket.emit("ScreenConnected", Params);
   };
   const handleOnConfirm = (setscreenMacID) => {
+    // console.log('selectedComposition :>> ', selectedComposition);
+    // console.log('selectedAsset :>> ', selectedAsset);
+    // if (!selectedAsset?.assetName) {
+    //   return toast.error("Please select Asset");
+    // }
+
     setShowAssetModal(false);
     setSearchAssest("");
     setSelectedAsset(assetPreview);
@@ -273,34 +279,68 @@ const ShowAssetModal = ({
     };
   }, []);
 
+  // const handleAssestSearch = (event) => {
+  //   setSearchAssest(event.target.value);
+  //   const searchQuery = event.target.value.toLowerCase().trim().replace(/\s+/g, '');
+
+  //   console.log('searchQuery :>> ', searchQuery);
+  //   if (searchQuery === "") {
+  //     setAssetData(assetAllData);
+  //   } else {
+  //     const filteredScreen = assetAllData.filter((entry) =>
+  //       Object.values(entry).some((val) => {
+
+  //         if (typeof val === "string") {
+  //           const keyWords = searchQuery.split(" ");
+  //           // console.log('keyWords :>> ', keyWords);
+  //           for (let i = 0; i < keyWords.length; i++) {
+  //             return (
+  //               val.toLocaleLowerCase().startsWith(keyWords[i]) ||
+  //               val.toLocaleLowerCase().endsWith(keyWords[i]) ||
+  //               val.toLocaleLowerCase().includes(keyWords[i]) ||
+  //               val.toLocaleLowerCase().includes(searchQuery)
+  //             );
+  //           }
+  //         }
+  //       })
+  //     );
+  //     console.log('filteredScreen :>> ', filteredScreen);
+  //     if (filteredScreen?.length > 0) {
+  //       setAssetData(filteredScreen);
+  //     } else {
+  //       setAssetData([]);
+  //     }
+  //   }
+  // };
+
+
   const handleAssestSearch = (event) => {
-    setSearchAssest(event.target.value);
-    const searchQuery = event.target.value.toLowerCase();
+    const searchInput = event.target.value;
+    setSearchAssest(searchInput);
+
+    const searchQuery = searchInput.toLowerCase().trim().replace(/\s+/g, '');
+
     if (searchQuery === "") {
       setAssetData(assetAllData);
     } else {
       const filteredScreen = assetAllData.filter((entry) =>
         Object.values(entry).some((val) => {
           if (typeof val === "string") {
-            const keyWords = searchQuery.split(" ");
-            for (let i = 0; i < keyWords.length; i++) {
-              return (
-                val.toLocaleLowerCase().startsWith(keyWords[i]) ||
-                val.toLocaleLowerCase().endsWith(keyWords[i]) ||
-                val.toLocaleLowerCase().includes(keyWords[i]) ||
-                val.toLocaleLowerCase().includes(searchQuery)
-              );
-            }
+            const normalizedVal = val.toLowerCase().replace(/\s+/g, '');
+            return (
+              normalizedVal.startsWith(searchQuery) ||
+              normalizedVal.endsWith(searchQuery) ||
+              normalizedVal.includes(searchQuery)
+            );
           }
+          return false; 
         })
       );
-      if (filteredScreen?.length > 0) {
-        setAssetData(filteredScreen);
-      } else {
-        setAssetData([]);
-      }
-    }
+
+      setAssetData(filteredScreen.length > 0 ? filteredScreen : []);
+    };
   };
+
 
   const handleCompositionSearch = (event) => {
     setSearchComposition(event.target.value);
@@ -888,7 +928,7 @@ const ShowAssetModal = ({
                       } lg:flex justify-between items-center pl-5 pr-5 pb-4`}
                   >
                     <p className="text-black mb-3 text-left">
-                      Content will always be playing Confirm
+                      Content will always be playing after confirming it.
                     </p>
                     <p className="text-right">
                       <button
@@ -915,7 +955,7 @@ const ShowAssetModal = ({
         />
       )}
       {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
-      
+
     </>
   );
 };

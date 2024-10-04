@@ -30,7 +30,30 @@ const PlanList = ({ choose, setChoose, myplan }) => {
                                         onClick={() => setChoose(!choose)}
                                     />
                                 </div>
-                                <div className="flex flex-wrap my-4 max-h-[550px] overflow-y-auto">
+                                <div className='flex justify-center items-center gap-3'>
+                                    <button
+                                        className={`relative group flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 
+                                            `}
+                                    // ${buttonType.uptoScreens ? 'bg-primary text-white' : ''}
+                                    // onClick={() => handleButtonClick('uptoScreens')}
+                                    > Up
+
+                                        Screens
+                                    </button>
+                                    <button
+                                        className={`relative group flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm  hover:shadow-lg  gap-1 
+                                            `}
+                                    // ${buttonType.moreThanScreens ? 'bg-primary text-white' : ''}
+                                    // onClick={() => handleButtonClick('moreThanScreens')}
+
+                                    >
+                                        More than
+
+                                        Screens
+                                        <div className="tooltip-arrow" data-popper-arrow></div>
+                                    </button>
+                                </div>
+                                <div className="flex flex-wrap my-4 max-h-[550px] overflow-y-auto ">
                                     {myplan?.map((item) => {
                                         return (
                                             <div className='w-full md:w-1/2 lg:w-1/4 xl:w-1/4 px-3 mb-4'>

@@ -28,7 +28,6 @@ const ScreenAssignModal = ({
   const [screenData, setScreenData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [screenMacID, setScreenMacID] = useState("");
-
   const selectScreenRef = useRef(null);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -109,6 +108,7 @@ const ScreenAssignModal = ({
     if (checked) {
       const allScreenIds = screenData.map((screen) => screen.screenID);
       const allScreenmacIds = screenData.map((screen) => screen.macid);
+
       setSelectedScreens(allScreenIds);
       setScreenMacID(allScreenmacIds);
     } else {
@@ -117,12 +117,21 @@ const ScreenAssignModal = ({
   };
 
   const handleScreenCheckboxChange = (screenID) => {
+    const findScreen = screenData?.find((item) => item?.screenID === screenID)
     const updatedCheckboxes = { ...screenCheckboxes };
     updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
     setScreenCheckboxes(updatedCheckboxes);
 
     // Create a copy of the selected screens array
     const updatedSelectedScreens = [...selectedScreens];
+    const updatedMacId = [...screenMacID]
+
+    if (updatedMacId?.includes(findScreen?.macid)) {
+      const index = updatedMacId.indexOf(findScreen?.macid);
+      updatedMacId.splice(index, 1);
+    } else {
+      updatedMacId.push(findScreen?.macid)
+    }
 
     // If the screenID is already in the array, remove it; otherwise, add it
     if (updatedSelectedScreens.includes(screenID)) {
@@ -131,10 +140,10 @@ const ScreenAssignModal = ({
     } else {
       updatedSelectedScreens.push(screenID);
     }
-   
+    setScreenMacID(updatedMacId)
     // Update the selected screens state
     setSelectedScreens(updatedSelectedScreens);
-    
+
     // Check if any individual screen checkbox is unchecked
     const allChecked = Object.values(updatedCheckboxes).every(
       (isChecked) => isChecked
@@ -148,7 +157,9 @@ const ScreenAssignModal = ({
     const screenAssigned = screenData.filter((item) =>
       selectedScreens.includes(item?.screenID)
     );
+
     const foundMacID = screenAssigned.map((i) => i.macid);
+
     setScreenMacID(foundMacID);
 
     if (user?.userID) {
@@ -161,6 +172,7 @@ const ScreenAssignModal = ({
         })
         .then((response) => {
           const fetchedData = response.data.data;
+
           setScreenData(fetchedData);
           setLoading(false);
           let initialCheckboxes = {};
@@ -174,6 +186,7 @@ const ScreenAssignModal = ({
                 initialCheckboxes[screen.screenID] = false;
               }
             });
+
             setScreenMacID(selectmacId);
             setScreenCheckboxes(initialCheckboxes);
           }
@@ -183,7 +196,7 @@ const ScreenAssignModal = ({
           console.log(error);
         });
     }
-  }, []);
+  }, [ user?.userID]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -453,7 +466,7 @@ const ScreenAssignModal = ({
 
           <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
             <div className="flex items-center">
-              <span className="text-gray-500">{`Total ${filteredData?.length} Screen`}</span>
+              <span className="text-gray-500">{`Total ${filteredData?.length} Screens`}</span>
             </div>
             <div className="flex justify-end">
               <select className='px-1 mr-2 border border-gray rounded-lg'
@@ -522,10 +535,7 @@ const ScreenAssignModal = ({
             <button
               className="bg-primary text-white text-base px-8 py-3 border border-primary shadow-md rounded-full "
               onClick={() => {
-                handleUpdateScreenAssign(
-                  screenCheckboxes,
-                  screenMacID.join(",").replace(/^\s+/g, "")
-                );
+                handleUpdateScreenAssign(screenCheckboxes, screenMacID.join(",").replace(/^\s+/g, ""));
                 setSelectedScreens([]);
               }}
             // disabled={selectedScreens?.length === 0}

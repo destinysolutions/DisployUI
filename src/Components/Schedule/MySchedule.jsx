@@ -98,7 +98,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
       const findData = item.payload.data.menu.find(
-        (e) => e.pageName === "My Schedule"
+        (e) => e.pageName === "My Schedules"
       );
       if (findData) {
         const ItemID = findData.moduleID;
@@ -477,7 +477,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
-                    My Schedule
+                    My schedules
                   </h1>
                   <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
                     <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
@@ -614,7 +614,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             Tags
                           </th>
                           <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                            Action{" "}
+                            Actions
                           </th>
                         </tr>
                       </thead>
@@ -909,7 +909,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className="flex justify-end">
                       <select className='px-1 mr-2 border border-gray rounded-lg'
                         value={pageSize}
-                        onChange={(e) => setPageSize(e.target.value)}
+                        onChange={(e) =>{ setPageSize(e.target.value); setCurrentPage(1)}}
                       >
                         {PageNumber.map((x) => (
                           <option value={x}>{x}</option>

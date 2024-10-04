@@ -66,6 +66,10 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchSchedule]);
+
   // Filter data based on search term
   const filteredData = Array.isArray(weatherList)
     ? weatherList.filter((item) =>
@@ -231,7 +235,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        if (response.data.status === 200) {
+      
+        if (response.data.status === true) {
+          toast.remove()
           try {
 
             if (macids?.includes(",")) {
@@ -252,17 +258,20 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               };
               socket.emit("ScreenConnected", Params);
             }
-            setTimeout(() => {
-              toast.remove();
-              fetchAllData()
-              setSelectScreenModal(false);
-              setAddScreenModal(false);
-            }, 2000);
+            toast.success(response?.data?.message)
           } catch (error) {
             toast.error("Something went wrong, try again");
             toast.remove();
           }
+        } else {
+          toast.remove();
+          toast.error(response?.data?.message)
         }
+        setTimeout(() => {
+          fetchAllData()
+          setSelectScreenModal(false);
+          setAddScreenModal(false);
+        }, 2000);
       })
       .catch((error) => {
         toast.remove();
@@ -363,7 +372,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
-              Weather Schedule
+              Weather Schedules
             </h1>
             <div className=" items-center flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn ">
               <div className="relative">
@@ -483,7 +492,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       Tags
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Action
+                      Actions
                     </th>
                   </tr>
                 </thead>
@@ -531,13 +540,15 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       {!isLoading && weatherList &&
                         sortedAndPaginatedData.length > 0 &&
                         sortedAndPaginatedData.map((schedule, index) => {
+                          const tag = schedule?.tags?.split(",")
+
                           return (
                             <tr
                               className="border-b-[#E4E6FF] border-b"
                               key={index}
                             >
                               <td className="text-[#5E5E5E] text-center">
-                                <div className="flex gap-1">
+                                <div className="flex gap-1  ">
                                   {selectAll ? (
                                     <CheckmarkIcon className="w-5 h-5" />
                                   ) : (
@@ -554,7 +565,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       }
                                     />
                                   )}
-                                  {schedule.name}
+                                  <p className="w-52 truncate ml-2">
+                                    {schedule.name}
+                                  </p>
                                 </div>
                               </td>
 
@@ -602,7 +615,12 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         />
                                       </span>
                                     )}
-                                  {schedule.tags !== null
+                                  {tag?.length > 0 && (
+                                    tag?.map((x) => (
+                                      <li key={x} className="flex items-center  gap-1 border border-black/40 rounded-lg p-1">{x}</li>
+                                    ))
+                                  )}
+                                  {/* {schedule.tags !== null
                                     ? schedule.tags
                                       ?.split(",")
                                       .slice(
@@ -622,7 +640,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         return text;
                                       })
                                       .join(",")
-                                    : ""}
+                                    : ""} */}
                                   {schedule?.tags !== "" &&
                                     schedule?.tags !== null && (
                                       <AiOutlinePlusCircle
@@ -714,7 +732,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="flex justify-end">
                 <select className='px-1 mr-2 border border-gray rounded-lg'
                   value={itemsPerPage}
-                  onChange={(e) => setItemsPerPage(e.target.value)}
+                  onChange={(e) => { setItemsPerPage(e.target.value); setCurrentPage(1) }}
                 >
                   {PageNumber.map((x) => (
                     <option value={x}>{x}</option>

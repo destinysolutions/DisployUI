@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { ADD_REGISTER_URL, GETALLRETAILER, UPDATE_USER, UPDATE_USER_ORG } from "../../Pages/Api";
 
+
 const initialState = {
   data: [],
   status: "idle",
@@ -26,6 +27,7 @@ export const getRetailerData = createAsyncThunk("data/fetchApiData", async (payl
 );
 
 // Add Retailer
+
 export const addRetailerData = createAsyncThunk("data/postData", async (payload, thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
@@ -77,17 +79,17 @@ const RetailersSlice = createSlice({
         state.error = action.error.message;
       })
 
-      .addCase(addRetailerData.pending, (state) => {    // addRetailerData
-        state.status = null;
+      .addCase(addRetailerData.pending, (state) => {
+        state.status = "loading";
       })
-      .addCase(addRetailerData.fulfilled, (state, action) => {    // addRetailerData
+      .addCase(addRetailerData.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = action.payload?.data;
-        state.message = action.message || 'Save data successFully';
+        state.data = action.payload;
+        // state.message= action?.payload?.message;
       })
-      .addCase(addRetailerData.rejected, (state, action) => {    // addRetailerData
+      .addCase(addRetailerData.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.error = action.payload.message;
       })
 
       .addCase(updateRetailerData.pending, (state) => {    // updateRetailerData
@@ -96,7 +98,7 @@ const RetailersSlice = createSlice({
       .addCase(updateRetailerData.fulfilled, (state, action) => {    // updateRetailerData
         state.status = "succeeded";
         state.data = action.payload?.data;
-        state.message = action.message || 'Save data successFully';
+        state.message = action.message || 'Update data successFully';
       })
       .addCase(updateRetailerData.rejected, (state, action) => {    // updateRetailerData
         state.status = "failed";

@@ -133,7 +133,7 @@ const UserScreen = ({ selectUser, screens, loading, sidebarOpen }) => {
                         Google Location
                       </th>
                       <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                        status
+                        Status
                       </th>
                       <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
                         Last Seen

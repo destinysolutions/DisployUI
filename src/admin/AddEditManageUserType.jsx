@@ -1,7 +1,8 @@
 import React from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
-const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive, HandleSubmit, userType, setUserType, error, setError,disable }) => {
+const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive, HandleSubmit, userType, setUserType, error, setError, disable }) => {
+
     return (
         <>
             <div
@@ -53,7 +54,7 @@ const AddEditManageUserType = ({ toggleModal, heading, isActive, setIsActive, Ha
                                                 <span className='error mb-1'>This field is required.</span>
                                             )}
                                             <div className='flex items-center py-2'>
-                                                <label>isActive </label>
+                                                <label>Is Active </label>
                                                 <input
                                                     className="border border-primary ml-8 rounded h-6 w-6"
                                                     type="checkbox"

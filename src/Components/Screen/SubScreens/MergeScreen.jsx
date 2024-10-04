@@ -104,6 +104,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const [itemsPerPage, setItemsPerPage] = useState(5); // Adjust items per page as needed
   const [mergeData, setMergeData] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [groupNameError, setgroupNameError] = useState('');
 
   useEffect(() => {
     if (loadFirst) {
@@ -213,13 +214,16 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const editMergeScreenName = (index) => {
     // mergeNameUpdate
     setEditIndex(index);
-    setNewGroupName(store?.data[index].screeName);
-    setEditGroupID(store?.data[index].mergeScreenId);
+    setNewGroupName(store?.data[index]?.screeName);
+    setEditGroupID(store?.data[index]?.mergeScreenId);
   };
 
-  const updateGroupName = async (index) => {
+  const updateGroupName = async (index,) => {
     // GroupNameUpdate
+    if (!newGroupName) return setgroupNameError('Screen Name is Required')
+
     const payload = {
+
       mergeScreenId: editGroupID,
       screeName: newGroupName,
     };
@@ -539,19 +543,23 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           <div className="flex gap-2 items-center">
                             {editIndex === i ? (
                               <>
-                                <input
-                                  type="text"
-                                  name="name"
-                                  className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                  value={newGroupName}
-                                  onChange={(e) =>
-                                    setNewGroupName(e.target.value)
-                                  }
-                                />
+                                <div>
+                                  <input
+                                    type="text"
+                                    name="name"
+                                    className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    value={newGroupName}
+                                    onChange={(e) =>
+                                      setNewGroupName(e.target.value)
+                                    }
+                                  />
+                                  {!newGroupName && <p className='text-rose-600 text-sm font-semibold w-56' >{groupNameError}</p>}
+                                </div>
+
                                 <div>
                                   <BiSave
                                     className="cursor-pointer text-xl text-[#0000FF]"
-                                    onClick={() => updateGroupName(i)}
+                                    onClick={() => updateGroupName(i, item)}
                                   />
                                   <IoClose
                                     className="cursor-pointer text-xl text-[#FF0000]"
@@ -564,7 +572,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                               </>
                             ) : (
                               <>
-                                <h1 className="text-lg capitalize">
+                                <h1 className="text-lg capitalize capitalize w-40 truncate">
                                   {item.screeName}
                                 </h1>
                                 <MdOutlineModeEdit
@@ -737,6 +745,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                   item.mergeSubScreenDeatils?.length > 0 &&
                                   item.mergeSubScreenDeatils.map(
                                     (screen, index) => {
+                                   
                                       return (
                                         <tr
                                           key={index}
@@ -759,9 +768,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                             </span>
                                           </td>
                                           <td className="p-2 text-center">
-                                            {moment(screen?.updatedDate).format(
-                                              "LLL"
-                                            )}
+                                            {moment(screen?.updatedDate).format("LLL")}
                                           </td>
                                           <td className="p-2 text-center">
                                             <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
@@ -870,60 +877,67 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
                 {/* end  pagination */}
                 {paginatedData && paginatedData.length > 0 && (
-                  <div className="flex justify-end">
-                    <select className='px-1 mr-2 border border-gray rounded-lg'
-                      value={itemsPerPage}
-                      onChange={(e) => setItemsPerPage(e.target.value)}
-                    >
-                      {PageNumber.map((x) => (
-                        <option value={x}>{x}</option>
-                      ))}
-                    </select>
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                      <svg
-                        className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 10"
+                  <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+                    <div className="flex items-center">
+                      <span className="text-gray-500">{`Total ${mergeData?.length} Merge Screens`}</span>
+                    </div>
+                    <div className="flex justify-end">
+                      <select className='px-1 mr-2 border border-gray rounded-lg'
+                        value={itemsPerPage}
+                        onChange={(e) => { setItemsPerPage(e.target.value); setCurrentPage(1) }}
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 5H1m0 0 4 4M1 5l4-4"
-                        />
-                      </svg>
-                      {sidebarOpen ? "Previous" : ""}
-                    </button>
-
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                    >
-                      {sidebarOpen ? "Next" : ""}
-                      <svg
-                        className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 10"
+                        {PageNumber.map((x) => (
+                          <option value={x}>{x}</option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                       >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M1 5h12m0 0L9 1m4 4L9 9"
-                        />
-                      </svg>
-                    </button>
+                        <svg
+                          className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 5H1m0 0 4 4M1 5l4-4"
+                          />
+                        </svg>
+                        {sidebarOpen ? "Previous" : ""}
+                      </button>
+                      <div className="flex items-center me-3">
+                        <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
+                      </div>
+                      <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                      >
+                        {sidebarOpen ? "Next" : ""}
+                        <svg
+                          className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 10"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9"
+                          />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

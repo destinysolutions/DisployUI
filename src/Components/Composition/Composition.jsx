@@ -132,7 +132,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
       const findData = item.payload.data.menu.find(
-        (e) => e.pageName === "My Composition"
+        (e) => e.pageName === "My Compositions"
       );
       if (findData) {
         const ItemID = findData.moduleID;
@@ -558,7 +558,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
-                    My Composition
+                    My Compositions
                   </h1>
                   <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
                     <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
@@ -687,7 +687,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             Tags
                           </th>
                           <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
-                            Action
+                            Actions
                           </th>
                         </tr>
                       </thead>
@@ -732,13 +732,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             {compositionData &&
                               sortedAndPaginatedData.length > 0 &&
                               sortedAndPaginatedData?.map((composition) => {
+                                const tag = composition?.tags?.split(",")
                                 return (
                                   <tr
                                     className="border-b border-b-[#E4E6FF] "
                                     key={composition?.compositionID}
                                   >
-                                    <td className="text-[#5E5E5E] mw-200">
-                                      <div className="flex gap-1 items-center">
+                                    <td className="text-[#5E5E5E] mw-200 ">
+                                      <div className="flex gap-1 items-center ">
                                         {permissions.isDelete && (
                                           <input
                                             type="checkbox"
@@ -753,7 +754,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                             }
                                           />
                                         )}
-                                        {composition?.compositionName}
+                                        <p className="w-52 truncate">{composition?.compositionName}</p>
+
                                       </div>
                                     </td>
                                     <td className="mw-200 text-[#5E5E5E] text-center">
@@ -803,7 +805,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               />
                                             </span>
                                           )}
-                                        {composition?.tags !== null
+                                        {tag?.length > 0 && (
+                                          tag?.map((x) => (
+                                            <li key={x} className="flex items-center gap-1 border border-black/40 rounded-lg p-1">{x}</li>
+                                          ))
+                                        )}
+                                        {/* {composition?.tags !== null
                                           ? composition?.tags
                                             ?.split(",")
                                             ?.slice(
@@ -828,7 +835,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               return text;
                                             })
                                             .join(",")
-                                          : ""}
+                                          : ""} */}
                                         {composition?.tags !== "" &&
                                           composition?.tags !== null && (
                                             <AiOutlinePlusCircle
@@ -850,7 +857,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                               className="w-5 h-5 cursor-pointer"
                                             />
                                           )}
-                                        {/* add or edit tag modal */}
 
                                       </div>
                                     </td>
@@ -958,7 +964,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className="flex justify-end ">
                       <select className='px-1 mr-2 border border-gray rounded-lg'
                         value={pageSize}
-                        onChange={(e) => setPageSize(e.target.value)}
+                        onChange={(e) => { setPageSize(e.target.value); setCurrentPage(1) }}
                       >
                         {PageNumber.map((x) => (
                           <option value={x}>{x}</option>
