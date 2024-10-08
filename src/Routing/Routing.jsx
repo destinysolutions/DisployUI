@@ -64,6 +64,9 @@ import AdvertisementScreens from "../Components/Advertisement/AdvertisementScree
 import BookYourSlot from "../Components/BookYourSlot/BookYourSlot";
 import AddBookYourSlot from "../Components/BookYourSlot/AddBookYourSlot";
 import AdvertismentRoute from "./AdvertismentRoute";
+import Date from "../Components/Apps/DateApps/Date";
+import AddEditDate from "../Components/Apps/DateApps/AddEditDate";
+import DateByID from "../Components/Apps/DateApps/DateByID";
 
 const Routing = () => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
@@ -95,7 +98,7 @@ const Routing = () => {
       window.removeEventListener("load", handleResize);
     };
   }, [handleResize]);
-  
+
   if (currentUrl.includes("PaymentIntegration")) {
     return (
       <BrowserRouter>
@@ -413,6 +416,34 @@ const Routing = () => {
                   />
                 }
               />
+              <Route
+                path="/Date"
+                element={
+                  <Date
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+              <Route
+                path="/Datedetails"
+                element={
+                  <AddEditDate
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+              <Route
+                path="/Datedetails/:id"
+                element={
+                  <DateByID
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+
               {/* Digital Menu Board route */}
               <Route
                 path="/Digital-Menu-Board"

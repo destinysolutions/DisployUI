@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io';
 import { FaCheckCircle } from 'react-icons/fa';
-import { AiFillCloseCircle } from 'react-icons/ai';
+import { AiFillCloseCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import { useDispatch, } from 'react-redux';
 import { getPendingScreen, getCostByArea, cancelPendingScreen, updatePendingScreen } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
-import { haversineDistance } from '../../Components/Common/Common';
+import { calculateDistance } from '../../Components/Common/Common';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
 import ReactTooltip from 'react-tooltip';
 import { MdOutlineAddLocationAlt } from 'react-icons/md';
@@ -52,7 +52,7 @@ export default function Approve({ handleTab }) {
         const isWithinAnyLocationRadius = (screenLat, screenLon, location) => {
             const { latitude, longitude } = location;
             if (latitude && longitude) {
-                const distance = haversineDistance(screenLat, screenLon, parseFloat(latitude), parseFloat(longitude));
+                const distance = calculateDistance(screenLat, screenLon, parseFloat(latitude), parseFloat(longitude));
                 return distance <= rad;
             }
             return false;
@@ -160,13 +160,15 @@ export default function Approve({ handleTab }) {
                             return (
                                 <div className="mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg h-full" key={index}>
                                     <div className="accordions shadow-md p-5 bg-blue-100 border border-blue-400 rounded-lg m-4">
-                                        <div className="section lg:flex md:flex sm:block items-center justify-between">
+                                        <div className="section lg:flex md:flex sm:block items-center justify-between"
+                                            onClick={() => toggleAccordion(index)}
+                                        >
                                             <div className="flex gap-2 items-center">
                                                 <h1 className="text-sm capitalize font-semibold">You have got a new request from  {userName}.</h1>
                                             </div>
 
                                             <div className="flex items-center justify-end">
-                                                <button onClick={() => toggleAccordion(index)}>
+                                                <button >
                                                     {openAccordionIndex === index ? (
                                                         <IoIosArrowDropup className="text-3xl" />
                                                     ) : (
@@ -302,7 +304,34 @@ export default function Approve({ handleTab }) {
                                                                                     </button>
                                                                                 </div>
                                                                             </div>
-                                                                        ) : <MdOutlineAddLocationAlt className='text-[black]' size={25} onClick={() => handleTab(1)} />}
+                                                                        ) : (<>
+                                                                            <div className="cursor-pointer text-xl flex gap-4">
+                                                                                <button
+                                                                                    data-tip
+                                                                                    data-for="Location"
+                                                                                    type="button"
+                                                                                    className="cursor-pointer  focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg  text-center inline-flex items-center "
+                                                                                    onClick={() => {
+                                                                                        handleUpdateScreen(item)
+                                                                                    }}
+                                                                                >
+                                                                                    <AiOutlinePlusCircle
+                                                                                        size={25}
+                                                                                        className="mx-auto cursor-pointer text-[black]"
+                                                                                        onClick={() => { handleTab(1); }}
+                                                                                    />
+                                                                                    <ReactTooltip
+                                                                                        id="Location"
+                                                                                        place="bottom"
+                                                                                        type="warning"
+                                                                                        effect="solid"
+                                                                                    >
+                                                                                        <span>Location</span>
+                                                                                    </ReactTooltip>
+                                                                                </button>
+                                                                            </div>
+                                                                        </>
+                                                                        )}
                                                                     </td>
                                                                 </tr>
                                                             ))

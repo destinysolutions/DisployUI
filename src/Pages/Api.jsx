@@ -331,3 +331,8 @@ export const UPDATE_ADVERTISER_SCREEN = `${baseUrl}NewScreen/UpdateAssetForAdScr
 // bookslot
 export const GET_BOOKING_SLOT = `${baseUrl}AdsCustomer/GetAllBookingSlotCustomer`
 export const GET_BOOKSLOT_REPORT = `${baseUrl}AdsCustomer/GetBookedSlotReport`
+
+
+// Apps 
+export const ADD_DATE_APPS = `${baseUrl}DateApp/AddUpdateDateApp`
+export const DELETE_DATE_APPS = `${baseUrl}DateApp/DeleteDateApp`

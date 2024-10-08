@@ -259,8 +259,8 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   ) : (
                     <>
-                      <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737]">
-                        {instanceName}
+                      <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] w-52 truncate">
+                        {instanceName} 
                       </h1>
                       <button onClick={() => setEdited(true)}>
                         <GoPencil className="ml-4 text-lg" />

@@ -184,9 +184,10 @@ export const DisployScreens = [
 
 export function multiOptions(arr) {
   return arr.map(screen => ({
-    label: screen.screenName,
+    label: screen.referralScreen,
     value: screen.screenID.toString(),
     Price: screen?.screenRatePerSec,
+    screenOrientation: screen?.screenOrientation,
     output: `${screen?.screenID}_${screen?.organizationID}`
   }));
 }
@@ -253,7 +254,7 @@ export const greenOptions = {
   color: "blue",
   fillColor: "blue",
 
-  fillOpacity: 0.35,
+  fillOpacity: 0.45,
   strokeColor: "blue",
   strokeOpacity: 0,
   strokeWeight: 0,
@@ -741,7 +742,7 @@ export const Commission = [
   { id: 1, title: "If the client brings the ads" },
 ]
 
-export const haversineDistance = (lat1, lon1, lat2, lon2) => {
+export const calculateDistance = (lat1, lon1, lat2, lon2) => {
   const toRad = (value) => (value * Math.PI) / 180;
   const R = 6371; // Radius of Earth in km
   const dLat = toRad(lat2 - lat1);
@@ -755,3 +756,33 @@ export const haversineDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 export const PageNumber = [5, 10, 25]
+
+export function filterScreensDistance(allArea, screenData,) {
+  const filteredScreens = screenData.filter((screen) => {
+
+    const screenLat = parseFloat(screen.latitude);
+    const screenLon = parseFloat(screen.longitude);
+
+    return allArea.some((area) => {
+      const areaLat = area.latitude;
+      const areaLon = area.longitude;
+      const dis = area?.area
+      const distance = calculateDistance(screenLat, screenLon, areaLat, areaLon);
+      return distance < dis;
+    });
+  });
+
+  return filteredScreens;
+}
+
+export const getDaysInMonth = (year, month) => {
+  return new Date(year, month + 1, 0).getDate();
+};
+
+export const getFirstDayOfMonthmonday = (year, month) => {
+  const firstDay = new Date(year, month, 1).getDay();
+  return (firstDay === 0 ? 7 : firstDay) - 1;
+};
+export const getFirstDayOfMonthforsunday = (year, month) => {
+  return new Date(year, month, 1).getDay();
+};

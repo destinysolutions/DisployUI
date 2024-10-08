@@ -48,7 +48,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const dispatch = useDispatch();
-  const { token, user,userDetails } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [appDetailModal, setAppDetailModal] = useState(false);
@@ -186,9 +186,9 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     const updatedInstance = youtubeData.map((youtube) =>
       youtube.youtubeId === instanceId
         ? {
-            ...youtube,
-            isChecked: !youtube.isChecked,
-          }
+          ...youtube,
+          isChecked: !youtube.isChecked,
+        }
         : youtube
     );
 
@@ -280,9 +280,8 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${ADD_YOUTUBE_TAGS}?YoutubeId=${updateTagYoutube?.youtubeId}&Tags=${
-        tags.length === 0 ? "" : tags
-      }`,
+      url: `${ADD_YOUTUBE_TAGS}?YoutubeId=${updateTagYoutube?.youtubeId}&Tags=${tags.length === 0 ? "" : tags
+        }`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
@@ -378,7 +377,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
               />
               <Navbar />
             </div>
-            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ?"lg:pt-32 md:pt-32 pt-10 px-5" : "lg:pt-24 md:pt-24 pt-10 px-5 "}>
+            <div className={userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan ? "lg:pt-32 md:pt-32 pt-10 px-5" : "lg:pt-24 md:pt-24 pt-10 px-5 "}>
               <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                 <div className="grid lg:grid-cols-3 gap-2">
                   <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -528,7 +527,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               fill="#1C64F2"
                             />
                           </svg>
-                         
+
                         </div>
                       ) : Array.isArray(youtubeData) &&
                         youtubeData.length > 0 ? (
@@ -629,14 +628,14 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                       setInstanceView(true);
                                     }}
                                   />
-                                  <h4 className="text-lg font-medium mt-3">
+                                  <h4 className="text-lg font-medium mt-3 w-52 truncate text-center  m-auto">
                                     {item.instanceName}
                                   </h4>
                                   <h4
                                     onClick={() => {
                                       item?.tags !== null &&
-                                      item?.tags !== undefined &&
-                                      item?.tags !== ""
+                                        item?.tags !== undefined &&
+                                        item?.tags !== ""
                                         ? setTags(item?.tags?.split(","))
                                         : setTags([]);
                                       setShowTagModal(true);
@@ -704,7 +703,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               </div>
                             </div>
                           ))}
-                      
+
                           {instanceView && (
                             <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-9990 outline-none focus:outline-none">
                               <div ref={modalRef}>
@@ -715,8 +714,13 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                         <img src={youtube} className="w-10" />
                                       </div>
                                       <div className="ml-3">
-                                        <h4 className="text-lg font-medium">
-                                          {instanceName} 
+                                        <h4 className="text-lg font-medium whitespace-wrap  w-[900px]   "
+                                          style={{
+                                            // overflow: "hidden",
+                                            // textOverflow: 'ellipsis',
+                                          }}
+                                        >
+                                          {instanceName}
                                         </h4>
                                       </div>
                                     </div>
@@ -849,8 +853,8 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
           sidebarOpen={sidebarOpen}
         />
       )}
-      
-      {(userDetails?.isTrial=== false) && (userDetails?.isActivePlan=== false) && (user?.userDetails?.isRetailer === false) && (
+
+      {(userDetails?.isTrial === false) && (userDetails?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (
         <PurchasePlanWarning />
       )}
     </>
