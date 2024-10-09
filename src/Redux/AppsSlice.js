@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
-import { getUrl } from "../Pages/Api";
+import { ADD_DATE_APPS, DELETE_DATE_APPS, getUrl, postUrl } from "../Pages/Api";
+import axios from "axios";
 
 export const handleGetYoutubeData = createAsyncThunk(
   "apps/handleGetYoutubeData",
@@ -91,9 +92,7 @@ export const handleGetDigitalMenuData = createAsyncThunk(
   async ({ token }, { rejectWithValue, signal }) => {
     try {
       const { data } = await getUrl(`YoutubeApp/GetAllYoutubeApp`, {
-        headers: {
-          Authorization: token,
-        },
+        headers: { Authorization: token, },
         signal,
       });
       if (data?.status == 200) return data;
@@ -106,6 +105,56 @@ export const handleGetDigitalMenuData = createAsyncThunk(
     }
   }
 );
+
+// getDate Apps
+export const getDateApps = createAsyncThunk("DateApp/getDateApps", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await getUrl(`DateApp/GetAllDateApp`, { headers: { Authorization: `Bearer ${token}`, }, });
+    // const response = await axios.get(GET_NOTIFICATIONS, { headers: { Authorization: `Bearer ${token}` } });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    toast.error('Failed to fetch data');
+    throw error;
+  }
+});
+
+export const getDateById = createAsyncThunk("DateApp/getDateById", async (id, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await getUrl(`DateApp/SelectDateAppById?ID=${id}`, { headers: { Authorization: `Bearer ${token}`, }, });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    toast.error('Failed to fetch data');
+    throw error;
+  }
+});
+
+export const deleteDate = createAsyncThunk("DateApp/deleteDate", async (Id, thunkAPI) => {
+  try {
+    const queryParams = new URLSearchParams({ id: Id, }).toString();
+    const token = thunkAPI.getState().root.auth.token
+    const response = await axios.post(`${DELETE_DATE_APPS}?${queryParams}`, {}, { headers: { Authorization: `Bearer ${token}` }, });
+    if (response.data.status) {
+      return { status: true, message: response.data.message, data: response.data.data, };
+    }
+  } catch (error) {
+    console.log(error);
+    throw error
+  }
+});
+
+export const handleAddDateApps = createAsyncThunk("DealMaster/handleAddDateApps", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.post(ADD_DATE_APPS, payload, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+});
 
 const initialState = {
   allApps: {
@@ -134,6 +183,7 @@ const initialState = {
     error: null,
   },
   allAppsData: [],
+  DateApps: []
 };
 
 const AppsSlice = createSlice({
@@ -239,8 +289,8 @@ const AppsSlice = createSlice({
       state.allApps.data = [];
     });
 
-     //get Digital Menu data
-     builder.addCase(
+    //get Digital Menu data
+    builder.addCase(
       handleGetDigitalMenuData.pending,
       (state, { payload, meta, type }) => {
         state.DigitalMenu.loading = true;
@@ -259,6 +309,57 @@ const AppsSlice = createSlice({
       state.DigitalMenu.loading = false;
       state.DigitalMenu.error = payload ?? null;
       state.DigitalMenu.DigitalMenuData = [];
+    });
+    builder.addCase(getDateApps.pending, (state) => {
+      state.status = null;
+    })
+    builder.addCase(getDateApps.fulfilled, (state, { payload }) => {
+      state.status = true;
+      state.DateApps = payload?.data;
+      state.token = payload?.data?.token;
+    })
+    builder.addCase(getDateApps.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.error.message;
+    })
+
+    builder.addCase(getDateById.pending, (state) => {
+      state.status = false;
+    })
+    builder.addCase(getDateById.fulfilled, (state, { payload }) => {
+      state.status = true;
+      state.DateApps = payload?.data;
+      state.token = payload?.data?.token;
+    })
+    builder.addCase(getDateById.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.error.message;
+    })
+
+    builder.addCase(deleteDate.pending, (state) => {
+      state.status = false;
+    })
+    builder.addCase(deleteDate.fulfilled, (state, { payload }) => {
+      state.status = true;
+      state.data = payload?.data;
+      state.token = payload?.data?.token;
+    })
+    builder.addCase(deleteDate.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.error.message;
+    })
+
+    builder.addCase(handleAddDateApps.pending, (state) => {
+      state.status = "loading";
+    });
+    builder.addCase(handleAddDateApps.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.data = action.payload;
+    });
+    builder.addCase(handleAddDateApps.rejected, (state, action) => {
+      state.status = "failed";
+      toast.error = (action.payload.message);
+
     });
   },
 });

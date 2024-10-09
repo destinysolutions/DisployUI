@@ -1,10 +1,9 @@
-import { Button } from '@material-tailwind/react';
 import React, { useState } from 'react'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { TbCloudUpload } from 'react-icons/tb';
 
 
-const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setVerticalFileName, setHorizontalFileName, verticalFileName, horizontalFileName }) => {
+const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setGetAllTime, getallTime }) => {
 
     const [ImageType, setImageType] = useState('Horizontal');
 
@@ -12,9 +11,6 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setVerticalFileNam
 
     const [verticalImage, setVerticalImage] = useState(null);
     const [horizontalImage, setHorizontalImage] = useState(null);
-
-
-
 
 
     const handleDragOver = (e) => {
@@ -29,25 +25,27 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setVerticalFileNam
         handleFileUpload(files);
 
     };
-    const handleFileInputChange = (e) => {
+    const handleFileInputChange = (e, type) => {
         const files = e.target.files[0];
-        handleFileUpload(files);
+        handleFileUpload(files, type);
     };
 
 
     const handleVerticalFileUpload = (e) => {
         const file = e.target.files[0];
+        console.log('file vertical:>> ', file);
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setVerticalImage(file);
-                setVerticalFileName(file.name);
+                const base64String = reader.result.split(',')[1];
+                setVerticalImage(base64String);
+              
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const handleFileUpload = (file) => {
+    const handleFileUpload = (file, type) => {
         if (file) {
             const reader = new FileReader();
 
@@ -63,15 +61,24 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setVerticalFileNam
             };
 
             reader.onloadend = () => {
-                // Get the Base64 string
                 const base64String = reader.result.split(',')[1];
-                // Check the image type and update the appropriate state
-                if (ImageType === 'Horizontal') {
+
+                if (type === 'Horizontal') {
                     setHorizontalImage(base64String);
-                    setHorizontalFileName(file.name);
+                    setGetAllTime((prevUploads) => {
+                        const newUploads = [...prevUploads];
+                        newUploads[index] = { ...newUploads[index], horizontalFileName: file.name };
+                        return newUploads;
+                    });
+
                 } else {
                     setVerticalImage(base64String);
-                    setVerticalFileName(file.name);
+                    setGetAllTime((prevUploads) => {
+                        const newUploads = [...prevUploads];
+                        newUploads[index] = { ...newUploads[index], verticalFileName: file.name };
+                        return newUploads;
+                    });
+                    
                 }
             };
 
@@ -106,9 +113,8 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setVerticalFileNam
                                     />
                                 </div>
                                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg screen-section">
-                                    <div className="schedual-table bg-white rounded-xl mt-5 px-3">
+                                    <div className="schedual-table bg-white rounded-xl mt-5 px-3 ">
                                         <div className="relative overflow-x-auto sc-scrollbar rounded-lg">
-
                                             {/* <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 m-auto">
                                                 <div class="mb-3 text-gray-500 dark:text-gray-400 m-auto">
                                                     <figure className="max-w-lg">
@@ -143,7 +149,7 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setVerticalFileNam
                                                         <input
                                                             type="file"
                                                             accept="image/*, video/*"
-                                                            onChange={handleHorizontalFileUpload}
+                                                            // onChange={handleHorizontalFileUpload}
                                                             className="hidden"
                                                             id="horizontal-file-upload"
                                                         />
@@ -156,79 +162,63 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setVerticalFileNam
                                                     </figure>
                                                 </div>
                                             </div> */}
-                                            <div class=" m-auto">
-                                                <div className="flex gap-6 justify-center m-auto">
-                                                    <div className=" flex items-center">
-                                                        <input
-                                                            type="radio"
-                                                            value={ImageType}
-                                                            checked={ImageType === "Horizontal"}
-                                                            name="Cel"
-                                                            id='Horizontal'
-                                                            onChange={() => setImageType("Horizontal")}
-                                                        />
-                                                        <label for='Horizontal' className="ml-2 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                                            {horizontalFileName ? horizontalFileName : 'Horizontal'}
-                                                            {/* Horizontal */}
-                                                        </label>
-                                                    </div>
-                                                    <div className=" flex items-center">
-                                                        <input
-                                                            id='Vertical'
-                                                            type="radio"
-                                                            value={ImageType}
-                                                            checked={ImageType === "Vertical"}
-                                                            name="Cel"
-                                                            onChange={() => setImageType("Vertical")}
-                                                        />
-                                                        <label for='Vertical' className="ml-2 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                                            {verticalFileName ? verticalFileName : 'Vertical'}
-                                                            {/* Vertical */}
-                                                        </label>
-                                                    </div>
-                                                </div>
-
-                                                <div
-                                                    className="flex justify-center items-center h-36 rounded-lg"
-                                                    onDragOver={handleDragOver}
-                                                    onDrop={handleDrop}
-                                                >
-                                                    <label htmlFor="fileInput" className="cursor-pointer flex flex-col items-center justify-center">
-                                                        <TbCloudUpload size={35} />
-                                                        <h3 className=" text-black text-sm px-5 p-2 font-semibold">Select Files to upload</h3>
-                                                        <h4 className='text-xs font-medium'>Drag and Drop  or Upload your content</h4>
-                                                        <input
-                                                            type="file"
-                                                            id="fileInput"
-                                                            className="hidden"
-                                                            onChange={handleFileInputChange}
-                                                            multiple
-                                                            accept="image/* , video/*"
-                                                        />
+                                            <div className="flex flex-row items-center justify-center  p-0 ">
+                                                <div className=" border-r-2 py-5 pr-10">
+                                                    <label for='Vertical' className="flex justify-center lg:text-base md:text-base sm:text-xs xs:text-xs text-center">
+                                                        {getallTime[index]?.horizontalFileName || ''}<br />
+                                                        Horizontal
                                                     </label>
-                                                </div>
-                                                <div>
-                                                    {progress > 0 && (
-                                                        <div className="flex items-center gap-x-3 whitespace-nowrap" key={index}>
-                                                            <div className="flex w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                                                                <div
-                                                                    className="flex flex-col justify-center rounded-full overflow-hidden text-xs text-white text-center whitespace-nowrap transition-all duration-500"
-                                                                    style={{
-                                                                        width: `${progress}%`,
-                                                                        backgroundColor: progress < 100 ? '#3182ce' : '#38a169'
-                                                                    }}
-                                                                ></div>
-                                                            </div>
-                                                            <div className="w-10 text-end">
-                                                                <span className="text-sm text-gray-800">
-                                                                    {`${progress}% `}
-                                                                </span>
-                                                            </div>
+                                                    <figure>
+                                                        <div
+                                                            className="flex justify-center items-center h-36 rounded-lg"
+                                                            onDragOver={handleDragOver}
+                                                            onDrop={handleDrop}
+                                                        >
+                                                            <label htmlFor="horizontal-file-upload" className="cursor-pointer flex flex-col items-center justify-center">
+                                                                <TbCloudUpload size={35} />
+                                                                <h3 className=" text-black text-sm px-5 p-2 font-semibold">Select Files to upload</h3>
+                                                                <h4 className='text-xs font-medium'>Drag and Drop  or Upload your content</h4>
+                                                                <input
+                                                                    type="file"
+                                                                    id="horizontal-file-upload"
+                                                                    className="hidden"
+                                                                    onChange={(e) => handleFileInputChange(e, 'Horizontal')}
+                                                                    multiple
+                                                                    accept="image/* , video/*"
+                                                                />
+                                                            </label>
                                                         </div>
-                                                    )}
-
+                                                    </figure>
+                                                </div>
+                                                <div className="pl-10">
+                                                    <label for='Vertical' className="flex justify-center lg:text-base md:text-base sm:text-xs xs:text-xs text-center">
+                                                        {getallTime[index]?.verticalFileName || ''} <br />
+                                                        Vertical
+                                                    </label>
+                                                    <figure>
+                                                        <div
+                                                            className="flex justify-center items-center h-36 rounded-lg"
+                                                            onDragOver={handleDragOver}
+                                                            onDrop={handleDrop}
+                                                        >
+                                                            <label htmlFor="vertical-file-upload" className="cursor-pointer flex flex-col items-center justify-center">
+                                                                <TbCloudUpload size={35} />
+                                                                <h3 className=" text-black text-sm px-5 p-2 font-semibold">Select Files to upload</h3>
+                                                                <h4 className='text-xs font-medium'>Drag and Drop  or Upload your content</h4>
+                                                                <input
+                                                                    type="file"
+                                                                    id="vertical-file-upload"
+                                                                    className="hidden"
+                                                                    onChange={(e) => handleFileInputChange(e, 'vertical')}
+                                                                    multiple
+                                                                    accept="image/* , video/*"
+                                                                />
+                                                            </label>
+                                                        </div>
+                                                    </figure>
                                                 </div>
                                             </div>
+
                                             <div className="w-full h-full">
                                                 <div className="flex justify-end pt-4 h-full items-end">
                                                     <button
