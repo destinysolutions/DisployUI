@@ -3,9 +3,14 @@ import { AiOutlineCloseCircle } from 'react-icons/ai'
 import { TbCloudUpload } from 'react-icons/tb';
 
 
-const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setGetAllTime, getallTime }) => {
-
-    const [ImageType, setImageType] = useState('Horizontal');
+const ImageUploadPopup = ({
+    index,
+    isOpen,
+    onClose,
+    onSubmit,
+    setGetAllTime,
+    getallTime
+}) => {
 
     const [progress, setProgress] = useState(0);
 
@@ -33,13 +38,12 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setGetAllTime, get
 
     const handleVerticalFileUpload = (e) => {
         const file = e.target.files[0];
-        console.log('file vertical:>> ', file);
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
                 const base64String = reader.result.split(',')[1];
                 setVerticalImage(base64String);
-              
+
             };
             reader.readAsDataURL(file);
         }
@@ -78,7 +82,7 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setGetAllTime, get
                         newUploads[index] = { ...newUploads[index], verticalFileName: file.name };
                         return newUploads;
                     });
-                    
+
                 }
             };
 
@@ -163,9 +167,8 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setGetAllTime, get
                                                 </div>
                                             </div> */}
                                             <div className="flex flex-row items-center justify-center  p-0 ">
-                                                <div className=" border-r-2 py-5 pr-10">
+                                                <div className="border-r-2 w-full p-3">
                                                     <label for='Vertical' className="flex justify-center lg:text-base md:text-base sm:text-xs xs:text-xs text-center">
-                                                        {getallTime[index]?.horizontalFileName || ''}<br />
                                                         Horizontal
                                                     </label>
                                                     <figure>
@@ -189,10 +192,12 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setGetAllTime, get
                                                             </label>
                                                         </div>
                                                     </figure>
+                                                    <p className='font-semibold'>
+                                                        {getallTime[index]?.horizontalFileName || ''}
+                                                    </p>
                                                 </div>
-                                                <div className="pl-10">
+                                                <div className="w-full p-3">
                                                     <label for='Vertical' className="flex justify-center lg:text-base md:text-base sm:text-xs xs:text-xs text-center">
-                                                        {getallTime[index]?.verticalFileName || ''} <br />
                                                         Vertical
                                                     </label>
                                                     <figure>
@@ -201,7 +206,7 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setGetAllTime, get
                                                             onDragOver={handleDragOver}
                                                             onDrop={handleDrop}
                                                         >
-                                                            <label htmlFor="vertical-file-upload" className="cursor-pointer flex flex-col items-center justify-center">
+                                                            <label htmlFor="horizontal-file-upload" className="cursor-pointer flex flex-col items-center justify-center">
                                                                 <TbCloudUpload size={35} />
                                                                 <h3 className=" text-black text-sm px-5 p-2 font-semibold">Select Files to upload</h3>
                                                                 <h4 className='text-xs font-medium'>Drag and Drop  or Upload your content</h4>
@@ -216,6 +221,9 @@ const ImageUploadPopup = ({ index, isOpen, onClose, onSubmit, setGetAllTime, get
                                                             </label>
                                                         </div>
                                                     </figure>
+                                                    <p className='font-semibold'>
+                                                        {getallTime[index]?.verticalFileName || ''}
+                                                    </p>
                                                 </div>
                                             </div>
 

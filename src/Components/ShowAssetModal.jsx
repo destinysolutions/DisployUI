@@ -166,8 +166,6 @@ const ShowAssetModal = ({
     socket.emit("ScreenConnected", Params);
   };
   const handleOnConfirm = (setscreenMacID) => {
-    // console.log('selectedComposition :>> ', selectedComposition);
-    // console.log('selectedAsset :>> ', selectedAsset);
     // if (!selectedAsset?.assetName) {
     //   return toast.error("Please select Asset");
     // }
@@ -283,7 +281,6 @@ const ShowAssetModal = ({
   //   setSearchAssest(event.target.value);
   //   const searchQuery = event.target.value.toLowerCase().trim().replace(/\s+/g, '');
 
-  //   console.log('searchQuery :>> ', searchQuery);
   //   if (searchQuery === "") {
   //     setAssetData(assetAllData);
   //   } else {
@@ -292,7 +289,6 @@ const ShowAssetModal = ({
 
   //         if (typeof val === "string") {
   //           const keyWords = searchQuery.split(" ");
-  //           // console.log('keyWords :>> ', keyWords);
   //           for (let i = 0; i < keyWords.length; i++) {
   //             return (
   //               val.toLocaleLowerCase().startsWith(keyWords[i]) ||
@@ -304,7 +300,6 @@ const ShowAssetModal = ({
   //         }
   //       })
   //     );
-  //     console.log('filteredScreen :>> ', filteredScreen);
   //     if (filteredScreen?.length > 0) {
   //       setAssetData(filteredScreen);
   //     } else {

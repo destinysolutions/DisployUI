@@ -109,6 +109,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
             Price = Price + item?.Price;
         });
         setTotalPrice(Price);
+        setTotalCost(Price)
 
     }, [selectedScreens]);
 
@@ -227,7 +228,6 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     // };
 
     const handleBookSlot = () => {
-        console.log('getallTime :>> ', getallTime);
 
         const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
         if (hasMissingImages) {
@@ -352,6 +352,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
 
             setTotalPrice(Price);
             setTotalCost(totalDuration * Price);
+            setTotalCost(totalDuration * Price)
 
             total = Number(totalDuration) * Number(Price);
         }

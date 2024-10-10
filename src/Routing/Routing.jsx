@@ -119,6 +119,23 @@ const Routing = () => {
         </Routes>
       </BrowserRouter>
     )
+  } else if (currentUrl.includes("bookslot")) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route>
+            <Route
+              path="/bookslot"
+              element={
+                <AddSlot
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen} />
+              }
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    )
   } else {
     if (!accessDetails)
       return (

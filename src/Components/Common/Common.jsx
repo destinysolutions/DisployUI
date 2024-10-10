@@ -783,6 +783,27 @@ export const getFirstDayOfMonthmonday = (year, month) => {
   const firstDay = new Date(year, month, 1).getDay();
   return (firstDay === 0 ? 7 : firstDay) - 1;
 };
+
 export const getFirstDayOfMonthforsunday = (year, month) => {
   return new Date(year, month, 1).getDay();
 };
+
+// export function secondsToHMS(seconds) {
+//   let hours = Math.floor(seconds / 3600);
+//   let minutes = Math.floor((seconds % 3600) / 60);
+//   let secs = seconds % 60;
+
+//   // Pad with leading zeros if necessary
+//   hours = hours.toString().padStart(2, '0');
+//   minutes = minutes.toString().padStart(2, '0');
+//   secs = secs.toString().padStart(2, '0');
+
+//   return `${hours}:${minutes}:${secs}`;
+// }
+
+export function formatToUSCurrency(amount) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
+}

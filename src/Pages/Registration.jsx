@@ -291,7 +291,6 @@ const Registration = () => {
           toast.error("Registration failed.")
         }
       });
-      console.log('response', response)
       if (!response) return;
       // response
       //   .then(() => {
@@ -318,7 +317,6 @@ const Registration = () => {
     const res = await signInWithPopup(auth, Googleauthprovider)
       .then((result) => {
         // Google sign-in successful, you can access user information via result.user
-        console.log('result', result.user)
         const data = result.user;
         const formData = new FormData();
 

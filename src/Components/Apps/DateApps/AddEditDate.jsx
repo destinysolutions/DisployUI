@@ -67,13 +67,11 @@ const AddEditDate = ({ sidebarOpen, setSidebarOpen }) => {
     const currentMonthName = getCurrentMonthName();
 
     const daysInMonth = getDaysInMonth(year, month);
-    console.log("daysInMonth", daysInMonth);
 
     const firstDay =
         SelectLayout.Startweek === "Monday"
             ? getFirstDayOfMonthmonday(year, month)
             : getFirstDayOfMonthforsunday(year, month);
-    console.log("first", firstDay);
 
     const [instanceName, setInstanceName] = useState(
         moment(currentDate).format("YYYY-MM-DD hh:mm")
@@ -92,7 +90,6 @@ const AddEditDate = ({ sidebarOpen, setSidebarOpen }) => {
             Startweek: value,
         }));
     };
-    console.log('SelectLayout :>> ', SelectLayout);
     const onSumbit = async () => {
         const Payload = {
             dateAppId: 0,

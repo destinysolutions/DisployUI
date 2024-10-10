@@ -1,4 +1,78 @@
 /* comman css */
+.bookslot input:focus {
+  border: 1px solid red !important;
+}
+.bookslot {
+  width: 100%;
+}
+.bookslot-input{
+  border: 1px solid #CACACA;
+  width: 100%;
+  border-radius: 0.75rem !important;
+}
+
+.bookslot-input input:focus,
+.bookslot-input input:focus-visible,
+.bookslot-phone-input input:focus {
+  /* border: 1px solid #CACACA !important; */
+  box-shadow: none !important;
+}
+.bookslot .react-tel-input .flag-dropdown{
+  border:none !important;
+  border-radius: 0.75rem !important;
+}
+.bookslot .react-tel-input {
+  border:1px solid red !important;
+  border-radius: 0.75rem !important;
+}
+
+.bookslot-phone-input{
+  width: 100%;
+}
+
+.bookslot .react-tel-input .form-control,
+.bookslot-phone-input .react-tel-input .form-control {
+  height: 50px !important;
+  border-radius: 0.75rem !important;
+}
+.bookslot .react-tel-input input:focus{
+  border: none !important;
+}
+
+.bookslot-phone-input .react-tel-input .flag-dropdown {
+  border: 1px solid #CACACA !important;
+  border-top-left-radius: 0.75rem !important;
+  border-bottom-left-radius: 0.75rem !important;
+  border-right: none;
+}
+.bookslot-phone-input .react-tel-input .flag-dropdown.open .selected-flag,
+.bookslot .react-tel-input .flag-dropdown.open .selected-flag,
+.bookslot .react-tel-input .selected-flag:hover, .react-tel-input .selected-flag:focus,
+.bookslot-phone-input .react-tel-input .selected-flag:hover, .react-tel-input .selected-flag:focus{
+  border-top-left-radius: 0.75rem !important;
+  border-bottom-left-radius: 0.75rem !important;
+}
+/* .bookslot-input .react-tel-input .flag-dropdown {
+  border: none !important;
+} */
+
+.bookslot-ref input:focus,
+.bookslot-ref-error input:focus{
+  box-shadow: none !important;
+  border-radius: 0.75rem !important;
+}
+
+.bookslot-ref{
+  border: 1px solid #CACACA;
+  width: 100%;
+  border-radius: 0.75rem !important;
+}
+
+.bookslot-ref-error {
+  border: 1px solid red !important;
+  border-radius: 0.75rem !important;
+}
+
 input:focus,
 input:focus-visible,
 select:focus,
@@ -14,6 +88,18 @@ input:visited {
   outline: none !important;
   background-color: #fff !important;
 }
+
+
+.pay-bookslot-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
 
 .screenIcon {
   border: 1px solid #00072e;

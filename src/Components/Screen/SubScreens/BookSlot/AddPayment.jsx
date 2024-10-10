@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaRegClock, FaRegQuestionCircle } from "react-icons/fa";
-import { FiMapPin } from "react-icons/fi";
-import { IoEarthSharp } from "react-icons/io5";
-import { getTimeZoneName, secondsToHMS } from "../../../Common/Common";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { PaymentElement, CardElement, useElements, useStripe, CardCvcElement, CardExpiryElement, CardNumberElement } from "@stripe/react-stripe-js";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import logo from "../../../../images/DisployImg/Black-Logo2.png";
 
 const AddPayment = ({
   selectedScreens,
@@ -37,7 +34,7 @@ const AddPayment = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const [autoPay, setAutoPay] = useState(false)
-  console.log('autoPay :>> ', autoPay);
+
   useEffect(() => {
     if (!stripe) {
       return;
@@ -84,78 +81,85 @@ const AddPayment = ({
       return;
     }
 
-    if (!autoPay) {
-      setErrorMessage(true)
-    }
+    // if (!autoPay) {
+    //   setErrorMessage(true)
+    // }
 
-    if (autoPay) {
-      setErrorMessage(false)
-      setIsLoading(true);
-      try {
-        // const { paymentIntent, error } = await stripe.confirmPayment({
-        //   elements,
-        //   redirect: 'if_required'
-        // });
+    // if (autoPay) {
+    setErrorMessage(false)
+    setIsLoading(true);
+    try {
+      // const { paymentIntent, error } = await stripe.confirmPayment({
+      //   elements,
+      //   redirect: 'if_required'
+      // });
 
-        // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-        //     payment_method: {
-        //         card: elements.getElement(CardElement),
-        //         billing_details: {
-        //             name: userDetails?.firstName ? userDetails?.firstName : "Admin" ,
-        //         },
-        //     },
-        // });
+      // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+      //     payment_method: {
+      //         card: elements.getElement(CardElement),
+      //         billing_details: {
+      //             name: userDetails?.firstName ? userDetails?.firstName : "Admin" ,
+      //         },
+      //     },
+      // });
 
-        // const cardElement = elements.getElement(CardElement);
-        // const { paymentMethod, error } = await stripe.createPaymentMethod({
-        //   type: 'card',
-        //   card: cardElement,
-        // });
+      // const cardElement = elements.getElement(CardElement);
+      // const { paymentMethod, error } = await stripe.createPaymentMethod({
+      //   type: 'card',
+      //   card: cardElement,
+      // });
 
-        const { error, paymentMethod } = await stripe.createPaymentMethod({
-          type: 'card',
-          card: elements.getElement(CardNumberElement),
-        });
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: elements.getElement(CardNumberElement),
+      });
 
-        handlebook(paymentMethod)
-        return
+      handlebook(paymentMethod)
+      return
 
-        if (error) {
-          if (error.type === "card_error" || error.type === "validation_error") {
-            toast.error(error?.message)
-            setIsLoading(false);
-            setMessage(error.message);
-          } else {
-            toast.error("An unexpected error occurred.")
-            setIsLoading(false);
-            setMessage("An unexpected error occurred.");
-          }
+      if (error) {
+        if (error.type === "card_error" || error.type === "validation_error") {
+          toast.error(error?.message)
+          setIsLoading(false);
+          setMessage(error.message);
         } else {
-          // Payment was successful, you can access paymentIntent for confirmation data
-          handlebook(paymentMethod)
-          setPage(page + 1)
-          setMessage("Payment successful!");
+          toast.error("An unexpected error occurred.")
+          setIsLoading(false);
+          setMessage("An unexpected error occurred.");
         }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error confirming payment:", error);
-        setIsLoading(false);
-        // Handle error, display error message to user, etc.
+      } else {
+        // Payment was successful, you can access paymentIntent for confirmation data
+        handlebook(paymentMethod)
+        setPage(page + 1)
+        setMessage("Payment successful!");
       }
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error confirming payment:", error);
+      setIsLoading(false);
+      // Handle error, display error message to user, etc.
     }
+    // }
   };
 
   return (
     <>
-      <div className="icons flex items-center">
-        <div>
+      <div className="icons flex items-center justify-center">
+        {/*<div>
           <button
             className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
             onClick={() => handleBack()}
           >
             <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
           </button>
+        </div>*/}
+        <div className="flex items-center justify-center">
+          <img
+            alt="Logo"
+            src={logo}
+            className="cursor-pointer duration-500 w-52"
+          />
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-5">
@@ -204,7 +208,7 @@ const AddPayment = ({
           </div>
         </div> */}
         <div className="md:col-span-3 lg:col-span-3 flex flex-col gap-5">
-          <div className="text-3xl font-semibold">Payment Method</div>
+          {/*<div className="text-3xl font-semibold">Payment Method</div>*/}
           {/*<div className="rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">
             <div className="text-xl font-semibold">Card Details</div>
             <div>Name on card</div>
@@ -312,7 +316,7 @@ const AddPayment = ({
           </div>
                 */}
 
-          <div className="p-4 shadow rounded-lg">
+          <div className="p-2">
             <label className="card-label">
               Card Number
               <CardNumberElement
@@ -373,7 +377,7 @@ const AddPayment = ({
                 }}
               />
             </label>
-            <div className="auto-pay">
+            {/*<div className="auto-pay">
               <input type="checkbox" className="auto-pay-checkbox" onChange={() => setAutoPay(!autoPay)} value={autoPay} />
               <label className="auto-pay-label">Auto Payment</label>
             </div>
@@ -381,13 +385,23 @@ const AddPayment = ({
               <div className='mb-2'>
                 <label className="error-message">You need to Check Auto Pay for Further Process.</label>
               </div>
-            )}
-            <div className="flex justify-center items-center">
-              <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type="button" className="pay-button w-full">
+            )}*/}
+            <div className="py-3">
+              <hr />
+            </div>
+            <div className="flex justify-center items-center gap-4">
+              <button
+                className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                onClick={() => handleBack()}
+              >
+                Back
+              </button>
+              <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type="button" className="pay-bookslot-button bg-orange-400 text-white hover:border-b-orange-600 px-8 rounded-full">
                 <span id="button-text">
-                  {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay now"}
+                  {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay"}
                 </span>
               </button>
+
             </div>
           </div>
 

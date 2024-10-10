@@ -139,7 +139,6 @@ const Sidebar = ({ sidebarOpen }) => {
     }
   }, [store.data]);
 
-  // console.log("store ------------------- ", store.data.menu, { menuData });
 
   // menu list
   const Menus = [

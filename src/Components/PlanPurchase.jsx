@@ -151,16 +151,13 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
                     console.error(confirmError.message);
                     setMessage(confirmError.message);
                 } else if (paymentIntent.status === 'succeeded') {
-                    console.log('Payment successful!');
                     setMessage("Payment successful!");
                     PaymentDetails({ paymentIntent, organizationID: organizationID, Subscription, product })
                 } else if (paymentIntent.status === 'requires_action') {
                     setIsLoading(false);
-                    console.log('3D Secure authentication required');
                     setErrorMessage('3D Secure authentication required. Please complete the authentication.');
                 } else if (paymentIntent.status === 'requires_payment_method') {
                     setIsLoading(false);
-                    console.log('Payment failed: requires payment method');
                     setErrorMessage('Payment failed: requires payment method. Please try again.');
                 }
             }

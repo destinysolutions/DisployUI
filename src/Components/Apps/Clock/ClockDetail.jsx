@@ -42,7 +42,6 @@ const ClockDetail = ({ sidebarOpen, setSidebarOpen }) => {
     Location: "",
   });
 
-  // console.log('Clock', Clock)
   const [time, setTime] = useState(moment());
   const [selectclock, setselectclock] = useState("1");
   const [countryCode, setCountryCode] = useState("");
@@ -178,7 +177,6 @@ const ClockDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handlesave = () => {
     alert("save");
-    console.log(Clock, "final");
   };
   const [currentTime, setCurrentTime] = useState(new Date());
   const formattedCurrentTime = `${currentTime.getHours().toString().padStart(2, '0')}:${currentTime.getMinutes().toString().padStart(2, '0')}`;

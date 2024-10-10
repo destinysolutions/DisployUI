@@ -17,6 +17,7 @@ import {
   ADDALLEVENT,
   ADDUPDATESLOT,
   GET_ALL_COUNTRY,
+  GET_TIMEZONE,
   GET_TIMEZONE_TOKEN,
   PAYMENT_INTENT_CREATE_REQUEST,
   SCREEN_LIST,
@@ -30,7 +31,7 @@ import AddPayment from "./AddPayment";
 import { Elements } from "@stripe/react-stripe-js";
 import { handlePaymentIntegration } from "../../../../Redux/PaymentSlice";
 import { useDispatch } from "react-redux";
-import { handleAllTimeZone } from "../../../../Redux/CommonSlice";
+import { getIndustry, handleAllTimeZone } from "../../../../Redux/CommonSlice";
 import ImageUploadPopup from "./ImageUploadPopup";
 import { handleGetState } from "../../../../Redux/SettingUserSlice";
 import 'react-time-picker/dist/TimePicker.css';
@@ -38,6 +39,8 @@ import AddSoltPage_2 from "./AddSoltPage_2";
 import BookSlotMap from "./BookSlotMap";
 import PhoneInput from "react-phone-input-2";
 import BookSlotTimeZone from "./BookSlotTimeZone";
+import logo from "../../../../images/DisployImg/Black-Logo2.png";
+import { getPurposeScreens } from "../../../../Redux/admin/AdvertisementSlice";
 
 
 const AddSlot = () => {
@@ -127,6 +130,11 @@ const AddSlot = () => {
   };
 
   useEffect(() => {
+    dispatch(getIndustry({}))
+    dispatch(getPurposeScreens({}))
+}, []);
+
+  useEffect(() => {
     let Price = 0;
     selectedScreens?.map((item) => {
       Price = Price + item?.Price;
@@ -178,6 +186,28 @@ const AddSlot = () => {
     }
   }, [endDate, startDate]);
 
+  useEffect(() => {
+    let arr = [];
+    let count = 0;
+
+    getallTime?.forEach((item) => {
+      let start = `${item?.startTime}`;
+      let end = `${item?.endTime}`;
+      let obj = { ...item, Duration: timeDifferenceInSeconds(start, end) };
+
+      count += timeDifferenceInSeconds(start, end);
+      arr.push(obj);
+    });
+    if (!repeat) {
+      setTotalDuration(count);
+    } else {
+      const total = countAllDaysInRange();
+      setTotalDuration(total * count);
+    }
+
+    setGetAllTime(arr);
+  }, [JSON.stringify(getallTime)]);
+
 
   const TimeZone = () => {
     const config = {
@@ -197,6 +227,7 @@ const AddSlot = () => {
             timeZoneName: "long",
           })
           .substring(4);
+        console.log('response', response)
         response?.payload?.data?.map((item) => {
           if (item?.timeZoneName === CurrentTimeZone) {
             setSelectedTimeZone(item?.timeZoneID);
@@ -210,10 +241,8 @@ const AddSlot = () => {
   };
 
   useEffect(() => {
-    if (page === 3) {
-      TimeZone();
-    }
-  }, [page]);
+    TimeZone();
+  }, [])
 
   const handleSelectTimeZoneChange = (event) => { setSelectedTimeZone(event?.target.value); };
   const handleEndDateChange = (event) => { setEndDate(event.target.value); };
@@ -227,7 +256,6 @@ const AddSlot = () => {
     }
     setStartDate(event.target.value);
   };
-
 
   const FetchScreen = async (Params) => {
 
@@ -640,8 +668,6 @@ const AddSlot = () => {
   // page 3 handleBookSlot
 
   const handleBookSlot = () => {
-    console.log('getallTime :>> ', getallTime);
-
 
     // setPage(page + 1)
     // return
@@ -649,29 +675,6 @@ const AddSlot = () => {
     if (hasMissingImages) {
       return toast.error("Please upload valid Vertical and Horizontal images.");
     } else {
-
-      let arr = [];
-      let count = 0;
-
-      getallTime?.map((item) => {
-
-        let start = `${item?.startTime}`;
-        let end = `${item?.endTime}`;
-        let obj = { ...item, Duration: timeDifferenceInSeconds(start, end) };
-
-        count = count + timeDifferenceInSeconds(start, end);
-        arr.push(obj);
-
-      });
-
-      if (!repeat) {
-        setTotalDuration(count);
-      } else {
-        const total = countAllDaysInRange();
-        setTotalDuration(total * count);
-      }
-
-      setGetAllTime(arr);
       setPage(page + 1);
     }
   };
@@ -721,14 +724,34 @@ const AddSlot = () => {
         {page === 1 && (
           <>
             <div className="w-full h-full p-5 flex items-center justify-center">
-              <div className="lg:w-[900px] md:w-[700px] w-full  h-[90vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg">
-                <div className="text-2xl font-semibold">Book Slot</div>
-                <div className="rounded-lg shadow-md bg-white p-5 h-[95%]">
+              <div className="bg-white lg:px-36 lg:py-10 md:px-28 md:py-8 sm:px-16 sm:py-4 p-3 shadow-xl rounded-xl">
+                {/* <div className="text-2xl font-semibold">Book Slot</div>*/}
+                <div className="flex items-center justify-center mb-6">
+                  <img
+                    alt="Logo"
+                    src={logo}
+                    className="cursor-pointer duration-500 w-52"
+                  />
+                </div>
+                <div>
                   <form
-                    className="flex flex-col gap-2 h-full"
+                    className="flex flex-col gap-6 items-center"
                     onSubmit={handleSubmit(onSubmit)}
                   >
-                    <label
+                    <div className={`${errors?.name ? "bookslot" : "bookslot-input"}`}>
+                      <input
+                        {...register("name", {
+                          required: "Name is required",
+                        })}
+                        type="text"
+                        name="name"
+                        id="name"
+                        placeholder="Enter Your Name"
+                        className={` bg-transparent placeholder-slate-400 focus:border-none focus:shadow-none border-black border-current w-full p-3 rounded-xl`}
+                        style={{ border: `${errors?.name ? "1px solid red" : "none"}` }}
+                      />
+                    </div>
+                    {/* <label
                       htmlFor="name"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
@@ -746,9 +769,25 @@ const AddSlot = () => {
                     />
                     {errors.name && (
                       <span className="error">{errors.name.message}</span>
-                    )}
-
-                    <label
+                    )}*/}
+                    <div className={`${errors?.email ? "bookslot" : "bookslot-input"}`}>
+                      <input
+                        {...register("email", {
+                          required: "Email is required",
+                          pattern: {
+                            value: /^\S+@\S+$/i,
+                            message: "Invalid email address",
+                          },
+                        })}
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder="Enter Your Email"
+                        className={`bookslot-input bg-transparent placeholder-slate-400 focus:border-none focus:shadow-none border-black  border-current w-full p-3 rounded-xl`}
+                        style={{ border: `${errors?.email ? "1px solid red" : "none"}` }}
+                      />
+                    </div>
+                    {/* <label
                       htmlFor="name"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
@@ -770,101 +809,58 @@ const AddSlot = () => {
                     />
                     {errors.email && (
                       <span className="error">{errors.email.message}</span>
-                    )}
+                    )}*/}
 
-                    <label
+                    {/*<label
                       htmlFor="name"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
                       Phone Number *
-                    </label>
-                    {/* <Controller
-                      name="phone"
-                      control={control}
-                      rules={{
-                        validate: (value) => isValidPhoneNumber(value),
-                      }}
-                      render={({ field: { onChange, value, country } }) => (
-                        <PhoneInput
-                          country={"in"}
-                          onChange={(phoneNumber) => {
-                            const formattedNumber = "+" + phoneNumber;
-                            onChange(formattedNumber); // Update the value directly
-                            setPhoneNumber(formattedNumber); // Update the state to reflect the phone number
-                          }}
-                          value={value || phoneNumber}
-                          autocompleteSearch={true}
-                          countryCodeEditable={false}
-                          enableSearch={true}
-                          inputStyle={{
-                            width: "100%",
-                            background: "white",
-                            padding: "25px 0 25px 3rem",
-                            borderRadius: "10px",
-                            fontSize: "1rem",
-                            border: "1px solid #000",
-                          }}
-                          dropdownStyle={{
-                            color: "#000",
-                            fontWeight: "600",
-                            padding: "0px 0px 0px 10px",
-                          }}
-                        />
-                      )}
-                    /> */}
+                    </label>*/}
+                    <div className={`${errors?.phone ? "bookslot" : "bookslot-phone-input"}`}>
+                      <Controller
+                        name="phone"
+                        control={control}
+                        rules={{
+                          required: 'Phone Number is required',
+                          validate: (value) => {
+                            // You can add additional validation logic here if needed
+                            if (!value || value.length < 10) {
+                              return "Invalid phone number";
+                            }
+                            return true; // Valid number
+                          },
+                        }}
+                        render={({ field: { onChange, value }, fieldState: { error } }) => (
+                          <PhoneInput
+                            autocompleteSearch={true}
+                            countryCodeEditable={false}
+                            enableSearch={false}
+                            value={value}
+                            onChange={(phone, countryData, event, isValid) => {
+                              onChange(phone); // Update the value in the Controller
+                            }}
+                            id="phone"
+                            country={'in'}
+                            inputProps={{
+                              name: 'phone',
+                              country: 'in',
+                              required: true,
+                              autoFocus: true,
+                            }}
+                          />
+                        )}
+                      />
 
-                    <Controller
-                      name="phone"
-                      control={control}
-                      rules={{ required: 'Phone Number is required' }}
-                      // rules={{
-                      //   validate: (value) => isValidPhoneNumber(value),
-                      // }}
-                      render={({ field: { onChange, value } }) => (
-                        <PhoneInput
-                          autocompleteSearch={true}
-                          countryCodeEditable={false}
-                          enableSearch={true}
-                          value={value}
-                          onChange={onChange}
-                          id="phone"
-                          country={'in'}
-                          error={true}
-                          inputProps={{
-                            name: 'phone',
-                            country: 'in',
-                            required: true,
-                            autoFocus: true,
-                            style: { width: '100%', border: "1px solid #e4e4e7" },
-                          }}
-                        />
-                      )}
-                    />
-                    {/* {isValidPhoneNumber && (
-                      <span className="error">Invalid Phone Number.</span>
-                    )} */}
-                    {/* {errors?.phone && <p className="text-red-500 text-xs ">{errors?.phone?.message}</p>} */}
-                    {/* <input
-                      type="number"
-                      name="phone"
-                      id="phone"
-                      placeholder="Enter Your Phone Number"
-                      {...register("phone", {
-                        required: "Phone Number is required",
-                        pattern: {
-                          value: /^\d{10}$/, // Adjust the regular expression as per your phone number format
-                          message: "Invalid phone number",
-                        },
-                      })}
-                      className="formInput"
-                    /> */}
-                    {errors.phone && (
+                    </div>
+
+                    {/*{errors.phone && (
                       <span className="error">{errors.phone.message}</span>
-                    )}
-                    <div className="w-full h-full">
-                      <div className="flex justify-end pt-4 h-full items-end">
+                    )}*/}
+                    <div>
+                      <div className="flex justify-end h-full items-end">
                         <button
-                          className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          className="flex align-middle bg-SlateBlue text-white items-center rounded-full xs:px-3 xs:py-1 sm:px-4 md:px-8 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           type="submit"
                         >
                           Next
@@ -877,39 +873,82 @@ const AddSlot = () => {
             </div>
           </>
         )}
-        {page === 2 && (<AddSoltPage_2 page={page} setPage={setPage} countries={countries} setallSlateDetails={setallSlateDetails} allSlateDetails={allSlateDetails} UserName={UserName} />)}
+        {page === 2 && (
+          <AddSoltPage_2
+            page={page}
+            setPage={setPage}
+            countries={countries}
+            setallSlateDetails={setallSlateDetails}
+            allSlateDetails={allSlateDetails}
+            UserName={UserName}
+          />
+        )}
 
         {page === 3 && (
-          <>
-            <BookSlotTimeZone
-              handleAddItem={handleAddItem} handleSequenceChange={handleSequenceChange} handleaftereventChange={handleaftereventChange} handleAftereventTypeChange={handleAftereventTypeChange}
-              allTimeZone={allTimeZone} selectedTimeZone={selectedTimeZone} selectedDays={selectedDays} countAllDaysInRange={countAllDaysInRange}
-              handleSelectTimeZoneChange={handleSelectTimeZoneChange} handleStartDateChange={handleStartDateChange}
-              handleEndDateChange={handleEndDateChange} repeat={repeat} startDate={startDate} endDate={endDate} setRepeat={setRepeat}
-              handleEndTimeChange={handleEndTimeChange} handleDayButtonClick={handleDayButtonClick} setPage={setPage} handleBookSlot={handleBookSlot} page={page}
-              getallTime={getallTime} handleStartTimeChange={handleStartTimeChange} handleOpenImagePopup={handleOpenImagePopup} handleRemoveItem={handleRemoveItem}
-              handleCheckboxChange={handleCheckboxChange} selectAllDays={selectAllDays}
-            />
-          </>
+          <BookSlotTimeZone
+            handleAddItem={handleAddItem}
+            handleSequenceChange={handleSequenceChange}
+            handleaftereventChange={handleaftereventChange}
+            handleAftereventTypeChange={handleAftereventTypeChange}
+            allTimeZone={allTimeZone}
+            selectedTimeZone={selectedTimeZone}
+            selectedDays={selectedDays}
+            countAllDaysInRange={countAllDaysInRange}
+            handleSelectTimeZoneChange={handleSelectTimeZoneChange}
+            handleStartDateChange={handleStartDateChange}
+            handleEndDateChange={handleEndDateChange}
+            repeat={repeat}
+            startDate={startDate}
+            endDate={endDate}
+            setRepeat={setRepeat}
+            handleEndTimeChange={handleEndTimeChange}
+            handleDayButtonClick={handleDayButtonClick}
+            setPage={setPage}
+            handleBookSlot={handleBookSlot}
+            page={page}
+            getallTime={getallTime}
+            handleStartTimeChange={handleStartTimeChange}
+            handleOpenImagePopup={handleOpenImagePopup}
+            handleRemoveItem={handleRemoveItem}
+            handleCheckboxChange={handleCheckboxChange}
+            selectAllDays={selectAllDays}
+            totalDuration={totalDuration}
+          />
         )}
 
         {page === 4 && (
           <>
-            <BookSlotMap totalPrice={totalPrice} totalDuration={totalDuration}
-              // selectedCountry={selectedCountry} setSelectedItem={setSelectedItem} selectedItem={selectedItem}
-              // handleSelectCountries={handleSelectCountries}  locationDis={locationDis}    setSelectedValue={setSelectedValue} screenArea={screenArea}
+            <BookSlotMap
+              totalPrice={totalPrice}
+              totalDuration={totalDuration}
+              // selectedCountry={selectedCountry} 
+              // setSelectedItem={setSelectedItem}
+              // selectedItem={selectedItem}
+              // handleSelectCountries={handleSelectCountries}  
+              // locationDis={locationDis}
+              setSelectedValue={setSelectedValue}
+              screenArea={screenArea}
               handleBack={handleBack}
               setAllArea={setAllArea}
-              selectedVal={selectedVal} setSelectedVal={setSelectedVal}
+              selectedVal={selectedVal}
+              setSelectedVal={setSelectedVal}
               getSelectedVal={getSelectedVal}
-              allArea={allArea} handleRangeChange={handleRangeChange}
-              // Open={Open} setOpen={setOpen}
-              setSelectedScreens={setSelectedScreens} setSelectedScreen={setSelectedScreen}
-              screenData={screenData} handleNext={handleNext}
-              countries={countries} handleSelectChange={handleSelectChange}
-              Screenoptions={Screenoptions} selectAllScreen={selectAllScreen}
-              selectedScreen={selectedScreen} selectedScreens={selectedScreens}
-              setSelectAllScreen={setSelectAllScreen} setAllCity={setAllCity}
+              allArea={allArea}
+              handleRangeChange={handleRangeChange}
+              // Open={Open} 
+              setOpen={setOpen}
+              setSelectedScreens={setSelectedScreens}
+              setSelectedScreen={setSelectedScreen}
+              screenData={screenData}
+              handleNext={handleNext}
+              countries={countries}
+              handleSelectChange={handleSelectChange}
+              Screenoptions={Screenoptions}
+              selectAllScreen={selectAllScreen}
+              selectedScreen={selectedScreen}
+              selectedScreens={selectedScreens}
+              setSelectAllScreen={setSelectAllScreen}
+              setAllCity={setAllCity}
               setScreenData={setScreenData}
             />
           </>
@@ -929,7 +968,7 @@ const AddSlot = () => {
         {/* clientSecret */}
         {page === 5 && clientSecret && (
           <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[700px] md:w-[500px] w-full h-[60vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+            <div className="lg:w-[700px] md:w-[500px] w-full bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
               <Elements options={options} stripe={stripePromise}>
                 <AddPayment
                   selectedScreens={selectedScreens}
