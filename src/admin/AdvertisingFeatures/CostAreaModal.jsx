@@ -4,7 +4,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { handleAddCostbyarea } from '../../Redux/admin/AdvertisementSlice';
 import { BsCurrencyDollar } from 'react-icons/bs';
-import { greenOptions, kilometersToMeters } from '../../Components/Common/Common';
+import { greenOptions, IncludeExclude, kilometersMilesToMeters, kilometersToMeters } from '../../Components/Common/Common';
 import { MdCurrencyRupee } from 'react-icons/md';
 import toast from 'react-hot-toast';
 
@@ -17,8 +17,7 @@ const options = {
     disableDefaultUI: true,
     zoomControl: true,
 };
-export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
-
+export default function CostAreaModal({ setLoadFirst, EditData, onclose, location }) {
 
     const dispatch = useDispatch();
     const { isLoaded } = useLoadScript({
@@ -34,9 +33,10 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
         location: '',
         cost: '',
         range: '',
-        currency: 'Indian'
-    });
+        currency: 'Indian',
+        unit: 'km'
 
+    });
 
     useEffect(() => {
         if (EditData) {
@@ -45,6 +45,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                 cost: EditData.costPerSec || '',
                 currency: EditData.currency || 'Indian',
                 range: EditData.range || '',
+                unit: EditData.unit || '',
             });
             if (EditData.latitude || EditData.longitude) {
                 map?.setZoom(14);
@@ -60,7 +61,18 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
             }
 
         }
-    }, [EditData]);
+        if (location) {
+            setdata({ ...data, location: location?.locationName, })
+            setCenter({
+                lat: parseFloat(location?.latitude),
+                lng: parseFloat(location?.longitude),
+            });
+            setMarkerPosition({
+                lat: parseFloat(location?.latitude) || 0,
+                lng: parseFloat(location?.longitude) || 0,
+            });
+        }
+    }, [EditData, location]);
 
     const onLoad = (mapInstance) => {
         const bounds = new window.google.maps.LatLngBounds();
@@ -68,11 +80,18 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
 
         // mapInstance.fitBounds(bounds);
         setMap(mapInstance);
-        if (EditData.latitude || EditData.longitude) {
+        if (EditData?.latitude || EditData?.longitude) {
             mapInstance.setZoom(12);
             setCenter({
-                lat: EditData.latitude,
-                lng: EditData.longitude,
+                lat: EditData?.latitude,
+                lng: EditData?.longitude,
+            });
+        }
+        if (location?.latitude || location?.longitude) {
+            mapInstance.setZoom(12);
+            setCenter({
+                lat: location?.latitude,
+                lng: location?.longitude,
             });
         }
     };
@@ -107,7 +126,8 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
             longitude: markerPosition.lng,
             costPerSec: data.cost,
             currency: data.currency,
-            range: data.range
+            range: data.range,
+            unit: data.unit,
         };
         dispatch(handleAddCostbyarea(payload)).then((res) => {
             if (res?.payload?.status) {
@@ -119,6 +139,12 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
             onclose();
             setdata({ location: '', cost: '', range: '', currency: 'Indian' });
         });
+    };
+
+    const getZoomLevel = (range) => {
+        if (range <= 1) return 15;
+        if (range <= 5) return 12;
+        return 10;
     };
 
     if (!isLoaded) return;
@@ -159,55 +185,68 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                                     </div>
                                     <div className='flex justify-start items-center gap-2 mb-3'>
                                         <label for='Yes' className="mr-3 lg:text-base md:text-base sm:text-xs xs:text-xs">Range :</label>
-                                        <div className='relative mt-1.5'>
-                                            <div className="relative">
-                                                <input
-                                                    id="labels-range-input"
-                                                    type="range"
-                                                    min="0"
-                                                    max="20"
-                                                    step="1" // Changed to step="1" for integer values
-                                                    value={data?.range}
-                                                    onChange={(e) => setdata({ ...data, range: parseInt(e.target.value) })}
-                                                    className="w-40 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                                                />
-                                                <span
-                                                    className="text-sm text-gray-500 dark:text-gray-400 absolute"
-                                                    style={{
-                                                        left: `${((data?.range || 0) / 20) * 100}%`,
-                                                        transform: 'translateX(-50%)',
-                                                        top: '-10px',
-                                                    }}
-                                                >
-                                                    {data?.range}
-                                                </span>                                    </div>
-
-                                            {Errors && data?.range <= 0 && (
-                                                <p className="text-red-600 text-sm font-semibold absolute top-5 start-0 ">Range is Required.</p>
-                                            )}
-                                        </div>
+                                        <input
+                                            type='number'
+                                            min={0}
+                                            value={data?.range}
+                                            onChange={(e) => {
+                                                const value = parseInt(e.target.value)
+                                                setdata({ ...data, range: value });
+                                                const newZoom = getZoomLevel(value); // Get the zoom level based on range
+                                                map.setZoom(newZoom);
+                                                if (markerPosition) {
+                                                    map.panTo(markerPosition); // Center the map on the marker
+                                                }
+                                            }}
+                                            className='appearance-none border border-[#D5E3FF] rounded w-16 py-1 px-3'
+                                        />
+                                        <select
+                                            className="border border-[#D5E3FF] rounded  px-4 pl-2 py-1 w-20"
+                                            value={data?.unit}
+                                            onChange={(e) => {
+                                                setdata({ ...data, unit: e.target.value });
+                                                map.setZoom(12);
+                                                if (markerPosition) {
+                                                    map.panTo(markerPosition);
+                                                }
+                                            }}
+                                        >
+                                            {IncludeExclude.map((option) => (
+                                                <option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
                                     <div className='w-full mb-3'>
-                                        <div className="flex items-center justify-center gap-3 w-full">
+                                        <div className="flex items-center justify-start   gap-3">
+                                            <label for='Yes' className=" lg:text-base md:text-base sm:text-xs xs:text-xs ">Cost / sec. :</label>
                                             <input
-                                                className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
+                                                className=" appearance-none border border-[#D5E3FF] rounded w-[100px] py-1 px-3"
                                                 type="number"
-                                                placeholder="Set Cost / sec."
                                                 value={data?.cost}
                                                 onChange={(e) => {
                                                     setdata({ ...data, cost: e.target.value })
                                                 }}
                                             />
-                                            {/* <div className="border border-[#D5E3FF] rounded font-bold text-black text-3xl">
-                                        ￠
-                                    </div> */}
+                                            <div className=" flex items-center">
+                                                <select
+                                                    className="border border-[#D5E3FF] rounded  px-4 pl-2 py-1 "
+                                                    value={data?.currency}
+                                                    onChange={(e) => setdata({ ...data, currency: e.target.value })}
+                                                >
+                                                    <option value={'Indian'}>Indian</option>
+                                                    <option value={'Other'}>Other</option>
+                                                </select>
+                                            </div>
+                                            {/* <div className="border border-[#D5E3FF] rounded font-bold text-black text-3xl">￠</div> */}
                                         </div>
                                         {Errors && data?.cost <= 0 && (
                                             <p className="text-red-600 text-sm font-semibold ">Cost is Required.</p>
                                         )}
                                     </div>
 
-                                    <div className="flex justify-start items-center gap-2 my-2">
+                                    {/* <div className="flex justify-start items-center gap-2 my-2">
                                         <label for='Yes' className="mr-3 lg:text-base md:text-base sm:text-xs xs:text-xs">
                                             Currency :
                                         </label>
@@ -222,7 +261,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                                                     setdata({ ...data, currency: 'Indian' })
                                                 }}
                                             />
-                                            <label for='Monthly' className="border border-[#D5E3FF] rounded font-bold text-black text-3xl p-[2px] ml-2">
+                                            <label for='Monthly' className="border border-[#D5E3FF] rounded font-bold text-black text-xl p-[2px] ml-2">
                                                 <MdCurrencyRupee />
                                             </label>
                                         </div>
@@ -237,22 +276,19 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                                                     setdata({ ...data, currency: 'Dollar' })
                                                 }}
                                             />
-                                            <label for='Annually' className="border border-[#D5E3FF] rounded font-bold text-black text-3xl p-[2px] ml-2">
+                                            <label for='Annually' className="border border-[#D5E3FF] rounded font-bold text-black text-xl p-[2px] ml-2">
                                                 <BsCurrencyDollar />
                                             </label>
-
                                         </div>
-                                    </div>
-
+                                    </div> */}
                                 </div>
-
                             </div>
                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 border-white shadow-lg'>
                                 <div className="h-full">
                                     <GoogleMap
                                         mapContainerStyle={containerStyle}
                                         center={center}
-                                        zoom={10}
+                                        zoom={5}
                                         onLoad={onLoad}
                                         options={options}
                                     >
@@ -261,7 +297,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose }) {
                                                 <Circle
                                                     center={markerPosition}
                                                     options={greenOptions}
-                                                    radius={kilometersToMeters(data?.range)}
+                                                    radius={kilometersMilesToMeters(data)}
                                                 />
                                                 <Marker position={markerPosition} />
                                             </>

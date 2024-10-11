@@ -132,7 +132,7 @@ const AddSlot = () => {
   useEffect(() => {
     dispatch(getIndustry({}))
     dispatch(getPurposeScreens({}))
-}, []);
+  }, []);
 
   useEffect(() => {
     let Price = 0;
@@ -501,11 +501,13 @@ const AddSlot = () => {
       area: 5,
       latitude: value?.latitude,
       longitude: value?.longitude,
+      unit: 'km'
     };
     let Params = {
       latitude: value?.latitude,
       longitude: value?.longitude,
       distance: 5,
+      unit: 'km',
       dates: constructTimeObjects(
         getallTime,
         startDate,
@@ -558,6 +560,7 @@ const AddSlot = () => {
           area: parseInt(item1?.area), // Assuming you want to modify the 'area' property of the matched item
           latitude: item?.latitude,
           longitude: item?.longitude,
+          unit: item?.unit,
         };
       } else {
         return item1;
@@ -570,9 +573,7 @@ const AddSlot = () => {
 
   // page 5 
   const handlebook = (paymentMethod) => {
-
     let EventDetails = [];
-
     getallTime?.map((item) => {
       let obj = {
         bookingSlotCustomerEventID: 0,
@@ -679,20 +680,19 @@ const AddSlot = () => {
     }
   };
 
-  const handleSelectCountries = (event) => {
+  const handleSelectunit = (e, index) => {
+    const { value } = e.target;
+    const updatedDis = [...allArea];
 
-    setSelectedCountry(event?.target.value);
+    updatedDis[index].unit = value;
+    setAllArea(updatedDis);
 
-    let Params = {
-      latitude: 0,
-      longitude: 0,
-      distance: 0,
-      // startDate: startDate,
-      // endDate: endDate,
-      // country: selectedCountry,
-      // systemTimeZone: selectedTimeZone,
-      // isRepeat: repeat,
-      // repeatDays: day,
+    const item = updatedDis[index];
+    const Params = {
+      latitude: item?.latitude,
+      longitude: item?.longitude,
+      distance: parseInt(item.area),
+      unit: item?.unit,
       dates: constructTimeObjects(
         getallTime,
         startDate,
@@ -707,8 +707,8 @@ const AddSlot = () => {
     };
 
     FetchScreen(Params);
-
   };
+
 
   const onSubmit = () => {
     setPage(page + 1)
@@ -913,6 +913,7 @@ const AddSlot = () => {
             handleCheckboxChange={handleCheckboxChange}
             selectAllDays={selectAllDays}
             totalDuration={totalDuration}
+            handleSelectunit={handleSelectunit}
           />
         )}
 

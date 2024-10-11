@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
-import { PageNumber } from '../../Components/Common/Common';
+import { formatToUSCurrency, PageNumber } from '../../Components/Common/Common';
 import { useDispatch } from 'react-redux';
 import { getAllUserAdScreen } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
+import Datepicker from "react-tailwindcss-datepicker";
+import { format } from 'date-fns';
 
 export default function AdScreens({ sidebarOpen }) {
     const dispatch = useDispatch()
@@ -18,24 +20,16 @@ export default function AdScreens({ sidebarOpen }) {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [AdScreens, setAdScreens] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [SelectedDate, setSelectedDate] = useState('');
-    // const [EndDate, setEndDate] = useState('');
     const [assetManagement, setAssetManagement] = useState({});
     const filteredData = store?.pendingScreens?.length > 0 ? store?.pendingScreens?.filter((item) => item?.screenName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
 
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-    const [showPicker, setShowPicker] = useState(false);
-
-    const handleStartDateChange = (e) => {
-        const date = e.target.value;
-        setStartDate(date);
-    };
-
-    const handleEndDateChange = (e) => {
-        const date = e.target.value;
-        setEndDate(date);
-        setShowPicker(!showPicker)
+    const [value, setValue] = useState({
+        startDate: '',
+        endDate: ''
+    });
+    const query = {
+        StartDate: value?.startDate ? moment(value.startDate).format('YYYY-MM-DD') : '',
+        EndDate: value?.endDate ? moment(value.endDate).format('YYYY-MM-DD') : ''
     };
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -44,11 +38,11 @@ export default function AdScreens({ sidebarOpen }) {
     useEffect(() => {
         if (loadFirst) {
             setLoading(true)
-            dispatch(getAllUserAdScreen(SelectedDate)).then((res) => {
+            dispatch(getAllUserAdScreen(query)).then((res) => {
                 const screens = res?.payload?.data || [];
                 const initialAssetManagement = {};
                 screens.forEach(screen => {
-                    initialAssetManagement[screen.screenID] = screen?.assetManagement; // Default to false or your desired initial state
+                    initialAssetManagement[screen.screenID] = screen?.assetManagement;
                 });
                 setAssetManagement(initialAssetManagement);
 
@@ -57,7 +51,7 @@ export default function AdScreens({ sidebarOpen }) {
             })
             setLoadFirst(false)
         }
-    }, [loadFirst, dispatch, SelectedDate]);
+    }, [loadFirst, dispatch,]);
 
     useEffect(() => {
         setCurrentPage(1)
@@ -71,6 +65,7 @@ export default function AdScreens({ sidebarOpen }) {
             const index = item?.screenID;
             newModalState[index] = !prev[index];
 
+
             const payload = {
                 ScreenID: item?.screenID,
                 UserID: item?.userID,
@@ -78,7 +73,7 @@ export default function AdScreens({ sidebarOpen }) {
             };
             try {
                 const res = dispatch(updateAssteScreen(payload));
-                dispatch(getAllUserAdScreen(SelectedDate));
+                dispatch(getAllUserAdScreen(query));
 
             } catch (error) {
                 console.error("Error updating asset management:", error);
@@ -86,10 +81,11 @@ export default function AdScreens({ sidebarOpen }) {
             return newModalState;
         });
     }
+
     return (
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-                <div className='flex items-center justify-justify-between'>
+                <div className='flex items-center justify-justify-between  p-2'>
                     <h2 className='font-semibold w-full'>Ad Screens</h2>
                     <div className="flex items-center justify-end gap-3 w-full ">
                         <div className="relative">
@@ -104,37 +100,14 @@ export default function AdScreens({ sidebarOpen }) {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <div className='p-0'>
-                            <button
-                                data-tip
-                                data-for="New MergeScreen"
-                                type="button"
-                                onClick={() => setShowPicker(!showPicker)}
-                                className="border rounded-full bg-SlateBlue text-white mr-2 p-0 hover:shadow-xl border-white shadow-lg flex items-center relative"
-                            >
-                                <span className="text-white text-2xl p-2"><FaCalendarAlt /></span>
-                                {/* <span className="ml-2">
-                                    {startDate ? `From: ${startDate}` : 'Select Date Range'}
-                                    {endDate ? ` To: ${endDate}` : ''}
-                                </span> */}
-                            </button>
-
-                            {showPicker && (
-                                <div className="absolute bg-white p-4 rounded-lg shadow-lg end-0 ">
-                                    <input
-                                        type='date'
-                                        id='start-date'
-                                        onChange={handleStartDateChange}
-                                        className="mb-2 border rounded-lg p-2"
-                                    /> <br/>
-                                    <input
-                                        type='date'
-                                        id='end-date'
-                                        onChange={handleEndDateChange}
-                                        className="mb-2 border rounded-lg p-2"
-                                    />
-                                </div>
-                            )}
+                        <div className="border border-[#D5E3FF] border-1 rounded w-full p-0 m-0 ">
+                            <Datepicker
+                                separator="to"
+                                value={value}
+                                onChange={newValue => { setValue(newValue); setLoadFirst(true); }}
+                                // showFooter={true}
+                                className="p-0"
+                            />
                         </div>
                     </div>
                 </div>
@@ -162,7 +135,7 @@ export default function AdScreens({ sidebarOpen }) {
                                             Asset management
                                         </th>
                                         <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                            Booked Slot
+                                            Book Slot
                                         </th>
                                         <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                                             Received Payment
@@ -227,7 +200,7 @@ export default function AdScreens({ sidebarOpen }) {
 
 
                                                 <td className="px-6 py-4">{item?.receivedPayment}</td>
-                                                <td className="px-6 py-4">{item?.payout}</td>
+                                                <td className="px-6 py-4">{formatToUSCurrency(item?.payout)}</td>
 
                                             </tr>
                                         ))}

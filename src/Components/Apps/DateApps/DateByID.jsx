@@ -16,24 +16,31 @@ import { getDateById, handleAddDateApps } from "../../../Redux/AppsSlice";
 
 export default function DateByID({ sidebarOpen, setSidebarOpen }) {
     const { id } = useParams()
-    const currentDate = new Date();
     const navigate = useNavigate()
+    const currentDate = new Date();
+    const dispatch = useDispatch()
     const { user, userDetails } = useSelector((state) => state.root.auth);
+
     const [edited, setEdited] = useState(false);
-    const [SelectLayout, setSelectLayout] = useState({
-        Startweek: "SunDay",
-    });
+    const [SelectLayout, setSelectLayout] = useState({ Startweek: "SunDay", });
     const [showPreview, setShowPreview] = useState(false);
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [EditData, setEditData] = useState();
+    const [instanceName, setInstanceName] = useState(moment().format('L'));
+
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const now = currentDate.getDate();
-    const dispatch = useDispatch()
-    const [saveLoading, setSaveLoading] = useState(false);
-    const [EditData, setEditData] = useState();
+    const currentDayName = moment().format('dddd');
+    const currentMonthName = moment().format('MMMM');
+    const daysInMonth = getDaysInMonth(year, month);
+    const firstDay = SelectLayout.Startweek === "Monday" ? getFirstDayOfMonthmonday(year, month) : getFirstDayOfMonthforsunday(year, month);
+
     useEffect(() => {
         dispatch(getDateById(id)).then((res) => {
+       
             if (res?.payload?.status === 200) {
-                const fetchData = res?.payload?.data[0]
+                const fetchData = res?.payload?.data
                 setEditData(fetchData)
                 setSelectLayout({ Startweek: fetchData?.startWeek })
                 setInstanceName(fetchData?.instanceName)
@@ -41,57 +48,13 @@ export default function DateByID({ sidebarOpen, setSidebarOpen }) {
         })
     }, [dispatch]);
 
-    const getCurrentMonthName = () => {
-        var MonthName = [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-        ];
-        return MonthName[month];
-    };
-    const getCurrentDayName = () => {
-        const now = new Date();
-        const dayIndex = now.getDay();
-        const dayNames = [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-        ];
-
-        return dayNames[dayIndex];
-    };
-
-    const currentDayName = getCurrentDayName();
-    const currentMonthName = getCurrentMonthName();
-
-    const daysInMonth = getDaysInMonth(year, month);
-
-    const firstDay =
-        SelectLayout.Startweek === "Monday"
-            ? getFirstDayOfMonthmonday(year, month)
-            : getFirstDayOfMonthforsunday(year, month);
-
-    const [instanceName, setInstanceName] = useState(moment(currentDate).format("YYYY-MM-DD hh:mm"));
-
     const handleOnSaveInstanceName = (e) => {
         if (!instanceName.replace(/\s/g, "").length) {
             return toast.error("Instance Name is Required.");
         }
         setEdited(false);
     };
+
     const handalselect = (e) => {
         const { value } = e.target;
         setSelectLayout((pre) => ({
@@ -100,17 +63,12 @@ export default function DateByID({ sidebarOpen, setSidebarOpen }) {
         }));
     };
 
-
     const onSumbit = async () => {
         const Payload = {
+            ...EditData,
             dateAppId: EditData?.dateAppId,
             instanceName: instanceName,
             startWeek: SelectLayout.Startweek,
-            // userID: 0,
-            // screens: "string",
-            // screenIDs: "string",
-            // maciDs: "string",
-            // tags: "string"
         }
         toast.loading('Saving ...')
         setSaveLoading(true);
@@ -199,13 +157,13 @@ export default function DateByID({ sidebarOpen, setSidebarOpen }) {
                                 </div>
                             </div>
                             {showPreview === true ? (
-                                <div className="w-[90%] h-[30rem] bg-gray-50 rounded-sm shadow-md border-4 border-black bg-sky-100 flex items-center justify-center">
-                                    <div className="flex items-center  h-[65%] bg-gray-100 w-[50%] ">
-                                        <div className="calendar p-4 ">
-                                            <h5 className=" flex justify-center mb-3  top-0 font-bold text-xl">
+                                <div className="w-[90%] h-[40rem] bg-gray-50 rounded-sm shadow-md border-4 border-black bg-sky-100 flex items-center justify-center overscroll-none ">
+                                    <div className="flex items-center  h-[53%]  bg-white shadow-lg  w-[50%]  ">
+                                        <div className="calendar py-3 p-4 ">
+                                            <h5 className=" flex justify-center my-3   text-xl font-semibold text-black">
                                                 {currentMonthName}
                                             </h5>
-                                            <div className="grid grid-cols-7 gap-8 text-center text-xl">
+                                            <div className="grid grid-cols-7 gap-x-10 gap-y-3 text-center text-xl my-5 ">
                                                 {Array.from({ length: firstDay }, (_, i) => (
                                                     <div key={`empty-${i}`} className=" "></div>
                                                 ))}
@@ -214,7 +172,7 @@ export default function DateByID({ sidebarOpen, setSidebarOpen }) {
                                                     <div
                                                         key={i}
                                                         className={` text-center  ${now === i + 1
-                                                            ? " bg-red text-white text-xl w-[25px] rounded-xl"
+                                                            ? " bg-red text-white text-xl h-8 w-8 pt-0.5 rounded-full"
                                                             : ""
                                                             }`}
                                                     >
@@ -223,19 +181,19 @@ export default function DateByID({ sidebarOpen, setSidebarOpen }) {
                                                 ))}
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-center h-[22rem] bg-red w-[300px]">
+                                        <div className="flex items-center justify-center h-[23rem] bg-red w-[250px]  ml-8">
                                             <div className="text-center">
-                                                <h1 className="text-3xl font-semibold">
+                                                <h1 className="text-2xl font-semibold text-white  ">
                                                     {currentDayName}
                                                 </h1>
-                                                <h1 className="text-9xl text-white mt-2">{now}</h1>
+                                                <h1 className="text-9xl text-white mt-2 ">{now}</h1>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="flex flex-col lg:flex-row bg-white shadow-lg rounded-lg h-full">
-                                    <div className="w-full lg:w-2/5 pr-0 lg:pr-4 mb-4 lg:mb-0 p-5">
+                                <div className="flex flex-col lg:flex-row  rounded-lg h-full gap-3">
+                                    <div className="w-full lg:w-2/5 pr-0 lg:pr-4 mb-4 lg:mb-0 p-5 bg-white shadow-lg">
                                         <div className="mb-3 relative inline-flex items-center w-full">
                                             <label
                                                 htmlFor="message"
@@ -254,35 +212,17 @@ export default function DateByID({ sidebarOpen, setSidebarOpen }) {
                                                 <option value="Monday">Monday</option>
                                             </select>
                                         </div>
-
-                                        {/* <div className="mb-3 relative inline-flex items-center w-full">
-                    <label
-                      htmlFor="message"
-                      className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Start the week on*
-                    </label>
-                    <select
-                      id="countries"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      defaultValue={""}
-                    >
-                      <option value="English">English</option>
-                      <option value="Span">Span</option>
-                    </select>
-                  </div> */}
                                     </div>
+                                    {/* <div className="border-r-0 lg:border-r-2 border-gray-300 h-auto mx-4 hidden lg:block"></div> */}
 
-                                    <div className="border-r-0 lg:border-r-2 border-gray-300 h-auto mx-4 hidden lg:block"></div>
-
-                                    <div className="w-full lg:w-3/5 h-[35rem] flex items-center justify-center mt-4 lg:mt-0">
-                                        <div className="w-[85%] h-[25rem] bg-gray-50 rounded-sm shadow-md border-4 border-black flex items-center justify-center">
-                                            <div className="flex items-center  h-[60%] bg-gray-100 w-[70%] ">
-                                                <div className="calendar p-4 ">
-                                                    <h5 className=" flex justify-center mb-4 top-0 font-bold">
+                                    <div className="w-full lg:w-3/5 h-[full] flex items-center justify-center border lg:mt-0 bg-white shadow-lg">
+                                        <div className="w-full h-[30rem] bg-gray-50 rounded-sm shadow-md border-4 border-black bg-sky-100 flex items-center justify-center overscroll-none ">
+                                            <div className="flex items-center  h-[65%]  bg-white shadow-lg  w-[70%]  ">
+                                                <div className="calendar py-3 p-4 ">
+                                                    <h5 className=" flex justify-center my-3   text-xl font-semibold text-black">
                                                         {currentMonthName}
                                                     </h5>
-                                                    <div className="grid grid-cols-7 gap-2 text-center ">
+                                                    <div className="grid grid-cols-7 gap-x-10 gap-y-3 text-center text-xl my-5 ">
                                                         {Array.from({ length: firstDay }, (_, i) => (
                                                             <div key={`empty-${i}`} className=" "></div>
                                                         ))}
@@ -291,7 +231,7 @@ export default function DateByID({ sidebarOpen, setSidebarOpen }) {
                                                             <div
                                                                 key={i}
                                                                 className={` text-center  ${now === i + 1
-                                                                    ? " bg-red text-white text-xl w-[25px] rounded-xl font-semibold"
+                                                                    ? " bg-red text-white text-xl h-8 w-8 pt-0.5 rounded-full"
                                                                     : ""
                                                                     }`}
                                                             >
@@ -300,13 +240,12 @@ export default function DateByID({ sidebarOpen, setSidebarOpen }) {
                                                         ))}
                                                     </div>
                                                 </div>
-
-                                                <div className="flex items-center justify-center h-[18rem] bg-red w-[50%]">
+                                                <div className="flex items-center justify-center h-[22rem] bg-red w-[280px]  ml-8">
                                                     <div className="text-center">
-                                                        <h1 className="text-2xl font-semibold text-slate-50">
+                                                        <h1 className="text-2xl font-semibold text-white  ">
                                                             {currentDayName}
                                                         </h1>
-                                                        <h1 className="text-7xl text-white mt-2 font-bold">{now}</h1>
+                                                        <h1 className="text-9xl text-white mt-2 ">{now}</h1>
                                                     </div>
                                                 </div>
                                             </div>

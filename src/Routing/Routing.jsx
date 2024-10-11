@@ -69,6 +69,8 @@ import ClockDetail from "../Components/Apps/Clock/ClockDetail";
 import Date from "../Components/Apps/DateApps/Date";
 import AddEditDate from "../Components/Apps/DateApps/AddEditDate";
 import DateByID from "../Components/Apps/DateApps/DateByID";
+import CurrencyApp from "../Components/Apps/CurrenciesApp/CurrencyApp";
+import AddCurrencies from "../Components/Apps/CurrenciesApp/AddCurrencies";
 
 const Routing = () => {
   const { user, token, userDetails } = useSelector((state) => state.root.auth);
@@ -457,6 +459,24 @@ const Routing = () => {
                 path="/Datedetails/:id"
                 element={
                   <DateByID
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+              <Route
+                path="/Currency"
+                element={
+                  <CurrencyApp
+                    sidebarOpen={sidebarOpen}
+                    setSidebarOpen={setSidebarOpen}
+                  />
+                }
+              />
+              <Route
+                path="/CurrenciesDetails"
+                element={
+                  <AddCurrencies
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
                   />

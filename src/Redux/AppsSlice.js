@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
-import { ADD_DATE_APPS, DELETE_DATE_APPS, getUrl, postUrl } from "../Pages/Api";
+import { ADD_DATE_APPS, ALL_DELETE_DATE, DELETE_DATE_APPS, getUrl, postUrl } from "../Pages/Api";
 import axios from "axios";
 
 export const handleGetYoutubeData = createAsyncThunk(
@@ -123,7 +123,7 @@ export const getDateApps = createAsyncThunk("DateApp/getDateApps", async (payloa
 export const getDateById = createAsyncThunk("DateApp/getDateById", async (id, thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
-    const response = await getUrl(`DateApp/SelectDateAppById?ID=${id}`, { headers: { Authorization: `Bearer ${token}`, }, });
+    const response = await getUrl(`DateApp/SelectDateAppById?dateId=${id}`, { headers: { Authorization: `Bearer ${token}`, }, });
     return response.data;
   } catch (error) {
     console.log("error", error);
@@ -133,6 +133,67 @@ export const getDateById = createAsyncThunk("DateApp/getDateById", async (id, th
 });
 
 export const deleteDate = createAsyncThunk("DateApp/deleteDate", async (Id, thunkAPI) => {
+  try {
+    const queryParams = new URLSearchParams({ DateAppId: Id, }).toString();
+    const token = thunkAPI.getState().root.auth.token
+    const response = await axios.post(`${DELETE_DATE_APPS}?${queryParams}`, {}, { headers: { Authorization: `Bearer ${token}` }, });
+    if (response.data.status) {
+      return { status: true, message: response.data.message, data: response.data.data, };
+    }
+  } catch (error) {
+    console.log(error);
+    throw error
+  }
+});
+export const AlldeleteDate = createAsyncThunk("DateApp/AlldeleteDate", async (Id, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token
+    const response = await axios.post(`${ALL_DELETE_DATE}`, {}, { headers: { Authorization: `Bearer ${token}` }, });
+    if (response.data.status) {
+      return { status: true, message: response.data.message, data: response.data.data, };
+    }
+  } catch (error) {
+    console.log(error);
+    throw error
+  }
+});
+
+export const handleAddDateApps = createAsyncThunk("DateApp/handleAddDateApps", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.post(ADD_DATE_APPS, payload, { headers: { Authorization: `Bearer ${token}` }, });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+});
+
+// Currency Apps
+export const getCurrencyApps = createAsyncThunk("CurrenciesApp/getCurrencyApps", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await getUrl(`CurrenciesApp/GetAllCurrenciesApp`, { headers: { Authorization: `Bearer ${token}`, }, });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    toast.error('Failed to fetch data');
+    throw error;
+  }
+});
+
+export const getCurrencyById = createAsyncThunk("CurrenciesApp/getDateById", async (id, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await getUrl(`CurrenciesApp/SelectDateAppById?ID=${id}`, { headers: { Authorization: `Bearer ${token}`, }, });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    toast.error('Failed to fetch data');
+    throw error;
+  }
+});
+
+export const deleteCurrency = createAsyncThunk("CurrenciesApp/deleteDate", async (Id, thunkAPI) => {
   try {
     const queryParams = new URLSearchParams({ id: Id, }).toString();
     const token = thunkAPI.getState().root.auth.token
@@ -145,8 +206,20 @@ export const deleteDate = createAsyncThunk("DateApp/deleteDate", async (Id, thun
     throw error
   }
 });
+export const AlldeleteCurrency = createAsyncThunk("CurrenciesApp/AlldeleteDate", async (Id, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token
+    const response = await axios.post(`${ALL_DELETE_DATE}`, {}, { headers: { Authorization: `Bearer ${token}` }, });
+    if (response.data.status) {
+      return { status: true, message: response.data.message, data: response.data.data, };
+    }
+  } catch (error) {
+    console.log(error);
+    throw error
+  }
+});
 
-export const handleAddDateApps = createAsyncThunk("DealMaster/handleAddDateApps", async (payload, thunkAPI) => {
+export const handleAddCurrencyApps = createAsyncThunk("CurrenciesApp/handleAddDateApps", async (payload, thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
     const response = await axios.post(ADD_DATE_APPS, payload, { headers: { Authorization: `Bearer ${token}` }, });
@@ -310,6 +383,7 @@ const AppsSlice = createSlice({
       state.DigitalMenu.error = payload ?? null;
       state.DigitalMenu.DigitalMenuData = [];
     });
+
     builder.addCase(getDateApps.pending, (state) => {
       state.status = null;
     })
@@ -359,8 +433,33 @@ const AppsSlice = createSlice({
     builder.addCase(handleAddDateApps.rejected, (state, action) => {
       state.status = "failed";
       toast.error = (action.payload.message);
-
     });
+
+    builder.addCase(AlldeleteDate.pending, (state) => {
+      state.status = false;
+    })
+    builder.addCase(AlldeleteDate.fulfilled, (state, { payload }) => {
+      state.status = true;
+      state.data = payload?.data;
+      state.token = payload?.data?.token;
+    })
+    builder.addCase(AlldeleteDate.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.error.message;
+    })
+
+    builder.addCase(getCurrencyApps.pending, (state) => {
+      state.status = null;
+    })
+    builder.addCase(getCurrencyApps.fulfilled, (state, { payload }) => {
+      state.status = true;
+      state.DateApps = payload?.data;
+      state.token = payload?.data?.token;
+    })
+    builder.addCase(getCurrencyApps.rejected, (state, action) => {
+      state.status = false;
+      state.error = action.error.message;
+    })
   },
 });
 

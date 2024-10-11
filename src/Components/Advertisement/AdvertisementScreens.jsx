@@ -245,12 +245,12 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                               <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                 Status
                               </th>
-                              <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
+                              {/* <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                 Start Date
                               </th>
                               <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                 End Date
-                              </th>
+                              </th> */}
                               <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                 Booked duration
                               </th>
@@ -333,14 +333,14 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                             </span>
                                           </td>
                                         </td>
-                                        <td className="text-[#5E5E5E] mw-200 text-center">
+                                        {/* <td className="text-[#5E5E5E] mw-200 text-center">
                                           {moment(screen?.startDate).format("LL")}
                                         </td>
                                         <td className="text-[#5E5E5E] mw-200 text-center">
                                           {moment(screen?.endDate).format("LL")}
-                                        </td>
+                                        </td> */}
                                         <td className="text-[#5E5E5E] mw-200 text-center">
-                                          {screen?.payout}
+                                          {/* {screen?.payout} */}
                                         </td>
                                         <td
                                           className="text-center cursor-pointer"

@@ -367,7 +367,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                       <Link to="/textscrolldetail">
                         <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                           <TbAppsFilled className="text-2xl mr-2 text-white" />
-                          New Instance
+                          New Instance 
                         </button>
                       </Link>
                     )}

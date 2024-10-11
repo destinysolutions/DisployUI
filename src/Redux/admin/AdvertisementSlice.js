@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { ADD_ADMIN_RATE, ADD_COMMISSION_RATE, ADD_COST_AREA, ADD_PERPOSE_SCREEN, ASSIGN_ADS, CANCEL_PENDING_SCREEN, DELETE_COST_AREA, DELETE_PERPOSE_SCREEN, GETALLADS, GET_ADVERTISER_SCREEN, GET_ALLUSER_SCREEN, GET_COMMISSION_RATE, GET_COST_AREA, GET_NOTIFICATIONS, GET_PENDING_SCREEN, GET_PERPOSE_SCREEN, UPDATE_ADS_RATE, UPDATE_PENDING_SCREEN } from "../../Pages/Api";
+import { ADD_ADMIN_RATE, ADD_COMMISSION_RATE, ADD_COST_AREA, ADD_PERPOSE_SCREEN, ASSIGN_ADS, CANCEL_PENDING_SCREEN, DELETE_COST_AREA, DELETE_PERPOSE_SCREEN, GETALLADS, GET_ADVERTISER_SCREEN, GET_ALLUSER_SCREEN, GET_COMMISSION_RATE, GET_COST_AREA, GET_NOTIFICATIONS, GET_PENDING_SCREEN, GET_PERPOSE_SCREEN, GET_REFERRAL_CODE, UPDATE_ADS_RATE, UPDATE_PENDING_SCREEN } from "../../Pages/Api";
 
 
 const initialState = {
@@ -14,7 +14,8 @@ const initialState = {
   type: null,
   costbyArea: [],
   pendingScreens: [],
-  Advertise: []
+  Advertise: [],
+  ReferralCode: [],
 };
 
 // getAdvertisementData all
@@ -199,7 +200,7 @@ export const cancelPendingScreen = createAsyncThunk("AdsCustomer/cancelPendingSc
 export const getAllUserAdScreen = createAsyncThunk("AdsCustomer/getAllUserAdScreen", async (payload, thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
-    const queryParams = new URLSearchParams({ CreatedDate: payload }).toString();
+    const queryParams = new URLSearchParams(payload).toString();
 
     const response = await axios.get(`${GET_ALLUSER_SCREEN}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
     return response.data;
@@ -258,6 +259,18 @@ export const deletePurpose = createAsyncThunk("data/deletePurpose", async (id) =
     throw error;
   }
 });
+
+
+export const getVaildReferralcode = createAsyncThunk("AdsCustomer/getVaildReferralcode", async (code) => {
+  try {
+    const queryParams = new URLSearchParams({ ReferralCode: code }).toString()
+    const response = await axios.get(`${GET_REFERRAL_CODE}?${queryParams}`)
+    return response.data
+  } catch (error) {
+    console.log(error)
+    throw error;
+  }
+})
 
 const AdvertisementSlice = createSlice({
   name: "advertisementData",
@@ -566,6 +579,24 @@ const AdvertisementSlice = createSlice({
       .addCase(deletePurpose.rejected, (state, action) => {
         state.status = "failed";
         state.message = "Failed to delete Industry";
+      })
+
+      // getVaildReferralcode
+      .addCase(getVaildReferralcode.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(getVaildReferralcode.fulfilled, (state, action) => {
+        state.loading = false;
+        state.ReferralCode = action.payload.data;
+        state.token = action?.data?.token;
+      })
+
+      .addCase(getVaildReferralcode.rejected, (state, action) => {
+        state.loading = false;
+        state.ReferralCode = null;
+        state.message = action.error.message || "Failed to data";
       });
 
   },

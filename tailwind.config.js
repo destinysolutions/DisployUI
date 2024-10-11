@@ -3,6 +3,7 @@ export default {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@apideck/file-picker/dist/*.js",
+    "./node_modules/react-tailwindcss-datepicker/dist/index.esm.{js,ts}",
   ],
   darkMode: ['variant', [
     '@media (prefers-color-scheme: dark) { &:not(.light *) }',

@@ -132,6 +132,7 @@ export const GET_ORG_USERS = `${baseUrl}UserMaster/GetOrgUsers`;
 export const GET_USER_SCREEN_DETAILS = `${baseUrl}UserMaster/GetUsetScreenDetails`;
 export const DELETE_ORG_USER = `${baseUrl}UserMaster/DeleteOrgUser`;
 export const GET_TIME_ZONE = `${baseUrl}ScheduleMaster/GetTimeZoneCurrentTime`
+export const GET_REFERRAL_CODE = `${baseUrl}AdsCustomer/CheckRefCodeExistsORNOT`
 
 // Weather App Api
 
@@ -336,3 +337,6 @@ export const GET_BOOKSLOT_REPORT = `${baseUrl}AdsCustomer/GetBookedSlotReport`
 // Apps 
 export const ADD_DATE_APPS = `${baseUrl}DateApp/AddUpdateDateApp`
 export const DELETE_DATE_APPS = `${baseUrl}DateApp/DeleteDateApp`
+export const ALL_DELETE_DATE = `${baseUrl}DateApp/DeleteAllDateApp`
+export const ADD_DATE_TAGS = `${baseUrl}DateApp/AddDateAppTags`
+export const ASSIGN_DATE_SCREEN = `${baseUrl}DateApp/DateApptoScreen`

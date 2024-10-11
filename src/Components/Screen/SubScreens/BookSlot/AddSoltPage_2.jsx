@@ -1,24 +1,39 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Select from "react-select";
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { IoIosArrowDown } from 'react-icons/io';
 import logo from "../../../../images/DisployImg/Black-Logo2.png";
+import { getPurposeScreens, getVaildReferralcode } from '../../../../Redux/admin/AdvertisementSlice';
+import toast from 'react-hot-toast';
+import { getIndustry } from '../../../../Redux/CommonSlice';
 
-export default function AddSoltPage_2({
-    setPage,
-    countries,
-    page,
-    setallSlateDetails,
-    allSlateDetails,
-    UserName
-}) {
+export default function AddSoltPage_2({ setPage, countries, page, setallSlateDetails, allSlateDetails, UserName }) {
+    const SelectDropdownRef = useRef(null);
     const dispatch = useDispatch()
     const store = useSelector((state) => state.root.common);
     const Purpose = useSelector((state) => state.root.advertisementData);
     const [Error, setError] = useState(false);
     const [includeoption, setincludeoption] = useState(null);
     const [menuIsOpen, setMenuIsOpen] = useState(false);
+
+
+    useEffect(() => {
+        dispatch(getIndustry({}))
+        dispatch(getPurposeScreens({}))
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (SelectDropdownRef.current && !SelectDropdownRef.current.contains(event?.target)) {
+                setMenuIsOpen(false);
+            }
+        };
+        document.addEventListener("click", handleClickOutside, true);
+        return () => {
+            document.removeEventListener("click", handleClickOutside, true);
+        };
+    }, []);
 
     const handleClick = (label) => {
         setallSlateDetails((prev) => {
@@ -36,7 +51,15 @@ export default function AddSoltPage_2({
         if (allSlateDetails?.Industry === null || (allSlateDetails?.refCode === 'Yes' && !allSlateDetails?.refVale)) {
             return setError(true)
         }
-        setPage(page + 1)
+        if (allSlateDetails?.refVale && allSlateDetails?.refCode === 'Yes') {
+            dispatch(getVaildReferralcode(allSlateDetails?.refVale)).then((res) => {
+                if (res?.payload?.data == false) {
+                    return toast.error(res?.payload?.message)
+                } else {
+                    setPage(page + 1)
+                }
+            })
+        } else { setPage(page + 1) }
     }
 
     const [selectedOption, setSelectedOption] = useState(null);
@@ -65,14 +88,14 @@ export default function AddSoltPage_2({
         const industryOption = {
             value: item?.industryID,
             label: (
-                <div className='flex items-center justify-between' >
-                    <span className=' w-full' style={{ marginLeft: '8px' }} onClick={() => { setMenuIsOpen(false) }}>{item?.industryName}</span>
-
-                    <IoIosArrowDown className='h-5 w-5' onClick={() => { setincludeoption(includeoption === index ? null : index); setMenuIsOpen(true) }} />
+                <div className='flex items-center justify-between' onClick={() => { setincludeoption(includeoption === index ? null : index); setMenuIsOpen(true) }}>
+                    <span className=' w-full font-semibold' >{item?.industryName}</span>
+                    <IoIosArrowDown className='h-5 w-5 ' onClick={() => { setincludeoption(includeoption === index ? null : index); setMenuIsOpen(true) }} />
                 </div>
             ),
             isIndustry: true
-        };
+        }
+
 
         const result = [industryOption];
 
@@ -80,7 +103,7 @@ export default function AddSoltPage_2({
         if (includeoption === index) {
             const includeOptions = item.industryInclude.map(include => ({
                 value: include.industryIncludeID,
-                label: (<div className='w-full ' onClick={() => { setMenuIsOpen(false) }}>{`${item.industryName} - ${include.category}`}</div>),
+                label: (<div className=' ml-5 h-full  ' onClick={() => { setMenuIsOpen(false) }}>{`${item.industryName} - ${include.category}`}</div>),
                 isIndustry: false
             }));
             result.push(...includeOptions);
@@ -94,7 +117,7 @@ export default function AddSoltPage_2({
         setSelectedOption(option);
         setallSlateDetails({ ...allSlateDetails, Industry: option })
         // You can also handle further logic based on selected option
-        console.log('Selected:', option);
+
     };
     return (
         <div className="w-full h-full p-5 flex items-center justify-center">
@@ -114,19 +137,19 @@ export default function AddSoltPage_2({
                                 <h3 className="text-center font-bold mb-2">Hi {UserName},</h3>
                                 <p className="text-sm text-center"> Before we begin, please take a moment to share some details about your organization. This will help us tailor the screen experience to perfectly suit your needs.</p>
                             </div>
-                            <div className="relative w-full col-span-2">
-
+                            <div className="relative w-full col-span-2" ref={SelectDropdownRef}>
                                 <Select
+
                                     placeholder='Select Industry'
                                     value={selectedOption}
                                     onChange={handleChange}
-                                    options={[...options, { value: "others", label: "Others" }]}
+                                    options={[...options]}
                                     isClearable={true}
                                     menuIsOpen={menuIsOpen}
                                     // onFocus={handleMenuOpen} 
                                     // onBlur={handleMenuClose} 
                                     onMenuOpen={() => setMenuIsOpen(true)}
-                                // onMenuClose={() => setMenuIsOpen(false)}
+                                // onMenuClose={() =>  setMenuIsOpen(false)}
                                 />
                                 {Error && !allSlateDetails?.Industry && (
                                     <p className="text-red-600 text-sm font-semibold">This field is Required.</p>
@@ -181,11 +204,41 @@ export default function AddSoltPage_2({
                                         </div>
                                     )}
                                 </div>
+                                {allSlateDetails?.selecteScreens?.some((x) => x === "others") && (
+                                    <div className='p-0 m-auto my-2'>
+                                        <input
+                                            type="text"
+                                            placeholder='Enter Text'
+                                            className={`bg-transparent placeholder-slate-400 focus:text-black border-black  focus:border-0 focus:bg-black  focus:ring-0  focus:outline-none  border-b-2 border-current w-72 p-2`}
+                                            // style={{ outline: 'none', }}
+                                            onChange={(e) => {
+                                                setallSlateDetails({ ...allSlateDetails, purposeText: e.target.value })
+                                            }}
+                                            value={allSlateDetails?.purposeText}
+                                        />
+                                    </div>
+                                )}
 
-                                <div className="flex items-center gap-3 m-auto mb-4">
-                                    {/*<label className="text-base font-medium">Referral Code:</label>*/}
-                                    <div className="flex justify-center items-center gap-4 m-auto ">
-                                        <div className='flex flex-col gap-4'>
+                                <div className="my-5  flex items-center gap-3  m-auto ">
+                                    <label className="text-base font-medium">Referral Code:</label>
+                                    <div className="flex justify-center items-center  gap-4 m-auto ">
+                                        {allSlateDetails?.refCode === "Yes" && (
+                                            <div>
+                                                <input
+                                                    className="block w-60 p-2 text-gray-900 border border-gray-300  bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                                    type="text"
+                                                    value={allSlateDetails?.refVale}
+                                                    // placeholder='Enter Refernce Code'
+                                                    onChange={(e) => {
+                                                        setallSlateDetails({ ...allSlateDetails, refVale: e.target.value });
+                                                    }}
+                                                />
+                                                {Error && !allSlateDetails?.refVale && (
+                                                    <p className="text-red-600 text-sm font-semibold text-center ">This field is Required.</p>
+                                                )}
+                                            </div>
+                                        )}
+                                        <div className=''>
                                             <div className="flex">
                                                 <div className="ml-2 flex items-center">
                                                     <input

@@ -10,31 +10,10 @@ import { IoSearch } from 'react-icons/io5';
 import logo from "../../../../images/DisployImg/Black-Logo2.png";
 import ReactTooltip from 'react-tooltip';
 
-
-export default function BookSlotMap({
-    totalPrice,
-    totalDuration,
-    setAllArea,
-    setScreenData,
-    setSelectAllScreen,
-    setSelectedScreens,
-    handleSelectChange,
-    Screenoptions,
-    selectAllScreen,
-    selectedScreen,
-    selectedScreens,
-    setSelectedScreen,
-    screenData,
-    handleNext,
-    handleBack,
-    allArea,
-    handleRangeChange,
-    getSelectedVal,
-    setSelectedVal,
-    selectedVal,
-    setAllCity
-}) {
-
+export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, setScreenData,
+    setSelectAllScreen, setSelectedScreens, handleSelectChange, Screenoptions, selectAllScreen, selectedScreen, selectedScreens,
+    setSelectedScreen, screenData, handleNext, handleBack, allArea, handleRangeChange,
+    getSelectedVal, setSelectedVal, selectedVal, setAllCity, handleSelectunit }) {
     const autocompleteRef = useRef(null);
 
     const { isLoaded } = useLoadScript({
@@ -75,13 +54,6 @@ export default function BookSlotMap({
         setMap(mapInstance);
     };
 
-    const handleIncludeChange = (e, index) => {
-        const { value } = e.target;
-        const updatedDis = [...allArea];
-        updatedDis[index].include = value;
-        setAllArea(updatedDis);
-    };
-
     const onPlaceChanged = () => {
         if (autocompleteRef.current) {
             const place = autocompleteRef?.current.getPlace();
@@ -91,7 +63,7 @@ export default function BookSlotMap({
                 setLocations({ lat: latlog?.latitude, lng: latlog?.longitude });
                 if (map) {
                     map.setCenter({ lat: latlog.latitude, lng: latlog.longitude });
-                    map.setZoom(10);
+                    map.setZoom(12);
                 }
                 setSelectedVal(place?.formatted_address)
                 getSelectedVal(latlog)
@@ -148,7 +120,7 @@ export default function BookSlotMap({
                                             <select
                                                 className="border border-primary rounded-lg px-4 pl-2 py-2 w-28"
                                                 value={item?.include}
-                                                onChange={(e) => handleIncludeChange(e, index)}
+                                                // onChange={(e) => handleIncludeChange(e, index)}
                                             >
                                                 <option className="hidden" value=''>Select Code </option>
                                                 {IncludeExclude.map((option) => (

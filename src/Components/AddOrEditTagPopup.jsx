@@ -23,6 +23,7 @@ const AddOrEditTagPopup = ({
   setUpdateDigitalMenuTag,
   handleUpadteWeatherScheduleTags,
   action,
+  setUpdateTagDate, handleUpdateTagsDate
 }) => {
   const [tagValue, setTagValue] = useState("");
 
@@ -48,8 +49,11 @@ const AddOrEditTagPopup = ({
     if (from === "textscroll") {
       setUpdateTextscrollTag(null);
     }
-    if(from === "digitalMenu"){
+    if (from === "digitalMenu") {
       setUpdateDigitalMenuTag(null);
+    }
+    if (from === "Date") {
+      setUpdateTagDate(null);
     }
   }
 
@@ -72,7 +76,7 @@ const AddOrEditTagPopup = ({
     if (from === "schedule") {
       return handleUpadteScheduleTags([...tags, tagValue].join(","));
     }
-    if(from === "weather-schedule"){
+    if (from === "weather-schedule") {
       return handleUpadteWeatherScheduleTags([...tags, tagValue].join(","));
     }
     if (from === "youtube") {
@@ -84,8 +88,11 @@ const AddOrEditTagPopup = ({
     if (from === "textscroll") {
       return handleUpdateTagsTextScroll([...tags, tagValue].join(","));
     }
-    if(from === "digitalMenu"){
+    if (from === "digitalMenu") {
       return handleUpdateTagsDitigitalMenu([...tags, tagValue].join(","))
+    }
+    if (from === "Date") {
+      return handleUpdateTagsDate([...tags, tagValue].join(","))
     }
   };
 
@@ -101,7 +108,7 @@ const AddOrEditTagPopup = ({
     if (from === "schedule") {
       return handleUpadteScheduleTags(newTags.join(","));
     }
-    if(from === "weather-schedule"){
+    if (from === "weather-schedule") {
       return handleUpadteWeatherScheduleTags(newTags.join(","));
     }
     if (from === "youtube") {
@@ -113,8 +120,11 @@ const AddOrEditTagPopup = ({
     if (from === "textscroll") {
       return handleUpdateTagsTextScroll(newTags.join(","));
     }
-    if(from === "digitalMenu"){
+    if (from === "digitalMenu") {
       return handleUpdateTagsDitigitalMenu(newTags.join(","))
+    }
+    if (from === "Date") {
+      return handleUpdateTagsDate(newTags.join(","))
     }
   };
 

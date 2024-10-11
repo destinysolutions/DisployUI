@@ -203,7 +203,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 ) : (
                   <>
                     <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] ">
-                      {instanceName} 
+                      {instanceName}
                     </h1>
                     <button onClick={() => setEdited(true)}>
                       <GoPencil className="ml-4 text-lg" />
@@ -465,7 +465,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         <tr>
                           <td>
                             <label className="text-base font-normal">
-                              YouTube URL: 
+                              YouTube URL:
                             </label>
                           </td>
                           <td>

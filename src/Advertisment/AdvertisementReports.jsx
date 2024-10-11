@@ -160,7 +160,7 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                                                 className="border-b border-b-[#E4E6FF] "
                                                                 key={index}
                                                             >
-                                                                <td className="text-[#5E5E5E] mw-200">
+                                                                <td className="text-[#5E5E5E] mw-200 text-center">
                                                                     {composition?.screenIDs}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">

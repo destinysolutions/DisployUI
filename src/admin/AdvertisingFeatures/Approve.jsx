@@ -9,6 +9,7 @@ import { calculateDistance } from '../../Components/Common/Common';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
 import ReactTooltip from 'react-tooltip';
 import { MdOutlineAddLocationAlt } from 'react-icons/md';
+import CostAreaModal from './CostAreaModal';
 
 
 
@@ -19,9 +20,9 @@ export default function Approve({ handleTab }) {
     const [openAccordionIndex, setOpenAccordionIndex] = useState(false);
     const [loadFirst, setLoadFirst] = useState(true);
     const [filteredScreens, setFilteredScreens] = useState([]);
-    const [cost, setcost] = useState('');
-    const [Error, setError] = useState(false);
+    const [location, setLocation] = useState({ locationName: '', latitude: '', longitude: '' });
     const [assetManagement, setAssetManagement] = useState({});
+    const [AreaModal, setAreaModal] = useState(false);
 
     useEffect(() => {
 
@@ -84,7 +85,7 @@ export default function Approve({ handleTab }) {
             return handleTab(1)
             // return setError(true)
         }
-        const query = { ScreenID: item?.screenID, UserID: item?.userID, ScreenRatePerSec: item?.screenRatePerSec ? item?.screenRatePerSec : cost }
+        const query = { ScreenID: item?.screenID, UserID: item?.userID, ScreenRatePerSec: item?.screenRatePerSec }
         dispatch(updatePendingScreen(query)).then((res) => setLoadFirst(true))
     }
     const groupedScreens = filteredScreens?.reduce((acc, screen) => {
@@ -121,6 +122,7 @@ export default function Approve({ handleTab }) {
         });
     }
 
+    const onclose = () => { setAreaModal(!AreaModal) }
 
     return (
         <div>
@@ -129,7 +131,7 @@ export default function Approve({ handleTab }) {
                     <h2 className='font-semibold'>Approve Request</h2>
                 </div>
                 {loading && (
-                    <div className='flex justify-center items-center'>
+                    <div className='flex justify-center items-center h-96'>
                         <div className="flex text-center m-5 justify-center items-center">
                             <svg
                                 aria-hidden="true"
@@ -253,9 +255,9 @@ export default function Approve({ handleTab }) {
 
                                                                         </div>
 
-                                                                        {cost?.length <= 0 && Error && (
+                                                                        {/* {cost?.length <= 0 && Error && (
                                                                             <span className='error'>Cost Value is required.</span>
-                                                                        )}
+                                                                        )} */}
                                                                     </td>
                                                                     <td className="px-6 py-4">
                                                                         {item?.screenRatePerSec ? (
@@ -311,14 +313,12 @@ export default function Approve({ handleTab }) {
                                                                                     data-for="Location"
                                                                                     type="button"
                                                                                     className="cursor-pointer  focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg  text-center inline-flex items-center "
-                                                                                    onClick={() => {
-                                                                                        handleUpdateScreen(item)
-                                                                                    }}
+                                                                                // onClick={() => { handleUpdateScreen(item) }}
                                                                                 >
                                                                                     <AiOutlinePlusCircle
                                                                                         size={25}
                                                                                         className="mx-auto cursor-pointer text-[black]"
-                                                                                        onClick={() => { handleTab(1); }}
+                                                                                        onClick={() => { setAreaModal(true); setLocation({ locationName: item?.googleLocation, latitude: item?.latitude, longitude: item?.longitude }) }}
                                                                                     />
                                                                                     <ReactTooltip
                                                                                         id="Location"
@@ -356,6 +356,7 @@ export default function Approve({ handleTab }) {
                     </div>
                 </div>
             </div>
+            {AreaModal && <CostAreaModal setLoadFirst={setLoadFirst} onclose={onclose} location={location} />}
         </div>
     );
 }
