@@ -123,6 +123,7 @@ const AddSlot = () => {
     purposeText: '',
     otherIndustry: '',
   });
+  console.log('allSlateDetails :>> ', allSlateDetails);
   const appearance = { theme: 'stripe', };
   const options = {
     clientSecret,
@@ -270,7 +271,7 @@ const AddSlot = () => {
       },
       data: JSON.stringify(Params),
     };
-    console.log('toastId :>> ', toastId);
+
     try {
       const response = await axios.request(config);
 
@@ -503,6 +504,7 @@ const AddSlot = () => {
       longitude: value?.longitude,
       unit: 'km'
     };
+    console.log('allSlateDetails :>> ', allSlateDetails);
     let Params = {
       latitude: value?.latitude,
       longitude: value?.longitude,
@@ -516,9 +518,11 @@ const AddSlot = () => {
         day,
         selectedTimeZone,
         allTimeZone,
-        selectedCountry,
-        selecteStates,
+        allSlateDetails,
+        // selectedCountry,
+        // selecteStates,
       ),
+
     };
 
     FetchScreen(Params);
@@ -540,6 +544,7 @@ const AddSlot = () => {
           latitude: item?.latitude,
           longitude: item?.longitude,
           distance: parseInt(item1?.area),
+          unit: item?.unit,
           dates: constructTimeObjects(
             getallTime,
             startDate,
@@ -548,6 +553,7 @@ const AddSlot = () => {
             day,
             selectedTimeZone,
             allTimeZone,
+            allSlateDetails,
             selectedCountry,
             selecteStates,
           ),
@@ -701,6 +707,7 @@ const AddSlot = () => {
         day,
         selectedTimeZone,
         allTimeZone,
+        allSlateDetails,
         selectedCountry,
         selecteStates,
       ),
@@ -913,7 +920,7 @@ const AddSlot = () => {
             handleCheckboxChange={handleCheckboxChange}
             selectAllDays={selectAllDays}
             totalDuration={totalDuration}
-            handleSelectunit={handleSelectunit}
+
           />
         )}
 
@@ -951,6 +958,7 @@ const AddSlot = () => {
               setSelectAllScreen={setSelectAllScreen}
               setAllCity={setAllCity}
               setScreenData={setScreenData}
+              handleSelectunit={handleSelectunit}
             />
           </>
         )}

@@ -188,7 +188,8 @@ export function multiOptions(arr) {
     value: screen.screenID.toString(),
     Price: screen?.screenRatePerSec,
     screenOrientation: screen?.screenOrientation,
-    output: `${screen?.screenID}_${screen?.organizationID}`
+    output: `${screen?.screenID}_${screen?.organizationID}`,
+    isReferral: screen?.isReferral
   }));
 }
 
@@ -280,19 +281,20 @@ export function kilometersToMeters(kilometers) {
   return kilometers * 1000; // 1 kilometer = 1000 meters
 }
 
-export const kilometersMilesToMeters = (data) => {
+export const kilometersMilesToMeters = (dis,unit) => {
   const MILES_TO_METERS = 1609.34; // 1 mile = 1609.34 meters
   const KILOMETERS_TO_METERS = 1000; // 1 kilometer = 1000 meters
-  if (data.unit === 'mi') {
-    return data.range * MILES_TO_METERS; 
+  if (unit === 'mi') {
+    return dis * MILES_TO_METERS;
   } else {
-    return data.range * KILOMETERS_TO_METERS; 
+    return dis * KILOMETERS_TO_METERS;
   }
 };
 
-export function constructTimeObjects(getallTime, startDate, endDate, repeat, day, selectedTimeZone, allTimeZone) {
+export function constructTimeObjects(getallTime, startDate, endDate, repeat, day, selectedTimeZone, allTimeZone, allSlateDetails) {
   let arr1 = [];
-
+  console.log('getallTime :>> ', getallTime);
+  console.log('allSlateDetails :>> ', allSlateDetails);
   getallTime?.map((item) => {
     let data = {
       startDate: `${startDate} 00:00:00`,
@@ -302,6 +304,7 @@ export function constructTimeObjects(getallTime, startDate, endDate, repeat, day
       isRepeat: repeat,
       repeatDays: day.join(", "),
       systemTimeZone: getTimeZoneName(allTimeZone, selectedTimeZone),
+      refcode: allSlateDetails?.refVale,
     };
     arr1?.push(data);
   });

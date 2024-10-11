@@ -8,10 +8,7 @@ import moment from 'moment';
 import { calculateDistance } from '../../Components/Common/Common';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
 import ReactTooltip from 'react-tooltip';
-import { MdOutlineAddLocationAlt } from 'react-icons/md';
 import CostAreaModal from './CostAreaModal';
-
-
 
 export default function Approve({ handleTab }) {
     const dispatch = useDispatch();
@@ -25,7 +22,6 @@ export default function Approve({ handleTab }) {
     const [AreaModal, setAreaModal] = useState(false);
 
     useEffect(() => {
-
         if (loadFirst) {
             setLoading(true);
             dispatch(getPendingScreen({})).then((res) => {
@@ -65,7 +61,7 @@ export default function Approve({ handleTab }) {
             const screenLon = parseFloat(screen?.longitude);
             if (isNaN(screenLat) || isNaN(screenLon)) return null;
             const location = locationData?.find(loc => isWithinAnyLocationRadius(screenLat, screenLon, loc));
-            return location ? { ...screen, screenRatePerSec: location?.costPerSec } : screen;
+            return location ? { ...screen, screenRatePerSec: location?.costPerSec, currency: location?.currency } : screen;
         })
         setFilteredScreens(filtered);
     };
@@ -80,14 +76,12 @@ export default function Approve({ handleTab }) {
         dispatch(cancelPendingScreen(query)).then((res) => setLoadFirst(true))
 
     }
+
     const handleUpdateScreen = (item) => {
-        if (!item?.screenRatePerSec) {
-            return handleTab(1)
-            // return setError(true)
-        }
-        const query = { ScreenID: item?.screenID, UserID: item?.userID, ScreenRatePerSec: item?.screenRatePerSec }
+        const query = { ScreenID: item?.screenID, UserID: item?.userID, ScreenRatePerSec: item?.screenRatePerSec, Currency: item?.currency }
         dispatch(updatePendingScreen(query)).then((res) => setLoadFirst(true))
     }
+
     const groupedScreens = filteredScreens?.reduce((acc, screen) => {
         const orgId = screen.organizationID;
         if (!acc[orgId]) {
@@ -99,7 +93,6 @@ export default function Approve({ handleTab }) {
 
 
     const DeactiveAsste = async (item) => {
-
         setAssetManagement(prev => {
             const newModalState = { ...prev };
             const index = item?.screenID;
@@ -219,9 +212,9 @@ export default function Approve({ handleTab }) {
                                                                             <input
                                                                                 type="checkbox"
                                                                                 className="sr-only peer"
-                                                                                checked={assetManagement[item?.screenID]} // Default to false if not defined
-                                                                                id={`Active_${item?.screenID}`} // Ensure consistent casing
-                                                                                onChange={() => DeactiveAsste(item)} // Directly pass the item
+                                                                                checked={assetManagement[item?.screenID]}
+                                                                                id={`Active_${item?.screenID}`}
+                                                                                onChange={() => DeactiveAsste(item)}
                                                                             />
                                                                             <div
                                                                                 style={{ background: (assetManagement[item?.screenID] ? 'green' : 'gray') }}
@@ -240,8 +233,7 @@ export default function Approve({ handleTab }) {
                                                                     <td className="px-6 py-4 ">{item?.userName}</td>
                                                                     <td className="px-6 py-4 ">
                                                                         <div>
-                                                                            {item?.screenRatePerSec ? `$ ${item?.screenRatePerSec}` : ''}
-
+                                                                            {item?.screenRatePerSec ? `${item?.currency === 'INR' ? '₹' : '$'} ${item?.screenRatePerSec}` : ''}
                                                                             {/* {item?.screenRatePerSec ? item?.screenRatePerSec :
                                                                                 (<input
                                                                                     type="number"
@@ -313,7 +305,7 @@ export default function Approve({ handleTab }) {
                                                                                     data-for="Location"
                                                                                     type="button"
                                                                                     className="cursor-pointer  focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg  text-center inline-flex items-center "
-                                                                                // onClick={() => { handleUpdateScreen(item) }}
+                                                                                    onClick={() => { setAreaModal(true); setLocation({ locationName: item?.googleLocation, latitude: item?.latitude, longitude: item?.longitude }) }}
                                                                                 >
                                                                                     <AiOutlinePlusCircle
                                                                                         size={25}

@@ -33,7 +33,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
         location: '',
         cost: '',
         range: '',
-        currency: 'Indian',
+        currency: 'INR',
         unit: 'km'
 
     });
@@ -43,7 +43,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
             setdata({
                 location: EditData.locationName || '',
                 cost: EditData.costPerSec || '',
-                currency: EditData.currency || 'Indian',
+                currency: EditData.currency || 'INR',
                 range: EditData.range || '',
                 unit: EditData.unit || '',
             });
@@ -137,7 +137,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                 toast.error(res?.payload?.message);
             }
             onclose();
-            setdata({ location: '', cost: '', range: '', currency: 'Indian' });
+            setdata({ location: '', cost: '', range: '', currency: 'INR' });
         });
     };
 
@@ -235,8 +235,8 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                                                     value={data?.currency}
                                                     onChange={(e) => setdata({ ...data, currency: e.target.value })}
                                                 >
-                                                    <option value={'Indian'}>Indian</option>
-                                                    <option value={'Other'}>Other</option>
+                                                    <option value={'INR'}>INR</option>
+                                                    <option value={'Dollar'}>Dollar</option>
                                                 </select>
                                             </div>
                                             {/* <div className="border border-[#D5E3FF] rounded font-bold text-black text-3xl">￠</div> */}
@@ -297,7 +297,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                                                 <Circle
                                                     center={markerPosition}
                                                     options={greenOptions}
-                                                    radius={kilometersMilesToMeters(data)}
+                                                    radius={kilometersMilesToMeters(data?.range, data?.unit)}
                                                 />
                                                 <Marker position={markerPosition} />
                                             </>

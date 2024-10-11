@@ -189,12 +189,11 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                         Others
                                     </button>
                                     {allSlateDetails?.selecteScreens?.some((x) => x === "others") && (
-                                        <div className='p-0 m-auto my-2 bookslot-ref w-72'>
+                                        <div className='p-0 m-auto mt-2  bookslot-ref w-72'>
                                             <input
                                                 type="text"
                                                 placeholder='Enter Your Purpose'
                                                 className={`bg-transparent placeholder-slate-400 border-current w-full p-2`}
-                                                // style={{ outline: 'none', }}
                                                 onChange={(e) => {
                                                     setallSlateDetails({ ...allSlateDetails, purposeText: e.target.value })
                                                 }}
@@ -204,7 +203,7 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                         </div>
                                     )}
                                 </div>
-                                {allSlateDetails?.selecteScreens?.some((x) => x === "others") && (
+                                {/* {allSlateDetails?.selecteScreens?.some((x) => x === "others") && (
                                     <div className='p-0 m-auto my-2'>
                                         <input
                                             type="text"
@@ -217,25 +216,25 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                             value={allSlateDetails?.purposeText}
                                         />
                                     </div>
-                                )}
+                                )} */}
 
                                 <div className="my-5  flex items-center gap-3  m-auto ">
                                     <label className="text-base font-medium">Referral Code:</label>
                                     <div className="flex justify-center items-center  gap-4 m-auto ">
                                         {allSlateDetails?.refCode === "Yes" && (
-                                            <div>
+                                            <div className={`${(Error && !allSlateDetails?.refVale) ? "bookslot-ref-error" : "bookslot-ref w-52"}`}>
                                                 <input
-                                                    className="block w-60 p-2 text-gray-900 border border-gray-300  bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                                                     type="text"
+                                                    className={`bg-transparent placeholder-slate-400 border-current w-52 p-2`}
                                                     value={allSlateDetails?.refVale}
-                                                    // placeholder='Enter Refernce Code'
+                                                    placeholder='Referral Code'
                                                     onChange={(e) => {
                                                         setallSlateDetails({ ...allSlateDetails, refVale: e.target.value });
                                                     }}
                                                 />
-                                                {Error && !allSlateDetails?.refVale && (
-                                                    <p className="text-red-600 text-sm font-semibold text-center ">This field is Required.</p>
-                                                )}
+                                                {/*{Error && !allSlateDetails?.refVale && (
+                                                        <p className="text-red-600 text-sm font-semibold text-center ">This field is Required.</p>
+                                                    )}*/}
                                             </div>
                                         )}
                                         <div className=''>
@@ -275,22 +274,7 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                                     </label>
                                                 </div>
                                             </div>
-                                            {allSlateDetails?.refCode === "Yes" && (
-                                                <div className={`${(Error && !allSlateDetails?.refVale) ? "bookslot-ref-error" : "bookslot-ref"}`}>
-                                                    <input
-                                                        type="text"
-                                                        className={`bg-transparent placeholder-slate-400 border-current w-72 p-2`}
-                                                        value={allSlateDetails?.refVale}
-                                                        placeholder='Referral Code'
-                                                        onChange={(e) => {
-                                                            setallSlateDetails({ ...allSlateDetails, refVale: e.target.value });
-                                                        }}
-                                                    />
-                                                    {/*{Error && !allSlateDetails?.refVale && (
-                                                        <p className="text-red-600 text-sm font-semibold text-center ">This field is Required.</p>
-                                                    )}*/}
-                                                </div>
-                                            )}
+
                                         </div>
                                     </div>
                                 </div>

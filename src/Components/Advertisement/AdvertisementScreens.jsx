@@ -8,6 +8,7 @@ import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import {
   handleDeleteAllScreen,
+  handleUpdateScreenAsset,
 } from "../../Redux/Screenslice";
 import { AiOutlineCloudUpload, AiOutlineSearch } from "react-icons/ai";
 import { PageNumber } from "../Common/Common";
@@ -21,6 +22,7 @@ import { socket } from "../../App";
 import { getAllAdvertisementScreenData } from "../../Redux/AdvertisentScreenSlice";
 import { BsPlayCircleFill } from "react-icons/bs";
 import moment from "moment";
+import ShowAssetModal from "../ShowAssetModal";
 
 const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
   const { token, user, userDetails } = useSelector((state) => state.root.auth);
@@ -40,6 +42,22 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
   const [searchScreen, setSearchScreen] = useState("");
   const [loadFist, setLoadFist] = useState(true);
   const [ispopup, setIsPopup] = useState(false);
+  const [selectedAsset, setSelectedAsset] = useState({
+    assetName: "",
+    assetID: "",
+  });
+  const [showAssetModal, setShowAssetModal] = useState(false);
+  const [setscreenMacID, setSetscreenMacID] = useState("");
+  const [assetScreenID, setAssetScreenID] = useState(null);
+  const [assetPreview, setAssetPreview] = useState("");
+  const [isEditingScreen, setIsEditingScreen] = useState(false);
+  const [selectedComposition, setSelectedComposition] = useState({
+    compositionName: "",
+  });
+  const [selectedYoutube, setSelectedYoutube] = useState();
+  const [selectedTextScroll, setSelectedTextScroll] = useState();
+  const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
+  const [popupActiveTab, setPopupActiveTab] = useState(1);
 
   const filteredData = Array.isArray(ScreenData)
     ? ScreenData?.filter((item) =>
@@ -50,6 +68,83 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
       )
     )
     : [];
+
+  const handleAssetAdd = (asset) => {
+    setSelectedAsset(asset);
+    setAssetPreview(asset);
+  };
+
+  const handleAssetUpdate = () => {
+    console.log('screens :>> ', screens);
+    console.log('assetScreenID :>> ', assetScreenID);
+    const screenToUpdate = filteredData?.find(
+      (screen) => screen?.screenID === assetScreenID
+    );
+    let moduleID =
+      selectedAsset?.assetID ||
+      selectedComposition?.compositionID ||
+      selectedYoutube?.youtubeId ||
+      selectedTextScroll?.textScroll_Id;
+    let mediaType = selectedAsset?.assetID
+      ? 1
+      : selectedTextScroll?.textScroll_Id !== null &&
+        selectedTextScroll?.textScroll_Id !== undefined
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : 0;
+
+    let mediaName =
+      selectedAsset?.assetName ||
+      selectedComposition?.compositionName ||
+      selectedYoutube?.instanceName ||
+      selectedTextScroll?.instanceName;
+
+    if (screenToUpdate) {
+      let data = {
+        ...screenToUpdate,
+        screenID: assetScreenID,
+        mediaType: mediaType,
+        mediaDetailID: moduleID,
+        operation: "Update",
+      };
+      toast.loading("Updating...");
+      const response = dispatch(
+        handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
+      );
+
+      if (!response) return;
+      response
+        .then((response) => {
+          toast.remove();
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId: screenToUpdate?.macid.replace(/^\s+/g, ""),
+          };
+          fetchScreenData();
+          socket.emit("ScreenConnected", Params);
+          setIsEditingScreen(false);
+        })
+        .catch((error) => {
+          toast.remove();
+          console.log(error);
+        });
+    } else {
+      toast.remove();
+      console.error("Asset not found for update");
+    }
+  };
+
+  const handleAppsAdd = (apps) => {
+    setSelectedYoutube(apps);
+    setSelectedTextScroll(apps);
+  };
+
 
   useEffect(() => {
     setCurrentPage(1);
@@ -251,9 +346,9 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                               <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                 End Date
                               </th> */}
-                              <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
+                              {/* <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                 Booked duration
-                              </th>
+                              </th> */}
                               <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                 Now Playing
                               </th>
@@ -339,25 +434,48 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                         <td className="text-[#5E5E5E] mw-200 text-center">
                                           {moment(screen?.endDate).format("LL")}
                                         </td> */}
-                                        <td className="text-[#5E5E5E] mw-200 text-center">
-                                          {/* {screen?.payout} */}
-                                        </td>
+                                        {/* <td className="text-[#5E5E5E] mw-200 text-center">
+                                          {screen?.payout}
+                                        </td> */}
                                         <td
                                           className="text-center cursor-pointer"
                                           style={{ wordBreak: "break-all" }}
                                         >
                                           {screen?.assetManagement && (
-                                            <div
-                                              title={screen?.assetName}
-                                              className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                            >
-                                              <p className="line-clamp-1">
-                                                {screen.assetName}
-                                              </p>
-                                              <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
-                                            </div>
+                                            <>
+                                              <div
+                                                onClick={(e) => {
+                                                  setAssetScreenID(screen.screenID);
+                                                  setSetscreenMacID(screen.macid);
+                                                  setShowAssetModal(true);
+                                                  setSelectedAsset({
+                                                    ...selectedAsset,
+                                                    assetName: screen?.assetName,
+                                                    assetID: screen?.mediaDetailID,
+                                                  });
+                                                  // setSelectedAsset(screen?.assetName);
+                                                }}
+                                                title={screen?.assetName}
+                                                className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                              >
+                                                <p className="line-clamp-1">
+                                                  {screen.assetName}
+                                                </p>
+                                                <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
+                                              </div>
+                                              {/* <div
+                                                title={screen?.assetName}
+                                                className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                              >
+                                                <p className="line-clamp-1">
+                                                  {screen.assetName}
+                                                </p>
+                                                <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
+                                              </div> */}
+                                            </>
                                           )}
                                         </td>
+
 
                                         {/* <td className="mw-200 text-[#5E5E5E] text-center">
                                       <select
@@ -380,7 +498,8 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                     </td> */}
 
                                         <td className="text-[#5E5E5E] mw-200 text-center">
-                                          {screen?.payout}
+                                          <span className='font-medium mr-2 '>{screen?.currency === 'INR' ? '₹' : '$'}</span>
+                                          {screen?.payout?.toLocaleString('en-IN')}
                                         </td>
                                       </tr>
                                     );
@@ -462,6 +581,28 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
               }
             </div>
             <Footer />
+            {
+              showAssetModal && (
+                <ShowAssetModal
+                  handleAssetAdd={handleAssetAdd}
+                  handleAssetUpdate={handleAssetUpdate}
+                  setSelectedComposition={setSelectedComposition}
+                  handleAppsAdd={handleAppsAdd}
+                  popupActiveTab={popupActiveTab}
+                  setAssetPreviewPopup={setAssetPreviewPopup}
+                  setPopupActiveTab={setPopupActiveTab}
+                  setShowAssetModal={setShowAssetModal}
+                  assetPreviewPopup={assetPreviewPopup}
+                  assetPreview={assetPreview}
+                  selectedComposition={selectedComposition}
+                  selectedTextScroll={selectedTextScroll}
+                  selectedYoutube={selectedYoutube}
+                  selectedAsset={selectedAsset}
+                  setscreenMacID={setscreenMacID}
+                  setSelectedAsset={setSelectedAsset}
+                />
+              )
+            }
             {ispopup && (
               <AdvertisementPopup ispopup={ispopup} setIsPopup={setIsPopup} />
             )}

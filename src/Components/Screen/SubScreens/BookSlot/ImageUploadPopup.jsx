@@ -11,7 +11,7 @@ const ImageUploadPopup = ({
     setGetAllTime,
     getallTime
 }) => {
-
+    console.log('getallTime :>> ', getallTime);
     const [progress, setProgress] = useState(0);
 
     const [verticalImage, setVerticalImage] = useState(null);
@@ -192,9 +192,9 @@ const ImageUploadPopup = ({
                                                             </label>
                                                         </div>
                                                     </figure>
-                                                    <p className='font-semibold'>
+                                                    {/* <p className='font-semibold'>
                                                         {getallTime[index]?.horizontalFileName || ''}
-                                                    </p>
+                                                    </p> */}
                                                 </div>
                                                 <div className="w-full p-3">
                                                     <label for='Vertical' className="flex justify-center lg:text-base md:text-base sm:text-xs xs:text-xs text-center">
@@ -206,7 +206,7 @@ const ImageUploadPopup = ({
                                                             onDragOver={handleDragOver}
                                                             onDrop={handleDrop}
                                                         >
-                                                            <label htmlFor="horizontal-file-upload" className="cursor-pointer flex flex-col items-center justify-center">
+                                                            <label htmlFor="vertical-file-upload" className="cursor-pointer flex flex-col items-center justify-center">
                                                                 <TbCloudUpload size={35} />
                                                                 <h3 className=" text-black text-sm px-5 p-2 font-semibold">Select Files to upload</h3>
                                                                 <h4 className='text-xs font-medium'>Drag and Drop  or Upload your content</h4>
@@ -221,21 +221,42 @@ const ImageUploadPopup = ({
                                                             </label>
                                                         </div>
                                                     </figure>
-                                                    <p className='font-semibold'>
+                                                    {/* <p className='font-semibold'>
                                                         {getallTime[index]?.verticalFileName || ''}
-                                                    </p>
+                                                    </p> */}
                                                 </div>
                                             </div>
 
+
                                             <div className="w-full h-full">
-                                                <div className="flex justify-end pt-4 h-full items-end">
-                                                    <button
-                                                        className="sm:ml-2 xs:ml-1 mb-5 flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                                        type="submit"
-                                                        onClick={handleSubmit}
-                                                    >
-                                                        Upload
-                                                    </button>
+                                                <div className="flex justify-between  h-full items-end mb-5 ">
+                                                    <div className=''>
+                                                        {getallTime[index]?.horizontalFileName && (
+                                                            <div className="flex items-center gap-3 ">
+                                                                <label for='Vertical' className="flex justify-center lg:text-base md:text-base sm:text-xs xs:text-xs text-center">
+                                                                    Horizontal :
+                                                                </label>
+                                                                <label for='Yes' className="font-semibold lg:text-md md:text-md sm:text-sm xs:text-xs ">{getallTime[index]?.horizontalFileName || ''}</label>
+                                                            </div>
+                                                        )}
+                                                        {getallTime[index]?.verticalFileName && (
+                                                            <div className="flex items-center gap-3">
+                                                                <label for='Vertical' className="flex justify-center lg:text-base md:text-base sm:text-xs xs:text-xs text-center">
+                                                                    Vertical :
+                                                                </label>
+                                                                <label for='Yes' className="font-semibold lg:text-md md:text-md sm:text-sm xs:text-xs ">{getallTime[index]?.verticalFileName || ''}</label>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className=''>
+                                                        <button
+                                                            className=" sm:ml-2 xs:ml-1 flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                                            type="submit"
+                                                            onClick={handleSubmit}
+                                                        >
+                                                            Upload
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

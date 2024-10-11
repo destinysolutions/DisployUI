@@ -17,7 +17,7 @@ import { Circle, LayerGroup, MapContainer, Marker, Popup, TileLayer } from 'reac
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from "leaflet";
 import mapImg from "../../../src/images/DisployImg/mapImg.png";
-import { GET_ALL_COUNTRY, PAYMENT_INTENT_CREATE_REQUEST, SCREEN_LIST, stripePromise } from '../../Pages/Api';
+import { GET_ALL_COUNTRY, GET_TIMEZONE_TOKEN, PAYMENT_INTENT_CREATE_REQUEST, SCREEN_LIST, stripePromise } from '../../Pages/Api';
 import { handlePaymentIntegration } from '../../Redux/PaymentSlice';
 import { useDispatch } from 'react-redux';
 import { Elements } from "@stripe/react-stripe-js";
@@ -28,6 +28,7 @@ import { customTimeOrhour } from '../Common/Util';
 import BookSlotMap from '../Screen/SubScreens/BookSlot/BookSlotMap';
 import axios from 'axios';
 import BookSlotTimeZone from '../Screen/SubScreens/BookSlot/BookSlotTimeZone';
+import { handleAllTimeZone } from '../../Redux/CommonSlice';
 // import mapImg from "../../../../images/DisployImg/mapImg.png";
 export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const navigate = useNavigate()
@@ -55,7 +56,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const [temperature, setTemprature] = useState("");
     const [temperatureUnit, setTempratureUnit] = useState("Hour");
     const [selectedVal, setSelectedVal] = useState("");
-
+    const [selectedValue, setSelectedValue] = useState(1);
     const start = new Date(startDate);
     const end = new Date(endDate);
     const dayDifference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
@@ -123,6 +124,42 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                 console.log("Error fetching countryID data:", error);
             });
     }, []);
+
+    const TimeZone = () => {
+        const config = {
+            method: "get",
+            maxBodyLength: Infinity,
+            url: GET_TIMEZONE_TOKEN,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+
+        dispatch(handleAllTimeZone({ config }))
+            .then((response) => {
+                const CurrentTimeZone = new Date()
+                    .toLocaleDateString(undefined, {
+                        day: "2-digit",
+                        timeZoneName: "long",
+                    })
+                    .substring(4);
+                console.log('response', response)
+                response?.payload?.data?.map((item) => {
+                    if (item?.timeZoneName === CurrentTimeZone) {
+                        setSelectedTimeZone(item?.timeZoneID);
+                    }
+                });
+                setAllTimeZone(response?.payload?.data);
+            })
+            .catch((error) => {
+                console.log('error', error)
+            })
+    };
+
+    useEffect(() => {
+        TimeZone();
+    }, [])
+
     const handleBack = () => {
         setPage(page - 1);
     };
@@ -428,6 +465,36 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         ]);
     };
 
+    const handleSelectunit = (e, index) => {
+        const { value } = e.target;
+        const updatedDis = [...allArea];
+
+        updatedDis[index].unit = value;
+        setAllArea(updatedDis);
+
+        const item = updatedDis[index];
+        const Params = {
+            latitude: item?.latitude,
+            longitude: item?.longitude,
+            distance: parseInt(item.area),
+            unit: item?.unit,
+            dates: constructTimeObjects(
+                getallTime,
+                startDate,
+                endDate,
+                repeat,
+                day,
+                selectedTimeZone,
+                allTimeZone,
+                null,
+                selectedCountry,
+                selecteStates,
+            ),
+        };
+
+        FetchScreen(Params);
+    };
+
     const getSelectedVal = (value) => {
 
 
@@ -481,11 +548,34 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                     {page === 1 && (
                         <>
                             <BookSlotTimeZone
-                                allTimeZone={allTimeZone} selectedTimeZone={selectedTimeZone} selectedDays={selectedDays}
-                                handleSelectTimeZoneChange={handleSelectTimeZoneChange} handleStartDateChange={handleStartDateChange}
-                                handleEndDateChange={handleEndDateChange} repeat={repeat} startDate={startDate} endDate={endDate} setRepeat={setRepeat}
-                                handleEndTimeChange={handleEndTimeChange} handleDayButtonClick={handleDayButtonClick} setPage={setPage} handleBookSlot={handleBookSlot} page={page}
-                                getallTime={getallTime} handleStartTimeChange={handleStartTimeChange} handleOpenImagePopup={handleOpenImagePopup} handleRemoveItem={handleRemoveItem}
+                                handleAddItem={handleAddItem}
+                                handleSequenceChange={handleSequenceChange}
+                                handleaftereventChange={handleaftereventChange}
+                                handleAftereventTypeChange={handleAftereventTypeChange}
+                                allTimeZone={allTimeZone}
+                                selectedTimeZone={selectedTimeZone}
+                                selectedDays={selectedDays}
+                                countAllDaysInRange={countAllDaysInRange}
+                                handleSelectTimeZoneChange={handleSelectTimeZoneChange}
+                                handleStartDateChange={handleStartDateChange}
+                                handleEndDateChange={handleEndDateChange}
+                                repeat={repeat}
+                                startDate={startDate}
+                                endDate={endDate}
+                                setRepeat={setRepeat}
+                                handleEndTimeChange={handleEndTimeChange}
+                                handleDayButtonClick={handleDayButtonClick}
+                                setPage={setPage}
+                                handleBookSlot={handleBookSlot}
+                                page={page}
+                                getallTime={getallTime}
+                                handleStartTimeChange={handleStartTimeChange}
+                                handleOpenImagePopup={handleOpenImagePopup}
+                                handleRemoveItem={handleRemoveItem}
+                                handleCheckboxChange={handleCheckboxChange}
+                                selectAllDays={selectAllDays}
+                                totalDuration={totalDuration}
+                                type={'BookYourSlot'}
                             />
                         </>
                     )}
@@ -493,20 +583,37 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                     {page === 2 && (
                         <>
                             <BookSlotMap
-                                totalPrice={totalPrice} totalDuration={totalDuration}
-                                selectedCountry={selectedCountry}
-                                // handleSelectCountries={handleSelectCountries}
+                                totalPrice={totalPrice}
+                                totalDuration={totalDuration}
+                                // selectedCountry={selectedCountry} 
+                                // setSelectedItem={setSelectedItem}
+                                // selectedItem={selectedItem}
+                                // handleSelectCountries={handleSelectCountries}  
+                                // locationDis={locationDis}
+                                setSelectedValue={setSelectedValue}
+                                screenArea={screenArea}
                                 handleBack={handleBack}
-                                selectedVal={selectedVal} setSelectedVal={setSelectedVal}
-                                setOpen={setOpen} getSelectedVal={getSelectedVal}
-                                allArea={allArea} handleRangeChange={handleRangeChange}
-                                selectedItem={selectedItem} Open={Open} setSelectedItem={setSelectedItem}
-                                setSelectedScreens={setSelectedScreens} setSelectedScreen={setSelectedScreen}
-                                screenData={screenData} screenArea={screenArea} handleNext={handleNext}
-                                countries={countries} handleSelectChange={handleSelectChange}
-                                Screenoptions={Screenoptions} selectAllScreen={selectAllScreen}
-                                selectedScreen={selectedScreen} selectedScreens={selectedScreens}
+                                setAllArea={setAllArea}
+                                selectedVal={selectedVal}
+                                setSelectedVal={setSelectedVal}
+                                getSelectedVal={getSelectedVal}
+                                allArea={allArea}
+                                handleRangeChange={handleRangeChange}
+                                // Open={Open} 
+                                setOpen={setOpen}
+                                setSelectedScreens={setSelectedScreens}
+                                setSelectedScreen={setSelectedScreen}
+                                screenData={screenData}
+                                handleNext={handleNext}
+                                countries={countries}
+                                handleSelectChange={handleSelectChange}
+                                Screenoptions={Screenoptions}
+                                selectAllScreen={selectAllScreen}
+                                selectedScreen={selectedScreen}
+                                selectedScreens={selectedScreens}
                                 setSelectAllScreen={setSelectAllScreen}
+                                setScreenData={setScreenData}
+                                handleSelectunit={handleSelectunit}
                             />
                             {/* <div className="w-full h-full p-5 flex items-center justify-center ">
                                 <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg ">
@@ -781,8 +888,6 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                             onSubmit={handlePopupSubmit}
                             getallTime={getallTime}
                             setGetAllTime={setGetAllTime}
-                            setVerticalFileName={setVerticalFileName}
-                            setHorizontalFileName={setHorizontalFileName}
                         />
                     )}
                 </div>

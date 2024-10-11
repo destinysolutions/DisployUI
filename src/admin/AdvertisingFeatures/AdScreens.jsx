@@ -199,9 +199,14 @@ export default function AdScreens({ sidebarOpen }) {
                                                 </td>
 
 
-                                                <td className="px-6 py-4">{item?.receivedPayment}</td>
-                                                <td className="px-6 py-4">{formatToUSCurrency(item?.payout)}</td>
+                                                <td className="px-6 py-4 gap-2">
+                                                    <span className='font-medium mr-2 '>{item?.currency === 'INR' ? '₹' : '$'}</span>
+                                                    {item?.receivedPayment?.toLocaleString('en-IN')}</td>
 
+                                                <td className="px-6 py-4">
+                                                    <span className='font-medium mr-2 '>{item?.currency === 'INR' ? '₹' : '$'}</span>
+                                                    {item?.payout?.toLocaleString('en-IN')}
+                                                </td>
                                             </tr>
                                         ))}
                                     {!loading && currentItems?.length === 0 && (

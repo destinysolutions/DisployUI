@@ -6,6 +6,7 @@ import { RiDeleteBin5Line } from 'react-icons/ri';
 import { buttons, secondsToHMS } from '../../../Common/Common';
 import logo from "../../../../images/DisployImg/Black-Logo2.png";
 import ReactTooltip from 'react-tooltip';
+import { useNavigate } from 'react-router-dom';
 
 export default function BookSlotTimeZone({
     allTimeZone,
@@ -35,7 +36,10 @@ export default function BookSlotTimeZone({
     page,
     selectedDays,
     totalDuration,
+    type
 }) {
+    const navigate = useNavigate()
+
     return (
         <div className="w-full h-full p-5 flex items-center justify-center">
             <div className="lg:w-[800px] md:w-[700px] w-full max-h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
@@ -391,7 +395,13 @@ export default function BookSlotTimeZone({
                             <div className="flex justify-center h-full items-end">
                                 <button
                                     className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-4 md:px-8 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                    onClick={() => setPage(page - 1)}
+                                    onClick={() => {
+                                        if (type === 'BookYourSlot') {
+                                            navigate('/book-your-slot')
+                                        } else {
+                                            setPage(page - 1)
+                                        }
+                                    }}
                                 >
                                     Back
                                 </button>

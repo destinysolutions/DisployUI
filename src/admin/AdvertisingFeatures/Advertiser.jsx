@@ -153,51 +153,58 @@ export default function Advertiser({ sidebarOpen }) {
                                     {!loading &&
                                         currentItems?.length > 0 &&
                                         currentItems?.map((item, index) => (
-                                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 text-center" key={index}>
-                                                <td className="px-6 py-4">{item?.clientName}</td>
-                                                <td className="px-6 py-4">{item?.screens}</td>
-                                                <td className="px-6 py-4">{item?.location}</td>
-                                                <td className="px-6 py-4 text-green-600">
-                                                    <span
-                                                        id={`changetvstatus${item?.macID}`}
-                                                        className={`rounded-full px-6 py-2 text-white text-center
-                                                                            ${item?.status === 1 ? "bg-[#3AB700]" : "bg-[#FF0000]"}`}
-                                                    >
-                                                        {item?.status === 1 ? "Live" : "offline"}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <label className="inline-flex items-center cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="sr-only peer"
-                                                            checked={assetManagement[item?.userID]}
-                                                            id={`Active_${item?.userID}`} // Ensure consistent casing
-                                                            onChange={() => DeactiveAsste(item)} // Directly pass the item
-                                                        />
-                                                        <div
-                                                            style={{ background: (assetManagement[item?.userID]) ? 'green' : 'gray' }}
-                                                            className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${(assetManagement[item?.userID]) ? 'bg-green-500' : 'bg-red-500'} peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 dark:bg-gray-700`}
-                                                        >
-                                                            <div
-                                                                className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200 dark:border-gray-600`}
-                                                                style={{
-                                                                    transform: (assetManagement[item?.userID]) ? 'translateX(20px)' : 'translateX(0)',
-                                                                    transition: 'transform 0.5s ease-in-out',
-                                                                }}
-                                                            ></div>
-                                                        </div>
-                                                    </label>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    {item?.bookedSlot ? moment(item?.bookedSlot).format("LLL") : null}
-                                                </td>
+                                            console.log('item :>> ', item),
+                                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 text-center" key={index}>
+                                        <td className="px-6 py-4">{item?.clientName}</td>
+                                        <td className="px-6 py-4">{item?.screens}</td>
+                                        <td className="px-6 py-4">{item?.location}</td>
+                                        <td className="px-6 py-4 text-green-600">
+                                            <span
+                                                id={`changetvstatus${item?.macID}`}
+                                                className={`rounded-full px-6 py-2 text-white text-center
+                                                                            ${item?.status ? "bg-[#3AB700]" : "bg-[#FF0000]"}`}
+                                            >
+                                                {item?.status ? "Live" : "offline"}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <label className="inline-flex items-center cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    className="sr-only peer"
+                                                    checked={assetManagement[item?.userID]}
+                                                    id={`Active_${item?.userID}`} // Ensure consistent casing
+                                                    onChange={() => DeactiveAsste(item)} // Directly pass the item
+                                                />
+                                                <div
+                                                    style={{ background: (assetManagement[item?.userID]) ? 'green' : 'gray' }}
+                                                    className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${(assetManagement[item?.userID]) ? 'bg-green-500' : 'bg-red-500'} peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 dark:bg-gray-700`}
+                                                >
+                                                    <div
+                                                        className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200 dark:border-gray-600`}
+                                                        style={{
+                                                            transform: (assetManagement[item?.userID]) ? 'translateX(20px)' : 'translateX(0)',
+                                                            transition: 'transform 0.5s ease-in-out',
+                                                        }}
+                                                    ></div>
+                                                </div>
+                                            </label>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {item?.bookedSlot ? moment(item?.bookedSlot).format("LLL") : null}
+                                        </td>
 
 
-                                                <td className="px-6 py-4">{item?.receivedPayment}</td>
-                                                <td className="px-6 py-4">{item?.payout}</td>
+                                        <td className="px-6 py-4">
+                                            <span className='font-medium mr-2 '>{item?.currency === 'INR' ? '₹' : '$'}</span>
+                                            {item?.receivedPayment?.toLocaleString('en-IN')}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className='font-medium mr-2 '>{item?.currency === 'INR' ? '₹' : '$'}</span>
+                                            {item?.payout?.toLocaleString('en-IN')}
+                                        </td>
 
-                                            </tr>
+                                    </tr>
                                         ))}
                                     {!loading && currentItems?.length === 0 && (
                                         <tr>

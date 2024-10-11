@@ -169,7 +169,6 @@ const ShowAssetModal = ({
     // if (!selectedAsset?.assetName) {
     //   return toast.error("Please select Asset");
     // }
-
     setShowAssetModal(false);
     setSearchAssest("");
     setSelectedAsset(assetPreview);
@@ -328,7 +327,7 @@ const ShowAssetModal = ({
               normalizedVal.includes(searchQuery)
             );
           }
-          return false; 
+          return false;
         })
       );
 

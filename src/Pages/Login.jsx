@@ -137,15 +137,18 @@ const Login = () => {
               window.localStorage.setItem("timer", JSON.stringify(18_00));
               const userRole = response.role;
               if (userRole == 1) {
-                localStorage.setItem("role_access", "ADMIN");
-                toast.success("Login successfully.");
-                window.location.href = "/";
-              } else if (userRole == 2) {
-                if (response?.isSalesMan === true && response?.isActivePlan === false) {
+                if (response?.isAdvCustomer) {
                   localStorage.setItem("role_access", "ADVERTISMENT");
                   toast.success("Login successfully.");
+                  window.location.href = "/";
+                } else {
+                  localStorage.setItem("role_access", "ADMIN");
+                  toast.success("Login successfully.");
+                  window.location.href = "/";
                 }
-                else if (response?.isSalesMan) {
+              } else if (userRole == 2) {
+
+                if (response?.isSalesMan) {
                   localStorage.setItem("role_access", "SALESMAN");
                   toast.success("Login successfully.");
                 } else {

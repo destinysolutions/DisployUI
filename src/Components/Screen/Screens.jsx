@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from "react";
+  import { Suspense, useEffect, useRef, useState } from "react";
 import "../../Styles/screen.css";
 import {
   AiOutlineCloseCircle,
@@ -487,7 +487,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             connection: socket.connected,
             macId: screenToUpdate?.macid.replace(/^\s+/g, ""),
           };
-          console.log('Params :>> ', Params);
           socket.emit("ScreenConnected", Params);
           setIsEditingScreen(false);
         })
