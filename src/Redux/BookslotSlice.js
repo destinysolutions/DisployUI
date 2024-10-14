@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GET_BOOKING_SLOT, GET_BOOKSLOT_REPORT } from "../Pages/Api";
+import { GET_BOOKING_SLOT, GET_BOOKSLOT_INVOICE, GET_BOOKSLOT_REPORT } from "../Pages/Api";
 
 
 
@@ -37,8 +37,18 @@ export const getAllSlotReport = createAsyncThunk("AdsCustomer/getAllSlotReport",
         toast.error('Failed to fetch data');
         throw error;
     }
-}
-);
+});
+export const getAllBookSlotInvoice = createAsyncThunk("AdsCustomer/getAllBookSlotInvoice", async (payload, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().root.auth.token;
+        const response = await axios.get(GET_BOOKSLOT_INVOICE, { headers: { Authorization: `Bearer ${token}` } });
+        return response.data;
+    } catch (error) {
+        console.log("error", error);
+        toast.error('Failed to fetch data');
+        throw error;
+    }
+});
 
 
 const BookslotSlice = createSlice({
@@ -74,6 +84,18 @@ const BookslotSlice = createSlice({
                 state.data = action.payload?.data;
             })
             .addCase(getAllSlotReport.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message;
+            })
+
+            .addCase(getAllBookSlotInvoice.pending, (state) => {
+                state.status = null;
+            })
+            .addCase(getAllBookSlotInvoice.fulfilled, (state, action) => {
+                state.status = null;
+                state.data = action.payload?.data;
+            })
+            .addCase(getAllBookSlotInvoice.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message;
             })

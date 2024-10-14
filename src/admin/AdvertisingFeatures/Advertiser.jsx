@@ -6,6 +6,7 @@ import { getAllUserAdvertiser } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { updateAdvScreen } from '../../Redux/CommonSlice';
+import Datepicker from 'react-tailwindcss-datepicker';
 
 export default function Advertiser({ sidebarOpen }) {
     const dispatch = useDispatch()
@@ -17,22 +18,28 @@ export default function Advertiser({ sidebarOpen }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [SelectedDate, setSelectedDate] = useState('');
     const [assetManagement, setAssetManagement] = useState({});
-
+    const [value, setValue] = useState({
+        startDate: '',
+        endDate: ''
+    });
     const filteredData = advertiserData?.length > 0 ? advertiserData?.filter((item) => item?.clientName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
+    const query = {
+        StartDate: value?.startDate ? moment(value?.startDate)?.format('YYYY-MM-DD') : '',
+        EndDate: value?.endDate ? moment(value?.endDate)?.format('YYYY-MM-DD') : ''
+    };
 
     useEffect(() => {
         if (loadFirst) {
             setLoading(true)
-            dispatch(getAllUserAdvertiser(SelectedDate)).then((res) => {
-
+            dispatch(getAllUserAdvertiser(query)).then((res) => {
                 const screens = res?.payload?.data || [];
                 const initialAssetManagement = {};
                 screens.forEach(screen => {
-                    initialAssetManagement[screen.userID] = screen?.assetManagement; // Default to false or your desired initial state
+                    initialAssetManagement[screen?.userID] = screen?.assetManagement;
                 });
                 setAssetManagement(initialAssetManagement);
                 setAdvertiserData(screens)
@@ -72,11 +79,9 @@ export default function Advertiser({ sidebarOpen }) {
     return (
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-                <div className='flex items-center justify-between '>
-                    <div className='flex justify-between items-center'>
-                        <h2 className='font-semibold'>Advertiser</h2>
-                    </div>
-                    <div className="flex items-center justify-end gap-2 w-full  ">
+                <div className='flex items-center justify-justify-between  '>
+                    <h2 className='font-semibold'>Advertiser</h2>
+                    <div className="flex items-center justify-end gap-3   w-full ">
                         <div className="relative">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <AiOutlineSearch className="w-5 h-5 text-gray" />
@@ -89,7 +94,16 @@ export default function Advertiser({ sidebarOpen }) {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <div className='p-0'>
+                        <div className="border border-[#D5E3FF] border-1 rounded w-80  p-0 m-0 ">
+                            <Datepicker
+                                separator="to"
+                                value={value}
+                                onChange={newValue => { setValue(newValue); setLoadFirst(true); }}
+                                // showFooter={true}
+                                className="p-0"
+                            />
+                        </div>
+                        {/* <div className='p-0'>
                             <button
                                 data-tip
                                 data-for="New MergeScreen"
@@ -109,7 +123,7 @@ export default function Advertiser({ sidebarOpen }) {
                                 />
                                 <span className="text-white text-2xl p-2"><FaCalendarAlt /></span>
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
@@ -153,58 +167,57 @@ export default function Advertiser({ sidebarOpen }) {
                                     {!loading &&
                                         currentItems?.length > 0 &&
                                         currentItems?.map((item, index) => (
-                                            console.log('item :>> ', item),
-                                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 text-center" key={index}>
-                                        <td className="px-6 py-4">{item?.clientName}</td>
-                                        <td className="px-6 py-4">{item?.screens}</td>
-                                        <td className="px-6 py-4">{item?.location}</td>
-                                        <td className="px-6 py-4 text-green-600">
-                                            <span
-                                                id={`changetvstatus${item?.macID}`}
-                                                className={`rounded-full px-6 py-2 text-white text-center
+                                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 text-center" key={index}>
+                                                <td className="px-6 py-4">{item?.clientName}</td>
+                                                <td className="px-6 py-4">{item?.screens}</td>
+                                                <td className="px-6 py-4">{item?.location}</td>
+                                                <td className="px-6 py-4 text-green-600">
+                                                    <span
+                                                        id={`changetvstatus${item?.macID}`}
+                                                        className={`rounded-full px-6 py-2 text-white text-center
                                                                             ${item?.status ? "bg-[#3AB700]" : "bg-[#FF0000]"}`}
-                                            >
-                                                {item?.status ? "Live" : "offline"}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <label className="inline-flex items-center cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    className="sr-only peer"
-                                                    checked={assetManagement[item?.userID]}
-                                                    id={`Active_${item?.userID}`} // Ensure consistent casing
-                                                    onChange={() => DeactiveAsste(item)} // Directly pass the item
-                                                />
-                                                <div
-                                                    style={{ background: (assetManagement[item?.userID]) ? 'green' : 'gray' }}
-                                                    className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${(assetManagement[item?.userID]) ? 'bg-green-500' : 'bg-red-500'} peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 dark:bg-gray-700`}
-                                                >
-                                                    <div
-                                                        className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200 dark:border-gray-600`}
-                                                        style={{
-                                                            transform: (assetManagement[item?.userID]) ? 'translateX(20px)' : 'translateX(0)',
-                                                            transition: 'transform 0.5s ease-in-out',
-                                                        }}
-                                                    ></div>
-                                                </div>
-                                            </label>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {item?.bookedSlot ? moment(item?.bookedSlot).format("LLL") : null}
-                                        </td>
+                                                    >
+                                                        {item?.status ? "Live" : "offline"}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <label className="inline-flex items-center cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            className="sr-only peer"
+                                                            checked={assetManagement[item?.userID]}
+                                                            id={`Active_${item?.userID}`} // Ensure consistent casing
+                                                            onChange={() => DeactiveAsste(item)} // Directly pass the item
+                                                        />
+                                                        <div
+                                                            style={{ background: (assetManagement[item?.userID]) ? 'green' : 'gray' }}
+                                                            className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${(assetManagement[item?.userID]) ? 'bg-green-500' : 'bg-red-500'} peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-blue-800 dark:bg-gray-700`}
+                                                        >
+                                                            <div
+                                                                className={`absolute top-[2px] left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-transform duration-200 dark:border-gray-600`}
+                                                                style={{
+                                                                    transform: (assetManagement[item?.userID]) ? 'translateX(20px)' : 'translateX(0)',
+                                                                    transition: 'transform 0.5s ease-in-out',
+                                                                }}
+                                                            ></div>
+                                                        </div>
+                                                    </label>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {item?.bookedSlot ? moment(item?.bookedSlot).format("LLL") : null}
+                                                </td>
 
 
-                                        <td className="px-6 py-4">
-                                            <span className='font-medium mr-2 '>{item?.currency === 'INR' ? '₹' : '$'}</span>
-                                            {item?.receivedPayment?.toLocaleString('en-IN')}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className='font-medium mr-2 '>{item?.currency === 'INR' ? '₹' : '$'}</span>
-                                            {item?.payout?.toLocaleString('en-IN')}
-                                        </td>
+                                                <td className="px-6 py-4">
+                                                    <span className='font-medium mr-2 '>{item?.currency === 'INR' ? '₹' : '$'}</span>
+                                                    {item?.receivedPayment?.toLocaleString('en-IN')}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className='font-medium mr-2 '>{item?.currency === 'INR' ? '₹' : '$'}</span>
+                                                    {item?.payout?.toLocaleString('en-IN')}
+                                                </td>
 
-                                    </tr>
+                                            </tr>
                                         ))}
                                     {!loading && currentItems?.length === 0 && (
                                         <tr>

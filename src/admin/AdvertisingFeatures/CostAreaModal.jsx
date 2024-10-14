@@ -4,7 +4,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { handleAddCostbyarea } from '../../Redux/admin/AdvertisementSlice';
 import { BsCurrencyDollar } from 'react-icons/bs';
-import { greenOptions, IncludeExclude, kilometersMilesToMeters, kilometersToMeters } from '../../Components/Common/Common';
+import { getZoomLevel, greenOptions, IncludeExclude, kilometersMilesToMeters, kilometersToMeters } from '../../Components/Common/Common';
 import { MdCurrencyRupee } from 'react-icons/md';
 import toast from 'react-hot-toast';
 
@@ -32,19 +32,20 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
     const [data, setdata] = useState({
         location: '',
         cost: '',
-        range: '',
+        range: 0,
         currency: 'INR',
         unit: 'km'
 
     });
-
+    console.log('data :>> ', data);
+    console.log('EditData :>> ', EditData);
     useEffect(() => {
         if (EditData) {
             setdata({
                 location: EditData.locationName || '',
                 cost: EditData.costPerSec || '',
                 currency: EditData.currency || 'INR',
-                range: EditData.range || '',
+                range: EditData.range || 0,
                 unit: EditData.unit || '',
             });
             if (EditData.latitude || EditData.longitude) {
@@ -141,11 +142,6 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
         });
     };
 
-    const getZoomLevel = (range) => {
-        if (range <= 1) return 15;
-        if (range <= 5) return 12;
-        return 10;
-    };
 
     if (!isLoaded) return;
 
@@ -190,7 +186,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                                             min={0}
                                             value={data?.range}
                                             onChange={(e) => {
-                                                const value = parseInt(e.target.value)
+                                                const value = parseInt(e.target.value || 0)
                                                 setdata({ ...data, range: value });
                                                 const newZoom = getZoomLevel(value); // Get the zoom level based on range
                                                 map.setZoom(newZoom);

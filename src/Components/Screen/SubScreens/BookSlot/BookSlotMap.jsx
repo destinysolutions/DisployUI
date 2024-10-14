@@ -10,29 +10,49 @@ import { IoSearch } from 'react-icons/io5';
 import logo from "../../../../images/DisployImg/Black-Logo2.png";
 import ReactTooltip from 'react-tooltip';
 import { IoIosArrowDown } from 'react-icons/io';
+import { BiEdit } from 'react-icons/bi';
 
-export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, setScreenData,
-    setSelectAllScreen, setSelectedScreens, handleSelectChange, Screenoptions, selectAllScreen, selectedScreen, selectedScreens,
-    setSelectedScreen, screenData, handleNext, handleBack, allArea, handleRangeChange,
-    getSelectedVal, setSelectedVal, selectedVal, setAllCity, handleSelectunit }) {
+export default function BookSlotMap({ totalPrice,
+    totalDuration,
+    setAllArea,
+    setScreenData,
+    setSelectAllScreen,
+    setSelectedScreens,
+    handleSelectChange,
+    Screenoptions,
+    selectAllScreen,
+    selectedScreen,
+    selectedScreens,
+    setSelectedScreen,
+    screenData,
+    handleNext,
+    handleBack,
+    allArea,
+    handleRangeChange,
+    getSelectedVal,
+    setSelectedVal,
+    selectedVal,
+    handleSelectunit,
+    Open, setSelectedItem,
+    selectedItem, setOpen,
+    Error
+
+}) {
+    console.log('Open :>> ', Open);
     const autocompleteRef = useRef(null);
     const SelectDropdownRef = useRef(null);
-
+    const radiusRef = useRef(null);
+    console.log('selectedItem :>> ', selectedItem);
     const { isLoaded } = useLoadScript({
-        googleMapsApiKey: 'AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk', // Replace with your API key
-        libraries: ['places'], // Load Places library
+        googleMapsApiKey: 'AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk',
+        libraries: ['places'],
     });
-    const [map, setMap] = useState(null);
-    const center = { lat: 20.5937, lng: 78.9629 };
-    const [locations, setLocations] = useState(center);
-    const [subMenu, setSubMenu] = useState({ horizontal: false, vertical: false });
     const customIcon = new L.Icon({
         iconUrl: mapImg,
         iconSize: [16, 16],
         iconAnchor: [8, 8],
         popupAnchor: [0, -16],
     });
-    const [menuIsOpen, setMenuIsOpen] = useState(false);
     const containerStyle = {
         width: '100%',
         height: '300px',
@@ -42,7 +62,12 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
         scrollwheel: true,
         zoomControl: true,
     };
-    console.log('subMenu :>> ', subMenu);
+
+    const [map, setMap] = useState(null);
+    const center = { lat: 20.5937, lng: 78.9629 };
+    const [locations, setLocations] = useState(center);
+    const [subMenu, setSubMenu] = useState({ horizontal: false, vertical: false, referral: false });
+    const [menuIsOpen, setMenuIsOpen] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -56,10 +81,28 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
         };
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (radiusRef.current && !radiusRef.current.contains(event?.target)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("click", handleClickOutside, true);
+        return () => {
+            document.removeEventListener("click", handleClickOutside, true);
+        };
+    }, []);
+
     const handleAreaChange = (e, index) => {
         const { value } = e.target;
         const updatedDis = [...allArea];
         updatedDis[index].area = value;
+        setAllArea(updatedDis);
+    };
+    const handlerangChange = (e, index) => {
+        const { value } = e.target;
+        const updatedDis = [...allArea];
+        updatedDis[index].unit = value;
         setAllArea(updatedDis);
     };
 
@@ -86,8 +129,6 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
             }
         }
     };
-    if (!isLoaded) return;
-
 
     const customStyles = {
         option: (provided, state) => ({
@@ -116,7 +157,6 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
         setMenuIsOpen(true);
     };
 
-
     const horizontalItems = Screenoptions?.filter(item => item?.screenOrientation === 1 || item?.screenOrientation === 3);
     const verticalItems = Screenoptions?.filter(item => item?.screenOrientation === 2 || item?.screenOrientation === 4);
     const ReferralScreens = Screenoptions?.filter(item => item?.isReferral);
@@ -135,6 +175,7 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
             },
             ...(subMenu?.horizontal ? horizontalItems?.map(item => ({
                 value: item?.value,
+                Price: item?.Price,
                 label: (
                     <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                         <span className='text-sm'>{item?.label}</span>
@@ -157,6 +198,7 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
             },
             ...(subMenu?.vertical ? verticalItems?.map(item => ({
                 value: item?.value,
+                Price: item?.Price,
                 label: (
                     <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                         <span className='text-sm'>{item?.label}</span>
@@ -174,15 +216,16 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
                 {
                     value: 'horizontalScreens',
                     label: (
-                        <div className='flex items-center justify-between' onClick={() => toggleSubMenu('horizontal')}>
-                            <span className='w-full font-semibold'>Referral screens</span>
+                        <div className='flex items-center justify-between' onClick={() => toggleSubMenu('referral')}>
+                            <span className='w-full font-semibold'>Referral Screens</span>
                             <IoIosArrowDown className='h-5 w-5' />
                         </div>
                     ),
                     isDisabled: true,
                 },
-                ...(horizontalItems?.length > 0 ? horizontalItems?.map(item => ({
+                ...(subMenu?.referral && horizontalItems?.length > 0 ? horizontalItems?.map(item => ({
                     value: item?.value,
+                    Price: item?.Price,
                     label: (
                         <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                             <span className='text-sm'>{item?.label}</span>
@@ -190,9 +233,10 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
                             <span className='h-2 w-12 bg-gray-400 border border-slate-600'></span>
                         </div>
                     ),
-                })) : [{ value: "", label: "Not Found" }]),
-                ...(verticalItems?.length > 0 ? verticalItems?.map(item => ({
+                })) : []),
+                ...(subMenu?.referral && verticalItems?.length > 0 ? verticalItems?.map(item => ({
                     value: item?.value,
+                    Price: item?.Price,
                     label: (
                         <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                             <span className='text-sm'>{item?.label}</span>
@@ -200,11 +244,13 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
                             <span className='h-8 w-2 bg-gray-400 border border-slate-600'></span>
                         </div>
                     ),
-                })) : [{ value: "", label: "Not Found" }]),
+                })) : []),
 
             ]) : screenOptions),
         ...(!ReferralScreens?.length < 0 ? screenOptions : [])
     ]
+
+    if (!isLoaded) return;
 
 
     return (
@@ -228,7 +274,7 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
                                     return (
                                         <div className='flex flex-row gap-2 items-center justify-between mb-2'>
                                             <div
-                                                className="cursor-pointer flex flex-row gap-2 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-96 p-2 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                className="cursor-pointer flex flex-row gap-2 bg-gray-50 border border-black text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 w-full p-2 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                 key={index}
                                                 onClick={() => { setLocations({ lat: item.latitude, lng: item.longitude }); setSelectedScreen(item) }}
                                             >
@@ -239,7 +285,7 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
                                                     <h2>{item?.searchValue}</h2>
                                                 </div>
                                             </div>
-                                            <div className="text-sm flex items-center">
+                                            {/* <div className="text-sm flex items-center">
                                                 <form
                                                     onSubmit={(e) => handleRangeChange(e, item)}
                                                     className="flex-initial w-fit"
@@ -263,7 +309,91 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
                                                         {option.label}
                                                     </option>
                                                 ))}
-                                            </select>
+                                            </select> */}
+
+                                            <div className="flex flex-row items-center rounded-lg">
+                                                <button
+                                                    data-tip
+                                                    data-for="Edit"
+                                                    type="button"
+                                                    className="rounded-full text-lg p-1.5 text-white text-center bg-blue-700"
+                                                    onClick={() => {
+                                                        setSelectedItem(item);
+                                                        setOpen(true);
+                                                    }}
+                                                >
+                                                    <BiEdit />
+                                                    <ReactTooltip
+                                                        id="Edit"
+                                                        place="bottom"
+                                                        type="warning"
+                                                        effect="solid"
+                                                    >
+                                                        <span>Edit</span>
+                                                    </ReactTooltip>
+                                                </button>
+                                                {selectedItem === item && Open && (
+                                                    <div
+                                                        id="ProfileDropDown"
+                                                        className={`rounded shadow-md bg-white absolute shadow-lg mt-44 z-[9999] w-48`}
+                                                    >
+                                                        <div>
+                                                            <div className="border-b flex justify-center mb-3">
+                                                                <div className="p-2">
+                                                                    Edit target radius
+                                                                </div>
+                                                            </div>
+                                                            <div className="text-sm flex items-center justify-center gap-2">
+                                                                <input
+                                                                    type='number'
+                                                                    min={0}
+                                                                    value={item?.area}
+                                                                    onChange={(e) => handleAreaChange(e, index)}
+                                                                    className='p-0 w-16 px-3 py-2 border border-primary rounded-md'
+                                                                    style={{ border: `${Error ? "1px solid red" : ""}` }}
+
+                                                                />
+                                                                <select
+                                                                    className="border border-primary rounded-lg px-4 pl-2 py-2 w-24"
+                                                                    value={item?.unit}
+                                                                    onChange={(e) => handlerangChange(e, index)}
+                                                                // onChange={(e) => setSelectedItem({ ...selectedItem, unit: e.target.value })}
+                                                                >
+                                                                    {IncludeExclude.map((option) => (
+                                                                        <option key={option.value} value={option.value}>
+                                                                            {option.label}
+                                                                        </option>
+                                                                    ))}
+                                                                </select>
+                                                            </div>
+
+                                                            <div className="my-3 flex items-center justify-center gap-2">
+                                                                <button
+                                                                    className="flex align-middle bg-SlateBlue text-white items-center rounded-full text-sm px-2 py-1 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                                                    onClick={() => setOpen(false)}
+                                                                >
+                                                                    Cancel
+                                                                </button>
+                                                                <button
+                                                                    className="flex align-middle bg-SlateBlue text-white items-center rounded-full text-sm px-3 py-1 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                                                    onClick={() => handleSelectunit(index)}
+                                                                // onClick={() => {
+                                                                //     // Save the updated item to your state or perform your API call here
+                                                                //     const updatedItems = allArea.map((it, idx) =>
+                                                                //         idx === index ? { ...it, ...selectedItem } : it
+                                                                //     );
+                                                                //     setAllArea(updatedItems); // Update the state with all items
+                                                                //     setOpen(false); // Close the modal
+                                                                // }}
+                                                                >
+                                                                    Save
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+
                                             <button
                                                 data-tip
                                                 data-for="Delete"
@@ -274,7 +404,6 @@ export default function BookSlotMap({ totalPrice, totalDuration, setAllArea, set
                                                     setAllArea(updatedQuestions);
                                                     const matchingScreens = filterScreensDistance(updatedQuestions, screenData,);
                                                     setScreenData(matchingScreens);
-
                                                 }}
                                             >
                                                 <RiDeleteBinLine />

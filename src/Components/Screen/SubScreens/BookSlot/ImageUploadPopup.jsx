@@ -11,7 +11,6 @@ const ImageUploadPopup = ({
     setGetAllTime,
     getallTime
 }) => {
-    console.log('getallTime :>> ', getallTime);
     const [progress, setProgress] = useState(0);
 
     const [verticalImage, setVerticalImage] = useState(null);
@@ -23,11 +22,11 @@ const ImageUploadPopup = ({
         e.stopPropagation();
     };
 
-    const handleDrop = (e) => {
+    const handleDrop = (e, type) => {
         e.preventDefault();
         e.stopPropagation();
         const files = e.dataTransfer.files[0];
-        handleFileUpload(files);
+        handleFileUpload(files, type);
 
     };
     const handleFileInputChange = (e, type) => {
@@ -71,7 +70,7 @@ const ImageUploadPopup = ({
                     setHorizontalImage(base64String);
                     setGetAllTime((prevUploads) => {
                         const newUploads = [...prevUploads];
-                        newUploads[index] = { ...newUploads[index], horizontalFileName: file.name };
+                        newUploads[index] = { ...newUploads[index], horizontalFileName: file.name, horizontalImage: base64String };
                         return newUploads;
                     });
 
@@ -79,7 +78,7 @@ const ImageUploadPopup = ({
                     setVerticalImage(base64String);
                     setGetAllTime((prevUploads) => {
                         const newUploads = [...prevUploads];
-                        newUploads[index] = { ...newUploads[index], verticalFileName: file.name };
+                        newUploads[index] = { ...newUploads[index], verticalFileName: file.name, verticalImage: base64String };
                         return newUploads;
                     });
 
@@ -175,7 +174,7 @@ const ImageUploadPopup = ({
                                                         <div
                                                             className="flex justify-center items-center h-36 rounded-lg"
                                                             onDragOver={handleDragOver}
-                                                            onDrop={handleDrop}
+                                                            onDrop={(e) => handleDrop(e, 'Horizontal')}
                                                         >
                                                             <label htmlFor="horizontal-file-upload" className="cursor-pointer flex flex-col items-center justify-center">
                                                                 <TbCloudUpload size={35} />
@@ -186,8 +185,7 @@ const ImageUploadPopup = ({
                                                                     id="horizontal-file-upload"
                                                                     className="hidden"
                                                                     onChange={(e) => handleFileInputChange(e, 'Horizontal')}
-                                                                    multiple
-                                                                    accept="image/* , video/*"
+                                                                    accept="image/*"
                                                                 />
                                                             </label>
                                                         </div>
@@ -204,7 +202,7 @@ const ImageUploadPopup = ({
                                                         <div
                                                             className="flex justify-center items-center h-36 rounded-lg"
                                                             onDragOver={handleDragOver}
-                                                            onDrop={handleDrop}
+                                                            onDrop={(e) => handleDrop(e, 'vertical')}
                                                         >
                                                             <label htmlFor="vertical-file-upload" className="cursor-pointer flex flex-col items-center justify-center">
                                                                 <TbCloudUpload size={35} />
@@ -215,8 +213,9 @@ const ImageUploadPopup = ({
                                                                     id="vertical-file-upload"
                                                                     className="hidden"
                                                                     onChange={(e) => handleFileInputChange(e, 'vertical')}
-                                                                    multiple
-                                                                    accept="image/* , video/*"
+
+                                                                    accept="image/* "
+                                                                // accept="image/* , video/*"
                                                                 />
                                                             </label>
                                                         </div>

@@ -13,8 +13,8 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
     const dispatch = useDispatch()
     const [reportsData, setReportsData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const sortedAndPaginatedData = reportsData
     const [loadFirst, setLoadFirst] = useState(true);
+    const sortedAndPaginatedData = reportsData
 
 
     useEffect(() => {
@@ -161,16 +161,16 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                                                 key={index}
                                                             >
                                                                 <td className="text-[#5E5E5E] mw-200 text-center">
-                                                                    {composition?.screenIDs}
+                                                                    {composition?.screenID}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {composition?.googleLocation}
+                                                                    {composition?.location}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {moment(composition.startDate).format("YYYY-MM-DD hh:mm")}
+                                                                    {moment(composition.startDate).format("YYYY-MM-DD")}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {moment(composition.endDate).format("YYYY-MM-DD hh:mm")}
+                                                                    {moment(composition.endDate).format("YYYY-MM-DD")}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
                                                                     {composition?.bookedDuration}

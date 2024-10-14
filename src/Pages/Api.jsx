@@ -327,11 +327,13 @@ export const GET_PERPOSE_SCREEN = `${baseUrl}AdsCustomer/GetAllPurposeMaster`
 export const ADD_PERPOSE_SCREEN = `${baseUrl}AdsCustomer/AddORUpdatePurposeMaster`
 export const DELETE_PERPOSE_SCREEN = `${baseUrl}AdsCustomer/DeletePurposeMaster`
 export const UPDATE_ADVERTISER_SCREEN = `${baseUrl}NewScreen/UpdateAssetForAdScreen`
+export const CHECK_EMAIL_BOOKSLOT = `${baseUrl}AdsCustomer/CheckEmailExistsForBookSlot`
 
 
 // bookslot
 export const GET_BOOKING_SLOT = `${baseUrl}AdsCustomer/GetAllBookingSlotCustomer`
 export const GET_BOOKSLOT_REPORT = `${baseUrl}AdsCustomer/GetBookedSlotReport`
+export const GET_BOOKSLOT_INVOICE = `${baseUrl}AdsCustomer/GetBookedSlotInvoice`
 
 
 // Apps 

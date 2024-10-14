@@ -44,95 +44,23 @@ const AdvertismentNavbar = () => {
 
   return (
     <>
-      <div className="w-full topbar bg-white shadow-lg top-0 fixed z-[21]">
+      <div className="w-full topbar  bg-white py-3 shadow-none">
         <div>
           <div className="flex-col flex">
             <div className="w-full">
-              <div className="justify-end items-center py-2 mx-auto gap-3 px-4 flex relative">
-                <div className="relative">
-                  <div className='flex items-center flex-row'>
-                    {userDetails?.profilePhoto == "" ? (
-                      <img
-                        src={createImageFromInitials(
-                          500,
-                          userDetails?.firstName,
-                          color
-                        )}
-                        alt="profile"
-                        className="profile cursor-pointer"
-                        onClick={handleProfileClick}
-                      />
-                    ) : (
-                      <img
-                        src={userDetails?.profilePhoto}
-                        alt="profile"
-                        className="profile cursor-pointer"
-                        onClick={handleProfileClick}
-                      />
-                    )}
-                    
-                    {showProfileBox && (
-                      <>
-                        <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
-                          <div className="flex items-center space-x-3  p-2">
-                            {userDetails?.profilePhoto === "" ? (
-                              <img
-                                src={createImageFromInitials(500, userDetails?.firstName, color)}
-                                alt="profile"
-                                className=" profile rounded-full "
-                                onClick={handleProfileClick}
-                              />
-                            ) : (
-                              <img
-                                src={userDetails?.profilePhoto}
-                                alt="profile"
-                                className=" profile rounded-full"
-                                onClick={handleProfileClick}
-                              />
-                            )}
-                            <div>
-                              <div className="font-semibold text-lg capitalize">
-                                {userDetails?.firstName} {userDetails?.lastName}
-                              </div>
-                            </div>
-                          </div>
-                          {/*<div className="flex justify-start items-center p-2">
-                            <div className="mr-2">
-                              <RiUserShared2Fill className="text-xl" />
-                            </div>
-                            <Link to="/userprofile">
-                              <button className="text-[#001737] font-bold text-base ">
-                                My Account
-                              </button>
-                            </Link>
-                            </div>*/}
-
-                          <div className="border-b-[1px] border-[#8E94A9]"></div>
-                          <div className="flex justify-start items-center p-2">
-                            <div className="mr-2">
-                              <MdOutlineLogout className="text-xl" />
-                            </div>
-                            <button
-                              className="text-[#001737] font-bold text-base "
-                              onClick={() => {
-                                toast.loading("Logout...");
-                                setTimeout(() => {
-                                  dispatch(handleLogout());
-                                  toast.remove();
-                                }, 1000);
-                              }}
-                            >
-                              Sign out
-                            </button>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                </div>
-
-                {/* profile box end */}
+              <div className=" justify-end items-center mx-auto px-4 flex relative">
+                <button
+                  className="text-[#001737] font-bold text-base "
+                  onClick={() => {
+                    toast.loading("Logout...");
+                    setTimeout(() => {
+                      dispatch(handleLogout());
+                      toast.remove();
+                    }, 1000);
+                  }}
+                >
+                  Sign out
+                </button>
               </div>
             </div>
           </div>

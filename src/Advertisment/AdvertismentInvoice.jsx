@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai';
 import AdvertismentSidebar from './AdvertismentSidebar';
 import AdvertismentNavbar from './AdvertismentNavbar';
@@ -6,13 +6,30 @@ import { PageNumber } from '../Components/Common/Common';
 import { BsEyeFill } from 'react-icons/bs';
 import ReactTooltip from 'react-tooltip';
 import { LuDownload } from 'react-icons/lu';
+import { useDispatch } from 'react-redux';
+import { getAllBookSlotInvoice } from '../Redux/BookslotSlice';
 
 export default function AdvertismentInvoice({ sidebarOpen, setSidebarOpen }) {
-
-    const [BookingData, setBookingData] = useState([]);
+    const dispatch = useDispatch()
+    const [InvoiceData, setInvoiceData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadFirst, setLoadFirst] = useState(true);
 
-    const sortedAndPaginatedData = BookingData
+    const sortedAndPaginatedData = InvoiceData
+
+
+
+    useEffect(() => {
+        if (loadFirst) {
+            setLoading(true)
+            dispatch(getAllBookSlotInvoice({})).then((res) => {
+                setInvoiceData(res?.payload?.data)
+                setLoading(false)
+            })
+        }
+        setLoadFirst(false)
+    }, [loadFirst, dispatch]);
+
     return (
         <>
             <div className="flex border-b border-gray ">
@@ -74,61 +91,6 @@ export default function AdvertismentInvoice({ sidebarOpen, setSidebarOpen }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr
-                                            className="border-b border-b-[#E4E6FF] "
-                                        >
-                                            <td className="text-[#5E5E5E] mw-200 text-center">
-                                                25
-                                            </td>
-                                            <td className="mw-200 text-[#5E5E5E] text-center">
-                                                7
-                                            </td>
-                                            <td className="mw-200 text-[#5E5E5E] text-center">
-                                                dd:mm:yyyy
-
-                                            </td>
-                                            <td className="mw-200 text-[#5E5E5E] text-center">
-                                                $ 10
-                                            </td>
-                                            <td className="mw-200 text-[#5E5E5E] text-center">
-                                                <div className="flex justify-center gap-4">
-                                                    <div
-                                                        data-tip
-                                                        data-for="View"
-                                                        className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-
-                                                    >
-                                                        <BsEyeFill />
-                                                        <ReactTooltip
-                                                            id="View"
-                                                            place="bottom"
-                                                            type="warning"
-                                                            effect="solid"
-                                                        >
-                                                            <span>View</span>
-                                                        </ReactTooltip>
-                                                    </div>
-
-                                                    <div
-                                                        data-tip
-                                                        data-for="Edit"
-                                                        className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                    >
-                                                        <LuDownload />
-                                                        <ReactTooltip
-                                                            id="Edit"
-                                                            place="bottom"
-                                                            type="warning"
-                                                            effect="solid"
-                                                        >
-                                                            <span>Delete</span>
-                                                        </ReactTooltip>
-                                                    </div>
-
-
-                                                </div>
-                                            </td>
-                                        </tr>
                                         {loading ? (
                                             <tr>
                                                 <td colSpan={7}>
@@ -153,7 +115,7 @@ export default function AdvertismentInvoice({ sidebarOpen, setSidebarOpen }) {
                                                     </div>
                                                 </td>
                                             </tr>
-                                        ) : BookingData &&
+                                        ) : InvoiceData &&
                                             sortedAndPaginatedData?.length === 0 ? (
                                             <tr>
                                                 <td colSpan={7}>
@@ -166,32 +128,28 @@ export default function AdvertismentInvoice({ sidebarOpen, setSidebarOpen }) {
                                             </tr>
                                         ) : (
                                             <>
-                                                {BookingData &&
+                                                {InvoiceData &&
                                                     sortedAndPaginatedData.length > 0 &&
-                                                    sortedAndPaginatedData?.map((composition, index) => {
+                                                    sortedAndPaginatedData?.map((item, index) => {
                                                         return (
                                                             <tr
                                                                 className="border-b border-b-[#E4E6FF] "
                                                                 key={index}
                                                             >
-                                                                <td className="text-[#5E5E5E] mw-200">
-                                                                    <div className="flex gap-1 items-center">
+                                                                <td className="text-[#5E5E5E] mw-200 text-center">
+                                                                    {item?.bookingDate}
+                                                                </td>
+                                                                <td className="mw-200 text-[#5E5E5E] text-center">
+                                                                    {item?.totalScreen}
+                                                                </td>
+                                                                <td className="mw-200 text-[#5E5E5E] text-center">
+                                                                    {item?.bookedDuration}
+                                                                </td>
+                                                                <td className="mw-200 text-[#5E5E5E] text-center">
+                                                                    {item?.paidAmount?.toLocaleString('en-IN')}
+                                                                </td>
+                                                                <td className="mw-200 text-[#5E5E5E] text-center">
 
-                                                                        25
-                                                                    </div>
-                                                                </td>
-                                                                <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    dd:mm:yyyy
-                                                                </td>
-                                                                <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    dd:mm:yyyy
-
-                                                                </td>
-                                                                <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    hh:mm:ss
-                                                                </td>
-                                                                <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    $2000
                                                                 </td>
                                                             </tr>
                                                         );

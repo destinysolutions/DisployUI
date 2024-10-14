@@ -40,7 +40,7 @@ import BookSlotMap from "./BookSlotMap";
 import PhoneInput from "react-phone-input-2";
 import BookSlotTimeZone from "./BookSlotTimeZone";
 import logo from "../../../../images/DisployImg/Black-Logo2.png";
-import { getPurposeScreens } from "../../../../Redux/admin/AdvertisementSlice";
+import { getPurposeScreens, getVaildEmail } from "../../../../Redux/admin/AdvertisementSlice";
 
 
 const AddSlot = () => {
@@ -69,6 +69,7 @@ const AddSlot = () => {
   const [selectedDays, setSelectedDays] = useState(
     new Array(buttons.length).fill(false)
   );
+  const [Error, setError] = useState(false);
 
   // const [searchArea, setSearchArea] = useState();
   const UserName = watch('name')
@@ -94,6 +95,7 @@ const AddSlot = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedItem, setSelectedItem] = useState();
   const [selecteStates, setSelecteStates] = useState("");
   const [states, setStates] = useState([]);
   const [allCity, setAllCity] = useState([]);
@@ -105,7 +107,7 @@ const AddSlot = () => {
       horizontalImage: "",
       verticalImage: "",
       endTime: getCurrentTimewithSecound(),
-      sequence: '',
+      sequence: 'In every Minute',
       afterevent: '',
       aftereventType: '',
       verticalFileName: '',
@@ -123,7 +125,7 @@ const AddSlot = () => {
     purposeText: '',
     otherIndustry: '',
   });
-  console.log('allSlateDetails :>> ', allSlateDetails);
+
   const appearance = { theme: 'stripe', };
   const options = {
     clientSecret,
@@ -192,17 +194,22 @@ const AddSlot = () => {
     let count = 0;
 
     getallTime?.forEach((item) => {
+      console.log('item :>> ', item);
       let start = `${item?.startTime}`;
       let end = `${item?.endTime}`;
-      let obj = { ...item, Duration: timeDifferenceInSeconds(start, end) };
+      let sequence = `${item?.sequence}`;
+      let obj = { ...item, Duration: timeDifferenceInSeconds(start, end, sequence) };
 
-      count += timeDifferenceInSeconds(start, end);
+      count += timeDifferenceInSeconds(start, end, sequence);
       arr.push(obj);
     });
+    console.log('repeat :>> ', repeat);
+    console.log('count :>> ', count);
     if (!repeat) {
       setTotalDuration(count);
     } else {
       const total = countAllDaysInRange();
+      console.log('total :>> ', total);
       setTotalDuration(total * count);
     }
 
@@ -228,7 +235,6 @@ const AddSlot = () => {
             timeZoneName: "long",
           })
           .substring(4);
-        console.log('response', response)
         response?.payload?.data?.map((item) => {
           if (item?.timeZoneName === CurrentTimeZone) {
             setSelectedTimeZone(item?.timeZoneID);
@@ -353,6 +359,7 @@ const AddSlot = () => {
 
   // page 4 handleSelectChange
   const handleSelectChange = (selected) => {
+
     setSelectedScreens(selected);
     if (selected?.length === screenData?.length) {
       setSelectAllScreen(true);
@@ -678,7 +685,11 @@ const AddSlot = () => {
 
     // setPage(page + 1)
     // return
-    const hasMissingImages = getallTime.some((item) => { return !item.verticalImage && !item.horizontalImage });
+
+    const hasMissingImages = getallTime.some((item) => {
+      return !item.verticalImage && !item.horizontalImage
+    });
+
     if (hasMissingImages) {
       return toast.error("Please upload valid Vertical and Horizontal images.");
     } else {
@@ -686,14 +697,22 @@ const AddSlot = () => {
     }
   };
 
-  const handleSelectunit = (e, index) => {
-    const { value } = e.target;
-    const updatedDis = [...allArea];
+  const handleSelectunit = (index) => {
+    // const { value } = e.target;
+    // const updatedDis = [...allArea];
 
-    updatedDis[index].unit = value;
-    setAllArea(updatedDis);
+    // updatedDis[index].unit = value;
+    // setAllArea(updatedDis);
 
-    const item = updatedDis[index];
+    const item = allArea[index];
+    console.log('item :>> ', item);
+
+    if (item?.area === '' || !(item?.area)) {
+      return setError(true)
+    } else {
+      setError(false)
+    }
+
     const Params = {
       latitude: item?.latitude,
       longitude: item?.longitude,
@@ -712,13 +731,19 @@ const AddSlot = () => {
         selecteStates,
       ),
     };
+    setOpen(false)
 
     FetchScreen(Params);
   };
 
-
-  const onSubmit = () => {
-    setPage(page + 1)
+  const onSubmit = (data) => {
+    dispatch(getVaildEmail(data?.email)).then((res) => {
+      if (res?.payload?.data == true) {
+        return toast.error(res?.payload?.message)
+      } else {
+        setPage(page + 1)
+      }
+    })
   }
 
   return (
@@ -930,8 +955,8 @@ const AddSlot = () => {
               totalPrice={totalPrice}
               totalDuration={totalDuration}
               // selectedCountry={selectedCountry} 
-              // setSelectedItem={setSelectedItem}
-              // selectedItem={selectedItem}
+              setSelectedItem={setSelectedItem}
+              selectedItem={selectedItem}
               // handleSelectCountries={handleSelectCountries}  
               // locationDis={locationDis}
               setSelectedValue={setSelectedValue}
@@ -943,7 +968,7 @@ const AddSlot = () => {
               getSelectedVal={getSelectedVal}
               allArea={allArea}
               handleRangeChange={handleRangeChange}
-              // Open={Open} 
+              Open={Open}
               setOpen={setOpen}
               setSelectedScreens={setSelectedScreens}
               setSelectedScreen={setSelectedScreen}
@@ -959,6 +984,7 @@ const AddSlot = () => {
               setAllCity={setAllCity}
               setScreenData={setScreenData}
               handleSelectunit={handleSelectunit}
+              Error={Error}
             />
           </>
         )}

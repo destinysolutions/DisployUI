@@ -39,7 +39,7 @@ export default function BookSlotTimeZone({
     type
 }) {
     const navigate = useNavigate()
-
+    console.log('totalDuration :>> ', totalDuration);
     return (
         <div className="w-full h-full p-5 flex items-center justify-center">
             <div className="lg:w-[800px] md:w-[700px] w-full max-h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">

@@ -53,7 +53,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
                                 Current Booking
                             </h1>
                             <div className="lg:col-span-2 lg:flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap ">
-                                <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
+                                {/* <div className="relative md:mr-2 lg:mr-2 lg:mb-0 md:mb-0 mb-3">
                                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                         <AiOutlineSearch className="w-5 h-5 text-gray " />
                                     </span>
@@ -64,7 +64,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
                                     // value={searchComposition}
                                     // onChange={handleSearchComposition}
                                     />
-                                </div>
+                                </div> */}
                                 <div className="flex items-center justify-end">
                                     <button
                                         // onClick={() => navigation("/addbookyourslot")}
@@ -158,9 +158,20 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     {composition?.totalScreen}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {composition?.googleLocation}
+                                                                    {composition?.location}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
+                                                                    <span
+                                                                        id={`changetvstatus${index}`}
+                                                                        className={`rounded-full px-6 py-2 text-white text-center ${composition.status
+                                                                            ? "bg-[#3AB700]"
+                                                                            : "bg-[#FF0000]"
+                                                                            }`}
+                                                                    >
+                                                                        {composition.status
+                                                                            ? "Live"
+                                                                            : "offline"}
+                                                                    </span>
                                                                     {composition?.status}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
@@ -173,7 +184,8 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     {composition?.bookedDuration}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {composition?.paidAmount}
+                                                                    {/* <span className='font-medium mr-2 '>{composition?.currency === 'INR' ? '₹' : '$'}</span> */}
+                                                                    {composition?.paidAmount?.toLocaleString('en-IN')}
                                                                 </td>
                                                             </tr>
                                                         );

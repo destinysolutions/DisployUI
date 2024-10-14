@@ -229,13 +229,37 @@ export const getCurrentTimewithSecound = () => {
 // Function to convert time string (HH:MM:SS) to seconds
 function timeToSeconds(time) {
   const [hours, minutes, seconds] = time.split(':').map(Number);
+  // console.log('hours :>> ', hours);
+  // console.log('seconds :>> ', seconds);
+  // console.log('minutes :>> ', minutes);
   return hours * 3600 + minutes * 60 + seconds;
+}
+function parseSequence(sequence) {
+
+  if (sequence.includes("In every Hour")) {
+    return 3600;
+  }
+  if (sequence.includes("In every Minute")) {
+    return 60;
+  }
+
+  return 0;
 }
 
 // Calculate the difference between two times in seconds
-export function timeDifferenceInSeconds(start, end) {
+export function timeDifferenceInSeconds(start, end, sequence) {
   const startTimeInSeconds = timeToSeconds(start);
-  const endTimeInSeconds = timeToSeconds(end);
+  let endTimeInSeconds = timeToSeconds(end);
+  // console.log('startTimeInSeconds :>> ', startTimeInSeconds);
+  // console.log('endTimeInSeconds :>> ', endTimeInSeconds);
+
+  const sequenceDuration = parseSequence(sequence);
+  // console.log('sequenceDuration :>> ', sequenceDuration);
+  // if (sequenceDuration) {
+  //   endTimeInSeconds += sequenceDuration;
+  // }
+  const res = endTimeInSeconds - startTimeInSeconds
+  console.log('res :>> ', res);
   return endTimeInSeconds - startTimeInSeconds;
 }
 
@@ -281,7 +305,7 @@ export function kilometersToMeters(kilometers) {
   return kilometers * 1000; // 1 kilometer = 1000 meters
 }
 
-export const kilometersMilesToMeters = (dis,unit) => {
+export const kilometersMilesToMeters = (dis, unit) => {
   const MILES_TO_METERS = 1609.34; // 1 mile = 1609.34 meters
   const KILOMETERS_TO_METERS = 1000; // 1 kilometer = 1000 meters
   if (unit === 'mi') {
@@ -313,7 +337,7 @@ export function constructTimeObjects(getallTime, startDate, endDate, repeat, day
 }
 
 export const getTimeZoneName = (allTimeZone, selectedTimeZone) => {
-  const timeZoneObject = allTimeZone.find(item => item.timeZoneID === selectedTimeZone);
+  const timeZoneObject = allTimeZone && allTimeZone?.find(item => item.timeZoneID === selectedTimeZone);
   return timeZoneObject?.timeZoneName;
 };
 
@@ -806,6 +830,13 @@ export function formatToUSCurrency(amount) {
     currency: 'USD',
   }).format(amount);
 }
+
+export const getZoomLevel = (range) => {
+  if (range <= 1) return 15;
+  if (range <= 5) return 12;
+  return 10;
+};
+
 
 export const countryList = {
   AED: "AE",
