@@ -73,11 +73,11 @@ const AdminSidebar = ({ sidebarOpen }) => {
           path: "/retailer",
           icon: <FaBuildingUser className="  text-xl  " />,
         },
-        {
-          title: "Advertisement",
-          path: "/advertisement",
-          icon: <RiAdvertisementFill className="  text-xl  " />,
-        },
+        // {
+        //   title: "Advertisement",
+        //   path: "/advertisement",
+        //   icon: <RiAdvertisementFill className="  text-xl  " />,
+        // },
         {
           title: "Sales Man",
           path: "/salesMan",
@@ -91,12 +91,12 @@ const AdminSidebar = ({ sidebarOpen }) => {
       path: "/client",
       icon: <FaUserGroup className="text-2xl" />,
     },
-    {
-      title: "Advertising Features",
-      cName: "nav-text link-items",
-      path: "/advertising",
-      icon: <RiAdvertisementFill className="text-2xl" />,
-    },
+    // {
+    //   title: "Advertising Features",
+    //   cName: "nav-text link-items",
+    //   path: "/advertising",
+    //   icon: <RiAdvertisementFill className="text-2xl" />,
+    // },
     {
       title: "Settings",
       cName: "nav-text link-items",
