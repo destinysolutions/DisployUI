@@ -1,4 +1,4 @@
-  import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import "../../Styles/screen.css";
 import {
   AiOutlineCloseCircle,
@@ -730,11 +730,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
 
     const price = round((addScreen * 10), 2) - discount;
+    const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+        day: "2-digit",
+        timeZoneName: "long",
+      })
+      .substring(4);
     const params = {
       "items": {
         "id": "0",
         "amount": String(round(price * 100)),
-      }
+      },
+      "Currency": TimeZone?.includes("India") ? "inr" : "usd"
     }
     const config = {
       method: "post",

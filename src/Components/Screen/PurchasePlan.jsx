@@ -74,11 +74,18 @@ const PurchasePlan = ({ setBuyPlan, buyPlan, selectPlan }) => {
         }
 
         const price = round(((addScreen * selectPlan?.planPrice) + selectPlan?.planPrice), 2) - discount;
+        const TimeZone = new Date()
+        .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+        })
+        .substring(4);
         const params = {
             "items": {
                 "id": "0",
                 "amount": String(round(price * 100)),
-            }
+            },
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
         const config = {
             method: "post",

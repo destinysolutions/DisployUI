@@ -85,6 +85,11 @@ const AddEditRetailer = ({
     enableReinitialize: editData,
     validationSchema: editId ? editValidationSchema : validationSchema,
     onSubmit: async (values) => {
+      const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+          day: "2-digit",
+          timeZoneName: "long",
+      })
       setDisable(true)
       const formData = new FormData();
       formData.append("OrganizationName", values.companyName);
@@ -95,6 +100,7 @@ const AddEditRetailer = ({
       formData.append("GoogleLocation", values.googleLocation);
       formData.append("Phone", values.phoneNumber);
       formData.append("IsRetailer", true);
+      formData.append("Currency", TimeZone?.includes("India") ? "inr" : "usd");
 
       if (editId) {
         formData.append("OrgUserSpecificID", editId);

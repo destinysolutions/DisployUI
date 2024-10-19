@@ -1,9 +1,7 @@
 import { Suspense, useState } from "react";
-import { Alert } from "@material-tailwind/react";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { USERDASHBOARD } from "../../Pages/Api";

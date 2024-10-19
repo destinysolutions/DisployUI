@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { MdArrowBackIosNew } from "react-icons/md";
 import { useForm } from "react-hook-form";
-import { PaymentElement, CardElement, useElements, useStripe, CardCvcElement, CardExpiryElement, CardNumberElement } from "@stripe/react-stripe-js";
+import { useElements, useStripe, CardCvcElement, CardExpiryElement, CardNumberElement } from "@stripe/react-stripe-js";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -17,7 +16,9 @@ const AddPayment = ({
   selectedTimeZone,
   allTimeZone,
   page,
-  setPage
+  setPage,
+  Name,
+  clientSecret
 }) => {
 
   const {
@@ -33,7 +34,6 @@ const AddPayment = ({
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
-  const [autoPay, setAutoPay] = useState(false)
 
   useEffect(() => {
     if (!stripe) {
@@ -81,64 +81,45 @@ const AddPayment = ({
       return;
     }
 
-    // if (!autoPay) {
-    //   setErrorMessage(true)
-    // }
-
-    // if (autoPay) {
     setErrorMessage(false)
     setIsLoading(true);
     try {
-      // const { paymentIntent, error } = await stripe.confirmPayment({
-      //   elements,
-      //   redirect: 'if_required'
-      // });
-
-      // const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-      //     payment_method: {
-      //         card: elements.getElement(CardElement),
-      //         billing_details: {
-      //             name: userDetails?.firstName ? userDetails?.firstName : "Admin" ,
-      //         },
-      //     },
-      // });
-
-      // const cardElement = elements.getElement(CardElement);
-      // const { paymentMethod, error } = await stripe.createPaymentMethod({
-      //   type: 'card',
-      //   card: cardElement,
-      // });
-
-      const { error, paymentMethod } = await stripe.createPaymentMethod({
+      const { error: paymentError, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
         card: elements.getElement(CardNumberElement),
+        billing_details: {
+          name: Name || "Advertiser", // Ensure name is sent
+        },
       });
 
-      handlebook(paymentMethod)
-      return
-
-      if (error) {
-        if (error.type === "card_error" || error.type === "validation_error") {
-          toast.error(error?.message)
-          setIsLoading(false);
-          setMessage(error.message);
-        } else {
-          toast.error("An unexpected error occurred.")
-          setIsLoading(false);
-          setMessage("An unexpected error occurred.");
-        }
-      } else {
-        // Payment was successful, you can access paymentIntent for confirmation data
-        handlebook(paymentMethod)
-        setPage(page + 1)
-        setMessage("Payment successful!");
+      if (paymentError) {
+        console.error("Payment Method Error:", paymentError);
+        toast.error(paymentError.message);
+        setIsLoading(false);
+        return;
       }
 
-      setIsLoading(false);
+      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: paymentMethod.id,
+      });
+
+      if (confirmError) {
+        console.error("Confirm Payment Error:", confirmError);
+        toast.error(confirmError.message);
+        setIsLoading(false);
+        return;
+      }
+      // Payment was successful
+      if (paymentIntent.status === 'succeeded') {
+        console.log("PaymentIntent:", paymentIntent);
+        toast.success("Payment succeeded!");
+        handlebook(paymentMethod)
+      } else {
+        toast.error(`Payment status: ${paymentIntent.status}`);
+      }
     } catch (error) {
       console.error("Error confirming payment:", error);
       setIsLoading(false);
-      // Handle error, display error message to user, etc.
     }
     // }
   };

@@ -188,6 +188,11 @@ const Login = () => {
 
   const SignInWithGoogle = async (data) => {
     try {
+      const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+          day: "2-digit",
+          timeZoneName: "long",
+      })
       setLoading(true)
       const loginData = {
         companyName: null,
@@ -198,6 +203,7 @@ const Login = () => {
         phoneNumber: null,
         operation: "Insert",
         googleID: data?.sub,
+        "Currency": TimeZone?.includes("India") ? "inr" : "usd"
       };
       const config = {
         method: "post",

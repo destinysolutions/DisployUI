@@ -26,13 +26,18 @@ const MicrosoftBtn = ({ register, setLoading }) => {
 
     const Registration = (res) => {
         setLoading(true)
+        const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+          day: "2-digit",
+          timeZoneName: "long",
+      })
         const formData = new FormData();
         formData.append("FirstName", res?.account?.name);
         formData.append("Email", res?.account?.username);
         formData.append("Phone", null);
         formData.append("Operation", "Insert");
         formData.append("googleID", res?.uniqueId);
-
+        formData.append("Currency", TimeZone?.includes("India") ? "inr" : "usd");
         const config = {
             method: "post",
             url: ADD_REGISTER_URL,

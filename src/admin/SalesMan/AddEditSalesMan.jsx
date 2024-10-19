@@ -72,7 +72,11 @@ const AddEditSalesMan = ({
         validationSchema: editId ? editValidationSchema : validationSchema,
         onSubmit: async (values) => {
             setLoading(true);
-
+            const TimeZone = new Date()
+                .toLocaleDateString(undefined, {
+                    day: "2-digit",
+                    timeZoneName: "long",
+                })
             const formData = new FormData();
             formData.append("Password", values.password || ""); // Set a default value if null
             formData.append("FirstName", values.firstName);
@@ -85,7 +89,7 @@ const AddEditSalesMan = ({
             formData.append("IsRetailer", false);
             formData.append("IsSalesMan", true);
             formData.append("orgUserID", values.orgUserID ? values.orgUserID : 0);
-
+            formData.append("Currency", TimeZone?.includes("India") ? "inr" : "usd");
             try {
                 let response;
 

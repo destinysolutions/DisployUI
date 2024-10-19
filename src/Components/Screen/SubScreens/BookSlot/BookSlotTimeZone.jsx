@@ -200,7 +200,6 @@ export default function BookSlotTimeZone({
                                                 // className="grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-2 gap-4 mb-3"
                                                 key={index}
                                             >
-
                                                 <div className="relative w-full col-span-1">
                                                     <input
                                                         title='Start Time'
@@ -261,7 +260,7 @@ export default function BookSlotTimeZone({
                                                             <div className="flex justify-center items-center gap-2 ">
                                                                 <div>
                                                                     <input
-                                                                        className="block w-20 p-2 text-gray-900 border border-gray-300  bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-20 p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                                         type="number"
                                                                         value={item?.afterevent}
                                                                         onChange={(e) => { handleaftereventChange(e, index) }}

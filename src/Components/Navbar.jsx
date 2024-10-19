@@ -56,6 +56,7 @@ const Navbar = () => {
   //show profile and notification box
   const dispatch = useDispatch();
   const { user, userDetails, token } = useSelector((state) => state.root.auth);
+  console.log('user', user)
   const { allNotifications } = useSelector((state) => state.root.notification);
 
   const authToken = `Bearer ${token}`;
@@ -155,7 +156,9 @@ const Navbar = () => {
               {userDetails?.isTrial && user?.userDetails?.isRetailer === false && !userDetails?.isActivePlan && (
                 <div>
                   <div className="flex items-center justify-center gap-2 bg-[#343c5c] p-3">
-                    <p className="text-white">You have {user?.trialDays} Trial Days Remaining</p>
+                    {user?.trialDays > 0 && (
+                      <p className="text-white">You have {user?.trialDays} Trial Days Remaining</p>
+                    )}
                     <span className="uppercase px-4 text-SlateBlue font-bold cursor-pointer hover:text-white hover:bg-SlateBlue rounded-full"
                       onClick={() => {
                         setPurchasePlan(true)

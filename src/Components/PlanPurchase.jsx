@@ -113,12 +113,19 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
         // } else {
         //     product = "prod_PwkWSDVFcbz4Ui"
         // }
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
 
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
-            Name: name
+            Name: name,
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
 
         let config = {
@@ -131,7 +138,7 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
             data: JSON.stringify(params),
         }
 
-        dispatch(handleCreateSubscription({ config })).then(async(res) => {
+        dispatch(handleCreateSubscription({ config })).then(async (res) => {
             if (res?.payload?.status) {
                 let Subscription = res?.payload?.subscriptionId
                 const SubscriptionData = res?.payload?.subscription
@@ -216,6 +223,11 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
                         setMessage("An unexpected error occurred.");
                     }
                 } else {
+                    const TimeZone = new Date()
+                        .toLocaleDateString(undefined, {
+                            day: "2-digit",
+                            timeZoneName: "long",
+                        })
                     const formData = new FormData();
                     formData.append("Password", customerData.password);
                     formData.append("FirstName", customerData.firstName);
@@ -225,7 +237,7 @@ const PlanPurchase = ({ selectedPlan, customerData, discountCoupon, clientSecret
                     formData.append("GoogleLocation", customerData.googleLocation);
                     formData.append("OrganizationName", customerData.company);
                     formData.append("Operation", "Insert");
-
+                    formData.append("Currency", TimeZone?.includes("India") ? "inr" : "usd");
                     let config = {
                         method: "post",
                         maxBodyLength: Infinity,

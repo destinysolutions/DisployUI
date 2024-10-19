@@ -154,13 +154,20 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
 
     const ScreenCreateSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, PaymentofScreen, name }) => {
         let screenId = selectPlan?.screenID;
+          const TimeZone = new Date()
+                .toLocaleDateString(undefined, {
+                    day: "2-digit",
+                    timeZoneName: "long",
+                })
+                .substring(4);
 
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: screenId,
             quantity: (Screen - 1),
-            Name: name
+            Name: name,
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
 
         let config = {
@@ -223,6 +230,12 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
 
     const CreateSubscription = ({ email, PaymentMethodId, paymentMethod, organizationID, name }) => {
         let product = selectPlan?.productID;
+          const TimeZone = new Date()
+                .toLocaleDateString(undefined, {
+                    day: "2-digit",
+                    timeZoneName: "long",
+                })
+                .substring(4);
 
         let params = {
             Email: email,
@@ -230,6 +243,7 @@ const BuyNewPlan = ({ selectPlan, clientSecret, Screen, openPayment, setOpenPaym
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
             trialDay,
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
 
         let config = {

@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { ADD_REGISTER_URL, GETALLRETAILER, UPDATE_USER } from "../../Pages/Api";
 import { ADD_ORGANIZATION_MASTER, CUSTOMER_DETAILS_ALL, GET_ALL_ORGANIZATION_MASTER, GET_ALL_STORAGE, INCREASE_STORAGE } from "../../admin/AdminAPI";
 
 const initialState = {

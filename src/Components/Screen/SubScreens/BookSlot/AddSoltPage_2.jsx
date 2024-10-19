@@ -123,7 +123,7 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
         <div className="w-full h-full p-5 flex items-center justify-center">
             <div className="lg:w-[800px] md:w-[700px] w-full bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
                 {/* <div className="text-2xl font-semibold">Book Slot</div>*/}
-                <div className="flex items-center justify-center mb-6">
+                <div className="flex items-center justify-center mb-4">
                     <img
                         alt="Logo"
                         src={logo}
@@ -218,25 +218,8 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                     </div>
                                 )} */}
 
-                                <div className="my-5  flex items-center gap-3  m-auto ">
-                                    <label className="text-base font-medium">Referral Code:</label>
-                                    <div className="flex justify-center items-center  gap-4 m-auto ">
-                                        {allSlateDetails?.refCode === "Yes" && (
-                                            <div className={`${(Error && !allSlateDetails?.refVale) ? "bookslot-ref-error" : "bookslot-ref w-52"}`}>
-                                                <input
-                                                    type="text"
-                                                    className={`bg-transparent placeholder-slate-400 border-current w-52 p-2`}
-                                                    value={allSlateDetails?.refVale}
-                                                    placeholder='Referral Code'
-                                                    onChange={(e) => {
-                                                        setallSlateDetails({ ...allSlateDetails, refVale: e.target.value });
-                                                    }}
-                                                />
-                                                {/*{Error && !allSlateDetails?.refVale && (
-                                                        <p className="text-red-600 text-sm font-semibold text-center ">This field is Required.</p>
-                                                    )}*/}
-                                            </div>
-                                        )}
+                                <div className="my-3 flex items-center gap-3 m-auto">
+                                    <div className="flex justify-center items-center gap-4 m-auto">
                                         <div className=''>
                                             <div className="flex">
                                                 <div className="ml-2 flex items-center">
@@ -274,10 +257,27 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                                     </label>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
+                                {allSlateDetails?.refCode === "Yes" && (
+                                    <div className='flex justify-center items-center my-3'>
+                                        <div className={`${(Error && !allSlateDetails?.refVale) ? "bookslot-ref-error" : "bookslot-ref w-52"}`}>
+                                            <input
+                                                type="text"
+                                                className={`bg-transparent placeholder-slate-400 border-current w-52 p-2`}
+                                                value={allSlateDetails?.refVale}
+                                                placeholder='Referral Code'
+                                                onChange={(e) => {
+                                                    setallSlateDetails({ ...allSlateDetails, refVale: e.target.value });
+                                                }}
+                                            />
+                                            {/*{Error && !allSlateDetails?.refVale && (
+                                                        <p className="text-red-600 text-sm font-semibold text-center ">This field is Required.</p>
+                                                    )}*/}
+                                        </div>
+                                    </div>
+                                )}
                                 <div className='m-auto'>
                                     <label className="custom-label flex items-center justify-center mb-2">
                                         <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded w-4 h-4 flex items-center justify-center mr-2">

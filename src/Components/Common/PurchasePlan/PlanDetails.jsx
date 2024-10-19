@@ -36,12 +36,18 @@ const PlanDetails = ({ planDetails, setPlanDetails, selectPlan }) => {
 
     const handlePay = () => {
         const total = totalScreen * selectPlan?.planPrice;
-
+        const TimeZone = new Date()
+        .toLocaleDateString(undefined, {
+            day: "2-digit",
+            timeZoneName: "long",
+        })
+        .substring(4);
         const params = {
             "items": {
                 "id": "0",
                 "amount": String(round(total * 100))
-            }
+            },
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
         const config = {
             method: "post",

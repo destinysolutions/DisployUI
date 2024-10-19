@@ -11,7 +11,7 @@ import { AiOutlineCloseCircle } from 'react-icons/ai';
 import SubscriptionTerm from '../Common/PurchasePlan/SubscriptionTerm';
 import PlanPurchaseModel from '../Common/PlanPurchaseModel';
 
-const UpgradePlan = ({ setUpgradePlan, upgradePlan, selectPlan, userPlanType, purchaseType ,Screen}) => {
+const UpgradePlan = ({ setUpgradePlan, upgradePlan, selectPlan, userPlanType, purchaseType, Screen }) => {
     const { user, token, userDetails } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
     const dispatch = useDispatch()
@@ -72,11 +72,18 @@ const UpgradePlan = ({ setUpgradePlan, upgradePlan, selectPlan, userPlanType, pu
         }
 
         const price = round(((addScreen * selectPlan?.planPrice) + selectPlan?.planPrice), 2) - discount;
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
         const params = {
             "items": {
                 "id": "0",
                 "amount": String(round(price * 100)),
-            }
+            },
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
         const config = {
             method: "post",

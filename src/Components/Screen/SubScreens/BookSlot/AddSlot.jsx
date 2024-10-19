@@ -360,11 +360,18 @@ const AddSlot = () => {
       setTotalCost(totalDuration * totalPrice);
       total = Number(totalDuration) * Number(totalPrice);
     }
+    const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+        day: "2-digit",
+        timeZoneName: "long",
+      })
+      .substring(4);
     const params = {
       "items": {
         "id": "0",
-        "amount": total
-      }
+        "amount": (total * 100)
+      },
+      "Currency": TimeZone?.includes("India") ? "inr" : "usd"
     }
 
     const config = {
@@ -657,7 +664,6 @@ const AddSlot = () => {
         bookingSlotCustomerEventID: 0,
         startTime: item?.startTime,
         endTime: item?.endTime,
-
         sequence: item?.sequence,
         customSequence: item?.afterevent || 0,
         isHour: item?.aftereventType === "Hour" ? true : false,
@@ -1080,11 +1086,13 @@ const AddSlot = () => {
             <div className="lg:w-[700px] md:w-[500px] w-full bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
               <Elements options={options} stripe={stripePromise}>
                 <AddPayment
+                clientSecret={clientSecret}
                   selectedScreens={selectedScreens}
                   totalDuration={totalDuration}
                   totalPrice={totalPrice}
                   totalCost={totalCost}
                   handlebook={handlebook}
+                  Name={Name}
                   handleBack={handleBack}
                   selectedTimeZone={selectedTimeZone}
                   allTimeZone={allTimeZone}

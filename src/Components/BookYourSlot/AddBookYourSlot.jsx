@@ -414,11 +414,18 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
             setTotalCost(totalDuration * totalPrice);
             total = Number(totalDuration) * Number(totalPrice);
         }
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
         const params = {
             "items": {
                 "id": "0",
                 "amount": total
-            }
+            },
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
 
         const config = {

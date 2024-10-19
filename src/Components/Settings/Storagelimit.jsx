@@ -91,11 +91,18 @@ const Storagelimit = () => {
       return;
     }
     const price = round((addStorage * 3), 2);
+    const TimeZone = new Date()
+    .toLocaleDateString(undefined, {
+        day: "2-digit",
+        timeZoneName: "long",
+    })
+    .substring(4);
     const params = {
       "items": {
         "id": "0",
         "amount": String(round(price * 100))
-      }
+      },
+      "Currency": TimeZone?.includes("India") ? "inr" : "usd"
     }
     const config = {
       method: "post",

@@ -204,6 +204,12 @@ const Registration = () => {
         return; // Exit the submission process if checkbox is not checked
       }
       const formData = new FormData();
+      const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+          day: "2-digit",
+          timeZoneName: "long",
+      })
+      .substring(4);
       formData.append("OrganizationName", values.companyName);
       formData.append("Password", values.password);
       formData.append("FirstName", values.firstName);
@@ -213,6 +219,7 @@ const Registration = () => {
       formData.append("Phone", values.phoneNumber);
       formData.append("IsRetailer", false);
       formData.append("IsSalesMan", false);
+      formData.append("Currency", TimeZone?.includes("India") ? "inr" : "usd");
 
       // formData.append("UserTokan", usertoken);   // used Firebase token
       formData.append("Operation", "Insert");
@@ -260,6 +267,11 @@ const Registration = () => {
 
   const SignInWithGoogle = async (data) => {
     //  return console.log(data);
+    const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+          day: "2-digit",
+          timeZoneName: "long",
+      })
     const formData = new FormData();
 
     formData.append("FirstName", data.name);
@@ -269,7 +281,7 @@ const Registration = () => {
     formData.append("googleID", data?.sub);
     formData.append("IsRetailer", false);
     formData.append("IsSalesMan", false);
-
+    formData.append("Currency", TimeZone?.includes("India") ? "inr" : "usd");
     const config = {
       method: "post",
       url: ADD_REGISTER_URL,
@@ -314,6 +326,11 @@ const Registration = () => {
 
   const SignInWithGooglebtn = async () => {
     setLoading(true)
+    const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+          day: "2-digit",
+          timeZoneName: "long",
+      })
     const res = await signInWithPopup(auth, Googleauthprovider)
       .then((result) => {
         // Google sign-in successful, you can access user information via result.user
@@ -327,7 +344,7 @@ const Registration = () => {
         formData.append("googleID", result?.user?.uid);
         formData.append("IsRetailer", false);
         formData.append("IsSalesMan", false);
-
+        formData.append("Currency", TimeZone?.includes("India") ? "inr" : "usd");
         const config = {
           method: "post",
           url: ADD_REGISTER_URL,
@@ -381,6 +398,11 @@ const Registration = () => {
   const SignInFaceBook = async (data) => {
     try {
       setLoading(true)
+      const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+          day: "2-digit",
+          timeZoneName: "long",
+      })
       const res = await signInWithPopup(auth, facebookProvider);
 
       const formData = new FormData();
@@ -391,6 +413,7 @@ const Registration = () => {
       formData.append("googleID", res?.user?.uid);
       formData.append("IsRetailer", false);
       formData.append("IsSalesMan", false);
+      formData.append("Currency", TimeZone?.includes("India") ? "inr" : "usd");
       // onclose();
       const config = {
         method: "post",

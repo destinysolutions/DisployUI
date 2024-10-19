@@ -180,13 +180,20 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         // } else {
         //     screenId = selectPlan?.screenID
         // }
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
 
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: screenId,
             quantity: userDetails?.extraScreen,
-            Name: name
+            Name: name,
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
 
         let config = {
@@ -257,11 +264,19 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
         //     product = selectPlan?.productID
         // }
 
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
+
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
-            Name: name
+            Name: name,
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
 
         let config = {
@@ -322,13 +337,20 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
     const UpgradeSubscription = ({ email, PaymentMethodId, paymentIntent, organizationID, name }) => {
         let product = selectPlan?.productID;
         let screenID = selectPlan?.screenID;
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
 
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
             screenProductID: screenID,
-            Name: name
+            Name: name,
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
 
         let config = {
@@ -394,7 +416,7 @@ const PlanPurchaseModel = ({ selectPlan, discountCoupon, clientSecret, Screen, s
             }
         })
     }
-        
+
     const handleSubmit = async (event) => {
         // event.preventDefault();
         if (!stripe || !elements) {

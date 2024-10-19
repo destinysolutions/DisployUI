@@ -160,12 +160,19 @@ const PurchasePayment = ({ togglePaymentModal, clientSecret, type, PaymentValue,
         // } else {
         //     product = "prod_PwkWSDVFcbz4Ui"
         // }
+          const TimeZone = new Date()
+                .toLocaleDateString(undefined, {
+                    day: "2-digit",
+                    timeZoneName: "long",
+                })
+                .substring(4);
 
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: product,
-            Name: name
+            Name: name,
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
 
         let config = {

@@ -12,9 +12,9 @@ const ThankYouPage = ({ navigate }) => {
             <div>
               <button
                 className={`border-2 bg-black text-white border-primary px-8 py-2 rounded-full`}
-                onClick={() => navigate("/dashboard")}
+                onClick={() => window.location.href = "https://web.disploy.com/"}
               >
-                Back to Dashboard
+                Login Now
               </button>
             </div>
           </div>

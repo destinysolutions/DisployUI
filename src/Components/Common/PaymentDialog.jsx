@@ -193,13 +193,19 @@ const PaymentDialog = ({ togglePaymentModal, clientSecret, type, PaymentValue, d
         if (type === "Storage") {
             screenId = "prod_Q1wJcEtb58TKI5"
         }
-
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
         let params = {
             Email: email,
             PaymentMethodId: PaymentMethodId,
             ProductID: screenId,
             quantity: PaymentValue,
-            Name: name
+            Name: name,
+            "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
 
         let config = {

@@ -768,7 +768,7 @@ const Routing = () => {
       );
     }
 
-    if (accessDetails === "USER" && (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false)) {
+    if (accessDetails === "USER" && (user?.isTrial === false) && (user?.isActivePlan === false) && (user?.userDetails?.isRetailer === false) && (user?.trialDays <= 0)) {
       return (
         <BrowserRouter>
           <ErrorBoundary
