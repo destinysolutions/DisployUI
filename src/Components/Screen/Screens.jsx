@@ -906,7 +906,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       )}
 
-                      {/*<button
+                      <button
                         data-tip
                         data-for="Delete"
                         type="button"
@@ -923,7 +923,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         >
                           <span>Convert to Advertising</span>
                         </ReactTooltip>
-                      </button>*/}
+                      </button>
                       <button
                         data-tip
                         data-for="Delete"

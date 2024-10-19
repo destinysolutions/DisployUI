@@ -91,12 +91,12 @@ const AdminSidebar = ({ sidebarOpen }) => {
       path: "/client",
       icon: <FaUserGroup className="text-2xl" />,
     },
-    // {
-    //   title: "Advertising Features",
-    //   cName: "nav-text link-items",
-    //   path: "/advertising",
-    //   icon: <RiAdvertisementFill className="text-2xl" />,
-    // },
+    {
+      title: "Advertising Features",
+      cName: "nav-text link-items",
+      path: "/advertising",
+      icon: <RiAdvertisementFill className="text-2xl" />,
+    },
     {
       title: "Settings",
       cName: "nav-text link-items",
