@@ -165,9 +165,9 @@ export const handleGetAllScreenAdmin = createAsyncThunk("screen/handleGetAllScre
 
 export const getConvertToAdvertisement = createAsyncThunk("ProductMaster/getVariations", async (payload, thunkAPI) => {
   try {
-    const queryParams = new URLSearchParams(payload).toString();
+    // const queryParams = new URLSearchParams(payload).toString();
     const token = thunkAPI.getState().root.auth.token
-    const response = await axios.get(`${GET_CONVERT_ADVERTISEMENT}?${queryParams}`, { headers: { Authorization: `Bearer ${token}` }, });
+    const response = await axios.post(`${GET_CONVERT_ADVERTISEMENT}`, payload, { headers: { Authorization: `Bearer ${token}` }, });
     return response.data
   } catch (error) {
     console.log('error', error)

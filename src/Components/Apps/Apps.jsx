@@ -100,11 +100,11 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               <div className="shadow-md bg-white rounded-lg p-3">
                                 <Link to={`/${app.appURL}`}>
-                                  <div className="text-center clear-both">
+                                  <div className="text-center clear-both mix-blend-darken">
                                     <img
                                       src={app.appPath}
                                       alt="Logo"
-                                      className="cursor-pointer mx-auto h-20 w-20"
+                                      className="cursor-pointer mx-auto h-20 w-20 mix-blend-darken"
                                     />
                                     <h4 className="text-lg font-medium mt-3">
                                       {app.appName}

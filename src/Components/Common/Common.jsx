@@ -1,3 +1,6 @@
+import { after } from "lodash";
+import moment from "moment";
+
 export const DynamicDesignComponent = ({
   length,
   name,
@@ -189,7 +192,8 @@ export function multiOptions(arr) {
     Price: screen?.screenRatePerSec,
     screenOrientation: screen?.screenOrientation,
     output: `${screen?.screenID}_${screen?.organizationID}`,
-    isReferral: screen?.isReferral
+    isReferral: screen?.isReferral,
+    currency: screen?.currency
   }));
 }
 
@@ -225,43 +229,71 @@ export const getCurrentTimewithSecound = () => {
   return `${hours}:${minutes}:${seconds}`;
 };
 
+export function secondsToDDHHMMSS(totalSeconds) {
+  totalSeconds = Number(totalSeconds);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+  // Format as DD:HH:MM:SS
+  return `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
 
 // Function to convert time string (HH:MM:SS) to seconds
 function timeToSeconds(time) {
   const [hours, minutes, seconds] = time.split(':').map(Number);
-  // console.log('hours :>> ', hours);
-  // console.log('seconds :>> ', seconds);
-  // console.log('minutes :>> ', minutes);
   return hours * 3600 + minutes * 60 + seconds;
-}
-function parseSequence(sequence) {
-
-  if (sequence.includes("In every Hour")) {
-    return 3600;
-  }
-  if (sequence.includes("In every Minute")) {
-    return 60;
-  }
-
-  return 0;
 }
 
 // Calculate the difference between two times in seconds
-export function timeDifferenceInSeconds(start, end, sequence) {
+export function timeDifferenceInSeconds(start, end) {
   const startTimeInSeconds = timeToSeconds(start);
   let endTimeInSeconds = timeToSeconds(end);
-  // console.log('startTimeInSeconds :>> ', startTimeInSeconds);
-  // console.log('endTimeInSeconds :>> ', endTimeInSeconds);
-
-  const sequenceDuration = parseSequence(sequence);
-  // console.log('sequenceDuration :>> ', sequenceDuration);
-  // if (sequenceDuration) {
-  //   endTimeInSeconds += sequenceDuration;
-  // }
-  const res = endTimeInSeconds - startTimeInSeconds
-  console.log('res :>> ', res);
   return endTimeInSeconds - startTimeInSeconds;
 }
+
+export function timeDifferenceInSequence(startTime, endTime, duration, sequence, aftereventType, afterHrMin, dayDifference) {
+  let sequenceDuration = 0
+  const extraDays = dayDifference * 24
+  const [startHours, startMinutes, startSeconds] = startTime?.split(':').map(Number);
+
+  const totalEndSeconds = startHours + startMinutes + startSeconds;
+  const durationDayMin = (((24 - startHours) + extraDays) * 3600)
+
+  if (sequence?.includes("In every hour")) {
+    const totalSumSec = (duration + (1 * 3600))
+    const totalSumSecLoop = (durationDayMin / totalSumSec)
+    const finalDuraionSec = totalSumSecLoop * duration
+    sequenceDuration = finalDuraionSec
+    return sequenceDuration;
+  }
+  if (sequence?.includes("In every minute")) {
+    // const durationDayMin = (((24 - startHours) + extraDays) * 3600)
+    const totalSumSec = (duration + (1 * 60))
+    const totalSumSecLoop = durationDayMin / totalSumSec
+    const finalDuraionSec = totalSumSecLoop * duration
+    sequenceDuration = finalDuraionSec
+    return sequenceDuration;
+  }
+  if (aftereventType?.includes("Minutes")) {
+    // const durationDayMin = (((24 - startHours) + extraDays) * 3600)
+    const totalSumSec = (duration + (afterHrMin * 60))
+    const totalSumSecLoop = durationDayMin / totalSumSec
+    const finalDuraionSec = totalSumSecLoop * duration
+    sequenceDuration = finalDuraionSec
+    return sequenceDuration;
+  }
+  if (aftereventType?.includes("Hours")) {
+    // const durationDayMin = (((24 - startHours) + extraDays) * 3600)
+    const totalSumSec = (duration + (afterHrMin * 3600))
+    const totalSumSecLoop = (durationDayMin / totalSumSec)
+    const finalDuraionSec = totalSumSecLoop * duration
+    sequenceDuration = finalDuraionSec
+    return sequenceDuration;
+  }
+}
+
 
 export function secondsToHMS(seconds) {
   const hours = Math.floor(seconds / 3600);
@@ -317,8 +349,6 @@ export const kilometersMilesToMeters = (dis, unit) => {
 
 export function constructTimeObjects(getallTime, startDate, endDate, repeat, day, selectedTimeZone, allTimeZone, allSlateDetails) {
   let arr1 = [];
-  console.log('getallTime :>> ', getallTime);
-  console.log('allSlateDetails :>> ', allSlateDetails);
   getallTime?.map((item) => {
     let data = {
       startDate: `${startDate} 00:00:00`,
@@ -326,9 +356,9 @@ export function constructTimeObjects(getallTime, startDate, endDate, repeat, day
       startTime: `${item?.startTime}`,
       endTime: `${item?.endTime}`,
       isRepeat: repeat,
-      repeatDays: day.join(", "),
+      repeatDays: day?.length > 0 ? day.join(", ") : moment().format('dddd'),
       systemTimeZone: getTimeZoneName(allTimeZone, selectedTimeZone),
-      refcode: allSlateDetails?.refVale,
+      refcode: allSlateDetails ? allSlateDetails?.refVale : null,
     };
     arr1?.push(data);
   });
@@ -826,7 +856,7 @@ export const getFirstDayOfMonthforsunday = (year, month) => {
 
 export function formatToUSCurrency(amount) {
   return new Intl.NumberFormat('en-US', {
-    style: 'currency',
+    // style: 'currency',
     currency: 'USD',
   }).format(amount);
 }

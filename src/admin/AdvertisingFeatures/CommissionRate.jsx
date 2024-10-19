@@ -160,13 +160,15 @@ export default function CommissionRate() {
                                     {Commission?.map((x, index) => (
                                         <div key={index}
                                             className="accordions shadow-md p-5 bg-blue-100 border border-blue-400 rounded-lg m-4">
-                                            <div className="section lg:flex md:flex sm:block items-center justify-between">
+                                            <div className="section lg:flex md:flex sm:block items-center justify-between"
+                                                onClick={() => toggleAccordion(index)}
+                                            >
                                                 <div className="flex gap-2 items-center">
                                                     <h1 className="text-sm  font-semibold">{x?.title}</h1>
                                                 </div>
 
                                                 <div className="flex items-center justify-end">
-                                                    <button onClick={() => toggleAccordion(index)}>
+                                                    <button >
                                                         {openAccordionIndex[index] ? (
                                                             <IoIosArrowDropup className="text-3xl" />
                                                         ) : (

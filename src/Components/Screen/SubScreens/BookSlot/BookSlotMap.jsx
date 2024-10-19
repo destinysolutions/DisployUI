@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FiMapPin } from 'react-icons/fi';
 import Select from "react-select";
-import { filterScreensDistance, formatToUSCurrency, greenOptions, IncludeExclude, kilometersMilesToMeters, kilometersToMeters, secondsToHMS, } from '../../../Common/Common';
+import { filterScreensDistance, formatToUSCurrency, greenOptions, IncludeExclude, kilometersMilesToMeters, kilometersToMeters, secondsToDDHHMMSS, secondsToHMS, } from '../../../Common/Common';
 import L from "leaflet";
 import mapImg from "../../../../images/DisployImg/mapImg.png";
 import { Autocomplete, GoogleMap, useLoadScript, Circle, Marker, InfoWindow, MarkerClusterer, } from '@react-google-maps/api';
@@ -35,14 +35,13 @@ export default function BookSlotMap({ totalPrice,
     handleSelectunit,
     Open, setSelectedItem,
     selectedItem, setOpen,
-    Error
+    Error, totalCost, timeZoneName
 
 }) {
-    console.log('Open :>> ', Open);
+
     const autocompleteRef = useRef(null);
     const SelectDropdownRef = useRef(null);
     const radiusRef = useRef(null);
-    console.log('selectedItem :>> ', selectedItem);
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: 'AIzaSyDL9J82iDhcUWdQiuIvBYa0t5asrtz3Swk',
         libraries: ['places'],
@@ -176,10 +175,11 @@ export default function BookSlotMap({ totalPrice,
             ...(subMenu?.horizontal ? horizontalItems?.map(item => ({
                 value: item?.value,
                 Price: item?.Price,
+                currency: item?.currency,
                 label: (
                     <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                         <span className='text-sm'>{item?.label}</span>
-                        <span className='text-sm'>{item?.Price}/Sec.</span>
+                        <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
                         <span className='h-2 w-7 bg-gray-400'></span>
                     </div>
                 ),
@@ -198,11 +198,12 @@ export default function BookSlotMap({ totalPrice,
             },
             ...(subMenu?.vertical ? verticalItems?.map(item => ({
                 value: item?.value,
+                currency: item?.currency,
                 Price: item?.Price,
                 label: (
                     <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                         <span className='text-sm'>{item?.label}</span>
-                        <span className='text-sm'>{item?.Price}/Sec.</span>
+                        <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
                         <span className='h-6 w-2 bg-gray-400'></span>
                     </div>
                 ),
@@ -225,22 +226,24 @@ export default function BookSlotMap({ totalPrice,
                 },
                 ...(subMenu?.referral && horizontalItems?.length > 0 ? horizontalItems?.map(item => ({
                     value: item?.value,
+                    currency: item?.currency,
                     Price: item?.Price,
                     label: (
                         <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                             <span className='text-sm'>{item?.label}</span>
-                            <span className='text-sm'>{item?.Price}/Sec.</span>
+                            <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
                             <span className='h-2 w-12 bg-gray-400 border border-slate-600'></span>
                         </div>
                     ),
                 })) : []),
                 ...(subMenu?.referral && verticalItems?.length > 0 ? verticalItems?.map(item => ({
                     value: item?.value,
+                    currency: item?.currency,
                     Price: item?.Price,
                     label: (
                         <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                             <span className='text-sm'>{item?.label}</span>
-                            <span className='text-sm'>{item?.Price}/Sec.</span>
+                            <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
                             <span className='h-8 w-2 bg-gray-400 border border-slate-600'></span>
                         </div>
                     ),
@@ -285,32 +288,6 @@ export default function BookSlotMap({ totalPrice,
                                                     <h2>{item?.searchValue}</h2>
                                                 </div>
                                             </div>
-                                            {/* <div className="text-sm flex items-center">
-                                                <form
-                                                    onSubmit={(e) => handleRangeChange(e, item)}
-                                                    className="flex-initial w-fit"
-                                                >
-                                                    <input
-                                                        type='number'
-                                                        min={0}
-                                                        value={item?.area}
-                                                        onChange={(e) => handleAreaChange(e, index)}
-                                                        className='p-0 w-16 px-3 py-2  border border-primary rounded-md'
-                                                    />
-                                                </form>
-                                            </div>
-                                            <select
-                                                className="border border-primary rounded-lg px-4 pl-2 py-2 w-28"
-                                                value={item?.unit}
-                                                onChange={(e) => handleSelectunit(e, index)}
-                                            >
-                                                {IncludeExclude.map((option) => (
-                                                    <option key={option.value} value={option.value}>
-                                                        {option.label}
-                                                    </option>
-                                                ))}
-                                            </select> */}
-
                                             <div className="flex flex-row items-center rounded-lg">
                                                 <button
                                                     data-tip
@@ -332,10 +309,11 @@ export default function BookSlotMap({ totalPrice,
                                                         <span>Edit</span>
                                                     </ReactTooltip>
                                                 </button>
-                                                {selectedItem === item && Open && (
+                                                {Open && (
                                                     <div
                                                         id="ProfileDropDown"
                                                         className={`rounded shadow-md bg-white absolute shadow-lg mt-44 z-[9999] w-48`}
+                                                        ref={radiusRef}
                                                     >
                                                         <div>
                                                             <div className="border-b flex justify-center mb-3">
@@ -347,17 +325,18 @@ export default function BookSlotMap({ totalPrice,
                                                                 <input
                                                                     type='number'
                                                                     min={0}
-                                                                    value={item?.area}
-                                                                    onChange={(e) => handleAreaChange(e, index)}
+                                                                    value={selectedItem?.area}
+                                                                    // onChange={(e) => handleAreaChange(e, index)}
+                                                                    onChange={(e) => setSelectedItem({ ...selectedItem, area: e.target.value })}
                                                                     className='p-0 w-16 px-3 py-2 border border-primary rounded-md'
                                                                     style={{ border: `${Error ? "1px solid red" : ""}` }}
 
                                                                 />
                                                                 <select
                                                                     className="border border-primary rounded-lg px-4 pl-2 py-2 w-24"
-                                                                    value={item?.unit}
-                                                                    onChange={(e) => handlerangChange(e, index)}
-                                                                // onChange={(e) => setSelectedItem({ ...selectedItem, unit: e.target.value })}
+                                                                    value={selectedItem?.unit}
+                                                                    // onChange={(e) => handlerangChange(e, index)}
+                                                                    onChange={(e) => setSelectedItem({ ...selectedItem, unit: e.target.value })}
                                                                 >
                                                                     {IncludeExclude.map((option) => (
                                                                         <option key={option.value} value={option.value}>
@@ -374,17 +353,11 @@ export default function BookSlotMap({ totalPrice,
                                                                 >
                                                                     Cancel
                                                                 </button>
+                                                                {/* cursor-not-allowed */}
                                                                 <button
-                                                                    className="flex align-middle bg-SlateBlue text-white items-center rounded-full text-sm px-3 py-1 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                                                    onClick={() => handleSelectunit(index)}
-                                                                // onClick={() => {
-                                                                //     // Save the updated item to your state or perform your API call here
-                                                                //     const updatedItems = allArea.map((it, idx) =>
-                                                                //         idx === index ? { ...it, ...selectedItem } : it
-                                                                //     );
-                                                                //     setAllArea(updatedItems); // Update the state with all items
-                                                                //     setOpen(false); // Close the modal
-                                                                // }}
+                                                                    disabled={!selectedItem?.area}
+                                                                    className={`flex align-middle bg-SlateBlue text-white items-center rounded-full text-sm px-3 py-1 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 ${!selectedItem?.area ? 'opacity-50 ' : ''}`}
+                                                                    onClick={() => handleSelectunit(index, selectedItem)}
                                                                 >
                                                                     Save
                                                                 </button>
@@ -542,7 +515,7 @@ export default function BookSlotMap({ totalPrice,
                                 <input
                                     type="checkbox"
                                     className="cursor-pointer"
-                                    value={selectAllScreen}
+                                    value={selectAllScreen === true}
                                     disabled={screenData?.length === 0}
                                     onChange={(e) => {
                                         if (e.target.checked) {
@@ -571,7 +544,7 @@ export default function BookSlotMap({ totalPrice,
                             <div className='w-full'>
                                 <div className="flex items-center justify-between  w-full">
                                     <label className="text-md font-medium">Repetition Duration:</label>
-                                    <label for='Yes' className=" lg:text-md md:text-md sm:text-sm xs:text-xs">{secondsToHMS(totalDuration)}</label>
+                                    <label for='Yes' className=" lg:text-md md:text-md sm:text-sm xs:text-xs">{secondsToDDHHMMSS(totalDuration)}</label>
                                 </div>
                                 {/* <div className="flex items-center justify-between">
                                     <label className="text-sm font-medium">Total balance credit:</label>
@@ -579,7 +552,7 @@ export default function BookSlotMap({ totalPrice,
                                     </div> */}
                                 <div className="flex items-center justify-between">
                                     <label className="text-md font-medium">Total Payable Amount:</label>
-                                    <label for='Yes' className=" lg:text-md md:text-md sm:text-sm xs:text-xs">{formatToUSCurrency(totalPrice)}</label>
+                                    <label for='Yes' className=" lg:text-md md:text-md sm:text-sm xs:text-xs">{timeZoneName === 'India Standard Time' ? '₹' : '$'} {formatToUSCurrency(totalCost)}</label>
                                 </div>
                             </div>
                         </div>

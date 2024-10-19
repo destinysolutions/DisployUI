@@ -51,7 +51,6 @@ const ImageUploadPopup = ({
     const handleFileUpload = (file, type) => {
         if (file) {
             const reader = new FileReader();
-
             reader.onloadstart = () => {
                 setProgress(0); // Reset progress when upload starts
             };
@@ -67,7 +66,7 @@ const ImageUploadPopup = ({
                 const base64String = reader.result.split(',')[1];
 
                 if (type === 'Horizontal') {
-                    setHorizontalImage(base64String);
+                    setHorizontalImage(file ? base64String : horizontalImage);
                     setGetAllTime((prevUploads) => {
                         const newUploads = [...prevUploads];
                         newUploads[index] = { ...newUploads[index], horizontalFileName: file.name, horizontalImage: base64String };
@@ -75,7 +74,7 @@ const ImageUploadPopup = ({
                     });
 
                 } else {
-                    setVerticalImage(base64String);
+                    setVerticalImage(file ? base64String : verticalImage);
                     setGetAllTime((prevUploads) => {
                         const newUploads = [...prevUploads];
                         newUploads[index] = { ...newUploads[index], verticalFileName: file.name, verticalImage: base64String };
@@ -90,7 +89,7 @@ const ImageUploadPopup = ({
     };
 
     const handleSubmit = () => {
-        onSubmit(index, verticalImage, horizontalImage);
+        // onSubmit(index, verticalImage, horizontalImage);
         onClose();
     };
 

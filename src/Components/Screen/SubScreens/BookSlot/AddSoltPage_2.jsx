@@ -53,7 +53,7 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
         }
         if (allSlateDetails?.refVale && allSlateDetails?.refCode === 'Yes') {
             dispatch(getVaildReferralcode(allSlateDetails?.refVale)).then((res) => {
-                if (res?.payload?.data == false) {
+                if (res?.payload?.data === false) {
                     return toast.error(res?.payload?.message)
                 } else {
                     setPage(page + 1)

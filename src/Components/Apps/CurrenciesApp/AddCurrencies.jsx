@@ -111,7 +111,7 @@ export default function AddCurrencies({ sidebarOpen, setSidebarOpen }) {
                                 }/flat/64.png`,
                         };
                     });
-
+                console.log('results :>> ', results);
                 setCurrency((pre) => ({
                     ...pre,
                     Currencies: results,

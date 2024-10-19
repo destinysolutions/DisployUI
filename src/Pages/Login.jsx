@@ -621,7 +621,7 @@ const Login = () => {
                       onClick={handleRegister}
                       disabled={loading}
                     >
-                      Sign in here
+                      Sign up here
                     </button>
                   </div>
                 </form>

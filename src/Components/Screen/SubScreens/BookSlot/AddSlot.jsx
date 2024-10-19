@@ -12,12 +12,12 @@ import {
   multiOptions,
   removeDuplicates,
   timeDifferenceInSeconds,
+  timeDifferenceInSequence,
 } from "../../../Common/Common";
 import {
   ADDALLEVENT,
   ADDUPDATESLOT,
   GET_ALL_COUNTRY,
-  GET_TIMEZONE,
   GET_TIMEZONE_TOKEN,
   PAYMENT_INTENT_CREATE_REQUEST,
   SCREEN_LIST,
@@ -45,8 +45,9 @@ import { getPurposeScreens, getVaildEmail } from "../../../../Redux/admin/Advert
 
 const AddSlot = () => {
   const { register, handleSubmit, watch, formState: { errors }, control } = useForm();
-
   const dispatch = useDispatch()
+  const timeZoneName = new Date().toLocaleDateString(undefined, { day: "2-digit", timeZoneName: "long" }).substring(4);
+
   const Name = watch("name");
   const Email = watch("email");
   const PhoneNumber = watch("phone");
@@ -86,7 +87,8 @@ const AddSlot = () => {
   const [selectedValue, setSelectedValue] = useState(1);
   const start = new Date(startDate);
   const end = new Date(endDate);
-  const dayDifference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+  const [dayDifference, setDayDifference] = useState(0);
+  // const dayDifference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
   const [selectedVal, setSelectedVal] = useState("");
   const [savedFile, setSavedFile] = useState([]);
   const [clientSecret, setClientSecret] = useState("");
@@ -102,19 +104,17 @@ const AddSlot = () => {
   const [getallTime, setGetAllTime] = useState([
     {
       startTime: getCurrentTimewithSecound(),
-      startTimeSecond: 10,
-      endTimeSecond: 15,
       horizontalImage: "",
       verticalImage: "",
       endTime: getCurrentTimewithSecound(),
-      sequence: 'In every Minute',
+      sequence: '', //In every Minute
       afterevent: '',
       aftereventType: '',
       verticalFileName: '',
-      horizontalFileName: ''
+      horizontalFileName: '',
+      SqunceDuration: 0
     },
   ]);
-
   const [allSlateDetails, setallSlateDetails] = useState({
     Industry: null,
     country: null,
@@ -138,12 +138,25 @@ const AddSlot = () => {
   }, []);
 
   useEffect(() => {
+    const baseCurrency = timeZoneName ? 'India Standard Time' : 'INR';
+
     let Price = 0;
-    selectedScreens?.map((item) => {
-      Price = Price + item?.Price;
+    const conversionRate = 84.05; // Example conversion rate from the selected currency to INR
+
+    selectedScreens?.forEach((item) => {
+      if (item?.currency === 'INR') {
+        Price += item.Price;
+        console.log('Price  INR:>> ', Price);
+      } else {
+        // Convert to INR
+        console.log('Price USD:>> ', Price);
+        Price += item.Price * conversionRate; // Apply conversion rate
+      }
     });
     setTotalPrice(Price);
-  }, [selectedScreens]);
+    setTotalCost(totalDuration * Price);
+  }, [selectedScreens, totalDuration]);
+
 
   useEffect(() => {
     fetch(GET_ALL_COUNTRY)
@@ -187,34 +200,38 @@ const AddSlot = () => {
     if (repeat) {
       handleCheckboxChange();
     }
-  }, [endDate, startDate]);
+  }, [endDate, startDate, repeat]);
 
-  useEffect(() => {
-    let arr = [];
-    let count = 0;
 
-    getallTime?.forEach((item) => {
-      console.log('item :>> ', item);
-      let start = `${item?.startTime}`;
-      let end = `${item?.endTime}`;
-      let sequence = `${item?.sequence}`;
-      let obj = { ...item, Duration: timeDifferenceInSeconds(start, end, sequence) };
 
-      count += timeDifferenceInSeconds(start, end, sequence);
-      arr.push(obj);
-    });
-    console.log('repeat :>> ', repeat);
-    console.log('count :>> ', count);
-    if (!repeat) {
-      setTotalDuration(count);
-    } else {
-      const total = countAllDaysInRange();
-      console.log('total :>> ', total);
-      setTotalDuration(total * count);
+  // for select all days to repeat day
+  function handleCheckboxChange() {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const daysDiff = moment(end).diff(start, "days");
+
+    if (daysDiff >= 6 && !selectAllDays) {
+      setSelectAllDays(true);
+    } else if (daysDiff < 6 && selectAllDays) {
+      setSelectAllDays(false);
     }
+    let days = [];
+    for (let i = 0; i < daysDiff; i++) {
+      days[i] = moment(moment(start).add(i, "day")).format("dddd");
+    }
+    days[days.length] = moment(end).format("dddd");
 
-    setGetAllTime(arr);
-  }, [JSON.stringify(getallTime)]);
+    setDay(days);
+    // let changeDayTrueOrFalse;
+    // for (let i = 0; i < days.length; i++) {
+    //   changeDayTrueOrFalse = buttons.map((i) => days.includes(i));
+    // }
+
+    const changeDayTrueOrFalse = buttons.map(button => days.includes(button));
+
+    setRepeatDays(changeDayTrueOrFalse);
+    setSelectedDays(changeDayTrueOrFalse);
+  }
 
 
   const TimeZone = () => {
@@ -252,10 +269,16 @@ const AddSlot = () => {
   }, [])
 
   const handleSelectTimeZoneChange = (event) => { setSelectedTimeZone(event?.target.value); };
-  const handleEndDateChange = (event) => { setEndDate(event.target.value); };
+
+  const handleEndDateChange = (event) => {
+    const value = event.target.value
+    const difDate = startDate < value
+    setEndDate(difDate ? value : startDate);
+  };
   const handleSelectStatesChange = (event) => { setSelecteStates(event?.target.value); };
   const handleBack = () => { setPage(page - 1); };
   const handleClick = (index) => { hiddenFileInput.current[index].click(); };
+
 
   const handleStartDateChange = (event) => {
     if (!repeat) {
@@ -263,6 +286,13 @@ const AddSlot = () => {
     }
     setStartDate(event.target.value);
   };
+
+  const closeRepeatDay = () => {
+    setEndDate(startDate)
+    setRepeat(false)
+    setDay([])
+  }
+
 
   const FetchScreen = async (Params) => {
 
@@ -326,15 +356,14 @@ const AddSlot = () => {
       let Price = 0;
       selectedScreens.forEach((item) => { Price += item?.Price || 0; });
 
-      setTotalPrice(Price);
-      setTotalCost(totalDuration * Price);
-
-      total = Number(totalDuration) * Number(Price);
+      setTotalPrice(totalPrice);
+      setTotalCost(totalDuration * totalPrice);
+      total = Number(totalDuration) * Number(totalPrice);
     }
     const params = {
       "items": {
         "id": "0",
-        "amount": Number(totalPrice * 100)
+        "amount": total
       }
     }
 
@@ -355,7 +384,6 @@ const AddSlot = () => {
       console.log('error', error)
     })
   };
-
 
   // page 4 handleSelectChange
   const handleSelectChange = (selected) => {
@@ -383,6 +411,7 @@ const AddSlot = () => {
       },
     ]);
   };
+
 
   const handleRemoveItem = (index) => {
     setGetAllTime(getallTime.filter((_, i) => i !== index));
@@ -414,9 +443,18 @@ const AddSlot = () => {
     setGetAllTime(updatedTime);
   };
 
+
   const handleSequenceChange = (index, value) => {
     const sequence = [...getallTime];
     sequence[index].sequence = value;
+    sequence[index].aftereventType = '';
+    sequence[index].afterevent = '';
+    setGetAllTime(sequence);
+  };
+
+  const handleSequenceTypeChange = (index, value) => {
+    const sequence = [...getallTime];
+    sequence[index].aftereventType = value;
     setGetAllTime(sequence);
   };
 
@@ -433,32 +471,6 @@ const AddSlot = () => {
     setGetAllTime(aftereventType);
   };
 
-
-
-  // for select all days to repeat day
-  function handleCheckboxChange() {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const daysDiff = moment(end).diff(start, "days");
-    if (daysDiff >= 6 && !selectAllDays) {
-      setSelectAllDays(true);
-    } else if (daysDiff < 6 && selectAllDays) {
-      setSelectAllDays(false);
-    }
-    let days = [];
-    for (let i = 0; i < daysDiff; i++) {
-      days[i] = moment(moment(start).add(i, "day")).format("dddd");
-    }
-    days[days.length] = moment(end).format("dddd");
-    setDay(days);
-    let changeDayTrueOrFalse;
-    for (let i = 0; i < days.length; i++) {
-      changeDayTrueOrFalse = buttons.map((i) => days.includes(i));
-    }
-    setRepeatDays(changeDayTrueOrFalse);
-    setSelectedDays(changeDayTrueOrFalse);
-  }
-
   // Count the repeated days within the selected date range
   const countRepeatedDaysInRange = () => {
     let count = 0;
@@ -468,6 +480,7 @@ const AddSlot = () => {
         count++;
       }
     }
+
     return count;
   };
 
@@ -478,6 +491,58 @@ const AddSlot = () => {
       return countRepeatedDaysInRange(); // Only selected days
     }
   };
+
+  useEffect(() => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const difference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+
+    // const start1 = moment(startDate);
+    // const end1 = moment(endDate);
+    // const duration = moment.duration(end1.diff(start1));
+    // console.log('duration :>> ', duration);
+    // const hours = difference.asHours()
+    // console.log('hours :>> ', hours);
+
+    setDayDifference(difference);
+  }, [startDate, endDate]);
+
+
+  useEffect(() => {
+    let arr = [];
+    let count = 0;
+
+    getallTime?.forEach((item) => {
+      let start = `${item?.startTime}`;
+      let end = `${item?.endTime}`;
+      let sequence = `${item?.sequence}`;
+      let obj = {
+        ...item, Duration: timeDifferenceInSeconds(start, end),
+        SqunceDuration: timeDifferenceInSequence(start, end,
+          item?.Duration,
+          sequence,
+          item?.aftereventType,
+          item?.afterevent,
+          dayDifference)
+      };
+
+      // count += timeDifferenceInSeconds(start, end, sequence);
+      count += obj?.SqunceDuration ? obj?.SqunceDuration : obj?.Duration;
+      arr.push(obj);
+
+    });
+
+    if (!repeat) {
+      setTotalDuration(count);
+    } else if (repeat) {
+      const totalDays = countAllDaysInRange();
+
+      setTotalDuration(count);
+    }
+
+    setGetAllTime(arr);
+  }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference]);
+
 
   // for select repeat day
   const handleDayButtonClick = (index, label) => {
@@ -627,8 +692,8 @@ const AddSlot = () => {
         otherIndustry: allSlateDetails?.otherIndustry,
         purpose: allSlateDetails?.selecteScreens?.map((item) => item).join(', '),
         text: allSlateDetails?.purposeText,
-        referralCode: allSlateDetails?.refVale || 0,
-        totalDuration: totalDuration,
+        referralCode: allSlateDetails?.refVale || null,
+        totalDuration: Math.floor(totalDuration),
         industryID: allSlateDetails?.Industry?.value,
         // StatesID: selecteStates,
         systemTimeZone: new Date()
@@ -683,29 +748,35 @@ const AddSlot = () => {
 
   const handleBookSlot = () => {
 
-    // setPage(page + 1)
-    // return
+    const sameTimeZone = getallTime.some((item) => {
+      return item.startTime === item.endTime
+    });
 
     const hasMissingImages = getallTime.some((item) => {
       return !item.verticalImage && !item.horizontalImage
     });
 
-    if (hasMissingImages) {
+    if (sameTimeZone) {
+      return toast.error('End Time must be greater than start Time.');
+    } else if (hasMissingImages) {
       return toast.error("Please upload valid Vertical and Horizontal images.");
     } else {
       setPage(page + 1);
     }
   };
 
-  const handleSelectunit = (index) => {
+  const handleSelectunit = (index, selectedData) => {
     // const { value } = e.target;
     // const updatedDis = [...allArea];
 
     // updatedDis[index].unit = value;
     // setAllArea(updatedDis);
 
-    const item = allArea[index];
-    console.log('item :>> ', item);
+    const updatedItems = [...allArea];
+    updatedItems[index] = { ...updatedItems[index], unit: selectedData?.unit, area: selectedData?.area, };
+    setAllArea(updatedItems);
+    const item = updatedItems[index];
+
 
     if (item?.area === '' || !(item?.area)) {
       return setError(true)
@@ -920,6 +991,7 @@ const AddSlot = () => {
           <BookSlotTimeZone
             handleAddItem={handleAddItem}
             handleSequenceChange={handleSequenceChange}
+            handleSequenceTypeChange={handleSequenceTypeChange}
             handleaftereventChange={handleaftereventChange}
             handleAftereventTypeChange={handleAftereventTypeChange}
             allTimeZone={allTimeZone}
@@ -945,7 +1017,7 @@ const AddSlot = () => {
             handleCheckboxChange={handleCheckboxChange}
             selectAllDays={selectAllDays}
             totalDuration={totalDuration}
-
+            closeRepeatDay={closeRepeatDay}
           />
         )}
 
@@ -985,6 +1057,8 @@ const AddSlot = () => {
               setScreenData={setScreenData}
               handleSelectunit={handleSelectunit}
               Error={Error}
+              totalCost={totalCost}
+              timeZoneName={timeZoneName}
             />
           </>
         )}

@@ -738,7 +738,7 @@ const Registration = () => {
                     </label>
                     <Link to="/">
                       <p className="lg:ml-1 not-italic text-white font-medium mb-3 hover:text-SlateBlue">
-                        Sign up here
+                        Sign in here
                       </p>
                     </Link>
                   </div>
