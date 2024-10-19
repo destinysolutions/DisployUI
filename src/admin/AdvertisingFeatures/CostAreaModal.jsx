@@ -37,8 +37,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
         unit: 'km'
 
     });
-    console.log('data :>> ', data);
-    console.log('EditData :>> ', EditData);
+
     useEffect(() => {
         if (EditData) {
             setdata({
@@ -102,15 +101,18 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
         if (autocompleteRef.current) {
             const place = autocompleteRef.current.getPlace();
             if (place?.geometry) {
+                const Indianlocation = place.formatted_address;
+                const isInIndia = Indianlocation?.toLowerCase()?.includes("india");
+
                 const location = place.geometry.location;
-                setdata({ ...data, location: place.formatted_address });
+                setdata({ ...data, location: place.formatted_address, currency: isInIndia ? "INR" : "USD" });
                 map.setZoom(12);
 
                 setMarkerPosition({
                     lat: location.lat(),
                     lng: location.lng(),
                 });
-                setCenter({ lat: location.lat(), lng: location.lng() }); // Center map on selected location
+                setCenter({ lat: location.lat(), lng: location.lng() }); 
             }
         }
     };
@@ -232,7 +234,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                                                     onChange={(e) => setdata({ ...data, currency: e.target.value })}
                                                 >
                                                     <option value={'INR'}>INR</option>
-                                                    <option value={'Dollar'}>Dollar</option>
+                                                    <option value={'USD'}>USD</option>
                                                 </select>
                                             </div>
                                             {/* <div className="border border-[#D5E3FF] rounded font-bold text-black text-3xl">￠</div> */}

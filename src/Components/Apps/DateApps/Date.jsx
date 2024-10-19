@@ -150,7 +150,6 @@ const Date = ({ sidebarOpen, setSidebarOpen }) => {
 
 
     const handleUpdateScreenAssign = (screenIds, macids) => {
-        console.log('macids :>> ', macids);
 
         let idS = "";
         for (const key in screenIds) {
@@ -177,8 +176,7 @@ const Date = ({ sidebarOpen, setSidebarOpen }) => {
                         connection: socket.connected,
                         macId: macids,
                     };
-                    console.log('Params :>> ', Params);
-                    socket.emit("ScreenConnected", Params);
+                            socket.emit("ScreenConnected", Params);
                 }
                 setSelectScreenModal(false);
                 setAddScreenModal(false);

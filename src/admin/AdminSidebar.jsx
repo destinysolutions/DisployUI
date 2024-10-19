@@ -73,11 +73,11 @@ const AdminSidebar = ({ sidebarOpen }) => {
           path: "/retailer",
           icon: <FaBuildingUser className="  text-xl  " />,
         },
-        {
-          title: "Advertisement",
-          path: "/advertisement",
-          icon: <RiAdvertisementFill className="  text-xl  " />,
-        },
+        // {
+        //   title: "Advertisement",
+        //   path: "/advertisement",
+        //   icon: <RiAdvertisementFill className="  text-xl  " />,
+        // },
         {
           title: "Sales Man",
           path: "/salesMan",

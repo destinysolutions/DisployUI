@@ -3,7 +3,7 @@ import { MdArrowBackIosNew, MdCloudUpload } from 'react-icons/md';
 import { customTimeOrhour } from '../../../Common/Util';
 import { FaPlusCircle } from 'react-icons/fa';
 import { RiDeleteBin5Line } from 'react-icons/ri';
-import { buttons, secondsToHMS } from '../../../Common/Common';
+import { buttons, secondsToDDHHMMSS, secondsToHMS } from '../../../Common/Common';
 import logo from "../../../../images/DisployImg/Black-Logo2.png";
 import ReactTooltip from 'react-tooltip';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ export default function BookSlotTimeZone({
     allTimeZone,
     selectedTimeZone,
     handleSelectTimeZoneChange,
+    handleSequenceTypeChange,
     repeat,
     startDate,
     handleStartDateChange,
@@ -36,13 +37,13 @@ export default function BookSlotTimeZone({
     page,
     selectedDays,
     totalDuration,
-    type
+    type, closeRepeatDay
 }) {
     const navigate = useNavigate()
-    console.log('totalDuration :>> ', totalDuration);
+
     return (
         <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[800px] md:w-[700px] w-full max-h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+            <div className="lg:w-[900px] md:w-[700px] w-full max-h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
                 {/* <div className="text-2xl font-semibold">Book Slot</div>*/}
                 <div className="flex items-center justify-center mb-4">
                     <img
@@ -126,6 +127,7 @@ export default function BookSlotTimeZone({
                             {!repeat && (
                                 <div className="grid grid-cols-4 gap-4">
                                     <div className="relative w-full col-span-2">
+                                        <label className="text-base font-medium w-20 mr-2">Start Date:</label>
                                         <input
                                             type="date"
                                             value={startDate}
@@ -134,6 +136,7 @@ export default function BookSlotTimeZone({
                                         />
                                     </div>
                                     <div className="relative w-full col-span-2">
+                                        <label className="text-base font-medium w-20 mr-2">End Date:</label>
                                         <input
                                             type="date"
                                             min={startDate}
@@ -152,13 +155,16 @@ export default function BookSlotTimeZone({
                                             <div>
                                                 <button
                                                     className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                                                    onClick={() => setRepeat(false)}
+                                                    onClick={() => {
+                                                        closeRepeatDay()
+                                                    }}
                                                 >
                                                     <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
                                                 </button>
                                             </div>
                                         </div>
                                         <div className="relative w-full col-span-2">
+                                            <label className="text-base font-medium w-20 mr-2">Start Date:</label>
                                             <input
                                                 type="date"
                                                 value={startDate}
@@ -167,9 +173,11 @@ export default function BookSlotTimeZone({
                                             />
                                         </div>
                                         <div className="relative w-full col-span-2">
+                                            <label className="text-base font-medium w-20 mr-2">End Date:</label>
                                             <input
                                                 type="date"
                                                 value={endDate}
+                                                min={startDate}
                                                 onChange={handleEndDateChange}
                                                 className="formInput"
                                             />
@@ -179,16 +187,23 @@ export default function BookSlotTimeZone({
                             )}
 
                             <div>
-                                <div className="overflow-auto max-h-44">
+                                <div className="overflow-auto w-[100%] max-h-44">
+                                    {/* <div className={`flex items-center justify-between border`}>
+                                        <label className="text-base font-medium ">Start Time</label>
+                                        <label className="text-base font-medium ">End Time</label>
+                                        <label className="text-base font-medium ">Frequent</label>
+                                    </div> */}
                                     {getallTime?.map((item, index) => {
                                         return (
                                             <div
-                                                className="flex items-center justify-center gap-4 mb-3"
+                                                className="flex items-center justify-center gap-4 mb-3 w-full"
                                                 // className="grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-2 gap-4 mb-3"
                                                 key={index}
                                             >
+
                                                 <div className="relative w-full col-span-1">
                                                     <input
+                                                        title='Start Time'
                                                         type="time"
                                                         name={`startTime${index}`}
                                                         id="name"
@@ -199,9 +214,9 @@ export default function BookSlotTimeZone({
                                                         onChange={(e) => handleStartTimeChange(e, index)}
                                                     />
                                                 </div>
-
                                                 <div className="relative w-full col-span-1">
                                                     <input
+                                                        title='End Time'
                                                         type="time"
                                                         name={`endTime${index}`}
                                                         id="name"
@@ -213,32 +228,37 @@ export default function BookSlotTimeZone({
                                                     />
                                                 </div>
 
-
                                                 <div className="relative  col-span-4 flex justify-center items-center gap-4">
                                                     <div className="relative  col-span-1 " >
                                                         <select
+                                                            title='Frequent'
                                                             className="border border-primary rounded-lg pl-2 py-2 w-40"
-                                                            id="selectOption"
                                                             value={item.sequence}
                                                             onChange={(e) => handleSequenceChange(index, e.target.value)}
+                                                            disabled={item?.Duration === 0}
                                                         >
-                                                            {/* <option value="" className="hidden">Select</option> */}
-                                                            {customTimeOrhour?.map((item) => {
-                                                                return (
-                                                                    <option
-                                                                        value={item.id}
-                                                                        key={item.id}
-                                                                    >
-                                                                        {item.name}
-                                                                    </option>
-                                                                );
-                                                            })}
+                                                            {/* hidden */}
+                                                            <option value="" className="">Select</option>
+                                                            {/* {item?.Duration <= 60 && (
+                                                                <>
+                                                                    <option value="In every minute">In every minute</option>
+                                                                </>
+                                                            )}
+                                                            {item?.Duration <= 3600 && (
+                                                                <>
+                                                                    <option value="In every hour">In every hour</option>
+                                                                </>
+                                                            )} */}
+                                                            <option value="In every minute">In every minute</option>
+                                                            <option value="In every hour">In every hour</option>
+                                                            <option value="Custom" >Custom</option>
                                                         </select>
                                                     </div>
                                                     {item?.sequence === "Custom" && (
-                                                        <div className=" flex items-center   justify-center ">
+                                                        // console.log('item :>> ', item),
+                                                        <di div className=" flex items-center   justify-center ">
                                                             <label className="text-sm font-medium w-20 mr-2">After every:</label>
-                                                            <div className="flex justify-center items-center  ">
+                                                            <div className="flex justify-center items-center gap-2 ">
                                                                 <div>
                                                                     <input
                                                                         className="block w-20 p-2 text-gray-900 border border-gray-300  bg-gray-50 sm:text-xs dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
@@ -248,35 +268,25 @@ export default function BookSlotTimeZone({
                                                                     />
                                                                 </div>
                                                                 <div className="flex">
-                                                                    <div className="ml-2 flex items-center">
-                                                                        <input
-                                                                            type="radio"
-                                                                            value={item?.aftereventType}
-                                                                            checked={item?.aftereventType === "Hour"}
-                                                                            name="Cel"
-                                                                            id='Hour'
-                                                                            onChange={() => handleAftereventTypeChange("Hour", index)}
-                                                                        />
-                                                                        <label for='Hour' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">
-                                                                            Hour
-                                                                        </label>
-                                                                    </div>
-                                                                    <div className="ml-3 flex items-center">
-                                                                        <input
-                                                                            id='Minute'
-                                                                            type="radio"
-                                                                            value={item?.aftereventType}
-                                                                            checked={item?.aftereventType === "Minute"}
-                                                                            name="Cel"
-                                                                            onChange={() => handleAftereventTypeChange("Minute", index)}
-                                                                        />
-                                                                        <label for='Minute' className="ml-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs">
-                                                                            Minute
-                                                                        </label>
-                                                                    </div>
+                                                                    <select
+                                                                        disabled={!item?.afterevent}
+                                                                        className="border border-primary rounded-lg pl-2 py-2 w-24"
+                                                                        id="selectOption"
+                                                                        value={item.aftereventType}
+                                                                        onChange={(e) => handleSequenceTypeChange(index, e.target.value)}
+                                                                    >
+                                                                        <option value="" className="">Select</option>
+                                                                        {item?.Duration < 3600 && (
+                                                                            <>
+                                                                                <option value="Minutes">Minutes</option>
+                                                                            </>
+                                                                        )}
+                                                                        <option value="Hours" >Hours</option>
+                                                                    </select>
+
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </di>
                                                     )}
                                                     <div className="flex items-center justify-center gap-2">
                                                         <div
@@ -389,7 +399,7 @@ export default function BookSlotTimeZone({
                         </div>
                         <hr />
                         <div className='flex justify-center font-semibold text-lg my-3'>
-                            <p>Repetition Duration: {secondsToHMS(totalDuration)}</p>
+                            <p>Total Booked Duration: {secondsToDDHHMMSS(totalDuration)}</p>
                         </div>
                         <div className="w-full">
                             <div className="flex justify-center h-full items-end">
@@ -417,6 +427,6 @@ export default function BookSlotTimeZone({
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

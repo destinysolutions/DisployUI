@@ -8,17 +8,19 @@ import AdvertismentNavbar from './AdvertismentNavbar';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { getAllBookingSlotCustomer } from '../Redux/BookslotSlice';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 
 const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
     const dispatch = useDispatch()
     const { token } = useSelector((s) => s.root.auth);
     const authToken = `Bearer ${token}`;
+    const navigation = useNavigate();
+
     const [loadFirst, setLoadFirst] = useState(true);
 
     const [BookingData, setBookingData] = useState([]);
     const [loading, setLoading] = useState(false);
-
 
 
     useEffect(() => {
@@ -44,7 +46,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
                 />
                 <AdvertismentNavbar />
             </div>
-            <div className="pt-28 px-5 page-contain ">
+            <div className="pt-10 px-5 page-contain ">
                 <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                     <div className=' rounded-lg p-5 '>
 
@@ -67,7 +69,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div> */}
                                 <div className="flex items-center justify-end">
                                     <button
-                                        // onClick={() => navigation("/addbookyourslot")}
+                                        onClick={() => navigation("/addbookyourslot")}
                                         className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                                     >
                                         Book a New Slot

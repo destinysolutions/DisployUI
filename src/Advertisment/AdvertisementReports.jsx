@@ -8,14 +8,18 @@ import ReactTooltip from 'react-tooltip';
 import { useDispatch } from 'react-redux';
 import { getAllSlotReport } from '../Redux/BookslotSlice';
 import moment from 'moment';
+import Papa from "papaparse";
 
 export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
     const dispatch = useDispatch()
     const [reportsData, setReportsData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [loadFirst, setLoadFirst] = useState(true);
-    const sortedAndPaginatedData = reportsData
+    const [searchTerm, setSearchTerm] = useState("");
+    const filteredData = reportsData?.length > 0 ? reportsData?.filter((item) => item?.screenID.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
 
+
+    const sortedAndPaginatedData = filteredData
 
     useEffect(() => {
         if (loadFirst) {
@@ -28,6 +32,17 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
         setLoadFirst(false)
     }, [loadFirst, dispatch]);
 
+    const exportDataToCSV = () => {
+        const csv = Papa.unparse(reportsData);
+        const csvBlob = new Blob([csv], { type: "text/csv" });
+        const csvUrl = URL.createObjectURL(csvBlob);
+        const link = document.createElement("a");
+        link.href = csvUrl;
+        link.download = `BookSlotReport.csv`;
+        link.click();
+        URL.revokeObjectURL(csvUrl);
+    };
+
     return (
         <>
             <div className="flex border-b border-gray ">
@@ -37,7 +52,7 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                 />
                 <AdvertismentNavbar />
             </div>
-            <div className="pt-28 px-5 page-contain ">
+            <div className="pt-10 px-5 page-contain ">
                 <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
                     <div className=' rounded-lg p-5 '>
 
@@ -54,8 +69,8 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                         type="text"
                                         placeholder="Search Screen"
                                         className="border border-primary rounded-full pl-10 py-2 search-user"
-                                    // value={searchComposition}
-                                    // onChange={handleSearchComposition}
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                 </div>
                                 <div className="ml-2">
@@ -63,7 +78,7 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                         data-tip
                                         data-for="Download"
                                         className="cursor-pointer text-white bg-SlateBlue hover:bg-primary focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    // onClick={() => exportDataToCSV()}
+                                        onClick={() => exportDataToCSV()}
                                     >
                                         <LuDownload />
                                         <ReactTooltip
@@ -189,9 +204,9 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                     </tbody>
                                 </table>
                             </div>
-                            <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
+                            {/* <div className="flex lg:flex-row lg:justify-between md:flex-row md:justify-between sm:flex-row sm:justify-between flex-col justify-end p-5 gap-3">
                                 <div className="flex items-center">
-                                    {/* <span className="text-gray-500">{`Total ${filteredData?.length} Slots`}</span> */}
+                                    <span className="text-gray-500">{`Total ${filteredData?.length} Slots`}</span>
                                 </div>
                                 <div className="flex justify-end ">
                                     <select className='px-1 mr-2 border border-gray rounded-lg'
@@ -225,9 +240,9 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                         {sidebarOpen ? "Previous" : ""}
                                     </button>
                                     <div className="flex items-center me-3">
-                                        {/* <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span> */}
+                                        <span className="text-gray-500">{`Page ${currentPage} of ${totalPages}`}</span>
                                     </div>
-                                    {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+                                    <span>{`Page ${currentPage} of ${totalPages}`}</span>
                                     <button
                                         // onClick={() => handlePageChange(currentPage + 1)}
                                         // disabled={(currentPage === totalPages) || (bookslotData?.length === 0)}
@@ -251,7 +266,7 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                         </svg>
                                     </button>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

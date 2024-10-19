@@ -75,8 +75,6 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAssetUpdate = () => {
-    console.log('screens :>> ', screens);
-    console.log('assetScreenID :>> ', assetScreenID);
     const screenToUpdate = filteredData?.find(
       (screen) => screen?.screenID === assetScreenID
     );
