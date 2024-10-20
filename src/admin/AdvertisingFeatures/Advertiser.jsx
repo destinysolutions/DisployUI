@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
-import { PageNumber } from '../../Components/Common/Common';
+import { formatINRCurrency, formatToUSCurrency, PageNumber } from '../../Components/Common/Common';
 import { useDispatch } from 'react-redux';
 import { getAllUserAdvertiser } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
@@ -80,7 +80,7 @@ export default function Advertiser({ sidebarOpen }) {
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
                 <div className='flex items-center justify-justify-between  '>
-                    <h2 className='font-semibold'>Advertiser</h2>
+                    <h2 className='font-semibold text-2xl'>Advertiser</h2>
                     <div className="flex items-center justify-end gap-3   w-full ">
                         <div className="relative">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -209,12 +209,10 @@ export default function Advertiser({ sidebarOpen }) {
 
 
                                                 <td className="px-6 py-4">
-                                                    <span className='font-medium mr-2 '>{item?.currency === 'INR' ? '₹' : '$'}</span>
-                                                    {item?.receivedPayment?.toLocaleString('en-IN')}
+                                                    {item?.currency === 'INR' ? formatINRCurrency(item?.receivedPayment) : formatToUSCurrency(item?.receivedPayment)}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className='font-medium mr-2 '>{item?.currency === 'INR' ? '₹' : '$'}</span>
-                                                    {item?.payout?.toLocaleString('en-IN')}
+                                                    {item?.currency === 'INR' ? formatINRCurrency(item?.payout) : formatToUSCurrency(item?.payout)}
                                                 </td>
 
                                             </tr>

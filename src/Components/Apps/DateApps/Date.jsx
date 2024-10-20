@@ -169,7 +169,6 @@ const Date = ({ sidebarOpen, setSidebarOpen }) => {
         axios
             .request(config)
             .then((response) => {
-                console.log('response :>> ', response);
                 if (response.data.status === 200) {
                     const Params = {
                         id: socket.id,

@@ -806,14 +806,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="flex items-center justify-center gap-4">
 
                           <div
-                            className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3 min-h-48"
+                            className=" appearance-none border cursor-pointer border-[#D5E3FF] rounded w-full py-2 px-3 min-h-48"
                             onClick={openMap}
                             style={{ minHeight: '40px' }}
                           >{selectedAddress}</div>
-                          <div className="border border-[#D5E3FF] rounded">
+                          <div className="border border-[#D5E3FF] rounded cursor-pointer">
                             <TbBrandGoogleMaps
                               size={30}
-                              className="text-black p-[2px]"
+                              className="text-black p-[2px] cursor-pointer"
                               onClick={openMap}
                             />
                           </div>

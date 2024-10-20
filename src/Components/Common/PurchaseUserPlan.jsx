@@ -108,8 +108,6 @@ const PurchaseUserPlan = ({ setPurchasePlan, purchasePlan, selectPlan, userPlanT
         }));
     };
 
-
-    // console.log('myplan :>> ', myplan);
     return (
         <>
             <div

@@ -7,10 +7,10 @@ import axios from "axios";
 export const baseUrl = "https://back.disploy.com/api/";
 
 // Test Mode
-// export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
+export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAeWqwobpP2JLyax9zkwjdOFKyHp85ch29mKeqhqyHTr4uIgTvsKkYPxTcEWQ00EyadI8qy");
 
 // Live Mode
-export const stripePromise = loadStripe("pk_live_51JIxSzLmxyI3WVNYdQLd2H64i4dU3EA0kHoDGWyu1MCxL6xfgCBFw2CP9qhkH1FGNWwkHosH4Jlx3xfIbRdhxsAw00wvPSXFZM");
+// export const stripePromise = loadStripe("pk_live_51JIxSzLmxyI3WVNYdQLd2H64i4dU3EA0kHoDGWyu1MCxL6xfgCBFw2CP9qhkH1FGNWwkHosH4Jlx3xfIbRdhxsAw00wvPSXFZM");
 
 
 export const paypalOptions = {

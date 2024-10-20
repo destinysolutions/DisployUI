@@ -82,7 +82,6 @@ const ClockDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setEdited(false);
   };
   const handleMuteChange = (e) => {
-    console.log(e, "e");
     const { name, checked } = e.target;
     setClock((pre) => ({
       ...pre,

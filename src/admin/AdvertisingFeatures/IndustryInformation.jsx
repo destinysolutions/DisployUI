@@ -76,7 +76,7 @@ export default function IndustryInformation({ sidebarOpen }) {
             dispatch(handleAddIndustry(payload))
 
         } catch (error) {
-            console.log('error :>> ', error);
+            console.log('error', error);
         }
     }
 
@@ -128,7 +128,7 @@ export default function IndustryInformation({ sidebarOpen }) {
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
                 <div className='border-b border-gray pb-3'>
                     <div className='flex justify-between items-center'>
-                        <h2 className='font-semibold'>Industry Information</h2>
+                        <h2 className='font-semibold text-2xl'>Industry Information</h2>
 
                         <div className="relative">
                             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -196,7 +196,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                             ) : row?.industryName && (
                                                                 <div className='flex items-center gap-3'>
                                                                     {row?.industryName}
-                                                                    <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" onClick={() => { toggleAccordion(index); setEditIndustry(row); }} />
+                                                                    <MdOutlineModeEdit className="w-6 h-5 cursor-pointer hover:text-primary text-[#0000FF]" onClick={() => { toggleAccordion(index); setEditIndustry(row); }} />
                                                                 </div>
                                                             )}
                                                         </>

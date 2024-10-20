@@ -4,10 +4,12 @@ import Sidebar from '../Sidebar';
 import Navbar from '../Navbar';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { PageNumber } from '../Common/Common';
+import { formatINRCurrency, formatToUSCurrency, PageNumber } from '../Common/Common';
 import Footer from '../Footer';
 import { getMenuAll, getMenuPermission } from '../../Redux/SidebarSlice';
 import { useDispatch } from 'react-redux';
+import { getAllBookingSlotCustomer } from '../../Redux/BookslotSlice';
+import moment from 'moment';
 
 const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
     const { token, user, userDetails } = useSelector((state) => state.root.auth);
@@ -18,22 +20,17 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
     const [sidebarload, setSidebarLoad] = useState(true);
     const [loading, setLoading] = useState(false);
 
-    const [bookslotData, setbookslotData] = useState([])
+    const [bookslotData, setbookslotData] = useState([]);
     const [pageSize, setPageSize] = useState(5);
     const [currentPage, setCurrentPage] = useState(1);
     const [sortOrder, setSortOrder] = useState("asc");
     const [sortedField, setSortedField] = useState(null);
+    const [loadFirst, setLoadFirst] = useState(true);
 
-    const [permissions, setPermissions] = useState({
-        isDelete: false,
-        isSave: false,
-        isView: false,
-    });
-
-    const filteredData = bookslotData.filter((item) =>
+    const filteredData = bookslotData?.filter((item) =>
         Object.values(item).some((value) => value)
     );
-    const totalPages = Math.ceil(filteredData.length / pageSize);
+    const totalPages = Math.ceil(filteredData?.length / pageSize);
 
     const sortData = (data, field, order) => {
         const sortedData = [...data];
@@ -51,6 +48,19 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
         }
     };
 
+
+    useEffect(() => {
+        if (loadFirst) {
+            setLoading(true)
+            dispatch(getAllBookingSlotCustomer({})).then((res) => {
+                setbookslotData(res?.payload?.data)
+                setLoading(false)
+                setSidebarLoad(false)
+            })
+        }
+        setLoadFirst(false)
+    }, [loadFirst, dispatch]);
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -61,27 +71,6 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
         sortedField,
         sortOrder
     ).slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
-    useEffect(() => {
-        dispatch(getMenuAll()).then((item) => {
-            const findData = item.payload.data.menu.find(
-                (e) => e.pageName === "Book your slot"
-            );
-            if (findData) {
-                const ItemID = findData.moduleID;
-                const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
-                dispatch(getMenuPermission(payload)).then((permissionItem) => {
-                    if (
-                        Array.isArray(permissionItem.payload.data) &&
-                        permissionItem.payload.data.length > 0
-                    ) {
-                        setPermissions(permissionItem.payload.data[0]);
-                    }
-                });
-            }
-            setSidebarLoad(false);
-        });
-    }, []);
 
     return (
         <>
@@ -136,8 +125,10 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
                                         >
                                             <thead>
                                                 <tr className="text-lext table-head-bg">
-                                                    <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit flex items-center text-left">
-                                                        Total Screen
+                                                    <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit items-center">
+                                                        <div className='flex'>
+                                                            Total Screen
+                                                        </div>
                                                     </th>
                                                     <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                                         Start Date
@@ -146,7 +137,8 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
                                                         End Date
                                                     </th>
                                                     <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
-                                                        Total Booked Duration
+                                                        Booked Duration <br />
+                                                        <label className=' text-sm'>dd:hh:mm:ss</label>
                                                     </th>
                                                     <th className="mw-200 text-[#5A5881] text-base font-semibold w-fit text-center">
                                                         Total Paid Amount
@@ -193,7 +185,7 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
                                                     <>
                                                         {bookslotData &&
                                                             sortedAndPaginatedData.length > 0 &&
-                                                            sortedAndPaginatedData?.map((composition, index) => {
+                                                            sortedAndPaginatedData?.map((item, index) => {
                                                                 return (
                                                                     <tr
                                                                         className="border-b border-b-[#E4E6FF] "
@@ -202,21 +194,20 @@ const BookYourSlot = ({ sidebarOpen, setSidebarOpen }) => {
                                                                         <td className="text-[#5E5E5E] mw-200">
                                                                             <div className="flex gap-1 items-center">
 
-                                                                                25
+                                                                                {item?.totalScreen}
                                                                             </div>
                                                                         </td>
                                                                         <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                            dd:mm:yyyy
+                                                                            {moment(item?.startDate).format("YYYY-MM-DD")}
                                                                         </td>
                                                                         <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                            dd:mm:yyyy
-
+                                                                            {moment(item?.endDate).format("YYYY-MM-DD")}
                                                                         </td>
                                                                         <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                            hh:mm:ss
+                                                                            {item?.bookedDuration}
                                                                         </td>
                                                                         <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                            $2000
+                                                                            {item?.currency === 'inr' ? formatINRCurrency(item?.paidAmount) : formatToUSCurrency(item?.paidAmount)}
                                                                         </td>
                                                                     </tr>
                                                                 );

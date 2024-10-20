@@ -1570,7 +1570,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           play: true,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
-                        console.log('Params', Params)
                         socket.emit('play_pause', Params);
                         // socket.emit('updateTime', time);
 
@@ -1600,7 +1599,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           play: false,
                           macId: screenData[0]?.macid?.replace(/^\s+/g, ""),
                         };
-                        console.log('Params', Params)
                         socket.emit('play_pause', Params);
                         // socket.emit('updateTime', time);
                       }}

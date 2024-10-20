@@ -38,7 +38,7 @@ export default function PurposeScreens() {
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
                 <div className='border-b border-gray pb-3'>
                     <div className='flex justify-between items-center'>
-                        <h2 className='font-semibold'>Purpose of advertising</h2>
+                        <h2 className='font-semibold text-2xl'>Purpose of advertising</h2>
                     </div>
                 </div>
 

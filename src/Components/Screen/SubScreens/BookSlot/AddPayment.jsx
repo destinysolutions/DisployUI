@@ -18,7 +18,8 @@ const AddPayment = ({
   page,
   setPage,
   Name,
-  clientSecret
+  clientSecret,
+  Isshow
 }) => {
 
   const {
@@ -111,7 +112,6 @@ const AddPayment = ({
       }
       // Payment was successful
       if (paymentIntent.status === 'succeeded') {
-        console.log("PaymentIntent:", paymentIntent);
         toast.success("Payment succeeded!");
         handlebook(paymentMethod)
       } else {
@@ -135,15 +135,17 @@ const AddPayment = ({
             <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
           </button>
         </div>*/}
-        <div className="flex items-center justify-center">
-          <img
-            alt="Logo"
-            src={logo}
-            className="cursor-pointer duration-500 w-52"
-          />
-        </div>
+        {Isshow === "True" && (
+          <div className="flex items-center justify-center">
+            <img
+              alt="Logo"
+              src={logo}
+              className="cursor-pointer duration-500 w-52"
+            />
+          </div>
+        )}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-5">
+      <div className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 ${Isshow === "True" ? "mt-5" : ""}`}>
         {/* <div className="md:col-span-2 lg:col-span-2 rounded-lg bg-white shadow-md p-5 flex flex-col gap-2">
           <div className="flex items-center gap-2 border-b border-black">
             <IoEarthSharp className="mb-2" />
@@ -299,7 +301,10 @@ const AddPayment = ({
 
           <div className="p-2">
             <label className="card-label">
-              Card Number
+              <div className="text-lg mb-2 font-medium">
+                Card Number
+              </div>
+
               <CardNumberElement
                 className="card-input"
                 options={{
@@ -319,7 +324,9 @@ const AddPayment = ({
               />
             </label>
             <label className="card-label">
-              Expiration Date
+              <div className="text-lg mb-2 font-medium">
+                Expiration Date
+              </div>
               <CardExpiryElement
                 className="card-input"
                 options={{
@@ -339,7 +346,9 @@ const AddPayment = ({
               />
             </label>
             <label className="card-label">
-              CVC
+              <div className="text-lg mb-2 font-medium">
+                CVC
+              </div>
               <CardCvcElement
                 className="card-input"
                 options={{
@@ -379,7 +388,7 @@ const AddPayment = ({
               </button>
               <button disabled={isLoading || !stripe || !elements} id="submit" onClick={handleSubmitPayment} type="button" className="pay-bookslot-button bg-orange-400 text-white hover:border-b-orange-600 px-8 rounded-full">
                 <span id="button-text">
-                  {isLoading ? <div className="spinner-payment" id="spinner"></div> : "Pay"}
+                  {isLoading ? <div className="spinner-payment-bookslot" id="spinner"></div> : "Pay"}
                 </span>
               </button>
 

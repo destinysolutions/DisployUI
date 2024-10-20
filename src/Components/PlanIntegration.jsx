@@ -8,25 +8,24 @@ import PlanPurchase from './PlanPurchase';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { handleGetAllPlans } from '../Redux/CommonSlice';
-import { handleGetCountries, handleGetState } from '../Redux/SettingUserSlice';
-import { useSelector } from 'react-redux';
-import { FaCheck } from 'react-icons/fa';
 import { verifyDiscountCoupon } from '../Redux/AdminSettingSlice';
 import video from "../images/DisployImg/iStock-1137481126.mp4";
 import logo from "../images/DisployImg/White-Logo2.png";
+import Loading from './Loading';
+import { formatINRCurrency, formatToUSCurrency } from './Common/Common';
 
 const PlanIntegration = () => {
     const { planId } = useParams();
     const dispatch = useDispatch();
     const [showPassword, setShowPassword] = useState(false);
     const [clientSecret, setClientSecret] = useState("");
-    const [selectedPlan, setSelectedPlan] = useState(null)
+    const [selectedPlan, setSelectedPlan] = useState(null);
     const [Screen, setScreen] = useState(1)
     const [page, setPage] = useState(0)
     const [showDiscount, setShowDiscount] = useState(false);
     const [showError, setShowError] = useState(false)
     const [discountCoupon, setDiscountCoupon] = useState("")
-    const [loading, setloading] = useState(false);
+    const [loading, setloading] = useState(true);
     const [error, setError] = useState({
         firstName: false,
         lastName: false,
@@ -55,7 +54,6 @@ const PlanIntegration = () => {
     };
 
     useEffect(() => {
-        setloading(true)
         const config = {
             method: "get",
             maxBodyLength: Infinity,
@@ -75,14 +73,14 @@ const PlanIntegration = () => {
         if (!customerData?.firstName) {
             setError(prevError => ({
                 ...prevError,
-                firstName: 'This Field is Required.'
+                firstName: 'First Name is Required.'
             }));
             error = true;
         }
         if (!customerData?.lastName) {
             setError(prevError => ({
                 ...prevError,
-                lastName: 'This Field is Required.'
+                lastName: 'Last Name is Required.'
             }));
             error = true;
         }
@@ -106,7 +104,7 @@ const PlanIntegration = () => {
         if (!customerData?.password) {
             setError(prevError => ({
                 ...prevError,
-                password: 'This Field is Required.'
+                password: 'Passwod is Required.'
             }));
             error = true;
         }
@@ -114,7 +112,7 @@ const PlanIntegration = () => {
         if (!customerData?.company) {
             setError(prevError => ({
                 ...prevError,
-                company: 'This Field is Required.'
+                company: 'Company Name is Required.'
             }));
             error = true;
         }
@@ -122,24 +120,17 @@ const PlanIntegration = () => {
         if (!customerData?.googleLocation) {
             setError(prevError => ({
                 ...prevError,
-                googleLocation: 'This Field is Required.'
+                googleLocation: 'Google Location is Required.'
             }));
             error = true;
         }
         if (!error) {
-            const TimeZone = new Date()
-                .toLocaleDateString(undefined, {
-                    day: "2-digit",
-                    timeZoneName: "long",
-                })
-                .substring(4);
-
             const params = {
                 "items": {
                     "id": "0",
                     "amount": (TotalPrice * 100)
                 },
-                "Currency": TimeZone?.includes("India") ? "inr" : "usd"
+                "Currency": selectedPlan?.isIndian ? "inr" : "usd"
             }
             const config = {
                 method: "post",
@@ -204,225 +195,229 @@ const PlanIntegration = () => {
 
     return (
         <>
-            <div className="videobg login relative">
-                <video src={video} autoPlay muted loop playsInline />
-                <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
-                    <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
-                        <div className="flex items-center pb-5">
-                            <img className="w-52 h-14" alt="logo" src={logo} />
-                        </div>
-                        <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0  xl:p-0 lg:min-w-[600px] md:min-w-[600px] sm:min-w-auto xs:min-w-auto">
-                            {page === 0 && (
-                                <div className="p-3 sm:px-8 py-1">
-                                    <div className="my-1 font-inter not-italic font-medium text-[24px] text-white mt-4">
-                                        Create account
-                                    </div>
-                                    <div className="flex flex-col gap-2 h-full">
-                                        <div className="grid grid-cols-2 gap-2 my-2 border-b border-gray">
-                                            <div className='flex flex-col'>
-                                                {/* <label
+            {loading && (
+                <Loading />
+            )}
+            {!loading && (
+                <div className="videobg login relative">
+                    <video src={video} autoPlay muted loop playsInline />
+                    <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
+                        <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
+                            <div className="flex items-center pb-5">
+                                <img className="w-52 h-14" alt="logo" src={logo} />
+                            </div>
+                            <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0  xl:p-0 lg:min-w-[600px] md:min-w-[600px] sm:min-w-auto xs:min-w-auto">
+                                {page === 0 && (
+                                    <div className="p-3 sm:px-8 py-1">
+                                        <div className="my-1 font-inter not-italic font-medium text-[24px] text-white mt-4">
+                                            Create an account
+                                        </div>
+                                        <div className="flex flex-col gap-2 h-full">
+                                            <div className="grid grid-cols-2 gap-2 my-2 border-b border-gray">
+                                                <div className='flex flex-col'>
+                                                    {/* <label
                                                 htmlFor="name"
                                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                             >
                                                 First Name
                                             </label> */}
-                                                <input
-                                                    type="text"
-                                                    name="firstName"
-                                                    id="firstName"
-                                                    placeholder="Enter Your First Name"
-                                                    className="formInput"
-                                                    value={customerData.firstName}
-                                                    onChange={handleChange}
-                                                />
-                                                {error?.firstName && (
-                                                    <span className="error">{error?.firstName}</span>
-                                                )}
-                                            </div>
-                                            <div className='flex flex-col'>
-                                                {/* <label
+                                                    <input
+                                                        type="text"
+                                                        name="firstName"
+                                                        id="firstName"
+                                                        placeholder="Enter Your First Name"
+                                                        className="formInput my-1"
+                                                        value={customerData.firstName}
+                                                        onChange={handleChange}
+                                                    />
+                                                    {error?.firstName && (
+                                                        <span className="error">{error?.firstName}</span>
+                                                    )}
+                                                </div>
+                                                <div className='flex flex-col'>
+                                                    {/* <label
                                                 htmlFor="name"
                                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                             >
                                                 Last Name
                                             </label> */}
-                                                <input
-                                                    type="text"
-                                                    name="lastName"
-                                                    id="lastName"
-                                                    placeholder="Enter Your Last Name"
-                                                    className="formInput"
-                                                    value={customerData.lastName}
-                                                    onChange={handleChange}
-                                                />
-                                                {error?.lastName && (
-                                                    <span className="error">{error?.lastName}</span>
-                                                )}
-                                            </div>
-                                            <div className='flex flex-col'>
-                                                {/* <label
+                                                    <input
+                                                        type="text"
+                                                        name="lastName"
+                                                        id="lastName"
+                                                        placeholder="Enter Your Last Name"
+                                                        className="formInput my-1"
+                                                        value={customerData.lastName}
+                                                        onChange={handleChange}
+                                                    />
+                                                    {error?.lastName && (
+                                                        <span className="error">{error?.lastName}</span>
+                                                    )}
+                                                </div>
+                                                <div className='flex flex-col'>
+                                                    {/* <label
                                                 htmlFor="name"
                                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                             >
                                                 Phone Number
                                             </label> */}
-                                                <input
-                                                    type="tel"
-                                                    name="phone"
-                                                    id="phone"
-                                                    placeholder="Enter Your Phone Number"
-                                                    className="formInput my-3"
-                                                    value={customerData.phone}
-                                                    onChange={handleChange}
-                                                />
-                                                {error?.phone && (
-                                                    <span className="error">{error?.phone}</span>
-                                                )}
-                                            </div>
-                                            <div className='flex flex-col'>
-                                                {/* <label
+                                                    <input
+                                                        type="tel"
+                                                        name="phone"
+                                                        id="phone"
+                                                        placeholder="Enter Your Phone Number"
+                                                        className="formInput my-1"
+                                                        value={customerData.phone}
+                                                        onChange={handleChange}
+                                                    />
+                                                    {error?.phone && (
+                                                        <span className="error">{error?.phone}</span>
+                                                    )}
+                                                </div>
+                                                <div className='flex flex-col'>
+                                                    {/* <label
                                                 htmlFor="name"
                                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                             >
                                                 Company Name
                                             </label> */}
-                                                <input
-                                                    type="text"
-                                                    name="company"
-                                                    id="company"
-                                                    placeholder="Enter Your Company Name"
-                                                    className="formInput my-3"
-                                                    value={customerData.company}
-                                                    onChange={handleChange}
-                                                />
-                                                {error?.company && (
-                                                    <span className="error">{error?.company}</span>
-                                                )}
-                                            </div>
-                                            <div className='flex flex-col'>
-                                                {/* <label
+                                                    <input
+                                                        type="text"
+                                                        name="company"
+                                                        id="company"
+                                                        placeholder="Enter Your Company Name"
+                                                        className="formInput my-1"
+                                                        value={customerData.company}
+                                                        onChange={handleChange}
+                                                    />
+                                                    {error?.company && (
+                                                        <span className="error">{error?.company}</span>
+                                                    )}
+                                                </div>
+                                                <div className='flex flex-col'>
+                                                    {/* <label
                                                 htmlFor="name"
                                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                             >
                                                 Google Location
                                             </label> */}
-                                                <input
-                                                    type="text"
-                                                    name="googleLocation"
-                                                    id="googleLocation"
-                                                    placeholder="Enter Your Google Location"
-                                                    className="formInput"
-                                                    value={customerData.googleLocation}
-                                                    onChange={handleChange}
-                                                />
-                                                {error?.googleLocation && (
-                                                    <span className="error">{error?.googleLocation}</span>
-                                                )}
-                                            </div>
-                                            <div className='flex flex-col'>
-                                                {/* <label
+                                                    <input
+                                                        type="text"
+                                                        name="googleLocation"
+                                                        id="googleLocation"
+                                                        placeholder="Enter Your Google Location"
+                                                        className="formInput my-1"
+                                                        value={customerData.googleLocation}
+                                                        onChange={handleChange}
+                                                    />
+                                                    {error?.googleLocation && (
+                                                        <span className="error">{error?.googleLocation}</span>
+                                                    )}
+                                                </div>
+                                                <div className='flex flex-col'>
+                                                    {/* <label
                                                 htmlFor="name"
                                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                             >
                                                 Email
                                             </label> */}
-                                                <input
-                                                    type="email"
-                                                    name="email"
-                                                    id="email"
-                                                    placeholder="Enter Your Email"
-                                                    className="formInput"
-                                                    value={customerData.email}
-                                                    onChange={handleChange}
-                                                />
-                                                {error?.email && (
-                                                    <span className="error">{error?.email}</span>
-                                                )}
-                                            </div>
-                                            <div className='flex flex-col mb-4'>
-                                                {/* <label
+                                                    <input
+                                                        type="email"
+                                                        name="email"
+                                                        id="email"
+                                                        placeholder="Enter Your Email"
+                                                        className="formInput my-1"
+                                                        value={customerData.email}
+                                                        onChange={handleChange}
+                                                    />
+                                                    {error?.email && (
+                                                        <span className="error">{error?.email}</span>
+                                                    )}
+                                                </div>
+                                                <div className='flex flex-col mb-4'>
+                                                    {/* <label
                                                 htmlFor="name"
                                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                             >
                                                 Password
                                             </label> */}
-                                                <div className="relative">
-                                                    <input
-                                                        type={showPassword ? "text" : "password"}
-                                                        name="password"
-                                                        id="password"
-                                                        placeholder="Enter Your Password"
-                                                        className="formInput my-3"
-                                                        value={customerData.password}
-                                                        onChange={handleChange}
-                                                    />
-                                                    <div className="icon">
-                                                        {showPassword ? (
-                                                            <BsFillEyeFill
-                                                                onClick={() => setShowPassword(!showPassword)}
-                                                            />
-                                                        ) : (
-                                                            <BsFillEyeSlashFill
-                                                                onClick={() => setShowPassword(!showPassword)}
-                                                            />
-                                                        )}
+                                                    <div className="relative">
+                                                        <input
+                                                            type={showPassword ? "text" : "password"}
+                                                            name="password"
+                                                            id="password"
+                                                            placeholder="Enter Your Password"
+                                                            className="formInput my-1"
+                                                            value={customerData.password}
+                                                            onChange={handleChange}
+                                                        />
+                                                        <div className="icon">
+                                                            {showPassword ? (
+                                                                <BsFillEyeFill
+                                                                    onClick={() => setShowPassword(!showPassword)}
+                                                                />
+                                                            ) : (
+                                                                <BsFillEyeSlashFill
+                                                                    onClick={() => setShowPassword(!showPassword)}
+                                                                />
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                {error?.password && (
-                                                    <span className="error">{error?.password}</span>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <div className='flex flex-col border-b border-gray'>
-                                            <div className='flex flex-row items-center justify-between mb-4'>
-                                                <h2 className='font-medium text-xl not-italic text-white '>
-                                                    {selectedPlan?.planName} - 1 Month Plan
-                                                </h2>
-                                                <span className='font-medium text-xl not-italic text-white'>
-                                                    {!loading && (
-                                                        <>
-                                                            {selectedPlan?.isIndian ? "₹" : "$"} {selectedPlan?.planPrice}
-                                                        </>
+                                                    {error?.password && (
+                                                        <span className="error">{error?.password}</span>
                                                     )}
-                                                </span>
+                                                </div>
+                                            </div>
 
-                                            </div>
-                                            <div className='flex flex-row items-center justify-between mb-4'>
-                                                <h2 className='flex flex-row items-center gap-2 not-italic text-white '>
-                                                    <p>Screen</p>
-                                                </h2>
-                                                <span className='font-medium text-xl'>
-                                                    <input type='number'
-                                                        className="relative border border-black rounded-md p-2 w-20"
-                                                        placeholder='1'
-                                                        value={Screen}
-                                                        onChange={(e) => {
-                                                            if (e.target.value <= 0) {
-                                                                setScreen(Screen)
-                                                            } else {
-                                                                setScreen(e.target.value)
-                                                            }
-                                                        }
-                                                        }
-                                                    />
-                                                </span>
-                                            </div>
-                                            {Screen > 1 && (
+                                            <div className='flex flex-col border-b border-gray'>
                                                 <div className='flex flex-row items-center justify-between mb-4'>
-                                                    <h2 className='flex flex-row items-center gap-2 not-italic text-white '>
-                                                        <p>Purchase Screen Price</p>
+                                                    <h2 className='font-medium text-xl not-italic text-white '>
+                                                        {selectedPlan?.planName} - {selectedPlan?.isAnnually ? "Anunually" : "Monthly"} Plan
                                                     </h2>
                                                     <span className='font-medium text-xl not-italic text-white'>
                                                         {!loading && (
                                                             <>
-                                                                {selectedPlan?.isIndian ? "₹" : "$"} {(Screen * selectedPlan?.planPrice) - selectedPlan?.planPrice}
+                                                                {selectedPlan?.isIndian ? formatINRCurrency(selectedPlan?.planPrice) : formatToUSCurrency(selectedPlan?.planPrice)}
                                                             </>
                                                         )}
                                                     </span>
+
                                                 </div>
-                                            )}
-                                            {/* <div className='flex flex-row items-center justify-between'>
+                                                <div className='flex flex-row items-center justify-between mb-4'>
+                                                    <h2 className='flex flex-row items-center gap-2 not-italic text-white '>
+                                                        <p>Screen</p>
+                                                    </h2>
+                                                    <span className='font-medium text-xl'>
+                                                        <input type='number'
+                                                            className="relative border border-black rounded-md p-2 w-20"
+                                                            placeholder='1'
+                                                            value={Screen}
+                                                            onChange={(e) => {
+                                                                if (e.target.value <= 0) {
+                                                                    setScreen(Screen)
+                                                                } else {
+                                                                    setScreen(e.target.value)
+                                                                }
+                                                            }
+                                                            }
+                                                        />
+                                                    </span>
+                                                </div>
+                                                {Screen > 1 && (
+                                                    <div className='flex flex-row items-center justify-between mb-4'>
+                                                        <h2 className='flex flex-row items-center gap-2 not-italic text-white '>
+                                                            <p>Purchase Screen Price</p>
+                                                        </h2>
+                                                        <span className='font-medium text-xl not-italic text-white'>
+                                                            {!loading && (
+                                                                <>
+                                                                    {selectedPlan?.isIndian ? formatINRCurrency(((Screen * selectedPlan?.planPrice) - selectedPlan?.planPrice)) : formatToUSCurrency(((Screen * selectedPlan?.planPrice) - selectedPlan?.planPrice))}
+                                                                </>
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                                {/* <div className='flex flex-row items-center justify-between'>
                                                 <h2 className='flex flex-row items-center gap-2'>
                                                     <FaCheck className='text-green' />
                                                     <p>Screen Management</p>
@@ -459,77 +454,79 @@ const PlanIntegration = () => {
                                                 </span>
                     </div>*/}
 
-                                        </div>
-
-                                        <div className='border-b border-gray'>
-                                            <div className='flex flex-row items-center justify-between mb-4 mt-2'>
-                                                <h2 className='font-semibold text-xl not-italic text-white '>
-                                                    Total
-                                                </h2>
-                                                <p className='font-semibold text-xl not-italic text-white '>
-                                                    {selectedPlan?.isIndian ? "₹" : '$'} {TotalPrice}
-                                                </p>
                                             </div>
-                                        </div>
 
-                                        <div className='flex items-center justify-start py-3 not-italic text-white'>
-                                            <h1 className='cursor-pointer hover:underline' onClick={() => setShowDiscount(!showDiscount)}>Have a coupon code?</h1>
-                                        </div>
-                                        {showDiscount && (
-                                            <>
-                                                <div className='flex items-center justify-between mb-2'>
-                                                    <div className='flex items-center gap-5'>
-                                                        <input
-                                                            type='text'
-                                                            placeholder='Discount Coupon'
-                                                            className="relative border border-black rounded-md p-2 w-48"
-                                                            onChange={(e) => setDiscountCoupon(e.target.value)}
-                                                            value={discountCoupon}
-                                                        />
-                                                        <button
-                                                            className={`text-white text-base px-5 py-2 border bg-SlateBlue shadow-md rounded-full ${discountCoupon?.length === 0 ? "cursor-not-allowed" : "cursor-pointer"}`}
-                                                            type="button"
-                                                            disabled={discountCoupon?.length === 0}
-                                                            onClick={() => handleVerify()}
-                                                        >
-                                                            Verify
-                                                        </button>
-                                                    </div>
+                                            <div className='border-b border-gray'>
+                                                <div className='flex flex-row items-center justify-between mb-4 mt-2'>
+                                                    <h2 className='font-semibold text-xl not-italic text-white '>
+                                                        Total
+                                                    </h2>
+                                                    <p className='font-semibold text-xl not-italic text-white '>
+                                                        {selectedPlan?.isIndian ? formatINRCurrency(TotalPrice) : formatToUSCurrency(TotalPrice)}
+                                                    </p>
                                                 </div>
-                                                {showError && (
-                                                    <span className='error mt-[-10px]'>Coupon is invalid.</span>
-                                                )}
-                                            </>
-                                        )}
+                                            </div>
 
-                                        <div className="w-full h-full border-t border-gray">
-                                            <div className="flex justify-center py-4 h-full items-center">
-                                                <button
-                                                    className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                                    onClick={() => handleCreate()}
-                                                    type="submit"
-                                                >
-                                                    Submit Secure Payment
-                                                </button>
+                                            <div className='flex items-center justify-start py-3 not-italic text-white'>
+                                                <h1 className='cursor-pointer hover:underline' onClick={() => setShowDiscount(!showDiscount)}>Have a coupon code?</h1>
+                                            </div>
+                                            {showDiscount && (
+                                                <>
+                                                    <div className='flex items-center justify-between mb-2'>
+                                                        <div className='flex items-center gap-5'>
+                                                            <input
+                                                                type='text'
+                                                                placeholder='Discount Coupon'
+                                                                className="relative border border-black rounded-md p-2 w-48"
+                                                                onChange={(e) => setDiscountCoupon(e.target.value)}
+                                                                value={discountCoupon}
+                                                            />
+                                                            <button
+                                                                className={`text-white text-base px-5 py-2 border bg-SlateBlue shadow-md rounded-full ${discountCoupon?.length === 0 ? "cursor-not-allowed" : "cursor-pointer"}`}
+                                                                type="button"
+                                                                disabled={discountCoupon?.length === 0}
+                                                                onClick={() => handleVerify()}
+                                                            >
+                                                                Verify
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    {showError && (
+                                                        <span className='error mt-[-10px]'>Coupon is invalid.</span>
+                                                    )}
+                                                </>
+                                            )}
+
+                                            <div className="w-full h-full border-t border-gray">
+                                                <div className="flex justify-center py-4 h-full items-center">
+                                                    <button
+                                                        className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                                        onClick={() => handleCreate()}
+                                                        type="submit"
+                                                    >
+                                                        Submit Secure Payment
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            )}
-                            {page === 1 && clientSecret && (
-                                <>
-                                    <Elements options={options} stripe={stripePromise}>
-                                        <PlanPurchase selectedPlan={selectedPlan} customerData={customerData} discountCoupon={discountCoupon} clientSecret={clientSecret} planId={planId} Screen={Screen} TotalPrice={TotalPrice} />
-                                    </Elements>
-                                </>
-                            )}
+                                )}
+                                {page === 1 && clientSecret && (
+                                    <>
+                                        <Elements options={options} stripe={stripePromise}>
+                                            <PlanPurchase selectedPlan={selectedPlan} customerData={customerData} discountCoupon={discountCoupon} clientSecret={clientSecret} planId={planId} Screen={Screen} TotalPrice={TotalPrice} />
+                                        </Elements>
+                                    </>
+                                )}
+
+                            </div>
+
 
                         </div>
-
-
                     </div>
                 </div>
-            </div>
+            )}
+
         </>
     )
 }

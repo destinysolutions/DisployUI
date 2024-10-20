@@ -206,7 +206,7 @@ const Discount = ({ sidebarOpen }) => {
                 }
             });
         } catch (error) {
-            console.log("error handleDeletePermanently Singal --- ", error);
+            console.log("error", error);
         }
     };
 

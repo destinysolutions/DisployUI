@@ -511,27 +511,27 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     dispatch(handleGetAllAssets({ token }));
     dispatch(handleGetYoutubeData({ token }));
     dispatch(handleGetTextScrollData({ token }));
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: UPDATED_SCHEDULE_DATA,
-      headers: { Authorization: authToken },
-    };
+    // let config = {
+    //   method: "get",
+    //   maxBodyLength: Infinity,
+    //   url: UPDATED_SCHEDULE_DATA,
+    //   headers: { Authorization: authToken },
+    // };
 
-    axios
-      .request(config)
-      .then((response) => {
-        if (
-          Array.isArray(response.data.data) &&
-          response.data.data.length > 0
-        ) {
-        } else {
-          console.warn("No data in the response");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // axios
+    //   .request(config)
+    //   .then((response) => {
+    //     if (
+    //       Array.isArray(response.data.data) &&
+    //       response.data.data.length > 0
+    //     ) {
+    //     } else {
+    //       console.warn("No data in the response");
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
 
     axios
       .get(GET_TIMEZONE, {

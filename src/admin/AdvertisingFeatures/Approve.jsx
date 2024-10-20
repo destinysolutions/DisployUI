@@ -5,7 +5,7 @@ import { AiFillCloseCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import { useDispatch, } from 'react-redux';
 import { getPendingScreen, getCostByArea, cancelPendingScreen, updatePendingScreen } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
-import { calculateDistance } from '../../Components/Common/Common';
+import { calculateDistance, formatINRCurrency, formatToUSCurrency } from '../../Components/Common/Common';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
 import ReactTooltip from 'react-tooltip';
 import CostAreaModal from './CostAreaModal';
@@ -121,7 +121,7 @@ export default function Approve({ handleTab }) {
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
                 <div className='border-b border-gray pb-3'>
-                    <h2 className='font-semibold'>Approve Request</h2>
+                    <h2 className='font-semibold text-2xl'>Approve Request</h2>
                 </div>
                 {loading && (
                     <div className='flex justify-center items-center h-96'>
@@ -153,7 +153,7 @@ export default function Approve({ handleTab }) {
                             const screens = groupedScreens[orgId];
                             const userName = screens[0]?.userName;
                             return (
-                                <div className="mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg h-full" key={index}>
+                                <div className="mt-5 cursor-pointer overflow-x-scroll sc-scrollbar sm:rounded-lg h-full" key={index}>
                                     <div className="accordions shadow-md p-5 bg-blue-100 border border-blue-400 rounded-lg m-4">
                                         <div className="section lg:flex md:flex sm:block items-center justify-between"
                                             onClick={() => toggleAccordion(index)}
@@ -233,7 +233,8 @@ export default function Approve({ handleTab }) {
                                                                     <td className="px-6 py-4 ">{item?.userName}</td>
                                                                     <td className="px-6 py-4 ">
                                                                         <div>
-                                                                            {item?.screenRatePerSec ? `${item?.currency === 'INR' ? '₹' : '$'} ${item?.screenRatePerSec}` : ''}
+                                                                            {item?.screenRatePerSec ? `${item?.currency === 'INR' ? formatINRCurrency(item?.screenRatePerSec) : formatToUSCurrency(item?.screenRatePerSec)}` : ''}
+                                                                            
                                                                             {/* {item?.screenRatePerSec ? item?.screenRatePerSec :
                                                                                 (<input
                                                                                     type="number"

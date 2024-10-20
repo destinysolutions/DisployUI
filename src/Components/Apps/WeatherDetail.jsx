@@ -448,7 +448,6 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
     // }, 2000);
   };
 
-  // console.log(locations);
 
   return (
     <>

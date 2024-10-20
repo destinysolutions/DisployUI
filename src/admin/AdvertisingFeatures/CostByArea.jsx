@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
-import { PageNumber } from '../../Components/Common/Common';
+import { formatINRCurrency, formatToUSCurrency, PageNumber } from '../../Components/Common/Common';
 import { MdAddLocation, MdDeleteForever, MdModeEditOutline } from 'react-icons/md';
 import CostAreaModal from './CostAreaModal';
 import { useDispatch, useSelector } from 'react-redux';
@@ -73,7 +73,7 @@ export default function CostByArea({ sidebarOpen }) {
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
                 <div className='flex justify-between items-center '>
-                    <h2 className='font-semibold'>Cost by Area</h2>
+                    <h2 className='font-semibold text-2xl'>Cost by Area</h2>
                     <div className="flex items-center justify-end gap-5 ">
 
                         <div className="relative">
@@ -125,7 +125,9 @@ export default function CostByArea({ sidebarOpen }) {
                                                     <td className="mw-200 text-[#5E5E5E] mx-auto text-center  ">
                                                         <div className='w-80 truncate text-center  mx-auto'>{item?.locationName}</div>
                                                     </td>
-                                                    <td className="mw-200 text-[#5E5E5E] ">{item?.currency === 'Dollar' ? '$' : '₹'} {item?.costPerSec}</td>
+                                                    <td className="mw-200 text-[#5E5E5E] ">
+                                                        {item?.currency === 'Dollar' ? formatToUSCurrency(item?.costPerSec) : formatINRCurrency(item?.costPerSec)}
+                                                    </td>
                                                     <td className="mw-200 px-6 py-4">
                                                         <div className="flex gap-2 justify-center">
                                                             <div className="cursor-pointer text-xl flex gap-4">

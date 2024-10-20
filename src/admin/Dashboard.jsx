@@ -56,7 +56,7 @@ const Dashboard = ({ sidebarOpen }) => {
         setDashboardData(data?.data?.data);
       })
       .catch((error) => {
-        console.log("Error fetching states data:", error);
+        console.log("error", error);
       });
   }, []);
 

@@ -157,7 +157,6 @@ const ShowAssetModal = ({
   }, []);
 
   const signalROnConfirm = () => {
-    console.log("run signal r");
     const Params = {
       id: socket.id,
       connection: socket.connected,

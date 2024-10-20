@@ -54,11 +54,28 @@
   .spinner-add-payment:before,
   .spinner-add-payment:after,
   .spinner-payment:before,
-  .spinner-payment:after {
+  .spinner-payment:after,
+  .spinner-payment-bookslot,
+  .spinner-payment-bookslot:before,
+  .spinner-payment-bookslot:after {
     border-radius: 50%;
   }
   
   .spinner-payment {
+    color: #ffffff;
+    font-size: 22px;
+    text-indent: -99999px;
+    margin: 0px auto;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    box-shadow: inset 0 0 0 2px;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  .spinner-payment-bookslot{
     color: #ffffff;
     font-size: 22px;
     text-indent: -99999px;
@@ -89,7 +106,9 @@
   .spinner-payment:before,
   .spinner-add-payment:before,
   .spinner-add-payment:after,
-  .spinner-payment:after {
+  .spinner-payment:after ,
+  .spinner-payment-bookslot:after,
+  .spinner-payment-bookslot:before {
     position: absolute;
     content: '';
   }
@@ -98,6 +117,19 @@
     width: 10.4px;
     height: 20.4px;
     background: #5469d4;
+    border-radius: 20.4px 0 0 20.4px;
+    top: -0.2px;
+    left: -0.2px;
+    -webkit-transform-origin: 10.4px 10.2px;
+    transform-origin: 10.4px 10.2px;
+    -webkit-animation: loading 2s infinite ease 1.5s;
+    animation: loading 2s infinite ease 1.5s;
+  }
+
+  .spinner-payment-bookslot:before {
+    width: 10.4px;
+    height: 20.4px;
+    background: black;
     border-radius: 20.4px 0 0 20.4px;
     top: -0.2px;
     left: -0.2px;
@@ -133,7 +165,8 @@
     animation: loading 2s infinite ease;
   }
 
-  .spinner-add-payment:after {
+  .spinner-add-payment:after,
+  .spinner-payment-bookslot:after {
     width: 10.4px;
     height: 10.2px;
     background: black;

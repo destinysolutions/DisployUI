@@ -20,6 +20,7 @@ import ReactTooltip from 'react-tooltip';
 import { handleGetUserDetails } from '../../Redux/Authslice';
 import toast from 'react-hot-toast';
 import TalkToSaleDialog from '../Common/TalkToSaleDialog';
+import { formatINRCurrency, formatToUSCurrency } from '../Common/Common';
 
 const Myplan = () => {
     const { token, user, userDetails } = useSelector((state) => state.root.auth);
@@ -390,7 +391,8 @@ const Myplan = () => {
                                                                 </h3>
                                                                 {item?.listOfPlansID !== 4 && (
                                                                     <div className="role-user flex justify-start items-end my-2">
-                                                                        {item?.isIndian ? "₹" : '$'} {item?.planPrice} per screen /mo + VAT
+                                                                        {item?.isIndian ? formatINRCurrency(item?.planPrice) : formatToUSCurrency(item?.planPrice)}
+                                                                        per screen /mo + VAT
                                                                     </div>
                                                                 )}
                                                                 <p>{item?.planDetailss}</p>

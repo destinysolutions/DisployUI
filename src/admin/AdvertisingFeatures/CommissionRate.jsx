@@ -111,7 +111,7 @@ export default function CommissionRate() {
         <div>
             <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
                 <div className='border-b border-gray pb-3'>
-                    <h2 className='font-semibold'>Commission Rate</h2>
+                    <h2 className='font-semibold text-2xl'>Commission Rate</h2>
                 </div>
 
                 <div className="clear-both">
@@ -160,7 +160,7 @@ export default function CommissionRate() {
                                     {Commission?.map((x, index) => (
                                         <div key={index}
                                             className="accordions shadow-md p-5 bg-blue-100 border border-blue-400 rounded-lg m-4">
-                                            <div className="section lg:flex md:flex sm:block items-center justify-between"
+                                            <div className="section cursor-pointer lg:flex md:flex sm:block items-center justify-between"
                                                 onClick={() => toggleAccordion(index)}
                                             >
                                                 <div className="flex gap-2 items-center">

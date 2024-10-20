@@ -140,7 +140,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
         }
       });
     } catch (error) {
-      console.log("error handleDeletePermanently Singal --- ", error);
+      console.log("error", error);
     }
   };
 

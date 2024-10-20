@@ -15,7 +15,6 @@ function jwtDecode(token) {
 }
 // ----------------------------------------------------------------------
 export const isValidToken = (accessToken) => {
-  console.log('accessToken :>> ', accessToken);
   if (!accessToken) {
     return false;
   }

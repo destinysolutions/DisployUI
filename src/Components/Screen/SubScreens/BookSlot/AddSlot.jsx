@@ -8,6 +8,7 @@ import {
   constructTimeObjects,
   filterScreensDistance,
   getCurrentTimewithSecound,
+  getTimeZoneName,
   getTodayDate,
   multiOptions,
   removeDuplicates,
@@ -41,6 +42,7 @@ import PhoneInput from "react-phone-input-2";
 import BookSlotTimeZone from "./BookSlotTimeZone";
 import logo from "../../../../images/DisployImg/Black-Logo2.png";
 import { getPurposeScreens, getVaildEmail } from "../../../../Redux/admin/AdvertisementSlice";
+import { socket } from "../../../../App";
 
 
 const AddSlot = () => {
@@ -56,6 +58,7 @@ const AddSlot = () => {
   const optionSelect = Array.from({ length: 60 }, (_, index) => index + 1); // Create an array of numbers from 1 to 60
   const [sidebarload, setSidebarLoad] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
+  console.log('selectedScreens', selectedScreens)
   const [day, setDay] = useState([]);
   const [selectedTimeZone, setSelectedTimeZone] = useState();
   const [repeat, setRepeat] = useState(false);
@@ -146,10 +149,8 @@ const AddSlot = () => {
     selectedScreens?.forEach((item) => {
       if (item?.currency === 'INR') {
         Price += item.Price;
-        console.log('Price  INR:>> ', Price);
       } else {
         // Convert to INR
-        console.log('Price USD:>> ', Price);
         Price += item.Price * conversionRate; // Apply conversion rate
       }
     });
@@ -508,14 +509,6 @@ const AddSlot = () => {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const difference = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-
-    // const start1 = moment(startDate);
-    // const end1 = moment(endDate);
-    // const duration = moment.duration(end1.diff(start1));
-    // console.log('duration :>> ', duration);
-    // const hours = difference.asHours()
-    // console.log('hours :>> ', hours);
-
     setDayDifference(difference);
   }, [startDate, endDate]);
 
@@ -588,13 +581,12 @@ const AddSlot = () => {
       longitude: value?.longitude,
       unit: 'km'
     };
-
     let Params = {
       latitude: value?.latitude,
       longitude: value?.longitude,
       distance: 5,
       unit: 'km',
-      systemCurrency: timeZoneName === 'India Standard Time' ? 'INR' : 'USD',
+      SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
       dates: constructTimeObjects(
         getallTime,
         startDate,
@@ -630,7 +622,7 @@ const AddSlot = () => {
           longitude: item?.longitude,
           distance: parseInt(item1?.area),
           unit: item?.unit,
-          systemCurrency: timeZoneName === 'India Standard Time' ? 'INR' : 'USD',
+          SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
           dates: constructTimeObjects(
             getallTime,
             startDate,
@@ -681,24 +673,32 @@ const AddSlot = () => {
       };
       EventDetails?.push(obj);
     })
+    const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+        day: "2-digit",
+        timeZoneName: "long",
+      })
+      .substring(4);
     let Params = JSON.stringify({
       advBookslotCustomerID: 0,
       name: Name,
       email: Email,
       phoneNumber: PhoneNumber,
       bookSlot: {
+        currency: TimeZone?.includes("India") ? "inr" : "usd",
         bookingSlotCustomerID: 0,
         startDate: startDate,
+        IsAdvCustomer: true,
         endDate: endDate,
         event: EventDetails,
         PaymentDetails: {
           ...paymentMethod,
-          AutoPay: true,
+          AutoPay: false,
           type: "Book Slot",
         },
         isRepeat: repeat,
         repeatDays: day.join(", "),
-        screenIDs: Screenoptions.map((item) => item.output).join(", "),
+        screenIDs: selectedScreens?.map((item) => item?.output).join(", "),
         totalCost: totalCost,
         timezoneID: selectedTimeZone,
         CountryID: selectedCountry,
@@ -731,7 +731,13 @@ const AddSlot = () => {
     axios
       .request(config)
       .then((response) => {
-        console.log('response :>> ', response);
+        const allScreenMacids = selectedScreens?.map((item) => item?.macid).join(", ")
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: allScreenMacids,
+        };
+        socket.emit("ScreenConnected", Params);
         setPage(page + 1);
       })
       .catch((error) => {
@@ -802,7 +808,7 @@ const AddSlot = () => {
       longitude: item?.longitude,
       distance: parseInt(item.area),
       unit: item?.unit,
-      systemCurrency: timeZoneName === 'India Standard Time' ? 'INR' : 'USD',
+      SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
       dates: constructTimeObjects(
         getallTime,
         startDate,
@@ -1003,6 +1009,7 @@ const AddSlot = () => {
 
         {page === 3 && (
           <BookSlotTimeZone
+            Isshow="True"
             handleAddItem={handleAddItem}
             handleSequenceChange={handleSequenceChange}
             handleSequenceTypeChange={handleSequenceTypeChange}
@@ -1038,6 +1045,7 @@ const AddSlot = () => {
         {page === 4 && (
           <>
             <BookSlotMap
+              Isshow="True"
               totalPrice={totalPrice}
               totalDuration={totalDuration}
               // selectedCountry={selectedCountry} 
@@ -1094,7 +1102,8 @@ const AddSlot = () => {
             <div className="lg:w-[700px] md:w-[500px] w-full bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
               <Elements options={options} stripe={stripePromise}>
                 <AddPayment
-                clientSecret={clientSecret}
+                  Isshow="true"
+                  clientSecret={clientSecret}
                   selectedScreens={selectedScreens}
                   totalDuration={totalDuration}
                   totalPrice={totalPrice}

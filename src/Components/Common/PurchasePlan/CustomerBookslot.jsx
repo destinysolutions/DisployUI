@@ -15,12 +15,12 @@ import ThankYouPage from '../../Screen/SubScreens/BookSlot/ThankYouPage';
 import { ADDUPDATESLOT, GET_TIMEZONE_TOKEN, PAYMENT_INTENT_CREATE_REQUEST, SCREEN_LIST, stripePromise } from '../../../Pages/Api';
 import { handlePaymentIntegration } from '../../../Redux/PaymentSlice';
 import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecound, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common';
+import { socket } from '../../../App';
 
 export default function CustomerBookslot({ sidebarOpen }) {
 
     const timeZoneName = new Date().toLocaleDateString(undefined, { day: "2-digit", timeZoneName: "long" }).substring(4);
     const { user, userDetails } = useSelector((state) => state.root.auth);
-    console.log('user :>> ', user);
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [page, setPage] = useState(1);
@@ -590,7 +590,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
                 },
                 isRepeat: repeat,
                 repeatDays: day ? day.join(", ") : moment().format('dddd'),
-                screenIDs: Screenoptions.map((item) => item.output).join(", "),
+                screenIDs: selectedScreens?.map((item) => item?.output).join(", "),
                 totalCost: totalCost,
                 timezoneID: selectedTimeZone,
                 // CountryID: selectedCountry,
@@ -623,6 +623,13 @@ export default function CustomerBookslot({ sidebarOpen }) {
         axios
             .request(config)
             .then((response) => {
+                const allScreenMacids = selectedScreens?.map((item) => item?.macid).join(", ")
+                const Params = {
+                    id: socket.id,
+                    connection: socket.connected,
+                    macId: allScreenMacids,
+                };
+                socket.emit("ScreenConnected", Params);
                 setPage(page + 1);
             })
             .catch((error) => {

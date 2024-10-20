@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react'
-import { PageNumber } from '../Components/Common/Common';
+import { formatINRCurrency, formatToUSCurrency, PageNumber } from '../Components/Common/Common';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import AdvertismentSidebar from './AdvertismentSidebar';
@@ -177,17 +177,16 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     {composition?.status}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {moment(composition.startDate).format("YYYY-MM-DD hh:mm")}
+                                                                    {moment(composition.startDate).format("YYYY-MM-DD")}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {moment(composition.endDate).format("YYYY-MM-DD hh:mm")}
+                                                                    {moment(composition.endDate).format("YYYY-MM-DD")}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
                                                                     {composition?.bookedDuration}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {/* <span className='font-medium mr-2 '>{composition?.currency === 'INR' ? '₹' : '$'}</span> */}
-                                                                    {composition?.paidAmount?.toLocaleString('en-IN')}
+                                                                    {composition?.currency === 'inr' ? formatINRCurrency(composition?.paidAmount) : formatToUSCurrency(composition?.paidAmount)}
                                                                 </td>
                                                             </tr>
                                                         );

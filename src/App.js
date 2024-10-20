@@ -23,12 +23,10 @@ export const socket = io.connect("https://disploysocket.disploy.com");
 
 const App = () => {
   const [timer, setTimer] = useState(0);
+  
   const { user, token, loading, userDetails } = useSelector((state) => state.root.auth);
-  const dispatch = useDispatch();
 
-  // console.log('socket', socket)
-  // console.log('userDetails', userDetails)
-  console.log('user', user)
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(handleNavigateFromCompositionChannel());

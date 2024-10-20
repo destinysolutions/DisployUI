@@ -3,9 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { handleAddCostbyarea } from '../../Redux/admin/AdvertisementSlice';
-import { BsCurrencyDollar } from 'react-icons/bs';
-import { getZoomLevel, greenOptions, IncludeExclude, kilometersMilesToMeters, kilometersToMeters } from '../../Components/Common/Common';
-import { MdCurrencyRupee } from 'react-icons/md';
+import { AllCurrency, getZoomLevel, greenOptions, IncludeExclude, kilometersMilesToMeters } from '../../Components/Common/Common';
 import toast from 'react-hot-toast';
 
 const containerStyle = {
@@ -28,15 +26,34 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
     const [map, setMap] = useState(null);
     const autocompleteRef = useRef(null);
     const [Errors, setErrors] = useState(false);
+    const [AllCurrencyOption, setAllCurrencyOption] = useState([])
     const [markerPosition, setMarkerPosition] = useState(null);
     const [data, setdata] = useState({
         location: '',
         cost: '',
-        range: 0,
-        currency: 'INR',
+        range: 5,
+        currency: '',
         unit: 'km'
 
     });
+
+    useEffect(() => {
+        if (data?.location?.includes("India")) {
+            const currency = AllCurrency?.filter((item) => item?.name === "INR");
+            setdata({
+                ...data,
+                currency: "INR"
+            })
+            setAllCurrencyOption(currency)
+        } else {
+            const currency = AllCurrency?.filter((item) => item?.name === "USD");
+            setdata({
+                ...data,
+                currency: "USD"
+            })
+            setAllCurrencyOption(currency)
+        }
+    }, [data?.location])
 
     useEffect(() => {
         if (EditData) {
@@ -96,7 +113,6 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
         }
     };
 
-
     const onPlaceChanged = () => {
         if (autocompleteRef.current) {
             const place = autocompleteRef.current.getPlace();
@@ -112,7 +128,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                     lat: location.lat(),
                     lng: location.lng(),
                 });
-                setCenter({ lat: location.lat(), lng: location.lng() }); 
+                setCenter({ lat: location.lat(), lng: location.lng() });
             }
         }
     };
@@ -121,7 +137,6 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
         if (!data.cost || !data.location || markerPosition === null || !data.range) {
             return setErrors(true);
         }
-
         const payload = {
             costByAreaID: EditData?.costByAreaID || 0,
             locationName: data.location,
@@ -151,7 +166,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
         <div>
             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-1000 outline-none focus:outline-none">
                 <div className="w-auto my-6 mx-auto lg:max-w-8xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none modal lg:w-[800px] md:w-[800px] md:h-[500px]">
+                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col bg-white outline-none focus:outline-none modal lg:w-[800px] md:w-[800px] md:h-[600px]">
                         <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                             <div className="flex items-center">
                                 <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium ">
@@ -164,7 +179,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                         </div>
                         <div className='grid grid-cols-12 gap-3 p-5 h-full'>
                             <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 border-white shadow-lg rounded-lg px-2'>
-                                <div className=" ">
+                                <div>
                                     <div className='w-full my-3'>
                                         <Autocomplete
                                             onLoad={(ref) => (autocompleteRef.current = ref)}
@@ -218,7 +233,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                                     </div>
                                     <div className='w-full mb-3'>
                                         <div className="flex items-center justify-start   gap-3">
-                                            <label for='Yes' className=" lg:text-base md:text-base sm:text-xs xs:text-xs ">Cost / sec. :</label>
+                                            <label for='Yes' className=" lg:text-base md:text-base sm:text-xs xs:text-xs ">Cost / sec :</label>
                                             <input
                                                 className=" appearance-none border border-[#D5E3FF] rounded w-[100px] py-1 px-3"
                                                 type="number"
@@ -233,8 +248,11 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                                                     value={data?.currency}
                                                     onChange={(e) => setdata({ ...data, currency: e.target.value })}
                                                 >
-                                                    <option value={'INR'}>INR</option>
-                                                    <option value={'USD'}>USD</option>
+                                                    {AllCurrencyOption?.map((item) => {
+                                                        return (
+                                                            <option value={item?.value}>{item?.name}</option>
+                                                        )
+                                                    })}
                                                 </select>
                                             </div>
                                             {/* <div className="border border-[#D5E3FF] rounded font-bold text-black text-3xl">￠</div> */}
@@ -281,7 +299,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                                     </div> */}
                                 </div>
                             </div>
-                            <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 border-white shadow-lg'>
+                            <div className='lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 border-white shadow-lg rounded-lg p-2'>
                                 <div className="h-full">
                                     <GoogleMap
                                         mapContainerStyle={containerStyle}
@@ -308,16 +326,16 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
                                 </div>
                             </div>
                         </div>
-                        <div className="pb-6 flex justify-center mt-3">
+                        <div className="pb-6 flex justify-center mt-3 gap-3">
                             <button
                                 type='button'
-                                className="bg-primary text-white px-8 py-2 rounded-full"
+                                className="bg-primary text-white px-8 py-3 rounded-full"
                                 onClick={onSumbit}
                             >
                                 {EditData?.costByAreaID ? 'Update' : "Save"}
                             </button>
                             <button
-                                className="bg-primary text-white px-4 py-2 rounded-full ml-3"
+                                className="bg-primary text-white px-8 py-3 rounded-full"
                                 onClick={onclose}
                             >
                                 Cancel

@@ -239,7 +239,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
         }
       });
     } catch (error) {
-      console.log("error handleDeletePermanently Singal --- ", error);
+      console.log("error", error);
     }
   };
 
@@ -303,7 +303,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
         }
       });
     } catch (error) {
-      console.log(" handleRestore --- ", error);
+      console.log("error", error);
     }
   };
 

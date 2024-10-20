@@ -1,7 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import Footer from "../Footer";
 import Loading from "../Loading";
 import Sidebar from "../Sidebar";
@@ -11,17 +10,14 @@ import {
   handleUpdateScreenAsset,
 } from "../../Redux/Screenslice";
 import { AiOutlineCloudUpload, AiOutlineSearch } from "react-icons/ai";
-import { PageNumber } from "../Common/Common";
-import ReactTooltip from "react-tooltip";
+import { formatINRCurrency, formatToUSCurrency, PageNumber } from "../Common/Common";
 import { SCREEN_DELETE_ALL } from "../../Pages/Api";
 import toast from "react-hot-toast";
-import { RiDeleteBin5Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { AdvertisementPopup } from "./AdvertisementPopup";
 import { socket } from "../../App";
 import { getAllAdvertisementScreenData } from "../../Redux/AdvertisentScreenSlice";
 import { BsPlayCircleFill } from "react-icons/bs";
-import moment from "moment";
 import ShowAssetModal from "../ShowAssetModal";
 
 const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
@@ -496,8 +492,7 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                     </td> */}
 
                                         <td className="text-[#5E5E5E] mw-200 text-center">
-                                          <span className='font-medium mr-2 '>{screen?.currency === 'INR' ? '₹' : '$'}</span>
-                                          {screen?.payout?.toLocaleString('en-IN')}
+                                          {screen?.currency === 'INR' ? formatINRCurrency(screen?.payout) : formatToUSCurrency(screen?.payout)}
                                         </td>
                                       </tr>
                                     );

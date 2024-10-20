@@ -43,6 +43,7 @@ import MicrosoftBtn from "./MicrosoftBtn";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import PhoneInput from "react-phone-input-2";
 import { LoginSocialFacebook } from "reactjs-social-login";
+import TermsConditions from "../Components/Common/TermsConditions";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -205,11 +206,11 @@ const Registration = () => {
       }
       const formData = new FormData();
       const TimeZone = new Date()
-      .toLocaleDateString(undefined, {
+        .toLocaleDateString(undefined, {
           day: "2-digit",
           timeZoneName: "long",
-      })
-      .substring(4);
+        })
+        .substring(4);
       formData.append("OrganizationName", values.companyName);
       formData.append("Password", values.password);
       formData.append("FirstName", values.firstName);
@@ -269,8 +270,8 @@ const Registration = () => {
     //  return console.log(data);
     const TimeZone = new Date()
       .toLocaleDateString(undefined, {
-          day: "2-digit",
-          timeZoneName: "long",
+        day: "2-digit",
+        timeZoneName: "long",
       })
     const formData = new FormData();
 
@@ -328,8 +329,8 @@ const Registration = () => {
     setLoading(true)
     const TimeZone = new Date()
       .toLocaleDateString(undefined, {
-          day: "2-digit",
-          timeZoneName: "long",
+        day: "2-digit",
+        timeZoneName: "long",
       })
     const res = await signInWithPopup(auth, Googleauthprovider)
       .then((result) => {
@@ -399,10 +400,10 @@ const Registration = () => {
     try {
       setLoading(true)
       const TimeZone = new Date()
-      .toLocaleDateString(undefined, {
+        .toLocaleDateString(undefined, {
           day: "2-digit",
           timeZoneName: "long",
-      })
+        })
       const res = await signInWithPopup(auth, facebookProvider);
 
       const formData = new FormData();
@@ -536,7 +537,7 @@ const Registration = () => {
             <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0  xl:p-0 lg:min-w-[600px] md:min-w-[600px] sm:min-w-auto xs:min-w-auto">
               <div className="p-3 sm:px-8 py-1">
                 <div className="my-1 font-inter not-italic font-medium text-[24px] text-white mt-4">
-                  Create account
+                  Create an account
                 </div>
                 <div className="mb-8 font-['Poppins'] not-italic font-normal text-[16px] text-white">
                   Fill in the fields below to sign up for an account.
@@ -824,114 +825,12 @@ const Registration = () => {
       </div>
 
       {showModal && (
-        <div className="backdrop bg-white">
-          <div ref={modalRef} className="user-model-TC">
-            <div className="relative  overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 p-4">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white w-full max-w-2xl max-h-full">
-                  Terms And Conditions
-                </h3>
-                <button
-                  type="button"
-                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                  data-modal-hide="default-modal"
-                  onClick={() => {
-                    setShowModal(false);
-                  }}
-                >
-                  <svg
-                    className="w-3 h-3"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                  <span className="sr-only">Close modal</span>
-                </button>
-              </div>
-              <div className="p-4 md:p-5 space-y-4 overflow-y-auto max-h-[calc(100vh - 200px)]">
-                <ol className="space-y-4 text-gray-500 list-decimal list-inside dark:text-gray-400">
-                  <li>
-                    <b>Prohibited Activities</b>
-                    <ul className="ps-5 mt-2 space-y-1 list-disc list-inside">
-                      <li>
-                        You may not access or use the Site for any purpose other
-                        than that for which we make the Site available. The Site
-                        may not be used in connection with any commercial
-                        endeavors except those that are specifically endorsed or
-                        approved by us.
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <b>Contribution License</b>
-                    <ul className="ps-5 mt-2 space-y-1 list-disc list-inside">
-                      <li>
-                        You and the Site agree that we may access, store,
-                        process, and use any information and personal data that
-                        you provide following the terms of the Privacy Policy
-                        and your choices (including settings). By submitting
-                        suggestions or other feedback regarding the Site, you
-                        agree that we can use and share such feedback for any
-                        purpose without compensation to you.
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <b>Term And Termination</b>
-                    <ul className="ps-5 mt-2 space-y-1 list-disc list-inside">
-                      <li>
-                        These terms of use shall remain in full force and effect
-                        while you use the site. Without limiting any other
-                        provision of these terms of use, we reserve the right
-                        to, in our sole discretion and without notice or
-                        liability, deny access to and use of the site and the
-                        marketplace offerings (including blocking certain ip
-                        addresses), to any person for any reason or for no
-                        reason, including without limitation for breach of any
-                        representation, warranty, or covenant contained in these
-                        terms of use or of any applicable law or regulation. We
-                        may terminate your use or participation in the site and
-                        the marketplace offerings or delete any content or
-                        information that you posted at any time, without
-                        warning, in our sole discretion.
-                      </li>
-                    </ul>
-                  </li>
-                </ol>
-              </div>
-              <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                <button
-                  data-modal-hide="default-modal"
-                  type="button"
-                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  onClick={() => handleAcceptTerms()}
-                >
-                  I accept
-                </button>
-                <button
-                  data-modal-hide="default-modal"
-                  type="button"
-                  className="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
-                  onClick={() => {
-                    setShowModal(false);
-                    setIsCheckboxChecked();
-                  }}
-                >
-                  Decline
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <TermsConditions
+          handleAcceptTerms={handleAcceptTerms}
+          modalRef={modalRef}
+          setShowModal={setShowModal}
+          setIsCheckboxChecked={setIsCheckboxChecked}
+        />
       )}
       {/* registration form end*/}
     </>

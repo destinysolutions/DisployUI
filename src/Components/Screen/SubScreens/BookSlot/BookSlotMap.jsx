@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FiMapPin } from 'react-icons/fi';
 import Select from "react-select";
-import { filterScreensDistance, formatToUSCurrency, greenOptions, IncludeExclude, kilometersMilesToMeters, kilometersToMeters, secondsToDDHHMMSS, secondsToHMS, } from '../../../Common/Common';
+import { filterScreensDistance, formatINRCurrency, formatToUSCurrency, greenOptions, IncludeExclude, kilometersMilesToMeters, kilometersToMeters, secondsToDDHHMMSS, secondsToHMS, } from '../../../Common/Common';
 import L from "leaflet";
 import mapImg from "../../../../images/DisployImg/mapImg.png";
 import { Autocomplete, GoogleMap, useLoadScript, Circle, Marker, InfoWindow, MarkerClusterer, } from '@react-google-maps/api';
@@ -33,10 +33,14 @@ export default function BookSlotMap({ totalPrice,
     setSelectedVal,
     selectedVal,
     handleSelectunit,
-    Open, setSelectedItem,
-    selectedItem, setOpen,
-    Error, totalCost, timeZoneName
-
+    Open,
+    setSelectedItem,
+    selectedItem,
+    setOpen,
+    Error,
+    totalCost,
+    timeZoneName,
+    Isshow
 }) {
 
     const autocompleteRef = useRef(null);
@@ -176,6 +180,9 @@ export default function BookSlotMap({ totalPrice,
                 value: item?.value,
                 Price: item?.Price,
                 currency: item?.currency,
+                macid:item?.macid,
+                screenID:item?.screenID,
+                output:item?.output,
                 label: (
                     <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                         <span className='text-sm'>{item?.label}</span>
@@ -200,6 +207,9 @@ export default function BookSlotMap({ totalPrice,
                 value: item?.value,
                 currency: item?.currency,
                 Price: item?.Price,
+                macid:item?.macid,
+                screenID:item?.screenID,
+                output:item?.output,
                 label: (
                     <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                         <span className='text-sm'>{item?.label}</span>
@@ -228,6 +238,9 @@ export default function BookSlotMap({ totalPrice,
                     value: item?.value,
                     currency: item?.currency,
                     Price: item?.Price,
+                    macid:item?.macid,
+                    screenID:item?.screenID,
+                    output:item?.output,
                     label: (
                         <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                             <span className='text-sm'>{item?.label}</span>
@@ -240,6 +253,9 @@ export default function BookSlotMap({ totalPrice,
                     value: item?.value,
                     currency: item?.currency,
                     Price: item?.Price,
+                    macid:item?.macid,
+                    screenID:item?.screenID,
+                    output:item?.output,
                     label: (
                         <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                             <span className='text-sm'>{item?.label}</span>
@@ -251,26 +267,35 @@ export default function BookSlotMap({ totalPrice,
 
             ]) : screenOptions),
         ...(!ReferralScreens?.length < 0 ? screenOptions : [])
-    ]
+    ];
 
     if (!isLoaded) return;
 
 
     return (
         <div className="w-full h-full p-5 flex items-center justify-center  ">
-            <div className="lg:w-[900px] md:w-[700px] w-full bg-white lg:p-6 p-3 rounded-lg shadow-lg">
-                <div className="flex items-center justify-center">
-                    <img
-                        alt="Logo"
-                        src={logo}
-                        className="cursor-pointer duration-500 w-52"
-                    />
-                </div>
-                <div className="grid grid-cols-8 gap-4 pt-5">
-                    <div className="col-span-5">
-                        <div className="flex flex-row items-center gap-2 mb-2">
-                            <h2 className="text-xl font-semibold">Find Your Screens</h2>
-                        </div>
+            <div className={`${Isshow === "True" ? "lg:w-[900px] md:w-[700px] lg:p-6 p-3" : "w-full p-10"} w-full bg-white  rounded-lg shadow-lg`}>
+                {Isshow === "True" && (
+                    <div className="flex items-center justify-center">
+                        <img
+                            alt="Logo"
+                            src={logo}
+                            className="cursor-pointer duration-500 w-52"
+                        />
+                    </div>
+                )}
+                {Isshow !== "True" && (
+                    <div className="flex flex-row justify-center items-center gap-2 mb-2">
+                        <h2 className="text-xl font-semibold">Find your Screens</h2>
+                    </div>
+                )}
+                <div className={`grid grid-cols-8 ${Isshow === "True" ? "gap-4 pt-5" : "gap-8 pt-2"} `}>
+                    <div className={` ${Isshow === "True" ? "col-span-5" : "col-span-4 bg-white shadow-xl p-5 rounded-lg"} `}>
+                        {Isshow === "True" && (
+                            <div className="flex flex-row items-center gap-2 mb-2">
+                                <h2 className="text-xl font-semibold">Find Your Screens</h2>
+                            </div>
+                        )}
                         <div className="flex flex-col gap-2 h-full">
                             <div className='overflow-y-scroll max-h-28'>
                                 {allArea?.map((item, index) => {
@@ -392,11 +417,12 @@ export default function BookSlotMap({ totalPrice,
                                         </div>
                                     );
                                 })}
-                            </div>
+                            </div >
 
-                            {allArea?.length < 5 && (
-                                <div className="flex justify-between items-center gap-4">
-                                    {/* <select
+                            {
+                                allArea?.length < 5 && (
+                                    <div className="flex justify-between items-center gap-4">
+                                        {/* <select
                                         className="border border-primary rounded-lg px-4 pl-2 py-2 w-36"
                                         value={selectedValue}
                                         onChange={handleChange}
@@ -408,27 +434,28 @@ export default function BookSlotMap({ totalPrice,
                                         ))}
                                     </select> */}
 
-                                    <div className="w-full">
-                                        <div className="relative col-span-2">
-                                            <div className="col-span-3">
-                                                <Autocomplete
-                                                    onLoad={(ref) => (autocompleteRef.current = ref)}
-                                                    onPlaceChanged={onPlaceChanged}
-                                                >
-                                                    <div className='relative'>
-                                                        <span className="flex items-center absolute top-2 bottom-2 left-2 ">
-                                                            <IoSearch className="w-5 h-5 text-black " />
-                                                        </span>
-                                                        <input value={selectedVal} type="text" placeholder="Search for an area" className='appearance-none border border-[#D5E3FF] rounded w-full py-2 px-9' onChange={(e) => setSelectedVal(e.target.value)} />
-                                                    </div>
-                                                </Autocomplete>
+                                        <div className="w-full">
+                                            <div className="relative col-span-2">
+                                                <div className="col-span-3">
+                                                    <Autocomplete
+                                                        onLoad={(ref) => (autocompleteRef.current = ref)}
+                                                        onPlaceChanged={onPlaceChanged}
+                                                    >
+                                                        <div className='relative'>
+                                                            <span className="flex items-center absolute top-2 bottom-2 left-2 ">
+                                                                <IoSearch className="w-5 h-5 text-black " />
+                                                            </span>
+                                                            <input value={selectedVal} type="text" placeholder="Search for an area" className='appearance-none border border-[#D5E3FF] rounded w-full py-2 px-9' onChange={(e) => setSelectedVal(e.target.value)} />
+                                                        </div>
+                                                    </Autocomplete>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            )}
+                                )
+                            }
 
-                            <div className="mt-5 flex flex-col">
+                            < div className="mt-5 flex flex-col" >
                                 <GoogleMap
                                     mapContainerStyle={containerStyle}
                                     center={locations}
@@ -491,10 +518,10 @@ export default function BookSlotMap({ totalPrice,
                                         </InfoWindow>
                                     )}
                                 </GoogleMap>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col col-span-3 gap-2">
+                            </div >
+                        </div >
+                    </div >
+                    <div className={`flex flex-col gap-2 ${Isshow === "True" ? "col-span-3" : "col-span-4 bg-white shadow-xl p-5 rounded-lg"} `}>
                         <div className='flex flex-row gap-2 items-center'>
                             <div className='font-semibold'>Reach</div>
                             <div className="text-lg bg-zinc-300 p-0.5 rounded-lg px-2">
@@ -540,25 +567,29 @@ export default function BookSlotMap({ totalPrice,
                                 styles={customStyles}
                             />
                         </div>
-                        <div className="h-full w-full flex items-end">
-                            <div className='w-full'>
+                        <div className={`h-full w-full flex items-end `}>
+                            <div className={`w-full ${Isshow === "True" ? "" : "gap-2 flex flex-col"}`}>
                                 <div className="flex items-center justify-between  w-full">
-                                    <label className="text-md font-medium">Repetition Duration:</label>
-                                    <label for='Yes' className=" lg:text-md md:text-md sm:text-sm xs:text-xs">{secondsToDDHHMMSS(totalDuration)}</label>
+                                    <label className="text-md font-medium">Total Booked Duration:</label>
+                                    <label className=" lg:text-md md:text-md sm:text-sm xs:text-xs">{secondsToDDHHMMSS(totalDuration)}</label>
                                 </div>
-                                {/* <div className="flex items-center justify-between">
-                                    <label className="text-sm font-medium">Total balance credit:</label>
-                                    <label for='Yes' className=" lg:text-sm md:text-sm sm:text-xs xs:text-xs">$0.00</label>
-                                    </div> */}
+                                {Isshow !== "True" && (
+                                    <div className="flex items-center justify-between">
+                                        <label className="text-md font-medium">Total balance credit:</label>
+                                        <label className="lg:text-sm md:text-sm sm:text-xs xs:text-xs">{timeZoneName === 'India Standard Time' ? '₹' : '$'}0.00</label>
+                                    </div>
+                                )}
                                 <div className="flex items-center justify-between">
                                     <label className="text-md font-medium">Total Payable Amount:</label>
-                                    <label for='Yes' className=" lg:text-md md:text-md sm:text-sm xs:text-xs">{timeZoneName === 'India Standard Time' ? '₹' : '$'} {formatToUSCurrency(totalCost)}</label>
+                                    <label className=" lg:text-md md:text-md sm:text-sm xs:text-xs">
+                                        {timeZoneName === 'India Standard Time' ? formatINRCurrency(totalCost) : formatToUSCurrency(totalCost)}
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className='py-4'>
+                </div >
+                <div className={`${Isshow === "True" ? "py-4" : "py-6"}`}>
                     <hr />
                 </div>
                 <div className="flex justify-center items-center">
@@ -575,7 +606,7 @@ export default function BookSlotMap({ totalPrice,
                         Book Your Slot
                     </button>
                 </div>
-            </div>
+            </div >
 
         </div >
 

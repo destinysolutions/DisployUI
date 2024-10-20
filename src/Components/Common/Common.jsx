@@ -193,7 +193,9 @@ export function multiOptions(arr) {
     screenOrientation: screen?.screenOrientation,
     output: `${screen?.screenID}_${screen?.organizationID}`,
     isReferral: screen?.isReferral,
-    currency: screen?.currency
+    currency: screen?.currency,
+    macid: screen?.macid,
+    screenID:screen?.screenID
   }));
 }
 
@@ -356,7 +358,9 @@ export function constructTimeObjects(getallTime, startDate, endDate, repeat, day
       startTime: `${item?.startTime}`,
       endTime: `${item?.endTime}`,
       isRepeat: repeat,
-      repeatDays: day?.length > 0 ? day.join(", ") : moment().format('dddd'),
+      repeatDays: repeat
+        ? (day?.length > 0 ? day.join(", ") : moment().format('dddd'))
+        : null,
       systemTimeZone: getTimeZoneName(allTimeZone, selectedTimeZone),
       refcode: allSlateDetails ? allSlateDetails?.refVale : null,
     };
@@ -856,8 +860,16 @@ export const getFirstDayOfMonthforsunday = (year, month) => {
 
 export function formatToUSCurrency(amount) {
   return new Intl.NumberFormat('en-US', {
-    // style: 'currency',
+    style: 'currency',
     currency: 'USD',
+  }).format(amount);
+}
+
+export function formatINRCurrency(amount) {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 2, // Ensures 2 decimal places
   }).format(amount);
 }
 
@@ -1029,3 +1041,13 @@ export const countryList = {
   ZMK: "ZM",
   ZWD: "ZW",
 };
+
+
+export const AllCurrency = [{
+  name: "INR",
+  value: "INR"
+},
+{
+  name: "USD",
+  value: "USD"
+}]

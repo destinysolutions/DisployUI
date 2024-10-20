@@ -37,26 +37,28 @@ export default function BookSlotTimeZone({
     page,
     selectedDays,
     totalDuration,
-    type, closeRepeatDay
+    type,
+    closeRepeatDay,
+    Isshow
 }) {
     const navigate = useNavigate()
 
     return (
         <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[900px] md:w-[700px] w-full max-h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+            <div className={`${Isshow === "True" ? "lg:w-[900px] md:w-[700px] w-full max-h-[70vh] lg:p-6 p-3" : "w-full p-10"} bg-white  rounded-lg shadow-lg overflow-auto`}>
                 {/* <div className="text-2xl font-semibold">Book Slot</div>*/}
-                <div className="flex items-center justify-center mb-4">
-                    {!type && (
+                {Isshow === "True" && (
+                    <div className="flex items-center justify-center mb-4">
                         <img
                             alt="Logo"
                             src={logo}
                             className="cursor-pointer duration-500 w-52"
                         />
-                    )}
-                </div>
+                    </div>
+                )}
                 <div className="grid grid-cols-4 gap-4 w-full ">
                     <div className="col-span-4">
-                        <div className="flex flex-col gap-4">
+                        <div className={`flex flex-col ${Isshow === "True" ? "gap-4" : "gap-6"}`}>
                             {/*<div>TimeZone</div>*/}
                             <div className="flex items-center gap-2">
                                 {/* <IoEarthSharp /> */}
@@ -128,8 +130,8 @@ export default function BookSlotTimeZone({
 
                             {!repeat && (
                                 <div className="grid grid-cols-4 gap-4">
-                                    <div className="relative w-full col-span-2">
-                                        <label className="text-base font-medium w-20 mr-2">Start Date:</label>
+                                    <div className={`relative w-full col-span-2 ${Isshow === "True" ? "" : "flex flex-col gap-2"}`}>
+                                        <label className="text-base font-medium mr-2">Start Date:</label>
                                         <input
                                             type="date"
                                             value={startDate}
@@ -137,8 +139,8 @@ export default function BookSlotTimeZone({
                                             className="formInput"
                                         />
                                     </div>
-                                    <div className="relative w-full col-span-2">
-                                        <label className="text-base font-medium w-20 mr-2">End Date:</label>
+                                    <div className={`relative w-full col-span-2 ${Isshow === "True" ? "" : "flex flex-col gap-2"}`}>
+                                        <label className="text-base font-medium mr-2">End Date:</label>
                                         <input
                                             type="date"
                                             min={startDate}
@@ -154,7 +156,7 @@ export default function BookSlotTimeZone({
                                 <div>
                                     <div className="gap-4 flex">
                                         <div className="icons flex items-center">
-                                            <div>
+                                            <div className='mt-2'>
                                                 <button
                                                     className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                                                     onClick={() => {
@@ -165,8 +167,8 @@ export default function BookSlotTimeZone({
                                                 </button>
                                             </div>
                                         </div>
-                                        <div className="relative w-full col-span-2">
-                                            <label className="text-base font-medium w-20 mr-2">Start Date:</label>
+                                        <div className={`relative w-full col-span-2 ${Isshow === "True" ? "" : "flex flex-col gap-2"}`}>
+                                            <label className="text-base font-medium mr-2">Start Date:</label>
                                             <input
                                                 type="date"
                                                 value={startDate}
@@ -174,8 +176,8 @@ export default function BookSlotTimeZone({
                                                 className="formInput"
                                             />
                                         </div>
-                                        <div className="relative w-full col-span-2">
-                                            <label className="text-base font-medium w-20 mr-2">End Date:</label>
+                                        <div className={`relative w-full col-span-2 ${Isshow === "True" ? "" : "flex flex-col gap-2"}`}>
+                                            <label className="text-base font-medium mr-2">End Date:</label>
                                             <input
                                                 type="date"
                                                 value={endDate}
@@ -382,7 +384,7 @@ export default function BookSlotTimeZone({
                                         <div>
                                             {buttons.map((label, index) => (
                                                 <button
-                                                    className={`border border-primary px-3 py-1 mr-2 mb-2 rounded-full ${selectedDays[index] &&
+                                                    className={`border border-primary ${Isshow === "True" ? "px-3 py-1 mr-2 mb-2" : "px-4 py-2 mr-3 mb-4"} rounded-full ${selectedDays[index] &&
                                                         "bg-SlateBlue border-white"
                                                         }`}
                                                     key={index}
@@ -399,13 +401,13 @@ export default function BookSlotTimeZone({
                             </div>
                         </div>
                         <hr />
-                        <div className='flex justify-center font-semibold text-lg my-3'>
+                        <div className={`flex justify-center font-semibold text-lg ${Isshow === "True" ? "my-3" : "my-4"}`}>
                             <p>Total Booked Duration: {secondsToDDHHMMSS(totalDuration)}</p>
                         </div>
                         <div className="w-full">
                             <div className="flex justify-center h-full items-end">
                                 <button
-                                    className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-4 md:px-8 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                    className="sm:ml-2 xs:ml-1 flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-4 md:px-8 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                                     onClick={() => {
                                         if (type === 'BookYourSlot') {
                                             navigate('/book-your-slot')
@@ -414,7 +416,7 @@ export default function BookSlotTimeZone({
                                         }
                                     }}
                                 >
-                                    Back
+                                    {Isshow === "True" ? "Back" : "Cancel"}
                                 </button>
                                 <button
                                     type="button"
