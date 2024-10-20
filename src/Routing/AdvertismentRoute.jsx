@@ -6,6 +6,7 @@ import ErrorFallback from '../Components/ErrorFallback';
 import Dashboard from '../Advertisment/Dashboard';
 import AdvertisementReports from '../Advertisment/AdvertisementReports';
 import AdvertismentInvoice from '../Advertisment/AdvertismentInvoice';
+import AddCustomerBookslot from '../Advertisment/AddCustomerBookslot';
 
 const AdvertismentRoute = ({ sidebarOpen, setSidebarOpen }) => {
     return (
@@ -43,6 +44,15 @@ const AdvertismentRoute = ({ sidebarOpen, setSidebarOpen }) => {
                         path="/invoice"
                         element={
                             <AdvertismentInvoice
+                                sidebarOpen={sidebarOpen}
+                                setSidebarOpen={setSidebarOpen}
+                            />
+                        }
+                    />
+                    <Route
+                        path="/addbookyourslot"
+                        element={
+                            <AddCustomerBookslot
                                 sidebarOpen={sidebarOpen}
                                 setSidebarOpen={setSidebarOpen}
                             />

@@ -46,11 +46,13 @@ export default function BookSlotTimeZone({
             <div className="lg:w-[900px] md:w-[700px] w-full max-h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
                 {/* <div className="text-2xl font-semibold">Book Slot</div>*/}
                 <div className="flex items-center justify-center mb-4">
-                    <img
-                        alt="Logo"
-                        src={logo}
-                        className="cursor-pointer duration-500 w-52"
-                    />
+                    {!type && (
+                        <img
+                            alt="Logo"
+                            src={logo}
+                            className="cursor-pointer duration-500 w-52"
+                        />
+                    )}
                 </div>
                 <div className="grid grid-cols-4 gap-4 w-full ">
                     <div className="col-span-4">

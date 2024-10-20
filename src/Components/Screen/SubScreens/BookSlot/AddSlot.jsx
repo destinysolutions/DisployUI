@@ -295,8 +295,14 @@ const AddSlot = () => {
 
 
   const FetchScreen = async (Params) => {
+    const toastId = toast.loading('Loading ...', {
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
 
-    const toastId = toast.loading('Loading ...');
+    console.log('toastId 1:>> ', toastId);
 
     const config = {
       method: 'post',
@@ -310,7 +316,6 @@ const AddSlot = () => {
 
     try {
       const response = await axios.request(config);
-
       if (response?.data?.status === 200) {
         toast.dismiss(toastId);
 
@@ -341,7 +346,7 @@ const AddSlot = () => {
         }
       }
     } catch (error) {
-      toast.dismiss(toastId);
+      // toast.dismiss(toastId);
       console.error(error);
       toast.error('Failed to load data');
     }
@@ -583,12 +588,13 @@ const AddSlot = () => {
       longitude: value?.longitude,
       unit: 'km'
     };
-    console.log('allSlateDetails :>> ', allSlateDetails);
+
     let Params = {
       latitude: value?.latitude,
       longitude: value?.longitude,
       distance: 5,
       unit: 'km',
+      systemCurrency: timeZoneName === 'India Standard Time' ? 'INR' : 'USD',
       dates: constructTimeObjects(
         getallTime,
         startDate,
@@ -624,6 +630,7 @@ const AddSlot = () => {
           longitude: item?.longitude,
           distance: parseInt(item1?.area),
           unit: item?.unit,
+          systemCurrency: timeZoneName === 'India Standard Time' ? 'INR' : 'USD',
           dates: constructTimeObjects(
             getallTime,
             startDate,
@@ -755,7 +762,7 @@ const AddSlot = () => {
   const handleBookSlot = () => {
 
     const sameTimeZone = getallTime.some((item) => {
-      return item.startTime === item.endTime
+      return item.startTime >= item.endTime
     });
 
     const hasMissingImages = getallTime.some((item) => {
@@ -795,6 +802,7 @@ const AddSlot = () => {
       longitude: item?.longitude,
       distance: parseInt(item.area),
       unit: item?.unit,
+      systemCurrency: timeZoneName === 'India Standard Time' ? 'INR' : 'USD',
       dates: constructTimeObjects(
         getallTime,
         startDate,
