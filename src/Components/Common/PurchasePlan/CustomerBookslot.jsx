@@ -14,7 +14,7 @@ import ImageUploadPopup from '../../Screen/SubScreens/BookSlot/ImageUploadPopup'
 import ThankYouPage from '../../Screen/SubScreens/BookSlot/ThankYouPage';
 import { ADDUPDATESLOT, GET_TIMEZONE_TOKEN, PAYMENT_INTENT_CREATE_REQUEST, SCREEN_LIST, stripePromise } from '../../../Pages/Api';
 import { handlePaymentIntegration } from '../../../Redux/PaymentSlice';
-import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecound, getTimeZoneName, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common';
+import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecound, getTimeZoneName, getTotalDurationInSeconds, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common';
 import { socket } from '../../../App';
 
 export default function CustomerBookslot({ sidebarOpen }) {
@@ -212,39 +212,53 @@ export default function CustomerBookslot({ sidebarOpen }) {
         setDayDifference(difference);
     }, [startDate, endDate]);
 
+    // useEffect(() => {
+    //     let arr = [];
+    //     let count = 0;
+
+    //     getallTime?.forEach((item) => {
+    //         let start = `${item?.startTime}`;
+    //         let end = `${item?.endTime}`;
+    //         let sequence = `${item?.sequence}`;
+    //         let obj = {
+    //             ...item, Duration: timeDifferenceInSeconds(start, end),
+    //             SqunceDuration: timeDifferenceInSequence(start, end,
+    //                 item?.Duration,
+    //                 sequence,
+    //                 item?.aftereventType,
+    //                 item?.afterevent,
+    //                 dayDifference)
+    //         };
+
+    //         count += obj?.SqunceDuration ? Math.floor(obj?.SqunceDuration) : Math.floor(obj?.Duration);
+    //         arr.push(obj);
+
+    //     });
+
+    //     if (!repeat) {
+    //         setTotalDuration(count);
+    //     } else if (repeat) {
+    //         const totalDays = countAllDaysInRange();
+
+    //         setTotalDuration(count);
+    //     }
+
+    //     setGetAllTime(arr);
+    // }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference]);
+
     useEffect(() => {
-        let arr = [];
         let count = 0;
-
-        getallTime?.forEach((item) => {
-            let start = `${item?.startTime}`;
-            let end = `${item?.endTime}`;
-            let sequence = `${item?.sequence}`;
-            let obj = {
-                ...item, Duration: timeDifferenceInSeconds(start, end),
-                SqunceDuration: timeDifferenceInSequence(start, end,
-                    item?.Duration,
-                    sequence,
-                    item?.aftereventType,
-                    item?.afterevent,
-                    dayDifference)
-            };
-
-            count += obj?.SqunceDuration ? Math.floor(obj?.SqunceDuration) : Math.floor(obj?.Duration);
-            arr.push(obj);
-
-        });
-
-        if (!repeat) {
-            setTotalDuration(count);
-        } else if (repeat) {
-            const totalDays = countAllDaysInRange();
-
-            setTotalDuration(count);
+        const totalDays = countAllDaysInRange();
+        const totalDurations = getTotalDurationInSeconds(getallTime);
+        if (totalDays > 0) {
+          count = totalDays * totalDurations
+        } else {
+          count = count + totalDurations
         }
-
-        setGetAllTime(arr);
-    }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference]);
+        setTotalDuration(count)
+    
+      }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference, selectedDays])
+    
 
     useEffect(() => {
         if (repeat) {
@@ -291,21 +305,26 @@ export default function CustomerBookslot({ sidebarOpen }) {
 
     const handleBookSlot = () => {
         const sameTimeZone = getallTime.some((item) => {
-            return item.startTime >= item.endTime
+          return item.startTime > item.endTime
         });
-
+        const sameTime = getallTime.some((item) => {
+          return item.startTime == item.endTime
+        });
+    
         const hasMissingImages = getallTime.some((item) => {
-            return !item.verticalImage && !item.horizontalImage
+          return !item.verticalImage && !item.horizontalImage
         });
-
+    
         if (sameTimeZone) {
-            return toast.error('End Time must be greater than start Time.');
+          return toast.error('End Time must be greater than start Time.');
+        } else if (sameTime) {
+          return toast.error('Start Time and Time Time both are same.');
         } else if (hasMissingImages) {
-            return toast.error("Please upload valid Vertical and Horizontal images.");
+          return toast.error("Please upload valid Vertical and Horizontal images.");
         } else {
-            setPage(page + 1);
+          setPage(page + 1);
         }
-    };
+      };
 
 
     // page 2
@@ -365,6 +384,12 @@ export default function CustomerBookslot({ sidebarOpen }) {
 
     const handleRangeChange = (e, item) => {
         e.preventDefault();
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
         let arr = allArea.map((item1) => {
             if (item1?.searchValue === item?.searchValue) {
                 let Params = {
@@ -372,7 +397,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
                     longitude: item?.longitude,
                     distance: parseInt(item1?.area),
                     unit: item?.unit,
-                    SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
+                    SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
                     dates: constructTimeObjects(
                         getallTime,
                         startDate,
@@ -489,13 +514,19 @@ export default function CustomerBookslot({ sidebarOpen }) {
         // } else {
         //     setError(false)
         // }
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
 
         const Params = {
             latitude: item?.latitude,
             longitude: item?.longitude,
             distance: parseInt(item.area),
             unit: item?.unit,
-            SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
+            SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
             dates: constructTimeObjects(
                 getallTime,
                 startDate,
@@ -525,13 +556,18 @@ export default function CustomerBookslot({ sidebarOpen }) {
             longitude: value?.longitude,
             unit: 'km',
         };
-
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
         let Params = {
             latitude: value?.latitude,
             longitude: value?.longitude,
             distance: 5,
             unit: 'km',
-            SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
+            SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
             dates: constructTimeObjects(
                 getallTime,
                 startDate,
@@ -569,7 +605,6 @@ export default function CustomerBookslot({ sidebarOpen }) {
                 bookingSlotCustomerEventID: 0,
                 startTime: item?.startTime,
                 endTime: item?.endTime,
-
                 sequence: item?.sequence,
                 customSequence: item?.afterevent || 0,
                 isHour: item?.aftereventType === "Hour" ? true : false,
@@ -580,13 +615,19 @@ export default function CustomerBookslot({ sidebarOpen }) {
             };
             EventDetails?.push(obj);
         })
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
         let Params = JSON.stringify({
             advBookslotCustomerID: 0,
             // name: Name,
             email: user?.isAdvCustomer ? user?.emailID : null,
             // phoneNumber: PhoneNumber,
             bookSlot: {
-                currency: timeZoneName?.includes("India") ? "inr" : "usd",
+                currency: TimeZone?.includes("India") ? "inr" : "usd",
                 bookingSlotCustomerID: 0,
                 userID: user?.userID,
                 isAdvCustomer: user?.isAdvCustomer,

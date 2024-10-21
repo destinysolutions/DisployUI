@@ -192,16 +192,10 @@ export default function BookSlotTimeZone({
 
                             <div>
                                 <div className="overflow-auto w-[100%] max-h-44">
-                                    {/* <div className={`flex items-center justify-between border`}>
-                                        <label className="text-base font-medium ">Start Time</label>
-                                        <label className="text-base font-medium ">End Time</label>
-                                        <label className="text-base font-medium ">Frequent</label>
-                                    </div> */}
                                     {getallTime?.map((item, index) => {
                                         return (
                                             <div
                                                 className="flex items-center justify-center gap-4 mb-3 w-full"
-                                                // className="grid lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-2 gap-4 mb-3"
                                                 key={index}
                                             >
                                                 <div className="relative w-full col-span-1">
@@ -232,7 +226,7 @@ export default function BookSlotTimeZone({
                                                 </div>
 
                                                 <div className="relative  col-span-4 flex justify-center items-center gap-4">
-                                                    <div className="relative  col-span-1 " >
+                                                   {/* <div className="relative  col-span-1 " >
                                                         <select
                                                             title='Frequent'
                                                             className="border border-primary rounded-lg pl-2 py-2 w-40"
@@ -240,25 +234,15 @@ export default function BookSlotTimeZone({
                                                             onChange={(e) => handleSequenceChange(index, e.target.value)}
                                                             disabled={item?.Duration === 0}
                                                         >
-                                                            {/* hidden */}
+                                                        
                                                             <option value="" className="">Select</option>
-                                                            {/* {item?.Duration <= 60 && (
-                                                                <>
-                                                                    <option value="In every minute">In every minute</option>
-                                                                </>
-                                                            )}
-                                                            {item?.Duration <= 3600 && (
-                                                                <>
-                                                                    <option value="In every hour">In every hour</option>
-                                                                </>
-                                                            )} */}
+                                                            
                                                             <option value="In every minute">In every minute</option>
                                                             <option value="In every hour">In every hour</option>
                                                             <option value="Custom" >Custom</option>
                                                         </select>
                                                     </div>
                                                     {item?.sequence === "Custom" && (
-                                                        // console.log('item :>> ', item),
                                                         <di div className=" flex items-center   justify-center ">
                                                             <label className="text-sm font-medium w-20 mr-2">After every:</label>
                                                             <div className="flex justify-center items-center gap-2 ">
@@ -290,7 +274,7 @@ export default function BookSlotTimeZone({
                                                                 </div>
                                                             </div>
                                                         </di>
-                                                    )}
+                                                    )}*/}
                                                     <div className="flex items-center justify-center gap-2">
                                                         <div
                                                             data-tip

@@ -44,7 +44,7 @@ const PlanIntegration = () => {
         company: "",
         googleLocation: ""
     })
-    const TotalPrice = Screen <= 1 ? selectedPlan?.planPrice : ((Screen * selectedPlan?.planPrice))
+    const TotalPrice = Screen <= 1 ? (selectedPlan?.isAnnually ? (selectedPlan?.planPrice * 12) : selectedPlan?.planPrice) : ((Screen * (selectedPlan?.isAnnually ? (selectedPlan?.planPrice * 12) : selectedPlan?.planPrice)))
     const appearance = {
         theme: 'stripe',
     };
@@ -377,7 +377,7 @@ const PlanIntegration = () => {
                                                     <span className='font-medium text-xl not-italic text-white'>
                                                         {!loading && (
                                                             <>
-                                                                {selectedPlan?.isIndian ? formatINRCurrency(selectedPlan?.planPrice) : formatToUSCurrency(selectedPlan?.planPrice)}
+                                                                {selectedPlan?.isIndian ? formatINRCurrency(selectedPlan?.isAnnually ? (selectedPlan?.planPrice * 12) : selectedPlan?.planPrice) : formatToUSCurrency(selectedPlan?.isAnnually ? (selectedPlan?.planPrice * 12) : selectedPlan?.planPrice)}
                                                             </>
                                                         )}
                                                     </span>
@@ -411,7 +411,7 @@ const PlanIntegration = () => {
                                                         <span className='font-medium text-xl not-italic text-white'>
                                                             {!loading && (
                                                                 <>
-                                                                    {selectedPlan?.isIndian ? formatINRCurrency(((Screen * selectedPlan?.planPrice) - selectedPlan?.planPrice)) : formatToUSCurrency(((Screen * selectedPlan?.planPrice) - selectedPlan?.planPrice))}
+                                                                    {selectedPlan?.isIndian ? formatINRCurrency(((Screen * (selectedPlan?.isAnnually ? (selectedPlan?.planPrice * 12) : selectedPlan?.planPrice)) - (selectedPlan?.isAnnually ? (selectedPlan?.planPrice * 12) : selectedPlan?.planPrice))) : formatToUSCurrency(((Screen * (selectedPlan?.isAnnually ? (selectedPlan?.planPrice * 12) : selectedPlan?.planPrice)) - (selectedPlan?.isAnnually ? (selectedPlan?.planPrice * 12) : selectedPlan?.planPrice)))}
                                                                 </>
                                                             )}
                                                         </span>

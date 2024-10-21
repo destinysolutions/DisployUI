@@ -5,11 +5,13 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
   buttons,
+  calculateTotalDuration,
   constructTimeObjects,
   filterScreensDistance,
   getCurrentTimewithSecound,
   getTimeZoneName,
   getTodayDate,
+  getTotalDurationInSeconds,
   multiOptions,
   removeDuplicates,
   timeDifferenceInSeconds,
@@ -58,11 +60,10 @@ const AddSlot = () => {
   const optionSelect = Array.from({ length: 60 }, (_, index) => index + 1); // Create an array of numbers from 1 to 60
   const [sidebarload, setSidebarLoad] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
-  console.log('selectedScreens', selectedScreens)
   const [day, setDay] = useState([]);
   const [selectedTimeZone, setSelectedTimeZone] = useState();
   const [repeat, setRepeat] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(3);
   const hiddenFileInput = useRef([]);
   const [screenData, setScreenData] = useState([]);
   const [screenArea, setScreenArea] = useState([]);
@@ -118,6 +119,7 @@ const AddSlot = () => {
       SqunceDuration: 0
     },
   ]);
+
   const [allSlateDetails, setallSlateDetails] = useState({
     Industry: null,
     country: null,
@@ -142,11 +144,11 @@ const AddSlot = () => {
 
   useEffect(() => {
     let Price = 0;
-    const conversionRate = 84.05; 
 
     selectedScreens?.forEach((item) => {
       Price += item.Price;
     });
+
     setTotalPrice(Price);
     setTotalCost(totalDuration * Price);
   }, [selectedScreens, totalDuration]);
@@ -220,7 +222,6 @@ const AddSlot = () => {
     // for (let i = 0; i < days.length; i++) {
     //   changeDayTrueOrFalse = buttons.map((i) => days.includes(i));
     // }
-
     const changeDayTrueOrFalse = buttons.map(button => days.includes(button));
 
     setRepeatDays(changeDayTrueOrFalse);
@@ -270,9 +271,16 @@ const AddSlot = () => {
     setEndDate(difDate ? value : startDate);
   };
   const handleSelectStatesChange = (event) => { setSelecteStates(event?.target.value); };
-  const handleBack = () => { setPage(page - 1); };
-  const handleClick = (index) => { hiddenFileInput.current[index].click(); };
 
+  const handleBack = () => {
+    setPage(page - 1);
+    setAllArea([]);
+    setScreenData([]);
+    setSelectAllScreen(false);
+    setSelectedScreens([]);
+  };
+
+  const handleClick = (index) => { hiddenFileInput.current[index].click(); };
 
   const handleStartDateChange = (event) => {
     if (!repeat) {
@@ -506,40 +514,53 @@ const AddSlot = () => {
   }, [startDate, endDate]);
 
 
+  // useEffect(() => {
+  //   let arr = [];
+  //   let count = 0;
+  //   const totalDays = countAllDaysInRange();
+
+  //   getallTime?.forEach((item) => {
+  //     let start = `${item?.startTime}`;
+  //     let end = `${item?.endTime}`;
+  //     let sequence = `${item?.sequence}`;
+  //     let obj = {
+  //       ...item, Duration: timeDifferenceInSeconds(start, end),
+  //       SqunceDuration: timeDifferenceInSequence(start, end,
+  //         item?.Duration,
+  //         sequence,
+  //         item?.aftereventType,
+  //         item?.afterevent,
+  //         dayDifference)
+  //     };
+
+  //     // count += timeDifferenceInSeconds(start, end, sequence);
+  //     count += (obj?.SqunceDuration !== null || obj?.SqunceDuration !== undefined) ? Math.floor(obj?.SqunceDuration) : Math.floor(obj?.Duration * totalDays); 
+  //     arr.push(obj);
+
+  //   });
+
+  //   if (!repeat) {
+  //     setTotalDuration(count);
+  //   } else if (repeat) {
+
+  //     setTotalDuration(count);
+  //   }
+
+  //   setGetAllTime(arr);
+  // }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference]);
+
   useEffect(() => {
-    let arr = [];
     let count = 0;
-
-    getallTime?.forEach((item) => {
-      let start = `${item?.startTime}`;
-      let end = `${item?.endTime}`;
-      let sequence = `${item?.sequence}`;
-      let obj = {
-        ...item, Duration: timeDifferenceInSeconds(start, end),
-        SqunceDuration: timeDifferenceInSequence(start, end,
-          item?.Duration,
-          sequence,
-          item?.aftereventType,
-          item?.afterevent,
-          dayDifference)
-      };
-
-      // count += timeDifferenceInSeconds(start, end, sequence);
-      count += obj?.SqunceDuration ? obj?.SqunceDuration : obj?.Duration;
-      arr.push(obj);
-
-    });
-
-    if (!repeat) {
-      setTotalDuration(count);
-    } else if (repeat) {
-      const totalDays = countAllDaysInRange();
-
-      setTotalDuration(count);
+    const totalDays = countAllDaysInRange();
+    const totalDurations = getTotalDurationInSeconds(getallTime);
+    if (totalDays > 0) {
+      count = totalDays * totalDurations
+    } else {
+      count = count + totalDurations
     }
+    setTotalDuration(count)
 
-    setGetAllTime(arr);
-  }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference]);
+  }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference, selectedDays])
 
 
   // for select repeat day
@@ -608,6 +629,12 @@ const AddSlot = () => {
   // page 4 handleRangeChange
   const handleRangeChange = (e, item) => {
     e.preventDefault();
+    const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+        day: "2-digit",
+        timeZoneName: "long",
+      })
+      .substring(4);
     let arr = allArea.map((item1) => {
       if (item1?.searchValue === item?.searchValue) {
         let Params = {
@@ -615,7 +642,7 @@ const AddSlot = () => {
           longitude: item?.longitude,
           distance: parseInt(item1?.area),
           unit: item?.unit,
-          SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
+          SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
           dates: constructTimeObjects(
             getallTime,
             startDate,
@@ -759,9 +786,11 @@ const AddSlot = () => {
   // page 3 handleBookSlot
 
   const handleBookSlot = () => {
-
     const sameTimeZone = getallTime.some((item) => {
-      return item.startTime >= item.endTime
+      return item.startTime > item.endTime
+    });
+    const sameTime = getallTime.some((item) => {
+      return item.startTime == item.endTime
     });
 
     const hasMissingImages = getallTime.some((item) => {
@@ -770,6 +799,8 @@ const AddSlot = () => {
 
     if (sameTimeZone) {
       return toast.error('End Time must be greater than start Time.');
+    } else if (sameTime) {
+      return toast.error('Start Time and Time Time both are same.');
     } else if (hasMissingImages) {
       return toast.error("Please upload valid Vertical and Horizontal images.");
     } else {
@@ -796,12 +827,19 @@ const AddSlot = () => {
       setError(false)
     }
 
+    const TimeZone = new Date()
+      .toLocaleDateString(undefined, {
+        day: "2-digit",
+        timeZoneName: "long",
+      })
+      .substring(4);
+
     const Params = {
       latitude: item?.latitude,
       longitude: item?.longitude,
       distance: parseInt(item.area),
       unit: item?.unit,
-      SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
+      SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
       dates: constructTimeObjects(
         getallTime,
         startDate,

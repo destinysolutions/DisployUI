@@ -12,7 +12,8 @@ import ReactTooltip from 'react-tooltip';
 import { IoIosArrowDown } from 'react-icons/io';
 import { BiEdit } from 'react-icons/bi';
 
-export default function BookSlotMap({ totalPrice,
+export default function BookSlotMap({ 
+    totalPrice,
     totalDuration,
     setAllArea,
     setScreenData,

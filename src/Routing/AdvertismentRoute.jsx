@@ -18,11 +18,11 @@ const AdvertismentRoute = ({ sidebarOpen, setSidebarOpen }) => {
                 }}
             >
                 <Routes>
-                    <Route path="/" element={<Navigate to="/dashboard" />} />
-                    <Route path="*" element={<Navigate to="/dashboard" />} />
-                    <Route path="/register" element={<Navigate to="/dashboard" />} />
+                    <Route path="/" element={<Navigate to="/current-booking" />} />
+                    <Route path="*" element={<Navigate to="/current-booking" />} />
+                    <Route path="/register" element={<Navigate to="/current-booking" />} />
                     <Route
-                        path="/dashboard"
+                        path="/current-booking"
                         element={
                             <Dashboard
                                 sidebarOpen={sidebarOpen}

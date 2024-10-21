@@ -295,7 +295,7 @@ export default function IndustryInformation({ sidebarOpen }) {
                                     ))}
                                     {!loading && industry?.length === 0 && (
                                         <tr className=' h-96'>
-                                            <td colSpan={3}>
+                                            <td colSpan={4}>
                                                 <button
                                                     className="mx-auto flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 py-2 text-base sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 gap-1"
                                                     onClick={() => addRow()}
@@ -303,6 +303,17 @@ export default function IndustryInformation({ sidebarOpen }) {
                                                     <AiFillPlusCircle className="text-2xl mr-1" />
                                                     Click to add industry
                                                 </button>
+                                            </td>
+                                        </tr>
+                                    )}
+                                    {!loading && currentItems?.length === 0 && industry?.length !== 0 && (
+                                        <tr>
+                                            <td colSpan={4}>
+                                                <div className="flex text-center m-5 justify-center">
+                                                    <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
+                                                        No Data Available
+                                                    </span>
+                                                </div>
                                             </td>
                                         </tr>
                                     )}

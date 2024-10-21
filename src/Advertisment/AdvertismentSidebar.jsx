@@ -17,6 +17,9 @@ import { LiaCalendarWeekSolid, LiaFileInvoiceSolid } from "react-icons/lia";
 import { MdOutlineLogout } from 'react-icons/md';
 import { handleLogout } from '../Redux/Authslice';
 import reportIcon from "../images/MenuIcons/reports_icon.svg";
+import logoutIcon from "../images/MenuIcons/logout_icon.svg";
+import InvoiceIcon from "../images/MenuIcons/Invoice.svg";
+import CurrentBookingIcon from "../images/MenuIcons/Current booking.svg";
 
 const AdvertismentSidebar = ({ sidebarOpen }) => {
     AdvertismentSidebar.propTypes = {
@@ -24,7 +27,7 @@ const AdvertismentSidebar = ({ sidebarOpen }) => {
     };
     const navigation = useNavigate();
     const dispatch = useDispatch();
-const [activeSubmenu, setActiveSubmenu] = useState(false);
+    const [activeSubmenu, setActiveSubmenu] = useState(false);
     const [submenuStates, setSubmenuStates] = useState({});
     const updateSubmenuState = (submenuTitle, isOpen) => {
         const updatedStates = { ...submenuStates, [submenuTitle]: isOpen };
@@ -48,27 +51,27 @@ const [activeSubmenu, setActiveSubmenu] = useState(false);
         {
             title: "Current booking",
             cName: "nav-text link-items",
-            path: "/dashboard",
-            icon: <LiaCalendarWeekSolid className="text-[30px] font-bold" />,
+            path: "/current-booking",
+            icon: <img src={CurrentBookingIcon} className=" font-bold w-[24px] h-[30px]" />,
         },
         {
             title: "Reports",
             cName: "nav-text link-items",
             path: "/report",
-            icon: <img src={reportIcon} alt="Reports" className="w-6" />
+            icon: <img src={reportIcon} className=" font-bold w-[24px] h-[30px]" />
         },
         {
             title: "Invoice",
             cName: "nav-text link-items",
             path: "/invoice",
-            icon: <LiaFileInvoiceSolid className="text-3xl font-bold" />,
+            icon: <img src={InvoiceIcon} className=" font-bold w-[24px] h-[30px]" />
         },
 
         {
             title: "Log Out",
             cName: "nav-text link-items",
             path: "/",
-            icon: <MdOutlineLogout className="text-2xl font-bold" />,
+            icon: <img src={logoutIcon} alt="LogOut" className="w-6" />,
         },
     ];
 

@@ -195,7 +195,7 @@ export function multiOptions(arr) {
     isReferral: screen?.isReferral,
     currency: screen?.currency,
     macid: screen?.macid,
-    screenID:screen?.screenID
+    screenID: screen?.screenID
   }));
 }
 
@@ -1048,3 +1048,42 @@ export const AllCurrency = [{
   name: "USD",
   value: "USD"
 }]
+
+export function calculateTotalDuration(arr, startDate, endDate) {
+  return arr.reduce((total, item) => {
+    let startDateTime = new Date(`${startDate}T${item.startTime}`);
+    let endDateTime = new Date(`${endDate}T${item.endTime}`);
+
+    // If endTime is earlier than startTime, it means the time crossed midnight
+    if (endDateTime < startDateTime) {
+      endDateTime.setDate(endDateTime.getDate() + 1);
+    }
+
+    // Calculate the duration in milliseconds and convert to seconds
+    const durationSeconds = Math.floor((endDateTime - startDateTime) / 1000);
+
+    return total + durationSeconds;
+  }, 0); // Initial total is 0
+}
+
+export function getTotalDurationInSeconds(arr) {
+  let totalMilliseconds = 0;
+
+  arr.forEach(({ startTime, endTime, sequence }) => {
+    if (sequence === "") {
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      let start = new Date(`${today}T${startTime}`);
+      let end = new Date(`${today}T${endTime}`);
+
+      // Handle next day case
+      if (end < start) {
+        end.setDate(end.getDate() + 1);
+      }
+
+      totalMilliseconds += end - start;
+    }
+  });
+
+  // Convert total milliseconds to seconds
+  return Math.floor(totalMilliseconds / 1000);
+}

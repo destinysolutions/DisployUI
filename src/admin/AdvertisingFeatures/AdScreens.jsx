@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 export default function AdScreens({ sidebarOpen }) {
     const dispatch = useDispatch()
     const store = useSelector((state) => state.root.advertisementData);
+    console.log('store?.pendingScreens', store?.pendingScreens)
 
     const [loadFirst, setLoadFirst] = useState(true);
     const [loading, setLoading] = useState(false);

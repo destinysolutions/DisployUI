@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Sidebar from '../Sidebar'
 import Navbar from '../Navbar'
-import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecound, getTimeZoneName, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common/Common';
+import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecound, getTimeZoneName, getTotalDurationInSeconds, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common/Common';
 import moment from 'moment';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -209,39 +209,52 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         setDayDifference(difference);
     }, [startDate, endDate]);
 
+    // useEffect(() => {
+    //     let arr = [];
+    //     let count = 0;
+
+    //     getallTime?.forEach((item) => {
+    //         let start = `${item?.startTime}`;
+    //         let end = `${item?.endTime}`;
+    //         let sequence = `${item?.sequence}`;
+    //         let obj = {
+    //             ...item, Duration: timeDifferenceInSeconds(start, end),
+    //             SqunceDuration: timeDifferenceInSequence(start, end,
+    //                 item?.Duration,
+    //                 sequence,
+    //                 item?.aftereventType,
+    //                 item?.afterevent,
+    //                 dayDifference)
+    //         };
+
+    //         count += obj?.SqunceDuration ? Math.floor(obj?.SqunceDuration) : Math.floor(obj?.Duration);
+    //         arr.push(obj);
+
+    //     });
+
+    //     if (!repeat) {
+    //         setTotalDuration(count);
+    //     } else if (repeat) {
+    //         const totalDays = countAllDaysInRange();
+
+    //         setTotalDuration(count);
+    //     }
+
+    //     setGetAllTime(arr);
+    // }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference]);
+
     useEffect(() => {
-        let arr = [];
         let count = 0;
-
-        getallTime?.forEach((item) => {
-            let start = `${item?.startTime}`;
-            let end = `${item?.endTime}`;
-            let sequence = `${item?.sequence}`;
-            let obj = {
-                ...item, Duration: timeDifferenceInSeconds(start, end),
-                SqunceDuration: timeDifferenceInSequence(start, end,
-                    item?.Duration,
-                    sequence,
-                    item?.aftereventType,
-                    item?.afterevent,
-                    dayDifference)
-            };
-
-            count += obj?.SqunceDuration ? Math.floor(obj?.SqunceDuration) : Math.floor(obj?.Duration);
-            arr.push(obj);
-
-        });
-
-        if (!repeat) {
-            setTotalDuration(count);
-        } else if (repeat) {
-            const totalDays = countAllDaysInRange();
-
-            setTotalDuration(count);
+        const totalDays = countAllDaysInRange();
+        const totalDurations = getTotalDurationInSeconds(getallTime);
+        if (totalDays > 0) {
+            count = totalDays * totalDurations
+        } else {
+            count = count + totalDurations
         }
+        setTotalDuration(count)
 
-        setGetAllTime(arr);
-    }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference]);
+    }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference, selectedDays])
 
     useEffect(() => {
         if (repeat) {
@@ -288,38 +301,26 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
 
     const handleBookSlot = () => {
         const sameTimeZone = getallTime.some((item) => {
-            return item.startTime === item.endTime
+            return item.startTime > item.endTime
+        });
+        const sameTime = getallTime.some((item) => {
+            return item.startTime == item.endTime
         });
 
-        let error = ""
+        const hasMissingImages = getallTime.some((item) => {
+            return !item.verticalImage && !item.horizontalImage
+        });
 
-        getallTime?.map((item) => {
-            if (item?.startTime > item?.endTime) {
-                return error = "Please Change End Time"
-
-            }
-        })
-
-        if (error !== "") {
-            return toast.error(error)
-
+        if (sameTimeZone) {
+            return toast.error('End Time must be greater than start Time.');
+        } else if (sameTime) {
+            return toast.error('Start Time and Time Time both are same.');
+        } else if (hasMissingImages) {
+            return toast.error("Please upload valid Vertical and Horizontal images.");
         } else {
-            const hasMissingImages = getallTime.some((item) => {
-                return !item.verticalImage && !item.horizontalImage
-            });
-
-            if (sameTimeZone) {
-                return toast.error('End Time must be greater than start Time.');
-            } else if (hasMissingImages) {
-                return toast.error("Please upload valid Vertical and Horizontal images.");
-            } else {
-                setPage(page + 1);
-            }
+            setPage(page + 1);
         }
-
-
     };
-
 
     // page 2
 
@@ -378,6 +379,12 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
 
     const handleRangeChange = (e, item) => {
         e.preventDefault();
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
         let arr = allArea.map((item1) => {
             if (item1?.searchValue === item?.searchValue) {
                 let Params = {
@@ -385,7 +392,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                     longitude: item?.longitude,
                     distance: parseInt(item1?.area),
                     unit: item?.unit,
-                    SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
+                    SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
                     dates: constructTimeObjects(
                         getallTime,
                         startDate,
@@ -509,12 +516,19 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         //     setError(false)
         // }
 
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
+
         const Params = {
             latitude: item?.latitude,
             longitude: item?.longitude,
             distance: parseInt(item.area),
             unit: item?.unit,
-            SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
+            SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
             dates: constructTimeObjects(
                 getallTime,
                 startDate,
@@ -544,13 +558,19 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
             longitude: value?.longitude,
             unit: 'km'
         };
+        const TimeZone = new Date()
+            .toLocaleDateString(undefined, {
+                day: "2-digit",
+                timeZoneName: "long",
+            })
+            .substring(4);
 
         let Params = {
             latitude: value?.latitude,
             longitude: value?.longitude,
             distance: 5,
             unit: 'km',
-            SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
+            SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
             dates: constructTimeObjects(
                 getallTime,
                 startDate,
