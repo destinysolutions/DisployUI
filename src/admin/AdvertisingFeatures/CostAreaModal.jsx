@@ -139,13 +139,13 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
         }
         const payload = {
             costByAreaID: EditData?.costByAreaID || 0,
-            locationName: data.location,
-            latitude: markerPosition.lat,
-            longitude: markerPosition.lng,
-            costPerSec: data.cost,
-            currency: data.currency,
-            range: data.range,
-            unit: data.unit,
+            locationName: data?.location,
+            latitude: markerPosition?.lat,
+            longitude: markerPosition?.lng,
+            costPerSec: data?.cost,
+            currency: data?.currency,
+            range: data?.range,
+            unit: data?.unit,
         };
         dispatch(handleAddCostbyarea(payload)).then((res) => {
             if (res?.payload?.status) {

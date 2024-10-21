@@ -191,10 +191,11 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                                                     {composition?.bookedDuration}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {composition?.streamingDuration}
+                                                                    {composition?.bookedDuration}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {composition?.credits}
+                                                                    {/* {composition?.credits} */}
+                                                                    00:00:00:00
                                                                 </td>
                                                             </tr>
                                                         );

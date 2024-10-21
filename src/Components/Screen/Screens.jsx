@@ -1283,9 +1283,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                 style={{ width: "max-content" }}
                                               >
                                                 {permissions.isSave ? (
-                                                  <div className="flex gap-1">
+                                                  <div className="flex   flex-wrap">
                                                     <Link
-                                                      className=" capitalize w-32 truncate ml-2"
+                                                      className=" capitalize w-24 truncate ml-2 "
                                                       to={`/screensplayer?screenID=${screen.screenID}`}
                                                     >
 

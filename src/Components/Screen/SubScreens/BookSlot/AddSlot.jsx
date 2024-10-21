@@ -141,18 +141,11 @@ const AddSlot = () => {
   }, []);
 
   useEffect(() => {
-    const baseCurrency = timeZoneName ? 'India Standard Time' : 'INR';
-
     let Price = 0;
-    const conversionRate = 84.05; // Example conversion rate from the selected currency to INR
+    const conversionRate = 84.05; 
 
     selectedScreens?.forEach((item) => {
-      if (item?.currency === 'INR') {
-        Price += item.Price;
-      } else {
-        // Convert to INR
-        Price += item.Price * conversionRate; // Apply conversion rate
-      }
+      Price += item.Price;
     });
     setTotalPrice(Price);
     setTotalCost(totalDuration * Price);

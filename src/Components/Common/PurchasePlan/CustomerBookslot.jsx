@@ -14,7 +14,7 @@ import ImageUploadPopup from '../../Screen/SubScreens/BookSlot/ImageUploadPopup'
 import ThankYouPage from '../../Screen/SubScreens/BookSlot/ThankYouPage';
 import { ADDUPDATESLOT, GET_TIMEZONE_TOKEN, PAYMENT_INTENT_CREATE_REQUEST, SCREEN_LIST, stripePromise } from '../../../Pages/Api';
 import { handlePaymentIntegration } from '../../../Redux/PaymentSlice';
-import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecound, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common';
+import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecound, getTimeZoneName, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common';
 import { socket } from '../../../App';
 
 export default function CustomerBookslot({ sidebarOpen }) {
@@ -74,6 +74,11 @@ export default function CustomerBookslot({ sidebarOpen }) {
     const [totalCost, setTotalCost] = useState(0);
     const [clientSecret, setClientSecret] = useState("");
     const [totalDuration, setTotalDuration] = useState(0);
+    const appearance = { theme: 'stripe', };
+    const options = {
+        clientSecret,
+        appearance,
+    };
 
     useEffect(() => {
         let Price = 0;
@@ -286,7 +291,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
 
     const handleBookSlot = () => {
         const sameTimeZone = getallTime.some((item) => {
-            return item.startTime === item.endTime
+            return item.startTime >= item.endTime
         });
 
         const hasMissingImages = getallTime.some((item) => {
@@ -367,6 +372,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
                     longitude: item?.longitude,
                     distance: parseInt(item1?.area),
                     unit: item?.unit,
+                    SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
                     dates: constructTimeObjects(
                         getallTime,
                         startDate,
@@ -415,8 +421,9 @@ export default function CustomerBookslot({ sidebarOpen }) {
         const params = {
             "items": {
                 "id": "0",
-                "amount": total
-            }
+                "amount": totalCost
+            },
+            "Currency": timeZoneName?.includes("India") ? "inr" : "usd"
         }
 
         const config = {
@@ -488,6 +495,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
             longitude: item?.longitude,
             distance: parseInt(item.area),
             unit: item?.unit,
+            SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
             dates: constructTimeObjects(
                 getallTime,
                 startDate,
@@ -515,7 +523,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
             area: 5,
             latitude: value?.latitude,
             longitude: value?.longitude,
-            unit: 'km'
+            unit: 'km',
         };
 
         let Params = {
@@ -523,6 +531,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
             longitude: value?.longitude,
             distance: 5,
             unit: 'km',
+            SystemCurrency: getTimeZoneName(allTimeZone, selectedTimeZone)?.includes("India") ? "inr" : "usd",
             dates: constructTimeObjects(
                 getallTime,
                 startDate,
@@ -577,6 +586,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
             email: user?.isAdvCustomer ? user?.emailID : null,
             // phoneNumber: PhoneNumber,
             bookSlot: {
+                currency: timeZoneName?.includes("India") ? "inr" : "usd",
                 bookingSlotCustomerID: 0,
                 userID: user?.userID,
                 isAdvCustomer: user?.isAdvCustomer,
@@ -585,11 +595,11 @@ export default function CustomerBookslot({ sidebarOpen }) {
                 event: EventDetails,
                 PaymentDetails: {
                     ...paymentMethod,
-                    AutoPay: true,
+                    AutoPay: false,
                     type: "Book Slot",
                 },
                 isRepeat: repeat,
-                repeatDays: day ? day.join(", ") : moment().format('dddd'),
+                repeatDays: day.join(", "),
                 screenIDs: selectedScreens?.map((item) => item?.output).join(", "),
                 totalCost: totalCost,
                 timezoneID: selectedTimeZone,
@@ -630,6 +640,8 @@ export default function CustomerBookslot({ sidebarOpen }) {
                     macId: allScreenMacids,
                 };
                 socket.emit("ScreenConnected", Params);
+                console.log('Params :>> ', Params);
+                console.log('page :>> ', page);
                 setPage(page + 1);
             })
             .catch((error) => {
@@ -721,14 +733,16 @@ export default function CustomerBookslot({ sidebarOpen }) {
                     </>
                 )}
                 {/* clientSecret && */}
-                {page === 3 && (
+                {page === 3 && clientSecret && (
                     <div className="w-full h-full p-5 flex items-center justify-center">
                         <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
                             <Elements
-                                // options={options} 
+                                options={options}
                                 stripe={stripePromise || ''}
                             >
                                 <AddPayment
+                                    Isshow="true"
+                                    clientSecret={clientSecret}
                                     selectedScreens={selectedScreens}
                                     totalDuration={totalDuration}
                                     totalPrice={totalPrice}

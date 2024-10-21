@@ -196,7 +196,7 @@ export default function Approve({ handleTab }) {
                                                                     <td className="px-6 py-4">{item?.screenName}  </td>
                                                                     <td className="px-6 py-4">{item?.googleLocation}</td>
                                                                     <td className="px-6 py-4">
-                                                                        {item?.lastSeen ? moment(item?.lastSeen).format("LLL") : null}
+                                                                        {item?.updatedDate ? moment(item?.updatedDate).format("LLL") : null}
                                                                     </td>
                                                                     <td className="px-6 py-4 text-green-600">
                                                                         <span
@@ -234,7 +234,7 @@ export default function Approve({ handleTab }) {
                                                                     <td className="px-6 py-4 ">
                                                                         <div>
                                                                             {item?.screenRatePerSec ? `${item?.currency === 'INR' ? formatINRCurrency(item?.screenRatePerSec) : formatToUSCurrency(item?.screenRatePerSec)}` : ''}
-                                                                            
+
                                                                             {/* {item?.screenRatePerSec ? item?.screenRatePerSec :
                                                                                 (<input
                                                                                     type="number"

@@ -195,7 +195,7 @@ export default function AdScreens({ sidebarOpen }) {
                                                     </label>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    {item?.lastSeen ? moment(item?.lastSeen).format("LLL") : null}
+                                                    {item?.bookedSlot}
                                                 </td>
 
 

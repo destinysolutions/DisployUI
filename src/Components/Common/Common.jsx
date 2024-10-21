@@ -271,7 +271,6 @@ export function timeDifferenceInSequence(startTime, endTime, duration, sequence,
     return sequenceDuration;
   }
   if (sequence?.includes("In every minute")) {
-    // const durationDayMin = (((24 - startHours) + extraDays) * 3600)
     const totalSumSec = (duration + (1 * 60))
     const totalSumSecLoop = durationDayMin / totalSumSec
     const finalDuraionSec = totalSumSecLoop * duration
@@ -279,7 +278,6 @@ export function timeDifferenceInSequence(startTime, endTime, duration, sequence,
     return sequenceDuration;
   }
   if (aftereventType?.includes("Minutes")) {
-    // const durationDayMin = (((24 - startHours) + extraDays) * 3600)
     const totalSumSec = (duration + (afterHrMin * 60))
     const totalSumSecLoop = durationDayMin / totalSumSec
     const finalDuraionSec = totalSumSecLoop * duration
@@ -287,7 +285,6 @@ export function timeDifferenceInSequence(startTime, endTime, duration, sequence,
     return sequenceDuration;
   }
   if (aftereventType?.includes("Hours")) {
-    // const durationDayMin = (((24 - startHours) + extraDays) * 3600)
     const totalSumSec = (duration + (afterHrMin * 3600))
     const totalSumSecLoop = (durationDayMin / totalSumSec)
     const finalDuraionSec = totalSumSecLoop * duration

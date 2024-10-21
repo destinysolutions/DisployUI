@@ -79,7 +79,7 @@ export default function AdvertismentInvoice({ sidebarOpen, setSidebarOpen }) {
                                     <button
                                         type="button"
                                         className="px-5 bg-primary flex items-center gap-2 text-white rounded-full py-2 border border-primary me-3 "
-                                        // onClick={() => SendInvoice()}
+                                    // onClick={() => SendInvoice()}
                                     >
                                         <BsFillSendFill />
                                         Send Invoice
@@ -87,7 +87,7 @@ export default function AdvertismentInvoice({ sidebarOpen, setSidebarOpen }) {
                                     <button
                                         className="bg-white text-primary text-base px-5 flex items-center gap-2 py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                                         type="button"
-                                        // onClick={() => DownloadInvoice()}
+                                    // onClick={() => DownloadInvoice()}
                                     >
                                         <FaDownload />
                                         Download
@@ -120,7 +120,7 @@ export default function AdvertismentInvoice({ sidebarOpen, setSidebarOpen }) {
                                 <h1 className="not-italic font-medium text-2xl text-[#001737]  mt-2">
                                     Invoice
                                 </h1>
-                               
+
                             </div>
                             <div className="bg-white rounded-xl lg:mt-8 mt-5 shadow screen-section">
 
@@ -229,7 +229,7 @@ export default function AdvertismentInvoice({ sidebarOpen, setSidebarOpen }) {
                                                                                     </ReactTooltip>
                                                                                 </div>
 
-                                                                                <div
+                                                                                {/* <div
                                                                                     data-tip
                                                                                     data-for="Download"
                                                                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -244,7 +244,7 @@ export default function AdvertismentInvoice({ sidebarOpen, setSidebarOpen }) {
                                                                                     >
                                                                                         <span>Download</span>
                                                                                     </ReactTooltip>
-                                                                                </div>
+                                                                                </div> */}
                                                                             </>
                                                                         </div>
                                                                     </td>

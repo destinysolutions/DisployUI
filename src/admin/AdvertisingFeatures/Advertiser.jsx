@@ -47,7 +47,7 @@ export default function Advertiser({ sidebarOpen }) {
             })
             setLoadFirst(false)
         }
-    }, [loadFirst, dispatch, SelectedDate]);
+    }, [loadFirst, dispatch,]);
 
     useEffect(() => {
         setCurrentPage(1)
@@ -67,7 +67,7 @@ export default function Advertiser({ sidebarOpen }) {
             };
             try {
                 const res = dispatch(updateAdvScreen(payload));
-                dispatch(getAllUserAdvertiser(SelectedDate));
+                dispatch(getAllUserAdvertiser(query));
 
             } catch (error) {
                 console.error("Error updating asset management:", error);
@@ -173,7 +173,7 @@ export default function Advertiser({ sidebarOpen }) {
                                                 <td className="px-6 py-4">{item?.location}</td>
                                                 <td className="px-6 py-4 text-green-600">
                                                     <span
-                                                        id={`changetvstatus${item?.macID}`}
+                                                        id={`changetvstatus${index}`}
                                                         className={`rounded-full px-6 py-2 text-white text-center
                                                                             ${item?.status ? "bg-[#3AB700]" : "bg-[#FF0000]"}`}
                                                     >
@@ -204,7 +204,7 @@ export default function Advertiser({ sidebarOpen }) {
                                                     </label>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    {item?.bookedSlot ? moment(item?.bookedSlot).format("LLL") : null}
+                                                    {item?.bookedSlot}
                                                 </td>
 
 
@@ -214,7 +214,6 @@ export default function Advertiser({ sidebarOpen }) {
                                                 <td className="px-6 py-4">
                                                     {item?.currency === 'INR' ? formatINRCurrency(item?.payout) : formatToUSCurrency(item?.payout)}
                                                 </td>
-
                                             </tr>
                                         ))}
                                     {!loading && currentItems?.length === 0 && (
