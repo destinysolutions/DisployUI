@@ -223,11 +223,24 @@ export const getCurrentTime = () => {
   return `${hours}:${minutes}`;
 };
 
-export const getCurrentTimewithSecound = () => {
+export const getCurrentTimewithSecond = () => {
   const now = new Date();
   const hours = String(now.getHours()).padStart(2, '0');
   const minutes = String(now.getMinutes()).padStart(2, '0');
   const seconds = String(now.getSeconds()).padStart(2, '0');
+  return `${hours}:${minutes}:${seconds}`;
+};
+
+export const getCurrentTimewithTwoMinuteAddInSecound = () => {
+  const now = new Date();
+  
+  // Add 2 minutes
+  now.setMinutes(now.getMinutes() + 2);
+
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+
   return `${hours}:${minutes}:${seconds}`;
 };
 

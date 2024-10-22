@@ -1145,6 +1145,9 @@ table.screen-table {
   display: flex;
   flex-direction: column;
 }
+.book-modal{
+  height: 55vh !important; /* Fixed height, adjust as needed */
+}
 
 @media (min-width: 992px) {
   input.search-user {

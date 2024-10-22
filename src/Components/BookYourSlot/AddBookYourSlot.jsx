@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Sidebar from '../Sidebar'
 import Navbar from '../Navbar'
-import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecound, getTimeZoneName, getTotalDurationInSeconds, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common/Common';
+import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecond, getCurrentTimewithTwoMinuteAddInSecound, getTimeZoneName, getTotalDurationInSeconds, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common/Common';
 import moment from 'moment';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +26,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const dispatch = useDispatch()
     const [page, setPage] = useState(1);
 
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     // page 1
     const [startDate, setStartDate] = useState(moment().format("YYYY-MM-DD"));
     const [endDate, setEndDate] = useState(moment().format("YYYY-MM-DD"));
@@ -44,10 +45,10 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const [dayDifference, setDayDifference] = useState(0);
     const [getallTime, setGetAllTime] = useState([
         {
-            startTime: getCurrentTimewithSecound(),
+            startTime: getCurrentTimewithTwoMinuteAddInSecound(),
             horizontalImage: "",
             verticalImage: "",
-            endTime: getCurrentTimewithSecound(),
+            endTime: getCurrentTimewithTwoMinuteAddInSecound(),
             sequence: '', //In every Minute
             afterevent: '',
             aftereventType: '',
@@ -56,7 +57,6 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
             SqunceDuration: 0
         },
     ]);
-
     // page 2
     const [allArea, setAllArea] = useState([]);
     const [Open, setOpen] = useState(false);
@@ -300,27 +300,37 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     };
 
     const handleBookSlot = () => {
+        const currentTimeStr = getCurrentTimewithSecond();
+        const currentTime = new Date(`${today}T${currentTimeStr}`);
+    
         const sameTimeZone = getallTime.some((item) => {
-            return item.startTime > item.endTime
+          return item.startTime > item.endTime
         });
         const sameTime = getallTime.some((item) => {
-            return item.startTime == item.endTime
+          return item.startTime == item.endTime
         });
-
+    
         const hasMissingImages = getallTime.some((item) => {
-            return !item.verticalImage && !item.horizontalImage
+          return !item.verticalImage && !item.horizontalImage
+        });
+    
+        const PastTime = getallTime.some((item) => {
+          const start = new Date(`${today}T${item.startTime}`);
+          return start < currentTime;
         });
 
-        if (sameTimeZone) {
-            return toast.error('End Time must be greater than start Time.');
+        if (PastTime) {
+          return toast.error('Start Time must be greater than Current Time.');
+        } else if (sameTimeZone) {
+          return toast.error('End Time must be greater than start Time.');
         } else if (sameTime) {
-            return toast.error('Start Time and Time Time both are same.');
+          return toast.error('Start Time and Time Time both are same.');
         } else if (hasMissingImages) {
-            return toast.error("Please upload valid Vertical and Horizontal images.");
+          return toast.error("Please upload valid Vertical and Horizontal images.");
         } else {
-            setPage(page + 1);
+          setPage(page + 1);
         }
-    };
+      };
 
     // page 2
 

@@ -8,7 +8,8 @@ import {
   calculateTotalDuration,
   constructTimeObjects,
   filterScreensDistance,
-  getCurrentTimewithSecound,
+  getCurrentTimewithSecond,
+  getCurrentTimewithTwoMinuteAddInSecound,
   getTimeZoneName,
   getTodayDate,
   getTotalDurationInSeconds,
@@ -56,14 +57,14 @@ const AddSlot = () => {
   const Email = watch("email");
   const PhoneNumber = watch("phone");
   const navigate = useNavigate();
-
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const optionSelect = Array.from({ length: 60 }, (_, index) => index + 1); // Create an array of numbers from 1 to 60
   const [sidebarload, setSidebarLoad] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [day, setDay] = useState([]);
   const [selectedTimeZone, setSelectedTimeZone] = useState();
   const [repeat, setRepeat] = useState(false);
-  const [page, setPage] = useState(3);
+  const [page, setPage] = useState(1);
   const hiddenFileInput = useRef([]);
   const [screenData, setScreenData] = useState([]);
   const [screenArea, setScreenArea] = useState([]);
@@ -107,10 +108,10 @@ const AddSlot = () => {
   const [allCity, setAllCity] = useState([]);
   const [getallTime, setGetAllTime] = useState([
     {
-      startTime: getCurrentTimewithSecound(),
+      startTime: getCurrentTimewithTwoMinuteAddInSecound(),
       horizontalImage: "",
       verticalImage: "",
-      endTime: getCurrentTimewithSecound(),
+      endTime: getCurrentTimewithTwoMinuteAddInSecound(),
       sequence: '', //In every Minute
       afterevent: '',
       aftereventType: '',
@@ -119,6 +120,8 @@ const AddSlot = () => {
       SqunceDuration: 0
     },
   ]);
+
+  console.log('getallTime', getallTime)
 
   const [allSlateDetails, setallSlateDetails] = useState({
     Industry: null,
@@ -786,6 +789,9 @@ const AddSlot = () => {
   // page 3 handleBookSlot
 
   const handleBookSlot = () => {
+    const currentTimeStr = getCurrentTimewithSecond();
+    const currentTime = new Date(`${today}T${currentTimeStr}`);
+
     const sameTimeZone = getallTime.some((item) => {
       return item.startTime > item.endTime
     });
@@ -797,7 +803,14 @@ const AddSlot = () => {
       return !item.verticalImage && !item.horizontalImage
     });
 
-    if (sameTimeZone) {
+    const PastTime = getallTime.some((item) => {
+      const start = new Date(`${today}T${item.startTime}`);
+      return start < currentTime;
+    });
+    
+    if (PastTime) {
+      return toast.error('Start Time must be greater than Current Time.');
+    } else if (sameTimeZone) {
       return toast.error('End Time must be greater than start Time.');
     } else if (sameTime) {
       return toast.error('Start Time and Time Time both are same.');

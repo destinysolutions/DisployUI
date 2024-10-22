@@ -14,7 +14,7 @@ import ImageUploadPopup from '../../Screen/SubScreens/BookSlot/ImageUploadPopup'
 import ThankYouPage from '../../Screen/SubScreens/BookSlot/ThankYouPage';
 import { ADDUPDATESLOT, GET_TIMEZONE_TOKEN, PAYMENT_INTENT_CREATE_REQUEST, SCREEN_LIST, stripePromise } from '../../../Pages/Api';
 import { handlePaymentIntegration } from '../../../Redux/PaymentSlice';
-import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecound, getTimeZoneName, getTotalDurationInSeconds, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common';
+import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecond, getCurrentTimewithTwoMinuteAddInSecound, getTimeZoneName, getTotalDurationInSeconds, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common';
 import { socket } from '../../../App';
 
 export default function CustomerBookslot({ sidebarOpen }) {
@@ -23,6 +23,8 @@ export default function CustomerBookslot({ sidebarOpen }) {
     const { user, userDetails } = useSelector((state) => state.root.auth);
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    
     const [page, setPage] = useState(1);
 
     // page 1
@@ -43,10 +45,10 @@ export default function CustomerBookslot({ sidebarOpen }) {
     const [dayDifference, setDayDifference] = useState(0);
     const [getallTime, setGetAllTime] = useState([
         {
-            startTime: getCurrentTimewithSecound(),
+            startTime: getCurrentTimewithTwoMinuteAddInSecound(),
             horizontalImage: "",
             verticalImage: "",
-            endTime: getCurrentTimewithSecound(),
+            endTime: getCurrentTimewithTwoMinuteAddInSecound(),
             sequence: '', //In every Minute
             afterevent: '',
             aftereventType: '',
@@ -251,14 +253,14 @@ export default function CustomerBookslot({ sidebarOpen }) {
         const totalDays = countAllDaysInRange();
         const totalDurations = getTotalDurationInSeconds(getallTime);
         if (totalDays > 0) {
-          count = totalDays * totalDurations
+            count = totalDays * totalDurations
         } else {
-          count = count + totalDurations
+            count = count + totalDurations
         }
         setTotalDuration(count)
-    
-      }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference, selectedDays])
-    
+
+    }, [JSON.stringify(getallTime), endDate, repeat, startDate, selectAllDays, dayDifference, selectedDays])
+
 
     useEffect(() => {
         if (repeat) {
@@ -304,27 +306,37 @@ export default function CustomerBookslot({ sidebarOpen }) {
     };
 
     const handleBookSlot = () => {
+        const currentTimeStr = getCurrentTimewithSecond();
+        const currentTime = new Date(`${today}T${currentTimeStr}`);
+
         const sameTimeZone = getallTime.some((item) => {
-          return item.startTime > item.endTime
+            return item.startTime > item.endTime
         });
         const sameTime = getallTime.some((item) => {
-          return item.startTime == item.endTime
+            return item.startTime == item.endTime
         });
-    
+
         const hasMissingImages = getallTime.some((item) => {
-          return !item.verticalImage && !item.horizontalImage
+            return !item.verticalImage && !item.horizontalImage
         });
-    
-        if (sameTimeZone) {
-          return toast.error('End Time must be greater than start Time.');
+
+        const PastTime = getallTime.some((item) => {
+            const start = new Date(`${today}T${item.startTime}`);
+            return start < currentTime;
+        });
+
+        if (PastTime) {
+            return toast.error('Start Time must be greater than Current Time.');
+        } else if (sameTimeZone) {
+            return toast.error('End Time must be greater than start Time.');
         } else if (sameTime) {
-          return toast.error('Start Time and Time Time both are same.');
+            return toast.error('Start Time and Time Time both are same.');
         } else if (hasMissingImages) {
-          return toast.error("Please upload valid Vertical and Horizontal images.");
+            return toast.error("Please upload valid Vertical and Horizontal images.");
         } else {
-          setPage(page + 1);
+            setPage(page + 1);
         }
-      };
+    };
 
 
     // page 2

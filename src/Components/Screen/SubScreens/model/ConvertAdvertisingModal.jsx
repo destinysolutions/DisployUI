@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { getIndustry } from '../../../../Redux/CommonSlice';
 import { getConvertToAdvertisement } from '../../../../Redux/Screenslice';
-import { getCurrentTimewithSecound } from '../../../Common/Common';
+import { getCurrentTimewithSecond } from '../../../Common/Common';
 
 export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, selectedItems, setLoadFist }) {
     const dispatch = useDispatch();
@@ -19,13 +19,13 @@ export default function ConvertAdvertisingModal({ setConvertAdvertisingModal, se
     const [industryOptions, setIndustryOptions] = useState([]);
     const [AllDay, setAllDay] = useState();
     const [schedule, setSchedule] = useState({
-        Sunday: [{ startTime: getCurrentTimewithSecound(), endTime: getCurrentTimewithSecound(), isClose: false }],
-        Monday: [{ startTime: getCurrentTimewithSecound(), endTime: getCurrentTimewithSecound(), isClose: false }],
-        Tuesday: [{ startTime: getCurrentTimewithSecound(), endTime: getCurrentTimewithSecound(), isClose: false }],
-        Wednesday: [{ startTime: getCurrentTimewithSecound(), endTime: getCurrentTimewithSecound(), isClose: false }],
-        Thursday: [{ startTime: getCurrentTimewithSecound(), endTime: getCurrentTimewithSecound(), isClose: false }],
-        Friday: [{ startTime: getCurrentTimewithSecound(), endTime: getCurrentTimewithSecound(), isClose: false }],
-        Saturday: [{ startTime: getCurrentTimewithSecound(), endTime: getCurrentTimewithSecound(), isClose: false }]
+        Sunday: [{ startTime: getCurrentTimewithSecond(), endTime: getCurrentTimewithSecond(), isClose: false }],
+        Monday: [{ startTime: getCurrentTimewithSecond(), endTime: getCurrentTimewithSecond(), isClose: false }],
+        Tuesday: [{ startTime: getCurrentTimewithSecond(), endTime: getCurrentTimewithSecond(), isClose: false }],
+        Wednesday: [{ startTime: getCurrentTimewithSecond(), endTime: getCurrentTimewithSecond(), isClose: false }],
+        Thursday: [{ startTime: getCurrentTimewithSecond(), endTime: getCurrentTimewithSecond(), isClose: false }],
+        Friday: [{ startTime: getCurrentTimewithSecond(), endTime: getCurrentTimewithSecond(), isClose: false }],
+        Saturday: [{ startTime: getCurrentTimewithSecond(), endTime: getCurrentTimewithSecond(), isClose: false }]
     });
 
     useEffect(() => {
