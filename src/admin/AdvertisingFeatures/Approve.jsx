@@ -9,6 +9,7 @@ import { calculateDistance, formatINRCurrency, formatToUSCurrency } from '../../
 import { updateAssteScreen } from '../../Redux/CommonSlice';
 import ReactTooltip from 'react-tooltip';
 import CostAreaModal from './CostAreaModal';
+import { socket } from '../../App';
 
 export default function Approve({ handleTab }) {
     const dispatch = useDispatch();
@@ -79,7 +80,15 @@ export default function Approve({ handleTab }) {
 
     const handleUpdateScreen = (item) => {
         const query = { ScreenID: item?.screenID, UserID: item?.userID, ScreenRatePerSec: item?.screenRatePerSec, Currency: item?.currency }
-        dispatch(updatePendingScreen(query)).then((res) => setLoadFirst(true))
+        dispatch(updatePendingScreen(query)).then((res) => {
+            const Params = {
+                id: socket.id,
+                connection: socket.connected,
+                macId: item?.macid,
+            };
+            socket.emit("ScreenConnected", Params);
+            setLoadFirst(true)
+        })
     }
 
     const groupedScreens = filteredScreens?.reduce((acc, screen) => {
@@ -106,6 +115,12 @@ export default function Approve({ handleTab }) {
             try {
                 const res = dispatch(updateAssteScreen(payload));
                 if (res) {
+                    const Params = {
+                        id: socket.id,
+                        connection: socket.connected,
+                        macId: item?.macid,
+                    };
+                    socket.emit("ScreenConnected", Params);
                     dispatch(getPendingScreen({}));
                 }
             } catch (error) {
