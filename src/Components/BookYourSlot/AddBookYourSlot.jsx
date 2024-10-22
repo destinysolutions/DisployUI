@@ -68,6 +68,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const [screenArea, setScreenArea] = useState([]);
     const [screenData, setScreenData] = useState([]);
     const [selectedScreens, setSelectedScreens] = useState([]);
+    console.log('selectedScreens', selectedScreens)
     const [selectedScreen, setSelectedScreen] = useState("");
     const [selectAllScreen, setSelectAllScreen] = useState(false);
     const Screenoptions = multiOptions(screenData);
@@ -299,40 +300,79 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         setSelectAllDays(newSelectAllDays);
     };
 
-    const handleBookSlot = () => {
-        const currentTimeStr = getCurrentTimewithSecond();
-        const currentTime = new Date(`${today}T${currentTimeStr}`);
-    
-        const sameTimeZone = getallTime.some((item) => {
-          return item.startTime > item.endTime
-        });
-        const sameTime = getallTime.some((item) => {
-          return item.startTime == item.endTime
-        });
-    
-        const hasMissingImages = getallTime.some((item) => {
-          return !item.verticalImage && !item.horizontalImage
-        });
-    
-        const PastTime = getallTime.some((item) => {
-          const start = new Date(`${today}T${item.startTime}`);
-          return start < currentTime;
-        });
+    // const handleBookSlot = () => {
+    //     const currentTimeStr = getCurrentTimewithSecond();
+    //     const currentTime = new Date(`${today}T${currentTimeStr}`);
 
-        if (PastTime) {
-          return toast.error('Start Time must be greater than Current Time.');
-        } else if (sameTimeZone) {
-          return toast.error('End Time must be greater than start Time.');
-        } else if (sameTime) {
-          return toast.error('Start Time and Time Time both are same.');
-        } else if (hasMissingImages) {
-          return toast.error("Please upload valid Vertical and Horizontal images.");
-        } else {
-          setPage(page + 1);
-        }
-      };
+    //     const sameTimeZone = getallTime.some((item) => {
+    //       return item.startTime > item.endTime
+    //     });
+    //     const sameTime = getallTime.some((item) => {
+    //       return item.startTime == item.endTime
+    //     });
+
+    //     const hasMissingImages = getallTime.some((item) => {
+    //       return !item.verticalImage && !item.horizontalImage
+    //     });
+
+    //     const PastTime = getallTime.some((item) => {
+    //       const start = new Date(`${today}T${item.startTime}`);
+    //       return start < currentTime;
+    //     });
+
+    //     if (PastTime) {
+    //       return toast.error('Start Time must be greater than Current Time.');
+    //     } else if (sameTimeZone) {
+    //       return toast.error('End Time must be greater than start Time.');
+    //     } else if (sameTime) {
+    //       return toast.error('Start Time and Time Time both are same.');
+    //     } else if (hasMissingImages) {
+    //       return toast.error("Please upload valid Vertical and Horizontal images.");
+    //     } else {
+    //       setPage(page + 1);
+    //     }
+    //   };
 
     // page 2
+
+
+    const handleBookSlot = () => {
+        const currentTimeStr = getCurrentTimewithSecond();
+        const today = new Date().toISOString().split('T')[0];
+        const currentTime = new Date(`${today}T${currentTimeStr}`);
+
+        const errors = {
+            sameTimeZone: 'End Time must be greater than Start Time.',
+            sameTime: 'Start Time and End Time both are the same.',
+            missingImages: 'Please upload valid Vertical and Horizontal images.',
+            pastStartAndEndTime: 'Start and End Time must be greater than Current Time.',
+            pastStartTime: 'Start Time must be greater than Current Time.'
+        };
+
+        for (const item of getallTime) {
+            const start = new Date(`${today}T${item.startTime}`);
+            const end = new Date(`${today}T${item.endTime}`);
+
+            if (start < currentTime && end < currentTime) {
+                return toast.error(errors.pastStartAndEndTime);
+            }
+            if (start < currentTime) {
+                return toast.error(errors.pastStartTime);
+            }
+            if (start >= end) {
+                return toast.error(errors.sameTimeZone);
+            }
+            if (start.getTime() === end.getTime()) {
+                return toast.error(errors.sameTime);
+            }
+            if (!item.verticalImage && !item.horizontalImage) {
+                return toast.error(errors.missingImages);
+            }
+        }
+
+        setPage(page + 1);
+    };
+
 
     const FetchScreen = async (Params) => {
 
@@ -637,8 +677,8 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         let Params = JSON.stringify({
             advBookslotCustomerID: 0,
             name: `${userDetails?.firstName} ${userDetails?.lastName}`,
-            email: userDetails?.email,
-            phoneNumber: userDetails?.phone,
+            // email: userDetails?.email,
+            // phoneNumber: userDetails?.phone,
             bookSlot: {
                 currency: TimeZone?.includes("India") ? "inr" : "usd",
                 bookingSlotCustomerID: 0,
@@ -688,14 +728,16 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         axios
             .request(config)
             .then((response) => {
-                const allScreenMacids = selectedScreens?.map((item) => item?.macid).join(", ")
-                const Params = {
-                    id: socket.id,
-                    connection: socket.connected,
-                    macId: allScreenMacids,
-                };
-                socket.emit("ScreenConnected", Params);
-                setPage(page + 1);
+                if (response?.data?.status) {
+                    const allScreenMacids = selectedScreens?.map((item) => item?.macid).join(", ")
+                    const Params = {
+                        id: socket.id,
+                        connection: socket.connected,
+                        macId: allScreenMacids,
+                    };
+                    socket.emit("ScreenConnected", Params);
+                    setPage(page + 1);
+                }
             })
             .catch((error) => {
                 console.log(error);
@@ -820,7 +862,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                             </div>
                         </div>
                     )}
-                    {page === 4 && <ThankYouPage navigate={navigate} />}
+                    {page === 4 && <ThankYouPage navigate={navigate} Name={`${userDetails?.firstName} ${userDetails?.lastName}`} bookslot={false} isCustomer={false}/>}
                     {popupVisible && (
                         <ImageUploadPopup
                             isOpen={popupVisible}

@@ -121,7 +121,6 @@ const AddSlot = () => {
     },
   ]);
 
-  console.log('getallTime', getallTime)
 
   const [allSlateDetails, setallSlateDetails] = useState({
     Industry: null,
@@ -307,7 +306,6 @@ const AddSlot = () => {
       draggable: true,
     });
 
-    console.log('toastId 1:>> ', toastId);
 
     const config = {
       method: 'post',
@@ -754,14 +752,16 @@ const AddSlot = () => {
     axios
       .request(config)
       .then((response) => {
-        const allScreenMacids = selectedScreens?.map((item) => item?.macid).join(", ")
-        const Params = {
-          id: socket.id,
-          connection: socket.connected,
-          macId: allScreenMacids,
-        };
-        socket.emit("ScreenConnected", Params);
-        setPage(page + 1);
+        if(response?.data?.status){
+          const allScreenMacids = selectedScreens?.map((item) => item?.macid).join(", ")
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId: allScreenMacids,
+          };
+          socket.emit("ScreenConnected", Params);
+          setPage(page + 1);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -788,38 +788,84 @@ const AddSlot = () => {
 
   // page 3 handleBookSlot
 
+  // const handleBookSlot = () => {
+  //   const currentTimeStr = getCurrentTimewithSecond();
+  //   const currentTime = new Date(`${today}T${currentTimeStr}`);
+
+  //   const sameTimeZone = getallTime.some((item) => {
+  //     return item.startTime > item.endTime
+  //   });
+  //   const sameTime = getallTime.some((item) => {
+  //     return item.startTime == item.endTime
+  //   });
+
+  //   const hasMissingImages = getallTime.some((item) => {
+  //     return !item.verticalImage && !item.horizontalImage
+  //   });
+
+  //   const PastStartTime = getallTime.some((item) => {
+  //     const start = new Date(`${today}T${item.startTime}`);
+  //     return start < currentTime;
+  //   });
+
+  //   const PastStartAndEndTime = getallTime.some((item) => {
+  //     const start = new Date(`${today}T${item.startTime}`);
+  //     const end = new Date(`${today}T${item.endTime}`);
+  //     return start < currentTime && end < currentTime;
+  //   });
+
+  //   if(PastStartAndEndTime){
+  //     return toast.error('Start and End Time must be greater than Current Time.');
+  //   } else if (PastStartTime) {
+  //     return toast.error('Start Time must be greater than Current Time.');
+  //   } else if (sameTimeZone) {
+  //     return toast.error('End Time must be greater than start Time.');
+  //   } else if (sameTime) {
+  //     return toast.error('Start Time and Time Time both are same.');
+  //   } else if (hasMissingImages) {
+  //     return toast.error("Please upload valid Vertical and Horizontal images.");
+  //   } else {
+  //     setPage(page + 1);
+  //   }
+  // };
+
   const handleBookSlot = () => {
     const currentTimeStr = getCurrentTimewithSecond();
+    const today = new Date().toISOString().split('T')[0];
     const currentTime = new Date(`${today}T${currentTimeStr}`);
-
-    const sameTimeZone = getallTime.some((item) => {
-      return item.startTime > item.endTime
-    });
-    const sameTime = getallTime.some((item) => {
-      return item.startTime == item.endTime
-    });
-
-    const hasMissingImages = getallTime.some((item) => {
-      return !item.verticalImage && !item.horizontalImage
-    });
-
-    const PastTime = getallTime.some((item) => {
+  
+    const errors = {
+      sameTimeZone: 'End Time must be greater than Start Time.',
+      sameTime: 'Start Time and End Time both are the same.',
+      missingImages: 'Please upload valid Vertical and Horizontal images.',
+      pastStartAndEndTime: 'Start and End Time must be greater than Current Time.',
+      pastStartTime: 'Start Time must be greater than Current Time.'
+    };
+  
+    for (const item of getallTime) {
       const start = new Date(`${today}T${item.startTime}`);
-      return start < currentTime;
-    });
-    
-    if (PastTime) {
-      return toast.error('Start Time must be greater than Current Time.');
-    } else if (sameTimeZone) {
-      return toast.error('End Time must be greater than start Time.');
-    } else if (sameTime) {
-      return toast.error('Start Time and Time Time both are same.');
-    } else if (hasMissingImages) {
-      return toast.error("Please upload valid Vertical and Horizontal images.");
-    } else {
-      setPage(page + 1);
+      const end = new Date(`${today}T${item.endTime}`);
+  
+      if (start < currentTime && end < currentTime) {
+        return toast.error(errors.pastStartAndEndTime);
+      }
+      if (start < currentTime) {
+        return toast.error(errors.pastStartTime);
+      }
+      if (start >= end) {
+        return toast.error(errors.sameTimeZone);
+      }
+      if (start.getTime() === end.getTime()) {
+        return toast.error(errors.sameTime);
+      }
+      if (!item.verticalImage && !item.horizontalImage) {
+        return toast.error(errors.missingImages);
+      }
     }
+  
+    setPage(page + 1);
   };
+  
 
   const handleSelectunit = (index, selectedData) => {
     // const { value } = e.target;
@@ -1143,7 +1189,7 @@ const AddSlot = () => {
         {/* clientSecret */}
         {page === 5 && clientSecret && (
           <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className="lg:w-[700px] md:w-[500px] w-full bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+            <div className="lg:w-[700px] md:w-[500px] w-full bg-white lg:p-6 p-3 rounded-xl shadow-lg overflow-auto">
               <Elements options={options} stripe={stripePromise}>
                 <AddPayment
                   Isshow="true"
@@ -1164,7 +1210,7 @@ const AddSlot = () => {
             </div>
           </div>
         )}
-        {page === 6 && <ThankYouPage navigate={navigate} />}
+        {page === 6 && <ThankYouPage navigate={navigate} Name={Name} bookslot={true} isCustomer={false}/>}
       </div>
     </>
   );

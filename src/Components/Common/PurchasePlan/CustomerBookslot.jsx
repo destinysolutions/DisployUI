@@ -24,7 +24,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    
+
     const [page, setPage] = useState(1);
 
     // page 1
@@ -305,41 +305,78 @@ export default function CustomerBookslot({ sidebarOpen }) {
         setSelectAllDays(newSelectAllDays);
     };
 
-    const handleBookSlot = () => {
-        const currentTimeStr = getCurrentTimewithSecond();
-        const currentTime = new Date(`${today}T${currentTimeStr}`);
+    // const handleBookSlot = () => {
+    //     const currentTimeStr = getCurrentTimewithSecond();
+    //     const currentTime = new Date(`${today}T${currentTimeStr}`);
 
-        const sameTimeZone = getallTime.some((item) => {
-            return item.startTime > item.endTime
-        });
-        const sameTime = getallTime.some((item) => {
-            return item.startTime == item.endTime
-        });
+    //     const sameTimeZone = getallTime.some((item) => {
+    //         return item.startTime > item.endTime
+    //     });
+    //     const sameTime = getallTime.some((item) => {
+    //         return item.startTime == item.endTime
+    //     });
 
-        const hasMissingImages = getallTime.some((item) => {
-            return !item.verticalImage && !item.horizontalImage
-        });
+    //     const hasMissingImages = getallTime.some((item) => {
+    //         return !item.verticalImage && !item.horizontalImage
+    //     });
 
-        const PastTime = getallTime.some((item) => {
-            const start = new Date(`${today}T${item.startTime}`);
-            return start < currentTime;
-        });
+    //     const PastTime = getallTime.some((item) => {
+    //         const start = new Date(`${today}T${item.startTime}`);
+    //         return start < currentTime;
+    //     });
 
-        if (PastTime) {
-            return toast.error('Start Time must be greater than Current Time.');
-        } else if (sameTimeZone) {
-            return toast.error('End Time must be greater than start Time.');
-        } else if (sameTime) {
-            return toast.error('Start Time and Time Time both are same.');
-        } else if (hasMissingImages) {
-            return toast.error("Please upload valid Vertical and Horizontal images.");
-        } else {
-            setPage(page + 1);
-        }
-    };
+    //     if (PastTime) {
+    //         return toast.error('Start Time must be greater than Current Time.');
+    //     } else if (sameTimeZone) {
+    //         return toast.error('End Time must be greater than start Time.');
+    //     } else if (sameTime) {
+    //         return toast.error('Start Time and Time Time both are same.');
+    //     } else if (hasMissingImages) {
+    //         return toast.error("Please upload valid Vertical and Horizontal images.");
+    //     } else {
+    //         setPage(page + 1);
+    //     }
+    // };
 
 
     // page 2
+
+    const handleBookSlot = () => {
+        const currentTimeStr = getCurrentTimewithSecond();
+        const today = new Date().toISOString().split('T')[0];
+        const currentTime = new Date(`${today}T${currentTimeStr}`);
+
+        const errors = {
+            sameTimeZone: 'End Time must be greater than Start Time.',
+            sameTime: 'Start Time and End Time both are the same.',
+            missingImages: 'Please upload valid Vertical and Horizontal images.',
+            pastStartAndEndTime: 'Start and End Time must be greater than Current Time.',
+            pastStartTime: 'Start Time must be greater than Current Time.'
+        };
+
+        for (const item of getallTime) {
+            const start = new Date(`${today}T${item.startTime}`);
+            const end = new Date(`${today}T${item.endTime}`);
+
+            if (start < currentTime && end < currentTime) {
+                return toast.error(errors.pastStartAndEndTime);
+            }
+            if (start < currentTime) {
+                return toast.error(errors.pastStartTime);
+            }
+            if (start >= end) {
+                return toast.error(errors.sameTimeZone);
+            }
+            if (start.getTime() === end.getTime()) {
+                return toast.error(errors.sameTime);
+            }
+            if (!item.verticalImage && !item.horizontalImage) {
+                return toast.error(errors.missingImages);
+            }
+        }
+
+        setPage(page + 1);
+    };
 
     const FetchScreen = async (Params) => {
 
@@ -686,16 +723,17 @@ export default function CustomerBookslot({ sidebarOpen }) {
         axios
             .request(config)
             .then((response) => {
-                const allScreenMacids = selectedScreens?.map((item) => item?.macid).join(", ")
-                const Params = {
-                    id: socket.id,
-                    connection: socket.connected,
-                    macId: allScreenMacids,
-                };
-                socket.emit("ScreenConnected", Params);
-                console.log('Params :>> ', Params);
-                console.log('page :>> ', page);
-                setPage(page + 1);
+                if (response?.data?.status) {
+                    debugger
+                    const allScreenMacids = selectedScreens?.map((item) => item?.macid).join(", ")
+                    const Params = {
+                        id: socket.id,
+                        connection: socket.connected,
+                        macId: allScreenMacids,
+                    };
+                    socket.emit("ScreenConnected", Params);
+                    setPage(page + 1);
+                }
             })
             .catch((error) => {
                 console.log(error);
@@ -705,8 +743,8 @@ export default function CustomerBookslot({ sidebarOpen }) {
     return (
         <>
             <div className={`${sidebarOpen ? "ml-60" : "ml-0"} `}>
-                <div className=" m-auto mt-10">
-                    <h1 className="text-2xl font-semibold text-center">Book your slot</h1>
+                <div className=" m-auto">
+                    <h1 className="text-4xl font-semibold text-left ml-5 mb-4">Book your slot</h1>
                 </div>
                 {page === 1 && (
                     <>
@@ -788,7 +826,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
                 {/* clientSecret && */}
                 {page === 3 && clientSecret && (
                     <div className="w-full h-full p-5 flex items-center justify-center">
-                        <div className="lg:w-[900px] md:w-[700px] w-full h-[70vh] bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+                            <div className="w-full bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
                             <Elements
                                 options={options}
                                 stripe={stripePromise || ''}
@@ -811,7 +849,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
                         </div>
                     </div>
                 )}
-                {page === 4 && <ThankYouPage navigate={navigate} />}
+                {page === 4 && <ThankYouPage navigate={navigate} Name={`${userDetails?.firstName} ${userDetails?.lastName}`} bookslot={false} isCustomer={true}/>}
                 {popupVisible && (
                     <ImageUploadPopup
                         isOpen={popupVisible}

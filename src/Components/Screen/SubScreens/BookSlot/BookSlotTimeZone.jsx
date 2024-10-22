@@ -45,7 +45,7 @@ export default function BookSlotTimeZone({
 
     return (
         <div className="w-full h-full p-5 flex items-center justify-center">
-            <div className={`${Isshow === "True" ? "lg:w-[900px] md:w-[700px] w-full max-h-[70vh] lg:p-6 p-3" : "w-full p-10"} bg-white  rounded-lg shadow-lg overflow-auto`}>
+            <div className={`${Isshow === "True" ? "lg:w-[800px] md:w-[700px] w-full max-h-[70vh] lg:p-6 p-3" : "w-full p-10"} bg-white  rounded-xl shadow-lg overflow-auto`}>
                 {/* <div className="text-2xl font-semibold">Book Slot</div>*/}
                 {Isshow === "True" && (
                     <div className="flex items-center justify-center mb-4">

@@ -648,7 +648,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSelectSlotWithTouch = (slotInfo) => {
     if (isTouchDevice()) {
       // Handle touch event for selecting slot
-      // console.log('Selected slot:', slotInfo);
       handleSelectSlot(slotInfo);
     } else {
       // Handle mouse event for selecting slot

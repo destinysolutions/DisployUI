@@ -12,6 +12,8 @@ export const stripePromise = loadStripe("pk_test_51JIxSzLmxyI3WVNYq18V5tZgnJ3kAe
 // Live Mode
 // export const stripePromise = loadStripe("pk_live_51JIxSzLmxyI3WVNYdQLd2H64i4dU3EA0kHoDGWyu1MCxL6xfgCBFw2CP9qhkH1FGNWwkHosH4Jlx3xfIbRdhxsAw00wvPSXFZM");
 
+export const INFOMAIL = 'info@disploy.com';
+export const PHONENUMBERDISPLOY = '+91 801027719';
 
 export const paypalOptions = {
   'client-id': 'Ac2YPb7PQ_z1TMuvWYOmWT1iafYTeVW9DubrVCxX0ub-se4zgR2D3qh4dKo8a6neF6b-vO2aDjH_CPWT', // Replace with your actual client ID

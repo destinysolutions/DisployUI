@@ -144,7 +144,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       currentPage * itemsPerPage
     )
     : [];
-
+    
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -756,8 +756,8 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                           </td>
                                           <td className="p-2 text-center">
                                             <span
-                                              id={`changetvstatus${screen.macID}`}
-                                              className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                              id={`changetvstatus${screen?.macID}`}
+                                              className={`rounded-full px-6 py-2 text-white text-center ${screen?.screenStatus == 1
                                                 ? "bg-[#3AB700]"
                                                 : "bg-[#FF0000]"
                                                 }`}

@@ -1012,13 +1012,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
                                                 <td className="p-2 text-center">
                                                   <span
-                                                    id={`changetvstatus${screen.macID}`}
-                                                    className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                                    id={`changetvstatus${screen?.macID}`}
+                                                    className={`rounded-full px-6 py-2 text-white text-center ${screen?.screenStatus == 1
                                                       ? "bg-[#3AB700]"
                                                       : "bg-[#FF0000]"
                                                       }`}
                                                   >
-                                                    {screen.screenStatus == 1
+                                                    {screen?.screenStatus == 1
                                                       ? "Live"
                                                       : "offline"}
                                                   </span>

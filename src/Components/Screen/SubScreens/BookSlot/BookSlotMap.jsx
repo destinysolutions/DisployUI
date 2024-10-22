@@ -275,7 +275,7 @@ export default function BookSlotMap({
 
     return (
         <div className="w-full h-full p-5 flex items-center justify-center  ">
-            <div className={`${Isshow === "True" ? "lg:w-[900px] md:w-[700px] lg:p-6 p-3" : "w-full p-10"} w-full bg-white  rounded-lg shadow-lg`}>
+            <div className={`${Isshow === "True" ? "lg:w-[900px] md:w-[700px] lg:p-6 p-3" : "w-full p-10"} w-full bg-white rounded-xl shadow-lg`}>
                 {Isshow === "True" && (
                     <div className="flex items-center justify-center">
                         <img

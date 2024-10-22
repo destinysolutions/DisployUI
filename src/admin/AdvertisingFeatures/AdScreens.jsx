@@ -13,7 +13,6 @@ import { format } from 'date-fns';
 export default function AdScreens({ sidebarOpen }) {
     const dispatch = useDispatch()
     const store = useSelector((state) => state.root.advertisementData);
-    console.log('store?.pendingScreens', store?.pendingScreens)
 
     const [loadFirst, setLoadFirst] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -155,7 +154,7 @@ export default function AdScreens({ sidebarOpen }) {
                                                 <td className="px-6 py-4">{item?.googleLocation}</td>
                                                 <td className="px-6 py-4 text-green-600">
                                                     <span
-                                                        id={`changetvstatus${item?.macID}`}
+                                                        id={`changetvstatus${item?.macid}`}
                                                         className={`rounded-full px-6 py-2 text-white text-center
                                                                             ${item?.screenStatus === 1 ? "bg-[#3AB700]" : "bg-[#FF0000]"}`}
                                                     >

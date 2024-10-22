@@ -200,7 +200,7 @@ export default function Approve({ handleTab }) {
                                                                     </td>
                                                                     <td className="px-6 py-4 text-green-600">
                                                                         <span
-                                                                            id={`changetvstatus${item?.macID}`}
+                                                                            id={`changetvstatus${item?.macid}`}
                                                                             className={`rounded-full px-6 py-2 text-white text-center
                                                                             ${item?.screenStatus === 1 ? "bg-[#3AB700]" : "bg-[#FF0000]"}`}
                                                                         >

@@ -105,9 +105,8 @@ const OneDrive = ({ setFile }) => {
         locale: "en-us",
       });
       const accessToken = await getToken(baseUrl);
-      console.log(accessToken);
       const url = baseUrl + `/_layouts/15/FilePicker.aspx?${queryString}`;
-      console.log(url);
+
 
       // const url = `${baseUrl}?${queryString}`;
 

@@ -129,7 +129,7 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
     return (
         <>
             <div className="w-full h-full p-5 flex items-center justify-center">
-                <div className="lg:w-[800px] md:w-[700px] w-full bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+                <div className="lg:w-[700px] md:w-[600px] w-full bg-white lg:p-6 p-3 rounded-xl shadow-lg overflow-auto">
                     {/* <div className="text-2xl font-semibold">Book Slot</div>*/}
                     <div className="flex items-center justify-center mb-4">
                         <img
@@ -143,7 +143,7 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                             <div className="p-5 flex flex-col gap-4 h-full">
                                 <div className="flex flex-col justify-center m-auto">
                                     <h3 className="text-center font-bold mb-2">Hi {UserName},</h3>
-                                    <p className="text-sm text-center"> Before we begin, please take a moment to share some details about your organization. This will help us tailor the screen experience to perfectly suit your needs.</p>
+                                    <p className="text-sm text-center w-[500px]"> Before we begin, please take a moment to share some details about your organization. This will help us tailor the screen experience to perfectly suit your needs.</p>
                                 </div>
                                 <div className="relative w-full col-span-2" ref={SelectDropdownRef}>
                                     <Select
@@ -178,7 +178,7 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                 )}
 
                                 <div className="flex flex-col justify-center">
-                                    <p className="text-center mb-3 font-semibold">Purpose of using Disploy Screens</p>
+                                    <p className="text-center mb-2 font-semibold">Purpose of using Disploy Screens</p>
                                     <div className="m-auto  flex justify-center flex-wrap my-3">
                                         {Purpose?.data?.length > 0 && Purpose?.data?.map((label, index) => (
                                             <button
@@ -225,8 +225,8 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                         />
                                     </div>
                                 )} */}
-
-                                    <div className="my-3 flex items-center gap-3 m-auto">
+                                    <hr className='mb-2' />
+                                    <div className="my-4 flex items-center gap-3 m-auto">
                                         <div className="flex justify-center items-center gap-4 m-auto">
                                             <div className=''>
                                                 <div className="flex">
@@ -269,7 +269,7 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                         </div>
                                     </div>
                                     {allSlateDetails?.refCode === "Yes" && (
-                                        <div className='flex justify-center items-center my-3'>
+                                        <div className='flex justify-center items-center mb-4'>
                                             <div className={`${(Error && !allSlateDetails?.refVale) ? "bookslot-ref-error" : "bookslot-ref w-52"}`}>
                                                 <input
                                                     type="text"
@@ -323,23 +323,23 @@ export default function AddSoltPage_2({ setPage, countries, page, setallSlateDet
                                                 className="ml-1 not-italic text-black font-medium decoration-black border-b cursor-pointer"
                                                 onClick={() => setShowModal(true)}
                                             >
-                                                terms and agreement of Disploy
+                                                terms and agreement of Disploy.
                                             </p>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="w-full h-full">
-                                    <div className="flex justify-center h-full items-end">
+                                    <div className="flex justify-center h-full items-end gap-4">
                                         <button
-                                            className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-4 md:px-8 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                            className="flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-4 md:px-8 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                                             onClick={() => setPage(page - 1)}
                                         >
                                             Back
                                         </button>
                                         <button
                                             disabled={allSlateDetails?.terms === false}
-                                            className={`sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-4 md:px-8 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 ${!allSlateDetails?.terms ? 'cursor-not-allowed  opacity-50' : ""}`}
+                                            className={`flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-4 md:px-8 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 ${!allSlateDetails?.terms ? 'cursor-not-allowed  opacity-50' : ""}`}
                                             onClick={onsumbitPage2}
                                         >
                                             Next
