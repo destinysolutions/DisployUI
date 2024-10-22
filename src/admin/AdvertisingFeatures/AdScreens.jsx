@@ -5,10 +5,8 @@ import { useDispatch } from 'react-redux';
 import { getAllUserAdScreen } from '../../Redux/admin/AdvertisementSlice';
 import moment from 'moment';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
-import { FaCalendarAlt } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import Datepicker from "react-tailwindcss-datepicker";
-import { format } from 'date-fns';
 
 export default function AdScreens({ sidebarOpen }) {
     const dispatch = useDispatch()
@@ -21,7 +19,15 @@ export default function AdScreens({ sidebarOpen }) {
     const [AdScreens, setAdScreens] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [assetManagement, setAssetManagement] = useState({});
-    const filteredData = store?.pendingScreens?.length > 0 ? store?.pendingScreens?.filter((item) => item?.screenName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
+    const [CustomDate, setCustomDate] = useState("This Month");
+
+    const filteredData = store?.pendingScreens?.length > 0
+        ? store.pendingScreens.filter(item => {
+            const screenNameMatch = item?.screenName?.toLowerCase().includes(searchTerm.toLowerCase());
+            const screenStatusMatch = (item?.screenStatus === 1 ? "Live" : "offline").toLowerCase().includes(searchTerm.toLowerCase());
+            return screenNameMatch || screenStatusMatch;
+        })
+        : [];
 
     const [value, setValue] = useState({
         startDate: '',
@@ -29,11 +35,12 @@ export default function AdScreens({ sidebarOpen }) {
     });
     const query = {
         StartDate: value?.startDate ? moment(value.startDate).format('YYYY-MM-DD') : '',
-        EndDate: value?.endDate ? moment(value.endDate).format('YYYY-MM-DD') : ''
+        EndDate: value?.endDate ? moment(value.endDate).format('YYYY-MM-DD') : '', DateType: CustomDate
     };
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
+
 
     useEffect(() => {
         if (loadFirst) {
@@ -51,7 +58,7 @@ export default function AdScreens({ sidebarOpen }) {
             })
             setLoadFirst(false)
         }
-    }, [loadFirst, dispatch,]);
+    }, [loadFirst, dispatch, CustomDate]);
 
     useEffect(() => {
         setCurrentPage(1)
@@ -100,15 +107,33 @@ export default function AdScreens({ sidebarOpen }) {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <div className="border border-[#D5E3FF] border-1 rounded w-full p-0 m-0 ">
-                            <Datepicker
-                                separator="to"
-                                value={value}
-                                onChange={newValue => { setValue(newValue); setLoadFirst(true); }}
-                                // showFooter={true}
-                                className="p-0"
-                            />
+                        <div>
+                            <select
+                                title='Frequent'
+                                className="border border-primary rounded-lg pl-2 py-2 w-40"
+                                value={CustomDate}
+                                onChange={(e) => { setCustomDate(e.target.value); setLoadFirst(true) }}
+                            >
+
+                                {/* <option value="" className="">Select</option> */}
+                                <option value="This Month">This Month</option>
+                                <option value="Last Month">Last Month</option>
+                                <option value="Last Three Month">Last Three Month</option>
+                                <option value="Last Year">Last Year</option>
+                                <option value="Custom" >Custom</option>
+                            </select>
                         </div>
+                        {CustomDate === 'Custom' && (
+                            <div className="border border-[#D5E3FF] border-1 rounded w-80  p-0 m-0 ">
+                                <Datepicker
+                                    separator="to"
+                                    value={value}
+                                    onChange={newValue => { setValue(newValue); setLoadFirst(true); }}
+                                    // showFooter={true}
+                                    className="p-0"
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -284,14 +309,14 @@ export default function AdScreens({ sidebarOpen }) {
                                     </button>
                                     <div className="flex items-center me-3">
                                         <span className="text-gray-500">{`Page ${currentPage} of ${Math.ceil(
-                                            AdScreens?.length / itemsPerPage
+                                            filteredData?.length / itemsPerPage
                                         )}`}</span>
                                     </div>
                                     <button
                                         onClick={() => setCurrentPage(currentPage + 1)}
                                         disabled={
                                             currentPage ===
-                                            Math.ceil(AdScreens?.length / itemsPerPage)
+                                            Math.ceil(filteredData?.length / itemsPerPage)
                                         }
                                         className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 "
                                     >

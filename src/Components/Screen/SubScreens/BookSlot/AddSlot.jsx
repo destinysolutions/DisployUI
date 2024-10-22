@@ -321,7 +321,7 @@ const AddSlot = () => {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
         toast.dismiss(toastId);
-
+        console.log('response.data.data :>> ', response.data.data?.length);
         let arr = [...screenData];
         const existingIds = new Set(arr.map(item => item.screenID));
         const newScreen = response.data.data.filter(item => !existingIds.has(item.screenID));
@@ -354,7 +354,6 @@ const AddSlot = () => {
       toast.error('Failed to load data');
     }
   };
-
   ///  page 4 handleNext
   const handleNext = () => {
     let total = ""
@@ -368,6 +367,7 @@ const AddSlot = () => {
       setTotalCost(totalDuration * totalPrice);
       total = Number(totalDuration) * Number(totalPrice);
     }
+
     const TimeZone = new Date()
       .toLocaleDateString(undefined, {
         day: "2-digit",
@@ -377,11 +377,12 @@ const AddSlot = () => {
     const params = {
       "items": {
         "id": "0",
-        "amount": (total * 100)
+        "amount": Math.floor(total * 100)
       },
       "Currency": TimeZone?.includes("India") ? "inr" : "usd"
     }
-
+    console.log('params :>> ', params);
+debugger
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -752,7 +753,7 @@ const AddSlot = () => {
     axios
       .request(config)
       .then((response) => {
-        if(response?.data?.status){
+        if (response?.data?.status) {
           const allScreenMacids = selectedScreens?.map((item) => item?.macid).join(", ")
           const Params = {
             id: socket.id,
@@ -833,7 +834,7 @@ const AddSlot = () => {
     const currentTimeStr = getCurrentTimewithSecond();
     const today = new Date().toISOString().split('T')[0];
     const currentTime = new Date(`${today}T${currentTimeStr}`);
-  
+
     const errors = {
       sameTimeZone: 'End Time must be greater than Start Time.',
       sameTime: 'Start Time and End Time both are the same.',
@@ -841,11 +842,11 @@ const AddSlot = () => {
       pastStartAndEndTime: 'Start and End Time must be greater than Current Time.',
       pastStartTime: 'Start Time must be greater than Current Time.'
     };
-  
+
     for (const item of getallTime) {
       const start = new Date(`${today}T${item.startTime}`);
       const end = new Date(`${today}T${item.endTime}`);
-  
+
       if (start < currentTime && end < currentTime) {
         return toast.error(errors.pastStartAndEndTime);
       }
@@ -862,10 +863,10 @@ const AddSlot = () => {
         return toast.error(errors.missingImages);
       }
     }
-  
+
     setPage(page + 1);
   };
-  
+
 
   const handleSelectunit = (index, selectedData) => {
     // const { value } = e.target;
@@ -876,6 +877,7 @@ const AddSlot = () => {
 
     const updatedItems = [...allArea];
     updatedItems[index] = { ...updatedItems[index], unit: selectedData?.unit, area: selectedData?.area, };
+
     setAllArea(updatedItems);
     const item = updatedItems[index];
 
@@ -1210,7 +1212,7 @@ const AddSlot = () => {
             </div>
           </div>
         )}
-        {page === 6 && <ThankYouPage navigate={navigate} Name={Name} bookslot={true} isCustomer={false}/>}
+        {page === 6 && <ThankYouPage navigate={navigate} Name={Name} bookslot={true} isCustomer={false} />}
       </div>
     </>
   );

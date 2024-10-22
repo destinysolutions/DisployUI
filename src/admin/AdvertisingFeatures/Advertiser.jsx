@@ -16,20 +16,30 @@ export default function Advertiser({ sidebarOpen }) {
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [advertiserData, setAdvertiserData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [SelectedDate, setSelectedDate] = useState('');
+    const [CustomDate, setCustomDate] = useState("This Month");
     const [assetManagement, setAssetManagement] = useState({});
     const [value, setValue] = useState({
         startDate: '',
         endDate: ''
     });
-    const filteredData = advertiserData?.length > 0 ? advertiserData?.filter((item) => item?.clientName.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
 
+    const filteredData = advertiserData?.length > 0
+        ? advertiserData.filter(item => {
+            const screenNameMatch = item?.clientName?.toLowerCase()?.includes(searchTerm?.toLowerCase());
+            const locationMatch = item?.location?.toLowerCase()?.includes(searchTerm?.toLowerCase());
+            const screenStatusMatch = (item?.status === 1 ? "Live" : "offline")?.toLowerCase()?.includes(searchTerm?.toLowerCase());
+            return screenNameMatch || screenStatusMatch || locationMatch;
+        })
+        : [];
+
+
+    console.log('filteredData :>> ', filteredData);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
     const query = {
         StartDate: value?.startDate ? moment(value?.startDate)?.format('YYYY-MM-DD') : '',
-        EndDate: value?.endDate ? moment(value?.endDate)?.format('YYYY-MM-DD') : ''
+        EndDate: value?.endDate ? moment(value?.endDate)?.format('YYYY-MM-DD') : '', DateType: CustomDate
     };
 
     useEffect(() => {
@@ -47,7 +57,7 @@ export default function Advertiser({ sidebarOpen }) {
             })
             setLoadFirst(false)
         }
-    }, [loadFirst, dispatch,]);
+    }, [loadFirst, dispatch, CustomDate]);
 
     useEffect(() => {
         setCurrentPage(1)
@@ -94,15 +104,33 @@ export default function Advertiser({ sidebarOpen }) {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <div className="border border-[#D5E3FF] border-1 rounded w-80  p-0 m-0 ">
-                            <Datepicker
-                                separator="to"
-                                value={value}
-                                onChange={newValue => { setValue(newValue); setLoadFirst(true); }}
-                                // showFooter={true}
-                                className="p-0"
-                            />
+                        <div>
+                            <select
+                                title='Frequent'
+                                className="border border-primary rounded-lg pl-2 py-2 w-40"
+                                value={CustomDate}
+                                onChange={(e) => { setCustomDate(e.target.value); setLoadFirst(true) }}
+                            >
+                                {/* hidden */}
+                                {/* <option value="" className="">Select</option> */}
+                                <option value="This Month">This Month</option>
+                                <option value="Last Month">Last Month</option>
+                                <option value="Last Three Month">Last Three Month</option>
+                                <option value="Last Year">Last Year</option>
+                                <option value="Custom" >Custom</option>
+                            </select>
                         </div>
+                        {CustomDate === 'Custom' && (
+                            <div className="border border-[#D5E3FF] border-1 rounded w-80  p-0 m-0 ">
+                                <Datepicker
+                                    separator="to"
+                                    value={value}
+                                    onChange={newValue => { setValue(newValue); setLoadFirst(true); }}
+                                    // showFooter={true}
+                                    className="p-0"
+                                />
+                            </div>
+                        )}
                         {/* <div className='p-0'>
                             <button
                                 data-tip

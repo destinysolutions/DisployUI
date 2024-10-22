@@ -16,8 +16,7 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
     const [loading, setLoading] = useState(false);
     const [loadFirst, setLoadFirst] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-    const filteredData = reportsData?.length > 0 ? reportsData?.filter((item) => item?.screenID.toString().toLowerCase().includes(searchTerm.toLowerCase())) : []
-
+    const filteredData = reportsData?.length > 0 ? reportsData?.filter((item) => item?.screenID?.toString()?.toLowerCase().includes(searchTerm?.toLowerCase())) : []
 
     const sortedAndPaginatedData = filteredData
 

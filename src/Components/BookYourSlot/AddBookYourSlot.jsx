@@ -25,7 +25,6 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [page, setPage] = useState(1);
-
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     // page 1
     const [startDate, setStartDate] = useState(moment().format("YYYY-MM-DD"));
@@ -68,7 +67,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     const [screenArea, setScreenArea] = useState([]);
     const [screenData, setScreenData] = useState([]);
     const [selectedScreens, setSelectedScreens] = useState([]);
-    console.log('selectedScreens', selectedScreens)
+
     const [selectedScreen, setSelectedScreen] = useState("");
     const [selectAllScreen, setSelectAllScreen] = useState(false);
     const Screenoptions = multiOptions(screenData);
@@ -497,10 +496,11 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         const params = {
             "items": {
                 "id": "0",
-                "amount": (total * 100)
+                "amount": Math.floor(total * 100)
             },
             "Currency": TimeZone?.includes("India") ? "inr" : "usd"
         }
+        console.log('params :>> ', params);
 
         const config = {
             method: "post",
@@ -862,7 +862,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
                             </div>
                         </div>
                     )}
-                    {page === 4 && <ThankYouPage navigate={navigate} Name={`${userDetails?.firstName} ${userDetails?.lastName}`} bookslot={false} isCustomer={false}/>}
+                    {page === 4 && <ThankYouPage navigate={navigate} Name={`${userDetails?.firstName} ${userDetails?.lastName}`} bookslot={false} isCustomer={false} />}
                     {popupVisible && (
                         <ImageUploadPopup
                             isOpen={popupVisible}

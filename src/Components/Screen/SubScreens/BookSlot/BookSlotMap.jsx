@@ -11,8 +11,10 @@ import logo from "../../../../images/DisployImg/Black-Logo2.png";
 import ReactTooltip from 'react-tooltip';
 import { IoIosArrowDown } from 'react-icons/io';
 import { BiEdit } from 'react-icons/bi';
+import horizontalIcon from "../../../../images/ScreenImg/horizontal-tv-icon.svg";
+import verticalIcon from "../../../../images/ScreenImg/vertical-tv-icon.svg";
 
-export default function BookSlotMap({ 
+export default function BookSlotMap({
     totalPrice,
     totalDuration,
     setAllArea,
@@ -181,14 +183,16 @@ export default function BookSlotMap({
                 value: item?.value,
                 Price: item?.Price,
                 currency: item?.currency,
-                macid:item?.macid,
-                screenID:item?.screenID,
-                output:item?.output,
+                macid: item?.macid,
+                screenID: item?.screenID,
+                output: item?.output,
                 label: (
                     <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                         <span className='text-sm'>{item?.label}</span>
                         <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
-                        <span className='h-2 w-7 bg-gray-400'></span>
+                        <span className='text-sm '>
+                            <img src={horizontalIcon} alt="horizontalIcon" className='h-4 h-4'/>
+                        </span>
                     </div>
                 ),
             })) : []),
@@ -208,14 +212,16 @@ export default function BookSlotMap({
                 value: item?.value,
                 currency: item?.currency,
                 Price: item?.Price,
-                macid:item?.macid,
-                screenID:item?.screenID,
-                output:item?.output,
+                macid: item?.macid,
+                screenID: item?.screenID,
+                output: item?.output,
                 label: (
                     <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                         <span className='text-sm'>{item?.label}</span>
                         <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
-                        <span className='h-6 w-2 bg-gray-400'></span>
+                        <span className='text-sm '>
+                            <img src={verticalIcon} alt="verticalIcon" className='h-5' />
+                        </span>
                     </div>
                 ),
             })) : []),
@@ -239,14 +245,16 @@ export default function BookSlotMap({
                     value: item?.value,
                     currency: item?.currency,
                     Price: item?.Price,
-                    macid:item?.macid,
-                    screenID:item?.screenID,
-                    output:item?.output,
+                    macid: item?.macid,
+                    screenID: item?.screenID,
+                    output: item?.output,
                     label: (
                         <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                             <span className='text-sm'>{item?.label}</span>
                             <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
-                            <span className='h-2 w-12 bg-gray-400 border border-slate-600'></span>
+                            <span className='text-sm '>
+                                <img src={verticalIcon} alt="horizontalIcon" className='h-4 h-4'/>
+                            </span>
                         </div>
                     ),
                 })) : []),
@@ -254,14 +262,16 @@ export default function BookSlotMap({
                     value: item?.value,
                     currency: item?.currency,
                     Price: item?.Price,
-                    macid:item?.macid,
-                    screenID:item?.screenID,
-                    output:item?.output,
+                    macid: item?.macid,
+                    screenID: item?.screenID,
+                    output: item?.output,
                     label: (
                         <div className='flex items-center justify-between gap-2' style={{ display: 'flex', alignItems: 'center' }}>
                             <span className='text-sm'>{item?.label}</span>
                             <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
-                            <span className='h-8 w-2 bg-gray-400 border border-slate-600'></span>
+                            <span className='text-sm '>
+                                <img src={verticalIcon} alt="verticalIcon" className='h-5'/>
+                            </span>
                         </div>
                     ),
                 })) : []),
@@ -322,7 +332,8 @@ export default function BookSlotMap({
                                                     className="rounded-full text-lg p-1.5 text-white text-center bg-blue-700"
                                                     onClick={() => {
                                                         setSelectedItem(item);
-                                                        setOpen(true);
+
+                                                        setOpen(prevState => prevState === index ? false : index);
                                                     }}
                                                 >
                                                     <BiEdit />
@@ -335,7 +346,7 @@ export default function BookSlotMap({
                                                         <span>Edit</span>
                                                     </ReactTooltip>
                                                 </button>
-                                                {Open && (
+                                                {Open === index && (
                                                     <div
                                                         id="ProfileDropDown"
                                                         className={`rounded shadow-md bg-white absolute shadow-lg mt-44 z-[9999] w-48`}
@@ -353,7 +364,10 @@ export default function BookSlotMap({
                                                                     min={0}
                                                                     value={selectedItem?.area}
                                                                     // onChange={(e) => handleAreaChange(e, index)}
-                                                                    onChange={(e) => setSelectedItem({ ...selectedItem, area: e.target.value })}
+                                                                    onChange={(e) => {
+                                                                        setSelectedItem({ ...selectedItem, area: e.target.value });
+                                                                        handleAreaChange(e, index)
+                                                                    }}
                                                                     className='p-0 w-16 px-3 py-2 border border-primary rounded-md'
                                                                     style={{ border: `${Error ? "1px solid red" : ""}` }}
 

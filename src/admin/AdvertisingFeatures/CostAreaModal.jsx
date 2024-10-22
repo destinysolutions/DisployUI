@@ -37,6 +37,7 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
 
     });
 
+
     useEffect(() => {
         if (data?.location?.includes("India")) {
             const currency = AllCurrency?.filter((item) => item?.name === "INR");
@@ -119,7 +120,6 @@ export default function CostAreaModal({ setLoadFirst, EditData, onclose, locatio
             if (place?.geometry) {
                 const Indianlocation = place.formatted_address;
                 const isInIndia = Indianlocation?.toLowerCase()?.includes("india");
-
                 const location = place.geometry.location;
                 setdata({ ...data, location: place.formatted_address, currency: isInIndia ? "INR" : "USD" });
                 map.setZoom(12);

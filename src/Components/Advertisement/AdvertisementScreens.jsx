@@ -492,7 +492,7 @@ const AdvertisementScreens = ({ sidebarOpen, setSidebarOpen }) => {
                                     </td> */}
 
                                         <td className="text-[#5E5E5E] mw-200 text-center">
-                                          {screen?.currency === 'INR' ? formatINRCurrency(screen?.payout) : formatToUSCurrency(screen?.payout)}
+                                          {screen?.currency.toUpperCase() === 'INR' ? formatINRCurrency(screen?.payout) : formatToUSCurrency(screen?.payout)}
                                         </td>
                                       </tr>
                                     );
