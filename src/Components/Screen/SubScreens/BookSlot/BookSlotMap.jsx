@@ -191,7 +191,7 @@ export default function BookSlotMap({
                         <span className='text-sm'>{item?.label}</span>
                         <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
                         <span className='text-sm '>
-                            <img src={horizontalIcon} alt="horizontalIcon" className='h-4 h-4'/>
+                            <img src={horizontalIcon} alt="horizontalIcon" className='h-4 h-4' />
                         </span>
                     </div>
                 ),
@@ -253,7 +253,7 @@ export default function BookSlotMap({
                             <span className='text-sm'>{item?.label}</span>
                             <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
                             <span className='text-sm '>
-                                <img src={verticalIcon} alt="horizontalIcon" className='h-4 h-4'/>
+                                <img src={horizontalIcon} alt="horizontalIcon" className='h-4 h-4' />
                             </span>
                         </div>
                     ),
@@ -270,7 +270,7 @@ export default function BookSlotMap({
                             <span className='text-sm'>{item?.label}</span>
                             <span className='text-sm'>{timeZoneName === 'India Standard Time' ? '₹' : '$'} {item?.Price}/Sec.</span>
                             <span className='text-sm '>
-                                <img src={verticalIcon} alt="verticalIcon" className='h-5'/>
+                                <img src={verticalIcon} alt="verticalIcon" className='h-5' />
                             </span>
                         </div>
                     ),
@@ -366,7 +366,7 @@ export default function BookSlotMap({
                                                                     // onChange={(e) => handleAreaChange(e, index)}
                                                                     onChange={(e) => {
                                                                         setSelectedItem({ ...selectedItem, area: e.target.value });
-                                                                        handleAreaChange(e, index)
+                                                                        // handleAreaChange(e, index)
                                                                     }}
                                                                     className='p-0 w-16 px-3 py-2 border border-primary rounded-md'
                                                                     style={{ border: `${Error ? "1px solid red" : ""}` }}

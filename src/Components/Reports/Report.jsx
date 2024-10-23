@@ -167,6 +167,26 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
             </div>
+            <div
+              className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56 cursor-pointer"
+            // onClick={() => handleReportClick("billingreport")}
+            >
+              <div className="reportbox text-center ">
+                <div>
+                  <TbFileReport className="lg:text-7xl md:text-7xl sm:text-6xl xs:text-7xl text-primary text-center mx-auto bg-white rounded-2xl lg:p-2 md:p-2 sm:p-2 xs:p-2 drop-shadow-xl  " />
+                </div>
+                <div>
+                  <h3 className="text-base font-medium  lg:mt-5 md:mt-5 sm:mt-3 xs:mt-3 mb-2">
+                    Bookslot Reports
+                  </h3>
+                </div>
+                <div>
+                  <p className="text-sm font-normal max-w-[250px] mx-auto">
+                    The report shows the past charges and payments for a screen.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
