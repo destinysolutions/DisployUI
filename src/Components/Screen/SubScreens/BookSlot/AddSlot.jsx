@@ -76,7 +76,6 @@ const AddSlot = () => {
     new Array(buttons.length).fill(false)
   );
   const [Error, setError] = useState(false);
-
   // const [searchArea, setSearchArea] = useState();
   const UserName = watch('name')
   const [totalDuration, setTotalDuration] = useState(0);
@@ -298,22 +297,9 @@ const AddSlot = () => {
   }
 
 
-  useEffect(() => {
-    const isAreaMatched = allArea.some(area =>
-      area.latitude === selectedItem?.latitude && area.longitude === selectedItem?.longitude
-    );
 
-    if (isAreaMatched) {
-      const matchingScreens = filterScreensDistance(allArea, screenData);
-      console.log('matchingScreens :>> ', matchingScreens);
-      if (matchingScreens.length > 0) {
-        setScreenData(matchingScreens);
-      }
-    }
+  const FetchScreen = async (Params, allArea) => {
 
-  }, [selectedItem, allArea,]);
-
-  const FetchScreen = async (Params) => {
     const toastId = toast.loading('Loading ...', {
       hideProgressBar: false,
       closeOnClick: true,
@@ -335,13 +321,11 @@ const AddSlot = () => {
     try {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
-
         toast.dismiss(toastId);
         let arr = [...screenData];
         const existingIds = new Set(arr.map(item => item.screenID));
         const newScreen = response.data.data.filter(item => !existingIds.has(item.screenID));
         let combinedArray = arr.concat(newScreen);
-
 
         let obj = {
           lat: Params?.latitude,
@@ -359,7 +343,7 @@ const AddSlot = () => {
 
 
         if (isAreaMatched) {
-          const matchingScreens = filterScreensDistance(allArea, combinedArray, Params?.distance);
+          const matchingScreens = filterScreensDistance(allArea, combinedArray);
           if (matchingScreens.length > 0) {
             setScreenData(matchingScreens);
           }
@@ -635,64 +619,67 @@ const AddSlot = () => {
 
     };
 
-    FetchScreen(Params);
     let arr = [...allArea];
     arr.push(obj);
+    FetchScreen(Params, arr);
     setAllArea(arr);
     setSelectedVal("");
     // setSearchArea("");
     // setSelectedValue("");
   };
 
+  const handleSelectunit = (index, selectedData) => {
+    // const { value } = e.target;
+    // const updatedDis = [...allArea];
 
-  // page 4 handleRangeChange
-  const handleRangeChange = (e, item) => {
-    e.preventDefault();
+    // updatedDis[index].unit = value;
+    // setAllArea(updatedDis);
+
+    const updatedItems = [...allArea];
+    updatedItems[index] = { ...updatedItems[index], unit: selectedData?.unit, area: selectedData?.area, };
+
+    setAllArea(updatedItems);
+    const item = updatedItems[index];
+
+
+    if (item?.area === '' || !(item?.area)) {
+      return setError(true)
+    } else {
+      setError(false)
+    }
+
     const TimeZone = new Date()
       .toLocaleDateString(undefined, {
         day: "2-digit",
         timeZoneName: "long",
       })
       .substring(4);
-    let arr = allArea.map((item1) => {
-      if (item1?.searchValue === item?.searchValue) {
-        let Params = {
-          latitude: item?.latitude,
-          longitude: item?.longitude,
-          distance: parseInt(item1?.area),
-          unit: item?.unit,
-          SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
-          dates: constructTimeObjects(
-            getallTime,
-            startDate,
-            endDate,
-            repeat,
-            day,
-            selectedTimeZone,
-            allTimeZone,
-            allSlateDetails,
-            selectedCountry,
-            selecteStates,
-          ),
-        };
 
-        FetchScreen(Params);
-        return {
-          searchValue: item?.searchValue,
-          include: Number(item?.include),
-          area: parseInt(item1?.area), // Assuming you want to modify the 'area' property of the matched item
-          latitude: item?.latitude,
-          longitude: item?.longitude,
-          unit: item?.unit,
-        };
-      } else {
-        return item1;
-      }
-    });
-    setAllArea(arr);
-    setOpen(false);
-    // setRangeValue(parseInt(e.target.value));
+    const Params = {
+      latitude: item?.latitude,
+      longitude: item?.longitude,
+      distance: parseInt(item.area),
+      unit: item?.unit,
+      SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
+      dates: constructTimeObjects(
+        getallTime,
+        startDate,
+        endDate,
+        repeat,
+        day,
+        selectedTimeZone,
+        allTimeZone,
+        allSlateDetails,
+        selectedCountry,
+        selecteStates,
+      ),
+    };
+    setOpen(false)
+
+    FetchScreen(Params, updatedItems);
+    setAllArea(updatedItems);
   };
+
 
   // page 5 
   const handlebook = (paymentMethod) => {
@@ -885,56 +872,7 @@ const AddSlot = () => {
   };
 
 
-  const handleSelectunit = (index, selectedData) => {
-    // const { value } = e.target;
-    // const updatedDis = [...allArea];
 
-    // updatedDis[index].unit = value;
-    // setAllArea(updatedDis);
-
-    const updatedItems = [...allArea];
-    updatedItems[index] = { ...updatedItems[index], unit: selectedData?.unit, area: selectedData?.area, };
-
-    setAllArea(updatedItems);
-    const item = updatedItems[index];
-
-
-    if (item?.area === '' || !(item?.area)) {
-      return setError(true)
-    } else {
-      setError(false)
-    }
-
-    const TimeZone = new Date()
-      .toLocaleDateString(undefined, {
-        day: "2-digit",
-        timeZoneName: "long",
-      })
-      .substring(4);
-
-    const Params = {
-      latitude: item?.latitude,
-      longitude: item?.longitude,
-      distance: parseInt(item.area),
-      unit: item?.unit,
-      SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
-      dates: constructTimeObjects(
-        getallTime,
-        startDate,
-        endDate,
-        repeat,
-        day,
-        selectedTimeZone,
-        allTimeZone,
-        allSlateDetails,
-        selectedCountry,
-        selecteStates,
-      ),
-    };
-    setOpen(false)
-
-    FetchScreen(Params);
-  };
 
   const onSubmit = (data) => {
     dispatch(getVaildEmail(data?.email)).then((res) => {
@@ -1170,7 +1108,6 @@ const AddSlot = () => {
               setSelectedVal={setSelectedVal}
               getSelectedVal={getSelectedVal}
               allArea={allArea}
-              handleRangeChange={handleRangeChange}
               Open={Open}
               setOpen={setOpen}
               setSelectedScreens={setSelectedScreens}

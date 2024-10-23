@@ -233,7 +233,7 @@ export const getCurrentTimewithSecond = () => {
 
 export const getCurrentTimewithTwoMinuteAddInSecound = () => {
   const now = new Date();
-  
+
   // Add 2 minutes
   now.setMinutes(now.getMinutes() + 2);
 
@@ -838,11 +838,11 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
 export const PageNumber = [5, 10, 25]
 
 export function filterScreensDistance(allArea, screenData,) {
+
   const filteredScreens = screenData.filter((screen) => {
 
     const screenLat = parseFloat(screen.latitude);
     const screenLon = parseFloat(screen.longitude);
-
     return allArea.some((area) => {
       const areaLat = area.latitude;
       const areaLon = area.longitude;

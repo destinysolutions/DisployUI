@@ -373,7 +373,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
     };
 
 
-    const FetchScreen = async (Params) => {
+    const FetchScreen = async (Params, allArea) => {
 
         const toastId = toast.loading('Loading ...');
 
@@ -594,7 +594,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
         };
         setOpen(false)
 
-        FetchScreen(Params);
+        FetchScreen(Params, updatedItems);
     };
 
     const getSelectedVal = (value) => {
@@ -636,9 +636,9 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
 
         };
 
-        FetchScreen(Params);
         let arr = [...allArea];
         arr.push(obj);
+        FetchScreen(Params, arr);
         setAllArea(arr);
         setSelectedVal("");
         // setSearchArea("");
