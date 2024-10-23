@@ -366,10 +366,9 @@ export default function BookSlotMap({
                                                                     // onChange={(e) => handleAreaChange(e, index)}
                                                                     onChange={(e) => {
                                                                         setSelectedItem({ ...selectedItem, area: e.target.value });
-                                                                        // handleAreaChange(e, index)
                                                                     }}
                                                                     className='p-0 w-16 px-3 py-2 border border-primary rounded-md'
-                                                                    style={{ border: `${Error ? "1px solid red" : ""}` }}
+                                                                // style={{ border: `${Error ? "1px solid red" : ""}` }}
 
                                                                 />
                                                                 <select

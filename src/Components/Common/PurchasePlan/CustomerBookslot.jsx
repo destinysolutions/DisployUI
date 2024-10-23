@@ -378,7 +378,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
         setPage(page + 1);
     };
 
-    const FetchScreen = async (Params) => {
+    const FetchScreen = async (Params, allArea) => {
 
         const toastId = toast.loading('Loading ...');
 
@@ -430,55 +430,6 @@ export default function CustomerBookslot({ sidebarOpen }) {
             toast.error('Failed to load data');
         }
     };
-
-    const handleRangeChange = (e, item) => {
-        e.preventDefault();
-        const TimeZone = new Date()
-            .toLocaleDateString(undefined, {
-                day: "2-digit",
-                timeZoneName: "long",
-            })
-            .substring(4);
-        let arr = allArea.map((item1) => {
-            if (item1?.searchValue === item?.searchValue) {
-                let Params = {
-                    latitude: item?.latitude,
-                    longitude: item?.longitude,
-                    distance: parseInt(item1?.area),
-                    unit: item?.unit,
-                    SystemCurrency: TimeZone?.includes("India") ? "inr" : "usd",
-                    dates: constructTimeObjects(
-                        getallTime,
-                        startDate,
-                        endDate,
-                        repeat,
-                        day,
-                        selectedTimeZone,
-                        allTimeZone,
-                        // allSlateDetails,
-                        // selectedCountry,
-                        // selecteStates,
-                    ),
-                };
-
-                FetchScreen(Params);
-                return {
-                    searchValue: item?.searchValue,
-                    include: Number(item?.include),
-                    area: parseInt(item1?.area), // Assuming you want to modify the 'area' property of the matched item
-                    latitude: item?.latitude,
-                    longitude: item?.longitude,
-                    unit: item?.unit,
-                };
-            } else {
-                return item1;
-            }
-        });
-        setAllArea(arr);
-        setOpen(false);
-
-    };
-
 
     const handleNext = () => {
         let total = ""
@@ -557,12 +508,6 @@ export default function CustomerBookslot({ sidebarOpen }) {
         setAllArea(updatedItems);
         const item = updatedItems[index];
 
-
-        // if (item?.area === '' || !(item?.area)) {
-        //     return setError(true)
-        // } else {
-        //     setError(false)
-        // }
         const TimeZone = new Date()
             .toLocaleDateString(undefined, {
                 day: "2-digit",
@@ -591,7 +536,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
         };
         setOpen(false)
 
-        FetchScreen(Params);
+        FetchScreen(Params, updatedItems);
     };
 
     const getSelectedVal = (value) => {
@@ -632,9 +577,9 @@ export default function CustomerBookslot({ sidebarOpen }) {
 
         };
 
-        FetchScreen(Params);
         let arr = [...allArea];
         arr.push(obj);
+        FetchScreen(Params, arr);
         setAllArea(arr);
         setSelectedVal("");
         // setSearchArea("");
@@ -801,7 +746,6 @@ export default function CustomerBookslot({ sidebarOpen }) {
                             setSelectedVal={setSelectedVal}
                             getSelectedVal={getSelectedVal}
                             allArea={allArea}
-                            handleRangeChange={handleRangeChange}
                             Open={Open}
                             setOpen={setOpen}
                             setSelectedScreens={setSelectedScreens}
@@ -826,7 +770,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
                 {/* clientSecret && */}
                 {page === 3 && clientSecret && (
                     <div className="w-full h-full p-5 flex items-center justify-center">
-                            <div className="w-full bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
+                        <div className="w-full bg-white lg:p-6 p-3 rounded-lg shadow-lg overflow-auto">
                             <Elements
                                 options={options}
                                 stripe={stripePromise || ''}
@@ -849,7 +793,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
                         </div>
                     </div>
                 )}
-                {page === 4 && <ThankYouPage navigate={navigate} Name={`${userDetails?.firstName} ${userDetails?.lastName}`} bookslot={false} isCustomer={true}/>}
+                {page === 4 && <ThankYouPage navigate={navigate} Name={`${userDetails?.firstName} ${userDetails?.lastName}`} bookslot={false} isCustomer={true} />}
                 {popupVisible && (
                     <ImageUploadPopup
                         isOpen={popupVisible}
