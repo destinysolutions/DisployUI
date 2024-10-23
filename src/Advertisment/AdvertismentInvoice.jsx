@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai';
 import AdvertismentSidebar from './AdvertismentSidebar';
 import AdvertismentNavbar from './AdvertismentNavbar';
-import { PageNumber } from '../Components/Common/Common';
+import { formatINRCurrency, formatToUSCurrency, PageNumber } from '../Components/Common/Common';
 import { BsEyeFill, BsFillPrinterFill, BsFillSendFill } from 'react-icons/bs';
 import ReactTooltip from 'react-tooltip';
 import { LuDownload } from 'react-icons/lu';
@@ -207,7 +207,7 @@ export default function AdvertismentInvoice({ sidebarOpen, setSidebarOpen }) {
                                                                         {item?.bookedDuration}
                                                                     </td>
                                                                     <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                        {item?.paidAmount?.toLocaleString('en-IN')}
+                                                                        {item?.currency === 'inr' ? formatINRCurrency(item?.paidAmount) : formatToUSCurrency(item?.paidAmount)}
                                                                     </td>
                                                                     <td className="mw-200 text-[#5E5E5E] text-center">
                                                                         <div className="flex gap-4 justify-center">

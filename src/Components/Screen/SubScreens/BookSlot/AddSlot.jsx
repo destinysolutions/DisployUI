@@ -300,12 +300,7 @@ const AddSlot = () => {
 
   const FetchScreen = async (Params, allArea) => {
 
-    const toastId = toast.loading('Loading ...', {
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
+    const toastId = toast.loading('Loading ...', { duration: Infinity });
 
 
     const config = {

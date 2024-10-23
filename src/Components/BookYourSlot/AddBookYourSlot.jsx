@@ -3,7 +3,7 @@ import Sidebar from '../Sidebar'
 import Navbar from '../Navbar'
 import { buttons, constructTimeObjects, filterScreensDistance, getCurrentTimewithSecond, getCurrentTimewithTwoMinuteAddInSecound, getTimeZoneName, getTotalDurationInSeconds, multiOptions, removeDuplicates, timeDifferenceInSeconds, timeDifferenceInSequence } from '../Common/Common';
 import moment from 'moment';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { ADDUPDATESLOT, GET_TIMEZONE_TOKEN, PAYMENT_INTENT_CREATE_REQUEST, SCREEN_LIST, stripePromise } from '../../Pages/Api';
 import { handlePaymentIntegration } from '../../Redux/PaymentSlice';
@@ -124,6 +124,10 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
 
     const handleBack = () => {
         setPage(page - 1);
+        setAllArea([]);
+        setScreenData([]);
+        setSelectAllScreen(false);
+        setSelectedScreens([]);
     };
 
     const handleSelectTimeZoneChange = (event) => { setSelectedTimeZone(event?.target.value); };
@@ -375,7 +379,7 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
 
     const FetchScreen = async (Params, allArea) => {
 
-        const toastId = toast.loading('Loading ...');
+        const toastId = toast.loading('Loading ...', { duration: Infinity });
 
         const config = {
             method: 'post',
@@ -425,6 +429,9 @@ export default function AddBookYourSlot({ sidebarOpen, setSidebarOpen }) {
             toast.error('Failed to load data');
         }
     };
+
+
+
 
     const handleRangeChange = (e, item) => {
         e.preventDefault();

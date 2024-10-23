@@ -63,7 +63,6 @@ export default function CustomerBookslot({ sidebarOpen }) {
     const [Open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState();
     const [selectedTimeZone, setSelectedTimeZone] = useState();
-    const [selectedCountry, setSelectedCountry] = useState("");
     const [allTimeZone, setAllTimeZone] = useState([]);
     const [screenArea, setScreenArea] = useState([]);
     const [screenData, setScreenData] = useState([]);
@@ -129,6 +128,10 @@ export default function CustomerBookslot({ sidebarOpen }) {
 
     const handleBack = () => {
         setPage(page - 1);
+        setAllArea([]);
+        setScreenData([]);
+        setSelectAllScreen(false);
+        setSelectedScreens([]);
     };
 
     const handleSelectTimeZoneChange = (event) => { setSelectedTimeZone(event?.target.value); };
@@ -380,7 +383,7 @@ export default function CustomerBookslot({ sidebarOpen }) {
 
     const FetchScreen = async (Params, allArea) => {
 
-        const toastId = toast.loading('Loading ...');
+        const toastId = toast.loading('Loading ...', { duration: Infinity });
 
         const config = {
             method: 'post',
