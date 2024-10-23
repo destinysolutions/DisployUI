@@ -66,6 +66,7 @@ export default function Advertiser({ sidebarOpen }) {
 
 
     const DeactiveAsste = async (item) => {
+
         setAssetManagement(prev => {
             const newModalState = { ...prev };
             const index = item?.userID;

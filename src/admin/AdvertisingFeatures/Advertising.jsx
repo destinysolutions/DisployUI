@@ -135,7 +135,7 @@ export default function Advertising({ sidebarOpen, setSidebarOpen }) {
                                 <div><CostByArea sidebarOpen={sidebarOpen} /></div>
                             )}
                             {STabs === 2 && (
-                                <div><CommissionRate /></div>
+                                <CommissionRate />
                             )}
                             {STabs === 3 && (
                                 <div><AdScreens /></div>

@@ -669,7 +669,6 @@ export default function CustomerBookslot({ sidebarOpen }) {
             .request(config)
             .then((response) => {
                 if (response?.data?.status) {
-                    debugger
                     const allScreenMacids = selectedScreens?.map((item) => item?.macid).join(", ")
                     const Params = {
                         id: socket.id,

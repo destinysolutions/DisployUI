@@ -17,13 +17,13 @@ const ThankYouPage = ({ navigate, Name, bookslot, isCustomer }) => {
       } else {
         navigate("/book-your-slot")
       }
-    }, 5000);
+    }, 2000);
   }, [])
 
   return (
     <>
       <div className="w-full h-full p-5 flex items-center justify-center">
-        <div className="lg:w-[800px] md:w-[600px] w-full h-[60vh] bg-white lg:p-6 p-3 rounded-xl shadow-xl">
+        <div className="lg:w-[800px] md:w-[600px] w-full lg:h-[60vh] md:h-[60vh] sm:h-[60vh] bg-white lg:p-6 p-3 rounded-xl shadow-xl">
           <div className="w-full h-full">
             <div className={`flex items-center justify-center ${show ? "mb-8" : ""}`}>
               <img
@@ -61,12 +61,12 @@ const ThankYouPage = ({ navigate, Name, bookslot, isCustomer }) => {
                 <div className="text-center text-md">
                   Dear {Name},
                 </div>
-                <div className="text-xl font-bold w-[600px] flex justify-center items-center ">
+                <div className="text-xl font-bold lg:w-[600px] md:w-[500px] sm:w-full flex justify-center items-center ">
                   <div className="text-center">
                     Thank you for booking your streaming slot on DISPLOY. We appreciate your trust in us!
                   </div>
                 </div>
-                <div className="text-md w-[600px] flex justify-center items-center">
+                <div className="text-md w-[600px] md:w-[500px] sm:w-full flex justify-center items-center">
                   <div className="text-center">
                     Please check your email for instructions on tracking your streaming. Follow the steps provided to get started.
                   </div>

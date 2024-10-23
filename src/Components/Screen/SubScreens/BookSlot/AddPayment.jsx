@@ -112,7 +112,7 @@ const AddPayment = ({
       }
       // Payment was successful
       if (paymentIntent.status === 'succeeded') {
-        toast.success("Payment succeeded!");
+        // toast.success("Payment succeeded!");
         handlebook(paymentMethod)
       } else {
         toast.error(`Payment status: ${paymentIntent.status}`);

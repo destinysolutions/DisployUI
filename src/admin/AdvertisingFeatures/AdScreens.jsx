@@ -7,6 +7,7 @@ import moment from 'moment';
 import { updateAssteScreen } from '../../Redux/CommonSlice';
 import { useSelector } from 'react-redux';
 import Datepicker from "react-tailwindcss-datepicker";
+import { socket } from '../../App';
 
 export default function AdScreens({ sidebarOpen }) {
     const dispatch = useDispatch()
@@ -80,6 +81,12 @@ export default function AdScreens({ sidebarOpen }) {
             };
             try {
                 const res = dispatch(updateAssteScreen(payload));
+                const Params = {
+                    id: socket.id,
+                    connection: socket.connected,
+                    macId: item?.macid,
+                };
+                socket.emit("ScreenConnected", Params);
                 dispatch(getAllUserAdScreen(query));
 
             } catch (error) {

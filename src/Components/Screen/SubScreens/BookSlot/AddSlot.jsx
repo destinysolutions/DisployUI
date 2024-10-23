@@ -382,8 +382,6 @@ const AddSlot = () => {
       },
       "Currency": TimeZone?.includes("India") ? "inr" : "usd"
     }
-    console.log('params :>> ', params);
-    debugger
     const config = {
       method: "post",
       maxBodyLength: Infinity,
