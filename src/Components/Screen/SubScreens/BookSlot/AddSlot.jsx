@@ -298,6 +298,21 @@ const AddSlot = () => {
   }
 
 
+  useEffect(() => {
+    const isAreaMatched = allArea.some(area =>
+      area.latitude === selectedItem?.latitude && area.longitude === selectedItem?.longitude
+    );
+
+    if (isAreaMatched) {
+      const matchingScreens = filterScreensDistance(allArea, screenData);
+      console.log('matchingScreens :>> ', matchingScreens);
+      if (matchingScreens.length > 0) {
+        setScreenData(matchingScreens);
+      }
+    }
+
+  }, [selectedItem, allArea,]);
+
   const FetchScreen = async (Params) => {
     const toastId = toast.loading('Loading ...', {
       hideProgressBar: false,
@@ -320,12 +335,13 @@ const AddSlot = () => {
     try {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
+
         toast.dismiss(toastId);
-        console.log('response.data.data :>> ', response.data.data?.length);
         let arr = [...screenData];
         const existingIds = new Set(arr.map(item => item.screenID));
         const newScreen = response.data.data.filter(item => !existingIds.has(item.screenID));
         let combinedArray = arr.concat(newScreen);
+
 
         let obj = {
           lat: Params?.latitude,
@@ -341,8 +357,9 @@ const AddSlot = () => {
           area.latitude === Params?.latitude && area.longitude === Params?.longitude
         );
 
+
         if (isAreaMatched) {
-          const matchingScreens = filterScreensDistance(allArea, combinedArray);
+          const matchingScreens = filterScreensDistance(allArea, combinedArray, Params?.distance);
           if (matchingScreens.length > 0) {
             setScreenData(matchingScreens);
           }
@@ -382,7 +399,7 @@ const AddSlot = () => {
       "Currency": TimeZone?.includes("India") ? "inr" : "usd"
     }
     console.log('params :>> ', params);
-debugger
+    debugger
     const config = {
       method: "post",
       maxBodyLength: Infinity,

@@ -17,7 +17,6 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
     const [loadFirst, setLoadFirst] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const filteredData = reportsData?.length > 0 ? reportsData?.filter((item) => item?.screenID?.toString()?.toLowerCase().includes(searchTerm?.toLowerCase())) : []
-
     const sortedAndPaginatedData = filteredData
 
     useEffect(() => {
@@ -32,7 +31,16 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
     }, [loadFirst, dispatch]);
 
     const exportDataToCSV = () => {
-        const csv = Papa.unparse(reportsData);
+        const data = reportsData?.map(item => ({
+            'Screen ID': item.screenID,
+            Location: item.location,
+            'Start Date': item.startDate,
+            'End Date': item.endDate,
+            'Booked Duration': item.bookedDuration,
+            'Streaming Duration': item.streamingDuration,
+            Credits: item.credits,
+        }));
+        const csv = Papa.unparse(data);
         const csvBlob = new Blob([csv], { type: "text/csv" });
         const csvUrl = URL.createObjectURL(csvBlob);
         const link = document.createElement("a");
@@ -125,7 +133,6 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                                 Credits <br />
                                                 <label className=' text-sm'>dd:hh:mm:ss</label>
                                             </th>
-
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -190,11 +197,10 @@ export default function AdvertisementReports({ sidebarOpen, setSidebarOpen }) {
                                                                     {composition?.bookedDuration}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {composition?.bookedDuration}
+                                                                    {composition?.streamingDuration}
                                                                 </td>
                                                                 <td className="mw-200 text-[#5E5E5E] text-center">
-                                                                    {/* {composition?.credits} */}
-                                                                    00:00:00:00
+                                                                    {composition?.credits}
                                                                 </td>
                                                             </tr>
                                                         );
