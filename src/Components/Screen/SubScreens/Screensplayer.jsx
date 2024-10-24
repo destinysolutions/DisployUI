@@ -154,7 +154,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedmediaTypeID, setSelectedMediaTypeID] = useState();
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [setscreenMacID, setSetscreenMacID] = useState(null);
-  const [isPlay, setIsPlay] = useState(false);
+  const [isPlay, setIsPlay] = useState(true);
   const [startTime, setStartTime] = useState(getCurrentTime());
   const [endTime, setEndTime] = useState(getCurrentTime());
   const [cardList, setCardList] = useState([])
