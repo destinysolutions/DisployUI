@@ -7,6 +7,7 @@ import moment from 'moment';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { updateAdvScreen } from '../../Redux/CommonSlice';
 import Datepicker from 'react-tailwindcss-datepicker';
+import { socket } from '../../App';
 
 export default function Advertiser({ sidebarOpen }) {
     const dispatch = useDispatch()
@@ -32,8 +33,6 @@ export default function Advertiser({ sidebarOpen }) {
         })
         : [];
 
-
-    console.log('filteredData :>> ', filteredData);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem);
@@ -71,6 +70,13 @@ export default function Advertiser({ sidebarOpen }) {
             const newModalState = { ...prev };
             const index = item?.userID;
             newModalState[index] = !prev[index];
+            let arr = []
+            advertiserData?.map((userData) => {
+                if (userData?.userID === item?.userID) {
+                    arr?.push(userData?.macid)
+                }
+            })
+            let macids = arr?.join(",");
 
             const payload = {
                 UserID: item?.userID,
@@ -78,6 +84,24 @@ export default function Advertiser({ sidebarOpen }) {
             };
             try {
                 const res = dispatch(updateAdvScreen(payload));
+                if (macids?.includes(",")) {
+                    let allMacIDs = macids?.split(",");
+                    allMacIDs?.map((item) => {
+                        let Params = {
+                            id: socket.id,
+                            connection: socket.connected,
+                            macId: item,
+                        };
+                        socket.emit("ScreenConnected", Params);
+                    });
+                } else {
+                    const Params = {
+                        id: socket.id,
+                        connection: socket.connected,
+                        macId: macids,
+                    };
+                    socket.emit("ScreenConnected", Params);
+                }
                 dispatch(getAllUserAdvertiser(query));
 
             } catch (error) {

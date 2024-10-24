@@ -318,7 +318,7 @@ export default function Approve({ handleTab }) {
                                                                             <div className="cursor-pointer text-xl flex gap-4">
                                                                                 <button
                                                                                     data-tip
-                                                                                    data-for="Location"
+                                                                                    data-for="Add Location"
                                                                                     type="button"
                                                                                     className="cursor-pointer  focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg  text-center inline-flex items-center "
                                                                                     onClick={() => { setAreaModal(true); setLocation({ locationName: item?.googleLocation, latitude: item?.latitude, longitude: item?.longitude }) }}
@@ -329,12 +329,12 @@ export default function Approve({ handleTab }) {
                                                                                         onClick={() => { setAreaModal(true); setLocation({ locationName: item?.googleLocation, latitude: item?.latitude, longitude: item?.longitude }) }}
                                                                                     />
                                                                                     <ReactTooltip
-                                                                                        id="Location"
+                                                                                        id="Add Location"
                                                                                         place="bottom"
                                                                                         type="warning"
                                                                                         effect="solid"
                                                                                     >
-                                                                                        <span>Location</span>
+                                                                                        <span>Add Location</span>
                                                                                     </ReactTooltip>
                                                                                 </button>
                                                                             </div>
